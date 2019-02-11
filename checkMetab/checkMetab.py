@@ -67,7 +67,7 @@ def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='que
     subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, 'tmp', '--threads', str(threads)])
     # filter query to target db to only best hit
     query_target_db_top = path.join(output_dir, '%s_%s.tophit.mmsdb' % (query_prefix, target_prefix))
-    subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', 1])
+    subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'])
     # filter query to target db to only hits with min threshold
     query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%smmsdb'
                                          % (query_prefix, target_prefix, bit_score_threshold))
@@ -76,7 +76,8 @@ def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='que
     # create subset for second search
     query_target_db_filt_top_swapped = path.join(output_dir, '%s_%s.minbitscore%s.tophit.swapped.mmsdb'
                                                  % (query_prefix, target_prefix, bit_score_threshold))
-    subprocess.run(['mmseqs', 'swapdb', query_target_db_top_filt, query_target_db_filt_top_swapped])
+    subprocess.run(['mmseqs', 'swapdb', query_target_db_top_filt, query_target_db_filt_top_swapped, '--threads',
+                    str(threads)])
     target_db_filt = path.join(output_dir, '%s.filt.mmsdb' % target_prefix)
     subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, target_db, target_db_filt])
     subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, '%s_h' % target_db,
