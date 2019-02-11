@@ -67,16 +67,17 @@ def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='que
     subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, 'tmp', '--threads', str(threads)])
     # filter query to target db to only best hit
     query_target_db_top = path.join(output_dir, '%s_%s.tophit.mmsdb' % (query_prefix, target_prefix))
-    subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', 1])
+    subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'])
     # filter query to target db to only hits with min threshold
     query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%smmsdb'
                                          % (query_prefix, target_prefix, bit_score_threshold))
     subprocess.run(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
-                    bit_score_threshold, '--threads', str(threads), query_target_db_top, query_target_db_top_filt])
+                    str(bit_score_threshold), '--threads', str(threads), query_target_db_top, query_target_db_top_filt])
     # create subset for second search
     query_target_db_filt_top_swapped = path.join(output_dir, '%s_%s.minbitscore%s.tophit.swapped.mmsdb'
                                                  % (query_prefix, target_prefix, bit_score_threshold))
-    subprocess.run(['mmseqs', 'swapdb', query_target_db_top_filt, query_target_db_filt_top_swapped])
+    subprocess.run(['mmseqs', 'swapdb', query_target_db_top_filt, query_target_db_filt_top_swapped, '--threads',
+                    str(threads)])
     target_db_filt = path.join(output_dir, '%s.filt.mmsdb' % target_prefix)
     subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, target_db, target_db_filt])
     subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, '%s_h' % target_db,
@@ -116,7 +117,7 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     # filter to remove bad hits
     output_db_filt = path.join(output_loc, '%s.minbitscore%s.mmsdb' % (output_prefix, bit_score_threshold))
     subprocess.run(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
-                    bit_score_threshold, output_db, output_db_filt])
+                    str(bit_score_threshold), output_db, output_db_filt])
     output_loc = 'pfam_output.b6'
     subprocess.run(['mmseqs', 'convertalis', query_db, pfam_profile, output_db_filt, output_loc])
     pfam_results = pd.read_table(output_loc, header=None, names=BOUTFMT6_COLUMNS)
