@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.*
+  - pandas
+  - pytest
+  - scikit-bio
+  - prodigal
+  - mmseqs2
