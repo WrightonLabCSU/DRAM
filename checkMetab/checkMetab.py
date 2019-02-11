@@ -84,7 +84,7 @@ def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='que
                     '%s_h' % target_db_filt])
     # make filtered target db to query db
     target_query_db = path.join(output_dir, '%s_%s.mmsdb' % (target_prefix, query_prefix))
-    subprocess.run(['mmseqs,' 'search', target_db_filt, query_db, target_query_db, 'tmp', '--threads', str(threads)])
+    subprocess.run(['mmseqs', 'search', target_db_filt, query_db, target_query_db, 'tmp', '--threads', str(threads)])
     # filter target to query results db
     target_query_db_filt = path.join(output_dir, '%s_%s.tophit.mmsdb' % (target_prefix, query_prefix))
     subprocess.run(['mmseqs', 'filterdb', target_query_db, target_query_db_filt, '--extract-lines', '1'])
