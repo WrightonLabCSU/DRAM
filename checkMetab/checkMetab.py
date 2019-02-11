@@ -1,6 +1,6 @@
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
-from os import path
+from os import path, mkdir
 import subprocess
 import pandas as pd
 
@@ -33,14 +33,14 @@ def download_and_process_pfam(output_dir, pfam_release='32.0', threads=10, verbo
     mmseq_msa = path.join(output_dir, 'pfam.mmsmsa')
     subprocess.run(['mmseqs', 'convertmsa', pfam_full_zipped, mmseq_msa])
     mmseq_profile = path.join(output_dir, 'pfam.mmspro')
-    subprocess.run(['mmseqs', 'msa2profile', mmseq_msa, mmseq_profile, '--match-mode', '1', '--threads', threads])
-    subprocess.run(['mmseqs', 'createindex', mmseq_profile, 'tmp', '-k', '5', '-s', '7', '--threads', threads])
+    subprocess.run(['mmseqs', 'msa2profile', mmseq_msa, mmseq_profile, '--match-mode', '1', '--threads', str(threads)])
+    subprocess.run(['mmseqs', 'createindex', mmseq_profile, 'tmp', '-k', '5', '-s', '7', '--threads', str(threads)])
 
 
 def make_mmseqs_db(fasta_loc, output_loc, create_index=False, threads=10):
     subprocess.run(['mmseqs', 'createdb', fasta_loc, output_loc])
     if create_index:
-        subprocess.run(['mmseqs', 'createindex', output_loc, 'tmp', '--threads', threads])
+        subprocess.run(['mmseqs', 'createindex', output_loc, 'tmp', '--threads', str(threads)])
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -64,7 +64,7 @@ def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='que
                           bit_score_threshold=60, threads=10):
     # make query to target db
     query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
-    subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, 'tmp', '--threads', threads])
+    subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, 'tmp', '--threads', str(threads)])
     # filter query to target db to only best hit
     query_target_db_top = path.join(output_dir, '%s_%s.tophit.mmsdb' % (query_prefix, target_prefix))
     subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', 1])
@@ -83,19 +83,19 @@ def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='que
                     '%s_h' % target_db_filt])
     # make filtered target db to query db
     target_query_db = path.join(output_dir, '%s_%s.mmsdb' % (target_prefix, query_prefix))
-    subprocess.run(['mmseqs,' 'search', target_db_filt, query_db, target_query_db, 'tmp', '--threads', threads])
+    subprocess.run(['mmseqs,' 'search', target_db_filt, query_db, target_query_db, 'tmp', '--threads', str(threads)])
     # filter target to query results db
     target_query_db_filt = path.join(output_dir, '%s_%s.tophit.mmsdb' % (target_prefix, query_prefix))
     subprocess.run(['mmseqs', 'filterdb', target_query_db, target_query_db_filt, '--extract-lines', 1])
     # get results
     forward_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (query_prefix, target_prefix))
     subprocess.run(['mmseqs', 'convertalis', query_db, target_db, query_target_db_top_filt, forward_output_loc,
-                    '--threads', threads])
+                    '--threads', str(threads)])
     forward_hits = pd.read_table(forward_output_loc, header=None, names=BOUTFMT6_COLUMNS)
     forward_hits = forward_hits.set_index('qId')
     reverse_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (target_prefix, query_prefix))
     subprocess.run(['mmseqs', 'convertalis', target_db_filt, query_db, target_query_db_filt, reverse_output_loc,
-                    '--threads', threads])
+                    '--threads', str(threads)])
     reverse_hits = pd.read_table(reverse_output_loc, header=None, names=BOUTFMT6_COLUMNS)
     reverse_hits = reverse_hits.set_index('qId')
     hits = pd.read_table(index=['%s_hit' % target_prefix, '%s_RBH' % target_prefix])
@@ -112,7 +112,7 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
                     threads=10):
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
     subprocess.run(['mmseqs', 'search', query_db, pfam_profile, output_db, 'tmp', '-k', '5', '-s', '7', '--threads',
-                    threads])
+                    str(threads)])
     # filter to remove bad hits
     output_db_filt = path.join(output_loc, '%s.minbitscore%s.mmsdb' % (output_prefix, bit_score_threshold))
     subprocess.run(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
@@ -147,22 +147,30 @@ def assign_grades(annotations):
 
 
 def main(fasta_loc, pfam_loc, uniref_loc, kegg_loc, output_dir='.', min_size=5000, bit_score_threshold=60, threads=10):
+    mkdir(output_dir)
     # first step filter fasta
+    print('Filtering fasta')
     filtered_fasta = path.join(output_dir, 'filtered_fasta.fa')
     filter_fasta(fasta_loc, min_size, filtered_fasta)
     # call genes with prodigal
+    print('Calling genes with prodigal')
     gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, output_dir)
     # run reverse best hits from kegg and uniref
+    print('Turning genes from prodigcal to mmseqs2 db')
     query_db = path.join(output_dir, 'gene.mmsdb')
     make_mmseqs_db(filtered_fasta, query_db, create_index=True, threads=threads)
+    print('Getting reverse best hits from KEGG')
     kegg_hits = get_reverse_best_hits(filtered_fasta, kegg_loc, output_dir, 'gene', 'kegg', bit_score_threshold,
                                       threads)
+    print('Getting reverse best hits from UniRef')
     uniref_hits = get_reverse_best_hits(filtered_fasta, uniref_loc, output_dir, 'gene', 'uniref', bit_score_threshold,
                                         threads)
     # run pfam scan
+    print('Getting hits from pfam')
     pfam_hits = run_mmseqs_pfam(gene_faa, pfam_loc, output_dir, output_prefix='pfam', bit_score_threshold=60,
                                 threads=threads)
     # merge dataframes
+    print('Finishing up results')
     annotations = pd.concat([kegg_hits, uniref_hits])
     annotations['pfam_hits'] = pfam_hits
     # assign grade and output
