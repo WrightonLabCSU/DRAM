@@ -136,15 +136,15 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     pfam_dict = dict()
     for gene, pfam_frame in pfam_results.groupby('qId'):
         pfam_dict[gene] = ','.join(pfam_frame.tId)
-    return pd.Series(pfam_dict)
+    return pd.Series(pfam_dict, name='pfam_hits')
 
 
 def assign_grades(annotations):
     grades = list()
     for gene, row in annotations.iterrows():
-        if row.kegg_RBH:
+        if row.kegg_RBH is True:
             grade = 'A'
-        elif row.uniref_RBH:
+        elif row.uniref_RBH is True:
             grade = 'B'
         elif row.kegg_hit is not None:
             grade = 'C'
@@ -155,8 +155,7 @@ def assign_grades(annotations):
         else:
             grade = 'E'
         grades.append(grade)
-    annotations['grade'] = grades
-    return annotations
+    return pd.Series(grades, name='grade')
 
 
 def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=5000, bit_score_threshold=60,
@@ -189,9 +188,8 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
                                 threads=threads)
     # merge dataframes
     print('Finishing up results')
-    annotations = pd.concat([kegg_hits, uniref_hits], axis=1)
-    annotations['pfam_hits'] = pfam_hits
+    annotations = pd.concat([kegg_hits, uniref_hits, pfam_hits], axis=1)
     # assign grade and output
-    annotations = assign_grades(annotations)
-    annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
+    annotations = pd.concat([assign_grades(annotations), annotations], axis=1)
+    annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t', index_label='gene')
     print("Runtime: %s" % str(datetime.now()-start_time))
