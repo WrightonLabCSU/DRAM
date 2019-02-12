@@ -3,10 +3,13 @@ from skbio.io import write as write_sequence
 from os import path, mkdir
 import subprocess
 import pandas as pd
+from datetime import datetime
 
 # TODO: add binning information
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old code
+# TODO: add real logging and verbose mode
+# TODO: add real annotation information (e.g. actual KEGG and UniRef ID's from fastas)
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -148,6 +151,7 @@ def assign_grades(annotations):
 
 
 def main(fasta_loc, pfam_loc, uniref_loc, kegg_loc, output_dir='.', min_size=5000, bit_score_threshold=60, threads=10):
+    start_time = datetime.now()
     mkdir(output_dir)
     # first step filter fasta
     print('Filtering fasta')
@@ -168,7 +172,7 @@ def main(fasta_loc, pfam_loc, uniref_loc, kegg_loc, output_dir='.', min_size=500
                                         threads)
     # run pfam scan
     print('Getting hits from pfam')
-    pfam_hits = run_mmseqs_pfam(gene_faa, pfam_loc, output_dir, output_prefix='pfam', bit_score_threshold=60,
+    pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, output_dir, output_prefix='pfam', bit_score_threshold=60,
                                 threads=threads)
     # merge dataframes
     print('Finishing up results')
@@ -177,3 +181,4 @@ def main(fasta_loc, pfam_loc, uniref_loc, kegg_loc, output_dir='.', min_size=500
     # assign grade and output
     annotations = assign_grades(annotations)
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
+    print("Runtime: %s" % str(start_time-datetime.now()))
