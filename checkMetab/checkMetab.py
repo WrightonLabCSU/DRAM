@@ -161,10 +161,10 @@ def main(fasta_loc, pfam_loc, uniref_loc, kegg_loc, output_dir='.', min_size=500
     query_db = path.join(output_dir, 'gene.mmsdb')
     make_mmseqs_db(filtered_fasta, query_db, create_index=True, threads=threads)
     print('Getting reverse best hits from KEGG')
-    kegg_hits = get_reverse_best_hits(filtered_fasta, kegg_loc, output_dir, 'gene', 'kegg', bit_score_threshold,
+    kegg_hits = get_reverse_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg', bit_score_threshold,
                                       threads)
     print('Getting reverse best hits from UniRef')
-    uniref_hits = get_reverse_best_hits(filtered_fasta, uniref_loc, output_dir, 'gene', 'uniref', bit_score_threshold,
+    uniref_hits = get_reverse_best_hits(query_db, uniref_loc, output_dir, 'gene', 'uniref', bit_score_threshold,
                                         threads)
     # run pfam scan
     print('Getting hits from pfam')
