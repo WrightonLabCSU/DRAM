@@ -99,14 +99,14 @@ def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='que
                     '--threads', str(threads)])
     reverse_hits = pd.read_table(reverse_output_loc, header=None, names=BOUTFMT6_COLUMNS)
     reverse_hits = reverse_hits.set_index('qId')
-    hits = pd.read_table(index=['%s_hit' % target_prefix, '%s_RBH' % target_prefix])
+    hits = pd.DataFrame(index=['%s_hit' % target_prefix, '%s_RBH' % target_prefix])
     for forward_hit, row in forward_hits.iterrows():
         rbh = False
         if row.tId in reverse_hits.index:
             if forward_hit == reverse_hits.loc[row.tId].tId:
                 rbh = True
         hits[forward_hit] = [row.tId, rbh]
-    return hits
+    return hits.transpose()
 
 
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', bit_score_threshold=60,
