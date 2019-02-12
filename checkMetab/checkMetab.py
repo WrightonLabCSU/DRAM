@@ -130,7 +130,7 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     output_db_filt = path.join(output_loc, '%s.minbitscore%s.mmsdb' % (output_prefix, bit_score_threshold))
     subprocess.run(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
                     str(bit_score_threshold), output_db, output_db_filt])
-    output_loc = 'pfam_output.b6'
+    output_loc = path.join(output_loc, 'pfam_output.b6')
     subprocess.run(['mmseqs', 'convertalis', query_db, pfam_profile, output_db_filt, output_loc])
     pfam_results = pd.read_table(output_loc, header=None, names=BOUTFMT6_COLUMNS)
     pfam_dict = dict()
@@ -146,9 +146,9 @@ def assign_grades(annotations):
             grade = 'A'
         elif row.uniref_RBH:
             grade = 'B'
-        elif row.kegg is not None:
+        elif row.kegg_hit is not None:
             grade = 'C'
-        elif row.uniref is not None:
+        elif row.uniref_hit is not None:
             grade = 'C'
         elif row.pfam_hits is not None:
             grade = 'D'
