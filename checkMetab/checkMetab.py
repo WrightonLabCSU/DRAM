@@ -37,13 +37,15 @@ def download_and_process_pfam(output_dir, pfam_release='32.0', threads=10, verbo
     subprocess.run(['mmseqs', 'convertmsa', pfam_full_zipped, mmseq_msa])
     mmseq_profile = path.join(output_dir, 'pfam.mmspro')
     subprocess.run(['mmseqs', 'msa2profile', mmseq_msa, mmseq_profile, '--match-mode', '1', '--threads', str(threads)])
-    subprocess.run(['mmseqs', 'createindex', mmseq_profile, 'tmp', '-k', '5', '-s', '7', '--threads', str(threads)])
+    tmp_dir = path.join(output_dir, 'tmp')
+    subprocess.run(['mmseqs', 'createindex', mmseq_profile, tmp_dir, '-k', '5', '-s', '7', '--threads', str(threads)])
 
 
 def make_mmseqs_db(fasta_loc, output_loc, create_index=False, threads=10):
     subprocess.run(['mmseqs', 'createdb', fasta_loc, output_loc])
     if create_index:
-        subprocess.run(['mmseqs', 'createindex', output_loc, 'tmp', '--threads', str(threads)])
+        tmp_dir = path.join(path.dirname(output_loc), 'tmp')
+        subprocess.run(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)])
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -66,8 +68,9 @@ def run_prodigal(fasta_loc, output_dir):
 def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
                              bit_score_threshold=60, threads=10):
     # make query to target db
+    tmp_dir = path.join(output_dir, 'tmp')
     query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
-    subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, 'tmp', '--threads', str(threads)])
+    subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, tmp_dir, '--threads', str(threads)])
     # filter query to target db to only best hit
     query_target_db_top = path.join(output_dir, '%s_%s.tophit.mmsdb' % (query_prefix, target_prefix))
     subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'])
@@ -87,7 +90,7 @@ def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='
                     '%s_h' % target_db_filt])
     # make filtered target db to query db
     target_query_db = path.join(output_dir, '%s_%s.mmsdb' % (target_prefix, query_prefix))
-    subprocess.run(['mmseqs', 'search', target_db_filt, query_db, target_query_db, 'tmp', '--threads', str(threads)])
+    subprocess.run(['mmseqs', 'search', target_db_filt, query_db, target_query_db, tmp_dir, '--threads', str(threads)])
     # filter target to query results db
     target_query_db_filt = path.join(output_dir, '%s_%s.tophit.mmsdb' % (target_prefix, query_prefix))
     subprocess.run(['mmseqs', 'filterdb', target_query_db, target_query_db_filt, '--extract-lines', '1'])
@@ -119,8 +122,9 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, bit_sco
 
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', bit_score_threshold=60,
                     threads=10):
+    tmp_dir = path.join(output_loc, 'tmp')
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
-    subprocess.run(['mmseqs', 'search', query_db, pfam_profile, output_db, 'tmp', '-k', '5', '-s', '7', '--threads',
+    subprocess.run(['mmseqs', 'search', query_db, pfam_profile, output_db, tmp_dir, '-k', '5', '-s', '7', '--threads',
                     str(threads)])
     # filter to remove bad hits
     output_db_filt = path.join(output_loc, '%s.minbitscore%s.mmsdb' % (output_prefix, bit_score_threshold))
