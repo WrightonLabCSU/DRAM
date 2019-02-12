@@ -140,7 +140,7 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
 
 
 def assign_grades(annotations):
-    grades = list()
+    grades = dict()
     for gene, row in annotations.iterrows():
         if row.kegg_RBH is True:
             grade = 'A'
@@ -154,7 +154,7 @@ def assign_grades(annotations):
             grade = 'D'
         else:
             grade = 'E'
-        grades.append(grade)
+        grades[gene] = grade
     return pd.Series(grades, name='grade')
 
 
