@@ -7,7 +7,7 @@ from datetime import datetime
 
 # TODO: add binning information
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
-# TODO: add ability to take into account multiple best hits as in old code
+# TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging and verbose mode
 # TODO: add real annotation information (e.g. actual KEGG and UniRef ID's from fastas)
 
@@ -63,8 +63,8 @@ def run_prodigal(fasta_loc, output_dir):
     return output_gff, output_fna, output_faa
 
 
-def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
-                          bit_score_threshold=60, threads=10):
+def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
+                             bit_score_threshold=60, threads=10):
     # make query to target db
     query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
     subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, 'tmp', '--threads', str(threads)])
@@ -91,22 +91,27 @@ def get_reverse_best_hits(query_db, target_db, output_dir='.', query_prefix='que
     # filter target to query results db
     target_query_db_filt = path.join(output_dir, '%s_%s.tophit.mmsdb' % (target_prefix, query_prefix))
     subprocess.run(['mmseqs', 'filterdb', target_query_db, target_query_db_filt, '--extract-lines', '1'])
-    # get results
+    # convert results to blast outformat 6
     forward_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (query_prefix, target_prefix))
     subprocess.run(['mmseqs', 'convertalis', query_db, target_db, query_target_db_top_filt, forward_output_loc,
                     '--threads', str(threads)])
-    forward_hits = pd.read_table(forward_output_loc, header=None, names=BOUTFMT6_COLUMNS)
-    forward_hits = forward_hits.set_index('qId')
     reverse_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (target_prefix, query_prefix))
     subprocess.run(['mmseqs', 'convertalis', target_db_filt, query_db, target_query_db_filt, reverse_output_loc,
                     '--threads', str(threads)])
-    reverse_hits = pd.read_table(reverse_output_loc, header=None, names=BOUTFMT6_COLUMNS)
+    return forward_output_loc, reverse_output_loc
+
+
+def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, bit_score_threshold=350,
+                                 target_prefix='target'):
+    forward_hits = pd.read_csv(forward_output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
+    forward_hits = forward_hits.set_index('qId')
+    reverse_hits = pd.read_csv(reverse_output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     reverse_hits = reverse_hits.set_index('qId')
     hits = pd.DataFrame(index=['%s_hit' % target_prefix, '%s_RBH' % target_prefix])
     for forward_hit, row in forward_hits.iterrows():
         rbh = False
         if row.tId in reverse_hits.index:
-            if forward_hit == reverse_hits.loc[row.tId].tId:
+            if forward_hit == reverse_hits.loc[row.tId].tId and row.bitScore >= bit_score_threshold:
                 rbh = True
         hits[forward_hit] = [row.tId, rbh]
     return hits.transpose()
@@ -140,17 +145,18 @@ def assign_grades(annotations):
         elif row.kegg is not None:
             grade = 'C'
         elif row.uniref is not None:
-            grade = 'D'
+            grade = 'C'
         elif row.pfam_hits is not None:
-            grade = 'E'
+            grade = 'D'
         else:
-            grade = 'F'
+            grade = 'E'
         grades.append(grade)
     annotations['grade'] = grades
     return annotations
 
 
-def main(fasta_loc, pfam_loc, uniref_loc, kegg_loc, output_dir='.', min_size=5000, bit_score_threshold=60, threads=10):
+def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=5000, bit_score_threshold=60,
+         rbh_bit_score_threshold=350, threads=10):
     start_time = datetime.now()
     mkdir(output_dir)
     # first step filter fasta
@@ -165,20 +171,23 @@ def main(fasta_loc, pfam_loc, uniref_loc, kegg_loc, output_dir='.', min_size=500
     query_db = path.join(output_dir, 'gene.mmsdb')
     make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads)
     print('Getting reverse best hits from KEGG')
-    kegg_hits = get_reverse_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg', bit_score_threshold,
-                                      threads)
+    forward_kegg_hits, reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg',
+                                                                    bit_score_threshold, threads)
+    kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold, 'kegg')
     print('Getting reverse best hits from UniRef')
-    uniref_hits = get_reverse_best_hits(query_db, uniref_loc, output_dir, 'gene', 'uniref', bit_score_threshold,
-                                        threads)
+    forward_uniref_hits, reverse_uniref_hits = get_reciprocal_best_hits(query_db, uniref_loc, output_dir, 'gene',
+                                                                        'uniref', bit_score_threshold, threads)
+    uniref_hits = process_reciprocal_best_hits(forward_uniref_hits, reverse_uniref_hits, rbh_bit_score_threshold,
+                                               'uniref')
     # run pfam scan
     print('Getting hits from pfam')
     pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, output_dir, output_prefix='pfam', bit_score_threshold=60,
                                 threads=threads)
     # merge dataframes
     print('Finishing up results')
-    annotations = pd.concat([kegg_hits, uniref_hits])
+    annotations = pd.concat([kegg_hits, uniref_hits], axis=1)
     annotations['pfam_hits'] = pfam_hits
     # assign grade and output
     annotations = assign_grades(annotations)
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
-    print("Runtime: %s" % str(start_time-datetime.now()))
+    print("Runtime: %s" % str(datetime.now()-start_time))
