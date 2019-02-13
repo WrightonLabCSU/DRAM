@@ -120,19 +120,14 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, bit_sco
     return hits.transpose()
 
 
-def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', bit_score_threshold=60,
-                    threads=10):
+def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10):
     tmp_dir = path.join(output_loc, 'tmp')
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
     subprocess.run(['mmseqs', 'search', query_db, pfam_profile, output_db, tmp_dir, '-k', '5', '-s', '7', '--threads',
                     str(threads)])
-    # filter to remove bad hits
-    output_db_filt = path.join(output_loc, '%s.minbitscore%s.mmsdb' % (output_prefix, bit_score_threshold))
-    subprocess.run(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
-                    str(bit_score_threshold), output_db, output_db_filt])
     output_loc = path.join(output_loc, 'pfam_output.b6')
-    subprocess.run(['mmseqs', 'convertalis', query_db, pfam_profile, output_db_filt, output_loc])
-    pfam_results = pd.read_table(output_loc, header=None, names=BOUTFMT6_COLUMNS)
+    subprocess.run(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc])
+    pfam_results = pd.read_csv(output_loc, seq='\t', header=None, names=BOUTFMT6_COLUMNS)
     pfam_dict = dict()
     for gene, pfam_frame in pfam_results.groupby('qId'):
         pfam_dict[gene] = ','.join(pfam_frame.tId)
@@ -146,11 +141,9 @@ def assign_grades(annotations):
             grade = 'A'
         elif row.uniref_RBH is True:
             grade = 'B'
-        elif row.kegg_hit is not None:
+        elif not pd.isna(row.kegg_hit) or not pd.isna(row.uniref_hit):
             grade = 'C'
-        elif row.uniref_hit is not None:
-            grade = 'C'
-        elif row.pfam_hits is not None:
+        elif not pd.isna(row.pfam_hits):
             grade = 'D'
         else:
             grade = 'E'
@@ -184,8 +177,7 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
                                                'uniref')
     # run pfam scan
     print('Getting hits from pfam')
-    pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, output_dir, output_prefix='pfam', bit_score_threshold=60,
-                                threads=threads)
+    pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, output_dir, output_prefix='pfam', threads=threads)
     # merge dataframes
     print('Finishing up results')
     annotations = pd.concat([kegg_hits, uniref_hits, pfam_hits], axis=1)
