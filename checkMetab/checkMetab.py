@@ -127,7 +127,7 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
                     str(threads)])
     output_loc = path.join(output_loc, 'pfam_output.b6')
     subprocess.run(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc])
-    pfam_results = pd.read_csv(output_loc, seq='\t', header=None, names=BOUTFMT6_COLUMNS)
+    pfam_results = pd.read_csv(output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     pfam_dict = dict()
     for gene, pfam_frame in pfam_results.groupby('qId'):
         pfam_dict[gene] = ','.join(pfam_frame.tId)
