@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime
 
 # TODO: add binning information
+# TODO: add scaffold information
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging and verbose mode
@@ -135,6 +136,11 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     return pd.Series(pfam_dict, name='pfam_hits')
 
 
+def get_scaffold(annotations):
+    return pd.Series(['_'.join(label.split('_')[:-1]) for label in annotations.index], index=annotations.index,
+                     name='scaffold')
+
+
 def assign_grades(annotations):
     grades = dict()
     for gene, row in annotations.iterrows():
@@ -182,7 +188,7 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
     # merge dataframes
     print('Finishing up results')
     annotations = pd.concat([kegg_hits, uniref_hits, pfam_hits], axis=1)
-    # assign grade and output
-    annotations = pd.concat([assign_grades(annotations), annotations], axis=1)
+    # get scaffold data, assign grade and output
+    annotations = pd.concat([get_scaffold(annotations), assign_grades(annotations), annotations], axis=1)
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t', index_label='gene')
     print("Runtime: %s" % str(datetime.now()-start_time))
