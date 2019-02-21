@@ -10,7 +10,6 @@ import re
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging and verbose mode
-# TODO: add real annotation information (e.g. actual KEGG and UniRef ID's from fastas)
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -135,9 +134,9 @@ def get_kegg_description(kegg_hits, kegg_loc):
         elif len(kos) == 0:
             ko_list.append('')
         else:
-            ko_list.append(kos[0])
+            ko_list.append(','.join(kos))
     kegg_hits['kegg_hit'] = gene_description
-    kegg_hits['kegg_KO'] = ko_list
+    kegg_hits['kegg_ko'] = ko_list
     return kegg_hits
 
 
