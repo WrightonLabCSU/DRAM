@@ -4,9 +4,9 @@ from os import path, mkdir
 import subprocess
 import pandas as pd
 from datetime import datetime
+import re
 
 # TODO: add binning information
-# TODO: add scaffold information
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging and verbose mode
@@ -122,6 +122,38 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, bit_sco
     return hits.transpose()
 
 
+def get_kegg_description(kegg_hits, kegg_loc):
+    gene_description = list()
+    ko_list = list()
+    for kegg_hit in kegg_hits.kegg_hit:
+        result = subprocess.run(['grep', '-a', kegg_hit, '%s_h' % kegg_loc], capture_output=True)
+        header = result.stdout.decode('ascii').strip()[1:]
+        gene_description.append(header)
+        kos = re.findall('(K\d\d\d\d\d)', header)
+        if len(kos) > 1:
+            raise ValueError('More than one KO on this line: %s' % header)
+        elif len(kos) == 0:
+            ko_list.append('')
+        else:
+            ko_list.append(kos[0])
+    kegg_hits['kegg_hit'] = gene_description
+    kegg_hits['kegg_KO'] = ko_list
+    return kegg_hits
+
+
+def get_uniref_description(uniref_hits, uniref_loc):
+    gene_description = list()
+    uniref_list = list()
+    for uniref_hit in uniref_hits.uniref_hit:
+        result = subprocess.run(['grep', '-a', uniref_hit, '%s_h' % uniref_loc], capture_output=True)
+        header = result.stdout.decode('ascii').strip()[1:]
+        gene_description.append(header)
+        uniref_list.append(header[header.find('RepID=')+6:])
+    uniref_hits['uniref_hit'] = gene_description
+    uniref_hits['uniref_id'] = uniref_list
+    return uniref_hits
+
+
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10):
     tmp_dir = path.join(output_loc, 'tmp')
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
@@ -177,11 +209,13 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
     forward_kegg_hits, reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg',
                                                                     bit_score_threshold, threads)
     kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold, 'kegg')
+    kegg_hits = get_kegg_description(kegg_hits, kegg_loc)
     print('Getting reverse best hits from UniRef')
     forward_uniref_hits, reverse_uniref_hits = get_reciprocal_best_hits(query_db, uniref_loc, output_dir, 'gene',
                                                                         'uniref', bit_score_threshold, threads)
     uniref_hits = process_reciprocal_best_hits(forward_uniref_hits, reverse_uniref_hits, rbh_bit_score_threshold,
                                                'uniref')
+    uniref_hits = get_uniref_description(uniref_hits, uniref_loc)
     # run pfam scan
     print('Getting hits from pfam')
     pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, output_dir, output_prefix='pfam', threads=threads)
