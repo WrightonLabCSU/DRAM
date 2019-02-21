@@ -121,33 +121,40 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, bit_sco
     return hits.transpose()
 
 
+def multigrep(search_terms, search_against): # TODO: multiprocess this over the list of search terms
+    results = subprocess.run(['grep', '-a'] + [k for j in [['-e', i] for i in search_terms] for k in j] +
+                             [search_against], capture_output=True)
+    processed_results = [i.strip()[1:] for i in results.stdout.decode('ascii').split('\n')]
+    return {i.split()[0]: i for i in processed_results}
+
+
 def get_kegg_description(kegg_hits, kegg_loc):
     gene_description = list()
     ko_list = list()
+    header_dict = multigrep(kegg_hits.kegg_hit, kegg_loc)
     for kegg_hit in kegg_hits.kegg_hit:
-        result = subprocess.run(['grep', '-a', kegg_hit, '%s_h' % kegg_loc], capture_output=True)
-        header = result.stdout.decode('ascii').strip()[1:]
+        header = header_dict[kegg_hit]
         gene_description.append(header)
         kos = re.findall('(K\d\d\d\d\d)', header)
         if len(kos) == 0:
             ko_list.append('')
         else:
             ko_list.append(','.join(kos))
+    kegg_hits['kegg_id'] = ko_list
     kegg_hits['kegg_hit'] = gene_description
-    kegg_hits['kegg_ko'] = ko_list
     return kegg_hits
 
 
 def get_uniref_description(uniref_hits, uniref_loc):
     gene_description = list()
     uniref_list = list()
+    header_dict = multigrep(uniref_hits.uniref_hit, uniref_loc)
     for uniref_hit in uniref_hits.uniref_hit:
-        result = subprocess.run(['grep', '-a', uniref_hit, '%s_h' % uniref_loc], capture_output=True)
-        header = result.stdout.decode('ascii').strip()[1:]
+        header = header_dict[uniref_hit]
         gene_description.append(header)
         uniref_list.append(header[header.find('RepID=')+6:])
-    uniref_hits['uniref_hit'] = gene_description
     uniref_hits['uniref_id'] = uniref_list
+    uniref_hits['uniref_hit'] = gene_description
     return uniref_hits
 
 
