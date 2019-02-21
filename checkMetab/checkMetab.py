@@ -125,7 +125,7 @@ def multigrep(search_terms, search_against): # TODO: multiprocess this over the 
     results = subprocess.run(['grep', '-a'] + [k for j in [['-e', i] for i in search_terms] for k in j] +
                              [search_against], capture_output=True)
     processed_results = [i.strip()[1:] for i in results.stdout.decode('ascii').split('\n')]
-    return {i.split()[0]: i for i in processed_results}
+    return {i.split()[0]: i for i in processed_results if i != ''}
 
 
 def get_kegg_description(kegg_hits, kegg_loc):
@@ -140,9 +140,8 @@ def get_kegg_description(kegg_hits, kegg_loc):
             ko_list.append('')
         else:
             ko_list.append(','.join(kos))
-    kegg_hits['kegg_id'] = ko_list
-    kegg_hits['kegg_hit'] = gene_description
-    return kegg_hits
+    new_df = pd.DataFrame([ko_list, gene_description], index=kegg_hits.index, columns=['kegg_id', 'kegg_hit'])
+    return pd.concat([new_df, kegg_hits.drop('kegg_hit', axis=1)], axis=1)
 
 
 def get_uniref_description(uniref_hits, uniref_loc):
@@ -153,9 +152,8 @@ def get_uniref_description(uniref_hits, uniref_loc):
         header = header_dict[uniref_hit]
         gene_description.append(header)
         uniref_list.append(header[header.find('RepID=')+6:])
-    uniref_hits['uniref_id'] = uniref_list
-    uniref_hits['uniref_hit'] = gene_description
-    return uniref_hits
+    new_df = pd.DataFrame([uniref_list, gene_description], index=uniref_hits.index, columns=['uniref_id', 'uniref_hit'])
+    return pd.concat([new_df, uniref_hits.drop('uniref_hit', axis=1)], axis=1)
 
 
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10):
