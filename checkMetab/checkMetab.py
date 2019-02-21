@@ -129,9 +129,7 @@ def get_kegg_description(kegg_hits, kegg_loc):
         header = result.stdout.decode('ascii').strip()[1:]
         gene_description.append(header)
         kos = re.findall('(K\d\d\d\d\d)', header)
-        if len(kos) > 1:
-            raise ValueError('More than one KO on this line: %s' % header)
-        elif len(kos) == 0:
+        if len(kos) == 0:
             ko_list.append('')
         else:
             ko_list.append(','.join(kos))
