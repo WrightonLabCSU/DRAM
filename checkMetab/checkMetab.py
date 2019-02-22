@@ -180,7 +180,7 @@ def get_scaffold_and_gene(annotations):
     for label in annotations:
         split_label = label.split('_')
         gene_scaffold_list.append(['_'.join(split_label[:-1]), split_label[-1]])
-    return pd.DataFrame(gene_scaffold_list, columns=['scaffold', 'gene'], index=annotations)
+    return pd.DataFrame(gene_scaffold_list, columns=['scaffold', 'gene_position'], index=annotations)
 
 
 def get_unannotated(fasta_loc, annotations):
@@ -245,6 +245,6 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
     unannotated['grade'] = 'E'
     annotations = pd.concat([unannotated, annotations], sort=False)
     # sort and output
-    annotations = annotations.sort_values(by=['scaffold', 'gene'])
+    annotations = annotations.sort_values(by=['scaffold', 'gene_position'])
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t', index_label='gene')
     print("Runtime: %s" % str(datetime.now()-start_time))

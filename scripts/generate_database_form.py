@@ -67,16 +67,21 @@ def parse_substeps():
     pass
 
 
-def parse_steps(definition, splitter=split_into_steps_space, flipper=False, level=''):
-    steps = splitter(definition)
+def parse_steps(definition, split_char=' ', flipper=False, level=''):
+    steps = split_into_steps(definition, split_char)
     ko_dict_list = list()
     if len(steps) > 1:
         for i, step in enumerate(steps):
+            print(step)
             if flipper:
-                ko_dict_list += parse_steps(step, split_into_steps_space, False, level='%s,%s' % (level, i))
+                ko_dict_list += parse_steps(step, ' ', False, level='%s,%s' % (level, i))
             else:
-                ko_dict_list += parse_steps(step, split_into_steps_comma, True, level='%s,%s' % (level, i))
+                ko_dict_list += parse_steps(step, ',', True, level='%s,%s' % (level, i))
     else:
+        return steps[0]
+
+
+def parse_substeps(definiton, split_char, level):
         level = level[1:]
         parsed_step = steps[0]
         for ko in split_into_steps(parsed_step, '+-'):
