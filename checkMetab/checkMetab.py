@@ -144,8 +144,8 @@ def get_kegg_description(kegg_hits, kegg_loc):
             ko_list.append('')
         else:
             ko_list.append(','.join(kos))
-    new_df = pd.DataFrame([ko_list, gene_description], index=kegg_hits.index, columns=['kegg_id', 'kegg_hit'])
-    return pd.concat([new_df, kegg_hits.drop('kegg_hit', axis=1)], axis=1)
+    new_df = pd.DataFrame([ko_list, gene_description], index=['kegg_id', 'kegg_hit'], columns=kegg_hits.index)
+    return pd.concat([new_df.transpose(), kegg_hits.drop('kegg_hit', axis=1)], axis=1)
 
 
 def get_uniref_description(uniref_hits, uniref_loc):
@@ -156,8 +156,8 @@ def get_uniref_description(uniref_hits, uniref_loc):
         header = header_dict[uniref_hit]
         gene_description.append(header)
         uniref_list.append(header[header.find('RepID=')+6:])
-    new_df = pd.DataFrame([uniref_list, gene_description], index=uniref_hits.index, columns=['uniref_id', 'uniref_hit'])
-    return pd.concat([new_df, uniref_hits.drop('uniref_hit', axis=1)], axis=1)
+    new_df = pd.DataFrame([uniref_list, gene_description], index=['uniref_id', 'uniref_hit'], columns=uniref_hits.index)
+    return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1)
 
 
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10):

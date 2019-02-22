@@ -63,6 +63,10 @@ split_into_steps_space = partial(split_into_steps, split_char=' ')
 split_into_steps_comma = partial(split_into_steps, split_char=',')
 
 
+def parse_substeps():
+    pass
+
+
 def parse_steps(definition, splitter=split_into_steps_space, flipper=False, level=''):
     steps = splitter(definition)
     ko_dict_list = list()
