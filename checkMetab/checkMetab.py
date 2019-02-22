@@ -121,7 +121,7 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, bit_sco
     return hits.transpose()
 
 
-def multigrep(search_terms, search_against): # TODO: multiprocess this over the list of search terms
+def multigrep(search_terms, search_against):  # TODO: multiprocess this over the list of search terms
     results = subprocess.run(['grep', '-a'] + [k for j in [['-e', i] for i in search_terms] for k in j] +
                              [search_against], capture_output=True)
     processed_results = [i.strip()[1:] for i in results.stdout.decode('ascii').split('\n')]
@@ -131,7 +131,7 @@ def multigrep(search_terms, search_against): # TODO: multiprocess this over the 
 def get_kegg_description(kegg_hits, kegg_loc):
     gene_description = list()
     ko_list = list()
-    header_dict = multigrep(kegg_hits.kegg_hit, kegg_loc)
+    header_dict = multigrep(kegg_hits.kegg_hit, '%s_h' % kegg_loc)
     for kegg_hit in kegg_hits.kegg_hit:
         header = header_dict[kegg_hit]
         gene_description.append(header)
@@ -147,7 +147,7 @@ def get_kegg_description(kegg_hits, kegg_loc):
 def get_uniref_description(uniref_hits, uniref_loc):
     gene_description = list()
     uniref_list = list()
-    header_dict = multigrep(uniref_hits.uniref_hit, uniref_loc)
+    header_dict = multigrep(uniref_hits.uniref_hit, '%s_h' % uniref_loc)
     for uniref_hit in uniref_hits.uniref_hit:
         header = header_dict[uniref_hit]
         gene_description.append(header)
