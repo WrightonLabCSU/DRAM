@@ -1,6 +1,6 @@
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
-from os import path, mkdir
+from os import path, mkdir, remove
 import subprocess
 import pandas as pd
 from datetime import datetime
@@ -121,10 +121,15 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, bit_sco
     return hits.transpose()
 
 
-def multigrep(search_terms, search_against):  # TODO: multiprocess this over the list of search terms
-    results = subprocess.run(['grep', '-a'] + [k for j in [['-e', i] for i in search_terms] for k in j] +
-                             [search_against], capture_output=True)
+def multigrep(search_terms, search_against, output='.'):  # TODO: multiprocess this over the list of search terms
+    """Search a list of exact substrings against a database, takes name of mmseqs db and appends _h to search against
+    the index"""
+    hits_file = path.join(output, 'hits.txt')
+    with open(hits_file, 'w') as f:
+        f.write('%s\n' % '\n'.join(search_terms))
+    results = subprocess.run(['grep', '-a', '-F', '-f', hits_file, '%s_h' % search_against], capture_output=True)
     processed_results = [i.strip()[1:] for i in results.stdout.decode('ascii').split('\n')]
+    remove(hits_file)
     return {i.split()[0]: i for i in processed_results if i != ''}
 
 
