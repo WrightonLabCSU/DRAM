@@ -1,6 +1,6 @@
 import pytest
 
-from checkMetab.checkMetab import main
+from checkMetab.annotate_scaffolds import main
 
 
 def test_main():

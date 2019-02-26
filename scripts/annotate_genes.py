@@ -1,6 +1,6 @@
 import argparse
 
-from checkMetab.checkMetab import main
+from checkMetab.annotate_scaffolds import main
 
 
 if __name__ == '__main__':
