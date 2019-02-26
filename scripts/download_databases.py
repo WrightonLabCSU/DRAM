@@ -1,6 +1,6 @@
 import argparse
 
-from checkMetab.checkMetab import download_and_process_pfam, download_unifref
+from checkMetab.annotate_scaffolds import download_and_process_pfam, download_unifref
 
 
 if __name__ == '__main__':

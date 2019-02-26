@@ -3,8 +3,6 @@ import pandas as pd
 import re
 from itertools import tee
 from KEGG_parser import downloader, parsers
-from collections import defaultdict
-from functools import partial
 
 
 def read_modules(modules_loc):
@@ -38,7 +36,7 @@ def first_open_paren_is_all(str_):
 
 
 def split_into_steps(definition, split_char=' '):
-    """Very fancy split on space"""
+    """Very fancy split on string of chars"""
     curr_level = 0
     step_starts = [-1]
     for i, char in enumerate(definition):
@@ -59,64 +57,22 @@ def split_into_steps(definition, split_char=' '):
     return steps
 
 
-split_into_steps_space = partial(split_into_steps, split_char=' ')
-split_into_steps_comma = partial(split_into_steps, split_char=',')
-
-
-def parse_substeps():
-    pass
-
-
-def parse_steps(definition, split_char=' ', flipper=False, level=''):
-    steps = split_into_steps(definition, split_char)
-    ko_dict_list = list()
-    if len(steps) > 1:
-        for i, step in enumerate(steps):
-            print(step)
-            if flipper:
-                ko_dict_list += parse_steps(step, ' ', False, level='%s,%s' % (level, i))
+def parse_definition(definition, path_tuple_base=()):
+    steps = split_into_steps(definition, split_char=' ')
+    ko_paths = list()
+    for i, step in enumerate(steps):
+        for j, path in enumerate(split_into_steps(step, ',')):
+            path_tuple = path_tuple_base+(i,j)
+            if ' ' in path:
+                ko_paths += parse_definition(path, path_tuple)
             else:
-                ko_dict_list += parse_steps(step, ',', True, level='%s,%s' % (level, i))
-    else:
-        return steps[0]
+                ko_paths.append((path, ','.join(map(str, path_tuple))))
+    return ko_paths
 
 
-def parse_substeps(definiton, split_char, level):
-        level = level[1:]
-        parsed_step = steps[0]
-        for ko in split_into_steps(parsed_step, '+-'):
-            if ',' in ko:
-                parsed_substep = split_into_steps(ko, ',')
-                ko_loc = parsed_step.find(ko)
-                if ko_loc == 0:
-                    required = True
-                elif ko_loc == -1:
-                    required = True
-                elif parsed_step[ko_loc - 2] == '+':
-                    required = True
-                elif parsed_step[ko_loc - 2] == '-':
-                    required = False
-                else:
-                    raise ValueError('%s from %s in %s at %s not expected' % (parsed_step[ko_loc - 2], ko,
-                                                                              parsed_step, ko_loc))
-                for i, substep in enumerate(parsed_substep):
-                    ko_dict_list += [{'ko': substep, 'step': '%s(%s)' % (level, i), 'required': required}]
-            else:
-                ko_loc = parsed_step.find(ko)
-                if ko_loc == 0:
-                    required = True
-                elif ko_loc == -1:
-                    required = True
-                elif parsed_step[ko_loc-1] == '+':
-                    required = True
-                elif parsed_step[ko_loc-1] == '-':
-                    required = False
-                else:
-                    raise ValueError('%s from %s in %s at %s not expected' % (parsed_step[ko_loc-1], ko, parsed_step,
-                                                                              ko_loc))
-                ko_dict_list += [{'ko': ko, 'step': level, 'required': required}]
-
-    return ko_dict_list
+def parse_complex(complex):
+    # TODO: get if required or not and if member of optional subcomplex, optional subcomplexes, 'or' subcomplexs, more
+    return re.findall('K\d\d\d\d\d', complex)
 
 
 def get_rows(modules_dict):
@@ -124,12 +80,14 @@ def get_rows(modules_dict):
     all_ko_dicts = list()
     for module, module_dict in modules_dict.items():
         print(module)
-        if ' ' in module_dict['DEFINITION']:
-            kos_dict = parse_steps(module_dict['DEFINITION'])  # gets step and required
-        else:
-            kos_dict = parse_steps(module_dict['DEFINITION'], split_into_steps_comma, True, '0,')
+        complex_list = parse_definition(module_dict['DEFINITION'])
+        kos_dict = []
+        for complex, path in complex_list:
+            for ko in parse_complex(complex):
+                kos_dict.append({'ko': ko, 'path': path})
         for ko_dict in kos_dict:
             ko_dict['module'] = module
+            ko_dict['module_name'] = module_dict['NAME']
             ko = ko_dict['ko']
             protein_name = get_value_from_complex_key(ko, module_dict['ORTHOLOGY'])
             ko_dict['gene'] = protein_name
@@ -158,7 +116,7 @@ def main(modules_list: list=None, modules_loc=None, output='empty_form.tsv'):
     modules_dict = downloader.get_kegg_record_dict(modules_list, parsers.parse_module)
     row_dict = get_rows(modules_dict)
     form = pd.DataFrame.from_dict(row_dict)
-    form.to_csv(output, sep='\t')
+    form.to_csv(output, sep='\t', index=False)
 
 
 if __name__ == '__main__':
