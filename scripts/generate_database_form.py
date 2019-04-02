@@ -79,7 +79,6 @@ def get_rows(modules_dict):
     """substrate, product, substrate_id, product_id, module, gene"""
     all_ko_dicts = list()
     for module, module_dict in modules_dict.items():
-        print(module)
         complex_list = parse_definition(module_dict['DEFINITION'])
         kos_dict = []
         for complex, path in complex_list:
@@ -89,21 +88,45 @@ def get_rows(modules_dict):
             ko_dict['module'] = module
             ko_dict['module_name'] = module_dict['NAME']
             ko = ko_dict['ko']
-            protein_name = get_value_from_complex_key(ko, module_dict['ORTHOLOGY'])
+            try:
+                protein_name = get_value_from_complex_key(ko, module_dict['ORTHOLOGY'])
+            except KeyError:
+                protein_name = ', '.join(downloader.get_kegg_record_dict([ko], parsers.parse_ko)[ko]['NAME'])
             ko_dict['gene'] = protein_name
-            if 'REACTION' in module_dict:
+            if 'REACTION' in module_dict:  # if module has reaction information then grab that information
                 rn_name_loc = protein_name.find('RN:')
-                if rn_name_loc != -1:
-                    reaction = protein_name[rn_name_loc + 3:rn_name_loc + 9]
-                    reaction_entry = get_value_from_complex_key(reaction, module_dict['REACTION'])
+                reaction_entry = None
+                if rn_name_loc != -1:  # try to get reaction from orthology
+                    reactions = protein_name[rn_name_loc+3:].split(']')[0].split()
+                    for reaction in reactions:
+                        try:
+                            reaction_entry = get_value_from_complex_key(reaction, module_dict['REACTION'])
+                        except KeyError:
+                            pass
+                else:  # get reaction information from the kegg api
+                    dblinks = downloader.get_kegg_record_dict([ko], parsers.parse_ko)[ko]['DBLINKS']
+                    if 'RN' in dblinks:
+                        for reaction in dblinks['RN']:
+                            try:
+                                reaction_entry = get_value_from_complex_key(reaction, module_dict['REACTION'])
+                            except KeyError:
+                                pass
+                if reaction_entry is not None:  # if there is reaction info from either method then break down
                     substrate_ids = reaction_entry[0]
                     ko_dict['substrate_ids'] = ','.join(substrate_ids)
                     ko_dict['substrate_names'] = ','.join([module_dict['COMPOUND'][substrate_id]
                                                            for substrate_id in substrate_ids])
                     product_ids = reaction_entry[1]
                     ko_dict['product_ids'] = ','.join(product_ids)
-                    ko_dict['product_names'] = ','.join([module_dict['COMPOUND'][product_id]
-                                                         for product_id in product_ids])
+                    product_names = list()
+                    for product_id in product_ids:
+                        try:
+                            product_names.append(module_dict['COMPOUND'][product_id])
+                        except KeyError:
+                            product_dict = downloader.get_kegg_record_dict([product_id],parsers.parse_co)
+                            product_name = product_dict[product_id]['NAME']
+                            product_names.append(product_name)
+                    ko_dict['product_names'] = ','.join(product_names)
         all_ko_dicts += kos_dict
     return all_ko_dicts
 

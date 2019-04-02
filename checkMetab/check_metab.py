@@ -1,10 +1,12 @@
 import pandas as pd
 import networkx as nx
 import os
+from collections import defaultdict
 
-
-def parse_kos_from_series(series):
-    return set([j for i in [i for i in series if type(i) is str] for j in i.split()])
+# TODO: add RBH information to output
+# TODO: add measure of redendancy of genes
+# TODO: add total number of copies
+# TODO: add tqdm progress bar
 
 
 def build_module_net(module_df):
@@ -48,18 +50,25 @@ def get_module_coverage(kos, module_net):
     num_steps = pruned_module_net.graph['num_steps']
     num_steps_present = num_steps-len(missing_steps)
     coverage = num_steps_present/num_steps
-    return num_steps, num_steps_present, coverage, module_kos_present
+    return num_steps, num_steps_present, coverage, sorted(module_kos_present)
 
 
-def make_coverage_df(kos, module_nets, min_cov=.5):
+def make_coverage_df(annotation_df, module_nets, min_cov=.5):
+    kos_to_genes = defaultdict(list)
+    for gene_id, ko_list in annotation_df.kegg_id.iteritems():
+        if type(ko_list) is str:
+            for ko in ko_list.split(','):
+                kos_to_genes[ko].append(gene_id)
     coverage_dict = {}
-    for module, net in module_nets.items():
-        module_steps, module_steps_present, module_coverage, module_kos = get_module_coverage(kos, net)
+    for i, (module, net) in enumerate(module_nets.items()):
+        module_steps, module_steps_present, module_coverage, module_kos = get_module_coverage(set(kos_to_genes.keys()),
+                                                                                              net)
+        module_genes = sorted([gene for ko in module_kos for gene in kos_to_genes[ko]])
         coverage_dict[module] = [net.graph['module_name'], module_steps, module_steps_present, module_coverage,
-                                 len(module_kos), ','.join(module_kos)]
+                                 len(module_kos), ','.join(module_kos), ','.join(module_genes)]
     coverage_df = pd.DataFrame.from_dict(coverage_dict, orient='index',
                                          columns=['module_name', 'steps', 'steps_present', 'step_coverage', 'ko_count',
-                                                  'kos_present', 'gene_name'])
+                                                  'kos_present', 'genes_present'])
     return coverage_df.loc[coverage_df.step_coverage >= min_cov]
 
 
@@ -67,17 +76,19 @@ def main(annotation_tsv, metabolism_db, output='.', min_cov=.5):
     # build module nets
     all_modules = pd.read_csv(metabolism_db, sep='\t')
     module_nets = {module: build_module_net(module_df) for module, module_df in all_modules.groupby('module')}
+    print('Nets made')
 
     # go through observed kos in entire metagenome
-    annotations = pd.read_csv(annotation_tsv, sep='\t')
-    all_kos = parse_kos_from_series(annotations.kegg_id)
-    metagenome_coverage_df = make_coverage_df(all_kos, module_nets, min_cov)
-    metagenome_coverage_df.to_csv(os.path.join('metagenome_metab.tsv'), sep='\t')
+    annotations = pd.read_csv(annotation_tsv, sep='\t', index_col=0)
+    metagenome_coverage_df = make_coverage_df(annotations, module_nets, min_cov)
+    metagenome_coverage_df.to_csv(os.path.join(output, 'metagenome_metab.tsv'), sep='\t')
+    print('Got coverage over metagenome')
 
     # go through each scaffold to check for modules
     scaffold_df_dict = dict()
     for scaffold, frame in annotations.groupby('scaffold'):
-        scaffold_kos = parse_kos_from_series(frame.kegg_id)
-        scaffold_df_dict[scaffold] = make_coverage_df(scaffold_kos, module_nets, min_cov)
+        scaffold_df_dict[scaffold] = make_coverage_df(frame, module_nets, min_cov)
+        print('Got %s' % scaffold)
     scaffold_coverage_df = pd.concat(scaffold_df_dict)
     scaffold_coverage_df.to_csv(os.path.join(output, 'scaffold_metab.tsv'), sep='\t')
+    print('Got coverage per scaffold')
