@@ -81,7 +81,7 @@ def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', tar
     query_target_db_top = path.join(output_dir, '%s_%s.tophit.mmsdb' % (query_prefix, target_prefix))
     subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'], check=True)
     # filter query to target db to only hits with min threshold
-    query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%smmsdb'
+    query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%s.mmsdb'
                                          % (query_prefix, target_prefix, bit_score_threshold))
     subprocess.run(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
                     str(bit_score_threshold), '--threads', str(threads), query_target_db_top, query_target_db_top_filt],
@@ -98,7 +98,7 @@ def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='
     # make query to target db
     tmp_dir = path.join(output_dir, 'tmp')
     # create subset for second search
-    query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%smmsdb'
+    query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%s.mmsdb'
                                          % (query_prefix, target_prefix, bit_score_threshold))
     query_target_db_filt_top_swapped = path.join(output_dir, '%s_%s.minbitscore%s.tophit.swapped.mmsdb'
                                                  % (query_prefix, target_prefix, bit_score_threshold))
@@ -224,7 +224,16 @@ def assign_grades(annotations):
 
 def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=5000, bit_score_threshold=60,
          rbh_bit_score_threshold=350, threads=10):
+    # set up
     start_time = datetime.now()
+    if not path.isfile(fasta_loc):
+        raise ValueError('Input fasta does not exist: %s' % fasta_loc)
+    if not path.isfile(kegg_loc):
+        raise ValueError('KEGG mmsdb does not exist: %s' % kegg_loc)
+    if not path.isfile(uniref_loc):
+        raise ValueError('UniRef mmsdb does not exist: %s' % uniref_loc)
+    if not path.isfile(uniref_loc):
+        raise ValueError('PFam mmspro does not exist: %s' % pfam_loc)
     mkdir(output_dir)
 
     # first step filter fasta
@@ -236,17 +245,17 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
     print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
     gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, output_dir)
 
-    # run reverse best hits from kegg and uniref
+    # run reciprocal best hits from kegg and uniref
     print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
     query_db = path.join(output_dir, 'gene.mmsdb')
     make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads)
 
     print('%s: Getting forward best hits from KEGG' % str(datetime.now()-start_time))
-    forward_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg', bit_score_threshold,
-                                                 threads)
+    forward_kegg_hits = get_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg', bit_score_threshold,
+                                      threads)
     print('%s: Getting reverse best hits from KEGG' % str(datetime.now()-start_time))
-    reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg', bit_score_threshold,
-                                                 threads)
+    reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg',
+                                                 bit_score_threshold, threads)
     kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold, 'kegg')
     kegg_hits = get_kegg_description(kegg_hits, kegg_loc)
 
