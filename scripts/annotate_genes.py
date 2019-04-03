@@ -18,6 +18,7 @@ if __name__ == '__main__':
     parser.add_argument('--min_bitscore', type=int, default=60, help='minimum bitScore of search to retain hits')
     parser.add_argument('--strict_bitscore', type=int, default=350,
                         help='minimum bitScore of reverse best hits to retain hits')
+    parser.add_argument('--keep_working_dir', action='store_true', default=False)
     parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
 
     args = parser.parse_args()
@@ -30,6 +31,8 @@ if __name__ == '__main__':
     min_contig_size = args.min_contig_size
     min_bitscore = args.min_bitscore
     strict_bitscore = args.strict_bitscore
+    keep_tmp = args.keep_working_dir
     threads = args.threads
 
-    main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output, min_contig_size, min_bitscore, strict_bitscore, threads)
+    main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output, min_contig_size, min_bitscore, strict_bitscore, keep_tmp,
+         threads)

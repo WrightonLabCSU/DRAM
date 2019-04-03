@@ -169,12 +169,16 @@ def get_kegg_description(kegg_hits, kegg_loc):
 def get_uniref_description(uniref_hits, uniref_loc):
     gene_description = list()
     uniref_list = list()
+    gene_taxonomy = list()
     header_dict = multigrep(uniref_hits.uniref_hit, '%s_h' % uniref_loc)
     for uniref_hit in uniref_hits.uniref_hit:
         header = header_dict[uniref_hit]
         gene_description.append(header)
         uniref_list.append(header[header.find('RepID=')+6:])
-    new_df = pd.DataFrame([uniref_list, gene_description], index=['uniref_id', 'uniref_hit'], columns=uniref_hits.index)
+        gene_taxonomy.append(re.search('Tax=(.*?) (\S*?)=', header).group(1))
+    new_df = pd.DataFrame([uniref_list, gene_description, gene_taxonomy],
+                          index=['uniref_id', 'uniref_hit', 'uniref_taxonomy'],
+                          columns=uniref_hits.index)
     return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1)
 
 
@@ -222,8 +226,37 @@ def assign_grades(annotations):
     return pd.Series(grades, name='grade')
 
 
+def generate_annotated_fasta(input_fasta, annotations, verbosity='short'):
+    '''verbosity should be short or long'''
+    for seq in read_sequence(input_fasta, format='fasta'):
+        annotation = annotations.loc[seq.metadata['id']]
+        annotation_str = 'grade: %s' % annotation.grade
+        if verbosity == 'short':
+            if (annotation.grade == 'A') or (annotation.grade == 'C' and not pd.isna(annotation.kegg_hit)):
+                annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
+            if annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
+                annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
+            if annotation.grade =='D':
+                annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
+        elif verbosity == 'long':
+            if not pd.isna(annotation.kegg_hit):
+                annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
+            if not pd.isna(annotation.uniref_hit):
+                annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'uniref')
+            if not pd.isna(annotation.pfam_hits):
+                annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
+        else:
+            raise ValueError('%s is not a valid verbosity level for annotation summarization' % verbosity)
+        seq.metadata['description'] = annotation_str
+        yield seq
+
+
+def create_annotated_fasta(input_fasta, annotations, output_fasta, verbosity='short'):
+    write_sequence(generate_annotated_fasta(input_fasta, annotations, verbosity), format='fasta', into=output_fasta)
+
+
 def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=5000, bit_score_threshold=60,
-         rbh_bit_score_threshold=350, threads=10):
+         rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10):
     # set up
     start_time = datetime.now()
     if not path.isfile(fasta_loc):
@@ -235,35 +268,37 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
     if not path.isfile(uniref_loc):
         raise ValueError('PFam mmspro does not exist: %s' % pfam_loc)
     mkdir(output_dir)
+    tmp_dir = path.join(output_dir, 'working_dir')
+    mkdir(tmp_dir)
 
     # first step filter fasta
     print('%s: Filtering fasta' % str(datetime.now()-start_time))
-    filtered_fasta = path.join(output_dir, 'filtered_fasta.fa')
+    filtered_fasta = path.join(tmp_dir, 'filtered_fasta.fa')
     filter_fasta(fasta_loc, min_size, filtered_fasta)
 
     # call genes with prodigal
     print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
-    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, output_dir)
+    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir)
 
     # run reciprocal best hits from kegg and uniref
     print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
-    query_db = path.join(output_dir, 'gene.mmsdb')
+    query_db = path.join(tmp_dir, 'gene.mmsdb')
     make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads)
 
     print('%s: Getting forward best hits from KEGG' % str(datetime.now()-start_time))
-    forward_kegg_hits = get_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg', bit_score_threshold,
+    forward_kegg_hits = get_best_hits(query_db, kegg_loc, tmp_dir, 'gene', 'kegg', bit_score_threshold,
                                       threads)
     print('%s: Getting reverse best hits from KEGG' % str(datetime.now()-start_time))
-    reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, output_dir, 'gene', 'kegg',
+    reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, tmp_dir, 'gene', 'kegg',
                                                  bit_score_threshold, threads)
     kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold, 'kegg')
     kegg_hits = get_kegg_description(kegg_hits, kegg_loc)
 
     print('%s: Getting forward best hits from UniRef' % str(datetime.now()-start_time))
-    forward_uniref_hits = get_best_hits(query_db, uniref_loc, output_dir, 'gene', 'uniref', bit_score_threshold,
+    forward_uniref_hits = get_best_hits(query_db, uniref_loc, tmp_dir, 'gene', 'uniref', bit_score_threshold,
                                         threads)
     print('%s: Getting reverse best hits from UniRef' % str(datetime.now()-start_time))
-    reverse_uniref_hits = get_reciprocal_best_hits(query_db, uniref_loc, output_dir, 'gene', 'uniref',
+    reverse_uniref_hits = get_reciprocal_best_hits(query_db, uniref_loc, tmp_dir, 'gene', 'uniref',
                                                    bit_score_threshold, threads)
     uniref_hits = process_reciprocal_best_hits(forward_uniref_hits, reverse_uniref_hits, rbh_bit_score_threshold,
                                                'uniref')
@@ -271,7 +306,7 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
 
     # run pfam scan
     print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
-    pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, output_dir, output_prefix='pfam', threads=threads)
+    pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, tmp_dir, output_prefix='pfam', threads=threads)
 
     # merge dataframes
     print('%s: Finishing up results' % str(datetime.now()-start_time))
@@ -289,4 +324,16 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
     # sort and output
     annotations = annotations.sort_values(by=['scaffold', 'gene_position'])
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t', index_label='gene')
+
+    # generate fna and faa output files with uniref annotations
+    annotated_fna = path.join(output_dir, 'genes.fna')
+    generate_annotated_fasta(gene_fna, annotations, annotated_fna)
+    annotated_faa = path.join(output_dir, 'genes.faa')
+    generate_annotated_fasta(gene_faa, annotations, annotated_faa)
+
+    # clean up
+    if not keep_tmp_dir:
+        remove(tmp_dir)
+
     print("%s: Completed" % str(datetime.now()-start_time))
+
