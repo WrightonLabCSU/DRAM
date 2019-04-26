@@ -196,6 +196,44 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     return pd.Series(pfam_dict, name='pfam_hits')
 
 
+def get_sig(tcovlen, evalue):
+    if tcovlen >= 80 and evalue < 1e-5:
+        return True
+    elif tcovlen < 80 and evalue < 1e-3:
+        return True
+    else:
+        return False
+
+
+def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc):
+    """
+    hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/checkMetab/genes.faa
+    cat ~/dbCAN_test_1 | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' | sed 's/ /\t/g' | \
+    sort -k 3,3 -k 8n -k 9n > dbCAN_test_1.good_cols.tsv
+    """
+    dbcan_output = path.join(output_loc, 'dbcan_results.unprocessed.txt')
+    subprocess.run(['hmmscan', '--domtblout', dbcan_output, dbcan_loc, genes_faa], check=True)
+    processed_dbcan_output = path.join(output_loc, 'dbcan_results.tsv')
+    cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
+          "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (dbcan_output, processed_dbcan_output)
+    subprocess.run(cmd, shell=True, check=True)
+
+    dbcan_res = pd.read_csv(processed_dbcan_output, sep='\t', header=None)
+
+    columns = ['tid', 'tlen', 'qid', 'qlen', 'evalue', 'tstart', 'tend', 'qstart', 'qend']
+    dbcan_res.columns = columns
+
+    dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
+
+    dbcan_res['significant'] = set(get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows())
+
+    dbcan_dict = dict()
+    for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
+        dbcan_dict[gene] = ','.join([i[:-4] for i in frame.tid])
+
+    return pd.Series(dbcan_dict, name='cazy_hits')
+
+
 def get_scaffold_and_gene(annotations):
     gene_scaffold_list = list()
     for label in annotations:
@@ -255,7 +293,7 @@ def create_annotated_fasta(input_fasta, annotations, output_fasta, verbosity='sh
     write_sequence(generate_annotated_fasta(input_fasta, annotations, verbosity), format='fasta', into=output_fasta)
 
 
-def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=5000, bit_score_threshold=60,
+def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='.', min_size=5000, bit_score_threshold=60,
          rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10):
     # set up
     start_time = datetime.now()
@@ -308,9 +346,13 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, output_dir='.', min_size=500
     print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
     pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, tmp_dir, output_prefix='pfam', threads=threads)
 
+    # use hmmer to detect cazy ids using dbCAN
+    print('%s: Getting hits from dbCAN')
+    dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, tmp_dir)
+
     # merge dataframes
     print('%s: Finishing up results' % str(datetime.now()-start_time))
-    annotations = pd.concat([kegg_hits, uniref_hits, pfam_hits], axis=1)
+    annotations = pd.concat([kegg_hits, uniref_hits, pfam_hits, dbcan_hits], axis=1)
 
     # get scaffold data and assign grades
     annotations = pd.concat([get_scaffold_and_gene(annotations.index), assign_grades(annotations), annotations], axis=1)

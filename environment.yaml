@@ -8,3 +8,4 @@ dependencies:
   - scikit-bio
   - prodigal
   - mmseqs2
+  - hmmer
