@@ -5,6 +5,7 @@ import subprocess
 import pandas as pd
 from datetime import datetime
 import re
+from glob import glob
 
 # TODO: add binning information
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
@@ -61,40 +62,56 @@ def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
         write_sequence(kept_seqs, format='fasta', into=output_loc)
 
 
-def run_prodigal(fasta_loc, output_dir):
+def run_prodigal(fasta_loc, output_dir, verbose=False):
     output_gff = path.join(output_dir, 'genes.gff')
     output_fna = path.join(output_dir, 'genes.fna')
     output_faa = path.join(output_dir, 'genes.faa')
-    subprocess.run(['prodigal', '-i', fasta_loc, '-p', 'meta', '-f', 'gff',
-                    '-o', output_gff, '-a', output_faa, '-d', output_fna], check=True)
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+    if verbose:
+        stdout = None
+        stderr = None
+    subprocess.run(['prodigal', '-i', fasta_loc, '-p', 'meta', '-f', 'gff', '-o', output_gff, '-a', output_faa, '-d',
+                    output_fna], check=True, stdout=stdout, stderr=stderr)
     return output_gff, output_fna, output_faa
 
 
 def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
-                  bit_score_threshold=60, threads=10):
+                  bit_score_threshold=60, threads=10, verbose=False):
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+    if verbose:
+        stdout = None
+        stderr = None
     # make query to target db
     tmp_dir = path.join(output_dir, 'tmp')
     query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
     subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, tmp_dir, '--threads', str(threads)],
-                   check=True)
+                   check=True, stdout=stdout, stderr=stderr)
     # filter query to target db to only best hit
     query_target_db_top = path.join(output_dir, '%s_%s.tophit.mmsdb' % (query_prefix, target_prefix))
-    subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'], check=True)
+    subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'], check=True,
+                   stdout=stdout, stderr=stderr)
     # filter query to target db to only hits with min threshold
     query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%s.mmsdb'
                                          % (query_prefix, target_prefix, bit_score_threshold))
     subprocess.run(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
                     str(bit_score_threshold), '--threads', str(threads), query_target_db_top, query_target_db_top_filt],
-                   check=True)
+                   check=True, stdout=stdout, stderr=stderr)
     # convert results to blast outformat 6
     forward_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (query_prefix, target_prefix))
     subprocess.run(['mmseqs', 'convertalis', query_db, target_db, query_target_db_top_filt, forward_output_loc,
-                    '--threads', str(threads)], check=True)
+                    '--threads', str(threads)], check=True, stdout=stdout, stderr=stderr)
     return forward_output_loc
 
 
 def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
-                             bit_score_threshold=60, threads=10):
+                             bit_score_threshold=60, threads=10, verbose=False):
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+    if verbose:
+        stdout = None
+        stderr = None
     # make query to target db
     tmp_dir = path.join(output_dir, 'tmp')
     # create subset for second search
@@ -103,22 +120,24 @@ def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='
     query_target_db_filt_top_swapped = path.join(output_dir, '%s_%s.minbitscore%s.tophit.swapped.mmsdb'
                                                  % (query_prefix, target_prefix, bit_score_threshold))
     subprocess.run(['mmseqs', 'swapdb', query_target_db_top_filt, query_target_db_filt_top_swapped, '--threads',
-                    str(threads)], check=True)
+                    str(threads)], check=True, stdout=stdout, stderr=stderr)
     target_db_filt = path.join(output_dir, '%s.filt.mmsdb' % target_prefix)
-    subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, target_db, target_db_filt], check=True)
+    subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, target_db, target_db_filt], check=True,
+                   stdout=stdout, stderr=stderr)
     subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, '%s_h' % target_db,
-                    '%s_h' % target_db_filt], check=True)
+                    '%s_h' % target_db_filt], check=True, stdout=stdout, stderr=stderr)
     # make filtered target db to query db
     target_query_db = path.join(output_dir, '%s_%s.mmsdb' % (target_prefix, query_prefix))
     subprocess.run(['mmseqs', 'search', target_db_filt, query_db, target_query_db, tmp_dir, '--threads', str(threads)],
-                   check=True)
+                   check=True, stdout=stdout, stderr=stderr)
     # filter target to query results db
     target_query_db_filt = path.join(output_dir, '%s_%s.tophit.mmsdb' % (target_prefix, query_prefix))
-    subprocess.run(['mmseqs', 'filterdb', target_query_db, target_query_db_filt, '--extract-lines', '1'], check=True)
+    subprocess.run(['mmseqs', 'filterdb', target_query_db, target_query_db_filt, '--extract-lines', '1'], check=True,
+                   stdout=stdout, stderr=stderr)
     # convert results to blast outformat 6
     reverse_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (target_prefix, query_prefix))
     subprocess.run(['mmseqs', 'convertalis', target_db_filt, query_db, target_query_db_filt, reverse_output_loc,
-                    '--threads', str(threads)], check=True)
+                    '--threads', str(threads)], check=True, stdout=stdout, stderr=stderr)
     return reverse_output_loc
 
 
@@ -182,13 +201,19 @@ def get_uniref_description(uniref_hits, uniref_loc):
     return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1)
 
 
-def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10):
+def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10, verbose=False):
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+    if verbose:
+        stdout = None
+        stderr = None
     tmp_dir = path.join(output_loc, 'tmp')
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
     subprocess.run(['mmseqs', 'search', query_db, pfam_profile, output_db, tmp_dir, '-k', '5', '-s', '7', '--threads',
-                    str(threads)], check=True)
+                    str(threads)], check=True, stdout=stdout, stderr=stderr)
     output_loc = path.join(output_loc, 'pfam_output.b6')
-    subprocess.run(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc], check=True)
+    subprocess.run(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc], check=True, stdout=stdout,
+                   stderr=stderr)
     pfam_results = pd.read_csv(output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     pfam_dict = dict()
     for gene, pfam_frame in pfam_results.groupby('qId'):
@@ -205,14 +230,20 @@ def get_sig(tcovlen, evalue):
         return False
 
 
-def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc):
+def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, verbose=False):
     """
     hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/checkMetab/genes.faa
     cat ~/dbCAN_test_1 | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' | sed 's/ /\t/g' | \
     sort -k 3,3 -k 8n -k 9n > dbCAN_test_1.good_cols.tsv
     """
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+    if verbose:
+        stdout = None
+        stderr = None
     dbcan_output = path.join(output_loc, 'dbcan_results.unprocessed.txt')
-    subprocess.run(['hmmscan', '--domtblout', dbcan_output, dbcan_loc, genes_faa], check=True)
+    subprocess.run(['hmmscan', '--domtblout', dbcan_output, dbcan_loc, genes_faa], check=True, stdout=stdout,
+                   stderr=stderr)
     processed_dbcan_output = path.join(output_loc, 'dbcan_results.tsv')
     cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
           "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (dbcan_output, processed_dbcan_output)
@@ -225,7 +256,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc):
 
     dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
 
-    dbcan_res['significant'] = set(get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows())
+    dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
 
     dbcan_dict = dict()
     for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
@@ -264,8 +295,8 @@ def assign_grades(annotations):
     return pd.Series(grades, name='grade')
 
 
-def generate_annotated_fasta(input_fasta, annotations, verbosity='short'):
-    '''verbosity should be short or long'''
+def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=None):
+    """verbosity should be short or long"""
     for seq in read_sequence(input_fasta, format='fasta'):
         annotation = annotations.loc[seq.metadata['id']]
         annotation_str = 'grade: %s' % annotation.grade
@@ -285,20 +316,26 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short'):
                 annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
         else:
             raise ValueError('%s is not a valid verbosity level for annotation summarization' % verbosity)
+        if name is not None:
+            seq.metadata['id'] = '%s_%s' % (name, seq.metadata['id'])
         seq.metadata['description'] = annotation_str
         yield seq
 
 
-def create_annotated_fasta(input_fasta, annotations, output_fasta, verbosity='short'):
-    write_sequence(generate_annotated_fasta(input_fasta, annotations, verbosity), format='fasta', into=output_fasta)
+def create_annotated_fasta(input_fasta, annotations, output_fasta, verbosity='short', name=None):
+    write_sequence(generate_annotated_fasta(input_fasta, annotations, verbosity, name),
+                   format='fasta', into=output_fasta)
 
 
-def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='.', min_size=5000, bit_score_threshold=60,
-         rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10):
+def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='.', min_size=5000,
+         bit_score_threshold=60, rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
-    if not path.isfile(fasta_loc):
-        raise ValueError('Input fasta does not exist: %s' % fasta_loc)
+    fasta_locs = glob(fasta_glob_str)
+    if len(fasta_locs) == 0:
+        raise ValueError('Given fasta locations returns no paths: %s')
+    else:
+        print('%s fastas found' % len(fasta_locs))
     if not path.isfile(kegg_loc):
         raise ValueError('KEGG mmsdb does not exist: %s' % kegg_loc)
     if not path.isfile(uniref_loc):
@@ -309,69 +346,99 @@ def main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='.', m
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
 
-    # first step filter fasta
-    print('%s: Filtering fasta' % str(datetime.now()-start_time))
-    filtered_fasta = path.join(tmp_dir, 'filtered_fasta.fa')
-    filter_fasta(fasta_loc, min_size, filtered_fasta)
+    annotations_list = list()
+    for fasta_loc in fasta_locs:
+        fasta_name = path.splitext(path.basename(fasta_loc))[0]
+        print('%s: Annotating %s' % (str(datetime.now()-start_time), fasta_name))
+        fasta_dir = path.join(tmp_dir, fasta_name)
+        mkdir(fasta_dir)
 
-    # call genes with prodigal
-    print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
-    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir)
+        # first step filter fasta
+        print('%s: Filtering fasta' % str(datetime.now()-start_time))
+        filtered_fasta = path.join(fasta_dir, 'filtered_fasta.fa')
+        filter_fasta(fasta_loc, min_size, filtered_fasta)
 
-    # run reciprocal best hits from kegg and uniref
-    print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
-    query_db = path.join(tmp_dir, 'gene.mmsdb')
-    make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads)
+        # call genes with prodigal
+        print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
+        gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, fasta_dir)
 
-    print('%s: Getting forward best hits from KEGG' % str(datetime.now()-start_time))
-    forward_kegg_hits = get_best_hits(query_db, kegg_loc, tmp_dir, 'gene', 'kegg', bit_score_threshold,
-                                      threads)
-    print('%s: Getting reverse best hits from KEGG' % str(datetime.now()-start_time))
-    reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, tmp_dir, 'gene', 'kegg',
-                                                 bit_score_threshold, threads)
-    kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold, 'kegg')
-    kegg_hits = get_kegg_description(kegg_hits, kegg_loc)
+        # run reciprocal best hits from kegg and uniref
+        print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
+        query_db = path.join(fasta_dir, 'gene.mmsdb')
+        make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads)
 
-    print('%s: Getting forward best hits from UniRef' % str(datetime.now()-start_time))
-    forward_uniref_hits = get_best_hits(query_db, uniref_loc, tmp_dir, 'gene', 'uniref', bit_score_threshold,
-                                        threads)
-    print('%s: Getting reverse best hits from UniRef' % str(datetime.now()-start_time))
-    reverse_uniref_hits = get_reciprocal_best_hits(query_db, uniref_loc, tmp_dir, 'gene', 'uniref',
-                                                   bit_score_threshold, threads)
-    uniref_hits = process_reciprocal_best_hits(forward_uniref_hits, reverse_uniref_hits, rbh_bit_score_threshold,
-                                               'uniref')
-    uniref_hits = get_uniref_description(uniref_hits, uniref_loc)
+        annotation_list = list()
 
-    # run pfam scan
-    print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
-    pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, tmp_dir, output_prefix='pfam', threads=threads)
+        if kegg_loc is not None:
+            print('%s: Getting forward best hits from KEGG' % str(datetime.now()-start_time))
+            forward_kegg_hits = get_best_hits(query_db, kegg_loc, fasta_dir, 'gene', 'kegg', bit_score_threshold,
+                                              threads)
+            print('%s: Getting reverse best hits from KEGG' % str(datetime.now()-start_time))
+            reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, fasta_dir, 'gene', 'kegg',
+                                                         bit_score_threshold, threads)
+            kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold, 'kegg')
+            kegg_hits = get_kegg_description(kegg_hits, kegg_loc)
+            annotation_list.append(kegg_hits)
 
-    # use hmmer to detect cazy ids using dbCAN
-    print('%s: Getting hits from dbCAN')
-    dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, tmp_dir)
+        if uniref_loc is not None:
+            print('%s: Getting forward best hits from UniRef' % str(datetime.now()-start_time))
+            forward_uniref_hits = get_best_hits(query_db, uniref_loc, fasta_dir, 'gene', 'uniref', bit_score_threshold,
+                                                threads)
+            print('%s: Getting reverse best hits from UniRef' % str(datetime.now()-start_time))
+            reverse_uniref_hits = get_reciprocal_best_hits(query_db, uniref_loc, fasta_dir, 'gene', 'uniref',
+                                                           bit_score_threshold, threads)
+            uniref_hits = process_reciprocal_best_hits(forward_uniref_hits, reverse_uniref_hits, rbh_bit_score_threshold,
+                                                       'uniref')
+            uniref_hits = get_uniref_description(uniref_hits, uniref_loc)
+            annotation_list.append(uniref_hits)
 
-    # merge dataframes
-    print('%s: Finishing up results' % str(datetime.now()-start_time))
-    annotations = pd.concat([kegg_hits, uniref_hits, pfam_hits, dbcan_hits], axis=1)
+        # run pfam scan
+        if pfam_loc is not None:
+            print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
+            pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, fasta_dir, output_prefix='pfam', threads=threads)
+            annotation_list.append(pfam_hits)
 
-    # get scaffold data and assign grades
-    annotations = pd.concat([get_scaffold_and_gene(annotations.index), assign_grades(annotations), annotations], axis=1)
+        # use hmmer to detect cazy ids using dbCAN
+        if dbcan_loc is not None:
+            print('%s: Getting hits from dbCAN')
+            dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, fasta_dir)
+            annotation_list.append(dbcan_hits)
 
-    # add unknowns
-    unannotated_genes = get_unannotated(gene_faa, annotations.index)
-    unannotated = get_scaffold_and_gene(unannotated_genes)
-    unannotated['grade'] = 'E'
-    annotations = pd.concat([unannotated, annotations], sort=False)
+        # merge dataframes
+        print('%s: Finishing up results' % str(datetime.now()-start_time))
+        annotations = pd.concat([annotation_list], axis=1)
 
-    # sort and output
-    annotations = annotations.sort_values(by=['scaffold', 'gene_position'])
-    annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t', index_label='gene')
+        # get scaffold data and assign grades
+        if uniref_loc is not None and kegg_loc is not None:
+            grades = assign_grades(annotations)
+            annotations = pd.concat([grades, annotations], axis=1)
+        annotations = pd.concat([get_scaffold_and_gene(annotations.index), annotations], axis=1)
+        annotations = annotations.insert(0, 'fasta', fasta_name)
 
-    # generate fna and faa output files with uniref annotations
-    annotated_fna = path.join(output_dir, 'genes.fna')
-    generate_annotated_fasta(gene_fna, annotations, annotated_fna)
-    annotated_faa = path.join(output_dir, 'genes.faa')
-    generate_annotated_fasta(gene_faa, annotations, annotated_faa)
+        # add unknowns
+        unannotated_genes = get_unannotated(gene_faa, annotations.index)
+        unannotated = get_scaffold_and_gene(unannotated_genes)
+        unannotated['grade'] = 'E'
+        annotations = pd.concat([unannotated, annotations], sort=False)
+
+        # generate fna and faa output files with uniref annotations
+        annotated_fna = path.join(output_dir, 'genes.fna')
+        generate_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
+        annotated_faa = path.join(output_dir, 'genes.faa')
+        generate_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
+
+        annotations_list.append(annotations)
+
+    # merge annotation dicts
+    all_annotations = pd.concat(annotations_list, sort=False)
+    all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
+    all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
+
+    # merge gene files
+    all_genes_faa = path.join(output_dir, 'genes.faa')
+    subprocess.run(['cat', '%s' % path.join(tmp_dir, '*', '*.faa'), '>', all_genes_faa], check=True)
+    all_genes_fna = path.join(output_dir, 'genes.fna')
+    subprocess.run(['cat', '%s' % path.join(tmp_dir, '*', '*.fna'), '>', all_genes_fna], check=True)
 
     # clean up
     if not keep_tmp_dir:
