@@ -47,11 +47,17 @@ def download_and_process_pfam(output_dir, pfam_release='32.0', threads=10, verbo
                    check=True)
 
 
-def make_mmseqs_db(fasta_loc, output_loc, create_index=False, threads=10):
-    subprocess.run(['mmseqs', 'createdb', fasta_loc, output_loc], check=True)
+def make_mmseqs_db(fasta_loc, output_loc, create_index=False, threads=10, verbose=False):
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+    if verbose:
+        stdout = None
+        stderr = None
+    subprocess.run(['mmseqs', 'createdb', fasta_loc, output_loc], check=True, stdout=stdout, stderr=stderr)
     if create_index:
         tmp_dir = path.join(path.dirname(output_loc), 'tmp')
-        subprocess.run(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], check=True)
+        subprocess.run(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], check=True,
+                       stdout=stdout, stderr=stderr)
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -400,13 +406,13 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
 
         # use hmmer to detect cazy ids using dbCAN
         if dbcan_loc is not None:
-            print('%s: Getting hits from dbCAN')
+            print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
             dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, fasta_dir)
             annotation_list.append(dbcan_hits)
 
         # merge dataframes
         print('%s: Finishing up results' % str(datetime.now()-start_time))
-        annotations = pd.concat([annotation_list], axis=1)
+        annotations = pd.concat(annotation_list, axis=1)
 
         # get scaffold data and assign grades
         if uniref_loc is not None and kegg_loc is not None:
