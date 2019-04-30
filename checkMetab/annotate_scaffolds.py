@@ -373,53 +373,55 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
 
         # call genes with prodigal
         print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
-        gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, fasta_dir)
+        gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, fasta_dir, verbose=verbose)
 
         # run reciprocal best hits from kegg and uniref
         print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
         query_db = path.join(fasta_dir, 'gene.mmsdb')
-        make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads)
+        make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads, verbose=verbose)
 
         annotation_list = list()
 
         if kegg_loc is not None:
             print('%s: Getting forward best hits from KEGG' % str(datetime.now()-start_time))
             forward_kegg_hits = get_best_hits(query_db, kegg_loc, fasta_dir, 'gene', 'kegg', bit_score_threshold,
-                                              threads)
+                                              threads, verbose=verbose)
             print('%s: Getting reverse best hits from KEGG' % str(datetime.now()-start_time))
             reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, fasta_dir, 'gene', 'kegg',
-                                                         bit_score_threshold, threads)
-            kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold, 'kegg')
+                                                         bit_score_threshold, threads, verbose=verbose)
+            kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold,
+                                                     'kegg')
             kegg_hits = get_kegg_description(kegg_hits, kegg_loc)
             annotation_list.append(kegg_hits)
 
         if uniref_loc is not None:
             print('%s: Getting forward best hits from UniRef' % str(datetime.now()-start_time))
             forward_uniref_hits = get_best_hits(query_db, uniref_loc, fasta_dir, 'gene', 'uniref', bit_score_threshold,
-                                                threads)
+                                                threads, verbose=verbose)
             print('%s: Getting reverse best hits from UniRef' % str(datetime.now()-start_time))
             reverse_uniref_hits = get_reciprocal_best_hits(query_db, uniref_loc, fasta_dir, 'gene', 'uniref',
-                                                           bit_score_threshold, threads)
-            uniref_hits = process_reciprocal_best_hits(forward_uniref_hits, reverse_uniref_hits, rbh_bit_score_threshold,
-                                                       'uniref')
+                                                           bit_score_threshold, threads, verbose=verbose)
+            uniref_hits = process_reciprocal_best_hits(forward_uniref_hits, reverse_uniref_hits,
+                                                       rbh_bit_score_threshold, 'uniref')
             uniref_hits = get_uniref_description(uniref_hits, uniref_loc)
             annotation_list.append(uniref_hits)
 
         # run pfam scan
         if pfam_loc is not None:
             print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
-            pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, fasta_dir, output_prefix='pfam', threads=threads)
+            pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, fasta_dir, output_prefix='pfam', threads=threads,
+                                        verbose=verbose)
             annotation_list.append(pfam_hits)
 
         # use hmmer to detect cazy ids using dbCAN
         if dbcan_loc is not None:
             print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
-            dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, fasta_dir)
+            dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, fasta_dir, verbose=verbose)
             annotation_list.append(dbcan_hits)
 
         # merge dataframes
         print('%s: Finishing up results' % str(datetime.now()-start_time))
-        annotations = pd.concat(annotation_list, axis=1)
+        annotations = pd.concat(annotation_list, axis=1, sort=False)
 
         # get scaffold data and assign grades
         if uniref_loc is not None and kegg_loc is not None:
@@ -434,9 +436,9 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
         annotations = pd.concat([unannotated, annotations], sort=False)
 
         # generate fna and faa output files with uniref annotations
-        annotated_fna = path.join(output_dir, 'genes.fna')
+        annotated_fna = path.join(fasta_dir, 'genes.annotated.fna')
         create_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
-        annotated_faa = path.join(output_dir, 'genes.faa')
+        annotated_faa = path.join(fasta_dir, 'genes.annotated.faa')
         create_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
 
         # add fasta name to frame and index, append to list
@@ -450,12 +452,11 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # merge gene files
-    merge_files(path.join(tmp_dir, '*', '*.faa'), path.join(output_dir, 'genes.faa'))
-    merge_files(path.join(tmp_dir, '*', '*.fna'), path.join(output_dir, 'genes.fna'))
+    merge_files(path.join(tmp_dir, '*', '*.annotated.faa'), path.join(output_dir, 'genes.faa'))
+    merge_files(path.join(tmp_dir, '*', '*.annotated.fna'), path.join(output_dir, 'genes.fna'))
 
     # clean up
     if not keep_tmp_dir:
         remove(tmp_dir)
 
     print("%s: Completed" % str(datetime.now()-start_time))
-

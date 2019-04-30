@@ -20,6 +20,7 @@ if __name__ == '__main__':
                         help='minimum bitScore of reverse best hits to retain hits')
     parser.add_argument('--keep_working_dir', action='store_true', default=False)
     parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
+    parser.add_argument('--verbose', action='store_true', default=False)
 
     args = parser.parse_args()
 
@@ -34,6 +35,7 @@ if __name__ == '__main__':
     strict_bitscore = args.strict_bitscore
     keep_tmp = args.keep_working_dir
     threads = args.threads
+    verbose = args.verbose
 
-    main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output, min_contig_size, min_bitscore, strict_bitscore, keep_tmp,
-         threads)
+    main(fasta_loc, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output, min_contig_size, min_bitscore, strict_bitscore,
+         keep_tmp, threads, verbose)
