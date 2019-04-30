@@ -341,7 +341,7 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s')
     else:
-        print('%s fastas found' % len(fasta_locs))
+        print('%s fasta found' % len(fasta_locs))
     if not path.isfile(kegg_loc):
         raise ValueError('KEGG mmsdb does not exist: %s' % kegg_loc)
     if not path.isfile(uniref_loc):
@@ -419,7 +419,7 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
             grades = assign_grades(annotations)
             annotations = pd.concat([grades, annotations], axis=1)
         annotations = pd.concat([get_scaffold_and_gene(annotations.index), annotations], axis=1)
-        annotations = annotations.insert(0, 'fasta', fasta_name)
+        annotations.insert(0, 'fasta', fasta_name)
 
         # add unknowns
         unannotated_genes = get_unannotated(gene_faa, annotations.index)
