@@ -311,7 +311,7 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
                 annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
             if annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
                 annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
-            if annotation.grade =='D':
+            if annotation.grade == 'D':
                 annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
         elif verbosity == 'long':
             if not pd.isna(annotation.kegg_hit):
@@ -331,6 +331,13 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
 def create_annotated_fasta(input_fasta, annotations, output_fasta, verbosity='short', name=None):
     write_sequence(generate_annotated_fasta(input_fasta, annotations, verbosity, name),
                    format='fasta', into=output_fasta)
+
+
+def merge_files(files_to_merge, outfile):
+    with open(outfile, 'w') as outfile_handle:
+        for file in glob(files_to_merge):
+            with open(file) as f:
+                outfile_handle.write(f.read())
 
 
 def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='.', min_size=5000,
@@ -419,7 +426,6 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
             grades = assign_grades(annotations)
             annotations = pd.concat([grades, annotations], axis=1)
         annotations = pd.concat([get_scaffold_and_gene(annotations.index), annotations], axis=1)
-        annotations.insert(0, 'fasta', fasta_name)
 
         # add unknowns
         unannotated_genes = get_unannotated(gene_faa, annotations.index)
@@ -429,10 +435,13 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
 
         # generate fna and faa output files with uniref annotations
         annotated_fna = path.join(output_dir, 'genes.fna')
-        generate_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
+        create_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
         annotated_faa = path.join(output_dir, 'genes.faa')
-        generate_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
+        create_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
 
+        # add fasta name to frame and index, append to list
+        annotations.insert(0, 'fasta', fasta_name)
+        annotations.index = annotations.fasta + '_' + annotations.index
         annotations_list.append(annotations)
 
     # merge annotation dicts
@@ -441,10 +450,8 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # merge gene files
-    all_genes_faa = path.join(output_dir, 'genes.faa')
-    subprocess.run(['cat', '%s' % path.join(tmp_dir, '*', '*.faa'), '>', all_genes_faa], check=True)
-    all_genes_fna = path.join(output_dir, 'genes.fna')
-    subprocess.run(['cat', '%s' % path.join(tmp_dir, '*', '*.fna'), '>', all_genes_fna], check=True)
+    merge_files(path.join(tmp_dir, '*', '*.faa'), path.join(output_dir, 'genes.faa'))
+    merge_files(path.join(tmp_dir, '*', '*.fna'), path.join(output_dir, 'genes.fna'))
 
     # clean up
     if not keep_tmp_dir:
