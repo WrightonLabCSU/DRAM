@@ -334,7 +334,7 @@ def create_annotated_fasta(input_fasta, annotations, output_fasta, verbosity='sh
 
 
 def generate_renamed_fasta(input_fasta, prefix):
-    for seq in read_sequence(input_fasta):
+    for seq in read_sequence(input_fasta, format='fasta'):
         seq.metadata['id'] = '%s_%s' % (prefix, seq.metadata['id'])
         yield seq
 
