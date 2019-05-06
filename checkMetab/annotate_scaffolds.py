@@ -360,6 +360,7 @@ def merge_files(files_to_merge, outfile):
 
 
 def merge_gtfs(gtf_files, outfile):
+    gtf_files = glob(gtf_files)
     with open(outfile, 'w') as f:
         f.write(open(gtf_files[0]).readline())
         for gtf in gtf_files:
