@@ -1,6 +1,6 @@
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
-from os import path, mkdir, remove
+from os import path, mkdir, remove, rmdir
 import subprocess
 import pandas as pd
 from datetime import datetime
@@ -348,7 +348,11 @@ def rename_gff(input_gff, output_gff, prefix):
         with open(output_gff, 'w') as o:
             for line in f:
                 if not line.startswith('#') and not line.startswith('\n'):
+                    old_scaffold = line.strip().split('\t')[0]
                     line = '%s_%s' % (prefix, line)
+                    match = re.search('ID=\d*_\d*;', line)
+                    gene_number = match.group().split('_')[-1][:-1]
+                    line = re.sub('ID=\d*_\d*;', 'ID=%s_%s_%s;' % (prefix, old_scaffold, gene_number), line)
                 o.write(line)
 
 
@@ -491,6 +495,6 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
 
     # clean up
     if not keep_tmp_dir:
-        remove(tmp_dir)
+        rmdir(tmp_dir)
 
     print("%s: Completed" % str(datetime.now()-start_time))
