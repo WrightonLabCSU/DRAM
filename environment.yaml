@@ -9,3 +9,4 @@ dependencies:
   - prodigal
   - mmseqs2
   - hmmer
+  - trnascan-se

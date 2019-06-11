@@ -86,7 +86,7 @@ def main(annotation_tsv, metabolism_db, output='.', min_cov=.5):
 
     # go through each scaffold to check for modules
     scaffold_df_dict = dict()
-    for scaffold, frame in annotations.groupby('scaffold'):
+    for scaffold, frame in annotations.groupby('fasta'):
         scaffold_df_dict[scaffold] = make_coverage_df(frame, module_nets, min_cov)
         print('Got %s' % scaffold)
     scaffold_coverage_df = pd.concat(scaffold_df_dict)

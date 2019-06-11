@@ -1,6 +1,7 @@
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
-from os import path, mkdir, remove, rmdir
+from os import path, mkdir, remove
+from shutil import rmtree
 import subprocess
 import pandas as pd
 from datetime import datetime
@@ -14,6 +15,7 @@ from glob import glob
 # TODO: add pfam domain descriptions
 # TODO: add gene locations in scaffold
 # TODO: add silent mode
+# TODO: add ability to take in GTDBTK file and add taxonomy to annotations
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -356,6 +358,14 @@ def rename_gff(input_gff, output_gff, prefix):
                 o.write(line)
 
 
+def run_trna_scan(fasta, output_loc, threads=10,):
+    raw_trnas = path.join(output_loc, 'raw_trnas.txt')
+    subprocess.run(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', threads, fasta])
+    processed_trnas = path.join(output_loc, 'trnas.tsv')
+    trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
+    trna_frame.to_csv(processed_trnas, sep='\t')
+
+
 def merge_files(files_to_merge, outfile):
     with open(outfile, 'w') as outfile_handle:
         for file in glob(files_to_merge):
@@ -363,7 +373,7 @@ def merge_files(files_to_merge, outfile):
                 outfile_handle.write(f.read())
 
 
-def merge_gtfs(gtf_files, outfile):
+def merge_files_w_header(gtf_files, outfile):
     gtf_files = glob(gtf_files)
     with open(outfile, 'w') as f:
         f.write(open(gtf_files[0]).readline())
@@ -477,6 +487,9 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
         renamed_gffs = path.join(fasta_dir, 'genes.annotated.gff')
         rename_gff(gene_gff, renamed_gffs, prefix=fasta_name)
 
+        # get rRNAs
+        run_trna_scan(renamed_scaffolds, fasta_dir, threads=threads)
+
         # add fasta name to frame and index, append to list
         annotations.insert(0, 'fasta', fasta_name)
         annotations.index = annotations.fasta + '_' + annotations.index
@@ -491,10 +504,11 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
     merge_files(path.join(tmp_dir, '*', '*.annotated.fna'), path.join(output_dir, 'genes.fna'))
     merge_files(path.join(tmp_dir, '*', '*.annotated.faa'), path.join(output_dir, 'genes.faa'))
     merge_files(path.join(tmp_dir, '*', 'scaffolds.annotated.fa'), path.join(output_dir, 'scaffolds.fna'))
-    merge_gtfs(path.join(tmp_dir, '*', 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'))
+    merge_files_w_header(path.join(tmp_dir, '*', 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'))
+    merge_files_w_header(path.join(tmp_dir, '*', 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'))
 
     # clean up
     if not keep_tmp_dir:
-        rmdir(tmp_dir)
+        rmtree(tmp_dir)
 
     print("%s: Completed" % str(datetime.now()-start_time))
