@@ -209,6 +209,20 @@ def get_uniref_description(uniref_hits, uniref_loc):
     return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1)
 
 
+def get_viral_description(viral_hits, viral_loc):
+    viral_list = list()
+    viral_description = list()
+    header_dict = multigrep(viral_hits.viral_hit, '%s_h' % viral_loc)
+    for viral_hit in viral_hits.viral_hit:
+        header = header_dict[viral_hit]
+        viral_list.append(viral_hit)
+        viral_description.append(header)
+    new_df = pd.DataFrame([viral_list, viral_description],
+                          index=['viral_id', 'viral_hit'],
+                          columns=viral_hits.index)
+    return pd.concat([new_df.transpose(), viral_hits.drop('viral_hit', axis=1)], axis=1)
+
+
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10, verbose=False):
     stdout = subprocess.DEVNULL
     stderr = subprocess.DEVNULL
@@ -360,7 +374,7 @@ def rename_gff(input_gff, output_gff, prefix):
 
 def run_trna_scan(fasta, output_loc, threads=10,):
     raw_trnas = path.join(output_loc, 'raw_trnas.txt')
-    subprocess.run(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', threads, fasta])
+    subprocess.run(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta])
     processed_trnas = path.join(output_loc, 'trnas.tsv')
     trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
     trna_frame.to_csv(processed_trnas, sep='\t')
@@ -382,7 +396,7 @@ def merge_files_w_header(gtf_files, outfile):
             f.write(content)
 
 
-def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='.', min_size=5000,
+def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, output_dir='.', min_size=5000,
          bit_score_threshold=60, rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
@@ -424,6 +438,7 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
 
         annotation_list = list()
 
+        # Get kegg hits
         if kegg_loc is not None:
             print('%s: Getting forward best hits from KEGG' % str(datetime.now()-start_time))
             forward_kegg_hits = get_best_hits(query_db, kegg_loc, fasta_dir, 'gene', 'kegg', bit_score_threshold,
@@ -436,6 +451,7 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
             kegg_hits = get_kegg_description(kegg_hits, kegg_loc)
             annotation_list.append(kegg_hits)
 
+        # Get uniref hits
         if uniref_loc is not None:
             print('%s: Getting forward best hits from UniRef' % str(datetime.now()-start_time))
             forward_uniref_hits = get_best_hits(query_db, uniref_loc, fasta_dir, 'gene', 'uniref', bit_score_threshold,
@@ -448,7 +464,7 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
             uniref_hits = get_uniref_description(uniref_hits, uniref_loc)
             annotation_list.append(uniref_hits)
 
-        # run pfam scan
+        # Get pfam hits
         if pfam_loc is not None:
             print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
             pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, fasta_dir, output_prefix='pfam', threads=threads,
@@ -460,6 +476,19 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, output_dir='
             print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
             dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, fasta_dir, verbose=verbose)
             annotation_list.append(dbcan_hits)
+
+        # Get viral hits
+        if viral_loc is not None:
+            print('%s: Getting forward best hits from Viral RefSeq' % str(datetime.now() - start_time))
+            forward_viral_hits = get_best_hits(query_db, viral_loc, fasta_dir, 'gene', 'viral', bit_score_threshold,
+                                                threads, verbose=verbose)
+            print('%s: Getting reverse best hits from Viral RefSeq' % str(datetime.now() - start_time))
+            reverse_viral_hits = get_reciprocal_best_hits(query_db, viral_loc, fasta_dir, 'gene', 'viral',
+                                                           bit_score_threshold, threads, verbose=verbose)
+            viral_hits = process_reciprocal_best_hits(forward_viral_hits, reverse_viral_hits,
+                                                       rbh_bit_score_threshold, 'viral')
+            viral_hits = get_viral_description(viral_hits, viral_loc)
+            annotation_list.append(viral_hits)
 
         # merge dataframes
         print('%s: Finishing up results' % str(datetime.now()-start_time))
