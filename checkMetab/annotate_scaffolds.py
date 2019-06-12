@@ -11,7 +11,7 @@ from glob import glob
 # TODO: add binning information
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
-# TODO: add real logging and verbose mode
+# TODO: add real logging
 # TODO: add pfam domain descriptions
 # TODO: add gene locations in scaffold
 # TODO: add silent mode
@@ -21,45 +21,49 @@ BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOp
                     'tEnd', 'eVal', 'bitScore']
 
 
+def run_process(command, shell=False, verbose=False):
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+    if verbose:
+        stdout = None
+        stderr = None
+    subprocess.run(command, check=True, shell=shell, stdout=stdout, stderr=stderr)
+
+
 def download_unifref(output_dir, uniref_version='90', verbose=True):
     if verbose:
         print('downloading uniref fasta to %s' % output_dir)
     uniref_fasta_zipped = path.join(output_dir, 'uniref%s.fasta.gz' % uniref_version)
-    subprocess.run(['wget', '-O', uniref_fasta_zipped,
-                    'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz'
-                    % (uniref_version, uniref_version)], check=True)
+    run_process(['wget', '-O', uniref_fasta_zipped,
+                 'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz'
+                 % (uniref_version, uniref_version)], verbose=verbose)
     if verbose:
         print('unzipping %s' % uniref_fasta_zipped)
-    subprocess.run(['gunzip', uniref_fasta_zipped], check=True)
+    run_process(['gunzip', uniref_fasta_zipped], verbose=verbose)
 
 
 def download_and_process_pfam(output_dir, pfam_release='32.0', threads=10, verbose=True):
     if verbose:
         print('downloading pfam msa to %s' % output_dir)
     pfam_full_zipped = path.join(output_dir, 'Pfam-A.full.gz')
-    subprocess.run(['wget', '-O', pfam_full_zipped,
-                    'ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam%s/Pfam-A.full.gz' % pfam_release], check=True)
+    run_process(['wget', '-O', pfam_full_zipped,
+                 'ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam%s/Pfam-A.full.gz' % pfam_release],
+                verbose=verbose)
     mmseq_msa = path.join(output_dir, 'pfam.mmsmsa')
-    subprocess.run(['mmseqs', 'convertmsa', pfam_full_zipped, mmseq_msa], check=True)
+    run_process(['mmseqs', 'convertmsa', pfam_full_zipped, mmseq_msa], verbose=verbose)
     mmseq_profile = path.join(output_dir, 'pfam.mmspro')
-    subprocess.run(['mmseqs', 'msa2profile', mmseq_msa, mmseq_profile, '--match-mode', '1', '--threads', str(threads)],
-                   check=True)
+    run_process(['mmseqs', 'msa2profile', mmseq_msa, mmseq_profile, '--match-mode', '1', '--threads', str(threads)],
+                verbose=verbose)
     tmp_dir = path.join(output_dir, 'tmp')
-    subprocess.run(['mmseqs', 'createindex', mmseq_profile, tmp_dir, '-k', '5', '-s', '7', '--threads', str(threads)],
-                   check=True)
+    run_process(['mmseqs', 'createindex', mmseq_profile, tmp_dir, '-k', '5', '-s', '7', '--threads', str(threads)],
+                verbose=verbose)
 
 
 def make_mmseqs_db(fasta_loc, output_loc, create_index=False, threads=10, verbose=False):
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
-    subprocess.run(['mmseqs', 'createdb', fasta_loc, output_loc], check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'createdb', fasta_loc, output_loc], verbose=verbose)
     if create_index:
         tmp_dir = path.join(path.dirname(output_loc), 'tmp')
-        subprocess.run(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], check=True,
-                       stdout=stdout, stderr=stderr)
+        run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -74,52 +78,38 @@ def run_prodigal(fasta_loc, output_dir, verbose=False):
     output_gff = path.join(output_dir, 'genes.gff')
     output_fna = path.join(output_dir, 'genes.fna')
     output_faa = path.join(output_dir, 'genes.faa')
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
-    subprocess.run(['prodigal', '-i', fasta_loc, '-p', 'meta', '-f', 'gff', '-o', output_gff, '-a', output_faa, '-d',
-                    output_fna], check=True, stdout=stdout, stderr=stderr)
+
+    run_process(['prodigal', '-i', fasta_loc, '-p', 'meta', '-f', 'gff', '-o', output_gff, '-a', output_faa, '-d',
+                 output_fna], verbose=verbose)
     return output_gff, output_fna, output_faa
 
 
 def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
                   bit_score_threshold=60, threads=10, verbose=False):
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
+
     # make query to target db
     tmp_dir = path.join(output_dir, 'tmp')
     query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
-    subprocess.run(['mmseqs', 'search', query_db, target_db, query_target_db, tmp_dir, '--threads', str(threads)],
-                   check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'search', query_db, target_db, query_target_db, tmp_dir, '--threads', str(threads)],
+                verbose=verbose)
     # filter query to target db to only best hit
     query_target_db_top = path.join(output_dir, '%s_%s.tophit.mmsdb' % (query_prefix, target_prefix))
-    subprocess.run(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'], check=True,
-                   stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'], verbose=verbose)
     # filter query to target db to only hits with min threshold
     query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%s.mmsdb'
                                          % (query_prefix, target_prefix, bit_score_threshold))
-    subprocess.run(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
-                    str(bit_score_threshold), '--threads', str(threads), query_target_db_top, query_target_db_top_filt],
-                   check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
+                 str(bit_score_threshold), '--threads', str(threads), query_target_db_top, query_target_db_top_filt],
+                verbose=verbose)
     # convert results to blast outformat 6
     forward_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (query_prefix, target_prefix))
-    subprocess.run(['mmseqs', 'convertalis', query_db, target_db, query_target_db_top_filt, forward_output_loc,
-                    '--threads', str(threads)], check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'convertalis', query_db, target_db, query_target_db_top_filt, forward_output_loc,
+                '--threads', str(threads)], verbose=verbose)
     return forward_output_loc
 
 
 def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
                              bit_score_threshold=60, threads=10, verbose=False):
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
     # make query to target db
     tmp_dir = path.join(output_dir, 'tmp')
     # create subset for second search
@@ -127,25 +117,23 @@ def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='
                                          % (query_prefix, target_prefix, bit_score_threshold))
     query_target_db_filt_top_swapped = path.join(output_dir, '%s_%s.minbitscore%s.tophit.swapped.mmsdb'
                                                  % (query_prefix, target_prefix, bit_score_threshold))
-    subprocess.run(['mmseqs', 'swapdb', query_target_db_top_filt, query_target_db_filt_top_swapped, '--threads',
-                    str(threads)], check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'swapdb', query_target_db_top_filt, query_target_db_filt_top_swapped, '--threads',
+                 str(threads)], verbose=verbose)
     target_db_filt = path.join(output_dir, '%s.filt.mmsdb' % target_prefix)
-    subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, target_db, target_db_filt], check=True,
-                   stdout=stdout, stderr=stderr)
-    subprocess.run(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, '%s_h' % target_db,
-                    '%s_h' % target_db_filt], check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, target_db, target_db_filt], verbose=verbose)
+    run_process(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, '%s_h' % target_db,
+                 '%s_h' % target_db_filt], verbose=verbose)
     # make filtered target db to query db
     target_query_db = path.join(output_dir, '%s_%s.mmsdb' % (target_prefix, query_prefix))
-    subprocess.run(['mmseqs', 'search', target_db_filt, query_db, target_query_db, tmp_dir, '--threads', str(threads)],
-                   check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'search', target_db_filt, query_db, target_query_db, tmp_dir, '--threads', str(threads)],
+                verbose=verbose)
     # filter target to query results db
     target_query_db_filt = path.join(output_dir, '%s_%s.tophit.mmsdb' % (target_prefix, query_prefix))
-    subprocess.run(['mmseqs', 'filterdb', target_query_db, target_query_db_filt, '--extract-lines', '1'], check=True,
-                   stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'filterdb', target_query_db, target_query_db_filt, '--extract-lines', '1'], verbose=verbose)
     # convert results to blast outformat 6
     reverse_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (target_prefix, query_prefix))
-    subprocess.run(['mmseqs', 'convertalis', target_db_filt, query_db, target_query_db_filt, reverse_output_loc,
-                    '--threads', str(threads)], check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'convertalis', target_db_filt, query_db, target_query_db_filt, reverse_output_loc,
+                '--threads', str(threads)], verbose=verbose)
     return reverse_output_loc
 
 
@@ -224,18 +212,12 @@ def get_viral_description(viral_hits, viral_loc):
 
 
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10, verbose=False):
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
     tmp_dir = path.join(output_loc, 'tmp')
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
-    subprocess.run(['mmseqs', 'search', query_db, pfam_profile, output_db, tmp_dir, '-k', '5', '-s', '7', '--threads',
-                    str(threads)], check=True, stdout=stdout, stderr=stderr)
+    run_process(['mmseqs', 'search', query_db, pfam_profile, output_db, tmp_dir, '-k', '5', '-s', '7', '--threads',
+                 str(threads)], verbose=verbose)
     output_loc = path.join(output_loc, 'pfam_output.b6')
-    subprocess.run(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc], check=True, stdout=stdout,
-                   stderr=stderr)
+    run_process(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc], verbose=verbose)
     pfam_results = pd.read_csv(output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     pfam_dict = dict()
     for gene, pfam_frame in pfam_results.groupby('qId'):
@@ -258,18 +240,12 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, verbose=False):
     cat ~/dbCAN_test_1 | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' | sed 's/ /\t/g' | \
     sort -k 3,3 -k 8n -k 9n > dbCAN_test_1.good_cols.tsv
     """
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
     dbcan_output = path.join(output_loc, 'dbcan_results.unprocessed.txt')
-    subprocess.run(['hmmscan', '--domtblout', dbcan_output, dbcan_loc, genes_faa], check=True, stdout=stdout,
-                   stderr=stderr)
+    run_process(['hmmscan', '--domtblout', dbcan_output, dbcan_loc, genes_faa], verbose=verbose)
     processed_dbcan_output = path.join(output_loc, 'dbcan_results.tsv')
     cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
           "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (dbcan_output, processed_dbcan_output)
-    subprocess.run(cmd, shell=True, check=True)
+    run_process(cmd, shell=True)
 
     dbcan_res = pd.read_csv(processed_dbcan_output, sep='\t', header=None)
 
@@ -373,14 +349,8 @@ def rename_gff(input_gff, output_gff, prefix):
 
 
 def run_trna_scan(fasta, output_loc, threads=10, verbose=True):
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
     raw_trnas = path.join(output_loc, 'raw_trnas.txt')
-    subprocess.run(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], stdout=stdout,
-                    stderr=stderr, check=True)
+    run_process(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], verbose=verbose)
     processed_trnas = path.join(output_loc, 'trnas.tsv')
     trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
     trna_frame.to_csv(processed_trnas, sep='\t')
@@ -402,6 +372,23 @@ def merge_files_w_header(gtf_files, outfile):
             f.write(content)
 
 
+def do_blast_style_search(query_db, target_db, working_dir, get_description, start_time, db_name='database',
+                          bit_score_threshold=60, rbh=True, rbh_bit_score_threshold=350, threads=10, verbose=False):
+    # Get kegg hits
+    print('%s: Getting forward best hits from %s' % (str(datetime.now() - start_time), db_name))
+    forward_hits = get_best_hits(query_db, target_db, working_dir, 'gene', db_name, bit_score_threshold,
+                                 threads, verbose=verbose)
+    if rbh:
+        print('%s: Getting reverse best hits from %s' % (str(datetime.now() - start_time), db_name))
+        reverse_hits = get_reciprocal_best_hits(query_db, target_db, working_dir, 'gene', db_name,
+                                                bit_score_threshold, threads, verbose=verbose)
+        hits = process_reciprocal_best_hits(forward_hits, reverse_hits, rbh_bit_score_threshold, db_name)
+    else:
+        hits = forward_hits
+    hits = get_description(hits, target_db)
+    return hits
+
+
 def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, output_dir='.', min_size=5000,
          bit_score_threshold=60, rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
@@ -421,6 +408,7 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
 
+    # iterate over list of fastas and annotate each individually
     annotations_list = list()
     for fasta_loc in fasta_locs:
         fasta_name = path.splitext(path.basename(fasta_loc))[0]
@@ -446,29 +434,21 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
 
         # Get kegg hits
         if kegg_loc is not None:
-            print('%s: Getting forward best hits from KEGG' % str(datetime.now()-start_time))
-            forward_kegg_hits = get_best_hits(query_db, kegg_loc, fasta_dir, 'gene', 'kegg', bit_score_threshold,
-                                              threads, verbose=verbose)
-            print('%s: Getting reverse best hits from KEGG' % str(datetime.now()-start_time))
-            reverse_kegg_hits = get_reciprocal_best_hits(query_db, kegg_loc, fasta_dir, 'gene', 'kegg',
-                                                         bit_score_threshold, threads, verbose=verbose)
-            kegg_hits = process_reciprocal_best_hits(forward_kegg_hits, reverse_kegg_hits, rbh_bit_score_threshold,
-                                                     'kegg')
-            kegg_hits = get_kegg_description(kegg_hits, kegg_loc)
-            annotation_list.append(kegg_hits)
+            annotation_list.append(do_blast_style_search(query_db, kegg_loc, fasta_dir, get_kegg_description,
+                                                         start_time, 'KEGG', bit_score_threshold, True,
+                                                         rbh_bit_score_threshold, threads, verbose))
 
         # Get uniref hits
         if uniref_loc is not None:
-            print('%s: Getting forward best hits from UniRef' % str(datetime.now()-start_time))
-            forward_uniref_hits = get_best_hits(query_db, uniref_loc, fasta_dir, 'gene', 'uniref', bit_score_threshold,
-                                                threads, verbose=verbose)
-            print('%s: Getting reverse best hits from UniRef' % str(datetime.now()-start_time))
-            reverse_uniref_hits = get_reciprocal_best_hits(query_db, uniref_loc, fasta_dir, 'gene', 'uniref',
-                                                           bit_score_threshold, threads, verbose=verbose)
-            uniref_hits = process_reciprocal_best_hits(forward_uniref_hits, reverse_uniref_hits,
-                                                       rbh_bit_score_threshold, 'uniref')
-            uniref_hits = get_uniref_description(uniref_hits, uniref_loc)
-            annotation_list.append(uniref_hits)
+            annotation_list.append(do_blast_style_search(query_db, uniref_loc, fasta_dir, get_uniref_description,
+                                                         start_time, 'UniRef', bit_score_threshold, True,
+                                                         rbh_bit_score_threshold, threads, verbose))
+
+        # Get viral hits
+        if viral_loc is not None:
+            annotation_list.append(do_blast_style_search(query_db, viral_loc, fasta_dir, get_viral_description,
+                                                         start_time, 'RefSeq_Viral_Proteins', bit_score_threshold, True,
+                                                         rbh_bit_score_threshold, threads, verbose))
 
         # Get pfam hits
         if pfam_loc is not None:
@@ -482,19 +462,6 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
             print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
             dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, fasta_dir, verbose=verbose)
             annotation_list.append(dbcan_hits)
-
-        # Get viral hits
-        if viral_loc is not None:
-            print('%s: Getting forward best hits from Viral RefSeq' % str(datetime.now() - start_time))
-            forward_viral_hits = get_best_hits(query_db, viral_loc, fasta_dir, 'gene', 'viral', bit_score_threshold,
-                                                threads, verbose=verbose)
-            print('%s: Getting reverse best hits from Viral RefSeq' % str(datetime.now() - start_time))
-            reverse_viral_hits = get_reciprocal_best_hits(query_db, viral_loc, fasta_dir, 'gene', 'viral',
-                                                           bit_score_threshold, threads, verbose=verbose)
-            viral_hits = process_reciprocal_best_hits(forward_viral_hits, reverse_viral_hits,
-                                                       rbh_bit_score_threshold, 'viral')
-            viral_hits = get_viral_description(viral_hits, viral_loc)
-            annotation_list.append(viral_hits)
 
         # merge dataframes
         print('%s: Finishing up results' % str(datetime.now()-start_time))
