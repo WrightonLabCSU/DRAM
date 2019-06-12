@@ -372,9 +372,15 @@ def rename_gff(input_gff, output_gff, prefix):
                 o.write(line)
 
 
-def run_trna_scan(fasta, output_loc, threads=10,):
+def run_trna_scan(fasta, output_loc, threads=10, verbose=True):
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+    if verbose:
+        stdout = None
+        stderr = None
     raw_trnas = path.join(output_loc, 'raw_trnas.txt')
-    subprocess.run(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta])
+    subprocess.run(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], stdout=stdout,
+                    stderr=stderr, check=True)
     processed_trnas = path.join(output_loc, 'trnas.tsv')
     trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
     trna_frame.to_csv(processed_trnas, sep='\t')
