@@ -2,7 +2,7 @@
 
 import argparse
 
-from checkMetab.annotate_scaffolds import main
+from checkMetab.annotate_bins import main
 
 
 if __name__ == '__main__':

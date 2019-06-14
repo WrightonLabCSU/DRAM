@@ -30,14 +30,6 @@ def run_process(command, shell=False, verbose=False):
     subprocess.run(command, check=True, shell=shell, stdout=stdout, stderr=stderr)
 
 
-def make_mmseqs_db(fasta_loc, output_loc, create_index=False, threads=10, verbose=False):
-    """Takes a fasta file and makes a mmseqs2 database for use in blast searching and hmm searching with mmseqs2"""
-    run_process(['mmseqs', 'createdb', fasta_loc, output_loc], verbose=verbose)
-    if create_index:
-        tmp_dir = path.join(path.dirname(output_loc), 'tmp')
-        run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
-
-
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
     """Removes sequences shorter than a set minimum from fasta files, outputs an object or to a file"""
     kept_seqs = (seq for seq in read_sequence(fasta_loc, format='fasta') if len(seq) > min_len)
@@ -58,11 +50,20 @@ def run_prodigal(fasta_loc, output_dir, verbose=False):
     return output_gff, output_fna, output_faa
 
 
+def make_mmseqs_db(fasta_loc, output_loc, create_index=False, threads=10, verbose=False):
+    """Takes a fasta file and makes a mmseqs2 database for use in blast searching and hmm searching with mmseqs2"""
+    run_process(['mmseqs', 'createdb', fasta_loc, output_loc], verbose=verbose)
+    if create_index:
+        tmp_dir = path.join(path.dirname(output_loc), 'tmp')
+        run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
+
+
 def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
                   bit_score_threshold=60, threads=10, verbose=False):
     """Uses mmseqs2 to do a blast style search of a query db against a target db, filters to only include best hits
     Returns a file location of a blast out format 6 file with search results
     """
+    # TODO: Return both tsv and mmsdb
     # make query to target db
     tmp_dir = path.join(output_dir, 'tmp')
     query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
@@ -87,9 +88,10 @@ def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', tar
 def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
                              bit_score_threshold=60, rbh_bit_score_threshold=350, threads=10, verbose=False):
     """Take results from best hits and use for a reciprocal best hits search"""
+    # TODO: Make it take query_target_db as a parameter
     # create subset for second search
     query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%s.mmsdb'
-                                         % (query_prefix, target_prefix, bit_score_threshold))
+                                         % (query_prefix, target_prefix, bit_score_threshold))   # I DON'T LIKE THIS
     query_target_db_filt_top_swapped = path.join(output_dir, '%s_%s.minbitscore%s.tophit.swapped.mmsdb'
                                                  % (query_prefix, target_prefix, bit_score_threshold))
     # swap queries and targets in results database
@@ -135,15 +137,14 @@ def multigrep(search_terms, search_against, output='.'):  # TODO: multiprocess t
     return {i.split()[0]: i for i in processed_results if i != ''}
 
 
-def get_kegg_description(kegg_hits, kegg_loc):
+def get_kegg_description(kegg_hits, header_dict):
     """Gets the KEGG IDs, and full KEGG hits from list of KEGG IDs for output in annotations"""
     gene_description = list()
     ko_list = list()
-    header_dict = multigrep(kegg_hits.kegg_hit, '%s_h' % kegg_loc)
     for kegg_hit in kegg_hits.kegg_hit:
         header = header_dict[kegg_hit]
         gene_description.append(header)
-        kos = re.findall('(K\d\d\d\d\d)', header)
+        kos = re.findall(r'(K\d\d\d\d\d)', header)
         if len(kos) == 0:
             ko_list.append('')
         else:
@@ -152,28 +153,26 @@ def get_kegg_description(kegg_hits, kegg_loc):
     return pd.concat([new_df.transpose(), kegg_hits.drop('kegg_hit', axis=1)], axis=1)
 
 
-def get_uniref_description(uniref_hits, uniref_loc):
+def get_uniref_description(uniref_hits, header_dict):
     """Gets UniRef ID's, taxonomy and full string from list of UniRef IDs for output in annotations"""
     gene_description = list()
     uniref_list = list()
     gene_taxonomy = list()
-    header_dict = multigrep(uniref_hits.uniref_hit, '%s_h' % uniref_loc)
     for uniref_hit in uniref_hits.uniref_hit:
         header = header_dict[uniref_hit]
         gene_description.append(header)
         uniref_list.append(header[header.find('RepID=')+6:])
-        gene_taxonomy.append(re.search('Tax=(.*?) (\S*?)=', header).group(1))
+        gene_taxonomy.append(re.search(r'Tax=(.*?) (\S*?)=', header).group(1))
     new_df = pd.DataFrame([uniref_list, gene_description, gene_taxonomy],
                           index=['uniref_id', 'uniref_hit', 'uniref_taxonomy'],
                           columns=uniref_hits.index)
     return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1)
 
 
-def get_viral_description(viral_hits, viral_loc):
+def get_viral_description(viral_hits, header_dict):
     """Get viral gene full descriptions based on headers (text before first space)"""
     viral_list = list()
     viral_description = list()
-    header_dict = multigrep(viral_hits.viral_hit, '%s_h' % viral_loc)
     for viral_hit in viral_hits.viral_hit:
         header = header_dict[viral_hit]
         viral_list.append(viral_hit)
@@ -331,9 +330,9 @@ def rename_gff(input_gff, output_gff, prefix):
                 if not line.startswith('#') and not line.startswith('\n'):
                     old_scaffold = line.strip().split('\t')[0]
                     line = '%s_%s' % (prefix, line)
-                    match = re.search('ID=\d*_\d*;', line)
+                    match = re.search(r'ID=\d*_\d*;', line)
                     gene_number = match.group().split('_')[-1][:-1]
-                    line = re.sub('ID=\d*_\d*;', 'ID=%s_%s_%s;' % (prefix, old_scaffold, gene_number), line)
+                    line = re.sub(r'ID=\d*_\d*;', 'ID=%s_%s_%s;' % (prefix, old_scaffold, gene_number), line)
                 o.write(line)
 
 
@@ -375,7 +374,8 @@ def do_blast_style_search(query_db, target_db, working_dir, get_description, sta
     reverse_hits = get_reciprocal_best_hits(query_db, target_db, working_dir, 'gene', db_name,
                                             bit_score_threshold, rbh_bit_score_threshold, threads, verbose=verbose)
     hits = process_reciprocal_best_hits(forward_hits, reverse_hits, db_name)
-    hits = get_description(hits, target_db)
+    header_dict = multigrep(hits['%s_hit' % db_name], '%s_h' % target_db)
+    hits = get_description(hits, header_dict)
     return hits
 
 
@@ -425,19 +425,19 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
         # Get kegg hits
         if kegg_loc is not None:
             annotation_list.append(do_blast_style_search(query_db, kegg_loc, fasta_dir, get_kegg_description,
-                                                         start_time, 'KEGG', bit_score_threshold,
+                                                         start_time, 'kegg', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get uniref hits
         if uniref_loc is not None:
             annotation_list.append(do_blast_style_search(query_db, uniref_loc, fasta_dir, get_uniref_description,
-                                                         start_time, 'UniRef', bit_score_threshold,
+                                                         start_time, 'uniref', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get viral hits
         if viral_loc is not None:
             annotation_list.append(do_blast_style_search(query_db, viral_loc, fasta_dir, get_viral_description,
-                                                         start_time, 'RefSeq_Viral_Proteins', bit_score_threshold,
+                                                         start_time, 'viral', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get pfam hits
