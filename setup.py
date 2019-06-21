@@ -7,7 +7,7 @@ __version__ = version
 setup(
       name="checkMetab",
       version=__version__,
-      scripts=['scripts/annotate_genes.py', 'scripts/generate_database_form.py', 'scripts/check_metab.py'],
+      scripts=['scripts/annotate_genes.py', 'scripts/download_databases'],
       packages=find_packages(),
       install_requires=['scikit-bio', 'pandas', 'networkx'],
       description="Annotate contigs/bins from metagenomic assemblies and create predicted metabolisms",
