@@ -1,8 +1,7 @@
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
-from os import path, mkdir, remove
+from os import path, mkdir
 from shutil import rmtree
-import subprocess
 import pandas as pd
 from datetime import datetime
 import re
@@ -15,19 +14,10 @@ from glob import glob
 # TODO: add gene locations in scaffold
 # TODO: add silent mode
 # TODO: add ability to take in GTDBTK file and add taxonomy to annotations
+from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files, merge_files_w_header
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
-
-
-def run_process(command, shell=False, verbose=False):
-    """Standardization of parameters for using subprocess.run, provides verbose mode and option to run via shell"""
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
-    subprocess.run(command, check=True, shell=shell, stdout=stdout, stderr=stderr)
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -48,14 +38,6 @@ def run_prodigal(fasta_loc, output_dir, verbose=False):
     run_process(['prodigal', '-i', fasta_loc, '-p', 'meta', '-f', 'gff', '-o', output_gff, '-a', output_faa, '-d',
                  output_fna], verbose=verbose)
     return output_gff, output_fna, output_faa
-
-
-def make_mmseqs_db(fasta_loc, output_loc, create_index=False, threads=10, verbose=False):
-    """Takes a fasta file and makes a mmseqs2 database for use in blast searching and hmm searching with mmseqs2"""
-    run_process(['mmseqs', 'createdb', fasta_loc, output_loc], verbose=verbose)
-    if create_index:
-        tmp_dir = path.join(path.dirname(output_loc), 'tmp')
-        run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
 
 
 def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', target_prefix='target',
@@ -124,17 +106,6 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, target_
                 rbh = True
         hits[forward_hit] = [row.tId, rbh, row.seqIdentity, row.bitScore, row.eVal]
     return hits.transpose()
-
-
-def multigrep(search_terms, search_against, output='.'):  # TODO: multiprocess this over the list of search terms
-    """Search a list of exact substrings against a database, takes name of mmseqs db index with _h to search against"""
-    hits_file = path.join(output, 'hits.txt')
-    with open(hits_file, 'w') as f:
-        f.write('%s\n' % '\n'.join(search_terms))
-    results = subprocess.run(['grep', '-a', '-F', '-f', hits_file, search_against], stdout=subprocess.PIPE, check=True)
-    processed_results = [i.strip()[1:] for i in results.stdout.decode('ascii').split('\n')]
-    remove(hits_file)
-    return {i.split()[0]: i for i in processed_results if i != ''}
 
 
 def get_kegg_description(kegg_hits, header_dict):
@@ -336,31 +307,14 @@ def rename_gff(input_gff, output_gff, prefix):
                 o.write(line)
 
 
-def run_trna_scan(fasta, output_loc, threads=10, verbose=True):
+def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
     """Run tRNAscan-SE on scaffolds and create a table of tRNAs as a separate output"""
     raw_trnas = path.join(output_loc, 'raw_trnas.txt')
     run_process(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], verbose=verbose)
     processed_trnas = path.join(output_loc, 'trnas.tsv')
     trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
+    trna_frame.insert(0, 'fasta', fasta_name)
     trna_frame.to_csv(processed_trnas, sep='\t')
-
-
-def merge_files(files_to_merge, outfile):
-    """It's in the name"""
-    with open(outfile, 'w') as outfile_handle:
-        for file in glob(files_to_merge):
-            with open(file) as f:
-                outfile_handle.write(f.read())
-
-
-def merge_files_w_header(gtf_files, outfile):
-    """Merge files but keep the header from the first file, assumes files all have same header"""
-    gtf_files = glob(gtf_files)
-    with open(outfile, 'w') as f:
-        f.write(open(gtf_files[0]).readline())
-        for gtf in gtf_files:
-            content = ''.join(open(gtf).readlines()[1:])
-            f.write(content)
 
 
 def do_blast_style_search(query_db, target_db, working_dir, get_description, start_time, db_name='database',
@@ -479,8 +433,8 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
         renamed_gffs = path.join(fasta_dir, 'genes.annotated.gff')
         rename_gff(gene_gff, renamed_gffs, prefix=fasta_name)
 
-        # get rRNAs
-        run_trna_scan(renamed_scaffolds, fasta_dir, threads=threads)
+        # get tRNAs
+        run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads)
 
         # add fasta name to frame and index, append to list
         annotations.insert(0, 'fasta', fasta_name)
