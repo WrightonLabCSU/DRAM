@@ -7,6 +7,9 @@ from datetime import datetime
 import re
 from glob import glob
 
+from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files
+
+
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
@@ -14,7 +17,6 @@ from glob import glob
 # TODO: add gene locations in scaffold
 # TODO: add silent mode
 # TODO: add ability to take in GTDBTK file and add taxonomy to annotations
-from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files, merge_files_w_header
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -450,8 +452,8 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
     merge_files(path.join(tmp_dir, '*', '*.annotated.fna'), path.join(output_dir, 'genes.fna'))
     merge_files(path.join(tmp_dir, '*', '*.annotated.faa'), path.join(output_dir, 'genes.faa'))
     merge_files(path.join(tmp_dir, '*', 'scaffolds.annotated.fa'), path.join(output_dir, 'scaffolds.fna'))
-    merge_files_w_header(path.join(tmp_dir, '*', 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'))
-    merge_files_w_header(path.join(tmp_dir, '*', 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'))
+    merge_files(path.join(tmp_dir, '*', 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'), True)
+    merge_files(path.join(tmp_dir, '*', 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'), True)
 
     # clean up
     if not keep_tmp_dir:

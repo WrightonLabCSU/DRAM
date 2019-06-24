@@ -4,15 +4,11 @@ import os
 
 import pandas as pd
 
-from checkMetab.annotate_bins import run_process, make_mmseqs_db, filter_fasta, run_prodigal, get_best_hits,\
-    get_reciprocal_best_hits, process_reciprocal_best_hits, multigrep, get_kegg_description, get_uniref_description, \
-    get_viral_description, run_mmseqs_pfam, get_sig, run_hmmscan_dbcan, get_scaffold_and_gene, get_unannotated,\
+from checkMetab.utils import make_mmseqs_db
+from checkMetab.annotate_bins import filter_fasta, run_prodigal, get_best_hits,\
+    get_reciprocal_best_hits, process_reciprocal_best_hits, get_kegg_description, get_uniref_description, \
+    get_viral_description, get_sig, get_scaffold_and_gene, get_unannotated,\
     assign_grades
-
-
-def test_run_process():
-    run_process(['echo', 'Hello', 'World'], verbose=True)
-    assert True
 
 
 @pytest.fixture()
@@ -121,12 +117,6 @@ def test_process_reciprocal_best_hits(processed_hits):
     assert processed_hits.shape == (7, 5)
     assert set(processed_hits.loc[processed_hits.target_RBH].index) == {'NC_001422.1_5', 'NC_001422.1_4',
                                                                         'NC_001422.1_7', 'NC_001422.1_6'}
-
-
-def test_multigrep(processed_hits, target_mmseqs_db):
-    dict_ = multigrep(processed_hits.target_hit, '%s_h' % target_mmseqs_db)
-    assert len(dict_) == len(processed_hits)
-    assert dict_['NP_040703.1'] == 'NP_040703.1 A [Escherichia virus phiX174]'
 
 
 def test_get_kegg_description():
