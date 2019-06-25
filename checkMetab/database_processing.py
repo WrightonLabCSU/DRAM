@@ -5,6 +5,7 @@ from shutil import move, rmtree
 from glob import glob
 from pkg_resources import resource_filename
 import json
+import gzip
 
 
 def get_iso_date():
@@ -51,12 +52,37 @@ def download_and_process_pfam(pfam_full_zipped=None, output_dir='.', pfam_releas
     return pfam_profile
 
 
+def download_and_process_pfam_descriptions(pfam_hmm_dat=None, output_dir='.', pfam_release='32.0', verbose=True):
+    if pfam_hmm_dat is None:
+        pfam_hmm_dat = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
+        download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam%s/Pfam-A.hmm.dat.gz' % pfam_release,
+                      pfam_hmm_dat, verbose=verbose)
+    if pfam_hmm_dat.endswith('.gz'):
+        f = gzip.open(pfam_hmm_dat, 'r').read().decode('utf-8')
+    else:
+        f = open(pfam_hmm_dat).read()
+    entries = f.split('//')
+    description_dict = dict()
+    for entry in entries:
+        entry = entry.split('\n')
+        ascession = None
+        description = None
+        for line in entry:
+            line = line.strip()
+            if line.startswith('#=GF AC'):
+                ascession = line.split('   ')[-1]
+            if line.startswith('#=GF DE'):
+                description = line.split('   ')[-1]
+        description_dict[ascession] = description
+    return description_dict
+
+
 def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='7', verbose=True):
     if dbcan_hmm is None:  # download database if not provided
         dbcan_hmm = path.join(output_dir, 'dbCAN-HMMdb-V%s.txt' % dbcan_release)
         download_file('http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,
                       verbose=verbose)
-    run_process(['hmmpress', dbcan_hmm], verbose=verbose)
+    run_process(['hmmpress', '-f', dbcan_hmm], verbose=verbose)
     return dbcan_hmm
 
 
@@ -93,13 +119,13 @@ def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbos
 
 def update_config(output_dbs):
     # change data paths
-    with open(path.abspath(resource_filename('checkMetab', 'DATA_CONFIG')), 'w') as f:
+    with open(path.abspath(resource_filename('checkMetab', 'DATABASE_LOCATIONS')), 'w') as f:
         f.write(json.dumps(output_dbs))
 
 
 def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version=90,
-                      pfam_loc=None, pfam_version=32.0, dbcan_loc=None, dbcan_version=7, viral_loc=None,
-                      keep_database_files=False, threads=10, verbose=True):
+                      pfam_loc=None, pfam_version=32.0, pfam_hmm_dat=None, dbcan_loc=None, dbcan_version=7,
+                      viral_loc=None, keep_database_files=False, threads=10, verbose=True):
     mkdir(output_dir)
     temporary = path.join(output_dir, 'database_files')
     mkdir(temporary)
@@ -108,6 +134,7 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
         output_dbs['kegg'] = process_kegg_db(temporary, kegg_loc, kegg_download_date, threads, verbose)
     output_dbs['uniref'] = download_and_process_unifref(uniref_loc, temporary, threads=threads, verbose=verbose)
     output_dbs['pfam'] = download_and_process_pfam(pfam_loc, temporary, threads=threads, verbose=verbose)
+    output_dbs['pfam_description'] = download_and_process_pfam_descriptions(pfam_hmm_dat)
     output_dbs['dbcan'] = download_and_process_dbcan(dbcan_loc, temporary, verbose=verbose)
     output_dbs['viral'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads, verbose=verbose)
 
@@ -119,17 +146,33 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
         rmtree(output_dir)
 
 
-def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, dbcan_db_loc=None, viral_db_loc=None):
+def check_file_exists(db_loc):
+    if path.isfile(db_loc):
+        return True
+    else:
+        raise ValueError("Database location does not exist: %s" % db_loc)
+
+
+def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
+                       viral_db_loc=None):
     db_dict = dict()
     if kegg_db_loc is not None:
-        db_dict['kegg'] = kegg_db_loc
+        if check_file_exists(kegg_db_loc):
+            db_dict['kegg'] = kegg_db_loc
     if uniref_db_loc is not None:
-        db_dict['uniref'] = uniref_db_loc
+        if check_file_exists(uniref_db_loc):
+            db_dict['uniref'] = uniref_db_loc
     if pfam_db_loc is not None:
-        db_dict['pfam'] = pfam_db_loc
+        if check_file_exists(pfam_db_loc):
+            db_dict['pfam'] = pfam_db_loc
+    if pfam_hmm_dat is not None:
+        if check_file_exists(pfam_hmm_dat):
+            db_dict['pfam_description'] = download_and_process_pfam_descriptions(pfam_hmm_dat)
     if dbcan_db_loc is not None:
-        db_dict['dbcan'] = dbcan_db_loc
+        if check_file_exists(dbcan_db_loc):
+            db_dict['dbcan'] = dbcan_db_loc
     if viral_db_loc is not None:
-        db_dict['viral'] = viral_db_loc
+        if check_file_exists(viral_db_loc):
+            db_dict['viral'] = viral_db_loc
 
     update_config(db_dict)

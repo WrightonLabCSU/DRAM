@@ -10,7 +10,7 @@ setup(
       scripts=['scripts/annotate_genes.py', 'scripts/prepare_databases.py', 'scripts/make_genome_summary.py',
                'scripts/set_database_locations.py'],
       packages=find_packages(),
-      package_data={'checkMetab': ['DATA_CONFIG']},
+      package_data={'checkMetab': ['DATABASE_LOCATIONS']},
       install_requires=['scikit-bio', 'pandas', 'networkx'],
       description="Annotate contigs/bins from metagenomic assemblies and create predicted metabolisms",
       author="Michael Shaffer",

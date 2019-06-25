@@ -6,10 +6,12 @@ import pandas as pd
 from datetime import datetime
 import re
 from glob import glob
+from pkg_resources import resource_filename
+import json
 
 from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files
 
-# TODO: Update to use file paths from DATA_CONFIG
+# TODO: Update to use file paths from DATABASE_LOCATIONS
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
@@ -20,6 +22,10 @@ from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
+
+
+def get_database_locs():
+    return json.loads(open(path.abspath(resource_filename('checkMetab', 'DATABASE_LOCATIONS'))).read())
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -156,7 +162,8 @@ def get_viral_description(viral_hits, header_dict):
     return pd.concat([new_df.transpose(), viral_hits.drop('viral_hit', axis=1)], axis=1)
 
 
-def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', threads=10, verbose=False):
+def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', pfam_descriptions=None,
+                    threads=10, verbose=False):
     """Use mmseqs to run a search against pfam, currently keeping all hits and not doing any extra filtering"""
     tmp_dir = path.join(output_loc, 'tmp')
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
@@ -167,7 +174,11 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     pfam_results = pd.read_csv(output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     pfam_dict = dict()
     for gene, pfam_frame in pfam_results.groupby('qId'):
-        pfam_dict[gene] = ','.join(pfam_frame.tId)
+        if pfam_descriptions is None:
+            pfam_dict[gene] = ';'.join(pfam_frame.tId)
+        else:
+            pfam_dict[gene] = ';'.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
+                                        for ascession in pfam_frame.tId])
     return pd.Series(pfam_dict, name='pfam_hits')
 
 
@@ -208,7 +219,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, verbose=False):
 
     dbcan_dict = dict()
     for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
-        dbcan_dict[gene] = ','.join([i[:-4] for i in frame.tid])  # gets rid of .hmm from every result
+        dbcan_dict[gene] = ';'.join([i[:-4] for i in frame.tid])  # gets rid of .hmm from every result
 
     return pd.Series(dbcan_dict, name='cazy_hits')
 
@@ -335,8 +346,8 @@ def do_blast_style_search(query_db, target_db, working_dir, get_description, sta
     return hits
 
 
-def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, output_dir='.', min_size=5000,
-         bit_score_threshold=60, rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10, verbose=True):
+def main(fasta_glob_str, output_dir='.', min_size=5000, bit_score_threshold=60, rbh_bit_score_threshold=350,
+         keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     fasta_locs = glob(fasta_glob_str)
@@ -344,12 +355,7 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
         raise ValueError('Given fasta locations returns no paths: %s')
     else:
         print('%s fasta found' % len(fasta_locs))
-    if not path.isfile(kegg_loc):
-        raise ValueError('KEGG mmsdb does not exist: %s' % kegg_loc)
-    if not path.isfile(uniref_loc):
-        raise ValueError('UniRef mmsdb does not exist: %s' % uniref_loc)
-    if not path.isfile(uniref_loc):
-        raise ValueError('PFam mmspro does not exist: %s' % pfam_loc)
+
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
@@ -377,36 +383,37 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
         make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads, verbose=verbose)
 
         annotation_list = list()
+        db_locs = get_database_locs()
 
         # Get kegg hits
-        if kegg_loc is not None:
-            annotation_list.append(do_blast_style_search(query_db, kegg_loc, fasta_dir, get_kegg_description,
+        if 'kegg' in db_locs:
+            annotation_list.append(do_blast_style_search(query_db, db_locs['kegg'], fasta_dir, get_kegg_description,
                                                          start_time, 'kegg', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get uniref hits
-        if uniref_loc is not None:
-            annotation_list.append(do_blast_style_search(query_db, uniref_loc, fasta_dir, get_uniref_description,
+        if 'uniref' in db_locs:
+            annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], fasta_dir, get_uniref_description,
                                                          start_time, 'uniref', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get viral hits
-        if viral_loc is not None:
-            annotation_list.append(do_blast_style_search(query_db, viral_loc, fasta_dir, get_viral_description,
+        if 'viral' in db_locs:
+            annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir, get_viral_description,
                                                          start_time, 'viral', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get pfam hits
-        if pfam_loc is not None:
+        if 'pfam' in db_locs:
             print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
-            pfam_hits = run_mmseqs_pfam(query_db, pfam_loc, fasta_dir, output_prefix='pfam', threads=threads,
+            pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], fasta_dir, output_prefix='pfam', threads=threads,
                                         verbose=verbose)
             annotation_list.append(pfam_hits)
 
         # use hmmer to detect cazy ids using dbCAN
-        if dbcan_loc is not None:
+        if 'dbcan' in db_locs:
             print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
-            dbcan_hits = run_hmmscan_dbcan(gene_faa, dbcan_loc, fasta_dir, verbose=verbose)
+            dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir, verbose=verbose)
             annotation_list.append(dbcan_hits)
 
         # merge dataframes
@@ -414,7 +421,7 @@ def main(fasta_glob_str, kegg_loc, uniref_loc, pfam_loc, dbcan_loc, viral_loc, o
         annotations = pd.concat(annotation_list, axis=1, sort=False)
 
         # get scaffold data and assign grades
-        if uniref_loc is not None and kegg_loc is not None:
+        if 'kegg' in db_locs and 'uniref' in db_locs:
             grades = assign_grades(annotations)
             annotations = pd.concat([grades, annotations], axis=1)
         annotations = pd.concat([get_scaffold_and_gene(annotations.index), annotations], axis=1)
