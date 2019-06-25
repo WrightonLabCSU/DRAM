@@ -9,7 +9,7 @@ from glob import glob
 
 from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files
 
-
+# TODO: Update to use file paths from DATA_CONFIG
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging

@@ -67,6 +67,7 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
     if merged_viral_faas is None:  # download database if not provided
         viral_file_list = list()
         for number in range(viral_files):
+            number += 1
             refseq_url = 'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
             refseq_faa = path.join(output_dir, 'viral.%s.protein.faa.gz' % number)
             download_file(refseq_url, refseq_faa)
