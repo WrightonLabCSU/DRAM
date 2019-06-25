@@ -90,6 +90,12 @@ def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbos
     return kegg_mmseqs_db
 
 
+def update_config(output_dbs):
+    # change data paths
+    with open(path.abspath(resource_filename('checkMetab', 'DATA_CONFIG')), 'w') as f:
+        f.write(json.dumps(output_dbs))
+
+
 def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version=90,
                       pfam_loc=None, pfam_version=32.0, dbcan_loc=None, dbcan_version=7, viral_loc=None,
                       keep_database_files=False, threads=10, verbose=True):
@@ -111,6 +117,18 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
     if not keep_database_files:
         rmtree(output_dir)
 
-    # change data paths
-    with open(path.abspath(resource_filename('checkMetab', 'DATA_CONFIG')), 'w') as f:
-        f.write(json.dumps(output_dbs))
+
+def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, dbcan_db_loc=None, viral_db_loc=None):
+    db_dict = dict()
+    if kegg_db_loc is not None:
+        db_dict['kegg'] = kegg_db_loc
+    if uniref_db_loc is not None:
+        db_dict['uniref'] = uniref_db_loc
+    if pfam_db_loc is not None:
+        db_dict['pfam'] = pfam_db_loc
+    if dbcan_db_loc is not None:
+        db_dict['dbcan'] = dbcan_db_loc
+    if viral_db_loc is not None:
+        db_dict['viral'] = viral_db_loc
+
+    update_config(db_dict)
