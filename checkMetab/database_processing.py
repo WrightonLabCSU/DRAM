@@ -102,7 +102,7 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
 
         # then merge files from above
         merged_viral_faas = path.join(output_dir, 'viral.merged.protein.faa.gz')
-        merge_files(viral_faa_glob, merged_viral_faas)
+        run_process(['cat %s > %s' % (' '.join(glob(viral_faa_glob)), merged_viral_faas)], shell=True)
 
     # make mmseqs database
     refseq_viral_mmseqs_db = path.join(output_dir, 'refseq_viral.%s.mmsdb' % get_iso_date())
@@ -144,7 +144,7 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
             move(db_file, path.join(output_dir, path.basename(db_file)))
 
     if not keep_database_files:
-        rmtree(output_dir)
+        rmtree(temporary)
 
 
 def check_file_exists(db_loc):

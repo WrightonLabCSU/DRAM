@@ -21,7 +21,8 @@ def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose
         run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
 
 
-def multigrep(search_terms, search_against, output='.', skip_chars=1):  # TODO: multiprocess this over the list of search terms
+def multigrep(search_terms, search_against, output='.', skip_chars=1):
+    # TODO: multiprocess this over the list of search terms
     """Search a list of exact substrings against a database, takes name of mmseqs db index with _h to search against"""
     hits_file = path.join(output, 'hits.txt')
     with open(hits_file, 'w') as f:
