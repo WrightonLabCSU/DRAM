@@ -90,18 +90,19 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
     """Can only download newest version"""
     # download all of the viral protein files, need to know the number of files
     # TODO: Make it so that you don't need to know number of viral files in refseq viral
+
     if merged_viral_faas is None:  # download database if not provided
-        viral_file_list = list()
+        faa_base_name = 'viral.%s.protein.faa.gz'
+        viral_faa_glob = path.join(output_dir, faa_base_name % '*')
         for number in range(viral_files):
             number += 1
             refseq_url = 'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
-            refseq_faa = path.join(output_dir, 'viral.%s.protein.faa.gz' % number)
+            refseq_faa = path.join(output_dir, faa_base_name % number)
             download_file(refseq_url, refseq_faa)
-            viral_file_list.append(refseq_faa)
 
         # then merge files from above
         merged_viral_faas = path.join(output_dir, 'viral.merged.protein.faa.gz')
-        merge_files(viral_file_list, merged_viral_faas)
+        merge_files(viral_faa_glob, merged_viral_faas)
 
     # make mmseqs database
     refseq_viral_mmseqs_db = path.join(output_dir, 'refseq_viral.%s.mmsdb' % get_iso_date())
