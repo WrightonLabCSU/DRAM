@@ -6,10 +6,8 @@ import pandas as pd
 from datetime import datetime
 import re
 from glob import glob
-from pkg_resources import resource_filename
-import json
 
-from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files
+from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files, get_database_locs
 
 # TODO: Update to use file paths from DATABASE_LOCATIONS
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
@@ -22,10 +20,6 @@ from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
-
-
-def get_database_locs():
-    return json.loads(open(path.abspath(resource_filename('checkMetab', 'DATABASE_LOCATIONS'))).read())
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):

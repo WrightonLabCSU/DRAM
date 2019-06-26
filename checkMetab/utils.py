@@ -1,6 +1,12 @@
 import subprocess
 from glob import glob
 from os import path, remove
+from pkg_resources import resource_filename
+import json
+
+
+def get_database_locs():
+    return json.loads(open(path.abspath(resource_filename('checkMetab', 'DATABASE_LOCATIONS'))).read())
 
 
 def run_process(command, shell=False, verbose=False):

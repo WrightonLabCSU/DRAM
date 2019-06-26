@@ -1,5 +1,4 @@
 from os import path, mkdir
-from checkMetab.utils import run_process, merge_files, make_mmseqs_db
 from datetime import datetime
 from shutil import move, rmtree
 from glob import glob
@@ -7,9 +6,18 @@ from pkg_resources import resource_filename
 import json
 import gzip
 
+from checkMetab.utils import run_process, make_mmseqs_db, get_database_locs
+
 
 def get_iso_date():
     return datetime.today().strftime('%Y%m%d')
+
+
+def check_file_exists(db_loc):
+    if path.isfile(db_loc):
+        return True
+    else:
+        raise ValueError("Database location does not exist: %s" % db_loc)
 
 
 def download_file(url, output_file, verbose=True):
@@ -26,6 +34,8 @@ def download_and_process_unifref(uniref_fasta_zipped=None, output_dir='.', unire
         uniref_url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' %\
                      (uniref_version, uniref_version)
         download_file(uniref_url, uniref_fasta_zipped, verbose=verbose)
+    else:
+        check_file_exists(uniref_fasta_zipped)
     uniref_mmseqs_db = path.join(output_dir, 'uniref%s.%s.mmsdb' % (uniref_version, get_iso_date()))
     make_mmseqs_db(uniref_fasta_zipped, uniref_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
     return uniref_mmseqs_db
@@ -48,15 +58,21 @@ def download_and_process_pfam(pfam_full_zipped=None, output_dir='.', pfam_releas
         pfam_full_zipped = path.join(output_dir, 'Pfam-A.full.gz')
         download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam%s/Pfam-A.full.gz' % pfam_release,
                       pfam_full_zipped)
+    else:
+        check_file_exists(pfam_full_zipped)
     pfam_profile = process_mmspro(pfam_full_zipped, output_dir, 'pfam', threads, verbose)
     return pfam_profile
 
 
-def download_and_process_pfam_descriptions(pfam_hmm_dat=None, output_dir='.', pfam_release='32.0', verbose=True):
-    if pfam_hmm_dat is None:
-        pfam_hmm_dat = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
-        download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam%s/Pfam-A.hmm.dat.gz' % pfam_release,
-                      pfam_hmm_dat, verbose=verbose)
+def download_pfam_descriptions(output_dir='.', pfam_release='32.0', verbose=True):
+    pfam_hmm_dat = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
+    download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam%s/Pfam-A.hmm.dat.gz' % pfam_release,
+                  pfam_hmm_dat, verbose=verbose)
+    return pfam_hmm_dat
+
+
+def process_pfam_descriptions(pfam_hmm_dat=None):
+    check_file_exists(pfam_hmm_dat)
     if pfam_hmm_dat.endswith('.gz'):
         f = gzip.open(pfam_hmm_dat, 'r').read().decode('utf-8')
     else:
@@ -82,6 +98,8 @@ def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='7'
         dbcan_hmm = path.join(output_dir, 'dbCAN-HMMdb-V%s.txt' % dbcan_release)
         download_file('http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,
                       verbose=verbose)
+    else:
+        check_file_exists(dbcan_hmm)
     run_process(['hmmpress', '-f', dbcan_hmm], verbose=verbose)
     return dbcan_hmm
 
@@ -103,6 +121,8 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
         # then merge files from above
         merged_viral_faas = path.join(output_dir, 'viral.merged.protein.faa.gz')
         run_process(['cat %s > %s' % (' '.join(glob(viral_faa_glob)), merged_viral_faas)], shell=True)
+    else:
+        check_file_exists(merged_viral_faas)
 
     # make mmseqs database
     refseq_viral_mmseqs_db = path.join(output_dir, 'refseq_viral.%s.mmsdb' % get_iso_date())
@@ -111,47 +131,12 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
 
 
 def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbose=True):
+    check_file_exists(kegg_loc)
     if download_date is None:
         download_date = get_iso_date()
     kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
     make_mmseqs_db(kegg_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
     return kegg_mmseqs_db
-
-
-def update_config(output_dbs):
-    # change data paths
-    with open(path.abspath(resource_filename('checkMetab', 'DATABASE_LOCATIONS')), 'w') as f:
-        f.write(json.dumps(output_dbs))
-
-
-def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version=90,
-                      pfam_loc=None, pfam_version=32.0, pfam_hmm_dat=None, dbcan_loc=None, dbcan_version=7,
-                      viral_loc=None, keep_database_files=False, threads=10, verbose=True):
-    mkdir(output_dir)
-    temporary = path.join(output_dir, 'database_files')
-    mkdir(temporary)
-    output_dbs = dict()
-    if kegg_loc is not None:
-        output_dbs['kegg'] = process_kegg_db(temporary, kegg_loc, kegg_download_date, threads, verbose)
-    output_dbs['uniref'] = download_and_process_unifref(uniref_loc, temporary, threads=threads, verbose=verbose)
-    output_dbs['pfam'] = download_and_process_pfam(pfam_loc, temporary, threads=threads, verbose=verbose)
-    output_dbs['pfam_description'] = download_and_process_pfam_descriptions(pfam_hmm_dat)
-    output_dbs['dbcan'] = download_and_process_dbcan(dbcan_loc, temporary, verbose=verbose)
-    output_dbs['viral'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads, verbose=verbose)
-
-    for output_db in output_dbs:
-        for db_file in glob('%s*' % output_db):
-            move(db_file, path.join(output_dir, path.basename(db_file)))
-
-    if not keep_database_files:
-        rmtree(temporary)
-
-
-def check_file_exists(db_loc):
-    if path.isfile(db_loc):
-        return True
-    else:
-        raise ValueError("Database location does not exist: %s" % db_loc)
 
 
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
@@ -168,7 +153,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
             db_dict['pfam'] = pfam_db_loc
     if pfam_hmm_dat is not None:
         if check_file_exists(pfam_hmm_dat):
-            db_dict['pfam_description'] = download_and_process_pfam_descriptions(pfam_hmm_dat)
+            db_dict['pfam_description'] = process_pfam_descriptions(pfam_hmm_dat)
     if dbcan_db_loc is not None:
         if check_file_exists(dbcan_db_loc):
             db_dict['dbcan'] = dbcan_db_loc
@@ -176,4 +161,68 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
         if check_file_exists(viral_db_loc):
             db_dict['viral'] = viral_db_loc
 
-    update_config(db_dict)
+    # change data paths
+    with open(path.abspath(resource_filename('checkMetab', 'DATABASE_LOCATIONS')), 'w') as f:
+        f.write(json.dumps(db_dict))
+
+
+def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version=90,
+                      pfam_loc=None, pfam_version=32.0, pfam_hmm_dat=None, dbcan_loc=None, dbcan_version=7,
+                      viral_loc=None, keep_database_files=False, threads=10, verbose=True):
+    mkdir(output_dir)
+    temporary = path.join(output_dir, 'database_files')
+    mkdir(temporary)
+    output_dbs = dict()
+    if kegg_loc is not None:
+        output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, kegg_download_date, threads, verbose)
+    output_dbs['uniref_db_loc'] = download_and_process_unifref(uniref_loc, temporary, threads=threads, verbose=verbose)
+    output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary, threads=threads, verbose=verbose)
+    output_dbs['dbcan_db_loc'] = download_and_process_dbcan(dbcan_loc, temporary, verbose=verbose)
+    output_dbs['viral_db_loc'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads,
+                                                                   verbose=verbose)
+
+    for db_name, output_db in output_dbs.items():
+        for db_file in glob('%s*' % output_db):
+            move(db_file, path.join(output_dir, path.basename(db_file)))
+        output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
+
+    # get pfam descriptions
+    if pfam_hmm_dat is None:
+        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
+    output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
+
+    set_database_paths(**output_dbs)
+
+    if not keep_database_files:
+        rmtree(temporary)
+
+
+def print_database_locations():
+    db_locs = get_database_locs()
+    if 'kegg' in db_locs:
+        kegg_loc = db_locs['kegg']
+    else:
+        kegg_loc = None
+    print('KEGG db loc: %s' % str(kegg_loc))
+    if 'uniref' in db_locs:
+        uniref_loc = db_locs['uniref']
+    else:
+        uniref_loc = None
+    print('UniRef db loc: %s' % str(uniref_loc))
+    if 'pfam' in db_locs:
+        pfam_loc = db_locs['pfam']
+    else:
+        pfam_loc = None
+    print('Pfam db loc: %s' % str(pfam_loc))
+    has_pfam_desc = 'pfam_description' in db_locs
+    print('Has Pfam descriptions: %s' % has_pfam_desc)
+    if 'dbcan' in db_locs:
+        dbcan_loc = db_locs['dbcan']
+    else:
+        dbcan_loc = None
+    print('dbCAN db loc: %s' % str(dbcan_loc))
+    if 'viral' in db_locs:
+        viral_loc = db_locs['viral']
+    else:
+        viral_loc = None
+    print('RefSeq Viral db loc: %s' % str(viral_loc))
