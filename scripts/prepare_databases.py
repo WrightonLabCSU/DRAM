@@ -1,6 +1,6 @@
 import argparse
 
-from checkMetab.database_processing import prepare_databases
+from mag_annotator.database_processing import prepare_databases
 
 
 if __name__ == '__main__':
@@ -38,5 +38,5 @@ if __name__ == '__main__':
 
     prepare_databases(output_dir=output_dir, kegg_loc=kegg_loc, kegg_download_date=kegg_download_date,
                       uniref_loc=uniref_loc, uniref_version=uniref_version, pfam_loc=pfam_loc,
-                      pfam_version=pfam_release, dbcan_loc=dbcan_loc, dbcan_version=dbcan_version, viral_loc=viral_loc,
+                      pfam_release=pfam_release, dbcan_loc=dbcan_loc, dbcan_version=dbcan_version, viral_loc=viral_loc,
                       keep_database_files=keep_db_files, threads=threads, verbose=verbose)

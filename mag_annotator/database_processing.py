@@ -6,7 +6,7 @@ from pkg_resources import resource_filename
 import json
 import gzip
 
-from checkMetab.utils import run_process, make_mmseqs_db, get_database_locs
+from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs
 
 
 def get_iso_date():
@@ -141,33 +141,34 @@ def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbos
 
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
                        viral_db_loc=None):
-    db_dict = dict()
+    """Processes pfam_hmm_dat"""
+    db_dict = get_database_locs()
     if kegg_db_loc is not None:
         if check_file_exists(kegg_db_loc):
-            db_dict['kegg'] = kegg_db_loc
+            db_dict['kegg'] = path.abspath(kegg_db_loc)
     if uniref_db_loc is not None:
         if check_file_exists(uniref_db_loc):
-            db_dict['uniref'] = uniref_db_loc
+            db_dict['uniref'] = path.abspath(uniref_db_loc)
     if pfam_db_loc is not None:
         if check_file_exists(pfam_db_loc):
-            db_dict['pfam'] = pfam_db_loc
+            db_dict['pfam'] = path.abspath(pfam_db_loc)
     if pfam_hmm_dat is not None:
         if check_file_exists(pfam_hmm_dat):
             db_dict['pfam_description'] = process_pfam_descriptions(pfam_hmm_dat)
     if dbcan_db_loc is not None:
         if check_file_exists(dbcan_db_loc):
-            db_dict['dbcan'] = dbcan_db_loc
+            db_dict['dbcan'] = path.abspath(dbcan_db_loc)
     if viral_db_loc is not None:
         if check_file_exists(viral_db_loc):
-            db_dict['viral'] = viral_db_loc
+            db_dict['viral'] = path.abspath(viral_db_loc)
 
     # change data paths
-    with open(path.abspath(resource_filename('checkMetab', 'DATABASE_LOCATIONS')), 'w') as f:
+    with open(path.abspath(resource_filename('MAGotator', 'DATABASE_LOCATIONS')), 'w') as f:
         f.write(json.dumps(db_dict))
 
 
-def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version=90,
-                      pfam_loc=None, pfam_version=32.0, pfam_hmm_dat=None, dbcan_loc=None, dbcan_version=7,
+def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
+                      pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='7',
                       viral_loc=None, keep_database_files=False, threads=10, verbose=True):
     mkdir(output_dir)
     temporary = path.join(output_dir, 'database_files')
@@ -175,9 +176,12 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
     output_dbs = dict()
     if kegg_loc is not None:
         output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, kegg_download_date, threads, verbose)
-    output_dbs['uniref_db_loc'] = download_and_process_unifref(uniref_loc, temporary, threads=threads, verbose=verbose)
-    output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary, threads=threads, verbose=verbose)
-    output_dbs['dbcan_db_loc'] = download_and_process_dbcan(dbcan_loc, temporary, verbose=verbose)
+    output_dbs['uniref_db_loc'] = download_and_process_unifref(uniref_loc, temporary, uniref_version=uniref_version,
+                                                               threads=threads, verbose=verbose)
+    output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary, pfam_release=pfam_release,
+                                                          threads=threads, verbose=verbose)
+    output_dbs['dbcan_db_loc'] = download_and_process_dbcan(dbcan_loc, temporary, dbcan_release=dbcan_version,
+                                                            verbose=verbose)
     output_dbs['viral_db_loc'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads,
                                                                    verbose=verbose)
 
@@ -188,7 +192,7 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
 
     # get pfam descriptions
     if pfam_hmm_dat is None:
-        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
+        pfam_hmm_dat = download_pfam_descriptions(output_dir, pfam_release=pfam_release, verbose=verbose)
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
 
     set_database_paths(**output_dbs)

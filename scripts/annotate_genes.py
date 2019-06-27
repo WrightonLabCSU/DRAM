@@ -2,7 +2,7 @@
 
 import argparse
 
-from checkMetab.annotate_bins import main
+from mag_annotator.annotate_bins import annotate_bins
 
 
 if __name__ == '__main__':
@@ -29,4 +29,4 @@ if __name__ == '__main__':
     threads = args.threads
     verbose = args.verbose
 
-    main(fasta_loc, output, min_contig_size, min_bitscore, strict_bitscore, keep_tmp, threads, verbose)
+    annotate_bins(fasta_loc, output, min_contig_size, min_bitscore, strict_bitscore, keep_tmp, threads, verbose)

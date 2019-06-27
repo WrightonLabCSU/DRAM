@@ -1,6 +1,6 @@
 import argparse
 
-from checkMetab.database_processing import set_database_paths
+from mag_annotator.database_processing import set_database_paths
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)

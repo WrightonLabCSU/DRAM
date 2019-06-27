@@ -6,7 +6,7 @@ import json
 
 
 def get_database_locs():
-    return json.loads(open(path.abspath(resource_filename('checkMetab', 'DATABASE_LOCATIONS'))).read())
+    return json.loads(open(path.abspath(resource_filename('mag_annotator', 'DATABASE_LOCATIONS'))).read())
 
 
 def run_process(command, shell=False, verbose=False):

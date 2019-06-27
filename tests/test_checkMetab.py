@@ -1,6 +1,6 @@
 # import pytest
 #
-# from checkMetab.annotate_bins import main
+# from MAGotator.annotate_bins import main
 #
 #
 # def test_main():

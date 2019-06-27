@@ -1,6 +1,6 @@
 import argparse
 
-from checkMetab.summarize_genomes import main
+from mag_annotator.summarize_genomes import summarize_genomes
 
 genome_summary_frame_path = '/Users/shafferm/lab/AMG/genome_summary_table.tsv'
 
@@ -18,5 +18,5 @@ if __name__ == '__main__':
     parser.add_argument("--min_cov", type=float, default=.001, help="Minimum coverage to include module in summary")
 
     args = parser.parse_args()
-    main(args.input_file, args.genome_summary_frame, args.trna_path, args.modules_path, args.group_column,
-         args.output_file, args.viral, args.min_cov)
+    summarize_genomes(args.input_file, args.genome_summary_frame, args.trna_path, args.modules_path, args.group_column,
+                      args.output_file, args.viral, args.min_cov)

@@ -2,7 +2,7 @@ from os import path, remove
 import subprocess
 import pandas as pd
 
-from checkMetab.annotate_bins import BOUTFMT6_COLUMNS
+from mag_annotator.annotate_bins import BOUTFMT6_COLUMNS
 
 
 def run_mmseqs(query_db, target_db, output_db='mmseq_results.mmsdb', return_df=False, threads=10):

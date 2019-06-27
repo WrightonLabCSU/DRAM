@@ -7,7 +7,7 @@ from datetime import datetime
 import re
 from glob import glob
 
-from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files, get_database_locs
+from mag_annotator.utils import run_process, make_mmseqs_db, multigrep, merge_files, get_database_locs
 
 # TODO: Update to use file paths from DATABASE_LOCATIONS
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
@@ -189,7 +189,7 @@ def get_sig(tcovlen, evalue):
 def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, verbose=False):
     """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
     Commands this is based on:
-    hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/checkMetab/genes.faa
+    hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/MAGotator/genes.faa
     cat ~/dbCAN_test_1 | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' | sed 's/ /\t/g' | \
     sort -k 3,3 -k 8n -k 9n > dbCAN_test_1.good_cols.tsv
     """
@@ -340,11 +340,11 @@ def do_blast_style_search(query_db, target_db, working_dir, get_description, sta
     return hits
 
 
-def main(fasta_glob_str, output_dir='.', min_size=5000, bit_score_threshold=60, rbh_bit_score_threshold=350,
-         keep_tmp_dir=True, threads=10, verbose=True):
+def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
+                  rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
-    fasta_locs = glob(fasta_glob_str)
+    fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s')
     else:
@@ -365,7 +365,7 @@ def main(fasta_glob_str, output_dir='.', min_size=5000, bit_score_threshold=60, 
         # first step filter fasta
         print('%s: Filtering fasta' % str(datetime.now()-start_time))
         filtered_fasta = path.join(fasta_dir, 'filtered_fasta.fa')
-        filter_fasta(fasta_loc, min_size, filtered_fasta)
+        filter_fasta(fasta_loc, min_contig_size, filtered_fasta)
 
         # call genes with prodigal
         print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))

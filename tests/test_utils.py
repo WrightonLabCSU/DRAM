@@ -2,7 +2,7 @@ import pytest
 
 import os
 
-from checkMetab.utils import run_process, make_mmseqs_db, multigrep, merge_files
+from mag_annotator.utils import run_process, make_mmseqs_db, multigrep, merge_files
 
 
 def test_run_process():

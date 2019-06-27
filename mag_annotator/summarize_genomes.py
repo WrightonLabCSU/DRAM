@@ -1,7 +1,7 @@
 import pandas as pd
 from collections import Counter, defaultdict
 import networkx as nx
-from os import path
+from os import path, mkdir
 
 # TODO: add RBH information to output
 # TODO: add measure of redendancy of genes
@@ -17,7 +17,7 @@ def summarize_kos_from_summary_frame(annotations, group_column, genome_summary_f
     return genome_summary_frame
 
 
-def summarize_cazys(annotations, groupby_column, genome_summary_frame):
+def summarize_cazys(annotations, groupby_column, genome_summary_frame_columns):
     cazy_classes = ['AA', 'CBM', 'CE', 'GH', 'GT', 'PL', 'SLH', 'cohesin', 'dockerin']
     cazy_lists = [i for i in list(annotations.cazy_hits) if type(i) is not float]
     cazy_set = sorted({j for i in cazy_lists for j in i.split(',')})
@@ -25,8 +25,8 @@ def summarize_cazys(annotations, groupby_column, genome_summary_frame):
     for cazy_class in cazy_classes:
         for cazy in cazy_set:
             if cazy_class in cazy:
-                rows.append(('na', cazy, '%s ?' % cazy_class, 'na', 'na', 'CAZY', cazy_class))
-    cazy_summary_frame = pd.DataFrame(rows, columns=genome_summary_frame.columns)
+                rows.append(('na', cazy, '%s ?' % cazy_class, 'na', 'na', 'CAZY'))
+    cazy_summary_frame = pd.DataFrame(rows, columns=genome_summary_frame_columns)
 
     # get cazy abundances per genome
     grouped_cazy = annotations.groupby(groupby_column)
@@ -45,19 +45,21 @@ def summarize_trnas(trnas_frame, groupby_column='fasta'):
     return trnas_summary_frame
 
 
-def make_genome_summary(annotations, genome_summary_frame, trna_frame,
+def make_genome_summary(annotations, genome_summary_frame, trna_frame=None,
                         group_column='fasta', viral=False):
+    summary_frames = list()
     # get ko summaries
-    ko_summary_frame = summarize_kos_from_summary_frame(annotations, group_column, genome_summary_frame)
+    summary_frames.append(summarize_kos_from_summary_frame(annotations, group_column, genome_summary_frame.copy()))
 
     # add cazys
-    cazy_summary_frame = summarize_cazys(annotations, group_column, genome_summary_frame)
+    summary_frames.append(summarize_cazys(annotations, group_column, genome_summary_frame.columns))
 
     # add tRNAs
-    trna_summary_frame = summarize_trnas(trna_frame, group_column)
+    if trna_frame is not None:
+        summary_frames.append(summarize_trnas(trna_frame, group_column))
 
     # merge summary frames
-    summarized_genomes = pd.concat([ko_summary_frame, cazy_summary_frame, trna_summary_frame])
+    summarized_genomes = pd.concat(summary_frames)
 
     # post processing
     if viral:  # filter out empty rows and columns if viral
@@ -147,13 +149,18 @@ def make_module_coverage_summary(annotations, module_nets, min_cov=.001, group_c
     return scaffold_coverage_df
 
 
-def main(annotations_path, genome_summary_frame_path, trna_path, metabolism_path, output_dir, group_column, viral=False,
-         min_cov=.001):
-    annotations = pd.read_csv(annotations_path, sep='\t', index_col=0)
+def summarize_genomes(input_file, genome_summary_frame_path, trna_path, metabolism_path, output_dir, group_column, viral=False,
+                      min_cov=.001):
+    annotations = pd.read_csv(input_file, sep='\t', index_col=0)
 
     # read in data for making genome summary
     genome_summary_frame = pd.read_csv(genome_summary_frame_path, sep='\t')
-    trna_frame = pd.read_csv(trna_path, sep='\t', index_col=0)
+    if trna_path is None:
+        trna_frame = None
+    else:
+        trna_frame = pd.read_csv(trna_path, sep='\t', index_col=0)
+
+    mkdir(output_dir)
 
     # make genome summary
     genome_summary = make_genome_summary(annotations, genome_summary_frame, trna_frame, group_column, viral)
