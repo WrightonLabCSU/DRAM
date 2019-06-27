@@ -163,7 +163,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
             db_dict['viral'] = path.abspath(viral_db_loc)
 
     # change data paths
-    with open(path.abspath(resource_filename('MAGotator', 'DATABASE_LOCATIONS')), 'w') as f:
+    with open(path.abspath(resource_filename('mag_annotator', 'DATABASE_LOCATIONS')), 'w') as f:
         f.write(json.dumps(db_dict))
 
 
