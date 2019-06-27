@@ -1,0 +1,1315 @@
+gene	KO	module	metabolism	element_trans	function
+hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	K00844	M00001	cat	C	intermediates, NADH/NADPH
+hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	K12407	M00001	cat	C	intermediates, NADH/NADPH
+hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	K00845	M00001	cat	C	intermediates, NADH/NADPH
+polyphosphate glucokinase [EC:2.7.1.63] [RN:R02189]	K00886	M00001	cat	C	intermediates, NADH/NADPH
+K00918 ADP-dependent glucokinase [EC:2.7.1.147] [RN:R09085]	K08074	M00001	cat	C	intermediates, NADH/NADPH
+ADP-dependent phosphofructokinase [EC:2.7.1.146] [RN:R09084]	K00918	M00001	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740]	K01810	M00001	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740]	K06859	M00001	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740]	K13810	M00001	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740]	K15916	M00001	cat	C	intermediates, NADH/NADPH
+6-phosphofructokinase [EC:2.7.1.11] [RN:R04779]	K00850	M00001	cat	C	intermediates, NADH/NADPH
+6-phosphofructokinase [EC:2.7.1.11] [RN:R04779]	K16370	M00001	cat	C	intermediates, NADH/NADPH
+ADP-dependent phosphofructokinase [EC:2.7.1.146] [RN:R09084]	K00918	M00001	cat	C	intermediates, NADH/NADPH
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	K01623	M00001	cat	C	intermediates, NADH/NADPH
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	K01624	M00001	cat	C	intermediates, NADH/NADPH
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	K11645	M00001	cat	C	intermediates, NADH/NADPH
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	K16305	M00001	cat	C	intermediates, NADH/NADPH
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	K16306	M00001	cat	C	intermediates, NADH/NADPH
+triosephosphate isomerase [EC:5.3.1.1] [RN:R01015]	K01803	M00001	cat	C	intermediates, NADH/NADPH
+glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	K00134	M00001	cat	C	intermediates, NADH/NADPH
+glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	K00150	M00001	cat	C	intermediates, NADH/NADPH
+phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	K00927	M00001	cat	C	intermediates, NADH/NADPH
+glyceraldehyde-3-phosphate dehydrogenase (ferredoxin) [EC:1.2.7.6] [RN:R07159]	K11389	M00001	cat	C	intermediates, NADH/NADPH
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K01834	M00001	cat	C	intermediates, NADH/NADPH
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15633	M00001	cat	C	intermediates, NADH/NADPH
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15634	M00001	cat	C	intermediates, NADH/NADPH
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15635	M00001	cat	C	intermediates, NADH/NADPH
+enolase [EC:4.2.1.11] [RN:R00658]	K01689	M00001	cat	C	intermediates, NADH/NADPH
+pyruvate kinase [EC:2.7.1.40] [RN:R00200]	K00873	M00001	cat	C	intermediates, NADH/NADPH
+pyruvate kinase [EC:2.7.1.40] [RN:R00200]	K12406	M00001	cat	C	intermediates, NADH/NADPH
+triosephosphate isomerase [EC:5.3.1.1] [RN:R01015]	K01803	M00002	cat	C	intermediates, NADH/NADPH
+glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	K00134	M00002	cat	C	intermediates, NADH/NADPH
+glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	K00150	M00002	cat	C	intermediates, NADH/NADPH
+phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	K00927	M00002	cat	C	intermediates, NADH/NADPH
+glyceraldehyde-3-phosphate dehydrogenase (ferredoxin) [EC:1.2.7.6] [RN:R07159]	K11389	M00002	cat	C	intermediates, NADH/NADPH
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K01834	M00002	cat	C	intermediates, NADH/NADPH
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15633	M00002	cat	C	intermediates, NADH/NADPH
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15634	M00002	cat	C	intermediates, NADH/NADPH
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15635	M00002	cat	C	intermediates, NADH/NADPH
+enolase [EC:4.2.1.11] [RN:R00658]	K01689	M00002	cat	C	intermediates, NADH/NADPH
+pyruvate kinase [EC:2.7.1.40] [RN:R00200]	K00873	M00002	cat	C	intermediates, NADH/NADPH
+pyruvate kinase [EC:2.7.1.40] [RN:R00200]	K12406	M00002	cat	C	intermediates, NADH/NADPH
+phosphoenolpyruvate carboxykinase [EC:4.1.1.32 4.1.1.49] [RN:R00431 R00726 R00341]	K01596	M00003	ana	C	biosynthesis
+phosphoenolpyruvate carboxykinase [EC:4.1.1.32 4.1.1.49] [RN:R00431 R00726 R00341]	K01610	M00003	ana	C	biosynthesis
+enolase [EC:4.2.1.11] [RN:R00658]	K01689	M00003	ana	C	biosynthesis
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K01834	M00003	ana	C	biosynthesis
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15633	M00003	ana	C	biosynthesis
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15634	M00003	ana	C	biosynthesis
+phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	K15635	M00003	ana	C	biosynthesis
+phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	K00927	M00003	ana	C	biosynthesis
+glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	K00134	M00003	ana	C	biosynthesis
+glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	K00150	M00003	ana	C	biosynthesis
+triosephosphate isomerase (TIM) [EC:5.3.1.1] [RN:R01015]	K01803	M00003	ana	C	biosynthesis
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	K01623	M00003	ana	C	biosynthesis
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	K01624	M00003	ana	C	biosynthesis
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	K11645	M00003	ana	C	biosynthesis
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	K03841	M00003	ana	C	biosynthesis
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	K02446	M00003	ana	C	biosynthesis
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	K11532	M00003	ana	C	biosynthesis
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	K01086	M00003	ana	C	biosynthesis
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	K04041	M00003	ana	C	biosynthesis
+fructose 1,6-bisphosphate aldolase/phosphatase [EC:4.1.2.13 3.1.3.11] [RN:R01070 R04780]	K01622	M00003	ana	C	biosynthesis
+hexose-6-phosphate dehydrogenase [EC:1.1.1.47 3.1.1.31] [RN:R02736 R02035]	K13937	M00004	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363 1.1.1.388] [RN:R02736 R10907]	K00036	M00004	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363 1.1.1.388] [RN:R02736 R10907]	K19243	M00004	cat	C	intermediates, NADH/NADPH
+6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	K01057	M00004	cat	C	intermediates, NADH/NADPH
+6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	K07404	M00004	cat	C	intermediates, NADH/NADPH
+6-phosphogluconate dehydrogenase [EC:1.1.1.44 1.1.1.343] [RN:R01528 R10221]	K00033	M00004	cat	C	intermediates, NADH/NADPH
+ribulose-phosphate 3-epimerase [EC:5.1.3.1] [RN:R01529]	K01783	M00004	cat	C	intermediates, NADH/NADPH
+ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	K01807	M00004	cat	C	intermediates, NADH/NADPH
+ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	K01808	M00004	cat	C	intermediates, NADH/NADPH
+transketolase [EC:2.2.1.1] [RN:R01641]	K00615	M00004	cat	C	intermediates, NADH/NADPH
+transaldolase [EC:2.2.1.2] [RN:R01827]	K00616	M00004	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740 R02739]	K01810	M00004	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740 R02739]	K06859	M00004	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740 R02739]	K13810	M00004	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740 R02739]	K15916	M00004	cat	C	intermediates, NADH/NADPH
+ribose-phosphate pyrophosphokinase [EC:2.7.6.1] [RN:R01049]	K00948	M00005	cat	C	intermediates, NADH/NADPH
+hexose-6-phosphate dehydrogenase [EC:1.1.1.47 3.1.1.31] [RN:R02736 R02035]	K13937	M00006	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363 1.1.1.388] [RN:R02736 R10907]	K00036	M00006	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363 1.1.1.388] [RN:R02736 R10907]	K19243	M00006	cat	C	intermediates, NADH/NADPH
+6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	K01057	M00006	cat	C	intermediates, NADH/NADPH
+6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	K07404	M00006	cat	C	intermediates, NADH/NADPH
+6-phosphogluconate dehydrogenase [EC:1.1.1.44 1.1.1.343] [RN:R01528 R10221]	K00033	M00006	cat	C	intermediates, NADH/NADPH
+transketolase [EC:2.2.1.1] [RN:R01830 R01641]	K00615	M00007	cat	C	intermediates, NADH/NADPH
+transaldolase [EC:2.2.1.2] [RN:R01827]	K00616	M00007	cat	C	intermediates, NADH/NADPH
+transaldolase [EC:2.2.1.2] [RN:R01827]	K13810	M00007	cat	C	intermediates, NADH/NADPH
+ribulose-phosphate 3-epimerase [EC:5.1.3.1] [RN:R01529]	K01783	M00007	cat	C	intermediates, NADH/NADPH
+ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	K01807	M00007	cat	C	intermediates, NADH/NADPH
+ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	K01808	M00007	cat	C	intermediates, NADH/NADPH
+glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363] [RN:R02736 R10907]	K00036	M00008	cat	C	intermediates, NADH/NADPH
+6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	K01057	M00008	cat	C	intermediates, NADH/NADPH
+6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	K07404	M00008	cat	C	intermediates, NADH/NADPH
+phosphogluconate dehydratase [EC:4.2.1.12] [RN:R02036]	K01690	M00008	cat	C	intermediates, NADH/NADPH
+2-dehydro-3-deoxyphosphogluconate aldolase [EC:4.1.2.14] [RN:R05605]	K01625	M00008	cat	C	intermediates, NADH/NADPH
+citrate synthase [EC:2.3.3.1] [RN:R00351]	K01647	M00009	cat	C	intermediates, NADH/NADPH
+citrate (Re)-synthase [EC:2.3.3.3] [RN:R00351]	K05942	M00009	cat	C	intermediates, NADH/NADPH
+aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900 R01324]	K01681	M00009	cat	C	intermediates, NADH/NADPH
+aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900 R01324]	K01682	M00009	cat	C	intermediates, NADH/NADPH
+isocitrate dehydrogenase [EC:1.1.1.42 1.1.1.41] [RN:R01899 R00268 R00267 R00709]	K00031	M00009	cat	C	intermediates, NADH/NADPH
+isocitrate dehydrogenase [EC:1.1.1.42 1.1.1.41] [RN:R01899 R00268 R00267 R00709]	K00030	M00009	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate dehydrogenase complex [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	K00164	M00009	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate dehydrogenase complex [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	K00658	M00009	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate dehydrogenase complex [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	K00382	M00009	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit alpha [EC:1.2.7.3 1.2.7.11] [RN:R01197]	K00174	M00009	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit beta [EC:1.2.7.3 1.2.7.11] [RN:R01197]	K00175	M00009	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate ferredoxin oxidoreductase subunit gamma [EC:1.2.7.3] [RN:R01197]	K00177	M00009	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate ferredoxin oxidoreductase subunit delta [EC:1.2.7.3] [RN:R01197]	K00176	M00009	cat	C	intermediates, NADH/NADPH
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01902	M00009	cat	C	intermediates, NADH/NADPH
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01903	M00009	cat	C	intermediates, NADH/NADPH
+succinyl-CoA synthetase [EC:6.2.1.4 6.2.1.5] [RN:R00405 R00432 R00727]	K01899	M00009	cat	C	intermediates, NADH/NADPH
+succinyl-CoA synthetase [EC:6.2.1.4 6.2.1.5] [RN:R00405 R00432 R00727]	K01900	M00009	cat	C	intermediates, NADH/NADPH
+succinyl-CoA:acetate CoA-transferase [EC:2.8.3.18] [RN:R10343]	K18118	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	K00234	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	K00235	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	K00236	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	K00237	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00239	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00240	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00241	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00242	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K18859	M00009	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K18860	M00009	cat	C	intermediates, NADH/NADPH
+fumarate reductase [EC:1.3.5.4] [RN:R02164]	K00244	M00009	cat	C	intermediates, NADH/NADPH
+fumarate reductase [EC:1.3.5.4] [RN:R02164]	K00245	M00009	cat	C	intermediates, NADH/NADPH
+fumarate reductase [EC:1.3.5.4] [RN:R02164]	K00246	M00009	cat	C	intermediates, NADH/NADPH
+fumarate reductase [EC:1.3.5.4] [RN:R02164]	K00247	M00009	cat	C	intermediates, NADH/NADPH
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01676	M00009	cat	C	intermediates, NADH/NADPH
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01679	M00009	cat	C	intermediates, NADH/NADPH
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01677	M00009	cat	C	intermediates, NADH/NADPH
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01678	M00009	cat	C	intermediates, NADH/NADPH
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00026	M00009	cat	C	intermediates, NADH/NADPH
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00025	M00009	cat	C	intermediates, NADH/NADPH
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00024	M00009	cat	C	intermediates, NADH/NADPH
+malate dehydrogenase (quinone) [EC:1.1.5.4] [RN:R00361]	K00116	M00009	cat	C	intermediates, NADH/NADPH
+citrate synthase [EC:2.3.3.1] [RN:R00351]	K01647	M00010	cat	C	intermediates, NADH/NADPH
+citrate (Re)-synthase [EC:2.3.3.3] [RN:R00351]	K05942	M00010	cat	C	intermediates, NADH/NADPH
+aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900 R01324]	K01681	M00010	cat	C	intermediates, NADH/NADPH
+aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900 R01324]	K01682	M00010	cat	C	intermediates, NADH/NADPH
+isocitrate dehydrogenase [EC:1.1.1.42 1.1.1.41] [RN:R01899 R00268 R00267 R00709]	K00031	M00010	cat	C	intermediates, NADH/NADPH
+isocitrate dehydrogenase [EC:1.1.1.42 1.1.1.41] [RN:R01899 R00268 R00267 R00709]	K00030	M00010	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate dehydrogenase [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	K00164	M00011	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate dehydrogenase [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	K00658	M00011	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate dehydrogenase [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	K00382	M00011	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit alpha [EC:1.2.7.3 1.2.7.11] [RN:R01197]	K00174	M00011	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit beta [EC:1.2.7.3 1.2.7.11] [RN:R01197]	K00175	M00011	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate ferredoxin oxidoreductase subunit gamma [EC:1.2.7.3] [RN:R01197]	K00177	M00011	cat	C	intermediates, NADH/NADPH
+2-oxoglutarate ferredoxin oxidoreductase subunit delta [EC:1.2.7.3] [RN:R01197]	K00176	M00011	cat	C	intermediates, NADH/NADPH
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01902	M00011	cat	C	intermediates, NADH/NADPH
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01903	M00011	cat	C	intermediates, NADH/NADPH
+succinyl-CoA synthetase [EC:6.2.1.4 6.2.1.5] [RN:R00405 R00432 R00727]	K01899	M00011	cat	C	intermediates, NADH/NADPH
+succinyl-CoA synthetase [EC:6.2.1.4 6.2.1.5] [RN:R00405 R00432 R00727]	K01900	M00011	cat	C	intermediates, NADH/NADPH
+succinyl-CoA:acetate CoA-transferase [EC:2.8.3.18] [RN:R10343]	K18118	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	K00234	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	K00235	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	K00236	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	K00237	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00239	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00240	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00241	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00242	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K18859	M00011	cat	C	intermediates, NADH/NADPH
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K18860	M00011	cat	C	intermediates, NADH/NADPH
+fumarate reductase [EC:1.3.5.4] [RN:R02164]	K00244	M00011	cat	C	intermediates, NADH/NADPH
+fumarate reductase [EC:1.3.5.4] [RN:R02164]	K00245	M00011	cat	C	intermediates, NADH/NADPH
+fumarate reductase [EC:1.3.5.4] [RN:R02164]	K00246	M00011	cat	C	intermediates, NADH/NADPH
+fumarate reductase [EC:1.3.5.4] [RN:R02164]	K00247	M00011	cat	C	intermediates, NADH/NADPH
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01676	M00011	cat	C	intermediates, NADH/NADPH
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01679	M00011	cat	C	intermediates, NADH/NADPH
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01677	M00011	cat	C	intermediates, NADH/NADPH
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01678	M00011	cat	C	intermediates, NADH/NADPH
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00026	M00011	cat	C	intermediates, NADH/NADPH
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00025	M00011	cat	C	intermediates, NADH/NADPH
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00024	M00011	cat	C	intermediates, NADH/NADPH
+malate dehydrogenase (quinone) [EC:1.1.5.4] [RN:R00361]	K00116	M00011	cat	C	intermediates
+citrate synthase [EC:2.3.3.1] [RN:R00351]	K01647	M00012	cat	C	intermediates
+aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900]	K01681	M00012	cat	C	intermediates
+aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900]	K01682	M00012	cat	C	intermediates
+isocitrate lyase [EC:4.1.3.1] [RN:R00479]	K01637	M00012	cat	C	intermediates
+malate synthase [EC:2.3.3.9] [RN:R00472]	K01638	M00012	cat	C	intermediates
+bifunctional (S)-malyl-CoA lyase/thioesterase [EC:4.1.3.24 3.1.2.30] [RN:R00473 R10612]	K19282	M00012	cat	C	intermediates
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00026	M00012	cat	C	intermediates
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00025	M00012	cat	C	intermediates
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00024	M00012	cat	C	intermediates
+acyl-CoA dehydrogenase [EC:1.3.8.7] [RN:R04432]	K00249	M00013	cat	C	intermediates
+enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03045]	K07511	M00013	cat	C	intermediates
+enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03045]	K07514	M00013	cat	C	intermediates
+enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03045]	K07515	M00013	cat	C	intermediates
+multifunctional beta-oxidation protein [EC:4.2.1.-] [RN:R03045]	K14729	M00013	cat	C	intermediates
+3-hydroxyisobutyryl-CoA hydrolase [EC:3.1.2.4] [RN:R03157 R03158]	K05605	M00013	cat	C	intermediates
+3-hydroxypropionate dehydrogenase [EC:1.1.1.59] [RN:R01608]	K23146	M00013	cat	C	intermediates
+malonate-semialdehyde dehydrogenase (acetylating) [EC:1.2.1.18] [RN:R00740]	K00140	M00013	cat	C	intermediates
+glutamate 5-kinase [EC:2.7.2.11] [RN:R00239]	K00931	M00015	ana	C	aa biosynthesis
+glutamate-5-semialdehyde dehydrogenase [EC:1.2.1.41] [RN:R03313]	K00147	M00015	ana	C	aa biosynthesis
+delta-1-pyrroline-5-carboxylate synthetase [EC:2.7.2.11 1.2.1.41] [RN:R00239 R03313]	K12657	M00015	ana	C	aa biosynthesis
+pyrroline-5-carboxylate reductase [EC:1.5.1.2] [RN:R01251]	K00286	M00015	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K00928	M00016	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12524	M00016	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12525	M00016	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12526	M00016	ana	C	aa biosynthesis
+aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	K00133	M00016	ana	C	aa biosynthesis
+4-hydroxy-tetrahydrodipicolinate synthase [EC:4.3.3.7] [RN:R10147]	K01714	M00016	ana	C	aa biosynthesis
+4-hydroxy-tetrahydrodipicolinate reductase [EC:1.17.1.8] [RN:R04198 R04199]	K00215	M00016	ana	C	aa biosynthesis
+2,3,4,5-tetrahydropyridine-2-carboxylate N-succinyltransferase [EC:2.3.1.117] [RN:R04365]	K00674	M00016	ana	C	aa biosynthesis
+N-succinyldiaminopimelate aminotransferase [EC:2.6.1.17] [RN:R04475]	K00821	M00016	ana	C	aa biosynthesis
+N-succinyldiaminopimelate aminotransferase [EC:2.6.1.17] [RN:R04475]	K14267	M00016	ana	C	aa biosynthesis
+succinyl-diaminopimelate desuccinylase [EC:3.5.1.18] [RN:R02734]	K01439	M00016	ana	C	aa biosynthesis
+diaminopimelate epimerase [EC:5.1.1.7] [RN:R02735]	K01778	M00016	ana	C	aa biosynthesis
+diaminopimelate decarboxylase [EC:4.1.1.20] [RN:R00451]	K01586	M00016	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12526	M00016	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K00928	M00017	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12524	M00017	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12525	M00017	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12526	M00017	ana	C	aa biosynthesis
+aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	K00133	M00017	ana	C	aa biosynthesis
+homoserine dehydrogenase [EC:1.1.1.3] [RN:R01773 R01775]	K00003	M00017	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12524	M00017	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12525	M00017	ana	C	aa biosynthesis
+homoserine O-succinyltransferase [EC:2.3.1.46] [RN:R01777]	K00651	M00017	ana	C	aa biosynthesis
+cystathionine gamma-synthase [EC:2.5.1.48] [RN:R03260]	K01739	M00017	ana	C	aa biosynthesis
+cystathionine beta-lyase [EC:4.4.1.8] [RN:R01286]	K01760	M00017	ana	C	aa biosynthesis
+methionine synthase [EC:2.1.1.13 2.1.1.14] [RN:R00946 R04405]	K00548	M00017	ana	C	aa biosynthesis
+methionine synthase [EC:2.1.1.13 2.1.1.14] [RN:R00946 R04405]	K00549	M00017	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K00928	M00018	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12524	M00018	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12525	M00018	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12526	M00018	ana	C	aa biosynthesis
+aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	K00133	M00018	ana	C	aa biosynthesis
+homoserine dehydrogenase [EC:1.1.1.3] [RN:R01773 R01775]	K00003	M00018	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12524	M00018	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12525	M00018	ana	C	aa biosynthesis
+homoserine kinase [EC:2.7.1.39] [RN:R01771]	K00872	M00018	ana	C	aa biosynthesis
+homoserine kinase [EC:2.7.1.39] [RN:R01771]	K02204	M00018	ana	C	aa biosynthesis
+homoserine kinase [EC:2.7.1.39] [RN:R01771]	K02203	M00018	ana	C	aa biosynthesis
+threonine synthase [EC:4.2.3.1] [RN:R01466]	K01733	M00018	ana	C	aa biosynthesis
+acetolactate synthase [EC:2.2.1.6] [RN:R00226 R08648]	K01652	M00019	ana	C	aa biosynthesis
+acetolactate synthase [EC:2.2.1.6] [RN:R00226 R08648]	K01653	M00019	ana	C	aa biosynthesis
+acetolactate synthase [EC:2.2.1.6] [RN:R00226 R08648]	K11258	M00019	ana	C	aa biosynthesis
+ketol-acid reductoisomerase [EC:1.1.1.86] [RN:R05071 R04440 R04439 R05069 R05068]	K00053	M00019	ana	C	aa biosynthesis
+dihydroxy-acid dehydratase [EC:4.2.1.9] [RN:R04441 R05070]	K01687	M00019	ana	C	aa biosynthesis
+branched-chain amino acid aminotransferase [EC:2.6.1.42] [RN:R01214 R02199]	K00826	M00019	ana	C	aa biosynthesis
+D-3-phosphoglycerate dehydrogenase [EC:1.1.1.95] [RN:R01513]	K00058	M00020	ana	C	aa biosynthesis
+phosphoserine aminotransferase [EC:2.6.1.52] [RN:R04173]	K00831	M00020	ana	C	aa biosynthesis
+phosphoserine phosphatase [EC:3.1.3.3] [RN:R00582]	K01079	M00020	ana	C	aa biosynthesis
+serine O-acetyltransferase [EC:2.3.1.30] [RN:R00586]	K00640	M00021	ana	C	aa biosynthesis
+cysteine synthase [EC:2.5.1.47] [RN:R00897]	K01738	M00021	ana	C	aa biosynthesis
+cysteine synthase [EC:2.5.1.47] [RN:R00897]	K13034	M00021	ana	C	aa biosynthesis
+cysteine synthase [EC:2.5.1.47] [RN:R00897]	K17069	M00021	ana	C	aa biosynthesis
+3-deoxy-7-phosphoheptulonate synthase [EC:2.5.1.54] [RN:R01826]	K01626	M00022	ana	C	aa biosynthesis
+3-deoxy-7-phosphoheptulonate synthase [EC:2.5.1.54] [RN:R01826]	K03856	M00022	ana	C	aa biosynthesis
+3-deoxy-7-phosphoheptulonate synthase [EC:2.5.1.54] [RN:R01826]	K13853	M00022	ana	C	aa biosynthesis
+3-dehydroquinate synthase [EC:4.2.3.4] [RN:R03083]	K01735	M00022	ana	C	aa biosynthesis
+3-dehydroquinate synthase [EC:4.2.3.4] [RN:R03083]	K13829	M00022	ana	C	aa biosynthesis
+3-dehydroquinate dehydratase [EC:4.2.1.10] [RN:R03084]	K03785	M00022	ana	C	aa biosynthesis
+3-dehydroquinate dehydratase [EC:4.2.1.10] [RN:R03084]	K03786	M00022	ana	C	aa biosynthesis
+shikimate 5-dehydrogenase [EC:1.1.1.25] [RN:R02413]	K00014	M00022	ana	C	aa biosynthesis
+3-dehydroquinate dehydratase [EC:4.2.1.10] [RN:R03084]	K13832	M00022	ana	C	aa biosynthesis
+3-dehydroquinate synthase [EC:4.2.3.4] [RN:R03083]	K13830	M00022	ana	C	aa biosynthesis
+shikimate kinase [EC:2.7.1.71] [RN:R02412]	K00891	M00022	ana	C	aa biosynthesis
+3-dehydroquinate synthase [EC:4.2.3.4] [RN:R03083]	K13829	M00022	ana	C	aa biosynthesis
+3-phosphoshikimate 1-carboxyvinyltransferase [EC:2.5.1.19] [RN:R03460]	K00800	M00022	ana	C	aa biosynthesis
+3-dehydroquinate synthase [EC:4.2.3.4] [RN:R03083]	K13830	M00022	ana	C	aa biosynthesis
+chorismate synthase [EC:4.2.3.5] [RN:R01714]	K01736	M00022	ana	C	aa biosynthesis
+anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	K01657	M00023	ana	C	aa biosynthesis
+anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	K01658	M00023	ana	C	aa biosynthesis
+anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	K13503	M00023	ana	C	aa biosynthesis
+anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	K13501	M00023	ana	C	aa biosynthesis
+anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	K01656	M00023	ana	C	aa biosynthesis
+anthranilate phosphoribosyltransferase [EC:2.4.2.18] [RN:R01073]	K00766	M00023	ana	C	aa biosynthesis
+anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	K13497	M00023	ana	C	aa biosynthesis
+phosphoribosylanthranilate isomerase [EC:5.3.1.24] [RN:R03509]	K01817	M00023	ana	C	aa biosynthesis
+anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	K01656	M00023	ana	C	aa biosynthesis
+indole-3-glycerol phosphate synthase [EC:4.1.1.48] [RN:R03508]	K01609	M00023	ana	C	aa biosynthesis
+phosphoribosylanthranilate isomerase [EC:5.3.1.24] [RN:R03509]	K13498	M00023	ana	C	aa biosynthesis
+anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	K13501	M00023	ana	C	aa biosynthesis
+tryptophan synthase [EC:4.2.1.20] [RN:R02722]	K01695	M00023	ana	C	aa biosynthesis
+tryptophan synthase [EC:4.2.1.20] [RN:R02722]	K01696	M00023	ana	C	aa biosynthesis
+tryptophan synthase [EC:4.2.1.20] [RN:R02722]	K06001	M00023	ana	C	aa biosynthesis
+tryptophan synthase [EC:4.2.1.20] [RN:R02722]	K01694	M00023	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K01850	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K04092	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K14187	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K04093	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K04516	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K06208	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K06209	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K13853	M00024	ana	C	aa biosynthesis
+prephenate dehydratase [EC:4.2.1.51] [RN:R01373]	K01713	M00024	ana	C	aa biosynthesis
+prephenate dehydratase [EC:4.2.1.51] [RN:R01373]	K04518	M00024	ana	C	aa biosynthesis
+prephenate dehydratase [EC:4.2.1.51] [RN:R01373]	K05359	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K14170	M00024	ana	C	aa biosynthesis
+aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R00694]	K00832	M00024	ana	C	aa biosynthesis
+aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R00694]	K00838	M00024	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K01850	M00025	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K04092	M00025	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K14170	M00025	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K04093	M00025	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K04516	M00025	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K06208	M00025	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K06209	M00025	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K13853	M00025	ana	C	aa biosynthesis
+prephenate dehydrogenase [EC:1.3.1.12] [RN:R01728]	K00210	M00025	ana	C	aa biosynthesis
+prephenate dehydrogenase [EC:1.3.1.12] [RN:R01728]	K04517	M00025	ana	C	aa biosynthesis
+chorismate mutase [EC:5.4.99.5] [RN:R01715]	K14187	M00025	ana	C	aa biosynthesis
+tyrosine aminotransferase [EC:2.6.1.5] [RN:R00734]	K00815	M00025	ana	C	aa biosynthesis
+aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R00734]	K00832	M00025	ana	C	aa biosynthesis
+aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R00734]	K00838	M00025	ana	C	aa biosynthesis
+ATP phosphoribosyltransferase [EC:2.4.2.17] [RN:R01071]	K00765	M00026	ana	C	aa biosynthesis
+ATP phosphoribosyltransferase [EC:2.4.2.17] [RN:R01071]	K02502	M00026	ana	C	aa biosynthesis
+phosphoribosyl-ATP pyrophosphohydrolase [EC:3.6.1.31] [RN:R04035]	K01523	M00026	ana	C	aa biosynthesis
+phosphoribosyl-AMP cyclohydrolase [EC:3.5.4.19] [RN:R04037]	K01496	M00026	ana	C	aa biosynthesis
+phosphoribosyl-ATP pyrophosphohydrolase [EC:3.6.1.31] [RN:R04035]	K11755	M00026	ana	C	aa biosynthesis
+phosphoribosyl-ATP pyrophosphohydrolase [EC:3.6.1.31] [RN:R04035]	K14152	M00026	ana	C	aa biosynthesis
+phosphoribosylformimino-5-aminoimidazole carboxamide ribotide isomerase [EC:5.3.1.16] [RN:R04640]	K01814	M00026	ana	C	aa biosynthesis
+imidazole glycerol-phosphate synthase [EC:4.3.2.10] [RN:R04558]	K02501	M00026	ana	C	aa biosynthesis
+imidazole glycerol-phosphate synthase [EC:4.3.2.10] [RN:R04558]	K02500	M00026	ana	C	aa biosynthesis
+imidazole glycerol-phosphate synthase [EC:4.3.2.10] [RN:R04558]	K01663	M00026	ana	C	aa biosynthesis
+imidazoleglycerol-phosphate dehydratase [EC:4.2.1.19] [RN:R03457]	K01693	M00026	ana	C	aa biosynthesis
+histidinol-phosphate aminotransferase [EC:2.6.1.9] [RN:R03243]	K00817	M00026	ana	C	aa biosynthesis
+histidinol-phosphatase [EC:3.1.3.15] [RN:R03013]	K04486	M00026	ana	C	aa biosynthesis
+histidinol-phosphatase [EC:3.1.3.15] [RN:R03013]	K05602	M00026	ana	C	aa biosynthesis
+histidinol-phosphatase [EC:3.1.3.15] [RN:R03013]	K18649	M00026	ana	C	aa biosynthesis
+imidazoleglycerol-phosphate dehydratase / histidinol-phosphatase [EC:4.2.1.19 3.1.3.15] [RN:R03457 R03013]	K01089	M00026	ana	C	aa biosynthesis
+histidinol-phosphate aminotransferase [EC:2.6.1.9] [RN:R03243]	K00817	M00026	ana	C	aa biosynthesis
+histidinol dehydrogenase [EC:1.1.1.23] [RN:R03012 R01163]	K00013	M00026	ana	C	aa biosynthesis
+phosphoribosyl-ATP pyrophosphohydrolase [EC:3.6.1.31] [RN:R04035]	K14152	M00026	ana	C	aa biosynthesis
+amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	K00618	M00028	ana	C	aa biosynthesis
+amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	K00619	M00028	ana	C	aa biosynthesis
+amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	K14681	M00028	ana	C	aa biosynthesis
+amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	K14682	M00028	ana	C	aa biosynthesis
+glutamate N-acetyltransferase / amino-acid N-acetyltransferase [EC:2.3.1.35 2.3.1.1] [RN:R00259 R02282]	K00620	M00028	ana	C	aa biosynthesis
+amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	K22477	M00028	ana	C	aa biosynthesis
+bifunctional N-acetylglutamate synthase/kinase [EC:2.3.1.1 2.7.2.8] [RN:R00259 R02649]	K22478	M00028	ana	C	aa biosynthesis
+acetylglutamate kinase [EC:2.7.2.8] [RN:R02649]	K00930	M00028	ana	C	aa biosynthesis
+bifunctional N-acetylglutamate synthase/kinase [EC:2.3.1.1 2.7.2.8] [RN:R00259 R02649]	K22478	M00028	ana	C	aa biosynthesis
+N-acetyl-gamma-glutamyl-phosphate reductase [EC:1.2.1.38] [RN:R03443]	K00145	M00028	ana	C	aa biosynthesis
+N-acetyl-gamma-glutamyl-phosphate reductase / acetylglutamate kinase [EC:1.2.1.38 2.7.2.8] [RN:R02649 R03443]	K12659	M00028	ana	C	aa biosynthesis
+acetylornithine aminotransferase [EC:2.6.1.11] [RN:R02283]	K00818	M00028	ana	C	aa biosynthesis
+acetylornithine aminotransferase [EC:2.6.1.11] [RN:R02283]	K00821	M00028	ana	C	aa biosynthesis
+acetylornithine deacetylase [EC:3.5.1.16] [RN:R00669]	K01438	M00028	ana	C	aa biosynthesis
+aminoacylase [EC:3.5.1.14] [RN:R00669]	K14677	M00028	ana	C	aa biosynthesis
+glutamate N-acetyltransferase / amino-acid N-acetyltransferase [EC:2.3.1.35 2.3.1.1] [RN:R00259 R02282]	K00620	M00028	ana	C	aa biosynthesis
+carbamoyl-phosphate synthase (ammonia) [EC:6.3.4.16] [RN:R00149]	K01948	M00029	cat 	C-N	aa transformation
+ornithine carbamoyltransferase [EC:2.1.3.3] [RN:R01398]	K00611	M00029	cat 	C-N	aa transformation
+argininosuccinate synthase [EC:6.3.4.5] [RN:R01954]	K01940	M00029	cat 	C-N	aa transformation
+argininosuccinate lyase [EC:4.3.2.1] [RN:R01086]	K01755	M00029	cat 	C-N	aa transformation
+argininosuccinate lyase [EC:4.3.2.1] [RN:R01086]	K14681	M00029	cat 	C-N	aa transformation
+arginase [EC:3.5.3.1] [RN:R00551]	K01476	M00029	cat 	C-N	aa transformation
+homocitrate synthase [EC:2.3.3.14] [RN:R00271]	K01655	M00030	ana	C	aa biosynthesis
+homoaconitase [EC:4.2.1.-] [RN:R03444]	K17450	M00030	ana	C	aa biosynthesis
+homoaconitate hydratase [EC:4.2.1.36] [RN:R04371]	K01705	M00030	ana	C	aa biosynthesis
+homoisocitrate dehydrogenase [EC:1.1.1.87] [RN:R01934]	K05824	M00030	ana	C	aa biosynthesis
+2-aminoadipate transaminase [EC:2.6.1.39] [RN:R01939]	K00838	M00030	ana	C	aa biosynthesis
+L-2-aminoadipate reductase [EC:1.2.1.95] [RN:R03098 R04863 R04390]	K00143	M00030	ana	C	aa biosynthesis
+saccharopine dehydrogenase (NADP+, L-glutamate forming) [EC:1.5.1.10] [RN:R02315]	K00293	M00030	ana	C	aa biosynthesis
+saccharopine dehydrogenase, L-lysine forming [EC:1.5.1.7] [RN:R00715]	K00290	M00030	ana	C	aa biosynthesis
+[lysine-biosynthesis-protein LysW]---L-2-aminoadipate ligase [EC:6.3.2.43] [RN:R09775]	K05827	M00031	ana	C	aa biosynthesis
+LysW-gamma-L-alpha-aminoadipate kinase [EC:2.7.2.-] [RN:R09776]	K05828	M00031	ana	C	aa biosynthesis
+LysW-gamma-L-alpha-aminoadipyl-6-phosphate reductase [EC:1.2.1.-] [RN:R09777]	K05829	M00031	ana	C	aa biosynthesis
+LysW-gamma-L-lysine aminotransferase [EC:2.6.1.-] [RN:R09778]	K05830	M00031	ana	C	aa biosynthesis
+LysW-gamma-L-lysine carboxypeptidase [RN:R09779]	K05831	M00031	ana	C	aa biosynthesis
+saccharopine dehydrogenase [EC:1.5.1.7] [RN:R00715]	K00290	M00032	cat 	C	aa degradation
+saccharopine dehydrogenase [EC:1.5.1.10] [RN:R02315]	K00293	M00032	cat 	C	aa degradation
+alpha-aminoadipic semialdehyde synthase [EC:1.5.1.8 1.5.1.9] [RN:R00716 R02313]	K14157	M00032	cat 	C	aa degradation
+aminoadipate-semialdehyde dehydrogenase [EC:1.2.1.31] [RN:R03102 R03103]	K14085	M00032	cat 	C	aa degradation
+2-aminoadipate transaminase [EC:2.6.1.39] [RN:R01939]	K00825	M00032	cat 	C	aa degradation
+probable 2-oxoglutarate dehydrogenase E1 component DHKTD1 [EC:1.2.4.2] [RN:R01933]	K15791	M00032	cat 	C	aa degradation
+2-oxoglutarate dehydrogenase E2 component (dihydrolipoamide [EC:2.3.1.61] [RN:R01933]	K00658	M00032	cat 	C	aa degradation
+dihydrolipoamide dehydrogenase [EC:1.8.1.4] [RN:R01933]	K00382	M00032	cat 	C	aa degradation
+glutaryl-CoA dehydrogenase [EC:1.3.8.6] [RN:R02488]	K00252	M00032	cat 	C	aa degradation
+enoyl-CoA hydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	K01825	M00032	cat 	C	aa degradation
+enoyl-CoA hydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	K01782	M00032	cat 	C	aa degradation
+enoyl-CoA hydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	K07514	M00032	cat 	C	aa degradation
+enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03026]	K01692	M00032	cat 	C	aa degradation
+enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03026]	K07515	M00032	cat 	C	aa degradation
+enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03026]	K07511	M00032	cat 	C	aa degradation
+3-hydroxyacyl-CoA dehydrogenase [EC:1.1.1.35] [RN:R01975]	K00022	M00032	cat 	C	aa degradation
+S-adenosylmethionine synthetase [EC:2.5.1.6] [RN:R00177]	K00789	M00035	cat 	C	aa degradation
+DNA (cytosine-5-)-methyltransferase [EC:2.1.1.37] [RN:R04858]	K00558	M00035	cat 	C	aa degradation
+DNA (cytosine-5-)-methyltransferase [EC:2.1.1.37] [RN:R04858]	K17398	M00035	cat 	C	aa degradation
+DNA (cytosine-5-)-methyltransferase [EC:2.1.1.37] [RN:R04858]	K17399	M00035	cat 	C	aa degradation
+adenosylhomocysteinase [EC:3.3.1.1] [RN:R00192]	K01251	M00035	cat 	C	aa degradation
+cystathionine beta-synthase [EC:4.2.1.22] [RN:R01290]	K01697	M00035	cat 	C	aa degradation
+cystathionine beta-synthase [EC:4.2.1.22] [RN:R01290]	K10150	M00035	cat 	C	aa degradation
+branched-chain amino acid aminotransferase [EC:2.6.1.42] [RN:R01090]	K00826	M00036	cat 	C	aa degradation
+2-oxoisovalerate dehydrogenase [EC:1.2.4.4] [RN:R07601 R07602]	K00166	M00036	cat 	C	aa degradation
+2-oxoisovalerate dehydrogenase [EC:1.2.4.4] [RN:R07601 R07602]	K00167	M00036	cat 	C	aa degradation
+2-oxoisovalerate dehydrogenase [EC:1.2.4.4] [RN:R07601 R07602]	K11381	M00036	cat 	C	aa degradation
+2-oxoisovalerate dehydrogenase [EC:2.3.1.168] [RN:R04097]	K09699	M00036	cat 	C	aa degradation
+dihydrolipoamide dehydrogenase [EC:1.8.1.4] [RN:R07618]	K00382	M00036	cat 	C	aa degradation
+isovaleryl-CoA dehydrogenase [EC:1.3.99.10] [RN:R04095]	K00253	M00036	cat 	C	aa degradation
+acyl-CoA dehydrogenase [EC:1.3.8.7] [RN:R04095]	K00249	M00036	cat 	C	aa degradation
+3-methylcrotonyl-CoA carboxylase [EC:6.4.1.4] [RN:R04138]	K01968	M00036	cat 	C	aa degradation
+3-methylcrotonyl-CoA carboxylase [EC:6.4.1.4] [RN:R04138]	K01969	M00036	cat 	C	aa degradation
+methylglutaconyl-CoA hydratase [EC:4.2.1.18] [RN:R02085]	K05607	M00036	cat 	C	aa degradation
+methylglutaconyl-CoA hydratase [EC:4.2.1.18] [RN:R02085]	K13766	M00036	cat 	C	aa degradation
+hydroxymethylglutaryl-CoA lyase [EC:4.1.3.4] [RN:R01360]	K01640	M00036	cat 	C	aa degradation
+aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R01731]	K00832	M00040	ana	C	aa biosynthesis
+aspartate-prephenate aminotransferase [EC:2.6.1.78] [RN:R01731]	K15849	M00040	ana	C	aa biosynthesis
+cyclohexadienyl dehydrogenase [EC:1.3.1.43] [RN:R00732]	K00220	M00040	ana	C	aa biosynthesis
+arogenate dehydrogenase (NADP+) [EC:1.3.1.78] [RN:R00733]	K15226	M00040	ana	C	aa biosynthesis
+arogenate dehydrogenase (NADP+) [EC:1.3.1.78] [RN:R00733]	K15227	M00040	ana	C	aa biosynthesis
+L-amino-acid oxidase [EC:1.4.3.2] [RN:R00729]	K03334	M00044	cat 	C	aa degradation
+4-hydroxyphenylpyruvate dioxygenase [EC:1.13.11.27] [RN:R02521]	K00457	M00044	cat 	C	aa degradation
+homogentisate 1,2-dioxygenase [EC:1.13.11.5] [RN:R02519]	K00451	M00044	cat 	C	aa degradation
+maleylacetoacetate isomerase [EC:5.2.1.2] [RN:R03181]	K01800	M00044	cat 	C	aa degradation
+fumarylacetoacetase [EC:3.7.1.2] [RN:R01364]	K01555	M00044	cat 	C	aa degradation
+fumarylacetoacetate (FAA) hydrolase [EC:3.7.1.2] [RN:R01364]	K16171	M00044	cat 	C	aa degradation
+histidine ammonia-lyase [EC:4.3.1.3] [RN:R01168]	K01745	M00045	cat 	C	aa degradation
+urocanate hydratase [EC:4.2.1.49] [RN:R02914]	K01712	M00045	cat 	C	aa degradation
+imidazolonepropionase [EC:3.5.2.7] [RN:R02288]	K01468	M00045	cat 	C	aa degradation
+formiminoglutamase [EC:3.5.3.8] [RN:R02285]	K01479	M00045	cat 	C	aa degradation
+glutamate formiminotransferase [EC:2.1.2.5] [RN:R02287]	K00603	M00045	cat 	C	aa degradation
+glutamate formiminotransferase [EC:2.1.2.5] [RN:R02287]	K13990	M00045	cat 	C	aa degradation
+formimidoylglutamate deiminase [EC:3.5.3.13] [RN:R02286]	K05603	M00045	cat 	C	aa degradation
+N-formylglutamate deformylase [EC:3.5.1.68] [RN:R00525]	K01458	M00045	cat 	C	aa degradation
+dihydropyrimidine dehydrogenase (NADP+) [EC:1.3.1.2] [RN:R00978 R01415]	K00207	M00046	cat 	C	base degradation
+dihydropyrimidine dehydrogenase (NAD+) [EC:1.3.1.1] [RN:R00977 R11026]	K17722	M00046	cat 	C	base degradation
+dihydropyrimidine dehydrogenase (NAD+) [EC:1.3.1.1] [RN:R00977 R11026]	K17723	M00046	cat 	C	base degradation
+dihydropyrimidinase [EC:3.5.2.2] [RN:R02269 R03055]	K01464	M00046	cat 	C	base degradation
+beta-ureidopropionase [EC:3.5.1.6] [RN:R00905 R04666]	K01431	M00046	cat 	C	base degradation
+beta-ureidopropionase [EC:3.5.1.6] [RN:R00905 R04666]	K06016	M00046	cat 	C	base degradation
+amidophosphoribosyltransferase [EC:2.4.2.14] [RN:R01072]	K00764	M00048	ana	C	nucleotide meta
+phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	K01945	M00048	ana	C	nucleotide meta
+phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	K11787	M00048	ana	C	nucleotide meta
+phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	K11788	M00048	ana	C	nucleotide meta
+fusion protein PurCD [EC:6.3.2.6 6.3.4.13] [RN:R04144 R04591]	K13713	M00048	ana	C	nucleotide meta
+phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	K00601	M00048	ana	C	nucleotide meta
+phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	K11175	M00048	ana	C	nucleotide meta
+phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	K08289	M00048	ana	C	nucleotide meta
+phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	K11787	M00048	ana	C	nucleotide meta
+phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	K01492	M00048	ana	C	nucleotide meta
+phosphoribosylformylglycinamidine synthase [EC:6.3.5.3] [RN:R04463]	K01952	M00048	ana	C	nucleotide meta
+phosphoribosylformylglycinamidine cyclo-ligase [EC:6.3.3.1] [RN:R04208]	K01933	M00048	ana	C	nucleotide meta
+phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	K11787	M00048	ana	C	nucleotide meta
+phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	K11788	M00048	ana	C	nucleotide meta
+phosphoribosylaminoimidazole carboxylase [EC:4.1.1.21] [RN:R04209]	K01587	M00048	ana	C	nucleotide meta
+phosphoribosylaminoimidazole carboxylase [EC:4.1.1.21] [RN:R04209]	K11808	M00048	ana	C	nucleotide meta
+5-(carboxyamino)imidazole ribonucleotide synthase [EC:6.3.4.18] [RN:R07405]	K01589	M00048	ana	C	nucleotide meta
+5-(carboxyamino)imidazole ribonucleotide mutase [EC:5.4.99.18] [RN:R07404]	K01588	M00048	ana	C	nucleotide meta
+phosphoribosylaminoimidazole-succinocarboxamide synthase [EC:6.3.2.6] [RN:R04591]	K01923	M00048	ana	C	nucleotide meta
+phosphoribosylaminoimidazole carboxylase [EC:4.1.1.21] [RN:R04209]	K01587	M00048	ana	C	nucleotide meta
+fusion protein PurCD [EC:6.3.2.6 6.3.4.13] [RN:R04144 R04591]	K13713	M00048	ana	C	nucleotide meta
+adenylosuccinate lyase [EC:4.3.2.2] [RN:R04559]	K01756	M00048	ana	C	nucleotide meta
+phosphoribosylaminoimidazolecarboxamide formyltransferase / IMP cyclohydrolase [EC:2.1.2.3 3.5.4.10] [RN:R04560 R01127]	K00602	M00048	ana	C	nucleotide meta
+phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	K01492	M00048	ana	C	nucleotide meta
+5-formaminoimidazole-4-carboxamide-1-(beta)-D-ribofuranosyl 5'-monophosphate synthetase [EC:6.3.4.23] [RN:R06975]	K06863	M00048	ana	C	nucleotide meta
+IMP cyclohydrolase [EC:3.5.4.10] [RN:R01127]	K11176	M00048	ana	C	nucleotide meta
+adenylosuccinate synthase [EC:6.3.4.4] [RN:R01135]	K01939	M00049	ana	C	nucleotide meta
+adenylosuccinate lyase [EC:4.3.2.2] [RN:R01083]	K01756	M00049	ana	C	nucleotide meta
+adenylate kinase [EC:2.7.4.3] [RN:R00127]	K00939	M00049	ana	C	nucleotide meta
+adenylate kinase [EC:2.7.4.3] [RN:R00127]	K18532	M00049	ana	C	nucleotide meta
+adenylate kinase [EC:2.7.4.3] [RN:R00127]	K18533	M00049	ana	C	nucleotide meta
+nucleoside-triphosphate--adenylate kinase [EC:2.7.4.10] [RN:R00333]	K00944	M00049	ana	C	nucleotide meta
+nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R00124]	K00940	M00049	ana	C	nucleotide meta
+pyruvate kinase [EC:2.7.1.40] [RN:R00200]	K00873	M00049	ana	C	nucleotide meta
+pyruvate kinase [EC:2.7.1.40] [RN:R00200]	K12406	M00049	ana	C	nucleotide meta
+IMP dehydrogenase [EC:1.1.1.205] [RN:R01130]	K00088	M00050	ana	C	nucleotide meta
+GMP synthase [EC:6.3.5.2] [RN:R01230 R01231]	K01951	M00050	ana	C	nucleotide meta
+guanylate kinase [EC:2.7.4.8] [RN:R00332]	K00942	M00050	ana	C	nucleotide meta
+nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R00330]	K00940	M00050	ana	C	nucleotide meta
+pyruvate kinase [EC:2.7.1.40] [RN:R00430]	K00873	M00050	ana	C	nucleotide meta
+pyruvate kinase [EC:2.7.1.40] [RN:R00430]	K12406	M00050	ana	C	nucleotide meta
+carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	K11540	M00051	ana	C	nucleotide meta
+carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	K11541	M00051	ana	C	nucleotide meta
+dihydroorotase [EC:3.5.2.3] [RN:R01993]	K01465	M00051	ana	C	nucleotide meta
+carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	K01954	M00051	ana	C	nucleotide meta
+carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	K01955	M00051	ana	C	nucleotide meta
+carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	K01956	M00051	ana	C	nucleotide meta
+aspartate carbamoyltransferase [EC:2.1.3.2] [RN:R01397]	K00609	M00051	ana	C	nucleotide meta
+aspartate carbamoyltransferase [EC:2.1.3.2] [RN:R01397]	K00610	M00051	ana	C	nucleotide meta
+aspartate carbamoyltransferase [EC:2.1.3.2] [RN:R01397]	K00608	M00051	ana	C	nucleotide meta
+dihydroorotase [EC:3.5.2.3] [RN:R01993]	K01465	M00051	ana	C	nucleotide meta
+dihydroorotate dehydrogenase [EC:1.3.98.1] [RN:R01867]	K00226	M00051	ana	C	nucleotide meta
+dihydroorotate dehydrogenase [EC:1.3.5.2] [RN:R01868]	K00254	M00051	ana	C	nucleotide meta
+dihydroorotate dehydrogenase [EC:1.3.1.14] [RN:R01869]	K17828	M00051	ana	C	nucleotide meta
+orotate phosphoribosyltransferase [EC:2.4.2.10] [RN:R01870]	K13421	M00051	ana	C	nucleotide meta
+orotate phosphoribosyltransferase [EC:2.4.2.10] [RN:R01870]	K00762	M00051	ana	C	nucleotide meta
+orotidine-5'-phosphate decarboxylase [EC:4.1.1.23] [RN:R00965]	K01591	M00051	ana	C	nucleotide meta
+cytidylate kinase [EC:2.7.4.14] [RN:R00158]	K13800	M00052	ana	C	nucleotide meta
+cytidylate kinase [EC:2.7.4.14] [RN:R00158]	K13809	M00052	ana	C	nucleotide meta
+cytidylate kinase [EC:2.7.4.14] [RN:R00158]	K00945	M00052	ana	C	nucleotide meta
+cytidylate kinase [EC:2.7.4.14] [RN:R00158]	K13799	M00052	ana	C	nucleotide meta
+nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R00156]	K00940	M00052	ana	C	nucleotide meta
+nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R00156]	K18533	M00052	ana	C	nucleotide meta
+CTP synthase [EC:6.3.4.2] [RN:R00571 R00573]	K01937	M00052	ana	C	nucleotide meta
+ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	K00524	M00053	ana	C	nucleotide meta
+ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	K00525	M00053	ana	C	nucleotide meta
+ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	K00526	M00053	ana	C	nucleotide meta
+ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	K10807	M00053	ana	C	nucleotide meta
+ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	K10808	M00053	ana	C	nucleotide meta
+nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R02326 R02093]	K00940	M00053	ana	C	nucleotide meta
+nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R02326 R02093]	K18533	M00053	ana	C	nucleotide meta
+ribonucleoside-triphosphate reductase [EC:1.17.4.2 1.1.98.6] [RN:R02022 R11636]	K00527	M00053	ana	C	nucleotide meta
+ribonucleoside-triphosphate reductase [EC:1.17.4.2 1.1.98.6] [RN:R02022 R11636]	K21636	M00053	ana	C	nucleotide meta
+dCTP deaminase [EC:3.5.4.13] [RN:R02325]	K01494	M00053	ana	C	nucleotide meta
+dUTP pyrophosphatase [EC:3.6.1.23] [RN:R02100]	K01520	M00053	ana	C	nucleotide meta
+thymidylate synthase [EC:2.1.1.45] [RN:R02101]	K00560	M00053	ana	C	nucleotide meta
+thymidylate synthase [EC:2.1.1.45] [RN:R02101]	K13998	M00053	ana	C	nucleotide meta
+dTMP kinase [EC:2.7.4.9] [RN:R02094]	K00943	M00053	ana	C	nucleotide meta
+nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R02326 R02093]	K00940	M00053	ana	C	nucleotide meta
+nuoA; NADH-quinone oxidoreductase subunit A [EC:7.1.1.2]	K00330	M00144	membrane	energy	complex I-prokaryote
+nuoB; NADH-quinone oxidoreductase subunit B [EC:7.1.1.2]	K00331	M00144	membrane	energy	complex I-prokaryote
+nuoC; NADH-quinone oxidoreductase subunit C [EC:7.1.1.2]	K00332	M00144	membrane	energy	complex I-prokaryote
+nuoD; NADH-quinone oxidoreductase subunit D [EC:7.1.1.2]	K00333	M00144	membrane	energy	complex I-prokaryote
+nuoB; NADH-quinone oxidoreductase subunit B [EC:7.1.1.2]	K00331	M00144	membrane	energy	complex I-prokaryote
+nuoCD; NADH-quinone oxidoreductase subunit C/D [EC:7.1.1.2]	K13378	M00144	membrane	energy	complex I-prokaryote
+nuoBCD; NADH-quinone oxidoreductase subunit B/C/D [EC:7.1.1.2]	K13380	M00144	membrane	energy	complex I-prokaryote
+nuoE; NADH-quinone oxidoreductase subunit E [EC:7.1.1.2]	K00334	M00144	membrane	energy	complex I-prokaryote
+nuoF; NADH-quinone oxidoreductase subunit F [EC:7.1.1.2]	K00335	M00144	membrane	energy	complex I-prokaryote
+nuoG; NADH-quinone oxidoreductase subunit G [EC:7.1.1.2]	K00336	M00144	membrane	energy	complex I-prokaryote
+nuoH; NADH-quinone oxidoreductase subunit H [EC:7.1.1.2]	K00337	M00144	membrane	energy	complex I-prokaryote
+nuoI; NADH-quinone oxidoreductase subunit I [EC:7.1.1.2]	K00338	M00144	membrane	energy	complex I-prokaryote
+nuoJ; NADH-quinone oxidoreductase subunit J [EC:7.1.1.2]	K00339	M00144	membrane	energy	complex I-prokaryote
+nuoK; NADH-quinone oxidoreductase subunit K [EC:7.1.1.2]	K00340	M00144	membrane	energy	complex I-prokaryote
+nuoL; NADH-quinone oxidoreductase subunit L [EC:7.1.1.2]	K00341	M00144	membrane	energy	complex I-prokaryote
+nuoM; NADH-quinone oxidoreductase subunit M [EC:7.1.1.2]	K00342	M00144	membrane	energy	complex I-prokaryote
+nuoLM; NADH-quinone oxidoreductase subunit L/M [EC:7.1.1.2]	K15863	M00144	membrane	energy	complex I-prokaryote
+nuoN; NADH-quinone oxidoreductase subunit N [EC:7.1.1.2]	K00343	M00144	membrane	energy	complex I-prokaryote
+ndhC; NAD(P)H-quinone oxidoreductase subunit 3 [EC:7.1.1.2]	K05574	M00145	membrane	energy	complex I-photosynthesis???
+ndhK; NAD(P)H-quinone oxidoreductase subunit K [EC:7.1.1.2]	K05582	M00145	membrane	energy	complex I-photosynthesis???
+ndhJ; NAD(P)H-quinone oxidoreductase subunit J [EC:7.1.1.2]	K05581	M00145	membrane	energy	complex I-photosynthesis???
+ndhH; NAD(P)H-quinone oxidoreductase subunit H [EC:7.1.1.2]	K05579	M00145	membrane	energy	complex I-photosynthesis???
+ndhA; NAD(P)H-quinone oxidoreductase subunit 1 [EC:7.1.1.2]	K05572	M00145	membrane	energy	complex I-photosynthesis???
+ndhI; NAD(P)H-quinone oxidoreductase subunit I [EC:7.1.1.2]	K05580	M00145	membrane	energy	complex I-photosynthesis???
+ndhG; NAD(P)H-quinone oxidoreductase subunit 6 [EC:7.1.1.2]	K05578	M00145	membrane	energy	complex I-photosynthesis???
+ndhE; NAD(P)H-quinone oxidoreductase subunit 4L [EC:7.1.1.2]	K05576	M00145	membrane	energy	complex I-photosynthesis???
+ndhF; NAD(P)H-quinone oxidoreductase subunit 5 [EC:7.1.1.2]	K05577	M00145	membrane	energy	complex I-photosynthesis???
+ndhD; NAD(P)H-quinone oxidoreductase subunit 4 [EC:7.1.1.2]	K05575	M00145	membrane	energy	complex I-photosynthesis???
+ndhB; NAD(P)H-quinone oxidoreductase subunit 2 [EC:7.1.1.2]	K05573	M00145	membrane	energy	complex I-photosynthesis???
+ndhL; NAD(P)H-quinone oxidoreductase subunit L [EC:7.1.1.2]	K05583	M00145	membrane	energy	complex I-photosynthesis???
+ndhM; NAD(P)H-quinone oxidoreductase subunit M [EC:7.1.1.2]	K05584	M00145	membrane	energy	complex I-photosynthesis???
+ndhN; NAD(P)H-quinone oxidoreductase subunit N [EC:7.1.1.2]	K05585	M00145	membrane	energy	complex I-photosynthesis???
+SDHC; succinate dehydrogenase (ubiquinone) cytochrome b560 subunit	K00236	M00148	membrane	energy	complex II-TCA
+SDHD; succinate dehydrogenase (ubiquinone) membrane anchor subunit	K00237	M00148	membrane	energy	complex II-TCA
+SDHA; succinate dehydrogenase (ubiquinone) flavoprotein subunit [EC:1.3.5.1]	K00234	M00148	membrane	energy	complex II-TCA
+SDHB; succinate dehydrogenase (ubiquinone) iron-sulfur subunit [EC:1.3.5.1]	K00235	M00148	membrane	energy	complex II-TCA
+sdhC; succinate dehydrogenase cytochrome b556 subunit	K00241	M00149	membrane	energy	complex II-TCA
+sdhD; succinate dehydrogenase membrane anchor subunit	K00242	M00149	membrane	energy	complex II-TCA
+sdhA; succinate dehydrogenase flavoprotein subunit [EC:1.3.5.1]	K00239	M00149	membrane	energy	complex II-TCA
+sdhB; succinate dehydrogenase iron-sulfur subunit [EC:1.3.5.1]	K00240	M00149	membrane	energy	complex II-TCA
+frdA; fumarate reductase flavoprotein subunit [EC:1.3.5.4]	K00244	M00150	membrane	energy	complex II-TCA
+frdB; fumarate reductase iron-sulfur subunit [EC:1.3.5.4]	K00245	M00150	membrane	energy	complex II-TCA
+frdC; fumarate reductase subunit C	K00246	M00150	membrane	energy	complex II-TCA
+frdD; fumarate reductase subunit D	K00247	M00150	membrane	energy	complex II-TCA
+CYTB; ubiquinol-cytochrome c reductase cytochrome b subunit	K00412	M00151	membrane	energy	complex III
+CYC1; ubiquinol-cytochrome c reductase cytochrome c1 subunit	K00413	M00151	membrane	energy	complex III
+fbcH; ubiquinol-cytochrome c reductase cytochrome b/c1 subunit	K00410	M00151	membrane	energy	complex III
+UQCRFS1; ubiquinol-cytochrome c reductase iron-sulfur subunit	K00411	M00151	membrane	energy	complex III
+MQCRA; menaquinol-cytochrome c reductase iron-sulfur subunit [EC:1.10.2.-]	K03886	M00151	membrane	energy	complex III
+MQCRB; menaquinol-cytochrome c reductase cytochrome b subunit	K03887	M00151	membrane	energy	complex III
+MQCRC; menaquinol-cytochrome c reductase cytochrome b/c subunit	K03888	M00151	membrane	energy	complex III
+qcrA; ubiquinol-cytochrome c reductase iron-sulfur subunit	K03890	M00151	membrane	energy	complex III
+qcrB; ubiquinol-cytochrome c reductase cytochrome b subunit	K03891	M00151	membrane	energy	complex III
+qcrC; ubiquinol-cytochrome c reductase cytochrome c subunit	K03889	M00151	membrane	energy	complex III
+CYTB; ubiquinol-cytochrome c reductase cytochrome b subunit	K00412	M00152	membrane	energy	complex III
+CYC1; ubiquinol-cytochrome c reductase cytochrome c1 subunit	K00413	M00152	membrane	energy	complex III
+FBCH; ubiquinol-cytochrome c reductase cytochrome b/c1 subunit	K00410	M00152	membrane	energy	complex III
+UQCRFS1; ubiquinol-cytochrome c reductase iron-sulfur subunit	K00411	M00152	membrane	energy	complex III
+QCR1; ubiquinol-cytochrome c reductase core subunit 1	K00414	M00152	membrane	energy	complex III
+QCR2; ubiquinol-cytochrome c reductase core subunit 2	K00415	M00152	membrane	energy	complex III
+QCR6; ubiquinol-cytochrome c reductase subunit 6	K00416	M00152	membrane	energy	complex III
+QCR7; ubiquinol-cytochrome c reductase subunit 7	K00417	M00152	membrane	energy	complex III
+QCR8; ubiquinol-cytochrome c reductase subunit 8	K00418	M00152	membrane	energy	complex III
+QCR9; ubiquinol-cytochrome c reductase subunit 9	K00419	M00152	membrane	energy	complex III
+QCR10; ubiquinol-cytochrome c reductase subunit 10	K00420	M00152	membrane	energy	complex III
+cytochrome bd ubiquinol oxidase subunit I [EC:1.10.3.14]	K00425	M00153	membrane	energy	complex IV
+cytochrome bd ubiquinol oxidase subunit II [EC:1.10.3.14]	K00426	M00153	membrane	energy	complex IV
+cydX; cytochrome bd-I ubiquinol oxidase subunit X [EC:1.10.3.14]	K00424	M00153	membrane	energy	complex IV
+appX; cytochrome bd-II ubiquinol oxidase subunit AppX [EC:1.10.3.14]	K22501	M00153	membrane	energy	complex IV
+COX10; protoheme IX farnesyltransferase [EC:2.5.1.-]	K02257	M00154	membrane	energy	complex IV
+COX3; cytochrome c oxidase subunit 3	K02262	M00154	membrane	energy	complex IV
+COX1; cytochrome c oxidase subunit 1 [EC:1.9.3.1]	K02256	M00154	membrane	energy	complex IV
+COX2; cytochrome c oxidase subunit 2	K02261	M00154	membrane	energy	complex IV
+COX4; cytochrome c oxidase subunit 4	K02263	M00154	membrane	energy	complex IV
+COX5A; cytochrome c oxidase subunit 5a	K02264	M00154	membrane	energy	complex IV
+COX5B; cytochrome c oxidase subunit 5b	K02265	M00154	membrane	energy	complex IV
+COX6A; cytochrome c oxidase subunit 6a	K02266	M00154	membrane	energy	complex IV
+COX6B; cytochrome c oxidase subunit 6b	K02267	M00154	membrane	energy	complex IV
+COX6C; cytochrome c oxidase subunit 6c	K02268	M00154	membrane	energy	complex IV
+COX7; cytochrome c oxidase subunit 7	K02269	M00154	membrane	energy	complex IV
+COX7A; cytochrome c oxidase subunit 7a	K02270	M00154	membrane	energy	complex IV
+COX7B; cytochrome c oxidase subunit 7b	K02271	M00154	membrane	energy	complex IV
+COX7C; cytochrome c oxidase subunit 7c	K02272	M00154	membrane	energy	complex IV
+COX8; cytochrome c oxidase subunit 8	K02273	M00154	membrane	energy	complex IV
+COX11; cytochrome c oxidase assembly protein subunit 11	K02258	M00154	membrane	energy	complex IV
+COX15; cytochrome c oxidase assembly protein subunit 15	K02259	M00154	membrane	energy	complex IV
+COX17; cytochrome c oxidase assembly protein subunit 17	K02260	M00154	membrane	energy	complex IV
+coxB; cytochrome c oxidase subunit II [EC:1.9.3.1]	K02275	M00155	membrane	energy	complex IV
+coxA; cytochrome c oxidase subunit I [EC:1.9.3.1]	K02274	M00155	membrane	energy	complex IV
+coxC; cytochrome c oxidase subunit III [EC:1.9.3.1]	K02276	M00155	membrane	energy	complex IV
+coxAC; cytochrome c oxidase subunit I+III [EC:1.9.3.1]	K15408	M00155	membrane	energy	complex IV
+coxD; cytochrome c oxidase subunit IV [EC:1.9.3.1]	K02277	M00155	membrane	energy	complex IV
+ccoN; cb-type cytochrome c oxidase subunit I [EC:1.9.3.1]	K00404	M00156	membrane	energy	complex IV
+ccoO; cb-type cytochrome c oxidase subunit II	K00405	M00156	membrane	energy	complex IV
+ccoNO; cbb3-type cytochrome c oxidase subunit I/II	K15862	M00156	membrane	energy	complex IV
+ccoQ; cb-type cytochrome c oxidase subunit IV	K00407	M00156	membrane	energy	complex IV
+ccoP; cb-type cytochrome c oxidase subunit III	K00406	M00156	membrane	energy	complex IV
+ATPF1A; F-type H+-transporting ATPase subunit alpha [EC:3.6.3.14]	K02111	M00157	membrane	energy	complex V, ATPase
+ATPF1B; F-type H+-transporting ATPase subunit beta [EC:3.6.3.14]	K02112	M00157	membrane	energy	complex V, ATPase
+ATPF1D; F-type H+-transporting ATPase subunit delta	K02113	M00157	membrane	energy	complex V, ATPase
+ATPF1E; F-type H+-transporting ATPase subunit epsilon	K02114	M00157	membrane	energy	complex V, ATPase
+ATPF1G, atpG	K02115	M00157	membrane	energy	complex V, ATPase
+ATPF0A; F-type H+-transporting ATPase subunit a	K02108	M00157	membrane	energy	complex V, ATPase
+ATPF0B; F-type H+-transporting ATPase subunit b	K02109	M00157	membrane	energy	complex V, ATPase
+ATPF0C; F-type H+-transporting ATPase subunit c	K02110	M00157	membrane	energy	complex V, ATPase
+ATPVA; V/A-type H+-transporting ATPase subunit A [EC:3.6.3.14]	K02117	M00159	membrane	energy	complex V, ATPase
+ATPVB; V/A-type H+-transporting ATPase subunit B	K02118	M00159	membrane	energy	complex V, ATPase
+ATPVC; V/A-type H+-transporting ATPase subunit C	K02119	M00159	membrane	energy	complex V, ATPase
+ATPVD; V/A-type H+-transporting ATPase subunit D	K02120	M00159	membrane	energy	complex V, ATPase
+ATPVE; V/A-type H+-transporting ATPase subunit E	K02121	M00159	membrane	energy	complex V, ATPase
+ATPVF; V/A-type H+-transporting ATPase subunit F	K02122	M00159	membrane	energy	complex V, ATPase
+ATPVG; V/A-type H+-transporting ATPase subunit G/H	K02107	M00159	membrane	energy	complex V, ATPase
+ATPVI; V/A-type H+-transporting ATPase subunit I	K02123	M00159	membrane	energy	complex V, ATPase
+ATPVK; V/A-type H+-transporting ATPase subunit K	K02124	M00159	membrane	energy	complex V, ATPase
+psbA; photosystem II reaction center D1 protein [EC:1.10.3.9]	K02703	M00161	membrane	energy	photosystem-ATP-NADPH
+psbD; photosystem II reaction center D2 protein [EC:1.10.3.9]	K02706	M00161	membrane	energy	photosystem-ATP-NADPH
+psbC; photosystem II CP43 chlorophyll apoprotein	K02705	M00161	membrane	energy	photosystem-ATP-NADPH
+psbB; photosystem II CP47 chlorophyll apoprotein	K02704	M00161	membrane	energy	photosystem-ATP-NADPH
+psbE; photosystem II cytochrome b559 subunit alpha	K02707	M00161	membrane	energy	photosystem-ATP-NADPH
+psbF; photosystem II cytochrome b559 subunit beta	K02708	M00161	membrane	energy	photosystem-ATP-NADPH
+cytochrome b6	K02635	M00162	membrane	energy	photosystem-ATP-NADPH
+cytochrome b6-f complex subunit 4	K02637	M00162	membrane	energy	photosystem-ATP-NADPH
+apocytochrome f	K02634	M00162	membrane	energy	photosystem-ATP-NADPH
+cytochrome b6-f complex iron-sulfur subunit	K02636	M00162	membrane	energy	photosystem-ATP-NADPH
+cytochrome b6-f complex subunit 6	K02642	M00162	membrane	energy	photosystem-ATP-NADPH
+cytochrome b6-f complex subunit 7	K02643	M00162	membrane	energy	photosystem-ATP-NADPH
+cytochrome b6-f complex subunit 8	K03689	M00162	membrane	energy	photosystem-ATP-NADPH
+cytochrome b6-f complex subunit 5	K02640	M00162	membrane	energy	photosystem-ATP-NADPH
+psaA; photosystem I P700 chlorophyll a apoprotein A1	K02689	M00163	membrane	energy	photosystem-ATP-NADPH
+psaB; photosystem I P700 chlorophyll a apoprotein A2	K02690	M00163	membrane	energy	photosystem-ATP-NADPH
+psaC; photosystem I subunit VII	K02691	M00163	membrane	energy	photosystem-ATP-NADPH
+psaD; photosystem I subunit II	K02692	M00163	membrane	energy	photosystem-ATP-NADPH
+psaE; photosystem I subunit IV	K02693	M00163	membrane	energy	photosystem-ATP-NADPH
+psaF; photosystem I subunit III	K02694	M00163	membrane	energy	photosystem-ATP-NADPH
+phosphoribulokinase [EC:2.7.1.19] [RN:R01523]	K00855	M00165	ana	C	CO2 fixation
+ribulose-bisphosphate carboxylase [EC:4.1.1.39] [RN:R00024]	K01601	M00165	ana	C	CO2 fixation
+ribulose-bisphosphate carboxylase [EC:4.1.1.39] [RN:R00024]	K01602	M00165	ana	C	CO2 fixation
+phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	K00927	M00165	ana	C	CO2 fixation
+glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	K05298	M00165	ana	C	CO2 fixation
+glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	K00150	M00165	ana	C	CO2 fixation
+glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	K00134	M00165	ana	C	CO2 fixation
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	K01623	M00165	ana	C	CO2 fixation
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	K01624	M00165	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K03841	M00165	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K02446	M00165	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K11532	M00165	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K01086	M00165	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K04041	M00165	ana	C	CO2 fixation
+transketolase [EC:2.2.1.1] [RN:R01067 R01641]	K00615	M00165	ana	C	CO2 fixation
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	K01623	M00165	ana	C	CO2 fixation
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	K01624	M00165	ana	C	CO2 fixation
+sedoheptulose-bisphosphatase [EC:3.1.3.37] [RN:R01845]	K01100	M00165	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K11532	M00165	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K01086	M00165	ana	C	CO2 fixation
+transketolase [EC:2.2.1.1] [RN:R01067 R01641]	K00615	M00165	ana	C	CO2 fixation
+ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	K01807	M00165	ana	C	CO2 fixation
+ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	K01808	M00165	ana	C	CO2 fixation
+phosphoribulokinase [EC:2.7.1.19] [RN:R01523]	K00855	M00166	ana	C	CO2 fixation
+ribulose-bisphosphate carboxylase [EC:4.1.1.39] [RN:R00024]	K01601	M00166	ana	C	CO2 fixation
+ribulose-bisphosphate carboxylase [EC:4.1.1.39] [RN:R00024]	K01602	M00166	ana	C	CO2 fixation
+phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	K00927	M00166	ana	C	CO2 fixation
+glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	K05298	M00166	ana	C	CO2 fixation
+glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	K00150	M00166	ana	C	CO2 fixation
+glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	K00134	M00166	ana	C	CO2 fixation
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	K01623	M00167	ana	C	CO2 fixation
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	K01624	M00167	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K03841	M00167	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K02446	M00167	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K11532	M00167	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K01086	M00167	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K04041	M00167	ana	C	CO2 fixation
+transketolase [EC:2.2.1.1] [RN:R01067 R01641]	K00615	M00167	ana	C	CO2 fixation
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	K01623	M00167	ana	C	CO2 fixation
+fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	K01624	M00167	ana	C	CO2 fixation
+sedoheptulose-bisphosphatase [EC:3.1.3.37] [RN:R01845]	K01100	M00167	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K11532	M00167	ana	C	CO2 fixation
+fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	K01086	M00167	ana	C	CO2 fixation
+transketolase [EC:2.2.1.1] [RN:R01067 R01641]	K00615	M00167	ana	C	CO2 fixation
+ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	K01807	M00167	ana	C	CO2 fixation
+ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	K01808	M00167	ana	C	CO2 fixation
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00169	M00173	ana	C	CO2 fixation, intermediate
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00170	M00173	ana	C	CO2 fixation, intermediate
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00171	M00173	ana	C	CO2 fixation, intermediate
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00172	M00173	ana	C	CO2 fixation, intermediate
+pyruvate-ferredoxin/flavodoxin oxidoreductase [EC:1.2.7.1 1.2.7.-] [RN:R01196 R10866]	K03737	M00173	ana	C	CO2 fixation, intermediate
+pyruvate,water dikinase [EC:2.7.9.2] [RN:R00199]	K01007	M00173	ana	C	CO2 fixation, intermediate
+pyruvate,orthophosphate dikinase [EC:2.7.9.1] [RN:R00206]	K01006	M00173	ana	C	CO2 fixation, intermediate
+phosphoenolpyruvate carboxylase [EC:4.1.1.31] [RN:R00345]	K01595	M00173	ana	C	CO2 fixation, intermediate
+pyruvate carboxylase subunit A [EC:6.4.1.1] [RN:R00344]	K01959	M00173	ana	C	CO2 fixation, intermediate
+pyruvate carboxylase subunit A [EC:6.4.1.1] [RN:R00344]	K01960	M00173	ana	C	CO2 fixation, intermediate
+pyruvate carboxylase subunit A [EC:6.4.1.1] [RN:R00344]	K01958	M00173	ana	C	CO2 fixation, intermediate
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00024	M00173	ana	C	CO2 fixation, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01676	M00173	ana	C	CO2 fixation, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01679	M00173	ana	C	CO2 fixation, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01677	M00173	ana	C	CO2 fixation, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01678	M00173	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00239	M00173	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00240	M00173	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00241	M00173	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00242	M00173	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00244	M00173	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00245	M00173	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00246	M00173	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00247	M00173	ana	C	CO2 fixation, intermediate
+NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	K18556	M00173	ana	C	CO2 fixation, intermediate
+NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	K18557	M00173	ana	C	CO2 fixation, intermediate
+NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	K18558	M00173	ana	C	CO2 fixation, intermediate
+NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	K18559	M00173	ana	C	CO2 fixation, intermediate
+NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	K18560	M00173	ana	C	CO2 fixation, intermediate
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01902	M00173	ana	C	CO2 fixation, intermediate
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01903	M00173	ana	C	CO2 fixation, intermediate
+2-oxoglutarate:ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	K00174	M00173	ana	C	CO2 fixation, intermediate
+2-oxoglutarate:ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	K00175	M00173	ana	C	CO2 fixation, intermediate
+2-oxoglutarate:ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	K00177	M00173	ana	C	CO2 fixation, intermediate
+2-oxoglutarate:ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	K00176	M00173	ana	C	CO2 fixation, intermediate
+isocitrate dehydrogenase [EC:1.1.1.42] [RN:R00267]	K00031	M00173	ana	C	CO2 fixation, intermediate
+aconitate hydratase [EC:4.2.1.3] [RN:R01900 R01325]	K01681	M00173	ana	C	CO2 fixation, intermediate
+aconitate hydratase [EC:4.2.1.3] [RN:R01900 R01325]	K01682	M00173	ana	C	CO2 fixation, intermediate
+ATP-citrate lyase [EC:2.3.3.8] [RN:R00352]	K15230	M00173	ana	C	CO2 fixation, intermediate
+ATP-citrate lyase [EC:2.3.3.8] [RN:R00352]	K15231	M00173	ana	C	CO2 fixation, intermediate
+citryl-CoA synthetase [EC:6.2.1.18] [RN:R01322]	K15232	M00173	ana	C	CO2 fixation, intermediate
+citryl-CoA synthetase [EC:6.2.1.18] [RN:R01322]	K15233	M00173	ana	C	CO2 fixation, intermediate
+citryl-CoA lyase [EC:4.1.3.34] [RN:R00354]	K15234	M00173	ana	C	CO2 fixation, intermediate
+methane/ammonia monooxygenase [EC:1.14.18.3] [RN:R09518]	K10944	M00174	cat	C	energy, intermediate
+methane/ammonia monooxygenase [EC:1.14.18.3] [RN:R09518]	K10945	M00174	cat	C	energy, intermediate
+methane/ammonia monooxygenase [EC:1.14.18.3] [RN:R09518]	K10946	M00174	cat	C	energy, intermediate
+methane monooxygenase component A [EC:1.14.13.25] [RN:R01142]	K16157	M00174	cat	C	energy, intermediate
+methane monooxygenase component A [EC:1.14.13.25] [RN:R01142]	K16158	M00174	cat	C	energy, intermediate
+methane monooxygenase component A [EC:1.14.13.25] [RN:R01142]	K16159	M00174	cat	C	energy, intermediate
+methane monooxygenase regulatory protein B [RN:R01142]	K16160	M00174	cat	C	energy, intermediate
+methane monooxygenase component C [EC:1.14.13.25] [RN:R01142]	K16161	M00174	cat	C	energy, intermediate
+methane monooxygenase component D [RN:R01142]	K16162	M00174	cat	C	energy, intermediate
+methanol dehydrogenase [EC:1.1.2.7] [RN:R01146]	K14028	M00174	cat	C	energy, intermediate
+methanol dehydrogenase [EC:1.1.2.7] [RN:R01146]	K14029	M00174	cat	C	energy, intermediate
+alcohol oxidase [EC:1.1.3.13] [RN:R00608]	K17066	M00174	cat	C	energy, intermediate
+nitrogenase iron protein [RN:R05185]	K02588	M00175	ana	N	N2 fixation, ATP, Fdred
+nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	K02586	M00175	ana	N	N2 fixation, ATP, Fdred
+nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	K02591	M00175	ana	N	N2 fixation, ATP, Fdred
+nitrogenase delta subunit [EC:1.18.6.1] [RN:R05185]	K00531	M00175	ana	N	N2 fixation, ATP, Fdred
+vanadium-dependent nitrogenase [EC:1.18.6.2] [RN:R12084]	K22896	M00175	ana	N	N2 fixation, ATP, Fdred
+vanadium-dependent nitrogenase [EC:1.18.6.2] [RN:R12084]	K22897	M00175	ana	N	N2 fixation, ATP, Fdred
+vanadium nitrogenase delta subunit [EC:1.18.6.2] [RN:R12084]	K22898	M00175	ana	N	N2 fixation, ATP, Fdred
+vanadium nitrogenase iron protein [RN:R12084]	K22899	M00175	ana	N	N2 fixation, ATP, Fdred
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K13811	M00176	ana	S	S assimilation
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K00958	M00176	ana	S	S assimilation
+adenylylsulfate kinase [EC:2.7.1.25] [RN:R00509]	K00860	M00176	ana	S	S assimilation
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K00955	M00176	ana	S	S assimilation
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K00957	M00176	ana	S	S assimilation
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K00956	M00176	ana	S	S assimilation
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K00957	M00176	ana	S	S assimilation
+adenylylsulfate kinase [EC:2.7.1.25] [RN:R00509]	K00860	M00176	ana	S	S assimilation
+phosphoadenosine phosphosulfate reductase [EC:1.8.4.8] [RN:R02021]	K00390	M00176	ana	S	S assimilation
+sulfite reductase (NADPH) [EC:1.8.1.2] [RN:R00858]	K00380	M00176	ana	S	S assimilation
+sulfite reductase (NADPH) [EC:1.8.1.2] [RN:R00858]	K00381	M00176	ana	S	S assimilation
+sulfite reductase (ferredoxin) [EC:1.8.7.1] [RN:R00859]	K00392	M00176	ana	S	S assimilation
+cysP; sulfate/thiosulfate transport system substrate-binding protein	K02048	M00185			Transporter
+sbp; sulfate/thiosulfate transport system substrate-binding protein	K23163	M00185			Transporter
+cysU; sulfate/thiosulfate transport system permease protein	K02046	M00185			Transporter
+cysW; sulfate/thiosulfate transport system permease protein	K02047	M00185			Transporter
+cysA; sulfate/thiosulfate transport system ATP-binding protein [EC:7.3.2.3]	K02045	M00185			Transporter
+ABC.ARG.S; lysine/arginine/ornithine transport system substrate-binding protein	K10013	M00225			Transporter
+hisM; histidine transport system permease protein	K10015	M00225			Transporter
+hisQ; histidine transport system permease protein	K10016	M00225			Transporter
+hisP; histidine transport system ATP-binding protein [EC:7.4.2.1]	K10017	M00225			Transporter
+hisJ; histidine transport system substrate-binding protein	K10014	M00226			Transporter
+hisM; histidine transport system permease protein	K10015	M00226			Transporter
+hisQ; histidine transport system permease protein	K10016	M00226			Transporter
+hisP; histidine transport system ATP-binding protein [EC:7.4.2.1]	K10017	M00226			Transporter
+glnH; glutamine transport system substrate-binding protein	K10036	M00227			Transporter
+glnP; glutamine transport system permease protein	K10037	M00227			Transporter
+glnQ; glutamine transport system ATP-binding protein [EC:7.4.2.1]	K10038	M00227			Transporter
+peb1A, glnH; aspartate/glutamate/glutamine transport system substrate-binding protein	K10039	M00228			Transporter
+peb1B, glnP, glnM; aspartate/glutamate/glutamine transport system permease protein	K10040	M00228			Transporter
+peb1C, glnQ; aspartate/glutamate/glutamine transport system ATP-binding protein [EC:7.4.2.1]	K10041	M00228			Transporter
+artJ; arginine transport system substrate-binding protein	K09996	M00229			Transporter
+artI; arginine transport system substrate-binding protein	K09997	M00229			Transporter
+artM; arginine transport system permease protein	K09998	M00229			Transporter
+artQ; arginine transport system permease protein	K09999	M00229			Transporter
+artP; arginine transport system ATP-binding protein [EC:7.4.2.1]	K10000	M00229			Transporter
+gltI; glutamate/aspartate transport system substrate-binding protein	K10001	M00230			Transporter
+gltK; glutamate/aspartate transport system permease protein	K10002	M00230			Transporter
+gltJ; glutamate/aspartate transport system permease protein	K10003	M00230			Transporter
+gltL; glutamate/aspartate transport system ATP-binding protein [EC:7.4.2.1]	K10004	M00230			Transporter
+occT; octopine/nopaline transport system substrate-binding protein	K10018	M00231			Transporter
+occM; octopine/nopaline transport system permease protein	K10019	M00231			Transporter
+occQ; octopine/nopaline transport system permease protein	K10020	M00231			Transporter
+occP; octopine/nopaline transport system ATP-binding protein [EC:7.4.2.1]	K10021	M00231			Transporter
+aapJ; general L-amino acid transport system substrate-binding protein	K09969	M00232			Transporter
+aapQ; general L-amino acid transport system permease protein	K09970	M00232			Transporter
+aapM; general L-amino acid transport system permease protein	K09971	M00232			Transporter
+aapP; general L-amino acid transport system ATP-binding protein [EC:3.6.3.-]	K09972	M00232			Transporter
+gluB; glutamate transport system substrate-binding protein	K10005	M00233			Transporter
+gluC; glutamate transport system permease protein	K10006	M00233			Transporter
+gluD; glutamate transport system permease protein	K10007	M00233			Transporter
+gluA; glutamate transport system ATP-binding protein [EC:7.4.2.1]	K10008	M00233			Transporter
+fliY, tcyA; L-cystine transport system substrate-binding protein	K02424	M00234			Transporter
+tcyB, yecS; L-cystine transport system permease protein	K10009	M00234			Transporter
+tcyC, yecC; L-cystine transport system ATP-binding protein [EC:7.4.2.1]	K10010	M00234			Transporter
+aotJ; arginine/ornithine transport system substrate-binding protein	K10022	M00235			Transporter
+aotM; arginine/ornithine transport system permease protein	K10023	M00235			Transporter
+aotQ; arginine/ornithine transport system permease protein	K10024	M00235			Transporter
+aotP; arginine/ornithine transport system ATP-binding protein [EC:7.4.2.1]	K10025	M00235			Transporter
+ABC.PA.S; polar amino acid transport system substrate-binding protein	K02030	M00236			Transporter
+ABC.PA.P; polar amino acid transport system permease protein	K02029	M00236			Transporter
+ABC.PA.A; polar amino acid transport system ATP-binding protein [EC:7.4.2.1]	K02028	M00236			Transporter
+livK; branched-chain amino acid transport system substrate-binding protein	K01999	M00237			Transporter
+livH; branched-chain amino acid transport system permease protein	K01997	M00237			Transporter
+livM; branched-chain amino acid transport system permease protein	K01998	M00237			Transporter
+livG; branched-chain amino acid transport system ATP-binding protein	K01995	M00237			Transporter
+livF; branched-chain amino acid transport system ATP-binding protein	K01996	M00237			Transporter
+ABC.MET.S; D-methionine transport system substrate-binding protein	K02073	M00238			Transporter
+ABC.MET.P; D-methionine transport system permease protein	K02072	M00238			Transporter
+ABC.MET.A; D-methionine transport system ATP-binding protein	K02071	M00238			Transporter
+pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	K00163	M00307	cat	C	NADH,ATP
+pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	K00161	M00307	cat	C	NADH,ATP
+pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	K00162	M00307	cat	C	NADH,ATP
+pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	K00627	M00307	cat	C	NADH,ATP
+pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	K00382	M00307	cat	C	NADH,ATP
+pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	K13997	M00307	cat	C	NADH,ATP
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00169	M00307	cat	C	NADH,ATP
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00170	M00307	cat	C	NADH,ATP
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00171	M00307	cat	C	NADH,ATP
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00172	M00307	cat	C	NADH,ATP
+pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K03737	M00307	cat	C	NADH,ATP
+gluconate dehydratase [EC:4.2.1.140] [RN:R01538]	K05308	M00308	cat	C	intermediate, NADH
+2-dehydro-3-deoxygluconokinase [EC:2.7.1.45] [RN:R01541]	K00874	M00308	cat	C	intermediate, NADH
+2-dehydro-3-deoxyphosphogluconate aldolase [EC:4.1.2.14] [RN:R05605]	K01625	M00308	cat	C	intermediate, NADH
+glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12] [RN:R01061]	K00134	M00308	cat	C	intermediate, NADH
+phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	K00927	M00308	cat	C	intermediate, NADH
+glyceraldehyde-3-phosphate dehydrogenase (NADP+) [EC:1.2.1.9] [RN:R01058]	K00131	M00308	cat	C	intermediate, NADH
+glyceraldehyde-3-phosphate dehydrogenase [NAD(P)+] [EC:1.2.1.90] [RN:R01058 R10860]	K18978	M00308	cat	C	intermediate, NADH
+gluconate/galactonate dehydratase [EC:4.2.1.140] [RN:R01538 R03033]	K05308	M00309	cat	C	intermediate, NADH
+2-dehydro-3-deoxy-phosphogluconate/2-dehydro-3-deoxy-6-phosphogalactonate aldolase [EC:4.1.2.55] [RN:R08570 R10616]	K11395	M00309	cat	C	intermediate, NADH
+2-dehydro-3-deoxy-D-gluconate aldolase [EC:4.1.2.51] [RN:R08570 R10616]	K18127	M00309	cat	C	intermediate, NADH
+glyceraldehyde dehydrogenase large subunit [EC:1.2.99.8] [RN:R10324]	K18020	M00309	cat	C	intermediate, NADH
+glyceraldehyde dehydrogenase large subunit [EC:1.2.99.8] [RN:R10324]	K18021	M00309	cat	C	intermediate, NADH
+glyceraldehyde dehydrogenase large subunit [EC:1.2.99.8] [RN:R10324]	K18022	M00309	cat	C	intermediate, NADH
+glyceraldehyde dehydrogenase [EC:1.2.1.89] [RN:R10615]	K18128	M00309	cat	C	intermediate, NADH
+aldehyde:ferredoxin oxidoreductase [EC:1.2.7.5] [RN:R08571]	K03738	M00309	cat	C	intermediate, NADH
+cystathionine beta-synthase [EC:4.2.1.22] [RN:R01290]	K01697	M00338	ana	C	aa biosynthesis
+cystathionine beta-synthase [EC:4.2.1.22] [RN:R01290]	K10150	M00338	ana	C	aa biosynthesis
+cystathionine gamma-lyase [EC:4.4.1.1] [RN:R01001]	K01758	M00338	ana	C	aa biosynthesis
+[methyl-Co(III) methanol-specific corrinoid protein]:coenzyme M methyltransferase [EC:2.1.1.246] [RN:R09098]	K14080	M00356	cat	C	energy, intermediate
+methanol---5-hydroxybenzimidazolylcobamide Co-methyltransferase [EC:2.1.1.90] [RN:R09098]	K04480	M00356	cat	C	energy, intermediate
+methanol corrinoid protein [RN:R09098]	K14081	M00356	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00399	M00356	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00401	M00356	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00402	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22480	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22481	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22482	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03388	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03389	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03390	M00356	cat	C	energy, intermediate
+heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	K08264	M00356	cat	C	energy, intermediate
+heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	K08265	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03388	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03389	M00356	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03390	M00356	cat	C	energy, intermediate
+F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.8.98.5 1.8.98.6] [RN:R11943 R11944]	K14127	M00356	cat	C	energy, intermediate
+F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	K14126	M00356	cat	C	energy, intermediate
+F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	K14128	M00356	cat	C	energy, intermediate
+formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	K22516	M00356	cat	C	energy, intermediate
+formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	K00125	M00356	cat	C	energy, intermediate
+acetate kinase [EC:2.7.2.1] [RN:R00315]	K00925	M00357	cat	C	energy, intermediate
+phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	K00625	M00357	cat	C	energy, intermediate
+phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	K13788	M00357	cat	C	energy, intermediate
+acetyl-CoA synthetase [EC:6.2.1.1] [RN:R00235]	K01895	M00357	cat	C	energy, intermediate
+acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R09096]	K00193	M00357	cat	C	energy, intermediate
+acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R09096]	K00197	M00357	cat	C	energy, intermediate
+acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R09096]	K00194	M00357	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00577	M00357	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00578	M00357	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00579	M00357	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00580	M00357	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00581	M00357	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00582	M00357	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00583	M00357	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00584	M00357	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00399	M00357	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00401	M00357	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00402	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22480	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22481	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22482	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03388	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03389	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03390	M00357	cat	C	energy, intermediate
+heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	K08264	M00357	cat	C	energy, intermediate
+heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	K08265	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03388	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03389	M00357	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03390	M00357	cat	C	energy, intermediate
+F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.8.98.5 1.8.98.6] [RN:R11943 R11944]	K14127	M00357	cat	C	energy, intermediate
+F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	K14126	M00357	cat	C	energy, intermediate
+F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	K14128	M00357	cat	C	energy, intermediate
+formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	K22516	M00357	cat	C	energy, intermediate
+formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	K00125	M00357	cat	C	energy, intermediate
+phosphosulfolactate synthase [EC:4.4.1.19] [RN:R07476]	K08097	M00358	ana	C	cofactor biosynthesis
+2-phosphosulfolactate phosphatase [EC:3.1.3.71] [RN:R05789]	K05979	M00358	ana	C	cofactor biosynthesis
+L-2-hydroxycarboxylate dehydrogenase (NAD+) [EC:1.1.1.337] [RN:R07136]	K05884	M00358	ana	C	cofactor biosynthesis
+sulfopyruvate decarboxylase [EC:4.1.1.79] [RN:R05774]	K13039	M00358	ana	C	cofactor biosynthesis
+sulfopyruvate decarboxylase [EC:4.1.1.79] [RN:R05774]	K06034	M00358	ana	C	cofactor biosynthesis
+pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00169	M00374	ana	C	CO2 fixation, intermediate
+pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00170	M00374	ana	C	CO2 fixation, intermediate
+pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00171	M00374	ana	C	CO2 fixation, intermediate
+pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00172	M00374	ana	C	CO2 fixation, intermediate
+pyruvate, water dikinase [EC:2.7.9.2] [RN:R00199]	K01007	M00374	ana	C	CO2 fixation, intermediate
+phosphoenolpyruvate carboxylase [EC:4.1.1.31] [RN:R00345]	K01595	M00374	ana	C	CO2 fixation, intermediate
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00024	M00374	ana	C	CO2 fixation, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01676	M00374	ana	C	CO2 fixation, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01677	M00374	ana	C	CO2 fixation, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01678	M00374	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00239	M00374	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00240	M00374	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K00241	M00374	ana	C	CO2 fixation, intermediate
+succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	K18860	M00374	ana	C	CO2 fixation, intermediate
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01902	M00374	ana	C	CO2 fixation, intermediate
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01903	M00374	ana	C	CO2 fixation, intermediate
+succinyl-CoA reductase [EC:1.2.1.76] [RN:R09280]	K15038	M00374	ana	C	CO2 fixation, intermediate
+succinyl-CoA reductase [EC:1.2.1.76] [RN:R09280]	K15017	M00374	ana	C	CO2 fixation, intermediate
+succinate semialdehyde reductase (NADPH) [EC:1.1.1.-] [RN:R09281]	K14465	M00374	ana	C	CO2 fixation, intermediate
+4-hydroxybutyrate---CoA ligase (AMP-forming) [EC:6.2.1.40] [RN:R09279]	K14467	M00374	ana	C	CO2 fixation, intermediate
+4-hydroxybutyrate---CoA ligase (AMP-forming) [EC:6.2.1.40] [RN:R09279]	K18861	M00374	ana	C	CO2 fixation, intermediate
+4-hydroxybutyryl-CoA dehydratase [EC:4.2.1.120] [RN:R10782]	K14534	M00374	ana	C	CO2 fixation, intermediate
+3-hydroxybutyryl-CoA dehydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	K15016	M00374	ana	C	CO2 fixation, intermediate
+acetyl-CoA C-acetyltransferase [EC:2.3.1.9] [RN:R00238]	K00626	M00374	ana	C	CO2 fixation, intermediate
+acetyl-CoA/propionyl-CoA carboxylase [EC:6.4.1.2 6.4.1.3] [RN:R00742 R01859]	K01964	M00375	ana	C	CO2 fixation, intermediate
+biotin carboxyl carrier protein [RN:R00742 R01859]	K15037	M00375	ana	C	CO2 fixation, intermediate
+acetyl-CoA/propionyl-CoA carboxylase [EC:6.4.1.2 6.4.1.3] [RN:R00742 R01859]	K15036	M00375	ana	C	CO2 fixation, intermediate
+malonyl-CoA reductase (NADPH) [EC:1.2.1.75] [RN:R00740]	K15017	M00375	ana	C	CO2 fixation, intermediate
+3-hydroxypropionate dehydrogenase (NADP+) [EC:1.1.1.298] [RN:R09289]	K15039	M00375	ana	C	CO2 fixation, intermediate
+3-hydroxypropionyl-coenzyme A synthetase [EC:6.2.1.36] [RN:R09286]	K15018	M00375	ana	C	CO2 fixation, intermediate
+3-hydroxypropionyl-coenzyme A dehydratase [EC:4.2.1.116] [RN:R03045]	K15019	M00375	ana	C	CO2 fixation, intermediate
+acryloyl-coenzyme A reductase [EC:1.3.1.84] [RN:R00919]	K15020	M00375	ana	C	CO2 fixation, intermediate
+methylmalonyl-CoA epimerase [EC:5.1.99.1] [RN:R02765]	K05606	M00375	ana	C	CO2 fixation, intermediate
+methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	K01848	M00375	ana	C	CO2 fixation, intermediate
+methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	K01849	M00375	ana	C	CO2 fixation, intermediate
+succinyl-coA reductase [EC:1.2.1.76] [RN:R09280]	K15038	M00375	ana	C	CO2 fixation, intermediate
+malonyl-CoA reductase (NADPH) [EC:1.2.1.75] [RN:R00740]	K15017	M00375	ana	C	CO2 fixation, intermediate
+succinate semialdehyde reductase [EC:1.1.1.-] [RN:R09281]	K14465	M00375	ana	C	CO2 fixation, intermediate
+4-hydroxybutyrate---CoA ligase (AMP-forming) [EC:6.2.1.40] [RN:R09279]	K14466	M00375	ana	C	CO2 fixation, intermediate
+4-hydroxybutyrate---CoA ligase (AMP-forming) [EC:6.2.1.40] [RN:R09279]	K18861	M00375	ana	C	CO2 fixation, intermediate
+4-hydroxybutyryl-CoA dehydratase / vinylacetyl-CoA-Delta-isomerase [EC:4.2.1.120 5.3.3.3] [RN:R10782]	K14534	M00375	ana	C	CO2 fixation, intermediate
+3-hydroxybutyryl-CoA dehydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	K15016	M00375	ana	C	CO2 fixation, intermediate
+acetyl-CoA C-acetyltransferase [EC:2.3.1.9] [RN:R00238]	K00626	M00375	ana	C	CO2 fixation, intermediate
+malyl-CoA/(S)-citramalyl-CoA lyase [EC:4.1.3.24 4.1.3.25] [RN:R00473 R00934 R00237]	K08691	M00376	ana	C	CO2 fixation, intermediate
+2-methylfumaryl-CoA hydratase [EC:4.2.1.148] [RN:R05076]	K14449	M00376	ana	C	CO2 fixation, intermediate
+2-methylfumaryl-CoA isomerase [EC:5.4.1.3] [RN:R09283]	K14470	M00376	ana	C	CO2 fixation, intermediate
+3-methylfumaryl-CoA hydratase [EC:4.2.1.153] [RN:R09282]	K09709	M00376	ana	C	CO2 fixation, intermediate
+carbon-monoxide dehydrogenase [EC:1.2.7.4] [RN:R07157]	K00198	M00377	ana	C	CO2 fixation, intermediate
+formate dehydrogenase [EC:1.17.1.10] [RN:R00134]	K05299	M00377	ana	C	CO2 fixation, intermediate
+formate dehydrogenase [EC:1.17.1.10] [RN:R00134]	K15022	M00377	ana	C	CO2 fixation, intermediate
+formate--tetrahydrofolate ligase [EC:6.3.4.3] [RN:R00943]	K01938	M00377	ana	C	CO2 fixation, intermediate
+methylenetetrahydrofolate dehydrogenase (NADP+) / methenyltetrahydrofolate cyclohydrolase [EC:1.5.1.5 3.5.4.9] [RN:R01655 R01220]	K01491	M00377	ana	C	CO2 fixation, intermediate
+methylenetetrahydrofolate reductase (NADPH) [EC:1.5.1.20] [RN:R07168]	K00297	M00377	ana	C	CO2 fixation, intermediate
+5-methyltetrahydrofolate corrinoid/iron sulfur protein methyltransferase [EC:2.1.1.258] [RN:R02289]	K15023	M00377	ana	C	CO2 fixation, intermediate
+acetyl-CoA synthase [EC:2.3.1.169] [RN:R08433]	K14138	M00377	ana	C	CO2 fixation, intermediate
+acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R10243]	K00197	M00377	ana	C	CO2 fixation, intermediate
+acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R10243]	K00194	M00377	ana	C	CO2 fixation, intermediate
+LPPG:FO 2-phospho-L-lactate transferase [EC:2.7.8.28] [RN:R09398]	K11212	M00378	ana	C	cofactor biosynthesis
+coenzyme F420-0:L-glutamate ligase / coenzyme F420-1:gamma-L-glutamate ligase [EC:6.3.2.31 6.3.2.34] [RN:R09399 R09400]	K12234	M00378	ana	C	cofactor biosynthesis
+qoxB; cytochrome aa3-600 menaquinol oxidase subunit I [EC:1.10.3.12]	K02827	M00416	membrane	energy	complex IV, terminal oxidase alternative?
+qoxA; cytochrome aa3-600 menaquinol oxidase subunit II [EC:1.10.3.12]	K02826	M00416	membrane	energy	complex IV, terminal oxidase alternative?
+qoxC; cytochrome aa3-600 menaquinol oxidase subunit III [EC:1.10.3.12]	K02828	M00416	membrane	energy	complex IV, terminal oxidase alternative?
+qoxD; cytochrome aa3-600 menaquinol oxidase subunit IV [EC:1.10.3.12]	K02829	M00416	membrane	energy	complex IV, terminal oxidase alternative?
+cyoA; cytochrome o ubiquinol oxidase subunit II [EC:1.10.3.10]	K02297	M00417	membrane	energy	complex IV, terminal oxidase alternative?
+cyoB; cytochrome o ubiquinol oxidase subunit I [EC:1.10.3.10]	K02298	M00417	membrane	energy	complex IV, terminal oxidase alternative?
+cyoC; cytochrome o ubiquinol oxidase subunit III	K02299	M00417	membrane	energy	complex IV, terminal oxidase alternative?
+cyoD; cytochrome o ubiquinol oxidase operon protein cyoD	K02300	M00417	membrane	energy	complex IV, terminal oxidase alternative?
+cdhA; anaerobic carbon-monoxide dehydrogenase, CODH/ACS complex subunit alpha [EC:1.2.7.4] [RN:R07157]	K00192	M00422	cat/ana	C	CO2 fixation/acetate degradation
+cdhB; anaerobic carbon-monoxide dehydrogenase, CODH/ACS complex subunit epsilon [RN:R07157]	K00195	M00422	cat/ana	C	CO2 fixation/acetate degradation
+cdhC; acetyl-CoA decarbonylase/synthase, CODH/ACS complex subunit beta [EC:2.3.1.169] [RN:R09096 R10219]	K00193	M00422	cat/ana	C	CO2 fixation/acetate degradation
+cdhE; acetyl-CoA decarbonylase/synthase, CODH/ACS complex subunit gamma [EC:2.1.1.245] [RN:R09096 R10219]	K00197	M00422	cat/ana	C	CO2 fixation/acetate degradation
+cdhD; acetyl-CoA decarbonylase/synthase, CODH/ACS complex subunit delta [EC:2.1.1.245] [RN:R09096 R10219]	K00194	M00422	cat/ana	C	CO2 fixation/acetate degradation
+2-isopropylmalate synthase [EC:2.3.3.13] [RN:R01213]	K01649	M00432	ana	C	aa biosynthesis
+3-isopropylmalate dehydratase [EC:4.2.1.33] [RN:R03968 R04001]	K01702	M00432	ana	C	aa biosynthesis
+3-isopropylmalate dehydratase [EC:4.2.1.33] [RN:R03968 R04001]	K01703	M00432	ana	C	aa biosynthesis
+3-isopropylmalate dehydratase [EC:4.2.1.33] [RN:R03968 R04001]	K01704	M00432	ana	C	aa biosynthesis
+3-isopropylmalate dehydrogenase [EC:1.1.1.85] [RN:R04426]	K00052	M00432	ana	C	aa biosynthesis
+homocitrate synthase [EC:2.3.3.14] [RN:R00271]	K01655	M00433	ana	C	aa biosynthesis
+homoaconitase [EC:4.2.1.- 4.2.1.36 4.2.1.114] [RN:R03444 R04371 R09720]	K17450	M00433	ana	C	aa biosynthesis
+homoaconitase [EC:4.2.1.- 4.2.1.36 4.2.1.114] [RN:R03444 R04371 R09720]	K01705	M00433	ana	C	aa biosynthesis
+homoaconitase [EC:4.2.1.- 4.2.1.36 4.2.1.114] [RN:R03444 R04371 R09720]	K16792	M00433	ana	C	aa biosynthesis
+homoaconitase [EC:4.2.1.- 4.2.1.36 4.2.1.114] [RN:R03444 R04371 R09720]	K16793	M00433	ana	C	aa biosynthesis
+homoisocitrate dehydrogenase [EC:1.1.1.87] [RN:R01934]	K05824	M00433	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K00928	M00525	ana	C	aa biosynthesis
+aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	K00133	M00525	ana	C	aa biosynthesis
+4-hydroxy-tetrahydrodipicolinate synthase [EC:4.3.3.7] [RN:R10147]	K01714	M00525	ana	C	aa biosynthesis
+4-hydroxy-tetrahydrodipicolinate reductase [EC:1.17.1.8] [RN:R04198 R04199]	K00215	M00525	ana	C	aa biosynthesis
+tetrahydrodipicolinate N-acetyltransferase [EC:2.3.1.89] [RN:R04364]	K05822	M00525	ana	C	aa biosynthesis
+aminotransferase [EC:2.6.1.-] [RN:R04467]	K00841	M00525	ana	C	aa biosynthesis
+N-acetyldiaminopimelate deacetylase [EC:3.5.1.47] [RN:R02733]	K05823	M00525	ana	C	aa biosynthesis
+diaminopimelate epimerase [EC:5.1.1.7] [RN:R02735]	K01778	M00525	ana	C	aa biosynthesis
+diaminopimelate decarboxylase [EC:4.1.1.20] [RN:R00451]	K01586	M00525	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K00928	M00526	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12524	M00526	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12525	M00526	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12526	M00526	ana	C	aa biosynthesis
+aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	K00133	M00526	ana	C	aa biosynthesis
+4-hydroxy-tetrahydrodipicolinate synthase [EC:4.3.3.7] [RN:R10147]	K01714	M00526	ana	C	aa biosynthesis
+4-hydroxy-tetrahydrodipicolinate reductase [EC:1.17.1.8] [RN:R04198 R04199]	K00215	M00526	ana	C	aa biosynthesis
+diaminopimelate dehydrogenase [EC:1.4.1.16] [RN:R02755]	K03340	M00526	ana	C	aa biosynthesis
+diaminopimelate decarboxylase [EC:4.1.1.20] [RN:R00451]	K01586	M00526	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12526	M00526	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K00928	M00527	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12524	M00527	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12525	M00527	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12526	M00527	ana	C	aa biosynthesis
+aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	K00133	M00527	ana	C	aa biosynthesis
+4-hydroxy-tetrahydrodipicolinate synthase [EC:4.3.3.7] [RN:R10147]	K01714	M00527	ana	C	aa biosynthesis
+4-hydroxy-tetrahydrodipicolinate reductase [EC:1.17.1.8] [RN:R04198 R04199]	K00215	M00527	ana	C	aa biosynthesis
+LL-diaminopimelate aminotransferase [EC:2.6.1.83] [RN:R07613]	K10206	M00527	ana	C	aa biosynthesis
+diaminopimelate epimerase [EC:5.1.1.7] [RN:R02735]	K01778	M00527	ana	C	aa biosynthesis
+diaminopimelate decarboxylase [EC:4.1.1.20] [RN:R00451]	K01586	M00527	ana	C	aa biosynthesis
+aspartate kinase [EC:2.7.2.4] [RN:R00480]	K12526	M00527	ana	C	aa biosynthesis
+ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	K10944	M00528	cat	N	energy
+ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	K10945	M00528	cat	N	energy
+ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	K10946	M00528	cat	N	energy
+hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	K10535	M00528	cat	N	energy
+nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	K00370	M00529	cat	N	energy
+nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	K00371	M00529	cat	N	energy
+nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	K00374	M00529	cat	N	energy
+periplasmic nitrate reductase NapA [EC:1.7.99.-] [RN:R00798]	K02567	M00529	cat	N	energy
+cytochrome c-type protein NapB [RN:R00798]	K02568	M00529	cat	N	energy
+nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	K00368	M00529	cat	N	energy
+nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	K15864	M00529	cat	N	energy
+nitric oxide reductase [EC:1.7.2.5] [RN:R00294]	K04561	M00529	cat	N	energy
+nitric oxide reductase [EC:1.7.2.5] [RN:R00294]	K02305	M00529	cat	N	energy
+fungal nitric oxide reductase [EC:1.7.1.14] [RN:R02492 R09446 R09808 R09809]	K15877	M00529	cat	N	energy
+nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]	K00376	M00529	cat	N	energy
+respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	K00370	M00530	cat	N	energy
+respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	K00371	M00530	cat	N	energy
+respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	K00374	M00530	cat	N	energy
+dissimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	K02567	M00530	cat	N	energy
+dissimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	K02568	M00530	cat	N	energy
+respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787]	K00362	M00530	cat	N	energy
+respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787]	K00363	M00530	cat	N	energy
+respiratory nitrite reductase [EC:1.7.2.2] [RN:R05712]	K03385	M00530	cat	N	energy
+respiratory nitrite reductase [EC:1.7.2.2] [RN:R05712]	K15876	M00530	cat	N	energy
+assimilatory nitrate reductase [EC:1.7.7.2] [RN:R00791]	K00367	M00531	ana	N	nitrogen assimilation
+nitrate reductase (NAD(P)H) [EC:1.7.1.1 1.7.1.2 1.7.1.3] [RN:R00794 R00796]	K10534	M00531	ana	N	nitrogen assimilation
+assimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	K00372	M00531	ana	N	nitrogen assimilation
+assimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	K00360	M00531	ana	N	nitrogen assimilation
+assimilatory nitrite reductase [EC:1.7.7.1] [RN:R00790]	K00366	M00531	ana	N	nitrogen assimilation
+assimilatory nitrite reductase [EC:1.7.1.4] [RN:R00787 R00789]	K17877	M00531	ana	N	nitrogen assimilation
+glycine cleavage system [RN:R01221]	K00281	M00532	cat	C	side pathway, CBB
+glycine cleavage system [RN:R01221]	K00605	M00532	cat	C	side pathway, CBB
+glycine cleavage system [RN:R01221]	K00382	M00532	cat	C	side pathway, CBB
+glycine cleavage system [RN:R01221]	K02437	M00532	cat	C	side pathway, CBB
+cimA; D-citramalate synthase [EC:2.3.1.182] [RN:R07399]	K09011	M00535	ana	C	aa biosynthesis
+leuCD; 3-isopropylmalate/(R)-2-methylmalate dehydratase [EC:4.2.1.33 4.2.1.35] [RN:R03896 R03898]	K01703	M00535	ana	C	aa biosynthesis
+leuCD; 3-isopropylmalate/(R)-2-methylmalate dehydratase [EC:4.2.1.33 4.2.1.35] [RN:R03896 R03898]	K01704	M00535	ana	C	aa biosynthesis
+leuB; 3-isopropylmalate dehydrogenase [EC:1.1.1.85] [RN:R00994]	K00052	M00535	ana	C	aa biosynthesis
+hexokinase [EC:2.7.1.1] [RN:R01786]	K00844	M00549	ana	C	nucleotide biosynthesis
+glucokinase [EC:2.7.1.2] [RN:R01786]	K00845	M00549	ana	C	nucleotide biosynthesis
+glucokinase [EC:2.7.1.2] [RN:R01786]	K12407	M00549	ana	C	nucleotide biosynthesis
+polyphosphate glucokinase [EC:2.7.1.63] [RN:R02189]	K00886	M00549	ana	C	nucleotide biosynthesis
+phosphoglucomutase [EC:5.4.2.2] [RN:R00959]	K01835	M00549	ana	C	nucleotide biosynthesis
+UTP--glucose-1-phosphate uridylyltransferase [EC:2.7.7.9] [RN:R00289]	K00963	M00549	ana	C	nucleotide biosynthesis
+galactonate dehydratase [EC:4.2.1.6] [RN:R03033]	K01684	M00552	cat	C	???surgar degradation
+2-dehydro-3-deoxygalactonokinase [EC:2.7.1.58] [RN:R03387]	K00883	M00552	cat	C	???surgar degradation
+2-dehydro-3-deoxyphosphogalactonate aldolase [EC:4.1.2.21] [RN:R01064]	K01631	M00552	cat	C	???surgar degradation
+glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12] [RN:R01061]	K00134	M00552	cat	C	???surgar degradation
+phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	K00927	M00552	cat	C	???surgar degradation
+galactokinase [EC:2.7.1.6] [RN:R01092]	K00849	M00554	ana	C	nucleotide biosynthesis
+UDPglucose--hexose-1-phosphate uridylyltransferase [EC:2.7.7.12] [RN:R00955]	K00965	M00554	ana	C	nucleotide biosynthesis
+choline oxidase [EC:1.1.3.17] [R01022 R08211]	K17755	M00555	ana	C-N	??? Betaine
+choline dehydrogenase [EC:1.1.99.1] [RN:R01025 R08557 R08558]	K00108	M00555	ana	C-N	??? Betaine
+choline dehydrogenase [EC:1.1.99.1] [RN:R01025 R08557 R08558]	K11440	M00555	ana	C-N	??? Betaine
+betaine-aldehyde dehydrogenase [EC:1.2.1.8] [R02565 R02566]	K00130	M00555	ana	C-N	??? Betaine
+mtbA; [methyl-Co(III) methylamine-specific corrinoid protein]:coenzyme M methyltransferase [EC:2.1.1.247] [RN:R09998]	K14082	M00563	cat	C	energy, intermediate
+mtmC; monomethylamine corrinoid protein [RN:R09998]	K16177	M00563	cat	C	energy, intermediate
+mtmB; methylamine---corrinoid protein Co-methyltransferase [EC:2.1.1.248] [RN:R09998]	K16176	M00563	cat	C	energy, intermediate
+mtbC; dimethylamine corrinoid protein [RN:R09999]	K16179	M00563	cat	C	energy, intermediate
+mtbB; dimethylamine---corrinoid protein Co-methyltransferase [EC:2.1.1.249] [RN:R09999]	K16178	M00563	cat	C	energy, intermediate
+mttC; trimethylamine corrinoid protein [RN:R09124]	K14084	M00563	cat	C	energy, intermediate
+mttB; trimethylamine---corrinoid protein Co-methyltransferase [EC:2.1.1.250] [RN:R09124]	K14083	M00563	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00399	M00563	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00401	M00563	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00402	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22480	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22481	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22482	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03388	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03389	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03390	M00563	cat	C	energy, intermediate
+heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	K08264	M00563	cat	C	energy, intermediate
+heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	K08265	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03388	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03389	M00563	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03390	M00563	cat	C	energy, intermediate
+F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.8.98.5 1.8.98.6] [RN:R11943 R11944]	K14127	M00563	cat	C	energy, intermediate
+F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	K14126	M00563	cat	C	energy, intermediate
+F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	K14128	M00563	cat	C	energy, intermediate
+formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	K22516	M00563	cat	C	energy, intermediate
+formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	K00125	M00563	cat	C	energy, intermediate
+formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	K00200	M00567	cat	C	energy, intermediate
+formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	K00201	M00567	cat	C	energy, intermediate
+formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	K00202	M00567	cat	C	energy, intermediate
+formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	K00203	M00567	cat	C	energy, intermediate
+formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	K11261	M00567	cat	C	energy, intermediate
+4Fe-4S ferredoxin	K00205	M00567	cat	C	energy, intermediate
+4Fe-4S ferredoxin	K11260	M00567	cat	C	energy, intermediate
+4Fe-4S ferredoxin	K00204	M00567	cat	C	energy, intermediate
+formylmethanofuran--tetrahydromethanopterin N-formyltransferase [EC:2.3.1.101] [RN:R03390]	K00672	M00567	cat	C	energy, intermediate
+methenyltetrahydromethanopterin cyclohydrolase [EC:3.5.4.27] [RN:R03464]	K01499	M00567	cat	C	energy, intermediate
+methylenetetrahydromethanopterin dehydrogenase [EC:1.5.99.9] [RN:R04456]	K00319	M00567	cat	C	energy, intermediate
+5,10-methenyltetrahydromethanopterin hydrogenase [EC:1.12.98.2] [RN:R04455]	K13942	M00567	cat	C	energy, intermediate
+coenzyme F420-dependent N5,N10-methenyltetrahydromethanopterin reductase [EC:1.5.99.11] [RN:R04464]	K00320	M00567	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00577	M00567	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00578	M00567	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00579	M00567	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00580	M00567	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00581	M00567	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00582	M00567	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00583	M00567	cat	C	energy, intermediate
+tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	K00584	M00567	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00399	M00567	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00401	M00567	cat	C	energy, intermediate
+methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	K00402	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22480	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22481	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	K22482	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03388	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03389	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03390	M00567	cat	C	energy, intermediate
+heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	K08264	M00567	cat	C	energy, intermediate
+heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	K08265	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03388	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03389	M00567	cat	C	energy, intermediate
+heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	K03390	M00567	cat	C	energy, intermediate
+F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.8.98.5 1.8.98.6] [RN:R11943 R11944]	K14127	M00567	cat	C	energy, intermediate
+F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	K14126	M00567	cat	C	energy, intermediate
+F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	K14128	M00567	cat	C	energy, intermediate
+formate dehydrogenase (coenzyme F420) [EC1.8.98.6] [RN:R11944]	K22516	M00567	cat	C	energy, intermediate
+formate dehydrogenase (coenzyme F420) [EC1.8.98.6] [RN:R11944]	K00125	M00567	cat	C	energy, intermediate
+threonine dehydratase [EC:4.3.1.19] [RN:R00996]	K17989	M00570	ana	C	aa biosynthesis
+threonine dehydratase [EC:4.3.1.19] [RN:R00996]	K01754	M00570	ana	C	aa biosynthesis
+acetolactate synthase [EC:2.2.1.6] [RN:R08648]	K01652	M00570	ana	C	aa biosynthesis
+acetolactate synthase [EC:2.2.1.6] [RN:R08648]	K01653	M00570	ana	C	aa biosynthesis
+acetolactate synthase [EC:2.2.1.6] [RN:R08648]	K11258	M00570	ana	C	aa biosynthesis
+ketol-acid reductoisomerase [EC:1.1.1.86] [RN:R05069 R05068]	K00053	M00570	ana	C	aa biosynthesis
+dihydroxy-acid dehydratase [EC:4.2.1.9] [RN:R05070]	K01687	M00570	ana	C	aa biosynthesis
+branched-chain amino acid aminotransferase [EC:2.6.1.42] [RN:R02199]	K00826	M00570	ana	C	aa biosynthesis
+phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	K00625	M00579	cat	C	ATP, SLP
+phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	K13788	M00579	cat	C	ATP, SLP
+phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	K15024	M00579	cat	C	ATP, SLP
+acetate kinase [EC:2.7.2.1] [RN:R00315]	K00925	M00579	cat	C	ATP, SLP
+6-phospho-3-hexuloisomerase [EC:5.3.1.27] [RN:R09780]	K08094	M00580	cat	C	NADH, intermediate
+3-hexulose-6-phosphate synthase [EC:4.1.2.43] [RN:R05338]	K08093	M00580	cat	C	NADH, intermediate
+3-hexulose-6-phosphate synthase [EC:4.1.2.43] [RN:R05338]	K13812	M00580	cat	C	NADH, intermediate
+6-phospho-3-hexuloisomerase [EC:5.3.1.27] [RN:R09780]	K13831	M00580	cat	C	NADH, intermediate
+ribose 5-phosphate isomerase A [EC:5.3.1.6] [RN:R01056]	K01807	M00580	cat	C	NADH, intermediate
+soxA; sulfur-oxidizing protein SoxA	K17222	M00595	cat	S	ATP, OP
+soxX; sulfur-oxidizing protein SoxX	K17223	M00595	cat	S	ATP, OP
+soxB; sulfur-oxidizing protein SoxB	K17224	M00595	cat	S	ATP, OP
+soxC; S-disulfanyl-L-cysteine oxidoreductase SoxC [EC:1.8.2.6]	K17225	M00595	cat	S	ATP, OP
+soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]	K22622	M00595	cat	S	ATP, OP
+soxY; sulfur-oxidizing protein SoxY	K17226	M00595	cat	S	ATP, OP
+soxZ; sulfur-oxidizing protein SoxZ	K17227	M00595	cat	S	ATP, OP
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K00956	M00596	cat	S	ATP, OP, anaerobic respiration
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K00957	M00596	cat	S	ATP, OP, anaerobic respiration
+sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	K00958	M00596	cat	S	ATP, OP, anaerobic respiration
+adenylylsulfate reductase [EC:1.8.99.2] [RN:R08553]	K00394	M00596	cat	S	ATP, OP, anaerobic respiration
+adenylylsulfate reductase [EC:1.8.99.2] [RN:R08553]	K00395	M00596	cat	S	ATP, OP, anaerobic respiration
+sulfite reductase, dissimilatory-type [EC:1.8.99.5] [RN:R00861]	K11180	M00596	cat	S	ATP, OP, anaerobic respiration
+sulfite reductase, dissimilatory-type [EC:1.8.99.5] [RN:R00861]	K11181	M00596	cat	S	ATP, OP, anaerobic respiration
+pufL; photosynthetic reaction center L subunit	K08928	M00597	ana	C	ATP, NADH, photosynthesis
+pufM; photosynthetic reaction center M subunit	K08929	M00597	ana	C	ATP, NADH, photosynthesis
+pscA; photosystem P840 reaction center large subunit	K08940	M00598	ana	C	ATP, NADH, photosynthesis
+pscB; photosystem P840 reaction center iron-sulfur protein	K08941	M00598	ana	C	ATP, NADH, photosynthesis
+pscC; photosystem P840 reaction center cytochrome c551	K08942	M00598	ana	C	ATP, NADH, photosynthesis
+pscD; photosystem P840 reaction center protein PscD	K08943	M00598	ana	C	ATP, NADH, photosynthesis
+S-adenosylmethionine synthetase [EC:2.5.1.6] [RN:R00177]	K00789	M00609	ana	C	aa biosynthesis
+putative AdoMet-dependent methyltransferase [EC:2.1.1.-] [RN:R10404]	K17462	M00609	ana	C	aa biosynthesis
+S-adenosylhomocysteine/5'-methylthioadenosine nucleosidase [EC:3.2.2.9] [RN:R00194]	K01243	M00609	ana	C	aa biosynthesis
+S-adenosylhomocysteine/5'-methylthioadenosine nucleosidase [EC:3.2.2.9] [RN:R00194]	K18284	M00609	ana	C	aa biosynthesis
+S-ribosylhomocysteine lyase [EC:4.4.1.21] [RN:R01291]	K07173	M00609	ana	C	aa biosynthesis
+cystathionine beta-synthase (O-acetyl-L-serine) [EC:2.5.1.134] [RN:R10305]	K17216	M00609	ana	C	aa biosynthesis
+cystathionine gamma-lyase [EC:4.4.1.1] [RN:R01001]	K17217	M00609	ana	C	aa biosynthesis
+NRT; MFS transporter, NNP family, nitrate/nitrite transporter	K02575	M00615	ana	N	transporter
+pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00169	M00620	cat	C	NADH, intermediate
+pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00170	M00620	cat	C	NADH, intermediate
+pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00171	M00620	cat	C	NADH, intermediate
+pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	K00172	M00620	cat	C	NADH, intermediate
+pyruvate carboxylase [EC:6.4.1.1] [RN:R00344]	K01959	M00620	cat	C	NADH, intermediate
+pyruvate carboxylase [EC:6.4.1.1] [RN:R00344]	K01960	M00620	cat	C	NADH, intermediate
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00024	M00620	cat	C	NADH, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01677	M00620	cat	C	NADH, intermediate
+fumarate hydratase [EC:4.2.1.2] [RN:R01082]	K01678	M00620	cat	C	NADH, intermediate
+fumarate reductase (CoM/CoB) [EC:1.3.4.1] [RN:R10660]	K18209	M00620	cat	C	NADH, intermediate
+fumarate reductase (CoM/CoB) [EC:1.3.4.1] [RN:R10660]	K18210	M00620	cat	C	NADH, intermediate
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01902	M00620	cat	C	NADH, intermediate
+succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	K01903	M00620	cat	C	NADH, intermediate
+2-oxoglutarate ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	K00174	M00620	cat	C	NADH, intermediate
+2-oxoglutarate ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	K00175	M00620	cat	C	NADH, intermediate
+2-oxoglutarate ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	K00176	M00620	cat	C	NADH, intermediate
+2-oxoglutarate ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	K00177	M00620	cat	C	NADH, intermediate
+glucuronate isomerase [EC:5.3.1.12] [RN:R01983]	K01812	M00631	cat	C	NADH, intermediate
+tagaturonate reductase [EC:1.1.1.58] [RN:R02555]	K00041	M00631	cat	C	NADH, intermediate
+altronate hydrolase [EC:4.2.1.7] [RN:R01540]	K01685	M00631	cat	C	NADH, intermediate
+altronate hydrolase [EC:4.2.1.7] [RN:R01540]	K16849	M00631	cat	C	NADH, intermediate
+altronate hydrolase [EC:4.2.1.7] [RN:R01540]	K16850	M00631	cat	C	NADH, intermediate
+2-dehydro-3-deoxygluconokinase [EC:2.7.1.45] [RN:R01541]	K00874	M00631	cat	C	NADH, intermediate
+2-dehydro-3-deoxy-phosphogluconate aldolase [EC:4.1.2.14] [RN:R05605]	K01625	M00631	cat	C	NADH, intermediate
+2-dehydro-3-deoxy-phosphogluconate aldolase [EC:4.1.2.14] [RN:R05605]	K17463	M00631	cat	C	NADH, intermediate
+aldose 1-epimerase [EC:5.1.3.3] [RN:R10619]	K01785	M00632	cat	C	NADH, intermediate
+galactokinase [EC:2.7.1.6] [RN:R01092]	K00849	M00632	cat	C	NADH, intermediate
+UDPglucose--hexose-1-phosphate uridylyltransferase [EC:2.7.7.12] [RN:R00955]	K00965	M00632	cat	C	NADH, intermediate
+UDP-glucose 4-epimerase [EC:5.1.3.2] [RN:R00291]	K01784	M00632	cat	C	NADH, intermediate???
+gluconate dehydratase [EC:4.2.1.140] [RN:R01538 R03033]	K05308	M00633	cat	C	NADH, intermediate???
+2-dehydro-3-deoxygluconokinase [EC:2.7.1.178] [RN:R01541 R03387]	K18126	M00633	cat	C	NADH, intermediate???
+2-dehydro-3-deoxyphosphogluconate aldolase [EC:4.1.2.55] [RN:R05605 R01064]	K11395	M00633	cat	C	NADH, intermediate???
+glyceraldehyde-3-phosphate dehydrogenase (NADP+) [EC:1.2.1.9] [RN:R01058]	K00131	M00633	cat	C	NADH, intermediate???
+glyceraldehyde-3-phosphate dehydrogenase [NAD(P)+] [EC:1.2.1.90] [RN:R01058 R10860]	K18978	M00633	cat	C	NADH, intermediate???
+citrate synthase [EC:2.3.3.1] [RN:R00351]	K01647	M00740	cat	C	C fixation, intermediate
+aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900]	K01681	M00740	cat	C	C fixation, intermediate
+isocitrate dehydrogenase [EC:1.1.1.42] [RN:R01899 R00268]	K00031	M00740	cat	C	C fixation, intermediate
+glutamate dehydrogenase (NAD(P)+) [EC:1.4.1.3] [RN:R00248]	K00261	M00740	cat	C	C fixation, intermediate
+methylaspartate mutase epsilon subunit [EC:5.4.99.1] [RN:R00262]	K19268	M00740	cat	C	C fixation, intermediate
+methylaspartate mutase epsilon subunit [EC:5.4.99.1] [RN:R00262]	K01846	M00740	cat	C	C fixation, intermediate
+methylaspartate ammonia-lyase [EC:4.3.1.2] [RN:R03696]	K04835	M00740	cat	C	C fixation, intermediate
+succinyl-CoA:mesaconate CoA transferase [EC:2.8.3.-] [RN:R10904]	K19280	M00740	cat	C	C fixation, intermediate
+2-methylfumaryl-CoA hydratase [EC:4.2.1.148] [RN:R05076]	K14449	M00740	cat	C	C fixation, intermediate
+beta-methylmalyl-CoA/(S)-malyl-CoA lyase [EC:4.1.3.24] [RN:R00934]	K19281	M00740	cat	C	C fixation, intermediate
+bifunctional (S)-malyl-CoA lyase/thioesterase [EC:4.1.3.24 3.1.2.30] [RN:R00473 R10612]	K19282	M00740	cat	C	C fixation, intermediate
+malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	K00024	M00740	cat	C	C fixation, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K01965	M00741	cat	C	NADH, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K01966	M00741	cat	C	NADH, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K11263	M00741	cat	C	NADH, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K18472	M00741	cat	C	NADH, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K19312	M00741	cat	C	NADH, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K22568	M00741	cat	C	NADH, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K01964	M00741	cat	C	NADH, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K15036	M00741	cat	C	NADH, intermediate
+propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	K15037	M00741	cat	C	NADH, intermediate
+methylmalonyl-CoA/ethylmalonyl-CoA epimerase [EC:5.1.99.1] [RN:R02765]	K05606	M00741	cat	C	NADH, intermediate
+methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	K01847	M00741	cat	C	NADH, intermediate
+methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	K01848	M00741	cat	C	NADH, intermediate
+methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	K01849	M00741	cat	C	NADH, intermediate
+glutamate--LysW ligase ArgX [EC:6.3.2.-] [RN:R10929]	K19412	M00763	ana	C-N	aa biosynthesis
+LysW-L-glutamate kinase [EC:2.7.2.-] [RN:R10930]	K05828	M00763	ana	C-N	aa biosynthesis
+LysW-L-glutamyl-5-phosphate reductase [EC:1.2.1.-] [RN:R10931]	K05829	M00763	ana	C-N	aa biosynthesis
+LysW-L-ornithine aminotransferase [EC:2.6.1.-] [RN:R10932]	K05830	M00763	ana	C-N	aa biosynthesis
+LysW-L-ornithine carboxypeptidase [RN:R10933]	K05831	M00763	ana	C-N	aa biosynthesis
+ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	K10944	M00804	cat	N	ATP, aerobic respiration
+ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	K10945	M00804	cat	N	ATP, aerobic respiration
+ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	K10946	M00804	cat	N	ATP, aerobic respiration
+hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	K10535	M00804	cat	N	ATP, aerobic respiration
+nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	K00370	M00804	cat	N	ATP, aerobic respiration
+nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	K00371	M00804	cat	N	ATP, aerobic respiration
+acetaldehyde dehydrogenase (acetylating) 	K00132	na	cat	C	NADH, intermediate
+alcohol dehydrogenase 	K13954	na	cat	C	NADH, intermediate
+alcohol dehydrogenase 	K00001	na	cat	C	NADH, intermediate
+L-lactate dehydrogenase 	K00016	na	cat	C	NADH, intermediate
+D-lactate dehydrogenase 	K03778	na	cat	C	NADH, intermediate
+Na+-transporting NADH:ubiquinone oxidoreductase subunit A [EC:1.6.5.-]	K00346	na	membrane	energy	complex I alternatives
+Na+-transporting NADH:ubiquinone oxidoreductase subunit B [EC:1.6.5.-]	K00347	na	membrane	energy	complex I alternatives
+Na+-transporting NADH:ubiquinone oxidoreductase subunit C [EC:1.6.5.-]	K00348	na	membrane	energy	complex I alternatives
+Na+-transporting NADH:ubiquinone oxidoreductase subunit D [EC:1.6.5.-]	K00349	na	membrane	energy	complex I alternatives
+Na+-transporting NADH:ubiquinone oxidoreductase subunit E [EC:1.6.5.-]	K00350	na	membrane	energy	complex I alternatives
+Na+-transporting NADH:ubiquinone oxidoreductase subunit F [EC:1.6.5.-]	K00351	na	membrane	energy	complex I alternatives
+gluconolactonase 	K01053	na	cat	C	NADH, intermediate
+formate acetyltransferase (pyruvate-formate lyase )	K00656	na	cat	C	NADH, intermediate
+pyruvate formate lyase activating enzyme 	K04069	na	cat	C	NADH, intermediate
+putative pyruvate formate lyase activating enzyme 	K04070	na	cat	C	NADH, intermediate
+acylphosphatase 	K01512	na	cat	C	NADH, intermediate
+3-hydroxybutyryl-CoA dehydrogenase 	K00074	na	cat	C	NADH, intermediate
+malate dehydrogenase (oxaloacetate-decarboxylating) 	K00027	na	cat	C	NADH, intermediate
+carbon-monoxide dehydrogenase iron sulfur subunit	K00196	na	cat	C	NADH, intermediate
+carbon-monoxide dehydrogenase small subunit 	K03518	na	cat	C	NADH, intermediate
+carbon-monoxide dehydrogenase medium subunit 	K03519	na	cat	C	NADH, intermediate
+carbon-monoxide dehydrogenase large subunit 	K03520	na	cat	C	NADH, intermediate
+naphthoate synthase 	K01661	na	ana	C	cofactor biosynthesis
+salicylate biosynthesis isochorismate synthase 	K01851	na	ana	C	cofactor biosynthesis
+O-succinylbenzoic acid--CoA ligase 	K01911	na	ana	C	cofactor biosynthesis
+isochorismate synthase 	K02361	na	ana	C	cofactor biosynthesis
+1,4-dihydroxy-2-naphthoate octaprenyltransferase 	K02548	na	ana	C	cofactor biosynthesis
+O-succinylbenzoate synthase 	K02549	na	ana	C	cofactor biosynthesis
+2-succinyl-5-enolpyruvyl-6-hydroxy-3-cyclohexene-1-carboxylate synthase 	K02551	na	ana	C	cofactor biosynthesis
+menaquinone-specific isochorismate synthase 	K02552	na	ana	C	cofactor biosynthesis
+demethylmenaquinone methyltransferase / 2-methoxy-6-polyprenyl-1,4-benzoquinol methylase 	K03183	na	ana	C	cofactor biosynthesis
+2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxylate synthase 	K08680	na	ana	C	cofactor biosynthesis
+1,4-dihydroxy-2-naphthoyl-CoA hydrolase 	K12073	na	ana	C	cofactor biosynthesis
+1,4-dihydroxy-2-naphthoyl-CoA hydrolase 	K19222	na	ana	C	cofactor biosynthesis
+2-polyprenyl-6-hydroxyphenyl methylase / 3-demethylubiquinone-9 3-methyltransferase 	K00568	na	ana	C	cofactor biosynthesis
+4-hydroxybenzoate polyprenyltransferase 	K03179	na	ana	C	cofactor biosynthesis
+chorismate--pyruvate lyase 	K03181	na	ana	C	cofactor biosynthesis
+4-hydroxy-3-polyprenylbenzoate decarboxylase 	K03182	na	ana	C	cofactor biosynthesis
+demethylmenaquinone methyltransferase / 2-methoxy-6-polyprenyl-1,4-benzoquinol methylase 	K03183	na	ana	C	cofactor biosynthesis
+2-octaprenyl-3-methyl-6-methoxy-1,4-benzoquinol hydroxylase 	K03184	na	ana	C	cofactor biosynthesis
+2-octaprenyl-6-methoxyphenol hydroxylase 	K03185	na	ana	C	cofactor biosynthesis
+4-hydroxy-3-polyprenylbenzoate decarboxylase 	K03186	na	ana	C	cofactor biosynthesis
+chorismate lyase / 3-hydroxybenzoate synthase 	K18240	na	ana	C	cofactor biosynthesis
+2-octaprenylphenol hydroxylase 	K18800	na	ana	C	cofactor biosynthesis
+plastocyanin	K02638	na	cat	energy	photosystem-ATP-NADPH
+ferredoxin	K02639	na	cat	energy	photosystem-ATP-NADPH
+ferredoxin--NADP+ reductase 	K02641	na	cat	energy	photosystem-ATP-NADPH
+polyphosphate kinase 	K00937	na	cat	energy	???terminal oxidase
+multicomponent Na+:H+ antiporter subunit A	K05565	na	membrane	energy	energy, ATP
+multicomponent Na+:H+ antiporter subunit D	K05568	na	membrane	energy	energy, ATP
+multicomponent Na+:H+ antiporter subunit C	K05567	na	membrane	energy	energy, ATP
+multicomponent Na+:H+ antiporter subunit B	K05566	na	membrane	energy	energy, ATP
+multicomponent Na+:H+ antiporter subunit G	K05571	na	membrane	energy	energy, ATP
+multicomponent Na+:H+ antiporter subunit F	K05570	na	membrane	energy	energy, ATP
+multicomponent Na+:H+ antiporter subunit E	K05569	na	membrane	energy	energy, ATP
+electron transport complex protein RnfB	K03616	na	membrane	energy	ATP, NADH, Fd, complex 0
+electron transport complex protein RnfA	K03617	na	membrane	energy	ATP, NADH, Fd, complex 0
+electron transport complex protein RnfE	K03613	na	membrane	energy	ATP, NADH, Fd, complex 0
+electron transport complex protein RnfG	K03612	na	membrane	energy	ATP, NADH, Fd, complex 0
+electron transport complex protein RnfD	K03614	na	membrane	energy	ATP, NADH, Fd, complex 0
+electron transport complex protein RnfC	K03615	na	membrane	energy	ATP, NADH, Fd, complex 0
