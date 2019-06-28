@@ -9,7 +9,7 @@ from glob import glob
 
 from mag_annotator.utils import run_process, make_mmseqs_db, multigrep, merge_files, get_database_locs
 
-# TODO: Update to use file paths from DATABASE_LOCATIONS
+# TODO: Update to use file paths from CONFIG
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
@@ -348,7 +348,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s')
     else:
-        print('%s fasta found' % len(fasta_locs))
+        print('%s: %s fastas found' % (str(datetime.now() - start_time), len(fasta_locs)))
 
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')
@@ -437,7 +437,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         rename_gff(gene_gff, renamed_gffs, prefix=fasta_name)
 
         # get tRNAs
-        run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads)
+        run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
 
         # add fasta name to frame and index, append to list
         annotations.insert(0, 'fasta', fasta_name)

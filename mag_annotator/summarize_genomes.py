@@ -3,6 +3,8 @@ from collections import Counter, defaultdict
 import networkx as nx
 from os import path, mkdir
 
+from mag_annotator.utils import get_database_locs
+
 # TODO: add RBH information to output
 # TODO: add measure of redendancy of genes
 # TODO: add total number of copies
@@ -149,26 +151,33 @@ def make_module_coverage_summary(annotations, module_nets, min_cov=.001, group_c
     return scaffold_coverage_df
 
 
-def summarize_genomes(input_file, genome_summary_frame_path, trna_path, metabolism_path, output_dir, group_column, viral=False,
-                      min_cov=.001):
+def summarize_genomes(input_file, trna_path, output_dir, group_column, viral=False, min_cov=.001):
+    # read in data
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
-
-    # read in data for making genome summary
-    genome_summary_frame = pd.read_csv(genome_summary_frame_path, sep='\t')
     if trna_path is None:
         trna_frame = None
     else:
         trna_frame = pd.read_csv(trna_path, sep='\t', index_col=0)
 
+    # make output folder
     mkdir(output_dir)
 
+    # get db_locs and read in dbs
+    db_locs = get_database_locs()
+    if 'genome_summary_form' not in db_locs or 'module_summary_form' not in db_locs:
+        raise ValueError('Genome_summary_frame and module_step_form must be set in order to summarize genomes.')
+
+    # read in dbs
+    genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
+    module_steps_form = pd.read_csv(db_locs['module_summary_form'], sep='\t')
+
     # make genome summary
-    genome_summary = make_genome_summary(annotations, genome_summary_frame, trna_frame, group_column, viral)
+    genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, group_column, viral)
     genome_summary.to_csv(path.join(output_dir, 'genome_summary.tsv'), sep='\t')
 
     # build module nets
-    module_frame = pd.read_csv(metabolism_path, sep='\t')
-    module_nets = {module: build_module_net(module_df) for module, module_df in module_frame.groupby('module')}
+    module_nets = {module: build_module_net(module_df)
+                   for module, module_df in module_steps_form.groupby('module')}
 
     # make coverage summary
     module_coverage_summary = make_module_coverage_summary(annotations, module_nets, min_cov, group_column)

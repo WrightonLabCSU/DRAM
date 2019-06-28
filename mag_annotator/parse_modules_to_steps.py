@@ -1,8 +1,14 @@
-import argparse
 import pandas as pd
 import re
 from itertools import tee
 from KEGG_parser import downloader, parsers
+
+from mag_annotator.utils import download_file
+
+
+def get_all_kegg_modules():
+    return [line.strip().split()[0][3:]
+            for line in download_file('http://rest.kegg.jp/list/module', verbose=False).strip().split('\n')]
 
 
 def read_modules(modules_loc):
@@ -24,6 +30,7 @@ def pairwise(iterable):
 
 
 def first_open_paren_is_all(str_):
+    """Go through string and return true"""
     curr_level = 1
     for i, char in enumerate(str_[1:-1]):
         if char == ')':
@@ -70,9 +77,9 @@ def parse_definition(definition, path_tuple_base=()):
     return ko_paths
 
 
-def parse_complex(complex):
+def parse_complex(protein_complex):
     # TODO: get if required or not and if member of optional subcomplex, optional subcomplexes, 'or' subcomplexs, more
-    return re.findall('K\d\d\d\d\d', complex)
+    return re.findall('K\d\d\d\d\d', protein_complex)
 
 
 def get_rows(modules_dict):
@@ -114,8 +121,11 @@ def get_rows(modules_dict):
                 if reaction_entry is not None:  # if there is reaction info from either method then break down
                     substrate_ids = reaction_entry[0]
                     ko_dict['substrate_ids'] = ','.join(substrate_ids)
-                    ko_dict['substrate_names'] = ','.join([module_dict['COMPOUND'][substrate_id]
-                                                           for substrate_id in substrate_ids])
+                    try:
+                        ko_dict['substrate_names'] = ','.join([module_dict['COMPOUND'][substrate_id]
+                                                               for substrate_id in substrate_ids])
+                    except KeyError:
+                        ko_dict['substrate_names'] = ''
                     product_ids = reaction_entry[1]
                     ko_dict['product_ids'] = ','.join(product_ids)
                     product_names = list()
@@ -131,23 +141,12 @@ def get_rows(modules_dict):
     return all_ko_dicts
 
 
-def main(modules_list: list=None, modules_loc=None, output='empty_form.tsv'):
-    if modules_list is None:
-        modules_list = list()
-    if modules_loc is not None:
-        modules_list += read_modules(modules_loc)
+def generate_module_steps_form(modules_loc=None, output='empty_form.tsv'):
+    if modules_loc is None:
+        modules_list = get_all_kegg_modules()
+    else:
+        modules_list = read_modules(modules_loc)
     modules_dict = downloader.get_kegg_record_dict(modules_list, parsers.parse_module)
     row_dict = get_rows(modules_dict)
     form = pd.DataFrame.from_dict(row_dict)
     form.to_csv(output, sep='\t', index=False)
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-    parser.add_argument('--module_list', nargs='*', help='Space separated list of KEGG Module IDs')
-    parser.add_argument('--modules_loc', help='File with one KEGG module per line')
-    parser.add_argument('--output', help='Name of output tsv', default='form.tsv')
-
-    args = parser.parse_args()
-    main(args.module_list, args.modules_loc, args.output)

@@ -6,8 +6,6 @@ from mag_annotator.database_processing import prepare_databases, set_database_pa
 from mag_annotator.annotate_bins import annotate_bins
 from mag_annotator.summarize_genomes import summarize_genomes
 
-genome_summary_frame_path = '/Users/shafferm/lab/AMG/genome_summary_table.tsv'
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
@@ -59,6 +57,8 @@ if __name__ == '__main__':
                                     help='hmm file for dbcan, already processed with hmmpress')
     set_db_locs_parser.add_argument('--viral_db_loc', default=None,
                                     help='mmseqs2 database file from ref seq viral gene collection')
+    set_db_locs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form")
+    set_db_locs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form")
     set_db_locs_parser.set_defaults(func=set_database_paths)
 
     # parser for printing out database configuration information
@@ -83,10 +83,7 @@ if __name__ == '__main__':
     # parser for summarizing genomes
     genome_summary_parser.add_argument("-i", "--input_file", help="Annotations path")
     genome_summary_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
-    genome_summary_parser.add_argument("--genome_summary_frame_path", help="Frame of genome summary to be filled in",
-                                       default=genome_summary_frame_path)
     genome_summary_parser.add_argument("--trna_path", help="tRNA output from annotation")
-    genome_summary_parser.add_argument("--metabolism_path", help="File outlining metabolisms of modules from KEGG")
     genome_summary_parser.add_argument("--group_column", help="Column from annotations to group as organism units",
                                        default='fasta')
     genome_summary_parser.add_argument("--viral", default=False, action='store_true',

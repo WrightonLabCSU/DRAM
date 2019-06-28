@@ -3,10 +3,20 @@ from glob import glob
 from os import path, remove
 from pkg_resources import resource_filename
 import json
+from urllib.request import urlopen
 
 
 def get_database_locs():
-    return json.loads(open(path.abspath(resource_filename('mag_annotator', 'DATABASE_LOCATIONS'))).read())
+    return json.loads(open(path.abspath(resource_filename('mag_annotator', 'CONFIG'))).read())
+
+
+def download_file(url, output_file=None, verbose=True):
+    if verbose:
+        print('downloading %s' % url)
+    if output_file is None:
+        return urlopen(url).read().decode('utf-8')
+    else:
+        run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
 def run_process(command, shell=False, verbose=False):

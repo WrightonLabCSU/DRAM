@@ -6,7 +6,8 @@ from pkg_resources import resource_filename
 import json
 import gzip
 
-from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs
+from mag_annotator.parse_modules_to_steps import generate_module_steps_form
+from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file
 
 
 def get_iso_date():
@@ -18,12 +19,6 @@ def check_file_exists(db_loc):
         return True
     else:
         raise ValueError("Database location does not exist: %s" % db_loc)
-
-
-def download_file(url, output_file, verbose=True):
-    if verbose:
-        print('downloading %s' % url)
-    run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
 def download_and_process_unifref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
@@ -139,31 +134,41 @@ def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbos
     return kegg_mmseqs_db
 
 
+def download_and_process_kegg_modules(output_dir):
+    module_summary_form_path = path.join(output_dir, 'module_summary_form.%s.tsv' % get_iso_date())
+    generate_module_steps_form(output=module_summary_form_path)
+    return module_summary_form_path
+
+
+def download_and_process_genome_summary_form(output_dir):
+    genome_summary_form = path.join(output_dir, 'genome_summary_form.%s.tsv' % get_iso_date())
+    download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/genome_summary_form.tsv',
+                  genome_summary_form, verbose=True)
+    return genome_summary_form
+
+
+def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
+    if loc is not None:
+        if check_file_exists(loc):
+            dict_to_update[name] = path.abspath(loc)
+    return dict_to_update
+
+
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
-                       viral_db_loc=None):
+                       viral_db_loc=None, module_step_form_loc=None, genome_summary_form_loc=None):
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
-    if kegg_db_loc is not None:
-        if check_file_exists(kegg_db_loc):
-            db_dict['kegg'] = path.abspath(kegg_db_loc)
-    if uniref_db_loc is not None:
-        if check_file_exists(uniref_db_loc):
-            db_dict['uniref'] = path.abspath(uniref_db_loc)
-    if pfam_db_loc is not None:
-        if check_file_exists(pfam_db_loc):
-            db_dict['pfam'] = path.abspath(pfam_db_loc)
-    if pfam_hmm_dat is not None:
-        if check_file_exists(pfam_hmm_dat):
-            db_dict['pfam_description'] = process_pfam_descriptions(pfam_hmm_dat)
-    if dbcan_db_loc is not None:
-        if check_file_exists(dbcan_db_loc):
-            db_dict['dbcan'] = path.abspath(dbcan_db_loc)
-    if viral_db_loc is not None:
-        if check_file_exists(viral_db_loc):
-            db_dict['viral'] = path.abspath(viral_db_loc)
+    db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(uniref_db_loc, 'uniref', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(pfam_hmm_dat, 'pfam_description', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
 
     # change data paths
-    with open(path.abspath(resource_filename('mag_annotator', 'DATABASE_LOCATIONS')), 'w') as f:
+    with open(path.abspath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
         f.write(json.dumps(db_dict))
 
 
@@ -184,6 +189,11 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
                                                             verbose=verbose)
     output_dbs['viral_db_loc'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads,
                                                                    verbose=verbose)
+    # get module step form
+    output_dbs['module_step_form'] = download_and_process_kegg_modules(temporary)
+
+    # add genome summary form
+    output_dbs['genome_summary_form'] = download_and_process_genome_summary_form(temporary)
 
     for db_name, output_db in output_dbs.items():
         for db_file in glob('%s*' % output_db):
@@ -230,3 +240,7 @@ def print_database_locations():
     else:
         viral_loc = None
     print('RefSeq Viral db loc: %s' % str(viral_loc))
+    has_module_step_form = 'module_step_form' in db_locs
+    print('Has module steps form: %s' % has_module_step_form)
+    has_genome_summary_form = 'genome_summary_form' in db_locs
+    print('Has genome summary form: %s' % has_genome_summary_form)

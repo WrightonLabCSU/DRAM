@@ -7,10 +7,9 @@ __version__ = version
 setup(
       name="MAGotator",
       version=__version__,
-      scripts=['scripts/MAGotator.py', 'scripts/annotate_genes.py', 'scripts/prepare_databases.py',
-               'scripts/make_genome_summary.py', 'scripts/set_database_locations.py'],
+      scripts=['scripts/MAGotator.py'],
       packages=find_packages(),
-      package_data={'mag_annotator': ['DATABASE_LOCATIONS']},
+      package_data={'mag_annotator': ['CONFIG']},
       install_requires=['scikit-bio', 'pandas', 'networkx'],
       description="Annotate contigs/bins from metagenomic assemblies and create predicted metabolisms",
       author="Michael Shaffer",
