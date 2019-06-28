@@ -159,17 +159,17 @@ def summarize_genomes(input_file, trna_path, output_dir, group_column, viral=Fal
     else:
         trna_frame = pd.read_csv(trna_path, sep='\t', index_col=0)
 
-    # make output folder
-    mkdir(output_dir)
-
     # get db_locs and read in dbs
     db_locs = get_database_locs()
-    if 'genome_summary_form' not in db_locs or 'module_summary_form' not in db_locs:
+    if 'genome_summary_form' not in db_locs or 'module_step_form' not in db_locs:
         raise ValueError('Genome_summary_frame and module_step_form must be set in order to summarize genomes.')
 
     # read in dbs
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
-    module_steps_form = pd.read_csv(db_locs['module_summary_form'], sep='\t')
+    module_steps_form = pd.read_csv(db_locs['module_step_form'], sep='\t')
+
+    # make output folder
+    mkdir(output_dir)
 
     # make genome summary
     genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, group_column, viral)
