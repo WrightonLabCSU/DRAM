@@ -21,6 +21,21 @@ def check_file_exists(db_loc):
         raise ValueError("Database location does not exist: %s" % db_loc)
 
 
+def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbose=True):
+    check_file_exists(kegg_loc)
+    if download_date is None:
+        download_date = get_iso_date()
+    kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
+    make_mmseqs_db(kegg_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
+    return kegg_mmseqs_db
+
+
+def download_and_process_kegg_modules(output_dir):
+    module_summary_form_path = path.join(output_dir, 'module_summary_form.%s.tsv' % get_iso_date())
+    generate_module_steps_form(output=module_summary_form_path)
+    return module_summary_form_path
+
+
 def download_and_process_unifref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
                                  verbose=True):
     """"""
@@ -125,19 +140,16 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
     return refseq_viral_mmseqs_db
 
 
-def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbose=True):
-    check_file_exists(kegg_loc)
-    if download_date is None:
-        download_date = get_iso_date()
-    kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
-    make_mmseqs_db(kegg_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
-    return kegg_mmseqs_db
-
-
-def download_and_process_kegg_modules(output_dir):
-    module_summary_form_path = path.join(output_dir, 'module_summary_form.%s.tsv' % get_iso_date())
-    generate_module_steps_form(output=module_summary_form_path)
-    return module_summary_form_path
+def download_and_process_merops_peptidases(peptidase_faa=None, output_dir='.', threads=10, verbose=True):
+    if peptidase_faa is None:  # download database if not provided
+        peptidase_faa = path.join(output_dir, 'merops_peptidases_nr.faa')
+        merops_url = 'ftp://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
+        download_file(merops_url, peptidase_faa, verbose=verbose)
+    else:
+        check_file_exists(peptidase_faa)
+    peptidase_mmseqs_db = path.join(output_dir, 'peptidases.%s.mmsdb' % get_iso_date())
+    make_mmseqs_db(peptidase_faa, peptidase_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
+    return peptidase_mmseqs_db
 
 
 def download_and_process_genome_summary_form(output_dir):
@@ -155,7 +167,8 @@ def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
 
 
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
-                       viral_db_loc=None, module_step_form_loc=None, genome_summary_form_loc=None):
+                       viral_db_loc=None, peptidase_db_loc=None,
+                       module_step_form_loc=None, genome_summary_form_loc=None):
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
@@ -164,6 +177,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(pfam_hmm_dat, 'pfam_description', db_dict)
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
     db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(peptidase_db_loc, 'peptidase', db_dict)
     db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
 
@@ -174,7 +188,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
 
 def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
                       pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='7',
-                      viral_loc=None, keep_database_files=False, threads=10, verbose=True):
+                      viral_loc=None, peptidase_loc=None, keep_database_files=False, threads=10, verbose=True):
     mkdir(output_dir)
     temporary = path.join(output_dir, 'database_files')
     mkdir(temporary)
@@ -189,6 +203,8 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
                                                             verbose=verbose)
     output_dbs['viral_db_loc'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads,
                                                                    verbose=verbose)
+    output_dbs['peptidase_db_loc'] = download_and_process_merops_peptidases(peptidase_loc, temporary, threads=threads,
+                                                                            verbose=verbose)
     # get module step form
     output_dbs['module_step_form'] = download_and_process_kegg_modules(temporary)
 
@@ -211,35 +227,24 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
         rmtree(temporary)
 
 
+def is_db_in_dict(key, dict_):
+    if key in dict_:
+        return dict_[key]
+    else:
+        return str(None)
+
+
 def print_database_locations():
     db_locs = get_database_locs()
-    if 'kegg' in db_locs:
-        kegg_loc = db_locs['kegg']
-    else:
-        kegg_loc = None
-    print('KEGG db loc: %s' % str(kegg_loc))
-    if 'uniref' in db_locs:
-        uniref_loc = db_locs['uniref']
-    else:
-        uniref_loc = None
-    print('UniRef db loc: %s' % str(uniref_loc))
-    if 'pfam' in db_locs:
-        pfam_loc = db_locs['pfam']
-    else:
-        pfam_loc = None
-    print('Pfam db loc: %s' % str(pfam_loc))
+
+    print('KEGG db loc: %s' % is_db_in_dict('kegg', db_locs))
+    print('UniRef db loc: %s' % is_db_in_dict('uniref', db_locs))
+    print('Pfam db loc: %s' % is_db_in_dict('pfam', db_locs))
     has_pfam_desc = 'pfam_description' in db_locs
     print('Has Pfam descriptions: %s' % has_pfam_desc)
-    if 'dbcan' in db_locs:
-        dbcan_loc = db_locs['dbcan']
-    else:
-        dbcan_loc = None
-    print('dbCAN db loc: %s' % str(dbcan_loc))
-    if 'viral' in db_locs:
-        viral_loc = db_locs['viral']
-    else:
-        viral_loc = None
-    print('RefSeq Viral db loc: %s' % str(viral_loc))
+    print('dbCAN db loc: %s' % is_db_in_dict('dbcan', db_locs))
+    print('RefSeq Viral db loc: %s' % is_db_in_dict('viral', db_locs))
+    print('MEROPS peptidase db loc: %s' % is_db_in_dict('peptidase', db_locs))
     has_module_step_form = 'module_step_form' in db_locs
     print('Has module steps form: %s' % has_module_step_form)
     has_genome_summary_form = 'genome_summary_form' in db_locs

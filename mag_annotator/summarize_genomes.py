@@ -61,7 +61,7 @@ def make_genome_summary(annotations, genome_summary_frame, trna_frame=None,
         summary_frames.append(summarize_trnas(trna_frame, group_column))
 
     # merge summary frames
-    summarized_genomes = pd.concat(summary_frames)
+    summarized_genomes = pd.concat(summary_frames, sort=True)
 
     # post processing
     if viral:  # filter out empty rows and columns if viral
@@ -173,7 +173,7 @@ def summarize_genomes(input_file, trna_path, output_dir, group_column, viral=Fal
 
     # make genome summary
     genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, group_column, viral)
-    genome_summary.to_csv(path.join(output_dir, 'genome_summary.tsv'), sep='\t')
+    genome_summary.to_csv(path.join(output_dir, 'genome_summary.tsv'), sep='\t', index=False)
 
     # build module nets
     module_nets = {module: build_module_net(module_df)

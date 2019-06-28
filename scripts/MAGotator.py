@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # parser for downloading and processing databases for annotation and summarization
     prepare_dbs_parser.add_argument('--output_dir', default="~/MAGotator_data", help="output directory")
     prepare_dbs_parser.add_argument('--kegg_loc', default=None,
-                        help="KEGG protein file, should be a single .pep, please merge all KEGG pep files")
+                                    help="KEGG protein file, should be a single .pep, please merge all KEGG pep files")
     prepare_dbs_parser.add_argument('--kegg_download_date', default=None,
                                     help="Date KEGG was download to include in database name")
     prepare_dbs_parser.add_argument('--uniref_loc', default=None, help="File path to uniref, if already downloaded")
@@ -41,6 +41,8 @@ if __name__ == '__main__':
     prepare_dbs_parser.add_argument('--dbcan_version', default='7', type=str, help='version of dbCAN to use')
     prepare_dbs_parser.add_argument('--viral_loc', default=None,
                                     help="File path to viral protein faa, if already downloaded")
+    prepare_dbs_parser.add_argument('--peptidase_loc', default=None,
+                                    help="File path to MEROPS peptidase fasta, if already downloaded")
     prepare_dbs_parser.add_argument('--keep_database_files', default=False, action='store_true',
                                     help="Keep unporcessed database files")
     prepare_dbs_parser.add_argument('--threads', default=10, type=int,
@@ -57,6 +59,8 @@ if __name__ == '__main__':
                                     help='hmm file for dbcan, already processed with hmmpress')
     set_db_locs_parser.add_argument('--viral_db_loc', default=None,
                                     help='mmseqs2 database file from ref seq viral gene collection')
+    set_db_locs_parser.add_argument('--peptidase_db_loc', default=None,
+                                    help='mmseqs2 database file from MEROPS database')
     set_db_locs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form")
     set_db_locs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form")
     set_db_locs_parser.set_defaults(func=set_database_paths)

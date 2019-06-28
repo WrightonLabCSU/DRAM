@@ -156,6 +156,20 @@ def get_viral_description(viral_hits, header_dict):
     return pd.concat([new_df.transpose(), viral_hits.drop('viral_hit', axis=1)], axis=1)
 
 
+def get_peptidase_description(peptidase_hits, header_dict):
+    peptidase_list = list()
+    peptidase_family = list()
+    peptidase_descirption = list()
+    for peptidase_hit in peptidase_hits.peptidase_hit:
+        header = header_dict[peptidase_hit]
+        peptidase_list.append(peptidase_hit)
+        peptidase_family.append(re.search(r'#\w*.#', header).group()[1:-1])
+        peptidase_descirption.append(header)
+    new_df = pd.DataFrame([peptidase_list, peptidase_family, peptidase_descirption],
+                          index=['peptidase_id', 'peptidase_family', 'peptidase_hit'])
+    return pd.concat([new_df.transpose(), peptidase_hits.drop('peptidase_hit', axis=1)], axis=1)
+
+
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', pfam_descriptions=None,
                     threads=10, verbose=False):
     """Use mmseqs to run a search against pfam, currently keeping all hits and not doing any extra filtering"""
@@ -396,6 +410,13 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
             annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir, get_viral_description,
                                                          start_time, 'viral', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
+
+        # Get peptidase hits
+        if 'peptidase' in db_locs:
+            annotation_list.append(do_blast_style_search(query_db, db_locs['peptidase'], fasta_dir,
+                                                         get_viral_description, start_time, 'peptidase',
+                                                         bit_score_threshold, rbh_bit_score_threshold, threads,
+                                                         verbose))
 
         # Get pfam hits
         if 'pfam' in db_locs:
