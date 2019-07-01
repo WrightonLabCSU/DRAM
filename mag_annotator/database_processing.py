@@ -206,10 +206,10 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
     output_dbs['peptidase_db_loc'] = download_and_process_merops_peptidases(peptidase_loc, temporary, threads=threads,
                                                                             verbose=verbose)
     # get module step form
-    output_dbs['module_step_form'] = download_and_process_kegg_modules(temporary)
+    output_dbs['module_step_form_loc'] = download_and_process_kegg_modules(temporary)
 
     # add genome summary form
-    output_dbs['genome_summary_form'] = download_and_process_genome_summary_form(temporary)
+    output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary)
 
     for db_name, output_db in output_dbs.items():
         for db_file in glob('%s*' % output_db):
