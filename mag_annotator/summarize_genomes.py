@@ -61,7 +61,7 @@ def make_genome_summary(annotations, genome_summary_frame, trna_frame=None,
         summary_frames.append(summarize_trnas(trna_frame, group_column))
 
     # merge summary frames
-    summarized_genomes = pd.concat(summary_frames, sort=True)
+    summarized_genomes = pd.concat(summary_frames, sort=False)
 
     # post processing
     if viral:  # filter out empty rows and columns if viral

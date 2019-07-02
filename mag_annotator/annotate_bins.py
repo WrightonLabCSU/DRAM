@@ -414,7 +414,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         # Get peptidase hits
         if 'peptidase' in db_locs:
             annotation_list.append(do_blast_style_search(query_db, db_locs['peptidase'], fasta_dir,
-                                                         get_viral_description, start_time, 'peptidase',
+                                                         get_peptidase_description, start_time, 'peptidase',
                                                          bit_score_threshold, rbh_bit_score_threshold, threads,
                                                          verbose))
 
