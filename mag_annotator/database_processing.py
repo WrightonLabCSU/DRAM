@@ -160,9 +160,12 @@ def download_and_process_genome_summary_form(output_dir):
 
 
 def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
-    if loc is not None:
+    if loc is not None:  # if location give and exists then add to dict, else raise ValueError
         if check_file_exists(loc):
             dict_to_update[name] = path.abspath(loc)
+    else:  # if location not given and is not in dict then set to none, else leave previous value
+        if name not in dict_to_update:
+            dict_to_update[name] = None
     return dict_to_update
 
 
@@ -174,8 +177,12 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
     db_dict = check_exists_and_add_to_location_dict(uniref_db_loc, 'uniref', db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
-    if check_file_exists(pfam_hmm_dat):
+    if pfam_hmm_dat is None and 'pfam_description' not in db_dict:
+        db_dict['pfam_description'] = None
+    elif check_file_exists(pfam_hmm_dat):
         db_dict['pfam_description'] = process_pfam_descriptions(pfam_hmm_dat)
+    else:
+        pass
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
     db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
     db_dict = check_exists_and_add_to_location_dict(peptidase_db_loc, 'peptidase', db_dict)

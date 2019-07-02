@@ -183,9 +183,9 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     pfam_dict = dict()
     for gene, pfam_frame in pfam_results.groupby('qId'):
         if pfam_descriptions is None:
-            pfam_dict[gene] = ';'.join(pfam_frame.tId)
+            pfam_dict[gene] = '; '.join(pfam_frame.tId)
         else:
-            pfam_dict[gene] = ';'.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
+            pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
                                         for ascession in pfam_frame.tId])
     return pd.Series(pfam_dict, name='pfam_hits')
 
@@ -371,6 +371,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     # iterate over list of fastas and annotate each individually
     annotations_list = list()
     for fasta_loc in fasta_locs:
+        # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
         fasta_name = path.splitext(path.basename(fasta_loc))[0]
         print('%s: Annotating %s' % (str(datetime.now()-start_time), fasta_name))
         fasta_dir = path.join(tmp_dir, fasta_name)
@@ -421,8 +422,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         # Get pfam hits
         if 'pfam' in db_locs:
             print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
-            pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], fasta_dir, output_prefix='pfam', threads=threads,
-                                        verbose=verbose)
+            pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], fasta_dir, output_prefix='pfam',
+                                        pfam_descriptions=db_locs['pfam_description'], threads=threads, verbose=verbose)
             annotation_list.append(pfam_hits)
 
         # use hmmer to detect cazy ids using dbCAN
