@@ -174,8 +174,8 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
     db_dict = check_exists_and_add_to_location_dict(uniref_db_loc, 'uniref', db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
-    db_dict = check_exists_and_add_to_location_dict(process_pfam_descriptions(pfam_hmm_dat),
-                                                    'pfam_description', db_dict)
+    if check_file_exists(pfam_hmm_dat):
+        db_dict['pfam_description'] = process_pfam_descriptions(pfam_hmm_dat)
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
     db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
     db_dict = check_exists_and_add_to_location_dict(peptidase_db_loc, 'peptidase', db_dict)
