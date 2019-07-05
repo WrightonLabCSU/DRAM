@@ -10,51 +10,71 @@ from mag_annotator.utils import get_database_locs
 # TODO: add total number of copies
 # TODO: add tqdm progress bar
 
+FRAME_COLUMNS = ['gene_id', 'gene_description', 'module_id', 'module_description', 'module_family',
+                 'key_gene']
 
-def summarize_kos_from_summary_frame(annotations, group_column, genome_summary_frame):
+
+def get_all_ids(frame):
+    id_counts = dict()
+    # kegg KO ids
+    id_counts.update(Counter([j for i in frame.kegg_id if not pd.isna(i) for j in i.split(',')]))
+    # cazy ids
+    id_counts.update(Counter([j.strip().split('_')[0]
+                              for i in frame.cazy_hits if not pd.isna(i) for j in i.split(';')]))
+    # peptidase ids
+    id_counts.update(Counter([i for i in frame.peptidase_family if not pd.isna(i)]))
+    return id_counts
+
+
+def fill_genome_summary_frame(annotations, group_column, genome_summary_frame):
     grouped = annotations.groupby(group_column)
     for genome, frame in grouped:
-        kos = Counter([j for i in frame.kegg_id if type(i) is str for j in i.split(',')])
-        genome_summary_frame[genome] = [kos[i] if i in kos else 0 for i in genome_summary_frame.KO]
+        id_dict = get_all_ids(frame)
+        genome_summary_frame[genome] = [id_dict[i] if i in id_dict else 0 for i in genome_summary_frame.gene_id]
     return genome_summary_frame
 
 
-def summarize_cazys(annotations, groupby_column, genome_summary_frame_columns):
-    cazy_classes = ['AA', 'CBM', 'CE', 'GH', 'GT', 'PL', 'SLH', 'cohesin', 'dockerin']
-    cazy_lists = [i for i in list(annotations.cazy_hits) if type(i) is not float]
-    cazy_set = sorted({j for i in cazy_lists for j in i.split(',')})
-    rows = list()
-    for cazy_class in cazy_classes:
-        for cazy in cazy_set:
-            if cazy_class in cazy:
-                rows.append(('na', cazy, '%s ?' % cazy_class, 'na', 'na', 'CAZY'))
-    cazy_summary_frame = pd.DataFrame(rows, columns=genome_summary_frame_columns)
-
-    # get cazy abundances per genome
-    grouped_cazy = annotations.groupby(groupby_column)
-    for genome, frame in grouped_cazy:
-        kos = Counter([j for i in frame.cazy_hits if type(i) is str for j in i.split(',')])
-        cazy_summary_frame[genome] = [kos[i] if i in kos else 0 for i in cazy_summary_frame.KO]
-    return cazy_summary_frame
-
-
-def summarize_trnas(trnas_frame, groupby_column='fasta'):
-    df_dict = dict()
-    for virus, frame in trnas_frame.groupby(groupby_column):
-        df_dict[virus] = Counter(frame.Type)
-    trnas_summary_frame = pd.DataFrame.from_dict(df_dict)
-    trnas_summary_frame = trnas_summary_frame.fillna(0)
-    return trnas_summary_frame
+def summarize_trnas(trnas_df, groupby_column='fasta'):
+    # first build the frame
+    combos = set()
+    for index, line in trnas_df.iterrows():
+        combos.add((line.Type, line.Codon, line.Note))
+    frame_rows = list()
+    for combo in combos:
+        if combo[2] == 'pseudo':
+            gene_id = '%s, pseudo (%s)'
+            gene_description = '%s pseudo tRNA with %s Codon'
+        else:
+            gene_id = '%s (%s)'
+            gene_description = '%s pseudo tRNA with %s Codon'
+        gene_id = gene_id % (combo[0], combo[1])
+        gene_description = gene_description % (combo[0], combo[1])
+        module_id = combo[0]
+        module_description = '%s tRNA' % combo[0]
+        module_family = 'tRNA genes'
+        frame_rows.append([gene_id, gene_description, module_id, module_description, module_family, ''])
+    trna_frame = pd.DataFrame(frame_rows, columns=FRAME_COLUMNS)
+    trna_frame = trna_frame.sort_values('gene_id')
+    # then fill it in
+    trna_frame = trna_frame.set_index('gene_id')
+    for group, frame in trnas_df.groupby(groupby_column):
+        gene_ids = list()
+        for index, line in frame.iterrows():
+            if line.Note == 'pseudo':
+                gene_id = '%s, pseudo (%s)'
+            else:
+                gene_id = '%s (%s)'
+            gene_ids.append(gene_id % (line.Type, line.Codon))
+        trna_frame[group] = pd.Series(Counter(gene_ids))
+    trna_frame = trna_frame.reset_index()[FRAME_COLUMNS]
+    return trna_frame
 
 
 def make_genome_summary(annotations, genome_summary_frame, trna_frame=None,
                         group_column='fasta', viral=False):
     summary_frames = list()
     # get ko summaries
-    summary_frames.append(summarize_kos_from_summary_frame(annotations, group_column, genome_summary_frame.copy()))
-
-    # add cazys
-    summary_frames.append(summarize_cazys(annotations, group_column, genome_summary_frame.columns))
+    summary_frames.append(fill_genome_summary_frame(annotations, group_column, genome_summary_frame.copy()))
 
     # add tRNAs
     if trna_frame is not None:
@@ -77,7 +97,6 @@ def make_genome_summary(annotations, genome_summary_frame, trna_frame=None,
 
 ##################
 # Now methods for making module summary
-
 
 def build_module_net(module_df):
     # build net from a set of module paths

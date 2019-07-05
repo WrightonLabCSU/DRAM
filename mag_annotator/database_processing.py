@@ -6,7 +6,6 @@ from pkg_resources import resource_filename
 import json
 import gzip
 
-from mag_annotator.parse_modules_to_steps import generate_module_steps_form
 from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file
 
 
@@ -28,12 +27,6 @@ def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbos
     kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
     make_mmseqs_db(kegg_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
     return kegg_mmseqs_db
-
-
-def download_and_process_kegg_modules(output_dir):
-    module_summary_form_path = path.join(output_dir, 'module_summary_form.%s.tsv' % get_iso_date())
-    generate_module_steps_form(output=module_summary_form_path)
-    return module_summary_form_path
 
 
 def download_and_process_unifref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
@@ -150,6 +143,13 @@ def download_and_process_merops_peptidases(peptidase_faa=None, output_dir='.', t
     peptidase_mmseqs_db = path.join(output_dir, 'peptidases.%s.mmsdb' % get_iso_date())
     make_mmseqs_db(peptidase_faa, peptidase_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
     return peptidase_mmseqs_db
+
+
+def download_and_process_kegg_modules(output_dir):
+    module_summary_form_path = path.join(output_dir, 'module_summary_form.%s.tsv' % get_iso_date())
+    download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/module_summary_form.tsv',
+                  module_summary_form_path, verbose=True)
+    return module_summary_form_path
 
 
 def download_and_process_genome_summary_form(output_dir):

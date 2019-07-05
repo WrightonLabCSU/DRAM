@@ -9,11 +9,9 @@ from glob import glob
 
 from mag_annotator.utils import run_process, make_mmseqs_db, multigrep, merge_files, get_database_locs
 
-# TODO: Update to use file paths from CONFIG
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
-# TODO: add pfam domain descriptions
 # TODO: add gene locations in scaffold
 # TODO: add silent mode
 # TODO: add ability to take in GTDBTK file and add taxonomy to annotations
