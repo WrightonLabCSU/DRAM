@@ -67,6 +67,7 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
             gene_ids.append(gene_id % (line.Type, line.Codon))
         trna_frame[group] = pd.Series(Counter(gene_ids))
     trna_frame = trna_frame.reset_index()
+    trna_frame = trna_frame.fillna(0)
     return trna_frame
 
 
