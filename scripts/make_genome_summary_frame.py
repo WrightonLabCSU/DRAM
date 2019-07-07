@@ -3,9 +3,9 @@ import re
 
 from mag_annotator.summarize_genomes import FRAME_COLUMNS
 
-pengfei_master_frame = '/Users/shafferm/lab/AMG/genome_frames/Metabolism_AMG_v4_16June2019.xlsx'
-cazy_frame = '/Users/shafferm/lab/AMG/genome_frames/cazymes_for_new_annotation_lms.xlsx'
-merops_frame = '/Users/shafferm/lab/AMG/genome_frames/MEROPS_database_edited_MB.xlsx'
+pengfei_master_frame_loc = '/Users/shafferm/lab/AMG/genome_frames/Metabolism_AMG_v4_16June2019.xlsx'
+cazy_frame_loc = '/Users/shafferm/lab/AMG/genome_frames/cazymes_for_new_annotation_lms.xlsx'
+merops_frame_loc = '/Users/shafferm/lab/AMG/genome_frames/MEROPS_database_edited_MB.xlsx'
 trna_frame = None
 
 OUTPUT_FILE = 'genome_summary_frame.tsv'
@@ -133,4 +133,4 @@ def main(master_frame_loc, cazy_frame_loc, merops_frame_loc, output):
 
 
 if __name__ == '__main__':
-    main(pengfei_master_frame, cazy_frame, merops_frame, output=OUTPUT_FILE)
+    main(pengfei_master_frame_loc, cazy_frame_loc, merops_frame_loc, output=OUTPUT_FILE)
