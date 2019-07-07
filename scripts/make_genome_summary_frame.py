@@ -3,10 +3,9 @@ import re
 
 from mag_annotator.summarize_genomes import FRAME_COLUMNS
 
-pengfei_master_frame_loc = '/Users/shafferm/lab/AMG/genome_frames/Metabolism_AMG_v4_16June2019.xlsx'
-cazy_frame_loc = '/Users/shafferm/lab/AMG/genome_frames/cazymes_for_new_annotation_lms.xlsx'
-merops_frame_loc = '/Users/shafferm/lab/AMG/genome_frames/MEROPS_database_edited_MB.xlsx'
-trna_frame = None
+PENGFEI_MASTER_FRAME_LOC = '/Users/shafferm/lab/AMG/genome_frames/Metabolism_AMG_v4_16June2019.xlsx'
+CAZY_FRAME_LOC = '/Users/shafferm/lab/AMG/genome_frames/cazymes_for_new_annotation_lms.xlsx'
+MEROPS_FRAME_LOC = '/Users/shafferm/lab/AMG/genome_frames/MEROPS_database_edited_MB.xlsx'
 
 OUTPUT_FILE = 'genome_summary_frame.tsv'
 
@@ -52,6 +51,7 @@ def split_to_numbers_and_letters(str_):
         return items
     else:
         raise ValueError('could not split %s' % str_)
+
 
 def parse_cazy_frame(cazy_frame_loc):
     cazy_frame = pd.read_excel(cazy_frame_loc)
@@ -126,11 +126,11 @@ def main(master_frame_loc, cazy_frame_loc, merops_frame_loc, output):
     master_frame = parse_pengfei_frame(master_frame_loc)
     cazy_frame = parse_cazy_frame(cazy_frame_loc)
     merops_frame = parse_merops_frame(merops_frame_loc)
-    #TODO: Add tRNAs
+    # TODO: Add tRNAs
 
     genome_summary_frame = pd.concat([master_frame, cazy_frame, merops_frame])
     genome_summary_frame.to_csv(output, sep='\t', index=None)
 
 
 if __name__ == '__main__':
-    main(pengfei_master_frame_loc, cazy_frame_loc, merops_frame_loc, output=OUTPUT_FILE)
+    main(PENGFEI_MASTER_FRAME_LOC, CAZY_FRAME_LOC, MEROPS_FRAME_LOC, output=OUTPUT_FILE)
