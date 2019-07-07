@@ -22,7 +22,8 @@ columns of the source sheets are concatenated to make them fit the common format
 CAZY_TYPE_DICT = {'GH': 'Glycoside Hydrolases', 'GT': 'GlycosylTransferases', 'PL': 'Polysaccharide Lyases',
                   'CE': 'Carbohydrate Esterases', 'AA': 'Auxiliary Activities', 'CBM': 'Carbohydrate-Binding Modules'}
 
-def parse_pengfei_frame(master_frame_loc):
+
+def parse_pengfei_frame(pengfei_master_frame):
     master_frame = pd.read_excel(pengfei_master_frame)
     new_frame = master_frame[['KO', 'gene', 'module', 'module/pathway_name', 'metabolism', 'key gene']]
     new_frame.columns = FRAME_COLUMNS

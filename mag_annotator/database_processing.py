@@ -197,9 +197,26 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
 def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
                       pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='7',
                       viral_loc=None, peptidase_loc=None, keep_database_files=False, threads=10, verbose=True):
+    # check that all given files exist
+    if kegg_loc is not None:
+        check_file_exists(kegg_loc)
+    if uniref_loc is not None:
+        check_file_exists(uniref_loc)
+    if pfam_loc is not None:
+        check_file_exists(pfam_loc)
+    if dbcan_loc is not None:
+        check_file_exists(dbcan_loc)
+    if viral_loc is not None:
+        check_file_exists(viral_loc)
+    if peptidase_loc is not None:
+        check_file_exists(peptidase_loc)
+
+    # setup
     mkdir(output_dir)
     temporary = path.join(output_dir, 'database_files')
     mkdir(temporary)
+
+    # get databases
     output_dbs = dict()
     if kegg_loc is not None:
         output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, kegg_download_date, threads, verbose)
