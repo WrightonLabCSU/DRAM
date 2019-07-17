@@ -2,7 +2,7 @@ import pytest
 
 import os
 
-from mag_annotator.utils import run_process, make_mmseqs_db, multigrep, merge_files
+from mag_annotator.utils import run_process, make_mmseqs_db, merge_files
 
 
 def test_run_process():
@@ -25,31 +25,8 @@ def test_make_mmseqs_db(mmseqs_db_dir):
 
 
 @pytest.fixture()
-def multigrep_inputs(tmpdir):
-    hits = ['gene1', 'gene3', 'gene5']
-    data_str = "gene1 something about gene1\n" \
-               "gene2 gene2 information\n" \
-               "gene3 data including gene3\n" \
-               "gene4 data including gene4\n" \
-               "gene5 data including gene5\n"
-    data_file = tmpdir.mkdir('multigrep_test').join('multigrep_test_data.txt')
-    data_file.write(data_str)
-    return hits, str(data_file)
-
-
-def test_multigrep(multigrep_inputs):
-    keys, values = multigrep_inputs
-    dict_ = multigrep(keys, values, skip_chars=0)
-    assert len(dict_) == len(keys)
-    assert dict_['gene1'] == 'gene1 something about gene1'
-    assert dict_['gene3'] == 'gene3 data including gene3'
-    assert dict_['gene5'] == 'gene5 data including gene5'
-
-
-@pytest.fixture()
 def merge_test_dir(tmpdir):
     return tmpdir.mkdir('test_merge')
-
 
 
 @pytest.fixture()

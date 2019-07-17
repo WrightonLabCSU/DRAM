@@ -37,18 +37,6 @@ def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose
         run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
 
 
-def multigrep(search_terms, search_against, output='.', skip_chars=1):
-    # TODO: multiprocess this over the list of search terms
-    """Search a list of exact substrings against a database, takes name of mmseqs db index with _h to search against"""
-    hits_file = path.join(output, 'hits.txt')
-    with open(hits_file, 'w') as f:
-        f.write('%s\n' % '\n'.join(search_terms))
-    results = subprocess.run(['grep', '-a', '-F', '-f', hits_file, search_against], stdout=subprocess.PIPE, check=True)
-    processed_results = [i.strip()[skip_chars:] for i in results.stdout.decode('ascii').split('\n')]
-    remove(hits_file)
-    return {i.split()[0]: i for i in processed_results if i != ''}
-
-
 def merge_files(files_to_merge, outfile, has_header=False):
     """It's in the name, if has_header assumes all files have the same header"""
     files_to_merge = glob(files_to_merge)

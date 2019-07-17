@@ -7,7 +7,7 @@ from datetime import datetime
 import re
 from glob import glob
 
-from mag_annotator.utils import run_process, make_mmseqs_db, multigrep, merge_files, get_database_locs
+from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs
 
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
@@ -336,8 +336,9 @@ def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
     trna_frame.to_csv(processed_trnas, sep='\t')
 
 
-def do_blast_style_search(query_db, target_db, working_dir, get_description, start_time, db_name='database',
-                          bit_score_threshold=60, rbh_bit_score_threshold=350, threads=10, verbose=False):
+def do_blast_style_search(query_db, target_db, working_dir, header_dict, get_description, start_time,
+                          db_name='database', bit_score_threshold=60, rbh_bit_score_threshold=350, threads=10,
+                          verbose=False):
     """A convenience function to do a blast style reciprocal best hits search"""
     # Get kegg hits
     print('%s: Getting forward best hits from %s' % (str(datetime.now() - start_time), db_name))
@@ -347,7 +348,6 @@ def do_blast_style_search(query_db, target_db, working_dir, get_description, sta
     reverse_hits = get_reciprocal_best_hits(query_db, target_db, working_dir, 'gene', db_name,
                                             bit_score_threshold, rbh_bit_score_threshold, threads, verbose=verbose)
     hits = process_reciprocal_best_hits(forward_hits, reverse_hits, db_name)
-    header_dict = multigrep(hits['%s_hit' % db_name], '%s_h' % target_db)
     hits = get_description(hits, header_dict)
     return hits
 
@@ -394,28 +394,31 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
 
         # Get kegg hits
         if 'kegg' in db_locs:
-            annotation_list.append(do_blast_style_search(query_db, db_locs['kegg'], fasta_dir, get_kegg_description,
-                                                         start_time, 'kegg', bit_score_threshold,
-                                                         rbh_bit_score_threshold, threads, verbose))
+            annotation_list.append(do_blast_style_search(query_db, db_locs['kegg'], fasta_dir,
+                                                         db_locs['kegg_description'], get_kegg_description, start_time,
+                                                         'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
+                                                         verbose))
 
         # Get uniref hits
         if 'uniref' in db_locs:
-            annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], fasta_dir, get_uniref_description,
+            annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], fasta_dir,
+                                                         db_locs['uniref_description'], get_uniref_description,
                                                          start_time, 'uniref', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get viral hits
         if 'viral' in db_locs:
-            annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir, get_viral_description,
+            annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir,
+                                                         db_locs['viral_description'], get_viral_description,
                                                          start_time, 'viral', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get peptidase hits
         if 'peptidase' in db_locs:
             annotation_list.append(do_blast_style_search(query_db, db_locs['peptidase'], fasta_dir,
-                                                         get_peptidase_description, start_time, 'peptidase',
-                                                         bit_score_threshold, rbh_bit_score_threshold, threads,
-                                                         verbose))
+                                                         db_locs['peptidase_description'], get_peptidase_description,
+                                                         start_time, 'peptidase', bit_score_threshold,
+                                                         rbh_bit_score_threshold, threads, verbose))
 
         # Get pfam hits
         if 'pfam' in db_locs:

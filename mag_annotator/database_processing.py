@@ -8,6 +8,8 @@ import gzip
 
 from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file
 
+# TODO: check if dbcan or pfam is down, raise appropriate error
+
 
 def get_iso_date():
     return datetime.today().strftime('%Y%m%d')
@@ -18,6 +20,11 @@ def check_file_exists(db_loc):
         return True
     else:
         raise ValueError("Database location does not exist: %s" % db_loc)
+
+
+def make_header_dict(mmseqs_db):
+    mmseqs_headers = open('%s_h' % mmseqs_db).read().split(' \n\x00')
+    return {i.split(' ')[0]: i for i in mmseqs_headers}
 
 
 def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbose=True):
@@ -74,7 +81,7 @@ def download_pfam_descriptions(output_dir='.', pfam_release='32.0', verbose=True
     return pfam_hmm_dat
 
 
-def process_pfam_descriptions(pfam_hmm_dat=None):
+def process_pfam_descriptions(pfam_hmm_dat):
     check_file_exists(pfam_hmm_dat)
     if pfam_hmm_dat.endswith('.gz'):
         f = gzip.open(pfam_hmm_dat, 'r').read().decode('utf-8')
@@ -105,6 +112,30 @@ def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='7'
         check_file_exists(dbcan_hmm)
     run_process(['hmmpress', '-f', dbcan_hmm], verbose=verbose)
     return dbcan_hmm
+
+
+def download_dbcan_descriptions(output_dir='.', upload_date='07312018', verbose=True):
+    dbcan_fam_activities = path.join(output_dir, 'CAZyDB.%s.fam-activities.txt' % upload_date)
+    download_file('http://bcb.unl.edu/dbCAN2/download/Databases/CAZyDB.%s.fam-activities.txt' % upload_date,
+                  dbcan_fam_activities, verbose=verbose)
+    return dbcan_fam_activities
+
+
+def process_dbcan_descriptions(dbcan_fam_activities):
+    check_file_exists(dbcan_fam_activities)
+    f = open(dbcan_fam_activities)
+    description_dict = dict()
+    for line in f.readlines():
+        if not line.startswith('#') and len(line.strip()) != 0:
+            line = line.strip().split()
+            if len(line) == 1:
+                description = line[0]
+            elif line[0] == line[1]:
+                description = ' '.join(line[1:])
+            else:
+                description = ' '.join(line)
+            description_dict[line[0]] = description
+    return description_dict
 
 
 def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', viral_files=3, threads=10, verbose=True):
@@ -169,13 +200,25 @@ def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
     return dict_to_update
 
 
+def check_exists_and_add_to_description_dict(loc, name, dict_to_update):
+    if loc is not None:  # if location give and exists then add to dict, else raise ValueError
+        if check_file_exists(loc):
+            dict_to_update[name] = make_header_dict(loc)
+    else:  # if location not given and is not in dict then set to none, else leave previous value
+        if name not in dict_to_update:
+            dict_to_update[name] = None
+    return dict_to_update
+
+
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
-                       viral_db_loc=None, peptidase_db_loc=None,
+                       dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None,
                        module_step_form_loc=None, genome_summary_form_loc=None):
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
+    db_dict = check_exists_and_add_to_description_dict(kegg_db_loc, 'kegg_description', db_dict)
     db_dict = check_exists_and_add_to_location_dict(uniref_db_loc, 'uniref', db_dict)
+    db_dict = check_exists_and_add_to_description_dict(uniref_db_loc, 'uniref_description', db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
     if pfam_hmm_dat is None and 'pfam_description' not in db_dict:
         db_dict['pfam_description'] = None
@@ -184,8 +227,16 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     else:
         pass
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
+    if dbcan_fam_activities is None and 'dbcan_description' not in db_dict:
+        db_dict['dbcan_description'] = None
+    elif check_file_exists(dbcan_fam_activities):
+        db_dict['dbcan_description'] = process_dbcan_descriptions(dbcan_fam_activities)
+    else:
+        pass
     db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
+    db_dict = check_exists_and_add_to_description_dict(viral_db_loc, 'viral_description', db_dict)
     db_dict = check_exists_and_add_to_location_dict(peptidase_db_loc, 'peptidase', db_dict)
+    db_dict = check_exists_and_add_to_description_dict(peptidase_db_loc, 'peptidase_description', db_dict)
     db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
 
@@ -196,7 +247,8 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
 
 def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
                       pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='7',
-                      viral_loc=None, peptidase_loc=None, keep_database_files=False, threads=10, verbose=True):
+                      dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None, peptidase_loc=None,
+                      keep_database_files=False, threads=10, verbose=True):
     # check that all given files exist
     if kegg_loc is not None:
         check_file_exists(kegg_loc)
@@ -241,10 +293,13 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
             move(db_file, path.join(output_dir, path.basename(db_file)))
         output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
 
-    # get pfam descriptions
+    # get pfam and dbcan descriptions
     if pfam_hmm_dat is None:
         pfam_hmm_dat = download_pfam_descriptions(output_dir, pfam_release=pfam_release, verbose=verbose)
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
+    if dbcan_fam_activities is None:
+        dbcan_fam_activities = download_dbcan_descriptions(output_dir, dbcan_date, verbose=verbose)
+    output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
 
     set_database_paths(**output_dbs)
 
@@ -259,18 +314,24 @@ def is_db_in_dict(key, dict_):
         return str(None)
 
 
+def is_description_in_dict(key, dict_):
+    return key in dict_
+
+
 def print_database_locations():
     db_locs = get_database_locs()
 
     print('KEGG db loc: %s' % is_db_in_dict('kegg', db_locs))
+    print('Has KEGG descriptions: %s' % is_description_in_dict('kegg_description', db_locs))
     print('UniRef db loc: %s' % is_db_in_dict('uniref', db_locs))
+    print('Has UniRef descriptions: %s' % is_description_in_dict('uniref_description', db_locs))
     print('Pfam db loc: %s' % is_db_in_dict('pfam', db_locs))
-    has_pfam_desc = 'pfam_description' in db_locs
-    print('Has Pfam descriptions: %s' % has_pfam_desc)
+    print('Has Pfam descriptions: %s' % is_description_in_dict('pfam_description', db_locs))
     print('dbCAN db loc: %s' % is_db_in_dict('dbcan', db_locs))
+    print('Has dbCAN descriptions: %s' % is_description_in_dict('dbcan_description', db_locs))
     print('RefSeq Viral db loc: %s' % is_db_in_dict('viral', db_locs))
+    print('Has RefSeq Viral descriptions: %s' % is_description_in_dict('viral_description', db_locs))
     print('MEROPS peptidase db loc: %s' % is_db_in_dict('peptidase', db_locs))
-    has_module_step_form = 'module_step_form' in db_locs
-    print('Has module steps form: %s' % has_module_step_form)
-    has_genome_summary_form = 'genome_summary_form' in db_locs
-    print('Has genome summary form: %s' % has_genome_summary_form)
+    print('Has peptidase descriptions: %s' % is_description_in_dict('peptidase_description', db_locs))
+    print('Has module steps form: %s' % is_description_in_dict('module_step_form', db_locs))
+    print('Has genome summary form: %s' % is_description_in_dict('genome_summary_form', db_locs))
