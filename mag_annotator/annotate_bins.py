@@ -230,15 +230,18 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, verbose=False):
     return pd.Series(dbcan_dict, name='cazy_hits')
 
 
-def get_scaffold_and_gene(annotations):
+def get_gene_data(fasta_loc):
     """Take the prodigal gene headers and get the scaffold that it came from
     Based on idba_ud 'scaffold_#' scaffold names with gene name after
     """
-    gene_scaffold_list = list()
-    for label in annotations:
-        split_label = label.split('_')
-        gene_scaffold_list.append(['_'.join(split_label[:-1]), split_label[-1]])
-    return pd.DataFrame(gene_scaffold_list, columns=['scaffold', 'gene_position'], index=annotations)
+    df_dict = dict()
+    for seq in read_sequence(fasta_loc, format='fasta'):
+        split_label = seq.metadata['id'].split('_')
+        scaffold = '_'.join(split_label[:-1])
+        gene_position = split_label[-1]
+        df_dict[seq.metadata['id']] = [scaffold, gene_position] + seq.metadata['description'].split('#')[1:4]
+    return pd.DataFrame.from_dict(df_dict, orient='index', columns=['scaffold', 'gene_position', 'start_position',
+                                                                    'end_position', 'strandedness'])
 
 
 def get_unannotated(fasta_loc, annotations):
@@ -441,13 +444,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         if 'kegg' in db_locs and 'uniref' in db_locs:
             grades = assign_grades(annotations)
             annotations = pd.concat([grades, annotations], axis=1)
-        annotations = pd.concat([get_scaffold_and_gene(annotations.index), annotations], axis=1)
-
-        # add unknowns
-        unannotated_genes = get_unannotated(gene_faa, annotations.index)
-        unannotated = get_scaffold_and_gene(unannotated_genes)
-        unannotated['grade'] = 'E'
-        annotations = pd.concat([unannotated, annotations], sort=False)
+        annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1)
 
         # generate fna and faa output files with uniref annotations
         annotated_fna = path.join(fasta_dir, 'genes.annotated.fna')
