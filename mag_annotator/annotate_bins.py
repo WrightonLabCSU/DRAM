@@ -466,13 +466,12 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         annotations.index = annotations.fasta + '_' + annotations.index
         annotations_list.append(annotations)
 
-    # if given add taxonomy information
-    if gtdb_taxonomy is not None:
-        pass
-
     # merge annotation dicts
     all_annotations = pd.concat(annotations_list, sort=False)
     all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
+    # if given add taxonomy information
+    if gtdb_taxonomy is not None:
+        all_annotations['bin_taxonomy'] = gtdb_taxonomy.classification.loc[all_annotations.fasta]
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # merge gene files

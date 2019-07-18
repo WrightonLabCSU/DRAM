@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     # parser for annotating mags, you know the real thing
     annotate_mags_parser.add_argument('-i', '--input_fasta',
-                                      help="fasta file optionally with wildcards to point to individual MAGs",
+                                      help="fasta file, optionally with wildcards to point to individual MAGs",
                                       required=True)
     annotate_mags_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_mags_parser.add_argument('--min_contig_size', type=int, default=5000,
@@ -80,6 +80,7 @@ if __name__ == '__main__':
                                       help='minimum bitScore of search to retain hits')
     annotate_mags_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
                                       help='minimum bitScore of reverse best hits to retain hits')
+    annotate_mags_parser.add_argument('--gtdb_taxonomy', help='Summary file from gtdbtk taxonomy assignment from bins')
     annotate_mags_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_mags_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_mags_parser.add_argument('--verbose', action='store_true', default=False)
