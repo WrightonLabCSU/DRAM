@@ -9,6 +9,7 @@ from mag_annotator.utils import get_database_locs
 # TODO: add measure of redendancy of genes
 # TODO: add total number of copies
 # TODO: add tqdm progress bar
+# TODO: add ability to take in GTDBTK file and add taxonomy to annotations
 
 FRAME_COLUMNS = ['gene_id', 'gene_description', 'module_id', 'module_description', 'module_family',
                  'key_gene']

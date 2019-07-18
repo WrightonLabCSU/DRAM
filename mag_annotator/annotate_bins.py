@@ -12,7 +12,6 @@ from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_da
 # TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
-# TODO: add gene locations in scaffold
 # TODO: add silent mode
 # TODO: add ability to take in GTDBTK file and add taxonomy to annotations
 
@@ -356,7 +355,7 @@ def do_blast_style_search(query_db, target_db, working_dir, header_dict, get_des
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10, verbose=True):
+                  rbh_bit_score_threshold=350, gtdb_taxonomy=None, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     fasta_locs = glob(input_fasta)
@@ -368,6 +367,10 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
+
+    # get database locations
+    db_locs = get_database_locs()
+    print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # iterate over list of fastas and annotate each individually
     annotations_list = list()
@@ -393,7 +396,6 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads, verbose=verbose)
 
         annotation_list = list()
-        db_locs = get_database_locs()
 
         # Get kegg hits
         if 'kegg' in db_locs:
@@ -463,6 +465,10 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         annotations.insert(0, 'fasta', fasta_name)
         annotations.index = annotations.fasta + '_' + annotations.index
         annotations_list.append(annotations)
+
+    # if given add taxonomy information
+    if gtdb_taxonomy is not None:
+        pass
 
     # merge annotation dicts
     all_annotations = pd.concat(annotations_list, sort=False)
