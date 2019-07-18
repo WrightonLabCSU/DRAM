@@ -23,7 +23,9 @@ def check_file_exists(db_loc):
 
 
 def make_header_dict(mmseqs_db):
-    mmseqs_headers = open('%s_h' % mmseqs_db).read().split(' \n\x00')
+    mmseqs_headers_handle = open('%s_h' % mmseqs_db, 'rb')
+    mmseqs_headers = mmseqs_headers_handle.read().decode(errors='ignore')
+    mmseqs_headers = [i.strip() for i in mmseqs_headers.strip().split(' \n\x00') if len(i) > 0]
     return {i.split(' ')[0]: i for i in mmseqs_headers}
 
 
