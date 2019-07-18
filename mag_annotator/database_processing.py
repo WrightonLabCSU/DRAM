@@ -224,14 +224,14 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
     if pfam_hmm_dat is None and 'pfam_description' not in db_dict:
         db_dict['pfam_description'] = None
-    elif check_file_exists(pfam_hmm_dat):
+    elif pfam_hmm_dat is not None and check_file_exists(pfam_hmm_dat):
         db_dict['pfam_description'] = process_pfam_descriptions(pfam_hmm_dat)
     else:
         pass
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
     if dbcan_fam_activities is None and 'dbcan_description' not in db_dict:
         db_dict['dbcan_description'] = None
-    elif check_file_exists(dbcan_fam_activities):
+    elif dbcan_fam_activities is not None and check_file_exists(dbcan_fam_activities):
         db_dict['dbcan_description'] = process_dbcan_descriptions(dbcan_fam_activities)
     else:
         pass
