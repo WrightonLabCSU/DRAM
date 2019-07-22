@@ -9,5 +9,5 @@ dependencies:
   - prodigal
   - mmseqs2
   - hmmer
-  - trnascan-se
+  - trnascan-se >=2
   - networkx
