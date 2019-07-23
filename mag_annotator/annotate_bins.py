@@ -11,11 +11,10 @@ import json
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs
 
-# TODO: multiprocess prodigal by breaking up the fasta input file and then concatenate
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
 # TODO: add silent mode
-# TODO: add ability to take in GTDBTK file and add taxonomy to annotations
+# TODO: make a DB handler class that can give dicts of decriptions or file loactions from config
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -437,7 +436,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         if 'pfam' in db_locs:
             print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
             pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], fasta_dir, output_prefix='pfam',
-                                        pfam_descriptions=json.loads(open(db_locs['pfam_description'])),
+                                        pfam_descriptions=json.loads(open(db_locs['pfam_description']).read()),
                                         threads=threads, verbose=verbose)
             annotation_list.append(pfam_hits)
 
@@ -445,7 +444,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         if 'dbcan' in db_locs:
             print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
             dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir,
-                                           dbcan_descriptions=json.loads(open(db_locs['dbcan_description'])),
+                                           dbcan_descriptions=json.loads(open(db_locs['dbcan_description']).read()),
                                            verbose=verbose)
             annotation_list.append(dbcan_hits)
 
