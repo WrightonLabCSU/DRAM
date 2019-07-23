@@ -39,7 +39,7 @@ def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbos
 
 
 def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
-                                 verbose=True):
+                                verbose=True):
     """"""
     if uniref_fasta_zipped is None:  # download database if not provided
         uniref_fasta_zipped = path.join(output_dir, 'uniref%s.fasta.gz' % uniref_version)
@@ -202,10 +202,10 @@ def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
     return dict_to_update
 
 
-def check_exists_and_add_to_description_dict(loc, name, dict_to_update):
+def check_exists_and_add_to_description_dict(loc, name, get_description_dict, dict_to_update):
     if loc is not None:  # if location give and exists then add to dict, else raise ValueError
         if check_file_exists(loc):
-            description_dict = make_header_dict(loc)
+            description_dict = get_description_dict(loc)
             description_dict_loc = path.join(path.dirname(loc), '%s_description.json' % name)
             with open(description_dict_loc, 'w') as f:
                 f.write(json.dumps(description_dict))
@@ -222,27 +222,20 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(kegg_db_loc, 'kegg_description', db_dict)
+    db_dict = check_exists_and_add_to_description_dict(kegg_db_loc, 'kegg_description', make_header_dict, db_dict)
     db_dict = check_exists_and_add_to_location_dict(uniref_db_loc, 'uniref', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(uniref_db_loc, 'uniref_description', db_dict)
+    db_dict = check_exists_and_add_to_description_dict(uniref_db_loc, 'uniref_description', make_header_dict, db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
-    if pfam_hmm_dat is None and 'pfam_description' not in db_dict:
-        db_dict['pfam_description'] = None
-    elif pfam_hmm_dat is not None and check_file_exists(pfam_hmm_dat):
-        db_dict['pfam_description'] = process_pfam_descriptions(pfam_hmm_dat)
-    else:
-        pass
+    db_dict = check_exists_and_add_to_description_dict(pfam_hmm_dat, 'pfam_description', process_pfam_descriptions,
+                                                       db_dict)
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
-    if dbcan_fam_activities is None and 'dbcan_description' not in db_dict:
-        db_dict['dbcan_description'] = None
-    elif dbcan_fam_activities is not None and check_file_exists(dbcan_fam_activities):
-        db_dict['dbcan_description'] = process_dbcan_descriptions(dbcan_fam_activities)
-    else:
-        pass
+    db_dict = check_exists_and_add_to_description_dict(dbcan_fam_activities, 'dbcan_description',
+                                                       process_dbcan_descriptions, db_dict)
     db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(viral_db_loc, 'viral_description', db_dict)
+    db_dict = check_exists_and_add_to_description_dict(viral_db_loc, 'viral_description', make_header_dict, db_dict)
     db_dict = check_exists_and_add_to_location_dict(peptidase_db_loc, 'peptidase', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(peptidase_db_loc, 'peptidase_description', db_dict)
+    db_dict = check_exists_and_add_to_description_dict(peptidase_db_loc, 'peptidase_description', make_header_dict,
+                                                       db_dict)
     db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
 

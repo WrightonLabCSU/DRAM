@@ -199,7 +199,7 @@ def get_sig(tcovlen, evalue):
         return False
 
 
-def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, verbose=False):
+def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, dbcan_descriptions=None, verbose=False):
     """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
     Commands this is based on:
     hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/MAGotator/genes.faa
@@ -226,8 +226,11 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, verbose=False):
 
     dbcan_dict = dict()
     for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
-        dbcan_dict[gene] = ';'.join([i[:-4] for i in frame.tid])  # gets rid of .hmm from every result
-
+        if dbcan_descriptions is None:
+            dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
+        else:
+            dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions[ascession[:-4]], ascession[:-4])
+                                          for ascession in frame.tId])
     return pd.Series(dbcan_dict, name='cazy_hits')
 
 
@@ -434,13 +437,16 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         if 'pfam' in db_locs:
             print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
             pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], fasta_dir, output_prefix='pfam',
-                                        pfam_descriptions=db_locs['pfam_description'], threads=threads, verbose=verbose)
+                                        pfam_descriptions=json.loads(open(db_locs['pfam_description'])),
+                                        threads=threads, verbose=verbose)
             annotation_list.append(pfam_hits)
 
         # use hmmer to detect cazy ids using dbCAN
         if 'dbcan' in db_locs:
             print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
-            dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir, verbose=verbose)
+            dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir,
+                                           dbcan_descriptions=json.loads(open(db_locs['dbcan_description'])),
+                                           verbose=verbose)
             annotation_list.append(dbcan_hits)
 
         # merge dataframes
