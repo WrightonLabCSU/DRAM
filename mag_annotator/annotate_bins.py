@@ -7,6 +7,7 @@ from datetime import datetime
 import re
 from glob import glob
 import warnings
+import json
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs
 
@@ -354,7 +355,7 @@ def do_blast_style_search(query_db, target_db, working_dir, header_dict, get_des
     reverse_hits = get_reciprocal_best_hits(query_db, target_db, working_dir, 'gene', db_name,
                                             bit_score_threshold, rbh_bit_score_threshold, threads, verbose=verbose)
     hits = process_reciprocal_best_hits(forward_hits, reverse_hits, db_name)
-    hits = get_description(hits, header_dict)
+    hits = get_description(hits, json.loads(open(header_dict).read()))
     return hits
 
 

@@ -38,7 +38,7 @@ def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbos
     return kegg_mmseqs_db
 
 
-def download_and_process_unifref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
+def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
                                  verbose=True):
     """"""
     if uniref_fasta_zipped is None:  # download database if not provided
@@ -140,7 +140,7 @@ def process_dbcan_descriptions(dbcan_fam_activities):
     return description_dict
 
 
-def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', viral_files=3, threads=10, verbose=True):
+def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', viral_files=2, threads=10, verbose=True):
     """Can only download newest version"""
     # download all of the viral protein files, need to know the number of files
     # TODO: Make it so that you don't need to know number of viral files in refseq viral
@@ -205,7 +205,11 @@ def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
 def check_exists_and_add_to_description_dict(loc, name, dict_to_update):
     if loc is not None:  # if location give and exists then add to dict, else raise ValueError
         if check_file_exists(loc):
-            dict_to_update[name] = make_header_dict(loc)
+            description_dict = make_header_dict(loc)
+            description_dict_loc = path.join(path.dirname(loc), '%s_description.json' % name)
+            with open(description_dict_loc, 'w') as f:
+                f.write(json.dumps(description_dict))
+            dict_to_update[name] = description_dict_loc
     else:  # if location not given and is not in dict then set to none, else leave previous value
         if name not in dict_to_update:
             dict_to_update[name] = None
@@ -274,8 +278,8 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
     output_dbs = dict()
     if kegg_loc is not None:
         output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, kegg_download_date, threads, verbose)
-    output_dbs['uniref_db_loc'] = download_and_process_unifref(uniref_loc, temporary, uniref_version=uniref_version,
-                                                               threads=threads, verbose=verbose)
+    output_dbs['uniref_db_loc'] = download_and_process_uniref(uniref_loc, temporary, uniref_version=uniref_version,
+                                                              threads=threads, verbose=verbose)
     output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary, pfam_release=pfam_release,
                                                           threads=threads, verbose=verbose)
     output_dbs['dbcan_db_loc'] = download_and_process_dbcan(dbcan_loc, temporary, dbcan_release=dbcan_version,
@@ -316,24 +320,20 @@ def is_db_in_dict(key, dict_):
         return str(None)
 
 
-def is_description_in_dict(key, dict_):
-    return key in dict_
-
-
 def print_database_locations():
     db_locs = get_database_locs()
 
     print('KEGG db loc: %s' % is_db_in_dict('kegg', db_locs))
-    print('Has KEGG descriptions: %s' % is_description_in_dict('kegg_description', db_locs))
+    print('KEGG descriptions loc: %s' % is_db_in_dict('kegg_description', db_locs))
     print('UniRef db loc: %s' % is_db_in_dict('uniref', db_locs))
-    print('Has UniRef descriptions: %s' % is_description_in_dict('uniref_description', db_locs))
+    print('UniRef descriptions loc: %s' % is_db_in_dict('uniref_description', db_locs))
     print('Pfam db loc: %s' % is_db_in_dict('pfam', db_locs))
-    print('Has Pfam descriptions: %s' % is_description_in_dict('pfam_description', db_locs))
+    print('Pfam descriptions loc: %s' % is_db_in_dict('pfam_description', db_locs))
     print('dbCAN db loc: %s' % is_db_in_dict('dbcan', db_locs))
-    print('Has dbCAN descriptions: %s' % is_description_in_dict('dbcan_description', db_locs))
+    print('dbCAN descriptions loc: %s' % is_db_in_dict('dbcan_description', db_locs))
     print('RefSeq Viral db loc: %s' % is_db_in_dict('viral', db_locs))
-    print('Has RefSeq Viral descriptions: %s' % is_description_in_dict('viral_description', db_locs))
+    print('RefSeq Viral descriptions loc: %s' % is_db_in_dict('viral_description', db_locs))
     print('MEROPS peptidase db loc: %s' % is_db_in_dict('peptidase', db_locs))
-    print('Has peptidase descriptions: %s' % is_description_in_dict('peptidase_description', db_locs))
-    print('Has module steps form: %s' % is_description_in_dict('module_step_form', db_locs))
-    print('Has genome summary form: %s' % is_description_in_dict('genome_summary_form', db_locs))
+    print('peptidase descriptions loc: %s' % is_db_in_dict('peptidase_description', db_locs))
+    print('module steps form loc: %s' % is_db_in_dict('module_step_form', db_locs))
+    print('genome summary form loc: %s' % is_db_in_dict('genome_summary_form', db_locs))
