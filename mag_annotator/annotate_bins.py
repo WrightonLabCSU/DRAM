@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime
 import re
 from glob import glob
+import warnings
 
 from mag_annotator.utils import run_process, make_mmseqs_db, multigrep, merge_files, get_database_locs
 
@@ -331,9 +332,12 @@ def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
     raw_trnas = path.join(output_loc, 'raw_trnas.txt')
     run_process(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], verbose=verbose)
     processed_trnas = path.join(output_loc, 'trnas.tsv')
-    trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
-    trna_frame.insert(0, 'fasta', fasta_name)
-    trna_frame.to_csv(processed_trnas, sep='\t')
+    if path.isfile(processed_trnas):
+        trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
+        trna_frame.insert(0, 'fasta', fasta_name)
+        trna_frame.to_csv(processed_trnas, sep='\t')
+    else:
+        warnings.warn('No tRNAs were detected, no trnas.tsv file will be created.')
 
 
 def do_blast_style_search(query_db, target_db, working_dir, get_description, start_time, db_name='database',
@@ -353,7 +357,7 @@ def do_blast_style_search(query_db, target_db, working_dir, get_description, sta
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, keep_tmp_dir=True, threads=10, verbose=True):
+                  rbh_bit_score_threshold=350, skip_trnascan=False, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     fasta_locs = glob(input_fasta)
@@ -457,7 +461,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         rename_gff(gene_gff, renamed_gffs, prefix=fasta_name)
 
         # get tRNAs
-        run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
+        if not skip_trnascan:
+            run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
 
         # add fasta name to frame and index, append to list
         annotations.insert(0, 'fasta', fasta_name)
