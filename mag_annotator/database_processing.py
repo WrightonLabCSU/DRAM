@@ -22,7 +22,7 @@ def check_file_exists(db_loc):
         raise ValueError("Database location does not exist: %s" % db_loc)
 
 
-def make_header_dict(mmseqs_db):
+def make_header_dict_from_mmseqs_db(mmseqs_db):
     mmseqs_headers_handle = open('%s_h' % mmseqs_db, 'rb')
     mmseqs_headers = mmseqs_headers_handle.read().decode(errors='ignore')
     mmseqs_headers = [i.strip() for i in mmseqs_headers.strip().split(' \n\x00') if len(i) > 0]
@@ -222,22 +222,28 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(kegg_db_loc, 'kegg_description', make_header_dict, db_dict)
+
     db_dict = check_exists_and_add_to_location_dict(uniref_db_loc, 'uniref', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(uniref_db_loc, 'uniref_description', make_header_dict, db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(pfam_hmm_dat, 'pfam_description', process_pfam_descriptions,
-                                                       db_dict)
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(dbcan_fam_activities, 'dbcan_description',
-                                                       process_dbcan_descriptions, db_dict)
     db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(viral_db_loc, 'viral_description', make_header_dict, db_dict)
     db_dict = check_exists_and_add_to_location_dict(peptidase_db_loc, 'peptidase', db_dict)
-    db_dict = check_exists_and_add_to_description_dict(peptidase_db_loc, 'peptidase_description', make_header_dict,
-                                                       db_dict)
     db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
+
+    # Add the descriptions to the database
+    db_dict = check_exists_and_add_to_description_dict(kegg_db_loc, 'kegg_description', make_header_dict_from_mmseqs_db,
+                                                       db_dict)
+    db_dict = check_exists_and_add_to_description_dict(uniref_db_loc, 'uniref_description',
+                                                       make_header_dict_from_mmseqs_db, db_dict)
+    db_dict = check_exists_and_add_to_description_dict(pfam_hmm_dat, 'pfam_description', process_pfam_descriptions,
+                                                       db_dict)
+    db_dict = check_exists_and_add_to_description_dict(dbcan_fam_activities, 'dbcan_description',
+                                                       process_dbcan_descriptions, db_dict)
+    db_dict = check_exists_and_add_to_description_dict(viral_db_loc, 'viral_description',
+                                                       make_header_dict_from_mmseqs_db, db_dict)
+    db_dict = check_exists_and_add_to_description_dict(peptidase_db_loc, 'peptidase_description',
+                                                       make_header_dict_from_mmseqs_db, db_dict)
 
     # change data paths
     with open(path.abspath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
