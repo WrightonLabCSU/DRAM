@@ -8,6 +8,7 @@ import re
 from glob import glob
 import warnings
 import json
+from functools import partial
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs
 
@@ -140,18 +141,18 @@ def get_uniref_description(uniref_hits, header_dict):
     return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1)
 
 
-def get_viral_description(viral_hits, header_dict):
+def get_description(hits, header_dict, db_name='viral'):
     """Get viral gene full descriptions based on headers (text before first space)"""
-    viral_list = list()
-    viral_description = list()
-    for viral_hit in viral_hits.viral_hit:
-        header = header_dict[viral_hit]
-        viral_list.append(viral_hit)
-        viral_description.append(header)
-    new_df = pd.DataFrame([viral_list, viral_description],
-                          index=['viral_id', 'viral_hit'],
-                          columns=viral_hits.index)
-    return pd.concat([new_df.transpose(), viral_hits.drop('viral_hit', axis=1)], axis=1)
+    hit_list = list()
+    description = list()
+    for hit in hits['%s_hit' % db_name]:
+        header = header_dict[hit]
+        hit_list.append(hit)
+        description.append(header)
+    new_df = pd.DataFrame([hit_list, description],
+                          index=['%s_id' % db_name, '%s_hit' % db_name],
+                          columns=hits.index)
+    return pd.concat([new_df.transpose(), hits.drop('%s_hit' % db_name, axis=1)], axis=1)
 
 
 def get_peptidase_description(peptidase_hits, header_dict):
@@ -357,12 +358,14 @@ def do_blast_style_search(query_db, target_db, working_dir, header_dict, get_des
     reverse_hits = get_reciprocal_best_hits(query_db, target_db, working_dir, 'gene', db_name,
                                             bit_score_threshold, rbh_bit_score_threshold, threads, verbose=verbose)
     hits = process_reciprocal_best_hits(forward_hits, reverse_hits, db_name)
+    print('%s: Getting descriptions of hits from %s' % (str(datetime.now() - start_time), db_name))
     hits = get_description(hits, json.loads(open(header_dict).read()))
     return hits
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, gtdb_taxonomy=None, keep_tmp_dir=True, threads=10, verbose=True):
+                  rbh_bit_score_threshold=350, custom_dbs=None, gtdb_taxonomy=None, keep_tmp_dir=True, threads=10,
+                  verbose=True):
     # set up
     start_time = datetime.now()
     fasta_locs = glob(input_fasta)
@@ -378,6 +381,12 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     # get database locations
     db_locs = get_database_locs()
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
+
+    custom_db_locs = dict()
+    for db_name, db_loc in custom_dbs.items():
+        custom_db_loc = path.join(tmp_dir, '%s.custom.mmsdb' % db_name)
+        make_mmseqs_db(db_loc, custom_db_loc, threads=threads, verbose=verbose)
+        custom_db_locs[db_name] = custom_db_loc
 
     # iterate over list of fastas and annotate each individually
     annotations_list = list()
@@ -421,7 +430,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         # Get viral hits
         if 'viral' in db_locs:
             annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir,
-                                                         db_locs['viral_description'], get_viral_description,
+                                                         db_locs['viral_description'], get_description,
                                                          start_time, 'viral', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
@@ -447,6 +456,9 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
                                            dbcan_descriptions=json.loads(open(db_locs['dbcan_description']).read()),
                                            verbose=verbose)
             annotation_list.append(dbcan_hits)
+
+        # for db_name, db_loc in custom_db_locs.items():
+        #     annotation_list.append(do_blast_style_search(query_db, db_loc, fasta_dir, ))
 
         # merge dataframes
         print('%s: Finishing up results' % str(datetime.now()-start_time))
