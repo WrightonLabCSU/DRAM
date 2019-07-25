@@ -17,12 +17,12 @@ class DatabaseHandler:
         self.session = DBSession()
 
     # functions for adding descriptions to tables
-    def add_descriptions_to_database(self, description_dict, db_name, clear_table=True):
+    def add_descriptions_to_database(self, description_dict, db_name, clear_table=False):
         description_class = TABLE_NAME_TO_CLASS_DICT[db_name]
         if clear_table:
             self.session.query(description_class).delete()
         for id, description in description_dict.items():  # TODO: Make this a bulk operation
-            self.session.add(description_class(id=id, description=description))
+            self.session.merge(description_class(id=id, description=description))
         self.session.commit()
 
     # functions for getting descriptions from tables
