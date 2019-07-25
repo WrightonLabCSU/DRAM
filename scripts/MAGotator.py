@@ -62,6 +62,8 @@ if __name__ == '__main__':
                                     help='mmseqs2 database file from ref seq viral gene collection')
     set_db_locs_parser.add_argument('--peptidase_db_loc', default=None,
                                     help='mmseqs2 database file from MEROPS database')
+    set_db_locs_parser.add_argument('--description_db_loc', default=None, help="Location to write description sqlite "
+                                                                               "db")
     set_db_locs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form")
     set_db_locs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form")
     set_db_locs_parser.set_defaults(func=set_database_paths)
