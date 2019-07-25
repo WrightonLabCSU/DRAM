@@ -7,6 +7,8 @@ import json
 import gzip
 
 from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file
+from mag_annotator.database_handler import DatabaseHandler
+from mag_annotator.database_setup import create_description_db
 
 # TODO: check if dbcan or pfam is down, raise appropriate error
 
@@ -202,23 +204,16 @@ def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
     return dict_to_update
 
 
-def check_exists_and_add_to_description_dict(loc, name, get_description_dict, dict_to_update):
+def check_exists_and_add_to_description_db(loc, name, get_description_dict, db_handler):
     if loc is not None:  # if location give and exists then add to dict, else raise ValueError
         if check_file_exists(loc):
             description_dict = get_description_dict(loc)
-            description_dict_loc = path.join(path.dirname(loc), '%s_description.json' % name)
-            with open(description_dict_loc, 'w') as f:
-                f.write(json.dumps(description_dict))
-            dict_to_update[name] = description_dict_loc
-    else:  # if location not given and is not in dict then set to none, else leave previous value
-        if name not in dict_to_update:
-            dict_to_update[name] = None
-    return dict_to_update
+            db_handler.add_descriptions_to_database(description_dict, name, clear_table=True)
 
 
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
                        dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None,
-                       module_step_form_loc=None, genome_summary_form_loc=None):
+                       description_db_loc=None, module_step_form_loc=None, genome_summary_form_loc=None):
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
@@ -232,18 +227,22 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
 
     # Add the descriptions to the database
-    db_dict = check_exists_and_add_to_description_dict(kegg_db_loc, 'kegg_description', make_header_dict_from_mmseqs_db,
-                                                       db_dict)
-    db_dict = check_exists_and_add_to_description_dict(uniref_db_loc, 'uniref_description',
-                                                       make_header_dict_from_mmseqs_db, db_dict)
-    db_dict = check_exists_and_add_to_description_dict(pfam_hmm_dat, 'pfam_description', process_pfam_descriptions,
-                                                       db_dict)
-    db_dict = check_exists_and_add_to_description_dict(dbcan_fam_activities, 'dbcan_description',
-                                                       process_dbcan_descriptions, db_dict)
-    db_dict = check_exists_and_add_to_description_dict(viral_db_loc, 'viral_description',
-                                                       make_header_dict_from_mmseqs_db, db_dict)
-    db_dict = check_exists_and_add_to_description_dict(peptidase_db_loc, 'peptidase_description',
-                                                       make_header_dict_from_mmseqs_db, db_dict)
+    if description_db_loc is not None:
+        create_description_db(description_db_loc)
+        db_dict['description_db'] = description_db_loc
+        db_handler = DatabaseHandler(description_db_loc)
+        check_exists_and_add_to_description_db(kegg_db_loc, 'kegg_description', make_header_dict_from_mmseqs_db,
+                                               db_handler)
+        check_exists_and_add_to_description_db(uniref_db_loc, 'uniref_description',
+                                               make_header_dict_from_mmseqs_db, db_handler)
+        check_exists_and_add_to_description_db(pfam_hmm_dat, 'pfam_description', process_pfam_descriptions,
+                                               db_handler)
+        check_exists_and_add_to_description_db(dbcan_fam_activities, 'dbcan_description',
+                                               process_dbcan_descriptions, db_handler)
+        check_exists_and_add_to_description_db(viral_db_loc, 'viral_description',
+                                               make_header_dict_from_mmseqs_db, db_handler)
+        check_exists_and_add_to_description_db(peptidase_db_loc, 'peptidase_description',
+                                               make_header_dict_from_mmseqs_db, db_handler)
 
     # change data paths
     with open(path.abspath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
@@ -323,16 +322,11 @@ def print_database_locations():
     db_locs = get_database_locs()
 
     print('KEGG db loc: %s' % is_db_in_dict('kegg', db_locs))
-    print('KEGG descriptions loc: %s' % is_db_in_dict('kegg_description', db_locs))
     print('UniRef db loc: %s' % is_db_in_dict('uniref', db_locs))
-    print('UniRef descriptions loc: %s' % is_db_in_dict('uniref_description', db_locs))
     print('Pfam db loc: %s' % is_db_in_dict('pfam', db_locs))
-    print('Pfam descriptions loc: %s' % is_db_in_dict('pfam_description', db_locs))
     print('dbCAN db loc: %s' % is_db_in_dict('dbcan', db_locs))
-    print('dbCAN descriptions loc: %s' % is_db_in_dict('dbcan_description', db_locs))
     print('RefSeq Viral db loc: %s' % is_db_in_dict('viral', db_locs))
-    print('RefSeq Viral descriptions loc: %s' % is_db_in_dict('viral_description', db_locs))
     print('MEROPS peptidase db loc: %s' % is_db_in_dict('peptidase', db_locs))
-    print('peptidase descriptions loc: %s' % is_db_in_dict('peptidase_description', db_locs))
+    print('Description db loc:%s' % is_db_in_dict('description_db_loc', db_locs))
     print('module steps form loc: %s' % is_db_in_dict('module_step_form', db_locs))
     print('genome summary form loc: %s' % is_db_in_dict('genome_summary_form', db_locs))
