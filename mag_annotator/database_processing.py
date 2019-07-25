@@ -227,10 +227,11 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
 
     # Add the descriptions to the database
-    if description_db_loc is not None:
+    if description_db_loc is not None:  # if description db loc is given then create it
         create_description_db(description_db_loc)
         db_dict['description_db'] = description_db_loc
-        db_handler = DatabaseHandler(description_db_loc)
+    if 'description_db' in db_dict:  # Make data tables as long as description db is in the db_dict
+        db_handler = DatabaseHandler(db_dict['description_db'])
         check_exists_and_add_to_description_db(kegg_db_loc, 'kegg_description', make_header_dict_from_mmseqs_db,
                                                db_handler)
         check_exists_and_add_to_description_db(uniref_db_loc, 'uniref_description',
@@ -304,6 +305,8 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
     if dbcan_fam_activities is None:
         dbcan_fam_activities = download_dbcan_descriptions(output_dir, dbcan_date, verbose=verbose)
     output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
+
+    output_dbs['description_db_loc'] = path.join(output_dir, 'description_db.sqlite')
 
     set_database_paths(**output_dbs)
 
