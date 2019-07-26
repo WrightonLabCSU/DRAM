@@ -91,19 +91,20 @@ def process_pfam_descriptions(pfam_hmm_dat):
         f = gzip.open(pfam_hmm_dat, 'r').read().decode('utf-8')
     else:
         f = open(pfam_hmm_dat).read()
-    entries = f.split('//')
+    entries = f.strip().split('//')
     description_dict = dict()
-    for entry in entries:
-        entry = entry.split('\n')
-        ascession = None
-        description = None
-        for line in entry:
-            line = line.strip()
-            if line.startswith('#=GF AC'):
-                ascession = line.split('   ')[-1]
-            if line.startswith('#=GF DE'):
-                description = line.split('   ')[-1]
-        description_dict[ascession] = description
+    for i, entry in enumerate(entries):
+        if len(entry) > 0:
+            entry = entry.split('\n')
+            ascession = None
+            description = None
+            for line in entry:
+                line = line.strip()
+                if line.startswith('#=GF AC'):
+                    ascession = line.split('   ')[-1]
+                if line.startswith('#=GF DE'):
+                    description = line.split('   ')[-1]
+            description_dict[ascession] = description
     return description_dict
 
 

@@ -48,3 +48,15 @@ def merge_files(files_to_merge, outfile, has_header=False):
                 if has_header:
                     _ = f.readline()
                 outfile_handle.write(f.read())
+
+
+def multigrep(search_terms, search_against, output='.', skip_chars=1):
+    # TODO: multiprocess this over the list of search terms
+    """Search a list of exact substrings against a database, takes name of mmseqs db index with _h to search against"""
+    hits_file = path.join(output, 'hits.txt')
+    with open(hits_file, 'w') as f:
+        f.write('%s\n' % '\n'.join(search_terms))
+    results = subprocess.run(['grep', '-a', '-F', '-f', hits_file, search_against], stdout=subprocess.PIPE, check=True)
+    processed_results = [i.strip()[skip_chars:] for i in results.stdout.decode('ascii').split('\n')]
+    remove(hits_file)
+    return {i.split()[0]: i for i in processed_results if i != ''}
