@@ -235,7 +235,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
             dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
         else:
             dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions[ascession[:-4]], ascession[:-4])
-                                          for ascession in frame.tId])
+                                          for ascession in frame.tid])
     return pd.Series(dbcan_dict, name='cazy_hits')
 
 
