@@ -181,7 +181,7 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     pfam_results = pd.read_csv(output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     pfam_dict = dict()
     if db_handler is not None:
-        pfam_descriptions = db_handler.get_descriptions(set(pfam_results.qId), 'pfam_description')
+        pfam_descriptions = db_handler.get_descriptions(set(pfam_results.tId), 'pfam_description')
     for gene, pfam_frame in pfam_results.groupby('qId'):
         if db_handler is None:
             pfam_dict[gene] = '; '.join(pfam_frame.tId)
