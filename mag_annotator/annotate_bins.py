@@ -370,7 +370,8 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, gtdb_taxonomy=None, keep_tmp_dir=True, threads=10, verbose=True):
+                  rbh_bit_score_threshold=350, skip_trnascan=False, gtdb_taxonomy=None, keep_tmp_dir=True, threads=10,
+                  verbose=True):
     # set up
     start_time = datetime.now()
     fasta_locs = glob(input_fasta)
@@ -476,7 +477,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         rename_gff(gene_gff, renamed_gffs, prefix=fasta_name)
 
         # get tRNAs
-        run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
+        if not skip_trnascan:
+            run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
 
         # add fasta name to frame and index, append to list
         annotations.insert(0, 'fasta', fasta_name)

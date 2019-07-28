@@ -83,6 +83,7 @@ if __name__ == '__main__':
     annotate_mags_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
                                       help='minimum bitScore of reverse best hits to retain hits')
     annotate_mags_parser.add_argument('--gtdb_taxonomy', help='Summary file from gtdbtk taxonomy assignment from bins')
+    annotate_mags_parser.add_argument('--skip_trnascan', action='store_true', default=False)
     annotate_mags_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_mags_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_mags_parser.add_argument('--verbose', action='store_true', default=False)
