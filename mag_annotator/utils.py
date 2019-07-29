@@ -4,6 +4,7 @@ from os import path, remove
 from pkg_resources import resource_filename
 import json
 from urllib.request import urlopen
+import warnings
 
 
 def get_database_locs():
@@ -40,14 +41,17 @@ def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose
 def merge_files(files_to_merge, outfile, has_header=False):
     """It's in the name, if has_header assumes all files have the same header"""
     files_to_merge = glob(files_to_merge)
-    with open(outfile, 'w') as outfile_handle:
-        if has_header:
-            outfile_handle.write(open(files_to_merge[0]).readline())
-        for file in files_to_merge:
-            with open(file) as f:
-                if has_header:
-                    _ = f.readline()
-                outfile_handle.write(f.read())
+    if len(files_to_merge) == 0:
+        warnings.warn('No files to merge found with path %s' % files_to_merge)
+    else:
+        with open(outfile, 'w') as outfile_handle:
+            if has_header:
+                outfile_handle.write(open(files_to_merge[0]).readline())
+            for file in files_to_merge:
+                with open(file) as f:
+                    if has_header:
+                        _ = f.readline()
+                    outfile_handle.write(f.read())
 
 
 def multigrep(search_terms, search_against, output='.', skip_chars=1):
