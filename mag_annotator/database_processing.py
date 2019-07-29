@@ -331,6 +331,6 @@ def print_database_locations():
     print('dbCAN db loc: %s' % is_db_in_dict('dbcan', db_locs))
     print('RefSeq Viral db loc: %s' % is_db_in_dict('viral', db_locs))
     print('MEROPS peptidase db loc: %s' % is_db_in_dict('peptidase', db_locs))
-    print('Description db loc:%s' % is_db_in_dict('description_db_loc', db_locs))
+    print('Description db loc: %s' % is_db_in_dict('description_db', db_locs))
     print('module steps form loc: %s' % is_db_in_dict('module_step_form', db_locs))
     print('genome summary form loc: %s' % is_db_in_dict('genome_summary_form', db_locs))
