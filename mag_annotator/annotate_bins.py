@@ -7,15 +7,15 @@ from datetime import datetime
 import re
 from glob import glob
 import warnings
-import json
 from functools import partial
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs
+from mag_annotator.database_handler import DatabaseHandler
 
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
 # TODO: add silent mode
-# TODO: make a DB handler class that can give dicts of decriptions or file loactions from config
+# TODO: add ability to take in GTDBTK file and add taxonomy to annotations
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -169,7 +169,7 @@ def get_peptidase_description(peptidase_hits, header_dict):
     return pd.concat([new_df.transpose(), peptidase_hits.drop('peptidase_hit', axis=1)], axis=1)
 
 
-def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', pfam_descriptions=None,
+def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', db_handler=None,
                     threads=10, verbose=False):
     """Use mmseqs to run a search against pfam, currently keeping all hits and not doing any extra filtering"""
     tmp_dir = path.join(output_loc, 'tmp')
@@ -180,8 +180,10 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     run_process(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc], verbose=verbose)
     pfam_results = pd.read_csv(output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     pfam_dict = dict()
+    if db_handler is not None:
+        pfam_descriptions = db_handler.get_descriptions(set(pfam_results.tId), 'pfam_description')
     for gene, pfam_frame in pfam_results.groupby('qId'):
-        if pfam_descriptions is None:
+        if db_handler is None:
             pfam_dict[gene] = '; '.join(pfam_frame.tId)
         else:
             pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
@@ -199,7 +201,7 @@ def get_sig(tcovlen, evalue):
         return False
 
 
-def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, dbcan_descriptions=None, verbose=False):
+def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose=False):
     """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
     Commands this is based on:
     hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/MAGotator/genes.faa
@@ -225,12 +227,16 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, dbcan_descriptions=None,
     dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
 
     dbcan_dict = dict()
+    if db_handler is not None:
+        dbcan_descriptions = db_handler.get_descriptions(set([i[:-4].split('_')[0] for i in
+                                                              dbcan_res[dbcan_res.significant].tid]),
+                                                         'dbcan_description')
     for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
-        if dbcan_descriptions is None:
+        if db_handler is None:
             dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
         else:
-            dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions[ascession[:-4]], ascession[:-4])
-                                          for ascession in frame.tId])
+            dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions.get(ascession[:-4].split('_')[0]),
+                                                       ascession[:-4]) for ascession in frame.tid])
     return pd.Series(dbcan_dict, name='cazy_hits')
 
 
@@ -346,7 +352,7 @@ def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
         warnings.warn('No tRNAs were detected, no trnas.tsv file will be created.')
 
 
-def do_blast_style_search(query_db, target_db, working_dir, header_dict, get_description, start_time,
+def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_description, start_time,
                           db_name='database', bit_score_threshold=60, rbh_bit_score_threshold=350, threads=10,
                           verbose=False):
     """A convenience function to do a blast style reciprocal best hits search"""
@@ -359,13 +365,14 @@ def do_blast_style_search(query_db, target_db, working_dir, header_dict, get_des
                                             bit_score_threshold, rbh_bit_score_threshold, threads, verbose=verbose)
     hits = process_reciprocal_best_hits(forward_hits, reverse_hits, db_name)
     print('%s: Getting descriptions of hits from %s' % (str(datetime.now() - start_time), db_name))
-    hits = get_description(hits, json.loads(open(header_dict).read()))
+    header_dict = db_handler.get_descriptions(hits['%s_hit' % db_name], '%s_description' % db_name)
+    hits = get_description(hits, header_dict)
     return hits
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_dbs=None, gtdb_taxonomy=None, keep_tmp_dir=True, threads=10,
-                  verbose=True):
+                  rbh_bit_score_threshold=350, custom_dbs=None, skip_trnascan=False, gtdb_taxonomy=None,
+                  keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     fasta_locs = glob(input_fasta)
@@ -380,6 +387,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
 
     # get database locations
     db_locs = get_database_locs()
+    db_handler = DatabaseHandler(db_locs['description_db'])
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     custom_db_locs = dict()
@@ -416,28 +424,29 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         # Get kegg hits
         if 'kegg' in db_locs:
             annotation_list.append(do_blast_style_search(query_db, db_locs['kegg'], fasta_dir,
-                                                         db_locs['kegg_description'], get_kegg_description, start_time,
+                                                         db_handler, get_kegg_description, start_time,
                                                          'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
                                                          verbose))
 
         # Get uniref hits
         if 'uniref' in db_locs:
             annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], fasta_dir,
-                                                         db_locs['uniref_description'], get_uniref_description,
+                                                         db_handler, get_uniref_description,
                                                          start_time, 'uniref', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get viral hits
         if 'viral' in db_locs:
+            get_viral_description = partial(get_description, db_name='viral')
             annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir,
-                                                         db_locs['viral_description'], get_description,
+                                                         db_handler, get_viral_description,
                                                          start_time, 'viral', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
         # Get peptidase hits
         if 'peptidase' in db_locs:
             annotation_list.append(do_blast_style_search(query_db, db_locs['peptidase'], fasta_dir,
-                                                         db_locs['peptidase_description'], get_peptidase_description,
+                                                         db_handler, get_peptidase_description,
                                                          start_time, 'peptidase', bit_score_threshold,
                                                          rbh_bit_score_threshold, threads, verbose))
 
@@ -445,15 +454,13 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         if 'pfam' in db_locs:
             print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
             pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], fasta_dir, output_prefix='pfam',
-                                        pfam_descriptions=json.loads(open(db_locs['pfam_description']).read()),
-                                        threads=threads, verbose=verbose)
+                                        db_handler=db_handler, threads=threads, verbose=verbose)
             annotation_list.append(pfam_hits)
 
         # use hmmer to detect cazy ids using dbCAN
         if 'dbcan' in db_locs:
             print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
-            dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir,
-                                           dbcan_descriptions=json.loads(open(db_locs['dbcan_description']).read()),
+            dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir, db_handler=db_handler,
                                            verbose=verbose)
             annotation_list.append(dbcan_hits)
 
@@ -481,7 +488,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         rename_gff(gene_gff, renamed_gffs, prefix=fasta_name)
 
         # get tRNAs
-        run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
+        if not skip_trnascan:
+            run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
 
         # add fasta name to frame and index, append to list
         annotations.insert(0, 'fasta', fasta_name)
