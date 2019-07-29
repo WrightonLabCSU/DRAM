@@ -37,3 +37,7 @@ class DatabaseHandler:
             warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
         return {i.id: i.description for i in descriptions}
+
+    @staticmethod
+    def get_database_names():
+        return TABLE_NAME_TO_CLASS_DICT.keys()

@@ -9,13 +9,14 @@ from glob import glob
 import warnings
 from functools import partial
 
-from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs
+from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs, multigrep
 from mag_annotator.database_handler import DatabaseHandler
 
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
 # TODO: add silent mode
 # TODO: add ability to take in GTDBTK file and add taxonomy to annotations
+# TODO: add abx resistance genes
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -141,7 +142,7 @@ def get_uniref_description(uniref_hits, header_dict):
     return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1)
 
 
-def get_description(hits, header_dict, db_name='viral'):
+def get_basic_description(hits, header_dict, db_name='viral'):
     """Get viral gene full descriptions based on headers (text before first space)"""
     hit_list = list()
     description = list()
@@ -365,14 +366,17 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
                                             bit_score_threshold, rbh_bit_score_threshold, threads, verbose=verbose)
     hits = process_reciprocal_best_hits(forward_hits, reverse_hits, db_name)
     print('%s: Getting descriptions of hits from %s' % (str(datetime.now() - start_time), db_name))
-    header_dict = db_handler.get_descriptions(hits['%s_hit' % db_name], '%s_description' % db_name)
+    if '%s_description' % db_name in db_handler.get_database_names():
+        header_dict = db_handler.get_descriptions(hits['%s_hit' % db_name], '%s_description' % db_name)
+    else:
+        header_dict = multigrep(hits['%s_hit' % db_name], '%s_h' % target_db, working_dir)
     hits = get_description(hits, header_dict)
     return hits
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_dbs=None, skip_trnascan=False, gtdb_taxonomy=None,
-                  keep_tmp_dir=True, threads=10, verbose=True):
+                  rbh_bit_score_threshold=350, custom_db_names=None, custom_fasta_locs=None, skip_trnascan=False,
+                  gtdb_taxonomy=None, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     fasta_locs = glob(input_fasta)
@@ -390,6 +394,9 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     db_handler = DatabaseHandler(db_locs['description_db'])
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
+    if len(custom_fasta_locs) != len(custom_db_names):
+        raise ValueError('Lengths of custom db fasta list and custom db name list must be the same.')
+    custom_dbs = {custom_db_names[i]: custom_fasta_locs[i] for i in range(len(custom_db_names))}
     custom_db_locs = dict()
     for db_name, db_loc in custom_dbs.items():
         custom_db_loc = path.join(tmp_dir, '%s.custom.mmsdb' % db_name)
@@ -437,7 +444,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
 
         # Get viral hits
         if 'viral' in db_locs:
-            get_viral_description = partial(get_description, db_name='viral')
+            get_viral_description = partial(get_basic_description, db_name='viral')
             annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir,
                                                          db_handler, get_viral_description,
                                                          start_time, 'viral', bit_score_threshold,
@@ -464,8 +471,11 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
                                            verbose=verbose)
             annotation_list.append(dbcan_hits)
 
-        # for db_name, db_loc in custom_db_locs.items():
-        #     annotation_list.append(do_blast_style_search(query_db, db_loc, fasta_dir, ))
+        for db_name, db_loc in custom_db_locs.items():
+            print('%s: Getting hits from %s' % (str(datetime.now() - start_time), db_name))
+            annotation_list.append(do_blast_style_search(query_db, db_loc, fasta_dir, db_handler, get_basic_description,
+                                                         start_time, db_name, bit_score_threshold,
+                                                         rbh_bit_score_threshold, threads, verbose))
 
         # merge dataframes
         print('%s: Finishing up results' % str(datetime.now()-start_time))
@@ -496,6 +506,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         annotations.index = annotations.fasta + '_' + annotations.index
         annotations_list.append(annotations)
 
+    print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
     # merge annotation dicts
     all_annotations = pd.concat(annotations_list, sort=False)
     all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
