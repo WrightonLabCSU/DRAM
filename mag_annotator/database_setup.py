@@ -11,7 +11,7 @@ KEGG_DESCRIPTION_TABLE_NAME = 'kegg_description'
 class KeggDescription(Base):
     __tablename__ = KEGG_DESCRIPTION_TABLE_NAME
 
-    id = Column(String(20), primary_key=True, nullable=False)
+    id = Column(String(20), primary_key=True, nullable=False, index=True)
 
     description = Column(String(100000))
 
@@ -29,7 +29,7 @@ UNIREF_DESCRIPTION_TABLE_NAME = 'uniref_description'
 class UniRefDescription(Base):
     __tablename__ = UNIREF_DESCRIPTION_TABLE_NAME
 
-    id = Column(String(20), primary_key=True, nullable=False)
+    id = Column(String(20), primary_key=True, nullable=False, index=True)
 
     description = Column(String(1000))
 
@@ -47,7 +47,7 @@ PFAM_DESCRIPTION_TABLE_NAME = 'pfam_description'
 class PfamDescription(Base):
     __tablename__ = PFAM_DESCRIPTION_TABLE_NAME
 
-    id = Column(String(12), primary_key=True, nullable=False)
+    id = Column(String(12), primary_key=True, nullable=False, index=True)
 
     description = Column(String(1000))
 
@@ -65,7 +65,7 @@ DBCAN_DESCRIPTION_TABLE_NAME = 'dbcan_description'
 class DbcanDescription(Base):
     __tablename__ = DBCAN_DESCRIPTION_TABLE_NAME
 
-    id = Column(String(30), primary_key=True, nullable=False)
+    id = Column(String(30), primary_key=True, nullable=False, index=True)
 
     description = Column(String(1000))
 
@@ -83,7 +83,7 @@ VIRAL_DESCRIPTION_TABLE_NAME = 'viral_description'
 class ViralDescription(Base):
     __tablename__ = VIRAL_DESCRIPTION_TABLE_NAME
 
-    id = Column(String(14), primary_key=True, nullable=False)
+    id = Column(String(14), primary_key=True, nullable=False, index=True)
 
     description = Column(String(1000))
 
@@ -101,7 +101,7 @@ PEPTIDASE_DESCRIPTION_TABLE_NAME = 'peptidase_description'
 class PeptidaseDescription(Base):
     __tablename__ = PEPTIDASE_DESCRIPTION_TABLE_NAME
 
-    id = Column(String(10), primary_key=True, nullable=False)
+    id = Column(String(10), primary_key=True, nullable=False, index=True)
 
     description = Column(String(1000))
 
