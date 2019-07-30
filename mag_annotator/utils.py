@@ -50,11 +50,11 @@ def multigrep(search_terms, search_against, output='.', skip_chars=1):
     return {i.split()[0]: i for i in processed_results if i != ''}
 
 
-def merge_files(files_to_merge, outfile, has_header=False):
+def merge_files(paths_to_files_to_merge, outfile, has_header=False):
     """It's in the name, if has_header assumes all files have the same header"""
-    files_to_merge = glob(files_to_merge)
+    files_to_merge = glob(paths_to_files_to_merge)
     if len(files_to_merge) == 0:
-        warnings.warn('No files to merge found with path %s' % files_to_merge)
+        warnings.warn('No files to merge found with path %s' % paths_to_files_to_merge)
     else:
         with open(outfile, 'w') as outfile_handle:
             if has_header:
