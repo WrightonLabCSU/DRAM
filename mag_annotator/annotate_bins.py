@@ -394,9 +394,9 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     db_handler = DatabaseHandler(db_locs['description_db'])
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
-    if len(custom_fasta_locs) != len(custom_db_names):
+    if len(custom_fasta_loc) != len(custom_db_name):
         raise ValueError('Lengths of custom db fasta list and custom db name list must be the same.')
-    custom_dbs = {custom_db_names[i]: custom_fasta_locs[i] for i in range(len(custom_db_names))}
+    custom_dbs = {custom_db_name[i]: custom_fasta_loc[i] for i in range(len(custom_db_name))}
     custom_db_locs = dict()
     for db_name, db_loc in custom_dbs.items():
         custom_db_loc = path.join(tmp_dir, '%s.custom.mmsdb' % db_name)
