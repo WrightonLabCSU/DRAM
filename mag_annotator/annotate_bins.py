@@ -375,7 +375,7 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_db_names=None, custom_fasta_locs=None, skip_trnascan=False,
+                  rbh_bit_score_threshold=350, custom_db_name=None, custom_fasta_loc=None, skip_trnascan=False,
                   gtdb_taxonomy=None, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
