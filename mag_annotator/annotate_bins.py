@@ -473,9 +473,11 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
 
         for db_name, db_loc in custom_db_locs.items():
             print('%s: Getting hits from %s' % (str(datetime.now() - start_time), db_name))
-            annotation_list.append(do_blast_style_search(query_db, db_loc, fasta_dir, db_handler, get_basic_description,
-                                                         start_time, db_name, bit_score_threshold,
-                                                         rbh_bit_score_threshold, threads, verbose))
+            get_custom_description = partial(get_basic_description, db_name=db_name)
+            annotation_list.append(do_blast_style_search(query_db, db_loc, fasta_dir, db_handler,
+                                                         get_custom_description, start_time, db_name,
+                                                         bit_score_threshold, rbh_bit_score_threshold, threads,
+                                                         verbose))
 
         # merge dataframes
         print('%s: Finishing up results' % str(datetime.now()-start_time))
