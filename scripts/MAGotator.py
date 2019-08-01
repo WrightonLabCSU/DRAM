@@ -82,10 +82,11 @@ if __name__ == '__main__':
                                       help='minimum bitScore of search to retain hits')
     annotate_mags_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
                                       help='minimum bitScore of reverse best hits to retain hits')
-    annotate_mags_parser.add_argument('--custom_db_names', action='append', default=(),
-                                      help="Names of custom databases")
-    annotate_mags_parser.add_argument('--custom_fasta_locs', action='append', default=(),
-                                      help="Location of fastas to annotated against")
+    annotate_mags_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be used"
+                                                                                "multiple times.")
+    annotate_mags_parser.add_argument('--custom_fasta_loc', action='append',
+                                      help="Location of fastas to annotated against, can be used multiple times but"
+                                           "must match nubmer of custom_db_name's")
     annotate_mags_parser.add_argument('--gtdb_taxonomy', help='Summary file from gtdbtk taxonomy assignment from bins')
     annotate_mags_parser.add_argument('--skip_trnascan', action='store_true', default=False)
     annotate_mags_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
