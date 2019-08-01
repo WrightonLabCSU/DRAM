@@ -345,7 +345,7 @@ def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
     raw_trnas = path.join(output_loc, 'raw_trnas.txt')
     run_process(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], verbose=verbose)
     processed_trnas = path.join(output_loc, 'trnas.tsv')
-    if path.isfile(processed_trnas):
+    if path.isfile(raw_trnas):
         trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
         trna_frame.insert(0, 'fasta', fasta_name)
         trna_frame.to_csv(processed_trnas, sep='\t')
