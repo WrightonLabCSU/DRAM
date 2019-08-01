@@ -375,7 +375,7 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_db_name=None, custom_fasta_loc=None, skip_trnascan=False,
+                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
                   gtdb_taxonomy=None, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
@@ -394,6 +394,11 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     db_handler = DatabaseHandler(db_locs['description_db'])
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
+    # if none is passed from argparse then set to tuple of len 0
+    if custom_fasta_loc is None:
+        custom_fasta_loc = ()
+    if custom_db_name is None:
+        custom_db_name = ()
     if len(custom_fasta_loc) != len(custom_db_name):
         raise ValueError('Lengths of custom db fasta list and custom db name list must be the same.')
     custom_dbs = {custom_db_name[i]: custom_fasta_loc[i] for i in range(len(custom_db_name))}
