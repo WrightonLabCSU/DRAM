@@ -11,3 +11,4 @@ dependencies:
   - hmmer
   - trnascan-se >=2
   - networkx
+  - sqlalchemy
