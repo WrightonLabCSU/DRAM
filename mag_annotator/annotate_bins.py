@@ -520,12 +520,12 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     # if given add taxonomy information
     if gtdb_taxonomy is not None:
         gtdb_taxonomy = pd.read_csv(gtdb_taxonomy, sep='\t', index_col=0)
-        all_annotations['bin_taxonomy'] = gtdb_taxonomy.classification.loc[all_annotations.fasta]
+        all_annotations['bin_taxonomy'] = [gtdb_taxonomy.loc[i, 'classification'] for i in all_annotations.fasta]
     if checkm_quality is not None:
         checkm_quality = pd.read_csv(checkm_quality, sep='\t', index_col=0)
         checkm_quality.index = [path.splitext(i)[0] for i in checkm_quality.index]
-        all_annotations['bin_completeness'] = checkm_quality.loc[all_annotations.fasta]['Completeness']
-        all_annotations['bin_contamination'] = checkm_quality.loc[all_annotations.fasta]['Contamination']
+        all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
+        all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination'] for i in all_annotations.fasta]
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # merge gene files
