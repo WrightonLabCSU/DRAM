@@ -376,7 +376,7 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
-                  gtdb_taxonomy=None, keep_tmp_dir=True, threads=10, verbose=True):
+                  gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     fasta_locs = glob(input_fasta)
@@ -519,7 +519,13 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
     # if given add taxonomy information
     if gtdb_taxonomy is not None:
+        gtdb_taxonomy = pd.read_csv(gtdb_taxonomy, sep='\t', index_col=0)
         all_annotations['bin_taxonomy'] = gtdb_taxonomy.classification.loc[all_annotations.fasta]
+    if checkm_quality is not None:
+        checkm_quality = pd.read_csv(checkm_quality, sep='\t', index_col=0)
+        checkm_quality.index = [path.splitext(i)[0] for i in checkm_quality.index]
+        all_annotations['bin_completeness'] = checkm_quality.loc[all_annotations.fasta]['Completeness']
+        all_annotations['bin_contamination'] = checkm_quality.loc[all_annotations.fasta]['Contamination']
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # merge gene files
