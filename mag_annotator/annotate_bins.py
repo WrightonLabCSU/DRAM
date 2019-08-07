@@ -1,13 +1,14 @@
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
 from os import path, mkdir
-from shutil import rmtree
+from shutil import rmtree, copy2
 import pandas as pd
 from datetime import datetime
 import re
 from glob import glob
 import warnings
 from functools import partial
+import io
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs, multigrep
 from mag_annotator.database_handler import DatabaseHandler
@@ -340,6 +341,30 @@ def rename_gff(input_gff, output_gff, prefix):
                 o.write(line)
 
 
+def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', output_gbk=None):
+    # scikit-bio can make a genbank for a concatenated gff and fasta file so make this first
+    gff = open(gff_loc)
+    fasta = open(fasta_loc)
+    fasta_records = len([i for i in read_sequence(open(fasta_loc), format='fasta') ]) # get number of fasta records
+    concat_gff = '%s\n##FASTA\n%s' % (gff.read(), fasta.read()) # the gff with fasta format is the gff then ##FASTA then the fasta
+
+    # now we can only ready one record from the gff/fasta hybrid at a time
+    # read a record at a time till end of the fasta
+    genbank_records = ''
+    for i in range(1, fasta_records+1):
+        seq = read_sequence(io.StringIO(concat_gff), format='gff3', into=Sequence, seq_num=i)
+        # need to capture genbank output so we can combine into a multi-genbank file
+        capture_print = io.StringIO()
+        seq.write(capture_print, format='genbank')
+        genbank_records += capture_print.getvalue()
+
+    # if no output then return as string, otherwise write write to output location
+    if output_gbk is None:
+        return genbank_records
+    else:
+        open(output_gbk, 'w').write(genbank_records)
+
+
 def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
     """Run tRNAscan-SE on scaffolds and create a table of tRNAs as a separate output"""
     raw_trnas = path.join(output_loc, 'raw_trnas.txt')
@@ -503,6 +528,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
         renamed_gffs = path.join(fasta_dir, 'genes.annotated.gff')
         rename_gff(gene_gff, renamed_gffs, prefix=fasta_name)
+        current_gbk = path.join(fasta_dir, '%s.gbk' % fasta_name)
+        make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
 
         # get tRNAs
         if not skip_trnascan:
@@ -534,6 +561,12 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     merge_files(path.join(tmp_dir, '*', 'scaffolds.annotated.fa'), path.join(output_dir, 'scaffolds.fna'))
     merge_files(path.join(tmp_dir, '*', 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'), True)
     merge_files(path.join(tmp_dir, '*', 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'), True)
+
+    # make output gbk dir
+    gbk_dir = path.join(output_dir, 'genbank')
+    mkdir(gbk_dir)
+    for gbk in glob(path.join(tmp_dir, '*', '*.gbk')):
+        copy2(gbk, path.join(gbk_dir, path.basename(gbk)))
 
     # clean up
     if not keep_tmp_dir:
