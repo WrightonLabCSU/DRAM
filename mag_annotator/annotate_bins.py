@@ -1,5 +1,6 @@
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
+from skbio import Sequence
 from os import path, mkdir
 from shutil import rmtree, copy2
 import pandas as pd
