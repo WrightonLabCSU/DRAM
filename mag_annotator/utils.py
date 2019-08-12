@@ -45,9 +45,7 @@ def multigrep(search_terms, search_against, output='.', skip_chars=1):
     with open(hits_file, 'w') as f:
         f.write('%s\n' % '\n'.join(search_terms))
     results = subprocess.run(['grep', '-a', '-F', '-f', hits_file, search_against], stdout=subprocess.PIPE, check=True)
-    processed_results = [header.strip()[skip_chars:] if i > 0 else header.strip() for i, header in
-                         enumerate(results.stdout.decode('ascii').split('\n'))]
-    processed_results = [i.strip() for i in results.stdout.decode(errors='ignore').strip().split(' \n\x00')
+    processed_results = [i.strip() for i in results.stdout.decode(errors='ignore').strip().split('\x00')
                          if len(i) > 0]
     # remove(hits_file)
     return {i.split()[0]: i for i in processed_results if i != ''}
