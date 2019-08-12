@@ -270,7 +270,8 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
         check_file_exists(peptidase_loc)
 
     # setup
-    mkdir(output_dir)
+    if not path.isdir(output_dir):
+        mkdir(output_dir)
     temporary = path.join(output_dir, 'database_files')
     mkdir(temporary)
 
