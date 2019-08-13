@@ -220,27 +220,30 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
     run_process(cmd, shell=True)
 
     # Process results
-    dbcan_res = pd.read_csv(processed_dbcan_output, sep='\t', header=None)
+    if path.isfile(processed_dbcan_output) and stat(processed_dbcan_output).st_size > 0:
+        dbcan_res = pd.read_csv(processed_dbcan_output, sep='\t', header=None)
 
-    columns = ['tid', 'tlen', 'qid', 'qlen', 'evalue', 'tstart', 'tend', 'qstart', 'qend']
-    dbcan_res.columns = columns
+        columns = ['tid', 'tlen', 'qid', 'qlen', 'evalue', 'tstart', 'tend', 'qstart', 'qend']
+        dbcan_res.columns = columns
 
-    dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
+        dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
 
-    dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
+        dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
 
-    dbcan_dict = dict()
-    if db_handler is not None:
-        dbcan_descriptions = db_handler.get_descriptions(set([i[:-4].split('_')[0] for i in
-                                                              dbcan_res[dbcan_res.significant].tid]),
-                                                         'dbcan_description')
-    for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
-        if db_handler is None:
-            dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
-        else:
-            dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions.get(ascession[:-4].split('_')[0]),
-                                                       ascession[:-4]) for ascession in frame.tid])
-    return pd.Series(dbcan_dict, name='cazy_hits')
+        dbcan_dict = dict()
+        if db_handler is not None:
+            dbcan_descriptions = db_handler.get_descriptions(set([i[:-4].split('_')[0] for i in
+                                                                  dbcan_res[dbcan_res.significant].tid]),
+                                                             'dbcan_description')
+        for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
+            if db_handler is None:
+                dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
+            else:
+                dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions.get(ascession[:-4].split('_')[0]),
+                                                           ascession[:-4]) for ascession in frame.tid])
+        return pd.Series(dbcan_dict, name='cazy_hits')
+    else:
+        return pd.Series()
 
 
 def get_gene_data(fasta_loc):
