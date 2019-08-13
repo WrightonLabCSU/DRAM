@@ -387,6 +387,8 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
     print('%s: Getting forward best hits from %s' % (str(datetime.now() - start_time), db_name))
     forward_hits = get_best_hits(query_db, target_db, working_dir, 'gene', db_name, bit_score_threshold,
                                  threads, verbose=verbose)
+    if stat(forward_hits).st_size == 0:
+        return pd.DataFrame()
     print('%s: Getting reverse best hits from %s' % (str(datetime.now() - start_time), db_name))
     reverse_hits = get_reciprocal_best_hits(query_db, target_db, working_dir, 'gene', db_name,
                                             bit_score_threshold, rbh_bit_score_threshold, threads, verbose=verbose)
