@@ -20,14 +20,18 @@ def download_file(url, output_file=None, verbose=True):
         run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
-def run_process(command, shell=False, verbose=False):
+def run_process(command, shell=False, capture_stdout=True, verbose=False):
     """Standardization of parameters for using subprocess.run, provides verbose mode and option to run via shell"""
     stdout = subprocess.DEVNULL
     stderr = subprocess.DEVNULL
     if verbose:
         stdout = None
         stderr = None
-    subprocess.run(command, check=True, shell=shell, stdout=stdout, stderr=stderr)
+    if capture_stdout:
+        return subprocess.run(command, check=True, shell=shell, stdout=subprocess.PIPE,
+                              stderr=stderr).stdout.decode(errors='ignore')
+    else:
+        subprocess.run(command, check=True, shell=shell, stdout=stdout, stderr=stderr)
 
 
 def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose=False):
@@ -44,8 +48,8 @@ def multigrep(search_terms, search_against, output='.', skip_chars=1):
     hits_file = path.join(output, 'hits.txt')
     with open(hits_file, 'w') as f:
         f.write('%s\n' % '\n'.join(search_terms))
-    results = subprocess.run(['grep', '-a', '-F', '-f', hits_file, search_against], stdout=subprocess.PIPE, check=True)
-    processed_results = [i.strip() for i in results.stdout.decode(errors='ignore').strip().split('\x00')
+    results = run_process(['grep', '-a', '-F', '-f', hits_file, search_against], capture_stdout=True, verbose=False)
+    processed_results = [i.strip() for i in results.strip().split('\x00')
                          if len(i) > 0]
     # remove(hits_file)
     return {i.split()[0]: i for i in processed_results if i != ''}
