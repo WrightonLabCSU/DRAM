@@ -35,6 +35,23 @@ def fill_genome_summary_frame(annotations, group_column, genome_summary_frame):
     return genome_summary_frame
 
 
+RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
+
+
+def summarize_rrnas(rrnas_df, groupby_column='fasta'):
+    genome_rrna_dict = dict()
+    for genome, frame in rrnas_df.groupby(groupby_column):
+        genome_rrna_dict[genome] = Counter(frame['type'])
+    row_list = list()
+    for type in RRNA_TYPES:
+        row = [type, '%s ribosomal RNA gene' % type.split()[0], 'rRNA', 'ribosomal RNA genes', 'rRNA genes', True]
+        for genome, rrna_dict in genome_rrna_dict.items():
+            row.append(genome_rrna_dict[genome].get(type, 0))
+        row_list.append(row)
+    rrna_frame = pd.DataFrame(row_list, columns=FRAME_COLUMNS+list(genome_rrna_dict.keys()))
+    return rrna_frame
+
+
 def summarize_trnas(trnas_df, groupby_column='fasta'):
     # first build the frame
     combos = set()
@@ -72,11 +89,15 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
     return trna_frame
 
 
-def make_genome_summary(annotations, genome_summary_frame, trna_frame=None,
+def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna_frame=None,
                         group_column='fasta', viral=False):
     summary_frames = list()
     # get ko summaries
     summary_frames.append(fill_genome_summary_frame(annotations, group_column, genome_summary_frame.copy()))
+
+    # add rRNAs
+    if rrna_frame is not None:
+        summary_frames.append(summarize_rrnas(rrna_frame, group_column))
 
     # add tRNAs
     if trna_frame is not None:
@@ -95,81 +116,6 @@ def make_genome_summary(annotations, genome_summary_frame, trna_frame=None,
         summarized_genomes = summarized_genomes[list(summarized_genomes.columns[:7]) + list(good_columns)]
 
     return summarized_genomes
-
-
-##################
-# Now methods for making module summary
-
-def build_module_net(module_df):
-    # build net from a set of module paths
-    num_steps = max([int(i.split(',')[0]) for i in set(module_df.path)]) + 1
-    module_net = nx.DiGraph(num_steps=num_steps, module_id=list(module_df.module)[0],
-                            module_name=list(module_df.module_name)[0])
-    for module_path, frame in module_df.groupby('path'):
-        split_path = [int(i) for i in module_path.split(',')]
-        module_net.add_node(module_path, kos=set(frame.ko))
-        # add incoming edge
-        if module_path[0] == 0:
-            module_net.add_edge('begin', module_path)
-        else:
-            module_net.add_edge('end_step_%s' % (split_path[0]-1), module_path)
-        # add outgoing edge
-        if split_path[0] == num_steps:
-            module_net.add_edge(module_path, 'end')
-        else:
-            module_net.add_edge(module_path, 'end_step_%s' % split_path[0])
-    return module_net
-
-
-def get_module_coverage(kos, module_net):
-    # prune network based on what kos were observed
-    pruned_module_net = module_net.copy()
-    module_kos_present = set()
-    for node, data in module_net.nodes.items():
-        if 'kos' in data:
-            ko_overlap = data['kos'] & kos
-            if len(ko_overlap) == 0:
-                pruned_module_net.remove_node(node)
-            else:
-                module_kos_present = module_kos_present | ko_overlap
-    # count number of missing steps
-    missing_steps = list()
-    for node, data in pruned_module_net.nodes.items():
-        if ('end_step' in node) and pruned_module_net.in_degree(node) == 0:
-            missing_steps.append(int(node.split('_')[-1]))
-    # get statistics
-    num_steps = pruned_module_net.graph['num_steps']
-    num_steps_present = num_steps-len(missing_steps)
-    coverage = num_steps_present/num_steps
-    return num_steps, num_steps_present, coverage, sorted(module_kos_present)
-
-
-def make_module_coverage_df(annotation_df, module_nets, min_cov=.5):
-    kos_to_genes = defaultdict(list)
-    for gene_id, ko_list in annotation_df.kegg_id.iteritems():
-        if type(ko_list) is str:
-            for ko in ko_list.split(','):
-                kos_to_genes[ko].append(gene_id)
-    coverage_dict = {}
-    for i, (module, net) in enumerate(module_nets.items()):
-        module_steps, module_steps_present, module_coverage, module_kos = get_module_coverage(set(kos_to_genes.keys()),
-                                                                                              net)
-        module_genes = sorted([gene for ko in module_kos for gene in kos_to_genes[ko]])
-        coverage_dict[module] = [net.graph['module_name'], module_steps, module_steps_present, module_coverage,
-                                 len(module_kos), ','.join(module_kos), ','.join(module_genes)]
-    coverage_df = pd.DataFrame.from_dict(coverage_dict, orient='index',
-                                         columns=['module_name', 'steps', 'steps_present', 'step_coverage', 'ko_count',
-                                                  'kos_present', 'genes_present'])
-    return coverage_df.loc[coverage_df.step_coverage >= min_cov]
-
-
-def make_module_coverage_summary(annotations, module_nets, min_cov=.001, group_column='fasta'):
-    # go through each scaffold to check for modules
-    scaffold_df_dict = dict()
-    for scaffold, frame in annotations.groupby(group_column):
-        scaffold_df_dict[scaffold] = make_module_coverage_df(frame, module_nets, min_cov)
-    scaffold_coverage_df = pd.concat(scaffold_df_dict)
-    return scaffold_coverage_df
 
 
 def summarize_genomes(input_file, trna_path, rrna_path, output_dir, group_column, viral=False, min_cov=.001):
@@ -196,5 +142,5 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, group_column
     mkdir(output_dir)
 
     # make genome summary
-    genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, group_column, viral)
+    genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, group_column, viral)
     genome_summary.to_csv(path.join(output_dir, 'genome_summary.tsv'), sep='\t', index=False)
