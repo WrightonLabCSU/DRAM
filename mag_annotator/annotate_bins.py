@@ -229,6 +229,8 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
         dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
 
         dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
+        if dbcan_res['significant'].sum() == 0: # if nothing significant then return nothing, don't get descriptions
+            return pd.Series()
 
         dbcan_dict = dict()
         if db_handler is not None:
