@@ -431,6 +431,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
                   gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
+    print('%s: Annotation started' % str(datetime.now()))
     fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s')

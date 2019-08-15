@@ -172,22 +172,25 @@ def make_module_coverage_summary(annotations, module_nets, min_cov=.001, group_c
     return scaffold_coverage_df
 
 
-def summarize_genomes(input_file, trna_path, output_dir, group_column, viral=False, min_cov=.001):
+def summarize_genomes(input_file, trna_path, rrna_path, output_dir, group_column, viral=False, min_cov=.001):
     # read in data
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     if trna_path is None:
         trna_frame = None
     else:
         trna_frame = pd.read_csv(trna_path, sep='\t', index_col=0)
+    if rrna_path is None:
+        rrna_frame = None
+    else:
+        rrna_frame = pd.read_csv(rrna_path, sep='\t', index_col=0)
 
     # get db_locs and read in dbs
     db_locs = get_database_locs()
-    if 'genome_summary_form' not in db_locs or 'module_step_form' not in db_locs:
-        raise ValueError('Genome_summary_frame and module_step_form must be set in order to summarize genomes.')
+    if 'genome_summary_form' not in db_locs:
+        raise ValueError('Genome_summary_frame must be set in order to summarize genomes.')
 
     # read in dbs
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
-    module_steps_form = pd.read_csv(db_locs['module_step_form'], sep='\t')
 
     # make output folder
     mkdir(output_dir)
@@ -195,11 +198,3 @@ def summarize_genomes(input_file, trna_path, output_dir, group_column, viral=Fal
     # make genome summary
     genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, group_column, viral)
     genome_summary.to_csv(path.join(output_dir, 'genome_summary.tsv'), sep='\t', index=False)
-
-    # build module nets
-    module_nets = {module: build_module_net(module_df)
-                   for module, module_df in module_steps_form.groupby('module')}
-
-    # make coverage summary
-    module_coverage_summary = make_module_coverage_summary(annotations, module_nets, min_cov, group_column)
-    module_coverage_summary.to_csv(path.join(output_dir, 'module_coverage_summary.tsv'), sep='\t')
