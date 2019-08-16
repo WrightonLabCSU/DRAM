@@ -181,13 +181,6 @@ def download_and_process_merops_peptidases(peptidase_faa=None, output_dir='.', t
     return peptidase_mmseqs_db
 
 
-def download_and_process_kegg_modules(output_dir):
-    module_summary_form_path = path.join(output_dir, 'module_summary_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/module_summary_form.tsv',
-                  module_summary_form_path, verbose=True)
-    return module_summary_form_path
-
-
 def download_and_process_genome_summary_form(output_dir):
     genome_summary_form = path.join(output_dir, 'genome_summary_form.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/genome_summary_form.tsv',
@@ -214,7 +207,7 @@ def check_exists_and_add_to_description_db(loc, name, get_description_dict, db_h
 
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
                        dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None,
-                       description_db_loc=None, module_step_form_loc=None, genome_summary_form_loc=None):
+                       description_db_loc=None, genome_summary_form_loc=None):
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
@@ -224,7 +217,6 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
     db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
     db_dict = check_exists_and_add_to_location_dict(peptidase_db_loc, 'peptidase', db_dict)
-    db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
 
     # Add the descriptions to the database
@@ -289,8 +281,6 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
                                                                    verbose=verbose)
     output_dbs['peptidase_db_loc'] = download_and_process_merops_peptidases(peptidase_loc, temporary, threads=threads,
                                                                             verbose=verbose)
-    # get module step form
-    output_dbs['module_step_form_loc'] = download_and_process_kegg_modules(temporary)
 
     # add genome summary form
     output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary)
@@ -333,5 +323,4 @@ def print_database_locations():
     print('RefSeq Viral db loc: %s' % is_db_in_dict('viral', db_locs))
     print('MEROPS peptidase db loc: %s' % is_db_in_dict('peptidase', db_locs))
     print('Description db loc: %s' % is_db_in_dict('description_db', db_locs))
-    print('module steps form loc: %s' % is_db_in_dict('module_step_form', db_locs))
     print('genome summary form loc: %s' % is_db_in_dict('genome_summary_form', db_locs))

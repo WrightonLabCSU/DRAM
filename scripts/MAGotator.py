@@ -65,7 +65,6 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--description_db_loc', default=None, help="Location to write description sqlite "
                                                                                "db")
     set_db_locs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form")
-    set_db_locs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form")
     set_db_locs_parser.set_defaults(func=set_database_paths)
 
     # parser for printing out database configuration information
@@ -98,13 +97,12 @@ if __name__ == '__main__':
     # parser for summarizing genomes
     genome_summary_parser.add_argument("-i", "--input_file", help="Annotations path")
     genome_summary_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
+    genome_summary_parser.add_argument("--rrna_path", help="rRNA output from annotation")
     genome_summary_parser.add_argument("--trna_path", help="tRNA output from annotation")
     genome_summary_parser.add_argument("--group_column", help="Column from annotations to group as organism units",
                                        default='fasta')
     genome_summary_parser.add_argument("--viral", default=False, action='store_true',
                                        help="If sample is viral will remove empty functions")
-    genome_summary_parser.add_argument("--min_cov", type=float, default=.001,
-                                       help="Minimum coverage to include module in summary")
     genome_summary_parser.set_defaults(func=summarize_genomes)
 
     args = parser.parse_args()

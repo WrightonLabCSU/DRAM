@@ -229,7 +229,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
         dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
 
         dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
-        if dbcan_res['significant'].sum() == 0: # if nothing significant then return nothing, don't get descriptions
+        if dbcan_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series()
 
         dbcan_dict = dict()
@@ -351,8 +351,9 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
     # scikit-bio can make a genbank for a concatenated gff and fasta file so make this first
     gff = open(gff_loc)
     fasta = open(fasta_loc)
-    fasta_records = len([i for i in read_sequence(open(fasta_loc), format='fasta') ]) # get number of fasta records
-    concat_gff = '%s\n##FASTA\n%s' % (gff.read(), fasta.read()) # the gff with fasta format is the gff then ##FASTA then the fasta
+    fasta_records = len([i for i in read_sequence(open(fasta_loc), format='fasta')])  # get number of fasta records
+    # the gff with fasta format is the gff then ##FASTA then the fasta
+    concat_gff = '%s\n##FASTA\n%s' % (gff.read(), fasta.read())
 
     # now we can only ready one record from the gff/fasta hybrid at a time
     # read a record at a time till end of the fasta
@@ -391,8 +392,8 @@ RRNA_COLUMNS = ['fasta', 'begin', 'end', 'strand', 'type', 'e-value', 'note']
 def run_barrnap(fasta, output_loc, fasta_name, threads=10, verbose=True):
     raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, verbose=verbose)
     if len(raw_rrna_str.strip()) > 0:
-        raw_rrna_table = pd.read_csv(io.StringIO(raw_rrna_str), skiprows=1, sep='\t', header=None, names=RAW_RRNA_COLUMNS,
-                                     index_col=0)
+        raw_rrna_table = pd.read_csv(io.StringIO(raw_rrna_str), skiprows=1, sep='\t', header=None,
+                                     names=RAW_RRNA_COLUMNS, index_col=0)
         rrna_table_rows = list()
         for gene, row in raw_rrna_table.iterrows():
             rrna_row_dict = {entry.split('=')[0]: entry.split('=')[1] for entry in row['note'].split(';')}
@@ -433,6 +434,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
                   gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
+    print('%s: Annotation started' % str(datetime.now()))
     fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s')
