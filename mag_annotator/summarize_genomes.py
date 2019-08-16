@@ -1,6 +1,5 @@
 import pandas as pd
 from collections import Counter, defaultdict
-import networkx as nx
 from os import path, mkdir
 
 from mag_annotator.utils import get_database_locs
@@ -118,7 +117,34 @@ def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna
     return summarized_genomes
 
 
-def summarize_genomes(input_file, trna_path, rrna_path, output_dir, group_column, viral=False, min_cov=.001):
+def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, group_column='fasta'):
+    rows = list()
+    columns = ['genome', 'taxonomy', 'completeness', 'contamination', 'number of scaffolds']
+    if rrna_frame is not None:
+        columns += RRNA_TYPES
+    if trna_frame is not None:
+        columns.append('tRNA count')
+    for genome, frame in annotations.groupby(group_column):
+        row = [genome, frame['bin_taxonomy'][0], frame['bin_completeness'][0], frame['bin_contamination'][0],
+               len(set(frame['scaffold']))]
+        if rrna_frame is not None:
+            genome_rrnas = rrna_frame.loc[rrna_frame.fasta == genome]
+            for rrna in RRNA_TYPES:
+                sixteens = genome_rrnas.loc[rrna_frame.type == rrna]
+                if sixteens.shape[0] == 0:
+                    row.append('')
+                elif sixteens.shape[0] == 1:
+                    row.append('%s, (%s, %s)' % (genome_rrnas.index[0], genome_rrnas.begin[0], genome_rrnas.end[0]))
+                else:
+                    row.append('%s present' % sixteens.shape[0])
+        if trna_frame is not None:
+            row.append(trna_frame.loc[trna_frame[group_column] == genome].shape[0])
+        rows.append(row)
+    genome_stats = pd.DataFrame(rows, columns=columns)
+    return genome_stats
+
+
+def summarize_genomes(input_file, trna_path, rrna_path, output_dir, group_column, viral=False):
     # read in data
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     if trna_path is None:
@@ -141,6 +167,11 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, group_column
     # make output folder
     mkdir(output_dir)
 
-    # make genome summary
+    # make genome metabolism summary
     genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, group_column, viral)
-    genome_summary.to_csv(path.join(output_dir, 'genome_summary.tsv'), sep='\t', index=False)
+    genome_summary.to_csv(path.join(output_dir, 'genome_metabolism_summary.tsv'), sep='\t', index=False)
+
+    # make genome stats
+    if not viral:
+        genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, group_column)
+        genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=False)
