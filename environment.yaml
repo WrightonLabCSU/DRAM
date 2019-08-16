@@ -10,6 +10,5 @@ dependencies:
   - mmseqs2
   - hmmer
   - trnascan-se >=2
-  - networkx
   - sqlalchemy
   - barrnap

@@ -10,7 +10,7 @@ setup(
       scripts=['scripts/MAGotator.py'],
       packages=find_packages(),
       package_data={'mag_annotator': ['CONFIG']},
-      install_requires=['scikit-bio', 'pandas', 'networkx'],
+      install_requires=['scikit-bio', 'pandas'],
       description="Annotate contigs/bins from metagenomic assemblies and create predicted metabolisms",
       author="Michael Shaffer",
       author_email='michael.t.shaffer@colostate.edu',
