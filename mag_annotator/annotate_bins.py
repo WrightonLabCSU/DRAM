@@ -229,6 +229,8 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
         dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
 
         dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
+        if dbcan_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
+            return pd.Series()
 
         dbcan_dict = dict()
         if db_handler is not None:
@@ -349,8 +351,9 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
     # scikit-bio can make a genbank for a concatenated gff and fasta file so make this first
     gff = open(gff_loc)
     fasta = open(fasta_loc)
-    fasta_records = len([i for i in read_sequence(open(fasta_loc), format='fasta') ]) # get number of fasta records
-    concat_gff = '%s\n##FASTA\n%s' % (gff.read(), fasta.read()) # the gff with fasta format is the gff then ##FASTA then the fasta
+    fasta_records = len([i for i in read_sequence(open(fasta_loc), format='fasta')])  # get number of fasta records
+    # the gff with fasta format is the gff then ##FASTA then the fasta
+    concat_gff = '%s\n##FASTA\n%s' % (gff.read(), fasta.read())
 
     # now we can only ready one record from the gff/fasta hybrid at a time
     # read a record at a time till end of the fasta
@@ -373,13 +376,34 @@ def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
     """Run tRNAscan-SE on scaffolds and create a table of tRNAs as a separate output"""
     raw_trnas = path.join(output_loc, 'raw_trnas.txt')
     run_process(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], verbose=verbose)
-    processed_trnas = path.join(output_loc, 'trnas.tsv')
     if path.isfile(raw_trnas) and stat(raw_trnas).st_size > 0:
+        processed_trnas = path.join(output_loc, 'trnas.tsv')
         trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
         trna_frame.insert(0, 'fasta', fasta_name)
         trna_frame.to_csv(processed_trnas, sep='\t')
     else:
         warnings.warn('No tRNAs were detected, no trnas.tsv file will be created.')
+
+
+RAW_RRNA_COLUMNS = ['scaffold', 'tool_name', 'type', 'begin', 'end', 'e-value', 'strand', 'empty', 'note']
+RRNA_COLUMNS = ['fasta', 'begin', 'end', 'strand', 'type', 'e-value', 'note']
+
+
+def run_barrnap(fasta, output_loc, fasta_name, threads=10, verbose=True):
+    raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, verbose=verbose)
+    if len(raw_rrna_str.strip()) > 0:
+        raw_rrna_table = pd.read_csv(io.StringIO(raw_rrna_str), skiprows=1, sep='\t', header=None,
+                                     names=RAW_RRNA_COLUMNS, index_col=0)
+        rrna_table_rows = list()
+        for gene, row in raw_rrna_table.iterrows():
+            rrna_row_dict = {entry.split('=')[0]: entry.split('=')[1] for entry in row['note'].split(';')}
+            rrna_table_rows.append([fasta_name, row.begin, row.end, row.strand, rrna_row_dict['Name'].replace('_', ' '),
+                                    row['e-value'], rrna_row_dict.get('note', '')])
+        rrna_table = pd.DataFrame(rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS)
+        processed_rrnas = path.join(output_loc, 'rrnas.tsv')
+        rrna_table.to_csv(processed_rrnas, sep='\t')
+    else:
+        warnings.warn('No rRNAs were detected, no rrnas.tsv file will be created.')
 
 
 def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_description, start_time,
@@ -410,6 +434,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
                   gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
+    print('%s: Annotation started' % str(datetime.now()))
     fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s')
@@ -537,9 +562,10 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         current_gbk = path.join(fasta_dir, '%s.gbk' % fasta_name)
         make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
 
-        # get tRNAs
+        # get tRNAs and rRNAs
         if not skip_trnascan:
             run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
+        run_barrnap(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
 
         # add fasta name to frame and index, append to list
         annotations.insert(0, 'fasta', fasta_name)
@@ -567,6 +593,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     merge_files(path.join(tmp_dir, '*', 'scaffolds.annotated.fa'), path.join(output_dir, 'scaffolds.fna'))
     merge_files(path.join(tmp_dir, '*', 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'), True)
     merge_files(path.join(tmp_dir, '*', 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'), True)
+    merge_files(path.join(tmp_dir, '*', 'rrnas.tsv'), path.join(output_dir, 'rrnas.tsv'), True)
 
     # make output gbk dir
     gbk_dir = path.join(output_dir, 'genbank')
