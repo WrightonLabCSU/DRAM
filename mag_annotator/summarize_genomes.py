@@ -1,6 +1,8 @@
 import pandas as pd
-from collections import Counter, defaultdict
+from collections import Counter
 from os import path, mkdir
+import re
+import altair as alt
 
 from mag_annotator.utils import get_database_locs
 
@@ -42,8 +44,9 @@ def summarize_rrnas(rrnas_df, groupby_column='fasta'):
     for genome, frame in rrnas_df.groupby(groupby_column):
         genome_rrna_dict[genome] = Counter(frame['type'])
     row_list = list()
-    for type in RRNA_TYPES:
-        row = [type, '%s ribosomal RNA gene' % type.split()[0], 'rRNA', 'ribosomal RNA genes', 'rRNA genes', True]
+    for rna_type in RRNA_TYPES:
+        row = [rna_type, '%s ribosomal RNA gene' % rna_type.split()[0], 'rRNA', 'ribosomal RNA genes', 'rRNA genes',
+               True]
         for genome, rrna_dict in genome_rrna_dict.items():
             row.append(genome_rrna_dict[genome].get(type, 0))
         row_list.append(row)
@@ -144,7 +147,67 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, group_colum
     return genome_stats
 
 
-def summarize_genomes(input_file, trna_path, rrna_path, output_dir, group_column, viral=False):
+def make_functional_heatmap(annotations, function_heatmap_form, groupby_column):
+    # build dict of ids per genome
+    genome_to_id_dict = dict()
+    for genome, frame in annotations.groupby(groupby_column):
+        id_list = list()
+        # get kegg ids
+        id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
+        # get ec numbers
+        for kegg_hit in frame.kegg_hit.dropna():
+            id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
+        # get merops ids
+        id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
+        # get cazy ids
+        id_list += [j.split('_')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
+        genome_to_id_dict[genome] = set(id_list)
+    # build long from data frame
+    rows = list()
+    for _, row in function_heatmap_form.iterrows():
+        function_id_set = set([i.strip() for i in row.function_ids.split(', ')])
+        for bin_name, id_set in genome_to_id_dict.items():
+            present_in_bin = len(set.intersection(id_set, function_id_set)) > 0
+            rows.append(list(row) + [bin_name, present_in_bin])
+    long_frame = pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['bin', 'present'])
+    # build heatmap
+    row_height = 10
+    column_width = 10
+
+    charts = list()
+    grouped_function_names = long_frame.groupby('category', sort=False)
+    for i, (group, frame) in enumerate(grouped_function_names):
+        c = alt.Chart().encode(
+            y=alt.Y('function_name', title=group, axis=alt.Axis(titleAngle=270, titleAlign='center'),
+                    sort=list(function_heatmap_form.loc[function_heatmap_form['category'] == group]['category'])),
+            tooltip=[alt.Tooltip('bin', title='MAG'),
+                     alt.Tooltip('category', title='Category'),
+                     alt.Tooltip('subcategory', title='Subcategory'),
+                     alt.Tooltip('function_name', title='Function'),
+                     alt.Tooltip('long_function_name', title='Description'),
+                     alt.Tooltip('gene_symbol', title='Gene Symbol')]
+        )
+        num_function_names_in_category = len(set(frame.function_name))
+        num_mags_in_frame = len(set(frame.bin))
+        a = c.mark_rect().encode(x='bin',
+                                 color=alt.Color('present', legend=alt.Legend(title="Function is Present",
+                                                                              symbolType='square',
+                                                                              values=[True, False])),
+                                 ).properties(
+            width=column_width * num_mags_in_frame,
+            height=row_height * num_function_names_in_category)
+        if i + 1 == len(grouped_function_names):
+            b = c.mark_text().encode(x=alt.X('bin', title='MAG'))
+        else:
+            b = c.mark_text().encode(x=alt.X('bin', axis=alt.Axis(title=None, labels=False, ticks=False)))
+        mini_function_name_heatmap = alt.layer(a, b, data=frame)
+        charts.append(mini_function_name_heatmap)
+
+    function_heatmap = alt.vconcat(*charts)
+    function_heatmap.save('function_heatmap.html')
+
+
+def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column, viral=False):
     # read in data
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     if trna_path is None:
@@ -159,19 +222,26 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, group_column
     # get db_locs and read in dbs
     db_locs = get_database_locs()
     if 'genome_summary_form' not in db_locs:
-        raise ValueError('Genome_summary_frame must be set in order to summarize genomes.')
+        raise ValueError('Genome summary form location must be set in order to summarize genomes')
+    if ' function_heatmap_form' not in db_locs:
+        raise ValueError('Functional heat map location must be set in order to summarize genomes')
 
     # read in dbs
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
+    function_heatmap_form = pd.read_csv(db_locs['function_heatmap_form'], sep='\t')
 
     # make output folder
     mkdir(output_dir)
 
     # make genome metabolism summary
-    genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, group_column, viral)
+    genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, groupby_column,
+                                         viral)
     genome_summary.to_csv(path.join(output_dir, 'genome_metabolism_summary.tsv'), sep='\t', index=False)
 
     # make genome stats
     if not viral:
-        genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, group_column)
+        genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, groupby_column)
         genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=False)
+
+    # make functional heatmap
+    make_functional_heatmap(annotations, function_heatmap_form, groupby_column)

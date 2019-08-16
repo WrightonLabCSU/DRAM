@@ -12,3 +12,4 @@ dependencies:
   - trnascan-se >=2
   - sqlalchemy
   - barrnap
+  - altair
