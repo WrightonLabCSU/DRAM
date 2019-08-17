@@ -5,15 +5,15 @@ __author__ = 'shafferm'
 __version__ = version
 
 setup(
-      name="MAGotator",
+      name="DRAM",
       version=__version__,
-      scripts=['scripts/MAGotator.py'],
+      scripts=['scripts/DRAM.py'],
       packages=find_packages(),
       package_data={'mag_annotator': ['CONFIG']},
       install_requires=['scikit-bio', 'pandas', 'altair', 'sqlalchemy'],
       description="Annotate contigs/bins from metagenomic assemblies and create predicted metabolisms",
       author="Michael Shaffer",
       author_email='michael.t.shaffer@colostate.edu',
-      url="https://github.com/shafferm/MAGotator/",
-      download_url="https://github.com/shafferm/MAGotator/tarball/%s" % __version__
+      url="https://github.com/shafferm/DRAM/",
+      download_url="https://github.com/shafferm/DRAM/tarball/%s" % __version__
 )

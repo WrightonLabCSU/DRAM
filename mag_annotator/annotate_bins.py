@@ -207,7 +207,7 @@ def get_sig(tcovlen, evalue):
 def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose=False):
     """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
     Commands this is based on:
-    hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/MAGotator/genes.faa
+    hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/DRAM/genes.faa
     cat ~/dbCAN_test_1 | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' | sed 's/ /\t/g' | \
     sort -k 3,3 -k 8n -k 9n > dbCAN_test_1.good_cols.tsv
     """

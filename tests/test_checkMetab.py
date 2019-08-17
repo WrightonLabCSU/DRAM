@@ -1,6 +1,6 @@
 # import pytest
 #
-# from MAGotator.annotate_bins import main
+# from DRAM.annotate_bins import main
 #
 #
 # def test_main():
