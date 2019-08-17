@@ -147,20 +147,25 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, group_colum
     return genome_stats
 
 
-def make_functional_heatmap(annotations, function_heatmap_form, groupby_column):
+def get_ids_from_annotation(frame):
+    id_list = list()
+    # get kegg ids
+    id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
+    # get ec numbers
+    for kegg_hit in frame.kegg_hit.dropna():
+        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
+    # get merops ids
+    id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
+    # get cazy ids
+    id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
+    return id_list
+
+
+def make_functional_heatmap(annotations, function_heatmap_form, groupby_column='fasta', output_dir=None):
     # build dict of ids per genome
     genome_to_id_dict = dict()
     for genome, frame in annotations.groupby(groupby_column):
-        id_list = list()
-        # get kegg ids
-        id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
-        # get ec numbers
-        for kegg_hit in frame.kegg_hit.dropna():
-            id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
-        # get merops ids
-        id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
-        # get cazy ids
-        id_list += [j.split('_')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
+        id_list = get_ids_from_annotation(frame)
         genome_to_id_dict[genome] = set(id_list)
     # build long from data frame
     rows = list()
@@ -204,7 +209,7 @@ def make_functional_heatmap(annotations, function_heatmap_form, groupby_column):
         charts.append(mini_function_name_heatmap)
 
     function_heatmap = alt.vconcat(*charts)
-    function_heatmap.save('function_heatmap.html')
+    return function_heatmap
 
 
 def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column, viral=False):
@@ -223,7 +228,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     db_locs = get_database_locs()
     if 'genome_summary_form' not in db_locs:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
-    if ' function_heatmap_form' not in db_locs:
+    if 'function_heatmap_form' not in db_locs:
         raise ValueError('Functional heat map location must be set in order to summarize genomes')
 
     # read in dbs
@@ -244,4 +249,5 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
         genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=False)
 
     # make functional heatmap
-    make_functional_heatmap(annotations, function_heatmap_form, groupby_column)
+    function_heatmap = make_functional_heatmap(annotations, function_heatmap_form, groupby_column)
+    function_heatmap.save(path.join(output_dir, 'function_heatmap.html'))

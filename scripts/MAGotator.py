@@ -101,7 +101,7 @@ if __name__ == '__main__':
     genome_summary_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
     genome_summary_parser.add_argument("--rrna_path", help="rRNA output from annotation")
     genome_summary_parser.add_argument("--trna_path", help="tRNA output from annotation")
-    genome_summary_parser.add_argument("--group_column", help="Column from annotations to group as organism units",
+    genome_summary_parser.add_argument("--groupby_column", help="Column from annotations to group as organism units",
                                        default='fasta')
     genome_summary_parser.add_argument("--viral", default=False, action='store_true',
                                        help="If sample is viral will remove empty functions")
