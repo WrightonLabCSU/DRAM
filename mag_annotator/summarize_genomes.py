@@ -161,7 +161,7 @@ def get_ids_from_annotation(frame):
     return id_list
 
 
-def make_functional_heatmap(annotations, function_heatmap_form, groupby_column='fasta', output_dir=None):
+def make_functional_heatmap(annotations, function_heatmap_form, groupby_column='fasta'):
     # build dict of ids per genome
     genome_to_id_dict = dict()
     for genome, frame in annotations.groupby(groupby_column):

@@ -22,13 +22,13 @@ class DatabaseHandler:
         description_class = TABLE_NAME_TO_CLASS_DICT[db_name]
         if clear_table:
             self.session.query(description_class).delete()
-        for id, description in description_dict.items():  # TODO: Make this a bulk operation
-            self.session.add(description_class(id=id, description=description))
+        for annotation_id, description in description_dict.items():  # TODO: Make this a bulk operation
+            self.session.add(description_class(id=annotation_id, description=description))
         self.session.commit()
 
     # functions for getting descriptions from tables
-    def get_description(self, id, db_name):
-        return self.session.query(TABLE_NAME_TO_CLASS_DICT[db_name]).filter_by(id=id).one().description
+    def get_description(self, annotation_id, db_name):
+        return self.session.query(TABLE_NAME_TO_CLASS_DICT[db_name]).filter_by(id=annotation_id).one().description
 
     def get_descriptions(self, ids, db_name):
         description_class = TABLE_NAME_TO_CLASS_DICT[db_name]

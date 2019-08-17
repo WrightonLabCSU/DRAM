@@ -1,6 +1,6 @@
 import subprocess
 from glob import glob
-from os import path, remove
+from os import path
 from pkg_resources import resource_filename
 import json
 from urllib.request import urlopen
@@ -42,7 +42,7 @@ def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose
         run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
 
 
-def multigrep(search_terms, search_against, output='.', skip_chars=1):
+def multigrep(search_terms, search_against, output='.'):
     # TODO: multiprocess this over the list of search terms
     """Search a list of exact substrings against a database, takes name of mmseqs db index with _h to search against"""
     hits_file = path.join(output, 'hits.txt')
