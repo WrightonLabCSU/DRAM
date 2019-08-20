@@ -133,11 +133,11 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, group_colum
         if rrna_frame is not None:
             genome_rrnas = rrna_frame.loc[rrna_frame.fasta == genome]
             for rrna in RRNA_TYPES:
-                sixteens = genome_rrnas.loc[rrna_frame.type == rrna]
+                sixteens = genome_rrnas.loc[genome_rrnas.type == rrna]
                 if sixteens.shape[0] == 0:
                     row.append('')
                 elif sixteens.shape[0] == 1:
-                    row.append('%s, (%s, %s)' % (genome_rrnas.index[0], genome_rrnas.begin[0], genome_rrnas.end[0]))
+                    row.append('%s, (%s, %s)' % (sixteens.index[0], sixteens.begin[0], sixteens.end[0]))
                 else:
                     row.append('%s present' % sixteens.shape[0])
         if trna_frame is not None:
