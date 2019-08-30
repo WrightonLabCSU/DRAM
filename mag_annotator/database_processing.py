@@ -210,8 +210,8 @@ def download_vog_annotations(output_dir, vogdb_version='latest', verbose=True):
 def process_vogdb_descriptions(vog_annotations):
     check_file_exists(vog_annotations)
     annotations_table = pd.read_csv(vog_annotations, sep='\t', index_col=0)
-    annotations_dict = {'%s; %s' % (row['ConsensusFunctionalDescription'], row['FunctionalCategory']) for vog, row in
-                        annotations_table.iterrows()}
+    annotations_dict = {vog: '%s; %s' % (row['ConsensusFunctionalDescription'], row['FunctionalCategory']) for vog, row
+                        in annotations_table.iterrows()}
     return annotations_dict
 
 
