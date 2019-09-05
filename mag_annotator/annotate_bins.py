@@ -506,7 +506,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     annotations_list = list()
     for fasta_loc in fasta_locs:
         # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
-        fasta_name = path.splitext(path.basename(fasta_loc))[0]
+        fasta_name = path.splitext(path.basename(fasta_loc.strip('.gz')))[0]
         print('%s: Annotating %s' % (str(datetime.now()-start_time), fasta_name))
         fasta_dir = path.join(tmp_dir, fasta_name)
         mkdir(fasta_dir)
