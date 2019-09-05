@@ -5,8 +5,10 @@ from glob import glob
 from pkg_resources import resource_filename
 import json
 import gzip
+import tarfile
+import pandas as pd
 
-from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file
+from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file, merge_files
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.database_setup import create_description_db
 
@@ -139,7 +141,7 @@ def process_dbcan_descriptions(dbcan_fam_activities):
                 description = ' '.join(line[1:])
             else:
                 description = ' '.join(line)
-            description_dict[line[0]] = description
+            description_dict[line[0]] = description.replace('\n', ' ')
     return description_dict
 
 
@@ -181,6 +183,38 @@ def download_and_process_merops_peptidases(peptidase_faa=None, output_dir='.', t
     return peptidase_mmseqs_db
 
 
+def download_and_process_vogdb(vog_hmm_targz=None, output_dir='.', vogdb_release='latest', verbose=True):
+    if vog_hmm_targz is None:
+        vog_hmm_targz = path.join(output_dir, 'vog.hmm.tar.gz')
+        vogdb_url = 'http://fileshare.csb.univie.ac.at/vog/%s/vog.hmm.tar.gz' % vogdb_release
+        download_file(vogdb_url, vog_hmm_targz, verbose=verbose)
+    else:
+        check_file_exists(vog_hmm_targz)
+    hmm_dir = path.join(output_dir, 'vogdb_hmms')
+    mkdir(hmm_dir)
+    vogdb_targz = tarfile.open(vog_hmm_targz)
+    vogdb_targz.extractall(hmm_dir)
+    vog_hmms = path.join(output_dir, 'vog_%s_hmms.txt' % vogdb_release)
+    merge_files(path.join(hmm_dir, 'VOG*.hmm'), vog_hmms)
+    run_process(['hmmpress', '-f', vog_hmms], verbose=verbose)
+    return vog_hmms
+
+
+def download_vog_annotations(output_dir, vogdb_version='latest', verbose=True):
+    vog_annotations = path.join(output_dir, 'vog_annotations_%s.tsv.gz' % vogdb_version)
+    download_file('http://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % vogdb_version,
+                  vog_annotations, verbose=verbose)
+    return vog_annotations
+
+
+def process_vogdb_descriptions(vog_annotations):
+    check_file_exists(vog_annotations)
+    annotations_table = pd.read_csv(vog_annotations, sep='\t', index_col=0)
+    annotations_dict = {vog: '%s; %s' % (row['ConsensusFunctionalDescription'], row['FunctionalCategory']) for vog, row
+                        in annotations_table.iterrows()}
+    return annotations_dict
+
+
 def download_and_process_genome_summary_form(output_dir):
     genome_summary_form = path.join(output_dir, 'genome_summary_form.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/genome_summary_form.tsv',
@@ -213,8 +247,9 @@ def check_exists_and_add_to_description_db(loc, name, get_description_dict, db_h
 
 
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
-                       dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None,
-                       description_db_loc=None, genome_summary_form_loc=None, function_heatmap_form_loc=None):
+                       dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None,
+                       vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None,
+                       function_heatmap_form_loc=None):
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
@@ -224,6 +259,8 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(dbcan_db_loc, 'dbcan', db_dict)
     db_dict = check_exists_and_add_to_location_dict(viral_db_loc, 'viral', db_dict)
     db_dict = check_exists_and_add_to_location_dict(peptidase_db_loc, 'peptidase', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(vogdb_db_loc, 'vogdb', db_dict)
+
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
 
@@ -235,16 +272,18 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
         db_handler = DatabaseHandler(db_dict['description_db'])
         check_exists_and_add_to_description_db(kegg_db_loc, 'kegg_description', make_header_dict_from_mmseqs_db,
                                                db_handler)
-        check_exists_and_add_to_description_db(uniref_db_loc, 'uniref_description',
-                                               make_header_dict_from_mmseqs_db, db_handler)
+        check_exists_and_add_to_description_db(uniref_db_loc, 'uniref_description', make_header_dict_from_mmseqs_db,
+                                               db_handler)
         check_exists_and_add_to_description_db(pfam_hmm_dat, 'pfam_description', process_pfam_descriptions,
                                                db_handler)
-        check_exists_and_add_to_description_db(dbcan_fam_activities, 'dbcan_description',
-                                               process_dbcan_descriptions, db_handler)
-        check_exists_and_add_to_description_db(viral_db_loc, 'viral_description',
-                                               make_header_dict_from_mmseqs_db, db_handler)
+        check_exists_and_add_to_description_db(dbcan_fam_activities, 'dbcan_description', process_dbcan_descriptions,
+                                               db_handler)
+        check_exists_and_add_to_description_db(viral_db_loc, 'viral_description', make_header_dict_from_mmseqs_db,
+                                               db_handler)
         check_exists_and_add_to_description_db(peptidase_db_loc, 'peptidase_description',
                                                make_header_dict_from_mmseqs_db, db_handler)
+        check_exists_and_add_to_description_db(vog_annotations, 'vogdb_description', process_vogdb_descriptions,
+                                               db_handler)
 
     # change data paths
     with open(path.abspath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
@@ -254,7 +293,8 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
 def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
                       pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='7',
                       dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None, peptidase_loc=None,
-                      keep_database_files=False, threads=10, verbose=True):
+                      vogdb_loc=None, vogdb_version='latest', vog_annotations=None, keep_database_files=False,
+                      threads=10, verbose=True):
     # check that all given files exist
     if kegg_loc is not None:
         check_file_exists(kegg_loc)
@@ -289,6 +329,8 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
                                                                    verbose=verbose)
     output_dbs['peptidase_db_loc'] = download_and_process_merops_peptidases(peptidase_loc, temporary, threads=threads,
                                                                             verbose=verbose)
+    output_dbs['vogdb_db_loc'] = download_and_process_vogdb(vogdb_loc, temporary, vogdb_release=vogdb_version,
+                                                            verbose=verbose)
 
     # add genome summary form and function heatmap form
     output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary)
@@ -306,6 +348,9 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
     if dbcan_fam_activities is None:
         dbcan_fam_activities = download_dbcan_descriptions(output_dir, dbcan_date, verbose=verbose)
     output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
+    if vog_annotations is None:
+        vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
+    output_dbs['vog_annotations'] = vog_annotations
 
     output_dbs['description_db_loc'] = path.join(output_dir, 'description_db.sqlite')
 
@@ -331,6 +376,7 @@ def print_database_locations():
     print('dbCAN db loc: %s' % is_db_in_dict('dbcan', db_locs))
     print('RefSeq Viral db loc: %s' % is_db_in_dict('viral', db_locs))
     print('MEROPS peptidase db loc: %s' % is_db_in_dict('peptidase', db_locs))
+    print('VOGDB db loc: %s' % is_db_in_dict('vogdb', db_locs))
     print('Description db loc: %s' % is_db_in_dict('description_db', db_locs))
-    print('genome summary form loc: %s' % is_db_in_dict('genome_summary_form', db_locs))
-    print('function heatmap form loc: %s' % is_db_in_dict('function_heatmap_form', db_locs))
+    print('Genome summary form loc: %s' % is_db_in_dict('genome_summary_form', db_locs))
+    print('Function heatmap form loc: %s' % is_db_in_dict('function_heatmap_form', db_locs))

@@ -113,6 +113,24 @@ class PeptidaseDescription(Base):
         }
 
 
+VOGDB_DESCRIPTION_TABLE_NAME = 'vogdb_description'
+
+
+class VOGDBDescription(Base):
+    __tablename__ = VOGDB_DESCRIPTION_TABLE_NAME
+
+    id = Column(String(10), primary_key=True, nullable=False, index=True)
+
+    description = Column(String(1000))
+
+    @property
+    def serialize(self):
+        return {
+            'vogdb_id': self.id,
+            'vogdb_description': self.description,
+        }
+
+
 def create_description_db(db_loc):
     engine = create_engine('sqlite:///%s' % db_loc)
     Base.metadata.create_all(engine)
@@ -123,4 +141,5 @@ TABLE_NAME_TO_CLASS_DICT = {KEGG_DESCRIPTION_TABLE_NAME: KeggDescription,
                             PFAM_DESCRIPTION_TABLE_NAME: PfamDescription,
                             DBCAN_DESCRIPTION_TABLE_NAME: DbcanDescription,
                             VIRAL_DESCRIPTION_TABLE_NAME: ViralDescription,
-                            PEPTIDASE_DESCRIPTION_TABLE_NAME: PeptidaseDescription}
+                            PEPTIDASE_DESCRIPTION_TABLE_NAME: PeptidaseDescription,
+                            VOGDB_DESCRIPTION_TABLE_NAME: VOGDBDescription}

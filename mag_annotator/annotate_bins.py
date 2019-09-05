@@ -22,6 +22,7 @@ from mag_annotator.database_handler import DatabaseHandler
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
+HMMSCAN_COLUMNS = ['tid', 'tlen', 'qid', 'qlen', 'evalue', 'tstart', 'tend', 'qstart', 'qend']
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -204,6 +205,7 @@ def get_sig(tcovlen, evalue):
         return False
 
 
+# TODO: refactor following to methods to a shared run hmm step and individual get description steps
 def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose=False):
     """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
     Commands this is based on:
@@ -223,8 +225,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
     if path.isfile(processed_dbcan_output) and stat(processed_dbcan_output).st_size > 0:
         dbcan_res = pd.read_csv(processed_dbcan_output, sep='\t', header=None)
 
-        columns = ['tid', 'tlen', 'qid', 'qlen', 'evalue', 'tstart', 'tend', 'qstart', 'qend']
-        dbcan_res.columns = columns
+        dbcan_res.columns = HMMSCAN_COLUMNS
 
         dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
 
@@ -234,16 +235,53 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
 
         dbcan_dict = dict()
         if db_handler is not None:
-            dbcan_descriptions = db_handler.get_descriptions(set([i[:-4].split('_')[0] for i in
+            dbcan_descriptions = db_handler.get_descriptions(set([i.strip('.hmm').split('_')[0] for i in
                                                                   dbcan_res[dbcan_res.significant].tid]),
                                                              'dbcan_description')
         for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
             if db_handler is None:
                 dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
             else:
-                dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions.get(ascession[:-4].split('_')[0]),
-                                                           ascession[:-4]) for ascession in frame.tid])
+                dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions.get(accession[:-4].split('_')[0]),
+                                                           accession[:-4]) for accession in frame.tid])
         return pd.Series(dbcan_dict, name='cazy_hits')
+    else:
+        return pd.Series()
+
+
+def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, db_handler=None, verbose=False):
+    # run hmmscan
+    vogdb_output = path.join(output_loc, 'vogdb_results.unprocessed.txt')
+    run_process(['hmmscan', '--domtblout', vogdb_output, vogdb_loc, genes_faa], verbose=verbose)
+    processed_vogdb_output = path.join(output_loc, 'dbcan_results.tsv')
+    cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
+          "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (vogdb_output, processed_vogdb_output)
+    run_process(cmd, shell=True)
+
+    # Process Results
+    if path.isfile(processed_vogdb_output) and stat(processed_vogdb_output).st_size > 0:
+        vogdb_res = pd.read_csv(processed_vogdb_output, sep='\t', header=None)
+
+        vogdb_res.columns = HMMSCAN_COLUMNS
+
+        vogdb_res['tcovlen'] = vogdb_res.tend - vogdb_res.tstart
+
+        vogdb_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in vogdb_res.iterrows()]
+        if vogdb_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
+            return pd.Series()
+
+        dbcan_dict = dict()
+        if db_handler is not None:
+            vogdb_descriptions = db_handler.get_descriptions(set([i.strip('.hmm').split('_')[0] for i in
+                                                                  vogdb_res[vogdb_res.significant].tid]),
+                                                             'vogdb_description')
+        for gene, frame in vogdb_res[vogdb_res.significant].groupby('qid'):
+            if db_handler is None:
+                dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
+            else:
+                dbcan_dict[gene] = '; '.join(['%s [%s]' % (vogdb_descriptions.get(accession.strip(
+                    '.hmm').split('_')[0]), accession.strip('.hmm')) for accession in frame.tid])
+        return pd.Series(dbcan_dict, name='vogdb_hits')
     else:
         return pd.Series()
 
@@ -531,6 +569,12 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
             dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir, db_handler=db_handler,
                                            verbose=verbose)
             annotation_list.append(dbcan_hits)
+
+        # use hmmer to detect vogdbs
+        if 'vogdb' in db_locs:
+            print('%s: Getting hits from VOGDB' % str(datetime.now()-start_time))
+            vogdb_hits = run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], fasta_dir, db_handler, verbose=verbose)
+            annotation_list.append(vogdb_hits)
 
         for db_name, db_loc in custom_db_locs.items():
             print('%s: Getting hits from %s' % (str(datetime.now() - start_time), db_name))
