@@ -30,7 +30,7 @@ def make_header_dict_from_mmseqs_db(mmseqs_db):
     mmseqs_headers_handle = open('%s_h' % mmseqs_db, 'rb')
     mmseqs_headers = mmseqs_headers_handle.read().decode(errors='ignore')
     mmseqs_headers = [i.strip() for i in mmseqs_headers.strip().split(' \n\x00') if len(i) > 0]
-    return {i.split(' ')[0]: i for i in mmseqs_headers}
+    return [{'id': i.split(' ')[0], 'description': i} for i in mmseqs_headers]
 
 
 def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbose=True):
@@ -94,7 +94,7 @@ def process_pfam_descriptions(pfam_hmm_dat):
     else:
         f = open(pfam_hmm_dat).read()
     entries = f.strip().split('//')
-    description_dict = dict()
+    description_list = list()
     for i, entry in enumerate(entries):
         if len(entry) > 0:
             entry = entry.split('\n')
@@ -106,8 +106,8 @@ def process_pfam_descriptions(pfam_hmm_dat):
                     ascession = line.split('   ')[-1]
                 if line.startswith('#=GF DE'):
                     description = line.split('   ')[-1]
-            description_dict[ascession] = description
-    return description_dict
+            description_list.append({'id': ascession, 'description': description})
+    return description_list
 
 
 def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='7', verbose=True):
@@ -131,7 +131,7 @@ def download_dbcan_descriptions(output_dir='.', upload_date='07312018', verbose=
 def process_dbcan_descriptions(dbcan_fam_activities):
     check_file_exists(dbcan_fam_activities)
     f = open(dbcan_fam_activities)
-    description_dict = dict()
+    description_list = list()
     for line in f.readlines():
         if not line.startswith('#') and len(line.strip()) != 0:
             line = line.strip().split()
@@ -141,8 +141,8 @@ def process_dbcan_descriptions(dbcan_fam_activities):
                 description = ' '.join(line[1:])
             else:
                 description = ' '.join(line)
-            description_dict[line[0]] = description.replace('\n', ' ')
-    return description_dict
+            description_list.append({'id': line[0], 'description': description.replace('\n', ' ')})
+    return description_list
 
 
 def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', viral_files=2, threads=10, verbose=True):
@@ -210,9 +210,10 @@ def download_vog_annotations(output_dir, vogdb_version='latest', verbose=True):
 def process_vogdb_descriptions(vog_annotations):
     check_file_exists(vog_annotations)
     annotations_table = pd.read_csv(vog_annotations, sep='\t', index_col=0)
-    annotations_dict = {vog: '%s; %s' % (row['ConsensusFunctionalDescription'], row['FunctionalCategory']) for vog, row
-                        in annotations_table.iterrows()}
-    return annotations_dict
+    annotations_list = [{'id': vog, 'description': '%s; %s' % (row['ConsensusFunctionalDescription'],
+                                                               row['FunctionalCategory'])}
+                        for vog, row in annotations_table.iterrows()]
+    return annotations_list
 
 
 def download_and_process_genome_summary_form(output_dir):
@@ -239,11 +240,11 @@ def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
     return dict_to_update
 
 
-def check_exists_and_add_to_description_db(loc, name, get_description_dict, db_handler):
+def check_exists_and_add_to_description_db(loc, name, get_description_list, db_handler):
     if loc is not None:  # if location give and exists then add to dict, else raise ValueError
         if check_file_exists(loc):
-            description_dict = get_description_dict(loc)
-            db_handler.add_descriptions_to_database(description_dict, name, clear_table=True)
+            description_list = get_description_list(loc)
+            db_handler.add_descriptions_to_database(description_list, name, clear_table=True)
 
 
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
