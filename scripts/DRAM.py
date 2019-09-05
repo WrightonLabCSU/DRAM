@@ -2,7 +2,8 @@
 
 import argparse
 
-from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations
+from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations,\
+                                              populate_description_db
 from mag_annotator.annotate_bins import annotate_bins
 from mag_annotator.summarize_genomes import summarize_genomes
 
@@ -16,11 +17,11 @@ if __name__ == '__main__':
     set_db_locs_parser = subparsers.add_parser('set_database_locations',
                                                help="Set database locations for already processed databases",
                                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    print_db_locs_parser = subparsers.add_parser('print_config',
-                                                 help="Print database locations",
+    update_description_db_parser = subparsers.add_parser('update_description_db', help='Update description database',
+                                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    print_db_locs_parser = subparsers.add_parser('print_config', help="Print database locations",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    annotate_mags_parser = subparsers.add_parser('annotate',
-                                                 help="Annotate contigs/bins/MAGs",
+    annotate_mags_parser = subparsers.add_parser('annotate', help="Annotate contigs/bins/MAGs",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     genome_summary_parser = subparsers.add_parser('summarize_genomes',
                                                   help="Summarize metabolic content of annotated genomes",
@@ -67,7 +68,11 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form")
     set_db_locs_parser.add_argument('--function_heatmap_form_loc', default=None,
                                     help="File path to function heatmap form")
+    set_db_locs_parser.add_argument('--update_description_db', action='store_true', default=False)
     set_db_locs_parser.set_defaults(func=set_database_paths)
+
+    # parser for updating database descriptions
+    update_description_db_parser.set_defaults(func=populate_description_db)
 
     # parser for printing out database configuration information
     print_db_locs_parser.set_defaults(func=print_database_locations)
