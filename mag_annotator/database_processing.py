@@ -1,4 +1,4 @@
-from os import path, mkdir
+from os import path, mkdir, remove
 from datetime import datetime
 from shutil import move, rmtree
 from glob import glob
@@ -268,9 +268,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
 
-    # Add the descriptions to the database
-    if description_db_loc is not None:  # if description db loc is given then create it
-        create_description_db(description_db_loc)
+    if description_db_loc is not None:
         db_dict['description_db'] = description_db_loc
 
     if update_description_db:
@@ -282,9 +280,15 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
 
 
 def populate_description_db(db_dict=None):
+    # setup
     if db_dict is None:
         db_dict = get_database_locs()
+    if path.exists(db_dict['description_db']):
+        remove(db_dict['description_db'])
+    create_description_db(db_dict['description_db'])
     db_handler = DatabaseHandler(db_dict['description_db'])
+
+    # fill database
     check_exists_and_add_to_description_db(db_dict['kegg'], 'kegg_description', make_header_dict_from_mmseqs_db,
                                            db_handler)
     check_exists_and_add_to_description_db(db_dict['uniref'], 'uniref_description', make_header_dict_from_mmseqs_db,
