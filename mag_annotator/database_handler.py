@@ -39,7 +39,7 @@ class DatabaseHandler:
     def get_descriptions(self, ids, db_name):
         description_class = TABLE_NAME_TO_CLASS_DICT[db_name]
         descriptions = list()
-        for chunk in divide_chunks(ids, 499):
+        for chunk in divide_chunks(list(ids), 499):
             descriptions += self.session.query(description_class).filter(description_class.id.in_(chunk)).all()
 
         if len(descriptions) == 0:
