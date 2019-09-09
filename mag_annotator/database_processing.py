@@ -367,7 +367,7 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
         vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
     output_dbs['vog_annotations'] = vog_annotations
 
-    output_dbs['description_db_loc'] = path.join(output_dir, 'description_db.sqlite')
+    output_dbs['description_db_loc'] = path.abspath(path.join(output_dir, 'description_db.sqlite'))
 
     set_database_paths(**output_dbs, update_description_db=True)
 

@@ -14,8 +14,8 @@ class DatabaseHandler:
         if not path.exists(database_loc):
             raise ValueError('Database does not exist at this path')
         engine = create_engine('sqlite:///%s' % database_loc)
-        DBSession = sessionmaker(bind=engine)
-        self.session = DBSession()
+        db_session = sessionmaker(bind=engine)
+        self.session = db_session()
 
     # functions for adding descriptions to tables
     def add_descriptions_to_database(self, description_list, db_name, clear_table=True):
