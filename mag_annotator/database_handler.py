@@ -9,6 +9,12 @@ from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT
 # TODO: store all sequence db locs within database handler class
 
 
+def divide_chunks(l, n):
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
 class DatabaseHandler:
     def __init__(self, database_loc):
         if not path.exists(database_loc):
@@ -32,7 +38,10 @@ class DatabaseHandler:
 
     def get_descriptions(self, ids, db_name):
         description_class = TABLE_NAME_TO_CLASS_DICT[db_name]
-        descriptions = self.session.query(description_class).filter(description_class.id.in_(ids)).all()
+        descriptions = list()
+        for chunk in divide_chunks(ids, 499):
+            descriptions += self.session.query(description_class).filter(description_class.id.in_(chunk)).all()
+
         if len(descriptions) == 0:
             warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
