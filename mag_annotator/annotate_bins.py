@@ -467,6 +467,29 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
     return hits
 
 
+NOT_MHC_GENES = ('K00370', 'K00371', 'K00374', 'K02567', 'K02568')
+
+
+def find_mhcs(gene_faa, annotations, not_annotated_as_list=NOT_MHC_GENES, motif='(C..CH)', mincount=2):
+    mhc_dict = dict()
+    for seq in read_sequence(gene_faa, format='fasta'):
+        more_than_mincount = len(list(seq.find_with_regex(motif))) > mincount
+        not_annotated_as = sum([i in str(annotations.loc[seq.metadata['id'], 'kegg_id'])
+                                for i in not_annotated_as_list]) == 0
+        if more_than_mincount and not_annotated_as:
+            mhc_dict[seq.metadata['id']] = True
+        else:
+            mhc_dict[seq.metadata['id']] = False
+    return mhc_dict
+
+
+def count_motifs(gene_faa, motif='(C..CH)'):
+    motif_count_dict = dict()
+    for seq in read_sequence(gene_faa, format='fasta'):
+        motif_count_dict[seq.metadata['id']] = len(list(seq.find_with_regex(motif)))
+    return motif_count_dict
+
+
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
                   gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10, verbose=True):
@@ -583,6 +606,9 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
                                                          get_custom_description, start_time, db_name,
                                                          bit_score_threshold, rbh_bit_score_threshold, threads,
                                                          verbose))
+
+        # heme regulatory motif count
+        annotation_list.append(pd.Series(count_motifs(gene_faa, '(C..CH)'), name='heme_regulatory_motif_count'))
 
         # merge dataframes
         print('%s: Finishing up results' % str(datetime.now()-start_time))
