@@ -371,18 +371,25 @@ def rename_fasta(input_fasta, output_fasta, prefix):
     write_sequence(generate_renamed_fasta(input_fasta, prefix), format='fasta', into=output_fasta)
 
 
-def rename_gff(input_gff, output_gff, prefix):
+def annotate_gff(input_gff, output_gff, annotations, prefix):
     """Go through a gff and add a prefix to the scaffold and gene number for all ID's"""
     with open(input_gff) as f:
         with open(output_gff, 'w') as o:
             for line in f:
                 if not line.startswith('#') and not line.startswith('\n'):
-                    old_scaffold = line.strip().split('\t')[0]
+                    line = line.strip()
+                    # replace id with new name
+                    old_scaffold = line.split('\t')[0]
                     line = '%s_%s' % (prefix, line)
                     match = re.search(r'ID=\d*_\d*;', line)
                     gene_number = match.group().split('_')[-1][:-1]
-                    line = re.sub(r'ID=\d*_\d*;', 'ID=%s_%s_%s;' % (prefix, old_scaffold, gene_number), line)
-                o.write(line)
+                    gene_name = '%s_%s_%s;' % (prefix, old_scaffold, gene_number)
+                    line = re.sub(r'ID=\d*_\d*;', 'ID=%s' % gene_name, line)
+                    # get annotations to add from annotations file and add to end of line
+                    annotations_to_add = {i: annotations.loc[gene_name, i] for i in annotations.columns
+                                          if i.endswith('_id') or i.endswith('_hits')}
+                    line += '%s;' % ';'.join(['%s=%s' % (key, value) for key, value in annotations_to_add.items()])
+                o.write('%s\n' % line)
 
 
 def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', output_gbk=None):
@@ -602,7 +609,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         renamed_scaffolds = path.join(fasta_dir, 'scaffolds.annotated.fa')
         rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
         renamed_gffs = path.join(fasta_dir, 'genes.annotated.gff')
-        rename_gff(gene_gff, renamed_gffs, prefix=fasta_name)
+        annotate_gff(gene_gff, renamed_gffs, prefix=fasta_name)
         current_gbk = path.join(fasta_dir, '%s.gbk' % fasta_name)
         make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
 
