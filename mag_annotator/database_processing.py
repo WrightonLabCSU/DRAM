@@ -7,6 +7,9 @@ import json
 import gzip
 import tarfile
 import pandas as pd
+from collections import defaultdict
+from skbio import read as read_sequence
+from skbio import write as write_sequence
 
 from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file, merge_files
 from mag_annotator.database_handler import DatabaseHandler
@@ -33,12 +36,33 @@ def make_header_dict_from_mmseqs_db(mmseqs_db):
     return [{'id': i.split(' ')[0], 'description': i} for i in mmseqs_headers]
 
 
-def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbose=True):
+def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc):
+    """Takes kegg fasta file and gene ko link file, adds kos not already in headers to headers"""
+    genes_ko_list = [i.strip().split() for i in open(gene_ko_link_loc)]
+    genes_ko_dict = defaultdict(list)
+    for gene, ko in genes_ko_list:
+        genes_ko_dict[gene].append(ko.lstrip('ko:'))
+    for seq in read_sequence(kegg_fasta, format='fasta'):
+        new_description = seq.metadata['description']
+        for ko in genes_ko_dict[seq.metadata['id']]:
+            if ko not in new_description:
+                new_description += '; %s' % ko
+        seq.metadata['description'] = new_description
+        yield seq
+
+
+def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc, download_date=None, threads=10, verbose=True):
     check_file_exists(kegg_loc)
+    check_file_exists(gene_ko_link_loc)
     if download_date is None:
         download_date = get_iso_date()
+    # add KOs to end of header where KO is not already there
+    kegg_mod_loc = path.join(output_dir, 'kegg.mod.fa')
+    write_sequence(generate_modified_kegg_fasta(kegg_loc, gene_ko_link_loc),
+                   format='fasta', into=kegg_mod_loc)
+    # make mmseqsdb from modified kegg fasta
     kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
-    make_mmseqs_db(kegg_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
+    make_mmseqs_db(kegg_mod_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
     return kegg_mmseqs_db
 
 
@@ -305,7 +329,7 @@ def populate_description_db(db_dict=None):
                                            db_handler)
 
 
-def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
+def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
                       pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='7',
                       dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None, peptidase_loc=None,
                       vogdb_loc=None, vogdb_version='latest', vog_annotations=None, keep_database_files=False,
@@ -333,7 +357,8 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
     # get databases
     output_dbs = dict()
     if kegg_loc is not None:
-        output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, kegg_download_date, threads, verbose)
+        output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, gene_ko_link_loc, kegg_download_date, threads,
+                                                    verbose)
     output_dbs['uniref_db_loc'] = download_and_process_uniref(uniref_loc, temporary, uniref_version=uniref_version,
                                                               threads=threads, verbose=verbose)
     output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary, pfam_release=pfam_release,
