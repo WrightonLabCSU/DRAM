@@ -51,15 +51,18 @@ def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc):
         yield seq
 
 
-def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc, download_date=None, threads=10, verbose=True):
+def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc=None, download_date=None, threads=10, verbose=True):
     check_file_exists(kegg_loc)
     check_file_exists(gene_ko_link_loc)
     if download_date is None:
         download_date = get_iso_date()
-    # add KOs to end of header where KO is not already there
-    kegg_mod_loc = path.join(output_dir, 'kegg.mod.fa')
-    write_sequence(generate_modified_kegg_fasta(kegg_loc, gene_ko_link_loc),
-                   format='fasta', into=kegg_mod_loc)
+    if gene_ko_link_loc is not None:
+        # add KOs to end of header where KO is not already there
+        kegg_mod_loc = path.join(output_dir, 'kegg.mod.fa')
+        write_sequence(generate_modified_kegg_fasta(kegg_loc, gene_ko_link_loc),
+                       format='fasta', into=kegg_mod_loc)
+    else:
+        kegg_mod_loc = kegg_loc
     # make mmseqsdb from modified kegg fasta
     kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
     make_mmseqs_db(kegg_mod_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
@@ -337,6 +340,8 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
     # check that all given files exist
     if kegg_loc is not None:
         check_file_exists(kegg_loc)
+    if gene_ko_link_loc is not None:
+        check_file_exists(gene_ko_link_loc)
     if uniref_loc is not None:
         check_file_exists(uniref_loc)
     if pfam_loc is not None:
