@@ -122,14 +122,19 @@ def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna
 
 def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, group_column='fasta'):
     rows = list()
-    columns = ['genome', 'taxonomy', 'completeness', 'contamination', 'number of scaffolds']
+    columns = ['genome', 'number of scaffolds', 'taxonomy', 'completeness', 'contamination']
     if rrna_frame is not None:
         columns += RRNA_TYPES
     if trna_frame is not None:
         columns.append('tRNA count')
     for genome, frame in annotations.groupby(group_column):
-        row = [genome, frame['bin_taxonomy'][0], frame['bin_completeness'][0], frame['bin_contamination'][0],
-               len(set(frame['scaffold']))]
+        row = [genome, len(set(frame['scaffold']))]
+        if 'bin_taxonomy' in frame:
+            row.append(frame['bin_taxonomy'][0])
+        if 'bin_completeness' in frame:
+            row.append(frame['bin_completeness'][0])
+        if 'bin_contamination' in frame:
+            row.append(frame['bin_contamination'][0])
         if rrna_frame is not None:
             genome_rrnas = rrna_frame.loc[rrna_frame.fasta == genome]
             for rrna in RRNA_TYPES:
