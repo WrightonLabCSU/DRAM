@@ -609,7 +609,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         renamed_scaffolds = path.join(fasta_dir, 'scaffolds.annotated.fa')
         rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
         renamed_gffs = path.join(fasta_dir, 'genes.annotated.gff')
-        annotate_gff(gene_gff, renamed_gffs, prefix=fasta_name)
+        annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
         current_gbk = path.join(fasta_dir, '%s.gbk' % fasta_name)
         make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
 
