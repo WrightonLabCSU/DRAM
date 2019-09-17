@@ -336,11 +336,11 @@ def populate_description_db(db_dict=None):
                                            db_handler)
 
 
-def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
-                      pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='7',
-                      dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None, peptidase_loc=None,
-                      vogdb_loc=None, vogdb_version='latest', vog_annotations=None, keep_database_files=False,
-                      threads=10, verbose=True):
+def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_download_date=None, uniref_loc=None,
+                      uniref_version='90', pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None,
+                      dbcan_version='7', dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None,
+                      peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
+                      keep_database_files=False, threads=10, verbose=True):
     # check that all given files exist
     if kegg_loc is not None:
         check_file_exists(kegg_loc)
