@@ -126,7 +126,7 @@ def get_kegg_description(kegg_hits, header_dict):
         else:
             ko_list.append(','.join(kos))
     new_df = pd.DataFrame([ko_list, gene_description], index=['kegg_id', 'kegg_hit'], columns=kegg_hits.index)
-    return pd.concat([new_df.transpose(), kegg_hits.drop('kegg_hit', axis=1)], axis=1)
+    return pd.concat([new_df.transpose(), kegg_hits.drop('kegg_hit', axis=1)], axis=1, sort=False)
 
 
 def get_uniref_description(uniref_hits, header_dict):
@@ -142,7 +142,7 @@ def get_uniref_description(uniref_hits, header_dict):
     new_df = pd.DataFrame([uniref_list, gene_description, gene_taxonomy],
                           index=['uniref_id', 'uniref_hit', 'uniref_taxonomy'],
                           columns=uniref_hits.index)
-    return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1)
+    return pd.concat([new_df.transpose(), uniref_hits.drop('uniref_hit', axis=1)], axis=1, sort=False)
 
 
 def get_basic_description(hits, header_dict, db_name='viral'):
@@ -156,7 +156,7 @@ def get_basic_description(hits, header_dict, db_name='viral'):
     new_df = pd.DataFrame([hit_list, description],
                           index=['%s_id' % db_name, '%s_hit' % db_name],
                           columns=hits.index)
-    return pd.concat([new_df.transpose(), hits.drop('%s_hit' % db_name, axis=1)], axis=1)
+    return pd.concat([new_df.transpose(), hits.drop('%s_hit' % db_name, axis=1)], axis=1, sort=False)
 
 
 def get_peptidase_description(peptidase_hits, header_dict):
@@ -170,7 +170,7 @@ def get_peptidase_description(peptidase_hits, header_dict):
         peptidase_descirption.append(header)
     new_df = pd.DataFrame([peptidase_list, peptidase_family, peptidase_descirption],
                           index=['peptidase_id', 'peptidase_family', 'peptidase_hit'], columns=peptidase_hits.index)
-    return pd.concat([new_df.transpose(), peptidase_hits.drop('peptidase_hit', axis=1)], axis=1)
+    return pd.concat([new_df.transpose(), peptidase_hits.drop('peptidase_hit', axis=1)], axis=1, sort=False)
 
 
 def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', db_handler=None,
@@ -617,8 +617,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         # get scaffold data and assign grades
         if 'kegg' in db_locs and 'uniref' in db_locs:
             grades = assign_grades(annotations)
-            annotations = pd.concat([grades, annotations], axis=1)
-        annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1)
+            annotations = pd.concat([grades, annotations], axis=1, sort=False)
+        annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
 
         # generate fna and faa output files with uniref annotations
         annotated_fna = path.join(fasta_dir, 'genes.annotated.fna')
