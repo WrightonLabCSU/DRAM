@@ -394,7 +394,7 @@ def annotate_gff(input_gff, output_gff, annotations, prefix):
             line = re.sub(r'ID=\d*_\d*;', 'ID=%s;' % gene_name, line)
             # get annotations to add from annotations file and add to end of line
             annotations_to_add = {i: annotations.loc[old_gene_name, i] for i in annotations.columns
-                                  if i.endswith('_id') or i.endswith('_hits')}
+                                  if i.endswith('_id')}
             line += '%s;' % ';'.join(['%s=%s' % (key.strip(), value.strip())
                                       for key, value in annotations_to_add.items()
                                       if not pd.isna(value) and value != ''])
