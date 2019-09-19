@@ -8,35 +8,31 @@ from mag_annotator.utils import get_database_locs
 
 # TODO: add RBH information to output
 # TODO: add measure of redendancy of genes
-# TODO: add total number of copies
 # TODO: add tqdm progress bar
-# TODO: add ability to take in GTDBTK file and add taxonomy to annotations
 
-FRAME_COLUMNS = ['gene_id', 'gene_description', 'module_id', 'module_description', 'module_family',
-                 'key_gene']
-
-
-def get_all_ids(frame):
-    id_counts = dict()
-    # kegg KO ids
-    id_counts.update(Counter([j for i in frame.kegg_id if not pd.isna(i) for j in i.split(',')]))
-    # cazy ids
-    id_counts.update(Counter([j.strip().split('_')[0]
-                              for i in frame.cazy_hits if not pd.isna(i) for j in i.split(';')]))
-    # peptidase ids
-    id_counts.update(Counter([i for i in frame.peptidase_family if not pd.isna(i)]))
-    return id_counts
+FRAME_COLUMNS = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader']
+RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
 
 
-def fill_genome_summary_frame(annotations, group_column, genome_summary_frame):
-    grouped = annotations.groupby(group_column)
-    for genome, frame in grouped:
-        id_dict = get_all_ids(frame)
+def get_ids_from_annotation(frame):
+    id_list = list()
+    # get kegg ids
+    id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
+    # get ec numbers
+    for kegg_hit in frame.kegg_hit.dropna():
+        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
+    # get merops ids
+    id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
+    # get cazy ids
+    id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
+    return Counter(id_list)
+
+
+def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):
+    for genome, frame in annotations.groupby(groupby_column):
+        id_dict = get_ids_from_annotation(frame)
         genome_summary_frame[genome] = [id_dict[i] if i in id_dict else 0 for i in genome_summary_frame.gene_id]
     return genome_summary_frame
-
-
-RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
 
 
 def summarize_rrnas(rrnas_df, groupby_column='fasta'):
@@ -45,8 +41,7 @@ def summarize_rrnas(rrnas_df, groupby_column='fasta'):
         genome_rrna_dict[genome] = Counter(frame['type'])
     row_list = list()
     for rna_type in RRNA_TYPES:
-        row = [rna_type, '%s ribosomal RNA gene' % rna_type.split()[0], 'rRNA', 'ribosomal RNA genes', 'rRNA genes',
-               True]
+        row = [rna_type, '%s ribosomal RNA gene' % rna_type.split()[0], 'rRNA', 'rRNA', '', '']
         for genome, rrna_dict in genome_rrna_dict.items():
             row.append(genome_rrna_dict[genome].get(type, 0))
         row_list.append(row)
@@ -69,10 +64,8 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
             gene_description = '%s pseudo tRNA with %s Codon'
         gene_id = gene_id % (combo[0], combo[1])
         gene_description = gene_description % (combo[0], combo[1])
-        module_id = combo[0]
         module_description = '%s tRNA' % combo[0]
-        module_family = 'tRNA genes'
-        frame_rows.append([gene_id, gene_description, module_id, module_description, module_family, ''])
+        frame_rows.append([gene_id, gene_description, module_description, 'tRNA', 'tRNA', ''])
     trna_frame = pd.DataFrame(frame_rows, columns=FRAME_COLUMNS)
     trna_frame = trna_frame.sort_values('gene_id')
     # then fill it in
@@ -91,33 +84,40 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
     return trna_frame
 
 
-def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna_frame=None,
-                        group_column='fasta', viral=False):
+def make_genome_summary(annotations, genome_summary_frame, output_file, trna_frame=None, rrna_frame=None,
+                        groupby_column='fasta', remove_empty_rows=False, remove_empty_cols=False):
     summary_frames = list()
     # get ko summaries
-    summary_frames.append(fill_genome_summary_frame(annotations, group_column, genome_summary_frame.copy()))
+    summary_frames.append(fill_genome_summary_frame(annotations, genome_summary_frame.copy(), groupby_column))
 
     # add rRNAs
     if rrna_frame is not None:
-        summary_frames.append(summarize_rrnas(rrna_frame, group_column))
+        summary_frames.append(summarize_rrnas(rrna_frame, groupby_column))
 
     # add tRNAs
     if trna_frame is not None:
-        summary_frames.append(summarize_trnas(trna_frame, group_column))
+        summary_frames.append(summarize_trnas(trna_frame, groupby_column))
 
     # merge summary frames
     summarized_genomes = pd.concat(summary_frames, sort=False)
 
     # post processing
-    if viral:  # filter out empty rows and columns if viral
-        summarized_genomes_numbers_only = summarized_genomes[summarized_genomes.columns[7:]]
+    summarized_genomes_numbers_only = summarized_genomes[summarized_genomes.columns[7:]]
+    if remove_empty_rows:  # filter out empty rows and columns if viral
         # remove all zero rows for viral
         summarized_genomes = summarized_genomes.loc[summarized_genomes_numbers_only.sum(axis=1) > 0]
+    if remove_empty_cols:
         # remove all zero columns so viruses with no AMGs
         good_columns = summarized_genomes_numbers_only.columns[summarized_genomes_numbers_only.sum(axis=0) > 0]
         summarized_genomes = summarized_genomes[list(summarized_genomes.columns[:7]) + list(good_columns)]
 
-    return summarized_genomes
+    # turn all this into an xlsx
+    with pd.ExcelWriter(output_file) as writer:
+        for sheet, frame in summarized_genomes.groupby('sheet', sort=False):
+            frame = frame.sort_values(['header', 'subheader', 'module', 'gene_id'])
+            frame = frame.drop(['sheet'], axis=1)
+            frame = frame.dropna(axis=1, how='all')
+            frame.to_excel(writer, sheet_name=sheet, index=False)
 
 
 def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, group_column='fasta'):
@@ -152,25 +152,11 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, group_colum
     return genome_stats
 
 
-def get_ids_from_annotation(frame):
-    id_list = list()
-    # get kegg ids
-    id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
-    # get ec numbers
-    for kegg_hit in frame.kegg_hit.dropna():
-        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
-    # get merops ids
-    id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
-    # get cazy ids
-    id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
-    return id_list
-
-
 def make_functional_heatmap(annotations, function_heatmap_form, groupby_column='fasta'):
     # build dict of ids per genome
     genome_to_id_dict = dict()
     for genome, frame in annotations.groupby(groupby_column):
-        id_list = get_ids_from_annotation(frame)
+        id_list = get_ids_from_annotation(frame).keys()
         genome_to_id_dict[genome] = set(id_list)
     # build long from data frame
     rows = list()
@@ -244,9 +230,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     mkdir(output_dir)
 
     # make genome metabolism summary
-    genome_summary = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, groupby_column,
-                                         viral)
-    genome_summary.to_csv(path.join(output_dir, 'genome_metabolism_summary.tsv'), sep='\t', index=False)
+    make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, groupby_column)
 
     # make genome stats
     if not viral:
