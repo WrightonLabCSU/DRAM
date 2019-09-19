@@ -12,8 +12,7 @@ from mag_annotator.utils import get_database_locs
 # TODO: add tqdm progress bar
 # TODO: add ability to take in GTDBTK file and add taxonomy to annotations
 
-FRAME_COLUMNS = ['gene_id', 'gene_description', 'module_id', 'module_description', 'module_family',
-                 'key_gene']
+FRAME_COLUMNS = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader']
 
 
 def get_all_ids(frame):
@@ -28,9 +27,8 @@ def get_all_ids(frame):
     return id_counts
 
 
-def fill_genome_summary_frame(annotations, group_column, genome_summary_frame):
-    grouped = annotations.groupby(group_column)
-    for genome, frame in grouped:
+def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):
+    for genome, frame in annotations.groupby(groupby_column):
         id_dict = get_all_ids(frame)
         genome_summary_frame[genome] = [id_dict[i] if i in id_dict else 0 for i in genome_summary_frame.gene_id]
     return genome_summary_frame
@@ -45,8 +43,7 @@ def summarize_rrnas(rrnas_df, groupby_column='fasta'):
         genome_rrna_dict[genome] = Counter(frame['type'])
     row_list = list()
     for rna_type in RRNA_TYPES:
-        row = [rna_type, '%s ribosomal RNA gene' % rna_type.split()[0], 'rRNA', 'ribosomal RNA genes', 'rRNA genes',
-               True]
+        row = [rna_type, '%s ribosomal RNA gene' % rna_type.split()[0], 'rRNA', 'rRNA', '', '']
         for genome, rrna_dict in genome_rrna_dict.items():
             row.append(genome_rrna_dict[genome].get(type, 0))
         row_list.append(row)
@@ -69,10 +66,8 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
             gene_description = '%s pseudo tRNA with %s Codon'
         gene_id = gene_id % (combo[0], combo[1])
         gene_description = gene_description % (combo[0], combo[1])
-        module_id = combo[0]
         module_description = '%s tRNA' % combo[0]
-        module_family = 'tRNA genes'
-        frame_rows.append([gene_id, gene_description, module_id, module_description, module_family, ''])
+        frame_rows.append([gene_id, gene_description, module_description, 'tRNA', 'tRNA', ''])
     trna_frame = pd.DataFrame(frame_rows, columns=FRAME_COLUMNS)
     trna_frame = trna_frame.sort_values('gene_id')
     # then fill it in
@@ -91,33 +86,40 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
     return trna_frame
 
 
-def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna_frame=None,
-                        group_column='fasta', viral=False):
+def make_genome_summary(annotations, genome_summary_frame, output_file, trna_frame=None, rrna_frame=None,
+                        groupby_column='fasta', remove_empty_rows=False, remove_empty_cols=False):
     summary_frames = list()
     # get ko summaries
-    summary_frames.append(fill_genome_summary_frame(annotations, group_column, genome_summary_frame.copy()))
+    summary_frames.append(fill_genome_summary_frame(annotations, genome_summary_frame.copy(), groupby_column))
 
     # add rRNAs
     if rrna_frame is not None:
-        summary_frames.append(summarize_rrnas(rrna_frame, group_column))
+        summary_frames.append(summarize_rrnas(rrna_frame, groupby_column))
 
     # add tRNAs
     if trna_frame is not None:
-        summary_frames.append(summarize_trnas(trna_frame, group_column))
+        summary_frames.append(summarize_trnas(trna_frame, groupby_column))
 
     # merge summary frames
     summarized_genomes = pd.concat(summary_frames, sort=False)
 
     # post processing
-    if viral:  # filter out empty rows and columns if viral
-        summarized_genomes_numbers_only = summarized_genomes[summarized_genomes.columns[7:]]
+    summarized_genomes_numbers_only = summarized_genomes[summarized_genomes.columns[7:]]
+    if remove_empty_rows:  # filter out empty rows and columns if viral
         # remove all zero rows for viral
         summarized_genomes = summarized_genomes.loc[summarized_genomes_numbers_only.sum(axis=1) > 0]
+    if remove_empty_cols:
         # remove all zero columns so viruses with no AMGs
         good_columns = summarized_genomes_numbers_only.columns[summarized_genomes_numbers_only.sum(axis=0) > 0]
         summarized_genomes = summarized_genomes[list(summarized_genomes.columns[:7]) + list(good_columns)]
 
-    return summarized_genomes
+    # turn all this into an xlsx
+    with pd.ExcelWriter(output_file) as writer:
+        for sheet, frame in summarized_genomes.groupby('sheet', sort=False):
+            frame = frame.sort_values(['header', 'subheader', 'module', 'gene_id'])
+            frame = frame.drop(['sheet'], axis=1)
+            frame = frame.dropna(axis=1, how='all')
+            frame.to_excel(writer, sheet_name=sheet, index=False)
 
 
 def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, group_column='fasta'):
