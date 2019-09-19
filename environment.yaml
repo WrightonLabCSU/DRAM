@@ -13,3 +13,4 @@ dependencies:
   - sqlalchemy
   - barrnap
   - altair
+  - networkx

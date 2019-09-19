@@ -13,8 +13,7 @@ from mag_annotator.utils import get_database_locs
 # TODO: add tqdm progress bar
 # TODO: add ability to take in GTDBTK file and add taxonomy to annotations
 
-FRAME_COLUMNS = ['gene_id', 'gene_description', 'module_id', 'module_description', 'module_family',
-                 'key_gene']
+FRAME_COLUMNS = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader']
 
 
 def get_all_ids(frame):
@@ -253,12 +252,21 @@ def make_module_coverage_heatmap(annotations, module_nets, mag_order=None, group
 
     module_coverage_heatmap = c.mark_rect().encode(color='step_coverage').properties(
         width=HEATMAP_CELL_WIDTH * num_mags_in_frame,
-        height=HEATMAP_CELL_HEIGHT * len(HEATMAP_MODULES))
+        height=HEATMAP_CELL_HEIGHT * len(module_nets))
 
     return module_coverage_heatmap
 
 
+def get_ordered_uniques(seq):
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]
+
+
 def make_functional_heatmap(annotations, function_heatmap_form, groupby_column='fasta'):
+    # clean up function heatmap form
+    function_heatmap_form = function_heatmap_form.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+    function_heatmap_form = function_heatmap_form.fillna('')
     # build dict of ids per genome
     genome_to_id_dict = dict()
     for genome, frame in annotations.groupby(groupby_column, sort=False):
@@ -267,44 +275,52 @@ def make_functional_heatmap(annotations, function_heatmap_form, groupby_column='
     # build long from data frame
     rows = list()
     for _, row in function_heatmap_form.iterrows():
-        function_id_set = set([i.strip() for i in row.function_ids.split(', ')])
+        function_id_set = set([i.strip() for i in row.function_ids.strip().split(',')])
         for bin_name, id_set in genome_to_id_dict.items():
-            present_in_bin = len(set.intersection(id_set, function_id_set)) > 0
-            rows.append(list(row) + [bin_name, present_in_bin])
+            functions_present = set.intersection(id_set, function_id_set)
+            present_in_bin = len(functions_present) > 0
+            rows.append([row.category, row.subcategory, row.function_name, ', '.join(functions_present),
+                         row.long_function_name, row.gene_symbol, bin_name, present_in_bin])
     long_frame = pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['bin', 'present'])
-    # build heatmap
+    # build heatmaps
     charts = list()
     grouped_function_names = long_frame.groupby('category', sort=False)
+    mag_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')['fasta'])
     for i, (group, frame) in enumerate(grouped_function_names):
-        c = alt.Chart().encode(
-            y=alt.Y('function_name', title=group, axis=alt.Axis(titleAngle=270, titleAlign='center'),
-                    sort=list(function_heatmap_form.loc[function_heatmap_form['category'] == group]['category'])),
+        # set variables for chart
+        num_function_names_in_category = len(set(frame.function_name))
+        num_mags_in_frame = len(set(frame.bin))
+        chart_width = HEATMAP_CELL_WIDTH * num_function_names_in_category
+        chart_height = HEATMAP_CELL_HEIGHT * num_mags_in_frame
+        function_order = list(function_heatmap_form.loc[function_heatmap_form['category'] == group].function_name)
+        # if this is the first chart then make y-ticks otherwise none
+        if i == 0:
+            y = alt.Y('bin', title=None, axis=alt.Axis(labelLimit=0), sort=mag_order)
+        else:
+            y=alt.Y('bin', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order)
+        # set up colors for chart
+        rect_colors = alt.Color('present',
+                                legend=alt.Legend(title="Function is Present",
+                                symbolType='square',
+                                values=[True, False]),
+                                sort=[True, False],
+                                scale=alt.Scale(range=['#e5f5f9', '#2ca25f']))
+        # define chart
+        c = alt.Chart(frame, title=alt.TitleParams(group)).encode(  # TODO: Figure out how to angle title
+            x=alt.X('function_name', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90), sort=function_order),
             tooltip=[alt.Tooltip('bin', title='MAG'),
                      alt.Tooltip('category', title='Category'),
                      alt.Tooltip('subcategory', title='Subcategory'),
+                     alt.Tooltip('function_ids', title='Function IDs'),
                      alt.Tooltip('function_name', title='Function'),
                      alt.Tooltip('long_function_name', title='Description'),
                      alt.Tooltip('gene_symbol', title='Gene Symbol')]
-        )
-        num_function_names_in_category = len(set(frame.function_name))
-        num_mags_in_frame = len(set(frame.bin))
-        a = c.mark_rect().encode(x='bin',
-                                 color=alt.Color('present', legend=alt.Legend(title="Function is Present",
-                                                                              symbolType='square',
-                                                                              values=[True, False])),
-                                 ).properties(
-            width=HEATMAP_CELL_WIDTH * num_mags_in_frame,
-            height=HEATMAP_CELL_HEIGHT * num_function_names_in_category)
-        if i + 1 == len(grouped_function_names):
-            b = c.mark_text().encode(x=alt.X('bin', title='MAG',
-                                             sort=alt.EncodingSortField(field='bin_taxonomy', order='ascending')))
-        else:
-            b = c.mark_text().encode(x=alt.X('bin', axis=alt.Axis(title=None, labels=False, ticks=False),
-                                             sort=alt.EncodingSortField(field='bin_taxonomy', order='ascending')))
-        mini_function_name_heatmap = alt.layer(a, b, data=frame)
-        charts.append(mini_function_name_heatmap)
-
-    function_heatmap = alt.vconcat(*charts)
+        ).mark_rect().encode(y=y, color=rect_colors).properties(
+            width=chart_width,
+            height=chart_height)
+        charts.append(c)
+    # merge and return
+    function_heatmap = alt.hconcat(*charts)
     return function_heatmap
 
 
