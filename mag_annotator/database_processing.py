@@ -218,14 +218,21 @@ def process_vogdb_descriptions(vog_annotations):
 
 def download_and_process_genome_summary_form(output_dir):
     genome_summary_form = path.join(output_dir, 'genome_summary_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/genome_summary_form.tsv',
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/master/data/genome_summary_form.tsv',
                   genome_summary_form, verbose=True)
     return genome_summary_form
 
 
+def download_and_process_module_step_form(output_dir):
+    function_heatmap_form = path.join(output_dir, 'module_step_form.%s.tsv' % get_iso_date())
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/master/data/module_step_form.tsv',
+                  function_heatmap_form, verbose=True)
+    return function_heatmap_form
+
+
 def download_and_process_function_heatmap_form(output_dir):
     function_heatmap_form = path.join(output_dir, 'function_heatmap_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/function_heatmap_form.tsv',
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/master/data/function_heatmap_form.tsv',
                   function_heatmap_form, verbose=True)
     return function_heatmap_form
 
@@ -250,7 +257,7 @@ def check_exists_and_add_to_description_db(loc, name, get_description_list, db_h
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
                        dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None,
                        vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None,
-                       function_heatmap_form_loc=None, update_description_db=False):
+                       module_step_form_loc=None, function_heatmap_form_loc=None, update_description_db=False):
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
 
@@ -266,6 +273,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(vog_annotations, 'vog_annotations', db_dict)
 
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
 
     if description_db_loc is not None:
@@ -349,6 +357,7 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
 
     # add genome summary form and function heatmap form
     output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary)
+    output_dbs['module_step_form_loc'] = download_and_process_module_step_form(temporary)
     output_dbs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(temporary)
 
     for db_name, output_db in output_dbs.items():
