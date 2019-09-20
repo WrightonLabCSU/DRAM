@@ -338,7 +338,8 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
         genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=False)
 
     # make genome metabolism summary
-    make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, groupby_column)
+    genome_summary = path.join(output_dir, 'genome_summary.xlsx')
+    make_genome_summary(annotations, genome_summary_form, genome_summary, trna_frame, rrna_frame, groupby_column)
 
     # make heatmaps
     module_nets = {module: build_module_net(module_df)
@@ -348,4 +349,4 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     # make functional heatmap
     function_heatmap = make_functional_heatmap(annotations, function_heatmap_form, groupby_column)
 
-    alt.hconcat(module_coverage_heatmap, function_heatmap).save('heatmap.html')
+    alt.hconcat(module_coverage_heatmap, function_heatmap).save(path.join(output_dir, 'heatmap.html'))
