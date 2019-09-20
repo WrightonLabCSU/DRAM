@@ -68,6 +68,7 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--description_db_loc', default=None, help="Location to write description sqlite "
                                                                                "db")
     set_db_locs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form")
+    set_db_locs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form")
     set_db_locs_parser.add_argument('--function_heatmap_form_loc', default=None,
                                     help="File path to function heatmap form")
     set_db_locs_parser.add_argument('--update_description_db', action='store_true', default=False)
