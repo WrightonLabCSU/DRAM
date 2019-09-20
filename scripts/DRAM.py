@@ -31,6 +31,8 @@ if __name__ == '__main__':
     prepare_dbs_parser.add_argument('--output_dir', default="~/MAGotator_data", help="output directory")
     prepare_dbs_parser.add_argument('--kegg_loc', default=None,
                                     help="KEGG protein file, should be a single .pep, please merge all KEGG pep files")
+    prepare_dbs_parser.add_argument('--gene_ko_link_loc', default=None,
+                                    help="KEGG gene ko link, can be gzipped or not")
     prepare_dbs_parser.add_argument('--kegg_download_date', default=None,
                                     help="Date KEGG was download to include in database name")
     prepare_dbs_parser.add_argument('--uniref_loc', default=None, help="File path to uniref, if already downloaded")
