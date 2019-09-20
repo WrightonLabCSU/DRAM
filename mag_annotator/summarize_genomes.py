@@ -14,6 +14,8 @@ from mag_annotator.utils import get_database_locs
 FRAME_COLUMNS = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader']
 RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
 HEATMAP_MODULES = ['M00001', 'M00009', 'M00004']
+HEATMAP_CELL_HEIGHT = 10
+HEATMAP_CELL_WIDTH = 10
 
 
 def get_ids_from_annotation(frame):
@@ -217,10 +219,6 @@ def make_module_coverage_df(annotation_df, module_nets):
     return coverage_df
 
 
-HEATMAP_CELL_HEIGHT = 10
-HEATMAP_CELL_WIDTH = 10
-
-
 def make_module_coverage_heatmap(annotations, module_nets, mag_order=None, groupby_column='fasta'):
     # go through each scaffold to check for modules
     module_coverage_dict = dict()
@@ -230,8 +228,8 @@ def make_module_coverage_heatmap(annotations, module_nets, mag_order=None, group
     num_mags_in_frame = len(set(annotations[groupby_column]))
 
     c = alt.Chart(module_coverage).encode(
-        x=alt.X('MAG'),
-        y=alt.Y('module_name', title='Module', sort=mag_order),
+        x=alt.X('module_name', title='Module', sort=mag_order),
+        y=alt.Y('MAG'),
         tooltip=[alt.Tooltip('MAG', title='MAG'),
                  alt.Tooltip('module_name', title='Module Name'),
                  alt.Tooltip('steps', title='Module steps'),
@@ -240,8 +238,8 @@ def make_module_coverage_heatmap(annotations, module_nets, mag_order=None, group
     )
 
     module_coverage_heatmap = c.mark_rect().encode(color='step_coverage').properties(
-        width=HEATMAP_CELL_WIDTH * num_mags_in_frame,
-        height=HEATMAP_CELL_HEIGHT * len(HEATMAP_MODULES))
+        width=HEATMAP_CELL_WIDTH * len(HEATMAP_MODULES),
+        height=HEATMAP_CELL_HEIGHT * num_mags_in_frame)
 
     return module_coverage_heatmap
 
@@ -344,4 +342,4 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     # make functional heatmap
     function_heatmap = make_functional_heatmap(annotations, function_heatmap_form, groupby_column)
 
-    alt.vconcat(module_coverage_heatmap, function_heatmap).save('heatmap.html')
+    alt.hconcat(module_coverage_heatmap, function_heatmap).save('heatmap.html')
