@@ -39,7 +39,7 @@ def make_header_dict_from_mmseqs_db(mmseqs_db):
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc):
     """Takes kegg fasta file and gene ko link file, adds kos not already in headers to headers"""
     if gene_ko_link_loc.endswith('.gz'):
-        gene_ko_link_fh = gzip.open(gene_ko_link_loc)
+        gene_ko_link_fh = gzip.open(gene_ko_link_loc, 'rt')
     else:
         gene_ko_link_fh = open(gene_ko_link_loc)
     genes_ko_dict = defaultdict(list)
