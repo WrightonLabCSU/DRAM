@@ -483,22 +483,6 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
     return hits
 
 
-NOT_MHC_GENES = ('K00370', 'K00371', 'K00374', 'K02567', 'K02568')
-
-
-def find_mhcs(gene_faa, annotations, not_annotated_as_list=NOT_MHC_GENES, motif='(C..CH)', mincount=2):
-    mhc_dict = dict()
-    for seq in read_sequence(gene_faa, format='fasta'):
-        more_than_mincount = len(list(seq.find_with_regex(motif))) > mincount
-        not_annotated_as = sum([i in str(annotations.loc[seq.metadata['id'], 'kegg_id'])
-                                for i in not_annotated_as_list]) == 0
-        if more_than_mincount and not_annotated_as:
-            mhc_dict[seq.metadata['id']] = True
-        else:
-            mhc_dict[seq.metadata['id']] = False
-    return mhc_dict
-
-
 def count_motifs(gene_faa, motif='(C..CH)'):
     motif_count_dict = dict()
     for seq in read_sequence(gene_faa, format='fasta'):
