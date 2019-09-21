@@ -506,6 +506,13 @@ def count_motifs(gene_faa, motif='(C..CH)'):
     return motif_count_dict
 
 
+def strip_endings(text, suffixes: list):
+    for suffix in suffixes:
+        if text.endswith(suffix):
+            text = text[:len(text)-len(suffix)]
+    return text
+
+
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
                   gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10, verbose=True):
@@ -668,7 +675,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         all_annotations['bin_taxonomy'] = [gtdb_taxonomy.loc[i, 'classification'] for i in all_annotations.fasta]
     if checkm_quality is not None:
         checkm_quality = pd.read_csv(checkm_quality, sep='\t', index_col=0)
-        checkm_quality.index = [i.rstrip('.fa').rstrip('.fasta').rstrip('.fna') for i in checkm_quality.index]
+        checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
         all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
         all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination'] for i in all_annotations.fasta]
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
