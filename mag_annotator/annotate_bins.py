@@ -17,8 +17,8 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
 # TODO: add silent mode
-# TODO: add ability to take in GTDBTK file and add taxonomy to annotations
 # TODO: add abx resistance genes
+# TODO: add skip uniref90 flag
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']

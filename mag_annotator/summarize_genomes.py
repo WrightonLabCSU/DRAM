@@ -8,8 +8,6 @@ import networkx as nx
 from mag_annotator.utils import get_database_locs
 
 # TODO: add RBH information to output
-# TODO: add measure of redendancy of genes
-# TODO: add tqdm progress bar
 
 FRAME_COLUMNS = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader']
 RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
