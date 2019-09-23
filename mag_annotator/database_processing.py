@@ -36,6 +36,12 @@ def make_header_dict_from_mmseqs_db(mmseqs_db):
     return [{'id': i.split(' ')[0], 'description': i} for i in mmseqs_headers]
 
 
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text  # or whatever
+
+
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc):
     """Takes kegg fasta file and gene ko link file, adds kos not already in headers to headers"""
     if gene_ko_link_loc.endswith('.gz'):
@@ -45,7 +51,7 @@ def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc):
     genes_ko_dict = defaultdict(list)
     for line in gene_ko_link_fh:
         gene, ko = line.strip().split()
-        genes_ko_dict[gene].append(ko.lstrip('ko:'))
+        genes_ko_dict[gene].append(remove_prefix(ko, 'ko:'))
     for seq in read_sequence(kegg_fasta, format='fasta'):
         new_description = seq.metadata['description']
         for ko in genes_ko_dict[seq.metadata['id']]:
