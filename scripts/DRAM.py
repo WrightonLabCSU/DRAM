@@ -39,13 +39,24 @@ if __name__ == '__main__':
     prepare_dbs_parser.add_argument('--uniref_version', default='90', help="UniRef version to download")
     prepare_dbs_parser.add_argument('--pfam_loc', default=None,
                                     help="File path to pfam-A hmm file, if already downloaded")
+    prepare_dbs_parser.add_argument('--pfam_hmm_dat', default=None, help="pfam hmm .dat file to get PF"
+                                                                         "descriptions, if already downloaded")
     prepare_dbs_parser.add_argument('--pfam_release', default='32.0', help="Pfam release to download")
     prepare_dbs_parser.add_argument('--dbcan_loc', default=None, help="File path to dbCAN, if already downloaded")
+    prepare_dbs_parser.add_argument('--dbcan_fam_activities', default=None, help='CAZY family activities file, if'
+                                                                                 'already downloaded')
     prepare_dbs_parser.add_argument('--dbcan_version', default='7', type=str, help='version of dbCAN to use')
+    prepare_dbs_parser.add_argument('--vogdb_loc', default=None, help='hmm file for vogdb, if already downloaded')
     prepare_dbs_parser.add_argument('--viral_loc', default=None,
                                     help="File path to viral protein faa, if already downloaded")
     prepare_dbs_parser.add_argument('--peptidase_loc', default=None,
                                     help="File path to MEROPS peptidase fasta, if already downloaded")
+    prepare_dbs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form,"
+                                                                                    "if already downloaded")
+    prepare_dbs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form, if"
+                                                                                 "already downloaded")
+    prepare_dbs_parser.add_argument('--function_heatmap_form_loc', default=None,
+                                    help="File path to function heatmap form, if already downloaded")
     prepare_dbs_parser.add_argument('--keep_database_files', default=False, action='store_true',
                                     help="Keep unporcessed database files")
     prepare_dbs_parser.add_argument('--threads', default=10, type=int,

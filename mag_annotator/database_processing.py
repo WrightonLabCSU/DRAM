@@ -354,6 +354,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
                       uniref_version='90', pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None,
                       dbcan_version='7', dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None,
                       peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
+                      genome_summary_form_loc=None, module_step_form_loc=None, function_heatmap_form_loc=None,
                       keep_database_files=False, threads=10, verbose=True):
     # check that all given files exist
     if kegg_loc is not None:
@@ -364,12 +365,24 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
         check_file_exists(uniref_loc)
     if pfam_loc is not None:
         check_file_exists(pfam_loc)
+    if pfam_hmm_dat is not None:
+        check_file_exists(pfam_hmm_dat)
     if dbcan_loc is not None:
         check_file_exists(dbcan_loc)
+    if dbcan_fam_activities is not None:
+        check_file_exists(dbcan_fam_activities)
+    if vogdb_loc is not None:
+        check_file_exists(vogdb_loc)
     if viral_loc is not None:
         check_file_exists(viral_loc)
     if peptidase_loc is not None:
         check_file_exists(peptidase_loc)
+    if genome_summary_form_loc is not None:
+        check_file_exists(genome_summary_form_loc)
+    if module_step_form_loc is not None:
+        check_file_exists(module_step_form_loc)
+    if function_heatmap_form_loc is not None:
+        check_file_exists(function_heatmap_form_loc)
 
     # setup
     if not path.isdir(output_dir):
@@ -396,9 +409,18 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
                                                             verbose=verbose)
 
     # add genome summary form and function heatmap form
-    output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary)
-    output_dbs['module_step_form_loc'] = download_and_process_module_step_form(temporary)
-    output_dbs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(temporary)
+    if genome_summary_form_loc is None:
+        output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary)
+    else:
+        output_dbs['genome_summary_form_loc'] = genome_summary_form_loc
+    if module_step_form_loc is None:
+        output_dbs['module_step_form_loc'] = download_and_process_module_step_form(temporary)
+    else:
+        output_dbs['module_step_form_loc'] = module_step_form_loc
+    if function_heatmap_form_loc is None:
+        output_dbs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(temporary)
+    else:
+        output_dbs['function_heatmap_form_loc'] = function_heatmap_form_loc
 
     for db_name, output_db in output_dbs.items():
         for db_file in glob('%s*' % output_db):
