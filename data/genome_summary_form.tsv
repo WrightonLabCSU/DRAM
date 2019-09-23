@@ -3,7 +3,7 @@ K20932	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	Nitr
 K20933	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	Nitrification, ammonia => nitrite	Energy	Nitrogen	
 K20934	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	Nitrification, ammonia => nitrite	Energy	Nitrogen	
 K20935	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	Nitrification, ammonia => nitrite	Energy	Nitrogen	
-EC:1.16.1.1	mercury(II) reductase	Mercury	Energy	Metal Reduction	
+EC:1.16.1.1	mercury(II) reductase	Mercury	MISC	Metal Reduction
 EC:1.20.4.1	arsenate reductase (glutaredoxin); ArsC (ambiguous)	Arsenate	Energy	Metal Reduction	
 EC:1.20.99.1	arsenate reductase (donor); arsenate:(acceptor) oxidoreductase	Arsenate	Energy	Metal Reduction	
 K07811	trimethylamine-N-oxide reductase (cytochrome c) [EC:1.7.2.3]	TMAO	Energy	C1	
@@ -744,7 +744,8 @@ K16162	methane monooxygenase component D [RN:R01142]	Methane oxidation, methanot
 K14028	methanol dehydrogenase [EC:1.1.2.7] [RN:R01146]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1	
 K14029	methanol dehydrogenase [EC:1.1.2.7] [RN:R01146]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1	
 K17066	alcohol oxidase [EC:1.1.3.13] [RN:R00608]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1	
-K02588	nitrogenase iron protein [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen	
+K16954	mtsA; methylthiol:coenzyme M methyltransferase [EC:2.1.1.251]	Methanogenesis, methanethiol => methane	Energy	C1-methane
+K02588	nitrogenase iron protein [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen
 K02586	nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen	
 K02591	nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen	
 K00531	nitrogenase delta subunit [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen	
