@@ -241,7 +241,6 @@ def make_module_coverage_frame(annotations, module_nets, groupby_column='fasta')
 
 def make_module_coverage_heatmap(module_coverage, mag_order=None):
     num_mags_in_frame = len(set(module_coverage['MAG']))
-    print(num_mags_in_frame)
     c = alt.Chart(module_coverage, title='Module').encode(
         x=alt.X('module_name', title=None, sort=mag_order, axis=alt.Axis(labelLimit=0, labelAngle=90)),
         y=alt.Y('MAG', title=None, axis=alt.Axis(labelLimit=0)),
