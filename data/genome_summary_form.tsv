@@ -7,7 +7,7 @@ EC:1.16.1.1	mercury(II) reductase	Mercury	MISC	Metal Reduction
 EC:1.20.4.1	arsenate reductase (glutaredoxin); ArsC (ambiguous)	Arsenate	Energy	Metal Reduction	
 EC:1.20.99.1	arsenate reductase (donor); arsenate:(acceptor) oxidoreductase	Arsenate	Energy	Metal Reduction	
 K07811	trimethylamine-N-oxide reductase (cytochrome c) [EC:1.7.2.3]	TMAO	Energy	C1	
-K17050¬†	selenate/chlorate reductase subunit alpha¬†[EC:1.97.1.9 1.97.1.1]	Selenate/Chlorate	Energy	Metal Reduction	
+K17050	selenate/chlorate reductase subunit alpha[EC:1.97.1.9 1.97.1.1]	Selenate/Chlorate	Energy	Metal Reduction	
 K00844	hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	carbon utilization	central carbon	glycolysis
 K12407	hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	carbon utilization	central carbon	glycolysis
 K00845	hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	carbon utilization	central carbon	glycolysis
