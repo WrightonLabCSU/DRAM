@@ -1,11 +1,10 @@
 import pandas as pd
 from collections import Counter, defaultdict
 from os import path, mkdir
-import re
 import altair as alt
 import networkx as nx
 
-from mag_annotator.utils import get_database_locs
+from mag_annotator.utils import get_database_locs, get_ids_from_annotation
 
 # TODO: add RBH information to output
 
@@ -20,20 +19,6 @@ def get_ordered_uniques(seq):
     seen = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
-
-
-def get_ids_from_annotation(frame):
-    id_list = list()
-    # get kegg ids
-    id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
-    # get ec numbers
-    for kegg_hit in frame.kegg_hit.dropna():
-        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
-    # get merops ids
-    id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
-    # get cazy ids
-    id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
-    return Counter(id_list)
 
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):

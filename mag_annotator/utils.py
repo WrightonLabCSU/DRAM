@@ -1,4 +1,6 @@
+import re
 import subprocess
+from collections import Counter
 from glob import glob
 from os import path
 from pkg_resources import resource_filename
@@ -69,3 +71,17 @@ def merge_files(paths_to_files_to_merge, outfile, has_header=False):
                     if has_header:
                         _ = f.readline()
                     outfile_handle.write(f.read())
+
+
+def get_ids_from_annotation(frame):
+    id_list = list()
+    # get kegg ids
+    id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
+    # get ec numbers
+    for kegg_hit in frame.kegg_hit.dropna():
+        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
+    # get merops ids
+    id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
+    # get cazy ids
+    id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
+    return Counter(id_list)

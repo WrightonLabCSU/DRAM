@@ -5,6 +5,7 @@ import argparse
 from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations,\
                                               populate_description_db
 from mag_annotator.annotate_bins import annotate_bins
+from mag_annotator.annotate_vgfs import annotate_vgfs
 from mag_annotator.summarize_genomes import summarize_genomes
 
 if __name__ == '__main__':
@@ -22,6 +23,8 @@ if __name__ == '__main__':
     print_db_locs_parser = subparsers.add_parser('print_config', help="Print database locations",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     annotate_mags_parser = subparsers.add_parser('annotate', help="Annotate contigs/bins/MAGs",
+                                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    annotate_vgfs_parser = subparsers.add_parser('annotate_viral', help="Annotate viral genome fragments",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     genome_summary_parser = subparsers.add_parser('summarize_genomes',
                                                   help="Summarize metabolic content of annotated genomes",
@@ -57,6 +60,8 @@ if __name__ == '__main__':
                                                                                  "already downloaded")
     prepare_dbs_parser.add_argument('--function_heatmap_form_loc', default=None,
                                     help="File path to function heatmap form, if already downloaded")
+    prepare_dbs_parser.add_argument('--branch', default='master', help="git branch from which to download forms; THIS "
+                                                                       "SHOULD NOT BE CHANGED BY REGULAR USERS")
     prepare_dbs_parser.add_argument('--keep_database_files', default=False, action='store_true',
                                     help="Keep unporcessed database files")
     prepare_dbs_parser.add_argument('--threads', default=10, type=int,
@@ -116,6 +121,28 @@ if __name__ == '__main__':
     annotate_mags_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_mags_parser.add_argument('--verbose', action='store_true', default=False)
     annotate_mags_parser.set_defaults(func=annotate_bins)
+
+    # parser for annotating vgfs
+    annotate_vgfs_parser.add_argument('-i', '--input_fasta', help="fasta file, output from ", required=True)
+    annotate_vgfs_parser.add_argument('-v', '--virsorter_affi_contigs', help="VirSorter VIRSorter_affi-contigs.tab "
+                                                                             "output file", required=True)
+    annotate_vgfs_parser.add_argument('-o', '--output_dir', help="output directory")
+    annotate_vgfs_parser.add_argument('--min_contig_size', type=int, default=5000,
+                                      help='minimum contig size to be used for gene prediction')
+    annotate_vgfs_parser.add_argument('--bit_score_threshold', type=int, default=60,
+                                      help='minimum bitScore of search to retain hits')
+    annotate_vgfs_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
+                                      help='minimum bitScore of reverse best hits to retain hits')
+    annotate_vgfs_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be used"
+                                                                                "multiple times.")
+    annotate_vgfs_parser.add_argument('--custom_fasta_loc', action='append',
+                                      help="Location of fastas to annotated against, can be used multiple times but"
+                                           "must match nubmer of custom_db_name's")
+    annotate_vgfs_parser.add_argument('--skip_trnascan', action='store_true', default=False)
+    annotate_vgfs_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
+    annotate_vgfs_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
+    annotate_vgfs_parser.add_argument('--verbose', action='store_true', default=False)
+    annotate_vgfs_parser.set_defaults(func=annotate_vgfs)
 
     # parser for summarizing genomes
     genome_summary_parser.add_argument("-i", "--input_file", help="Annotations path")

@@ -19,6 +19,7 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: add silent mode
 # TODO: add abx resistance genes
 # TODO: add skip uniref90 flag
+# TODO: in annotated gene faa checkout out ko id for actual kegg gene id
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -497,6 +498,140 @@ def strip_endings(text, suffixes: list):
     return text
 
 
+def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, custom_db_locs=(),
+                   bit_score_threshold=60, rbh_bit_score_threshold=350, skip_trnascan=False, start_time=datetime.now(),
+                   threads=1, verbose=False):
+    """Annotated a single multifasta file, all file based outputs will be in output_dir"""
+    print('%s: Annotating %s' % (str(datetime.now()-start_time), fasta_name))
+    fasta_dir = path.join(output_dir, fasta_name)
+    mkdir(fasta_dir)
+
+    # first step filter fasta
+    print('%s: Filtering fasta' % str(datetime.now()-start_time))
+    filtered_fasta = path.join(fasta_dir, 'filtered_fasta.fa')
+    filter_fasta(fasta_loc, min_contig_size, filtered_fasta)
+
+    # call genes with prodigal
+    print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
+    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, fasta_dir, verbose=verbose)
+
+    # run reciprocal best hits from kegg and uniref
+    print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
+    query_db = path.join(fasta_dir, 'gene.mmsdb')
+    make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads, verbose=verbose)
+
+    annotation_list = list()
+
+    # Get kegg hits
+    if 'kegg' in db_locs:
+        annotation_list.append(do_blast_style_search(query_db, db_locs['kegg'], fasta_dir,
+                                                     db_handler, get_kegg_description, start_time,
+                                                     'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
+                                                     verbose))
+
+    # Get uniref hits
+    if 'uniref' in db_locs:
+        annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], fasta_dir,
+                                                     db_handler, get_uniref_description,
+                                                     start_time, 'uniref', bit_score_threshold,
+                                                     rbh_bit_score_threshold, threads, verbose))
+
+    # Get viral hits
+    if 'viral' in db_locs:
+        get_viral_description = partial(get_basic_description, db_name='viral')
+        annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir,
+                                                     db_handler, get_viral_description,
+                                                     start_time, 'viral', bit_score_threshold,
+                                                     rbh_bit_score_threshold, threads, verbose))
+
+    # Get peptidase hits
+    if 'peptidase' in db_locs:
+        annotation_list.append(do_blast_style_search(query_db, db_locs['peptidase'], fasta_dir,
+                                                     db_handler, get_peptidase_description,
+                                                     start_time, 'peptidase', bit_score_threshold,
+                                                     rbh_bit_score_threshold, threads, verbose))
+
+    # Get pfam hits
+    if 'pfam' in db_locs:
+        print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
+        pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], fasta_dir, output_prefix='pfam',
+                                    db_handler=db_handler, threads=threads, verbose=verbose)
+        annotation_list.append(pfam_hits)
+
+    # use hmmer to detect cazy ids using dbCAN
+    if 'dbcan' in db_locs:
+        print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
+        dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir, db_handler=db_handler,
+                                       verbose=verbose)
+        annotation_list.append(dbcan_hits)
+
+    # use hmmer to detect vogdbs
+    if 'vogdb' in db_locs:
+        print('%s: Getting hits from VOGDB' % str(datetime.now()-start_time))
+        vogdb_hits = run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], fasta_dir, db_handler, verbose=verbose)
+        annotation_list.append(vogdb_hits)
+
+    for db_name, db_loc in custom_db_locs.items():
+        print('%s: Getting hits from %s' % (str(datetime.now() - start_time), db_name))
+        get_custom_description = partial(get_basic_description, db_name=db_name)
+        annotation_list.append(do_blast_style_search(query_db, db_loc, fasta_dir, db_handler,
+                                                     get_custom_description, start_time, db_name,
+                                                     bit_score_threshold, rbh_bit_score_threshold, threads,
+                                                     verbose))
+
+    # heme regulatory motif count
+    annotation_list.append(pd.Series(count_motifs(gene_faa, '(C..CH)'), name='heme_regulatory_motif_count'))
+
+    # merge dataframes
+    print('%s: Finishing up results' % str(datetime.now()-start_time))
+    annotations = pd.concat(annotation_list, axis=1, sort=False)
+
+    # get scaffold data and assign grades
+    if 'kegg' in db_locs and 'uniref' in db_locs:
+        grades = assign_grades(annotations)
+        annotations = pd.concat([grades, annotations], axis=1, sort=False)
+    annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
+
+    # generate fna and faa output files with uniref annotations
+    annotated_fna = path.join(fasta_dir, 'genes.annotated.fna')
+    create_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
+    annotated_faa = path.join(fasta_dir, 'genes.annotated.faa')
+    create_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
+    renamed_scaffolds = path.join(fasta_dir, 'scaffolds.annotated.fa')
+    rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
+    renamed_gffs = path.join(fasta_dir, 'genes.annotated.gff')
+    annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
+    current_gbk = path.join(fasta_dir, '%s.gbk' % fasta_name)
+    make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
+
+    # get tRNAs and rRNAs
+    if not skip_trnascan:
+        run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
+    run_barrnap(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
+
+    # add fasta name to frame and index, append to list
+    annotations.insert(0, 'fasta', fasta_name)
+    annotations.index = annotations.fasta + '_' + annotations.index
+    return annotations
+
+
+def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, verbose=False):
+    # if none is passed from argparse then set to tuple of len 0
+    if custom_fasta_loc is None:
+        custom_fasta_loc = ()
+    if custom_db_name is None:
+        custom_db_name = ()
+    if len(custom_fasta_loc) != len(custom_db_name):
+        raise ValueError('Lengths of custom db fasta list and custom db name list must be the same.')
+    custom_dbs = {custom_db_name[i]: custom_fasta_loc[i] for i in range(len(custom_db_name))}
+    custom_db_locs = dict()
+    for db_name, db_loc in custom_dbs.items():
+        custom_db_loc = path.join(output_dir, '%s.custom.mmsdb' % db_name)
+        make_mmseqs_db(db_loc, custom_db_loc, threads=threads, verbose=verbose)
+        custom_db_locs[db_name] = custom_db_loc
+    return custom_db_locs
+
+
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
                   gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10, verbose=True):
@@ -516,139 +651,17 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, tmp_dir, threads, verbose)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
-
-    # if none is passed from argparse then set to tuple of len 0
-    if custom_fasta_loc is None:
-        custom_fasta_loc = ()
-    if custom_db_name is None:
-        custom_db_name = ()
-    if len(custom_fasta_loc) != len(custom_db_name):
-        raise ValueError('Lengths of custom db fasta list and custom db name list must be the same.')
-    custom_dbs = {custom_db_name[i]: custom_fasta_loc[i] for i in range(len(custom_db_name))}
-    custom_db_locs = dict()
-    for db_name, db_loc in custom_dbs.items():
-        custom_db_loc = path.join(tmp_dir, '%s.custom.mmsdb' % db_name)
-        make_mmseqs_db(db_loc, custom_db_loc, threads=threads, verbose=verbose)
-        custom_db_locs[db_name] = custom_db_loc
 
     # iterate over list of fastas and annotate each individually
     annotations_list = list()
     for fasta_loc in fasta_locs:
         # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
         fasta_name = path.splitext(path.basename(fasta_loc.strip('.gz')))[0]
-        print('%s: Annotating %s' % (str(datetime.now()-start_time), fasta_name))
-        fasta_dir = path.join(tmp_dir, fasta_name)
-        mkdir(fasta_dir)
-
-        # first step filter fasta
-        print('%s: Filtering fasta' % str(datetime.now()-start_time))
-        filtered_fasta = path.join(fasta_dir, 'filtered_fasta.fa')
-        filter_fasta(fasta_loc, min_contig_size, filtered_fasta)
-
-        # call genes with prodigal
-        print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
-        gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, fasta_dir, verbose=verbose)
-
-        # run reciprocal best hits from kegg and uniref
-        print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
-        query_db = path.join(fasta_dir, 'gene.mmsdb')
-        make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads, verbose=verbose)
-
-        annotation_list = list()
-
-        # Get kegg hits
-        if 'kegg' in db_locs:
-            annotation_list.append(do_blast_style_search(query_db, db_locs['kegg'], fasta_dir,
-                                                         db_handler, get_kegg_description, start_time,
-                                                         'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
-                                                         verbose))
-
-        # Get uniref hits
-        if 'uniref' in db_locs:
-            annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], fasta_dir,
-                                                         db_handler, get_uniref_description,
-                                                         start_time, 'uniref', bit_score_threshold,
-                                                         rbh_bit_score_threshold, threads, verbose))
-
-        # Get viral hits
-        if 'viral' in db_locs:
-            get_viral_description = partial(get_basic_description, db_name='viral')
-            annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], fasta_dir,
-                                                         db_handler, get_viral_description,
-                                                         start_time, 'viral', bit_score_threshold,
-                                                         rbh_bit_score_threshold, threads, verbose))
-
-        # Get peptidase hits
-        if 'peptidase' in db_locs:
-            annotation_list.append(do_blast_style_search(query_db, db_locs['peptidase'], fasta_dir,
-                                                         db_handler, get_peptidase_description,
-                                                         start_time, 'peptidase', bit_score_threshold,
-                                                         rbh_bit_score_threshold, threads, verbose))
-
-        # Get pfam hits
-        if 'pfam' in db_locs:
-            print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
-            pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], fasta_dir, output_prefix='pfam',
-                                        db_handler=db_handler, threads=threads, verbose=verbose)
-            annotation_list.append(pfam_hits)
-
-        # use hmmer to detect cazy ids using dbCAN
-        if 'dbcan' in db_locs:
-            print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
-            dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir, db_handler=db_handler,
-                                           verbose=verbose)
-            annotation_list.append(dbcan_hits)
-
-        # use hmmer to detect vogdbs
-        if 'vogdb' in db_locs:
-            print('%s: Getting hits from VOGDB' % str(datetime.now()-start_time))
-            vogdb_hits = run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], fasta_dir, db_handler, verbose=verbose)
-            annotation_list.append(vogdb_hits)
-
-        for db_name, db_loc in custom_db_locs.items():
-            print('%s: Getting hits from %s' % (str(datetime.now() - start_time), db_name))
-            get_custom_description = partial(get_basic_description, db_name=db_name)
-            annotation_list.append(do_blast_style_search(query_db, db_loc, fasta_dir, db_handler,
-                                                         get_custom_description, start_time, db_name,
-                                                         bit_score_threshold, rbh_bit_score_threshold, threads,
-                                                         verbose))
-
-        # heme regulatory motif count
-        annotation_list.append(pd.Series(count_motifs(gene_faa, '(C..CH)'), name='heme_regulatory_motif_count'))
-
-        # merge dataframes
-        print('%s: Finishing up results' % str(datetime.now()-start_time))
-        annotations = pd.concat(annotation_list, axis=1, sort=False)
-
-        # get scaffold data and assign grades
-        if 'kegg' in db_locs and 'uniref' in db_locs:
-            grades = assign_grades(annotations)
-            annotations = pd.concat([grades, annotations], axis=1, sort=False)
-        annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
-
-        # generate fna and faa output files with uniref annotations
-        annotated_fna = path.join(fasta_dir, 'genes.annotated.fna')
-        create_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
-        annotated_faa = path.join(fasta_dir, 'genes.annotated.faa')
-        create_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
-        renamed_scaffolds = path.join(fasta_dir, 'scaffolds.annotated.fa')
-        rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
-        renamed_gffs = path.join(fasta_dir, 'genes.annotated.gff')
-        annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
-        current_gbk = path.join(fasta_dir, '%s.gbk' % fasta_name)
-        make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
-
-        # get tRNAs and rRNAs
-        if not skip_trnascan:
-            run_trna_scan(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
-        run_barrnap(renamed_scaffolds, fasta_dir, fasta_name, threads=threads, verbose=verbose)
-
-        # add fasta name to frame and index, append to list
-        annotations.insert(0, 'fasta', fasta_name)
-        annotations.index = annotations.fasta + '_' + annotations.index
-        annotations_list.append(annotations)
-
+        annotations_list.append(annotate_fasta(fasta_loc, fasta_name, tmp_dir, db_locs, db_handler, min_contig_size,
+                                               custom_db_locs, bit_score_threshold, rbh_bit_score_threshold,
+                                               skip_trnascan, start_time, threads, verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
     # merge annotation dicts
     all_annotations = pd.concat(annotations_list, sort=False)
@@ -682,4 +695,4 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     if not keep_tmp_dir:
         rmtree(tmp_dir)
 
-    print("%s: Completed" % str(datetime.now()-start_time))
+    print("%s: Completed annotations" % str(datetime.now()-start_time))
