@@ -276,7 +276,7 @@ def download_and_process_function_heatmap_form(output_dir, branch='master'):
 
 def download_and_process_amg_database(output_dir, branch='master'):
     function_heatmap_form = path.join(output_dir, 'function_heatmap_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/function_heatmap_form.tsv' % branch,
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/amg_database.tsv' % branch,
                   function_heatmap_form, verbose=True)
     return function_heatmap_form
 

@@ -20,6 +20,7 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: add abx resistance genes
 # TODO: add skip uniref90 flag
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
+# TODO: fix GBKs
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
