@@ -195,8 +195,8 @@ def get_amg_ids(amg_frame):
 
 
 def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
-                  keep_tmp_dir=True, threads=10, verbose=True):
+                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_uniref=True,
+                  skip_trnascan=False, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -215,8 +215,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
     fasta_name = path.splitext(path.basename(input_fasta.strip('.gz')))[0]
     annotations = annotate_fasta(input_fasta, fasta_name, tmp_dir, db_locs, db_handler, min_contig_size, custom_db_locs,
-                                 bit_score_threshold, rbh_bit_score_threshold, skip_trnascan, start_time, threads,
-                                 verbose)
+                                 None, bit_score_threshold, rbh_bit_score_threshold, skip_uniref, skip_trnascan,
+                                 start_time, threads, verbose)
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     amg_database_frame = pd.read_csv(db_locs['amg_database'], sep='\t')

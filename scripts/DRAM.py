@@ -118,6 +118,9 @@ if __name__ == '__main__':
                                            "must match nubmer of custom_db_name's")
     annotate_mags_parser.add_argument('--gtdb_taxonomy', help='Summary file from gtdbtk taxonomy assignment from bins')
     annotate_mags_parser.add_argument('--checkm_quality', help='Summary of of checkM quality assessment from bins')
+    annotate_mags_parser.add_argument('--skip_uniref', action='store_true', default=False,
+                                      help='Skip annotating with UniRef, drastically decreases run time and memory'
+                                           'requirements')
     annotate_mags_parser.add_argument('--skip_trnascan', action='store_true', default=False)
     annotate_mags_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_mags_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
@@ -140,6 +143,9 @@ if __name__ == '__main__':
     annotate_vgfs_parser.add_argument('--custom_fasta_loc', action='append',
                                       help="Location of fastas to annotated against, can be used multiple times but"
                                            "must match nubmer of custom_db_name's")
+    annotate_mags_parser.add_argument('--skip_uniref', action='store_true', default=False,
+                                      help='Skip annotating with UniRef, drastically decreases run time and memory'
+                                           'requirements')
     annotate_vgfs_parser.add_argument('--skip_trnascan', action='store_true', default=False)
     annotate_vgfs_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_vgfs_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')

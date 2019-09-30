@@ -500,8 +500,8 @@ def strip_endings(text, suffixes: list):
 
 
 def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, custom_db_locs=(),
-                   bit_score_threshold=60, rbh_bit_score_threshold=350, skip_trnascan=False, start_time=datetime.now(),
-                   threads=1, verbose=False):
+                   dbs_to_use=None, bit_score_threshold=60, rbh_bit_score_threshold=350, skip_uniref=True,
+                   skip_trnascan=False, start_time=datetime.now(), threads=1, verbose=False):
     """Annotated a single multifasta file, all file based outputs will be in output_dir"""
     print('%s: Annotating %s' % (str(datetime.now()-start_time), fasta_name))
     fasta_dir = path.join(output_dir, fasta_name)
@@ -516,7 +516,11 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
     gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, fasta_dir, verbose=verbose)
 
-    # run reciprocal best hits from kegg and uniref
+    # if dbs_to_use is not none then filter to only include databases listed
+    if dbs_to_use is not None:
+        db_locs = {key: value for key, value in db_locs.items() if key in dbs_to_use}
+
+    # run reciprocal best hits searches
     print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
     query_db = path.join(fasta_dir, 'gene.mmsdb')
     make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads, verbose=verbose)
@@ -531,7 +535,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                                                      verbose))
 
     # Get uniref hits
-    if 'uniref' in db_locs:
+    if 'uniref' in db_locs and not skip_uniref:
         annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], fasta_dir,
                                                      db_handler, get_uniref_description,
                                                      start_time, 'uniref', bit_score_threshold,
@@ -633,9 +637,13 @@ def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, 
     return custom_db_locs
 
 
+MAG_DBS_TO_ANNOTATE = ['kegg', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb']
+
+
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
-                  gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10, verbose=True):
+                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_uniref=True,
+                  skip_trnascan=False, gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10,
+                  verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -661,8 +669,9 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
         fasta_name = path.splitext(path.basename(fasta_loc.strip('.gz')))[0]
         annotations_list.append(annotate_fasta(fasta_loc, fasta_name, tmp_dir, db_locs, db_handler, min_contig_size,
-                                               custom_db_locs, bit_score_threshold, rbh_bit_score_threshold,
-                                               skip_trnascan, start_time, threads, verbose))
+                                               custom_db_locs, MAG_DBS_TO_ANNOTATE, bit_score_threshold,
+                                               rbh_bit_score_threshold, skip_uniref, skip_trnascan, start_time, threads,
+                                               verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
     # merge annotation dicts
     all_annotations = pd.concat(annotations_list, sort=False)
