@@ -239,7 +239,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
 
         dbcan_dict = dict()
         if db_handler is not None:
-            dbcan_descriptions = db_handler.get_descriptions(set([i.strip('.hmm').split('_')[0] for i in
+            dbcan_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
                                                                   dbcan_res[dbcan_res.significant].tid]),
                                                              'dbcan_description')
         else:
@@ -259,7 +259,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, db_handler=None, verbose
     # run hmmscan
     vogdb_output = path.join(output_loc, 'vogdb_results.unprocessed.txt')
     run_process(['hmmscan', '--domtblout', vogdb_output, vogdb_loc, genes_faa], verbose=verbose)
-    processed_vogdb_output = path.join(output_loc, 'dbcan_results.tsv')
+    processed_vogdb_output = path.join(output_loc, 'vogdb_results.tsv')
     cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
           "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (vogdb_output, processed_vogdb_output)
     run_process(cmd, shell=True)
@@ -592,7 +592,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotations = pd.concat(annotation_list, axis=1, sort=False)
 
     # get scaffold data and assign grades
-    if 'kegg' in db_locs and 'uniref' in db_locs:
+    if 'kegg' in db_locs and 'uniref' in db_locs and not skip_uniref:
         grades = assign_grades(annotations)
         annotations = pd.concat([grades, annotations], axis=1, sort=False)
     annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
