@@ -219,7 +219,8 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
     """
     # Run hmmscan
     dbcan_output = path.join(output_loc, 'dbcan_results.unprocessed.txt')
-    run_process(['hmmsearch', '--domtblout', dbcan_output, '--cpu', threads, dbcan_loc, genes_faa], verbose=verbose)
+    run_process(['hmmsearch', '--domtblout', dbcan_output, '--cpu', str(threads), dbcan_loc, genes_faa],
+                verbose=verbose)
     processed_dbcan_output = path.join(output_loc, 'dbcan_results.tsv')
     cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
           "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (dbcan_output, processed_dbcan_output)
@@ -258,7 +259,8 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
 def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=None, verbose=False):
     # run hmmscan
     vogdb_output = path.join(output_loc, 'vogdb_results.unprocessed.txt')
-    run_process(['hmmsearch', '--domtblout', vogdb_output, '--cpu', threads, vogdb_loc, genes_faa], verbose=verbose)
+    run_process(['hmmsearch', '--domtblout', vogdb_output, '--cpu', str(threads), vogdb_loc, genes_faa],
+                verbose=verbose)
     processed_vogdb_output = path.join(output_loc, 'vogdb_results.tsv')
     cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
           "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (vogdb_output, processed_vogdb_output)
