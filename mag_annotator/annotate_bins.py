@@ -24,7 +24,7 @@ from mag_annotator.database_handler import DatabaseHandler
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
-HMMSCAN_COLUMNS = ['tid', 'tlen', 'qid', 'qlen', 'evalue', 'tstart', 'tend', 'qstart', 'qend']
+HMMSCAN_COLUMNS = ['qid', 'qlen', 'tid', 'tlen', 'evalue', 'qstart', 'qend', 'tstart', 'tend']
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -280,17 +280,18 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
 
         dbcan_dict = dict()
         if db_handler is not None:
-            vogdb_descriptions = db_handler.get_descriptions(set([i.strip('.hmm').split('_')[0] for i in
+            vogdb_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
                                                                   vogdb_res[vogdb_res.significant].tid]),
                                                              'vogdb_description')
         else:
             vogdb_descriptions = None
         for gene, frame in vogdb_res[vogdb_res.significant].groupby('qid'):
-            if db_handler is None:
-                dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
+            if vogdb_descriptions is None:
+                dbcan_dict[gene] = '; '.join([strip_endings(i, ['.hmm']) for i in frame.tid])
             else:
-                dbcan_dict[gene] = '; '.join(['%s [%s]' % (vogdb_descriptions.get(accession.strip(
-                    '.hmm').split('_')[0]), accession.strip('.hmm')) for accession in frame.tid])
+                dbcan_dict[gene] = '; '.join(['%s [%s]' %
+                                              (vogdb_descriptions.get(strip_endings(i, ['.hmm']).split('_')[0]),
+                                               strip_endings(i, ['.hmm'])) for i in frame.tid])
         return pd.Series(dbcan_dict, name='vogdb_hits')
     else:
         return pd.Series()
@@ -340,23 +341,33 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
     """
     for seq in read_sequence(input_fasta, format='fasta'):
         annotation = annotations.loc[seq.metadata['id']]
-        annotation_str = 'grade: %s' % annotation.grade
-        if verbosity == 'short':
-            if (annotation.grade == 'A') or (annotation.grade == 'C' and not pd.isna(annotation.kegg_hit)):
-                annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-            if annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
-                annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
-            if annotation.grade == 'D':
-                annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
-        elif verbosity == 'long':
-            if not pd.isna(annotation.kegg_hit):
-                annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-            if not pd.isna(annotation.uniref_hit):
-                annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'uniref')
-            if not pd.isna(annotation.pfam_hits):
-                annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
+        if 'grade' in annotations.columns:
+            annotation_str = 'grade: %s' % annotation.grade
+            if verbosity == 'short':
+                if (annotation.grade == 'A') or (annotation.grade == 'C' and not pd.isna(annotation.kegg_hit)):
+                    annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
+                if annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
+                    annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
+                if annotation.grade == 'D':
+                    annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
+            elif verbosity == 'long':
+                if not pd.isna(annotation.kegg_hit):
+                    annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
+                if not pd.isna(annotation.uniref_hit):
+                    annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'uniref')
+                if not pd.isna(annotation.pfam_hits):
+                    annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
+            else:
+                raise ValueError('%s is not a valid verbosity level for annotation summarization' % verbosity)
         else:
-            raise ValueError('%s is not a valid verbosity level for annotation summarization' % verbosity)
+            annotation_list = []
+            if not pd.isna(annotation.kegg_hit):
+                annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'kegg')]
+            if not pd.isna(annotation.uniref_hit):
+                annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'uniref')]
+            if not pd.isna(annotation.pfam_hits):
+                annotation_list += ['%s (db=%s)' % (annotation.pfam_hits, 'pfam')]
+            annotation_str = '; '.join(annotation_list)
         if name is not None:
             seq.metadata['id'] = '%s_%s' % (name, seq.metadata['id'])
         seq.metadata['description'] = annotation_str
