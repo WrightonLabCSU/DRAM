@@ -235,7 +235,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     amg_database_frame = pd.read_csv(db_locs['amg_database'], sep='\t')
-    genome_summary_frame = pd.read_csv(db_locs['genome_summary_frame'], sep='\t', index_col=0)
+    genome_summary_frame = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
     virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
 
     # add auxiliary score
