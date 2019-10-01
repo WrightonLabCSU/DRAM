@@ -210,7 +210,7 @@ def get_sig(tcovlen, evalue):
 
 
 # TODO: refactor following to methods to a shared run hmm step and individual get description steps
-def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose=False):
+def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=None, verbose=False):
     """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
     Commands this is based on:
     hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/DRAM/genes.faa
@@ -219,7 +219,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
     """
     # Run hmmscan
     dbcan_output = path.join(output_loc, 'dbcan_results.unprocessed.txt')
-    run_process(['hmmscan', '--domtblout', dbcan_output, dbcan_loc, genes_faa], verbose=verbose)
+    run_process(['hmmsearch', '--domtblout', dbcan_output, '--cpu', threads, dbcan_loc, genes_faa], verbose=verbose)
     processed_dbcan_output = path.join(output_loc, 'dbcan_results.tsv')
     cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
           "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (dbcan_output, processed_dbcan_output)
@@ -255,10 +255,10 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
         return pd.Series()
 
 
-def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, db_handler=None, verbose=False):
+def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=None, verbose=False):
     # run hmmscan
     vogdb_output = path.join(output_loc, 'vogdb_results.unprocessed.txt')
-    run_process(['hmmscan', '--domtblout', vogdb_output, vogdb_loc, genes_faa], verbose=verbose)
+    run_process(['hmmsearch', '--domtblout', vogdb_output, '--cpu', threads, vogdb_loc, genes_faa], verbose=verbose)
     processed_vogdb_output = path.join(output_loc, 'vogdb_results.tsv')
     cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
           "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (vogdb_output, processed_vogdb_output)
@@ -566,14 +566,15 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     # use hmmer to detect cazy ids using dbCAN
     if 'dbcan' in db_locs:
         print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
-        dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir, db_handler=db_handler,
+        dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], fasta_dir, threads, db_handler=db_handler,
                                        verbose=verbose)
         annotation_list.append(dbcan_hits)
 
     # use hmmer to detect vogdbs
     if 'vogdb' in db_locs:
         print('%s: Getting hits from VOGDB' % str(datetime.now()-start_time))
-        vogdb_hits = run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], fasta_dir, db_handler, verbose=verbose)
+        vogdb_hits = run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], fasta_dir, threads, db_handler=db_handler,
+                                       verbose=verbose)
         annotation_list.append(vogdb_hits)
 
     for db_name, db_loc in custom_db_locs.items():
