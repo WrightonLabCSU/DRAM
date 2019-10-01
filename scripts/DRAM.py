@@ -143,7 +143,7 @@ if __name__ == '__main__':
     annotate_vgfs_parser.add_argument('--custom_fasta_loc', action='append',
                                       help="Location of fastas to annotated against, can be used multiple times but"
                                            "must match nubmer of custom_db_name's")
-    annotate_mags_parser.add_argument('--skip_uniref', action='store_true', default=False,
+    annotate_vgfs_parser.add_argument('--skip_uniref', action='store_true', default=False,
                                       help='Skip annotating with UniRef, drastically decreases run time and memory'
                                            'requirements')
     annotate_vgfs_parser.add_argument('--skip_trnascan', action='store_true', default=False)
