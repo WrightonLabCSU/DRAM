@@ -361,12 +361,15 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
                 raise ValueError('%s is not a valid verbosity level for annotation summarization' % verbosity)
         else:
             annotation_list = []
-            if not pd.isna(annotation.kegg_hit):
-                annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'kegg')]
-            if not pd.isna(annotation.uniref_hit):
-                annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'uniref')]
-            if not pd.isna(annotation.pfam_hits):
-                annotation_list += ['%s (db=%s)' % (annotation.pfam_hits, 'pfam')]
+            if 'kegg_hit' in annotations.columns:
+                if not pd.isna(annotation.kegg_hit):
+                    annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'kegg')]
+            if 'uniref_hit' in annotations.columns:
+                if not pd.isna(annotation.uniref_hit):
+                    annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'uniref')]
+            if 'pfam_hits' in annotations.columns:
+                if not pd.isna(annotation.pfam_hits):
+                    annotation_list += ['%s (db=%s)' % (annotation.pfam_hits, 'pfam')]
             annotation_str = '; '.join(annotation_list)
         if name is not None:
             seq.metadata['id'] = '%s_%s' % (name, seq.metadata['id'])
