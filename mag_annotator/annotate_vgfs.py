@@ -21,6 +21,9 @@ VIRSORTER_HALLMARK_GENE_CATEGORIES = {'0', '3'}
 
 VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES = {'1', '2', '4'}
 
+TRANSPOSON_PFAMS = {'PF01609', 'PF00872', 'PF01610', 'PF01527', 'PF02371', 'PF01710', 'PF01385', 'PF01548', 'PF01526',
+                    'PF01797', 'PF02899', 'PF05717', 'PF07592', 'PF03050', 'PF04754', 'PF04986', 'PF03400'}
+
 
 def get_virsorter_hits(virsorter_affi_contigs):
     raw_file = open(virsorter_affi_contigs).read()
@@ -54,6 +57,14 @@ def get_next_number_name_row(i, frame):
     row = frame.iloc[i]
     row_name = row.name
     return i, row_name, row
+
+
+def is_transposon(pfam_hits):
+    if pd.isna(pfam_hits):
+        return False
+    else:
+        pfams = {i[1:-1].split('.')[0] for i in re.findall('\[PF\d\d\d\d\d.\d*\]', pfam_hits)}
+        return len(pfams & TRANSPOSON_PFAMS) > 0
 
 
 def get_gene_order(dram_genes, virsorter_genes, min_overlap=.85):
@@ -163,27 +174,31 @@ def get_metabolic_flags(annotations, gene_order, metabolic_genes, amgs, verified
                         length_from_end=5000):
     flag_dict = dict()
     metabolic_genes = set(metabolic_genes)
-    for gene, row in annotations.iterrows():
-        # set up
-        flags = ''
-        gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())
-        # is viral
-        if gene_order.loc[gene_order.dram_gene == gene].virsorter_category.iloc[0] not in ['-', None]:
-            flags += 'V'
-        # is metabolic
-        if len(metabolic_genes & gene_annotations) > 0:
-            flags += 'M'
-        # is this a reported AMG reported
-        if len(gene_annotations & set(amgs)) > 0:
-            flags += 'K'
-        # is this a experimentally verified amg
-        if len(gene_annotations & set(verified_amgs)) > 0:
-            flags += 'E'
-        # within 5 kb of end of contig
-        if (row.start_position < length_from_end) or \
-           (row.end_position > (scaffold_length_dict[row.scaffold] - length_from_end)):
-            flags += 'F'
-        flag_dict[gene] = flags
+    for scaffold, scaffold_annotations in annotations.groupby('scaffold'):
+        for gene, row in scaffold_annotations.iterrows():
+            # set up
+            flags = ''
+            gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())
+            # is viral
+            if gene_order.loc[gene_order.dram_gene == gene].virsorter_category.iloc[0] not in ['-', None]:
+                flags += 'V'
+            # is metabolic
+            if len(metabolic_genes & gene_annotations) > 0:
+                flags += 'M'
+            # is this a reported AMG reported
+            if len(gene_annotations & set(amgs)) > 0:
+                flags += 'K'
+            # is this a experimentally verified amg
+            if len(gene_annotations & set(verified_amgs)) > 0:
+                flags += 'E'
+            # if there is a transposon in the contig
+            if scaffold_annotations['is_transposon'].any():
+                flags += 'T'
+            # within 5 kb of end of contig
+            if (row.start_position < length_from_end) or \
+               (row.end_position > (scaffold_length_dict[row.scaffold] - length_from_end)):
+                flags += 'F'
+            flag_dict[gene] = flags
     return flag_dict
 
 
@@ -243,6 +258,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     gene_order = pd.DataFrame(gene_orders, columns=['dram_gene', 'virsorter_gene', 'virsorter_category'])
     genome_summary_frame = genome_summary_frame.loc[[i != 'CAZY' for i in genome_summary_frame.subheader]]
     metabolic_genes = set(genome_summary_frame.index)
+    annotations['is_transposon'] = [is_transposon(i) for i in annotations['pfam_hits']]
 
     amgs = get_amg_ids(amg_database_frame)
     verified_amgs = get_amg_ids(amg_database_frame.loc[amg_database_frame.verified])
