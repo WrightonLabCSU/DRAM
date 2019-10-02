@@ -195,8 +195,8 @@ def get_metabolic_flags(annotations, gene_order, metabolic_genes, amgs, verified
             if scaffold_annotations['is_transposon'].any():
                 flags += 'T'
             # within 5 kb of end of contig
-            if (row.start_position < length_from_end) or \
-               (row.end_position > (scaffold_length_dict[row.scaffold] - length_from_end)):
+            if (int(row.start_position) < length_from_end) or \
+               (int(row.end_position) > (scaffold_length_dict[row.scaffold] - length_from_end)):
                 flags += 'F'
             flag_dict[gene] = flags
     return flag_dict
