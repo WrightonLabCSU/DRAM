@@ -67,7 +67,7 @@ def is_transposon(pfam_hits):
         return len(pfams & TRANSPOSON_PFAMS) > 0
 
 
-def get_gene_order(dram_genes, virsorter_genes, min_overlap=.85):
+def get_gene_order(dram_genes, virsorter_genes, min_overlap=.70):
     dram_gene_frame_list = list()
     dram_gene_frame_list.append(dram_genes['start_position'].astype(int))
     dram_gene_frame_list.append(dram_genes['end_position'].astype(int))
@@ -170,7 +170,7 @@ def calculate_auxiliary_scores(gene_order):
     return gene_auxiliary_score_dict
 
 
-def get_metabolic_flags(annotations, gene_order, metabolic_genes, amgs, verified_amgs, scaffold_length_dict,
+def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaffold_length_dict,
                         length_from_end=5000):
     flag_dict = dict()
     metabolic_genes = set(metabolic_genes)
@@ -180,7 +180,7 @@ def get_metabolic_flags(annotations, gene_order, metabolic_genes, amgs, verified
             flags = ''
             gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())
             # is viral
-            if gene_order.loc[gene_order.dram_gene == gene].virsorter_category.iloc[0] not in ['-', None]:
+            if not pd.isna(row['vogdb_hits']):
                 flags += 'V'
             # is metabolic
             if len(metabolic_genes & gene_annotations) > 0:
@@ -255,14 +255,13 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
 
     # get metabolic flags
     scaffold_length_dict = {seq.metadata['id']: len(seq) for seq in read_sequence(input_fasta, format='fasta')}
-    gene_order = pd.DataFrame(gene_orders, columns=['dram_gene', 'virsorter_gene', 'virsorter_category'])
     genome_summary_frame = genome_summary_frame.loc[[i != 'CAZY' for i in genome_summary_frame.subheader]]
     metabolic_genes = set(genome_summary_frame.index)
     annotations['is_transposon'] = [is_transposon(i) for i in annotations['pfam_hits']]
 
     amgs = get_amg_ids(amg_database_frame)
     verified_amgs = get_amg_ids(amg_database_frame.loc[amg_database_frame.verified])
-    annotations['amg_flags'] = pd.Series(get_metabolic_flags(annotations, gene_order, metabolic_genes, amgs,
+    annotations['amg_flags'] = pd.Series(get_metabolic_flags(annotations, metabolic_genes, amgs,
                                                              verified_amgs, scaffold_length_dict))
 
     # write annotations
