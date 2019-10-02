@@ -269,8 +269,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # copy results files to output
-    copy2(path.join(tmp_dir, '%s.annotated.fna' % fasta_name), path.join(output_dir, 'genes.fna'))
-    copy2(path.join(tmp_dir, '%s.annotated.faa'), path.join(output_dir, 'genes.faa'))
+    copy2(path.join(tmp_dir, 'genes.annotated.fna'), path.join(output_dir, 'genes.fna'))
+    copy2(path.join(tmp_dir, 'genes.annotated.faa'), path.join(output_dir, 'genes.faa'))
     copy2(path.join(tmp_dir, 'scaffolds.annotated.fa'), path.join(output_dir, 'scaffolds.fna'))
     copy2(path.join(tmp_dir, 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'))
     copy2(path.join(tmp_dir, 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'))
