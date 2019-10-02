@@ -8,6 +8,8 @@ import networkx as nx
 from mag_annotator.utils import get_database_locs
 
 # TODO: add RBH information to output
+# TODO: add flag to output table and not xlsx
+# TODO: add flag to output heatmap table
 
 FRAME_COLUMNS = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader']
 RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
@@ -242,8 +244,8 @@ def make_module_coverage_frame(annotations, module_nets, groupby_column='fasta')
 def make_module_coverage_heatmap(module_coverage, mag_order=None):
     num_mags_in_frame = len(set(module_coverage['MAG']))
     c = alt.Chart(module_coverage, title='Module').encode(
-        x=alt.X('module_name', title=None, sort=mag_order, axis=alt.Axis(labelLimit=0, labelAngle=90)),
-        y=alt.Y('MAG', title=None, axis=alt.Axis(labelLimit=0)),
+        x=alt.X('module_name', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90)),
+        y=alt.Y('MAG', title=None, sort=mag_order, axis=alt.Axis(labelLimit=0)),
         tooltip=[alt.Tooltip('MAG', title='MAG'),
                  alt.Tooltip('module_name', title='Module Name'),
                  alt.Tooltip('steps', title='Module steps'),
