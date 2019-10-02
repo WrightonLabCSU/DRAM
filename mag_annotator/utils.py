@@ -84,4 +84,6 @@ def get_ids_from_annotation(frame):
     id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
     # get cazy ids
     id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
+    # get pfam ids
+    id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna() for j in re.findall('\[PF\d\d\d\d\d.\d*\]', i)]
     return Counter(id_list)

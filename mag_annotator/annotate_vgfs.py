@@ -25,6 +25,10 @@ TRANSPOSON_PFAMS = {'PF01609', 'PF00872', 'PF01610', 'PF01527', 'PF02371', 'PF01
                     'PF01797', 'PF02899', 'PF05717', 'PF07592', 'PF03050', 'PF04754', 'PF04986', 'PF03400'}
 
 
+CELL_ENTRY_CAZYS = {'CBM50', 'GH102', 'GH103', 'GH104', 'GH108', 'GH18', 'GH19', 'GH22', 'GH23', 'GH24', 'GH25', 'GH73',
+                    'PL9', 'CBM12', 'CBM14', 'CBM18', 'CBM19'}
+
+
 def get_virsorter_hits(virsorter_affi_contigs):
     raw_file = open(virsorter_affi_contigs).read()
 
@@ -191,6 +195,9 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
             # is this a experimentally verified amg
             if len(gene_annotations & set(verified_amgs)) > 0:
                 flags += 'E'
+            # is this gene a normal viral cell host entry gene
+            if len(gene_annotations & CELL_ENTRY_CAZYS) > 0:
+                flags += 'C'
             # if there is a transposon in the contig
             if scaffold_annotations['is_transposon'].any():
                 flags += 'T'
