@@ -233,7 +233,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
 
         dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
         if dbcan_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
-            return pd.Series()
+            return pd.Series(name='cazy_hits')
 
         dbcan_dict = dict()
         if db_handler is not None:
@@ -250,7 +250,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, db_handler=None, verbose
                                                            accession[:-4]) for accession in frame.tid])
         return pd.Series(dbcan_dict, name='cazy_hits')
     else:
-        return pd.Series()
+        return pd.Series(name='cazy_hits')
 
 
 def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, db_handler=None, verbose=False):
@@ -272,7 +272,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, db_handler=None, verbose
 
         vogdb_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in vogdb_res.iterrows()]
         if vogdb_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
-            return pd.Series()
+            return pd.Series(name='vogdb_hits')
 
         dbcan_dict = dict()
         if db_handler is not None:
@@ -289,7 +289,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, db_handler=None, verbose
                     '.hmm').split('_')[0]), accession.strip('.hmm')) for accession in frame.tid])
         return pd.Series(dbcan_dict, name='vogdb_hits')
     else:
-        return pd.Series()
+        return pd.Series(name='vogdb_hits')
 
 
 def get_gene_data(fasta_loc):
@@ -444,7 +444,7 @@ RRNA_COLUMNS = ['fasta', 'begin', 'end', 'strand', 'type', 'e-value', 'note']
 
 
 def run_barrnap(fasta, output_loc, fasta_name, threads=10, verbose=True):
-    raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, verbose=verbose)
+    raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, check=False, verbose=verbose)
     if len(raw_rrna_str.strip()) > 0:
         raw_rrna_table = pd.read_csv(io.StringIO(raw_rrna_str), skiprows=1, sep='\t', header=None,
                                      names=RAW_RRNA_COLUMNS, index_col=0)
