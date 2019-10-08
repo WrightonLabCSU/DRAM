@@ -29,6 +29,9 @@ if __name__ == '__main__':
     genome_summary_parser = subparsers.add_parser('summarize_genomes',
                                                   help="Summarize metabolic content of annotated genomes",
                                                   formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    vgf_summary_parser = subparsers.add_parser('summarize_vgfs',
+                                               help="Summarize AMGs in annotated viral genome fragments",
+                                               formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for downloading and processing databases for annotation and summarization
     prepare_dbs_parser.add_argument('--output_dir', default="~/MAGotator_data", help="output directory")
@@ -162,6 +165,19 @@ if __name__ == '__main__':
     genome_summary_parser.add_argument("--viral", default=False, action='store_true',
                                        help="If sample is viral will remove empty functions")
     genome_summary_parser.set_defaults(func=summarize_genomes)
+
+    # parser for summarizing genomes
+    vgf_summary_parser.add_argument("-i", "--input_file", help="Annotations path")
+    vgf_summary_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
+    vgf_summary_parser.add_argument("--groupby_column", help="Column from annotations to group as VGF units",
+                                    default='fasta')
+    vgf_summary_parser.add_argument("--max_auxiliary_score", default=4, help="Maximum auxiliary score to consider gene "
+                                                                             "as potential AMG")
+    vgf_summary_parser.add_argument("--remove_transposons", default=False, action='store_true',
+                                    help="Do not consider genes on scaffolds with transposons as potential AMGs")
+    vgf_summary_parser.add_argument("--remove_fs", default=False, action='store_true',
+                                    help="Do not consider genes near ends of scaffolds as potential AMGs")
+    vgf_summary_parser.set_defaults(func=summarize_genomes)
 
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}
