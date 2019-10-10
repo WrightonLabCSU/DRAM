@@ -246,6 +246,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
 
     # add auxiliary score
+    gene_virsorter_category_dict = dict()
     gene_auxiliary_score_dict = dict()
     gene_orders = list()
     for scaffold, dram_frame in annotations.groupby('scaffold'):
@@ -256,8 +257,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
         virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
         gene_order = get_gene_order(dram_frame, virsorter_frame)
         gene_orders += gene_order
+        gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
+                                             gene_order if dram_gene is not None})
         gene_auxiliary_score_dict.update(calculate_auxiliary_scores(gene_order))
-
+    annotations['virsorter_category'] = pd.Series(gene_virsorter_category_dict)
     annotations['auxiliary_score'] = pd.Series(gene_auxiliary_score_dict)
 
     # get metabolic flags
