@@ -197,7 +197,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
                 flags += 'E'
             # is this gene a normal viral cell host entry gene
             if len(gene_annotations & CELL_ENTRY_CAZYS) > 0:
-                flags += 'C'
+                flags += 'A'
             # if there is a transposon in the contig
             if scaffold_annotations['is_transposon'].any():
                 flags += 'T'
@@ -206,6 +206,17 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
                (int(row.end_position) > (scaffold_length_dict[row.scaffold] - length_from_end)):
                 flags += 'F'
             flag_dict[gene] = flags
+        # get 3 metabolic genes in a row flag
+        for i in range(len(scaffold_annotations)):
+            if 0 < i < len(scaffold_annotations):
+                gene = scaffold_annotations.index[i]
+                gene_flags = flag_dict[gene]
+                previous_gene = scaffold_annotations.index[i-1]
+                previous_gene_flags = flag_dict[previous_gene]
+                next_gene = scaffold_annotations.index[i+1]
+                next_gene_flags = flag_dict[next_gene]
+                if 'M' in previous_gene_flags and 'M' in gene_flags and 'M' in next_gene_flags:
+                    flag_dict[gene] += 'B'
     return flag_dict
 
 
@@ -265,6 +276,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
 
     # get metabolic flags
     scaffold_length_dict = {seq.metadata['id']: len(seq) for seq in read_sequence(input_fasta, format='fasta')}
+    # remove cazys which are often false positives
     genome_summary_frame = genome_summary_frame.loc[[i != 'CAZY' for i in genome_summary_frame.subheader]]
     metabolic_genes = set(genome_summary_frame.index)
     annotations['is_transposon'] = [is_transposon(i) for i in annotations['pfam_hits']]

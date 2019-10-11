@@ -2,15 +2,19 @@ import pandas as pd
 import altair as alt
 import re
 from os import path
+from functools import partial
+from collections import defaultdict
 
-from mag_annotator.utils import get_ids_from_annotation, get_database_locs
+from mag_annotator.utils import get_database_locs
 from mag_annotator.summarize_genomes import get_ordered_uniques
 
 VIRAL_DISTILLATE_COLUMNS = ['gene', 'scaffold', 'gene_id', 'gene_description', 'category', 'header',
                             'subheader', 'module', 'auxiliary_score', 'amg_flags']
-VIRAL_LIQUOR_HEADERS = ['Category', 'Function', 'Genes Present', 'VGF Name', 'Present in VGF']
+VIRAL_LIQUOR_HEADERS = ['Category', 'Function', 'AMG Genes', 'Genes Present', 'VGF Name', 'Present in VGF']
 HEATMAP_CELL_HEIGHT = 10
 HEATMAP_CELL_WIDTH = 10
+
+defaultdict_list = partial(defaultdict, list)
 
 
 def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False):
@@ -19,7 +23,7 @@ def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=Fa
         amg_flags = row['amg_flags']
         if not pd.isna(amg_flags):
             if ('V' not in amg_flags) and ('M' in amg_flags) and \
-                    (row['auxiliary_score'] <= max_aux) and ('C' not in amg_flags):
+               (row['auxiliary_score'] <= max_aux) and ('C' not in amg_flags):
                 if (remove_transposons and 'T' not in amg_flags) or not remove_transposons:
                     if (remove_fs and 'F' not in amg_flags) or not remove_fs:
                         potential_amgs.append(gene)
@@ -39,7 +43,7 @@ def get_ids_from_row(row):
         id_list += [j for j in row.peptidase_family.split(';')]
     # get cazy ids
     if not pd.isna(row.cazy_hits):
-        id_list += [j.split(' ')[0] for j in row.cazy_hits.split(';')]
+        id_list += [j.strip().split(' ')[0] for j in row.cazy_hits.split(';')]
     return set(id_list)
 
 
@@ -64,20 +68,28 @@ def make_viral_distillate(potential_amgs, genome_summary_frame):
 
 def make_viral_functional_df(annotations, genome_summary_frame, groupby_column='scaffold'):
     # build dict of ids per genome
-    vgf_to_id_dict = dict()
+    vgf_to_id_dict = defaultdict(defaultdict_list)
     for vgf, frame in annotations.groupby(groupby_column, sort=False):
-        id_list = get_ids_from_annotation(frame).keys()
-        vgf_to_id_dict[vgf] = set(id_list)
+        for gene, row in frame.iterrows():
+            id_list = get_ids_from_row(row)
+            for id_ in id_list:
+                vgf_to_id_dict[vgf][id_].append(gene)
     # build long from data frame
     rows = list()
     for category, category_frame in genome_summary_frame.groupby('sheet'):
         for header, header_frame in category_frame.groupby('module'):
             header_id_set = set(header_frame.index.to_list())
             curr_rows = list()
-            for vgf, id_set in vgf_to_id_dict.items():
-                functions_present = set.intersection(id_set, header_id_set)
-                present_in_bin = len(functions_present) > 0
-                curr_rows.append([category, header, ', '.join(functions_present), vgf, present_in_bin])
+            for vgf, id_dict in vgf_to_id_dict.items():
+                present_in_bin = False
+                functions_present = list()
+                amgs_present = list()
+                for id_, amgs in id_dict.items():
+                    if id_ in header_id_set:
+                        present_in_bin = True
+                        functions_present.append(id_)
+                        amgs_present += amgs
+                curr_rows.append([category, header, ', '.join(amgs_present), ', '.join(functions_present), vgf, present_in_bin])
             if sum([i[-1] for i in curr_rows]) > 0:
                 rows += curr_rows
     return pd.DataFrame(rows, columns=VIRAL_LIQUOR_HEADERS)
@@ -109,6 +121,7 @@ def make_viral_functional_heatmap(functional_df):
             tooltip=[alt.Tooltip('VGF Name'),
                      alt.Tooltip('Category'),
                      alt.Tooltip('Function'),
+                     alt.Tooltip('AMG Genes'),
                      alt.Tooltip('Genes Present')]
         ).mark_rect().encode(y=y, color=rect_colors).properties(
             width=chart_width,
