@@ -184,8 +184,9 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
             flags = ''
             gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())
             # is viral
-            if not pd.isna(row['vogdb_hits']):
-                flags += 'V'
+            if not pd.isna(row['vogdb_categories']):
+                if len({'Xr', 'Xs'} & set(row['vogdb_categories'].split(';'))) > 0:
+                    flags += 'V'
             # is metabolic
             if len(metabolic_genes & gene_annotations) > 0:
                 flags += 'M'
@@ -208,7 +209,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
             flag_dict[gene] = flags
         # get 3 metabolic genes in a row flag
         for i in range(len(scaffold_annotations)):
-            if 0 < i < len(scaffold_annotations):
+            if 0 < i < (len(scaffold_annotations) - 1):
                 gene = scaffold_annotations.index[i]
                 gene_flags = flag_dict[gene]
                 previous_gene = scaffold_annotations.index[i-1]

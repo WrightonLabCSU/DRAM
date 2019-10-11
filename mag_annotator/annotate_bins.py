@@ -278,7 +278,8 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
         if vogdb_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series()
 
-        dbcan_dict = dict()
+        vogdb_description_dict = dict()
+        vogdb_category_dict = dict()
         if db_handler is not None:
             vogdb_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
                                                                   vogdb_res[vogdb_res.significant].tid]),
@@ -287,12 +288,20 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
             vogdb_descriptions = None
         for gene, frame in vogdb_res[vogdb_res.significant].groupby('qid'):
             if vogdb_descriptions is None:
-                dbcan_dict[gene] = '; '.join([strip_endings(i, ['.hmm']) for i in frame.tid])
+                vogdb_description_dict[gene] = ', '.join([strip_endings(i, ['.hmm']) for i in frame.tid])
             else:
-                dbcan_dict[gene] = '; '.join(['%s [%s]' %
-                                              (vogdb_descriptions.get(strip_endings(i, ['.hmm']).split('_')[0]),
-                                               strip_endings(i, ['.hmm'])) for i in frame.tid])
-        return pd.Series(dbcan_dict, name='vogdb_hits')
+                vogdb_hits = list()
+                vogdb_categories = list()
+                for i in frame.tid:
+                    vogdb_id = strip_endings(i, ['.hmm']).split('_')[0]
+                    description = vogdb_descriptions.get(vogdb_id)
+                    vogdb_hits.append((vogdb_id, description))
+                    categories_str = description.split('; ')[1]
+                    vogdb_categories += [categories_str[0+i:2+i] for i in range(0, len(categories_str), 2)]
+                vogdb_description_dict[gene] = ', '.join(['%s [%s]' % (i[1], i[0]) for i in vogdb_hits])
+                vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
+        return pd.DataFrame((pd.Series(vogdb_description_dict, name='vogdb_description'),
+                             pd.Series(vogdb_category_dict, name='vogdb_categories')))
     else:
         return pd.Series()
 
@@ -571,23 +580,20 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     # Get pfam hits
     if 'pfam' in db_locs:
         print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
-        pfam_hits = run_mmseqs_pfam(query_db, db_locs['pfam'], output_dir, output_prefix='pfam',
-                                    db_handler=db_handler, threads=threads, verbose=verbose)
-        annotation_list.append(pfam_hits)
+        annotation_list.append(run_mmseqs_pfam(query_db, db_locs['pfam'], output_dir, output_prefix='pfam',
+                                               db_handler=db_handler, threads=threads, verbose=verbose))
 
     # use hmmer to detect cazy ids using dbCAN
     if 'dbcan' in db_locs:
         print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
-        dbcan_hits = run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], output_dir, threads, db_handler=db_handler,
-                                       verbose=verbose)
-        annotation_list.append(dbcan_hits)
+        annotation_list.append(run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], output_dir, threads, db_handler=db_handler,
+                                                 verbose=verbose))
 
     # use hmmer to detect vogdbs
     if 'vogdb' in db_locs:
         print('%s: Getting hits from VOGDB' % str(datetime.now()-start_time))
-        vogdb_hits = run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], output_dir, threads, db_handler=db_handler,
-                                       verbose=verbose)
-        annotation_list.append(vogdb_hits)
+        annotation_list.append(run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], output_dir, threads, db_handler=db_handler,
+                                                 verbose=verbose))
 
     for db_name, db_loc in custom_db_locs.items():
         print('%s: Getting hits from %s' % (str(datetime.now() - start_time), db_name))
