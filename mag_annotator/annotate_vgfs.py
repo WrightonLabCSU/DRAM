@@ -253,6 +253,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
                                  start_time, threads, verbose)
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
+    # setting up scoring viral genes
     amg_database_frame = pd.read_csv(db_locs['amg_database'], sep='\t')
     genome_summary_frame = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
     virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)

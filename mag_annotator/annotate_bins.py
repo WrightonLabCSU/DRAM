@@ -301,7 +301,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
                 vogdb_description_dict[gene] = ', '.join(['%s [%s]' % (i[1], i[0]) for i in vogdb_hits])
                 vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
         return pd.DataFrame((pd.Series(vogdb_description_dict, name='vogdb_description'),
-                             pd.Series(vogdb_category_dict, name='vogdb_categories')))
+                             pd.Series(vogdb_category_dict, name='vogdb_categories'))).transpose()
     else:
         return pd.Series()
 
