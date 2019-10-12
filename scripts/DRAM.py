@@ -178,7 +178,7 @@ if __name__ == '__main__':
                                     help="Do not consider genes on scaffolds with transposons as potential AMGs")
     vgf_summary_parser.add_argument("--remove_fs", default=False, action='store_true',
                                     help="Do not consider genes near ends of scaffolds as potential AMGs")
-    vgf_summary_parser.set_defaults(func=summarize_vgfs())
+    vgf_summary_parser.set_defaults(func=summarize_vgfs)
 
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}
