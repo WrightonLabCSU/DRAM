@@ -70,7 +70,7 @@ def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', tar
     # convert results to blast outformat 6
     forward_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (query_prefix, target_prefix))
     run_process(['mmseqs', 'convertalis', query_db, target_db, query_target_db_top_filt, forward_output_loc,
-                '--threads', str(threads)], verbose=verbose)
+                 '--threads', str(threads)], verbose=verbose)
     return forward_output_loc
 
 
@@ -80,7 +80,7 @@ def get_reciprocal_best_hits(query_db, target_db, output_dir='.', query_prefix='
     # TODO: Make it take query_target_db as a parameter
     # create subset for second search
     query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%s.mmsdb'
-                                         % (query_prefix, target_prefix, bit_score_threshold))   # I DON'T LIKE THIS
+                                         % (query_prefix, target_prefix, bit_score_threshold))  # I DON'T LIKE THIS
     query_target_db_filt_top_swapped = path.join(output_dir, '%s_%s.minbitscore%s.tophit.swapped.mmsdb'
                                                  % (query_prefix, target_prefix, bit_score_threshold))
     # swap queries and targets in results database
@@ -139,7 +139,7 @@ def get_uniref_description(uniref_hits, header_dict):
     for uniref_hit in uniref_hits.uniref_hit:
         header = header_dict[uniref_hit]
         gene_description.append(header)
-        uniref_list.append(header[header.find('RepID=')+6:])
+        uniref_list.append(header[header.find('RepID=') + 6:])
         gene_taxonomy.append(re.search(r'Tax=(.*?) (\S*?)=', header).group(1))
     new_df = pd.DataFrame([uniref_list, gene_description, gene_taxonomy],
                           index=['uniref_id', 'uniref_hit', 'uniref_taxonomy'],
@@ -195,7 +195,7 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
             pfam_dict[gene] = '; '.join(pfam_frame.tId)
         else:
             pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
-                                        for ascession in pfam_frame.tId])
+                                         for ascession in pfam_frame.tId])
     return pd.Series(pfam_dict, name='pfam_hits')
 
 
@@ -297,7 +297,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
                     description = vogdb_descriptions.get(vogdb_id)
                     vogdb_hits.append((vogdb_id, description))
                     categories_str = description.split('; ')[1]
-                    vogdb_categories += [categories_str[0+i:2+i] for i in range(0, len(categories_str), 2)]
+                    vogdb_categories += [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
                 vogdb_description_dict[gene] = ', '.join(['%s [%s]' % (i[1], i[0]) for i in vogdb_hits])
                 vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
         return pd.DataFrame((pd.Series(vogdb_description_dict, name='vogdb_description'),
@@ -439,7 +439,7 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
     # now we can only ready one record from the gff/fasta hybrid at a time
     # read a record at a time till end of the fasta
     genbank_records = ''
-    for i in range(1, fasta_records+1):
+    for i in range(1, fasta_records + 1):
         seq = read_sequence(io.StringIO(concat_gff), format='gff3', into=Sequence, seq_num=i)
         # need to capture genbank output so we can combine into a multi-genbank file
         capture_print = io.StringIO()
@@ -520,7 +520,7 @@ def count_motifs(gene_faa, motif='(C..CH)'):
 def strip_endings(text, suffixes: list):
     for suffix in suffixes:
         if text.endswith(suffix):
-            text = text[:len(text)-len(suffix)]
+            text = text[:len(text) - len(suffix)]
     return text
 
 
@@ -529,12 +529,12 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                    skip_trnascan=False, start_time=datetime.now(), threads=1, verbose=False):
     """Annotated a single multifasta file, all file based outputs will be in output_dir"""
     # first step filter fasta
-    print('%s: Filtering fasta' % str(datetime.now()-start_time))
+    print('%s: Filtering fasta' % str(datetime.now() - start_time))
     filtered_fasta = path.join(output_dir, 'filtered_fasta.fa')
     filter_fasta(fasta_loc, min_contig_size, filtered_fasta)
 
     # call genes with prodigal
-    print('%s: Calling genes with prodigal' % str(datetime.now()-start_time))
+    print('%s: Calling genes with prodigal' % str(datetime.now() - start_time))
     gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, output_dir, verbose=verbose)
 
     # if dbs_to_use is not none then filter to only include databases listed
@@ -542,7 +542,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         db_locs = {key: value for key, value in db_locs.items() if key in dbs_to_use}
 
     # run reciprocal best hits searches
-    print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now()-start_time))
+    print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now() - start_time))
     query_db = path.join(output_dir, 'gene.mmsdb')
     make_mmseqs_db(gene_faa, query_db, create_index=True, threads=threads, verbose=verbose)
 
@@ -579,19 +579,19 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
 
     # Get pfam hits
     if 'pfam' in db_locs:
-        print('%s: Getting hits from pfam' % str(datetime.now()-start_time))
+        print('%s: Getting hits from pfam' % str(datetime.now() - start_time))
         annotation_list.append(run_mmseqs_pfam(query_db, db_locs['pfam'], output_dir, output_prefix='pfam',
                                                db_handler=db_handler, threads=threads, verbose=verbose))
 
     # use hmmer to detect cazy ids using dbCAN
     if 'dbcan' in db_locs:
-        print('%s: Getting hits from dbCAN' % str(datetime.now()-start_time))
+        print('%s: Getting hits from dbCAN' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], output_dir, threads, db_handler=db_handler,
                                                  verbose=verbose))
 
     # use hmmer to detect vogdbs
     if 'vogdb' in db_locs:
-        print('%s: Getting hits from VOGDB' % str(datetime.now()-start_time))
+        print('%s: Getting hits from VOGDB' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], output_dir, threads, db_handler=db_handler,
                                                  verbose=verbose))
 
@@ -607,7 +607,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotation_list.append(pd.Series(count_motifs(gene_faa, '(C..CH)'), name='heme_regulatory_motif_count'))
 
     # merge dataframes
-    print('%s: Finishing up results' % str(datetime.now()-start_time))
+    print('%s: Finishing up results' % str(datetime.now() - start_time))
     annotations = pd.concat(annotation_list, axis=1, sort=False)
 
     # get scaffold data and assign grades
@@ -727,4 +727,4 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     if not keep_tmp_dir:
         rmtree(tmp_dir)
 
-    print("%s: Completed annotations" % str(datetime.now()-start_time))
+    print("%s: Completed annotations" % str(datetime.now() - start_time))

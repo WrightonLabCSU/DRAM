@@ -11,7 +11,6 @@ from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.annotate_bins import process_custom_dbs, annotate_fasta
 from mag_annotator.utils import get_database_locs, get_ids_from_annotation
 
-
 VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length', 'strandedness',
                           'viral_protein_cluster_hit', 'viral_protein_cluster_hit_score',
                           'viral_protein_cluster_hit_evalue', 'viral_protein_cluster_category', 'pfam_hit',
@@ -23,7 +22,6 @@ VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES = {'1', '2', '4'}
 
 TRANSPOSON_PFAMS = {'PF01609', 'PF00872', 'PF01610', 'PF01527', 'PF02371', 'PF01710', 'PF01385', 'PF01548', 'PF01526',
                     'PF01797', 'PF02899', 'PF05717', 'PF07592', 'PF03050', 'PF04754', 'PF04986', 'PF03400'}
-
 
 CELL_ENTRY_CAZYS = {'CBM50', 'GH102', 'GH103', 'GH104', 'GH108', 'GH18', 'GH19', 'GH22', 'GH23', 'GH24', 'GH25', 'GH73',
                     'PL9', 'CBM12', 'CBM14', 'CBM18', 'CBM19'}
@@ -50,8 +48,8 @@ def get_overlap(row1, row2):
     if overlap_len <= 0:
         return 0, 0
     else:
-        return overlap_len/(row1.end_position - row1.start_position), \
-               overlap_len/(row2.end_position - row2.start_position)
+        return overlap_len / (row1.end_position - row1.start_position), \
+               overlap_len / (row2.end_position - row2.start_position)
 
 
 def get_next_number_name_row(i, frame):
@@ -153,7 +151,7 @@ def calculate_auxiliary_scores(gene_order):
             viral_like_left = len(set(left_categories) & set(VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES)) > 0
 
             right_categories = [right_virsorter_category for right_dram_gene, right_viral_gene, right_virsorter_category
-                                in gene_order[i+1:] if right_viral_gene is not None]
+                                in gene_order[i + 1:] if right_viral_gene is not None]
             hallmark_right = len(set(right_categories) & set(VIRSORTER_HALLMARK_GENE_CATEGORIES)) > 0
             viral_like_right = len(set(right_categories) & set(VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES)) > 0
             if hallmark_left and hallmark_right:  # hallmark on both sides then cat 1
@@ -166,7 +164,7 @@ def calculate_auxiliary_scores(gene_order):
                 auxiliary_score = 3
             # not end of contig and hallmark or viral like on other side
             elif ((hallmark_left or viral_like_left) and len(right_categories) > 0) or \
-                 (len(left_categories) > 0 and (hallmark_right or viral_like_right)):
+                    (len(left_categories) > 0 and (hallmark_right or viral_like_right)):
                 auxiliary_score = 4
             else:  # if gene is at end of contig or no viral like or hallmark genes then score is 5
                 auxiliary_score = 5
@@ -204,7 +202,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
                 flags += 'T'
             # within 5 kb of end of contig
             if (int(row.start_position) < length_from_end) or \
-               (int(row.end_position) > (scaffold_length_dict[row.scaffold] - length_from_end)):
+                    (int(row.end_position) > (scaffold_length_dict[row.scaffold] - length_from_end)):
                 flags += 'F'
             flag_dict[gene] = flags
         # get 3 metabolic genes in a row flag
@@ -212,9 +210,9 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
             if 0 < i < (len(scaffold_annotations) - 1):
                 gene = scaffold_annotations.index[i]
                 gene_flags = flag_dict[gene]
-                previous_gene = scaffold_annotations.index[i-1]
+                previous_gene = scaffold_annotations.index[i - 1]
                 previous_gene_flags = flag_dict[previous_gene]
-                next_gene = scaffold_annotations.index[i+1]
+                next_gene = scaffold_annotations.index[i + 1]
                 next_gene_flags = flag_dict[next_gene]
                 if 'M' in previous_gene_flags and 'M' in gene_flags and 'M' in next_gene_flags:
                     flag_dict[gene] += 'B'

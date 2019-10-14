@@ -38,7 +38,7 @@ def summarize_rrnas(rrnas_df, groupby_column='fasta'):
         for genome, rrna_dict in genome_rrna_dict.items():
             row.append(genome_rrna_dict[genome].get(type, 0))
         row_list.append(row)
-    rrna_frame = pd.DataFrame(row_list, columns=FRAME_COLUMNS+list(genome_rrna_dict.keys()))
+    rrna_frame = pd.DataFrame(row_list, columns=FRAME_COLUMNS + list(genome_rrna_dict.keys()))
     return rrna_frame
 
 
@@ -163,7 +163,7 @@ def build_module_net(module_df):
         if module_path[0] == 0:
             module_net.add_edge('begin', module_path)
         else:
-            module_net.add_edge('end_step_%s' % (split_path[0]-1), module_path)
+            module_net.add_edge('end_step_%s' % (split_path[0] - 1), module_path)
         # add outgoing edge
         if split_path[0] == num_steps:
             module_net.add_edge(module_path, 'end')
@@ -190,8 +190,8 @@ def get_module_coverage(kos, module_net):
             missing_steps.append(int(node.split('_')[-1]))
     # get statistics
     num_steps = pruned_module_net.graph['num_steps']
-    num_steps_present = num_steps-len(missing_steps)+1  # But should we +1?
-    coverage = num_steps_present/num_steps
+    num_steps_present = num_steps - len(missing_steps) + 1  # But should we +1?
+    coverage = num_steps_present / num_steps
     return num_steps, num_steps_present, coverage, sorted(module_kos_present)
 
 

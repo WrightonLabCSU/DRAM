@@ -23,7 +23,7 @@ def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=Fa
         amg_flags = row['amg_flags']
         if not pd.isna(amg_flags):
             if ('V' not in amg_flags) and ('M' in amg_flags) and \
-               (row['auxiliary_score'] <= max_aux) and ('A' not in amg_flags):
+                    (row['auxiliary_score'] <= max_aux) and ('A' not in amg_flags):
                 if (remove_transposons and 'T' not in amg_flags) or not remove_transposons:
                     if (remove_fs and 'F' not in amg_flags) or not remove_fs:
                         potential_amgs.append(gene)

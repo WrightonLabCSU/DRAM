@@ -15,6 +15,7 @@ from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, 
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.database_setup import create_description_db
 
+
 # TODO: check if dbcan or pfam is down, raise appropriate error
 
 
