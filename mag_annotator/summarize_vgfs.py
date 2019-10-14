@@ -23,7 +23,7 @@ def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=Fa
         amg_flags = row['amg_flags']
         if not pd.isna(amg_flags):
             if ('V' not in amg_flags) and ('M' in amg_flags) and \
-               (row['auxiliary_score'] <= max_aux) and ('C' not in amg_flags):
+               (row['auxiliary_score'] <= max_aux) and ('A' not in amg_flags):
                 if (remove_transposons and 'T' not in amg_flags) or not remove_transposons:
                     if (remove_fs and 'F' not in amg_flags) or not remove_fs:
                         potential_amgs.append(gene)
@@ -141,7 +141,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     if 'genome_summary_form' not in db_locs:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     mkdir(output_dir)
-    genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
+    genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
     # get potential AMGs
     potential_amgs = filter_to_amgs(annotations, max_aux=max_auxiliary_score, remove_transposons=remove_transposons,
                                     remove_fs=remove_fs)
