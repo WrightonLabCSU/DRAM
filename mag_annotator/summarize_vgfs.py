@@ -89,7 +89,8 @@ def make_viral_functional_df(annotations, genome_summary_frame, groupby_column='
                         present_in_bin = True
                         functions_present.append(id_)
                         amgs_present += amgs
-                curr_rows.append([category, header, ', '.join(amgs_present), ', '.join(functions_present), vgf, present_in_bin])
+                curr_rows.append([category, header, ', '.join(amgs_present), ', '.join(functions_present), vgf,
+                                  present_in_bin])
             if sum([i[-1] for i in curr_rows]) > 0:
                 rows += curr_rows
     return pd.DataFrame(rows, columns=VIRAL_LIQUOR_HEADERS)
