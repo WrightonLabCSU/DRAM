@@ -1,7 +1,7 @@
 import pandas as pd
 import altair as alt
 import re
-from os import path
+from os import path, mkdir
 from functools import partial
 from collections import defaultdict
 
@@ -136,9 +136,11 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
                    remove_fs=False):
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
+    annotations = annotations.fillna('')
     db_locs = get_database_locs()
     if 'genome_summary_form' not in db_locs:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
+    mkdir(output_dir)
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
     # get potential AMGs
     potential_amgs = filter_to_amgs(annotations, max_aux=max_auxiliary_score, remove_transposons=remove_transposons,
