@@ -62,6 +62,8 @@ if __name__ == '__main__':
                                                                                     "if already downloaded")
     prepare_dbs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form, if"
                                                                                  "already downloaded")
+    prepare_dbs_parser.add_argument('--etc_module_database_loc', default=None,
+                                    help="File path to etc module database, if already downloaded")
     prepare_dbs_parser.add_argument('--function_heatmap_form_loc', default=None,
                                     help="File path to function heatmap form, if already downloaded")
     prepare_dbs_parser.add_argument('--branch', default='master', help="git branch from which to download forms; THIS "
@@ -87,14 +89,14 @@ if __name__ == '__main__':
                                     help='mmseqs2 database file from ref seq viral gene collection')
     set_db_locs_parser.add_argument('--peptidase_db_loc', default=None,
                                     help='mmseqs2 database file from MEROPS database')
-    set_db_locs_parser.add_argument('--description_db_loc', default=None, help="Location to write description sqlite "
-                                                                               "db")
+    set_db_locs_parser.add_argument('--description_db_loc', default=None,
+                                    help="Location to write description sqlite db")
     set_db_locs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form")
     set_db_locs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form")
+    set_db_locs_parser.add_argument('--etc_module_database_loc', default=None, help="File path to etc module database")
     set_db_locs_parser.add_argument('--function_heatmap_form_loc', default=None,
                                     help="File path to function heatmap form")
-    set_db_locs_parser.add_argument('--amg_database_loc', default=None,
-                                    help="File path to amg database")
+    set_db_locs_parser.add_argument('--amg_database_loc', default=None, help="File path to amg database")
     set_db_locs_parser.add_argument('--update_description_db', action='store_true', default=False)
     set_db_locs_parser.set_defaults(func=set_database_paths)
 

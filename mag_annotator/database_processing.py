@@ -268,6 +268,13 @@ def download_and_process_module_step_form(output_dir, branch='master'):
     return function_heatmap_form
 
 
+def download_and_process_etc_module_database(output_dir, branch='master'):
+    etc_module_database = path.join(output_dir, 'etc_mdoule_database.%s.tsv' % get_iso_date())
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/etc_module_database.tsv' % branch,
+                  etc_module_database, verbose=True)
+    return etc_module_database
+
+
 def download_and_process_function_heatmap_form(output_dir, branch='master'):
     function_heatmap_form = path.join(output_dir, 'function_heatmap_form.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/function_heatmap_form.tsv' % branch,
@@ -276,10 +283,10 @@ def download_and_process_function_heatmap_form(output_dir, branch='master'):
 
 
 def download_and_process_amg_database(output_dir, branch='master'):
-    function_heatmap_form = path.join(output_dir, 'function_heatmap_form.%s.tsv' % get_iso_date())
+    amg_database = path.join(output_dir, 'amg_database.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/amg_database.tsv' % branch,
-                  function_heatmap_form, verbose=True)
-    return function_heatmap_form
+                  amg_database, verbose=True)
+    return amg_database
 
 
 def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
@@ -302,8 +309,8 @@ def check_exists_and_add_to_description_db(loc, name, get_description_list, db_h
 def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
                        dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None,
                        vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None,
-                       module_step_form_loc=None, function_heatmap_form_loc=None, amg_database_loc=None,
-                       update_description_db=False):
+                       module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None,
+                       amg_database_loc=None, update_description_db=False):
     """Processes pfam_hmm_dat"""
     db_dict = get_database_locs()
 
@@ -320,6 +327,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
 
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(etc_module_database_loc, 'etc_module_database', db_dict)
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(amg_database_loc, 'amg_database', db_dict)
 
@@ -364,8 +372,9 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
                       uniref_version='90', pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None,
                       dbcan_version='7', dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None,
                       peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
-                      genome_summary_form_loc=None, module_step_form_loc=None, function_heatmap_form_loc=None,
-                      amg_database_loc=None, keep_database_files=False, branch='master', threads=10, verbose=True):
+                      genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
+                      function_heatmap_form_loc=None, amg_database_loc=None, keep_database_files=False, branch='master',
+                      threads=10, verbose=True):
     # check that all given files exist
     if kegg_loc is not None:
         check_file_exists(kegg_loc)
@@ -429,6 +438,10 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
         output_dbs['module_step_form_loc'] = download_and_process_module_step_form(temporary, branch)
     else:
         output_dbs['module_step_form_loc'] = module_step_form_loc
+    if etc_module_database_loc is None:
+        output_dbs['etc_module_database_loc'] = download_and_process_etc_module_database(temporary, branch)
+    else:
+        output_dbs['etc_module_database_loc'] = etc_module_database_loc
     if function_heatmap_form_loc is None:
         output_dbs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(temporary, branch)
     else:
