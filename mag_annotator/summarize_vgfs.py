@@ -3,7 +3,7 @@ import altair as alt
 import re
 from os import path, mkdir
 from functools import partial
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 from mag_annotator.utils import get_database_locs
 from mag_annotator.summarize_genomes import get_ordered_uniques
@@ -64,6 +64,18 @@ def make_viral_distillate(potential_amgs, genome_summary_frame):
                                  sub_gene_summary['subheader'], sub_gene_summary['module'],
                                  row['auxiliary_score'], row['amg_flags']])
     return pd.DataFrame(rows, columns=VIRAL_DISTILLATE_COLUMNS)
+
+
+def make_amg_count_column(potential_amgs):
+    # build count column
+    amg_counts = pd.DataFrame(Counter(potential_amgs.scaffold).items(), columns=['VGF Name', 'Number'])
+    amg_counts['AMG Count'] = 'AMG Count'
+    text = alt.Chart(amg_counts, width=HEATMAP_CELL_WIDTH+10, height=HEATMAP_CELL_HEIGHT*len(amg_counts)).encode(
+                     x=alt.X('AMG Count', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90)),
+                     y=alt.Y('VGF Name', title=None, axis=alt.Axis(labelLimit=0)),
+                     text='Number'
+                    ).mark_text()
+    return text
 
 
 def make_viral_functional_df(annotations, genome_summary_frame, groupby_column='scaffold'):
@@ -129,7 +141,7 @@ def make_viral_functional_heatmap(functional_df):
             height=chart_height)
         charts.append(c)
     # merge and return
-    function_heatmap = alt.hconcat(*charts)
+    function_heatmap = alt.hconcat(*charts, spacing=5)
     return function_heatmap
 
 
@@ -150,7 +162,8 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     viral_distillate = make_viral_distillate(potential_amgs, genome_summary_form)
     viral_distillate.to_csv(path.join(output_dir, 'vgf_amg_summary.tsv'), sep='\t', index=None)
     # make liquor
+    amg_column = make_amg_count_column(potential_amgs)
     viral_function_df = make_viral_functional_df(potential_amgs, genome_summary_form,
                                                  groupby_column=groupby_column)
     viral_functional_heatmap = make_viral_functional_heatmap(viral_function_df)
-    viral_functional_heatmap.save(path.join(output_dir, 'vgf_amg_heatmap.html'))
+    alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'vgf_amg_heatmap.html'))
