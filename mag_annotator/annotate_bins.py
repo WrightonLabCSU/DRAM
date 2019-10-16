@@ -278,27 +278,31 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
         if vogdb_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series()
 
+        vogdb_res = vogdb_res[vogdb_res.significant]
+        vogdb_res_most_sig = list()
+        for gene, frame in vogdb_res.groupby('qid'):
+            frame = frame.sort_values('evalue')
+            vogdb_res_most_sig.append(frame.iloc[0])
+        vogdb_res_most_sig = pd.DataFrame(vogdb_res_most_sig)
+
         vogdb_description_dict = dict()
         vogdb_category_dict = dict()
         if db_handler is not None:
             vogdb_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
-                                                                  vogdb_res[vogdb_res.significant].tid]),
+                                                                  vogdb_res_most_sig.tid]),
                                                              'vogdb_description')
         else:
             vogdb_descriptions = None
-        for gene, frame in vogdb_res[vogdb_res.significant].groupby('qid'):
+        for _, row in vogdb_res_most_sig.iterrows():
+            gene = row['qid']
+            vogdb_id = strip_endings(row['tid'], ['.hmm']).split('_')[0]
             if vogdb_descriptions is None:
-                vogdb_description_dict[gene] = ', '.join([strip_endings(i, ['.hmm']) for i in frame.tid])
+                vogdb_description_dict[gene] = strip_endings(vogdb_id, ['.hmm'])
             else:
-                vogdb_hits = list()
-                vogdb_categories = list()
-                for i in frame.tid:
-                    vogdb_id = strip_endings(i, ['.hmm']).split('_')[0]
-                    description = vogdb_descriptions.get(vogdb_id)
-                    vogdb_hits.append((vogdb_id, description))
-                    categories_str = description.split('; ')[1]
-                    vogdb_categories += [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
-                vogdb_description_dict[gene] = ', '.join(['%s [%s]' % (i[1], i[0]) for i in vogdb_hits])
+                description = vogdb_descriptions.get(vogdb_id)
+                categories_str = description.split('; ')[1]
+                vogdb_categories = [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
+                vogdb_description_dict[gene] = description
                 vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
         return pd.DataFrame((pd.Series(vogdb_description_dict, name='vogdb_description'),
                              pd.Series(vogdb_category_dict, name='vogdb_categories'))).transpose()
