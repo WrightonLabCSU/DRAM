@@ -317,7 +317,9 @@ def get_gene_data(fasta_loc):
         split_label = seq.metadata['id'].split('_')
         scaffold = '_'.join(split_label[:-1])
         gene_position = split_label[-1]
-        df_dict[seq.metadata['id']] = [scaffold, gene_position] + seq.metadata['description'].split('#')[1:4]
+        start_position, end_position, strandedness = seq.metadata['description'].split('#')[1:4]
+        df_dict[seq.metadata['id']] = [scaffold, int(gene_position), int(start_position), int(end_position),
+                                       int(strandedness)]
     return pd.DataFrame.from_dict(df_dict, orient='index', columns=['scaffold', 'gene_position', 'start_position',
                                                                     'end_position', 'strandedness'])
 
