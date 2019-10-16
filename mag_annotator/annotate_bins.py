@@ -199,8 +199,9 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     return pd.Series(pfam_dict, name='pfam_hits')
 
 
-def get_sig(tcovlen, evalue):
+def get_sig(tstart, tend, evalue):
     """Check if hmm match is significant, based on dbCAN described parameters"""
+    tcovlen = tend - tstart
     if tcovlen >= 80 and evalue < 1e-5:
         return True
     elif tcovlen < 80 and evalue < 1e-3:
@@ -232,20 +233,19 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
 
         dbcan_res.columns = HMMSCAN_COLUMNS
 
-        dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
-
-        dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
-        if dbcan_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
+        significant = [row_num for row_num, row in dbcan_res.iterrows() if get_sig(row.tstart, row.tend, row.evalue)]
+        if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series(name='cazy_hits')
+        dbcan_res_significant = dbcan_res.loc[significant]
 
         dbcan_dict = dict()
         if db_handler is not None:
             dbcan_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
-                                                                  dbcan_res[dbcan_res.significant].tid]),
+                                                                  dbcan_res_significant.tid]),
                                                              'dbcan_description')
         else:
             dbcan_descriptions = None
-        for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
+        for gene, frame in dbcan_res_significant.groupby('qid'):
             if dbcan_descriptions is None:
                 dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
             else:
@@ -272,13 +272,11 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
 
         vogdb_res.columns = HMMSCAN_COLUMNS
 
-        vogdb_res['tcovlen'] = vogdb_res.tend - vogdb_res.tstart
-
-        vogdb_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in vogdb_res.iterrows()]
-        if vogdb_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
+        significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.tstart, row.tend, row.evalue)]
+        if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series(name='vogdb_hits')
 
-        vogdb_res = vogdb_res[vogdb_res.significant]
+        vogdb_res = vogdb_res[significant]
         vogdb_res_most_sig = list()
         for gene, frame in vogdb_res.groupby('qid'):
             frame = frame.sort_values('evalue')
@@ -475,7 +473,8 @@ RRNA_COLUMNS = ['fasta', 'begin', 'end', 'strand', 'type', 'e-value', 'note']
 
 
 def run_barrnap(fasta, output_loc, fasta_name, threads=10, verbose=True):
-    raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, check=False, verbose=verbose)
+    raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, check=False,
+                               verbose=verbose)
     if len(raw_rrna_str.strip()) > 0:
         raw_rrna_table = pd.read_csv(io.StringIO(raw_rrna_str), skiprows=1, sep='\t', header=None,
                                      names=RAW_RRNA_COLUMNS, index_col=0)
