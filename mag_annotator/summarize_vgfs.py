@@ -133,7 +133,7 @@ def make_viral_functional_heatmap(functional_df):
     return function_heatmap
 
 
-def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=4, remove_transposons=True,
+def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3, remove_transposons=True,
                    remove_fs=False):
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)

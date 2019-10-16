@@ -172,7 +172,7 @@ if __name__ == '__main__':
     vgf_summary_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
     vgf_summary_parser.add_argument("--groupby_column", help="Column from annotations to group as VGF units",
                                     default='scaffold')
-    vgf_summary_parser.add_argument("--max_auxiliary_score", type=int, default=4,
+    vgf_summary_parser.add_argument("--max_auxiliary_score", type=int, default=3,
                                     help="Maximum auxiliary score to consider gene as potential AMG")
     vgf_summary_parser.add_argument("--remove_transposons", default=False, action='store_true',
                                     help="Do not consider genes on scaffolds with transposons as potential AMGs")
