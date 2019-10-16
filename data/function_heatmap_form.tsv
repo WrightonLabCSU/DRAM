@@ -16,16 +16,6 @@ CAZY	CAZY	Fucose Cleavage	GH107, GH139, GH141, GH151, GH29, GH95, GH43	alpha-L-f
 CAZY	CAZY	Arabinose cleavage	GH121, GH127, GH131, GH137, GH142, GH146, GH42, GH54, GH62	beta-L-arabinofuranosidase (EC 3.2.1.185), beta-L-arabinobiosidase (EC 3.2.1.-), alpha-L-arabinofuranosidase (EC 3.2.1.55)
 CAZY	CAZY	Rhamnose cleavage	GH78, GH106, GH145, PL24, PL25, PL27, PL28	alpha-L-rhamnosidase (EC 3.2.1.40); rhamnogalacturonan alpha-L-rhamnohydrolase (EC 3.2.1.174), L-Rhalpha-alpha-1,4-GlcA alpha-L-rhamnohydrolase (EC 3.2.1.-)
 CAZY	CAZY	Ppo laccase 	K05909, AA1, AA2	Laccase / p-diphenol:oxygen oxidoreductase / ferroxidase (EC 1.10.3.2); ; ferroxidase (EC 1.10.3.-); Laccase-like multicopper oxidase (EC 1.10.3.-), manganese peroxidase (EC 1.11.1.13); versatile peroxidase (EC 1.11.1.16); lignin peroxidase (EC 1.11.1.14); peroxidase (EC 1.11.1.-)
-Aerobic respiration	Low affinity	Cytochrome c oxidase, eukaryotes	K02261,K02256	COX2; cytochrome c oxidase subunit 2, COX1; cytochrome c oxidase subunit 1 [EC:1.9.3.1]
-Aerobic respiration	Low affinity	Cytochrome c oxidase, prokaryotes	K02275,K02274	coxB; cytochrome c oxidase subunit II [EC:1.9.3.1], coxA; cytochrome c oxidase subunit I [EC:1.9.3.1]
-Aerobic respiration	Low affinity	Cytochrome o ubiquinol oxidase	K02297,K02298	cyoA or B; cytochrome o ubiquinol oxidase subunit II [EC:1.10.3.10]
-Aerobic respiration	Low affinity	Cytochrome aa3-600 menaquinol oxidase	K02827,K02826	qoxAB; cytochrome aa3-600 menaquinol oxidase subunit I [EC:1.10.3.12]
-Aerobic respiration	High Affinity - Microaerophilic 	Cytochrome c oxidase, cbb3-type	K00405,K00404,K15862	ccoO; cb-type cytochrome c oxidase subunit II, ccoN; cb-type cytochrome c oxidase subunit I [EC:1.9.3.1], ccoNO; cbb3-type cytochrome c oxidase subunit I/II
-Aerobic respiration	High Affinity - Microaerophilic 	Cytochrome bd ubiquinol oxidase	K00425,K00426	cytochrome bd ubiquinol oxidase subunit I [EC:1.10.3.14]
-Electron transport chain	Reductases and Electron transport chain components	Complex II Succinate dehydrogenase, prokaryotes	K00239,K00240	succinate dehydrogenase flavoprotein subunit [EC:1.3.5.1]	complex II-TCA, sdhAB
-Electron transport chain	Reductases and Electron transport chain components	Succinate dehydrogenase (ubiquinone), alternative	K00234,K00235	succinate dehydrogenase (ubiquinone) flavoprotein subunit [EC:1.3.5.1]	complex II-TCA
-Electron transport chain	Reductases and Electron transport chain components	Complex III, Cytochrome bc1 complex 	K00414,K00410,K00414,K00415,K00416,K00417,K00418,K00419,K00420           	COMPLEX 3
-Electron transport chain	Reductases and Electron transport chain components	Fumarate reductase	K00244, K00245	frdA; fumarate reductase flavoprotein subunit [EC:1.3.5.4], frdB; fumarate reductase iron-sulfur subunit [EC:1.3.5.4]
 Nitrogen metabolism	Nitrification 	ammonia => nitrite	EC:1.14.99.39	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]
 Nitrogen metabolism	Nitrification 	Bacterial/Archaeal ammonia oxidation	K10944, K10945, K10946	amoA; Methane/ammonia monooxygenase subunit A (aka: particulate ammonia monooxygenase) [EC:1.14.99.39] [RN:R00148]	amoA
 Nitrogen metabolism	Nitrification 	Bacterial (aerobic-specific) ammonia oxidation	K10535	hao: Hydroxylamine dehydrogenase [EC:1.7.2.6] [RN:R10164]	hao
@@ -34,8 +24,8 @@ Nitrogen metabolism	Nitrification 	nitrite => nitrate	K00370, K00371	nxrA; Nitri
 Nitrogen metabolism	Denitrification 	nitrate => nitrite	K02567, K00370, K00371, K02568	periplasmic nitrate reductase NapA [EC:1.7.99.-] [RN:R00798] or nitrate reductase 1 NarG [EC:1.7.99.-] [RN:R00798]
 Nitrogen metabolism	Denitrification 	nitrite => nitric oxide	K00362, K00370, K00368, K15864	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787], respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]
 Nitrogen metabolism	Denitrification 	Dissimilatory nitrite reduction to ammonia (DNRA)	K03385, K15876	nrfA; Nitrite reductase (cytochrome c-552) [EC:1.7.2.2] [RN:R05712]; nrfH; cytochrome c nitrite reductase small subunit [EC:1.7.2.2] [RN:R05712]	nrfA
-Nitrogen metabolism	Denitrification 	nitric oxide => nitrous oxide	K00376	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]
-Nitrogen metabolism	Denitrification 	nitric oxide => di nitrogen	K04561,K15877, K02305	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]
+Nitrogen metabolism	Denitrification 	nitric oxide => nitrous oxide	K04561, K15877	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]
+Nitrogen metabolism	Denitrification 	nitrous oxide => nitrogen	K00376 	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]
 Nitrogen metabolism	Nitrogen  fixation	nitrogen => ammonia	K02588, K02586	nitrogenase iron protein [RN:R05185]
 Nitrogen metabolism	Nitrogen  fixation	Nitrogen fixation altennative	K22896	vnfD; Vanadium-dependent nitrogenase alpha chain [EC:1.18.6.2] [RN:R12084]	vnfH
 Sulfur metabolism 	Sulfur metabolism 	dissimilatory sulfate reduction (and oxidation) sulfate => sulfide	K11180, K11181	dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]	dsrA or dsrB
