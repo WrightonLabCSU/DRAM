@@ -235,14 +235,14 @@ def make_module_coverage_frame(annotations, module_nets, groupby_column='fasta')
 def make_module_coverage_heatmap(module_coverage, mag_order=None):
     num_mags_in_frame = len(set(module_coverage['MAG']))
     c = alt.Chart(module_coverage, title='Module').encode(
-        x=alt.X('module_name', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90)),
+        x=alt.X('module_name', title=None, sort=None, axis=alt.Axis(labelLimit=0, labelAngle=90)),
         y=alt.Y('MAG', title=None, sort=mag_order, axis=alt.Axis(labelLimit=0)),
         tooltip=[alt.Tooltip('MAG', title='MAG'),
                  alt.Tooltip('module_name', title='Module Name'),
                  alt.Tooltip('steps', title='Module steps'),
                  alt.Tooltip('steps_present', title='Steps present')
                  ]
-    ).mark_rect().encode(color='step_coverage').properties(
+    ).mark_rect().encode(color=alt.Color('step_coverage', legend=alt.Legend(title='% Complete'))).properties(
         width=HEATMAP_CELL_WIDTH * len(HEATMAP_MODULES),
         height=HEATMAP_CELL_HEIGHT * num_mags_in_frame)
     return c
@@ -368,7 +368,7 @@ def make_etc_coverage_heatmap(etc_coverage, mag_order=None, module_order=None):
                      alt.Tooltip('genes', title='Genes present'),
                      alt.Tooltip('missing_genes', title='Genes missing')
                      ]
-        ).mark_rect().encode(color='percent_coverage').properties(
+        ).mark_rect().encode(color=alt.Color('percent_coverage', legend=alt.Legend(title='% Complete'))).properties(
             width=HEATMAP_CELL_WIDTH * len(set(frame['module_name'])),
             height=HEATMAP_CELL_HEIGHT * num_mags_in_frame)
         charts.append(c)
@@ -490,7 +490,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     # make ETC heatmap
     etc_module_df = pd.read_csv(db_locs['etc_module_database'], sep='\t')
     etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations)
-    etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df)
+    etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
 
     # make functional heatmap
     function_df = make_functional_df(annotations, function_heatmap_form, groupby_column)
