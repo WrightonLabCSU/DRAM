@@ -291,7 +291,7 @@ def download_and_process_amg_database(output_dir, branch='master'):
 def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
     if loc is not None:  # if location give and exists then add to dict, else raise ValueError
         if check_file_exists(loc):
-            dict_to_update[name] = path.abspath(loc)
+            dict_to_update[name] = path.realpath(loc)
     else:  # if location not given and is not in dict then set to none, else leave previous value
         if name not in dict_to_update:
             dict_to_update[name] = None
@@ -337,7 +337,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
         populate_description_db(db_dict)
 
     # change data paths
-    with open(path.abspath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
+    with open(path.realpath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
         f.write(json.dumps(db_dict))
 
 
@@ -466,7 +466,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
         vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
     output_dbs['vog_annotations'] = vog_annotations
 
-    output_dbs['description_db_loc'] = path.abspath(path.join(output_dir, 'description_db.sqlite'))
+    output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
 
     set_database_paths(**output_dbs, update_description_db=True)
 
