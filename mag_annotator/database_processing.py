@@ -493,5 +493,6 @@ def print_database_locations():
     print('VOGDB db location: %s' % is_db_in_dict('vogdb', db_locs))
     print('Description db location: %s' % is_db_in_dict('description_db', db_locs))
     print('Genome summary form location: %s' % is_db_in_dict('genome_summary_form', db_locs))
+    print('ETC module database location: %s' % is_db_in_dict('etc_module_database', db_locs))
     print('Function heatmap form location: %s' % is_db_in_dict('function_heatmap_form', db_locs))
     print('AMG database location: %s' % is_db_in_dict('amg_database', db_locs))
