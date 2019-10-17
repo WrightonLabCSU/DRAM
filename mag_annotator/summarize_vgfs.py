@@ -117,11 +117,6 @@ def make_viral_functional_heatmap(functional_df):
         num_vgfs_in_frame = len(set(frame['VGF Name']))
         chart_width = HEATMAP_CELL_WIDTH * len(function_order)
         chart_height = HEATMAP_CELL_HEIGHT * num_vgfs_in_frame
-        # if this is the first chart then make y-ticks otherwise none
-        if i == 0:
-            y = alt.Y('VGF Name', title=None, axis=alt.Axis(labelLimit=0))
-        else:
-            y = alt.Y('VGF Name', axis=alt.Axis(title=None, labels=False, ticks=False))
         # set up colors for chart
         rect_colors = alt.Color('Present in VGF',
                                 legend=alt.Legend(symbolType='square', values=[True, False]),
@@ -131,12 +126,13 @@ def make_viral_functional_heatmap(functional_df):
         # TODO: Figure out how to angle title to take up less space
         c = alt.Chart(frame, title=alt.TitleParams(group)).encode(
             x=alt.X('Function', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90), sort=function_order),
+            y=alt.Y('VGF Name', axis=alt.Axis(title=None, labels=False, ticks=False)),
             tooltip=[alt.Tooltip('VGF Name'),
                      alt.Tooltip('Category'),
                      alt.Tooltip('Function'),
                      alt.Tooltip('AMG Genes'),
                      alt.Tooltip('Genes Present')]
-        ).mark_rect().encode(y=y, color=rect_colors).properties(
+        ).mark_rect().encode(color=rect_colors).properties(
             width=chart_width,
             height=chart_height)
         charts.append(c)
