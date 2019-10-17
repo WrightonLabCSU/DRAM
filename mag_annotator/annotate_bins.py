@@ -276,7 +276,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series(name='vogdb_hits')
 
-        vogdb_res = vogdb_res[significant]
+        vogdb_res = vogdb_res.loc[significant]
         vogdb_res_most_sig = list()
         for gene, frame in vogdb_res.groupby('qid'):
             frame = frame.sort_values('evalue')
