@@ -66,13 +66,21 @@ def make_viral_distillate(potential_amgs, genome_summary_frame):
     return pd.DataFrame(rows, columns=VIRAL_DISTILLATE_COLUMNS)
 
 
-def make_amg_count_column(potential_amgs):
+def make_vgf_order(amgs):
+    amg_score_dict = {scaffold: ((1/frame['auxiliary_score']).sum(), len(frame))
+                      for scaffold, frame in amgs.groupby('scaffold')}
+    amg_scores = pd.DataFrame.from_dict(amg_score_dict, columns=['AMG_score', 'AMG_count'],
+                                        orient='index')
+    return list(amg_scores.sort_values(['AMG_score', 'AMG_count'], ascending=False).index)
+
+
+def make_amg_count_column(potential_amgs, vgf_order=None):
     # build count column
     amg_counts = pd.DataFrame(Counter(potential_amgs.scaffold).items(), columns=['VGF Name', 'Number'])
     amg_counts['AMG Count'] = 'AMG Count'
     text = alt.Chart(amg_counts, width=HEATMAP_CELL_WIDTH+10, height=HEATMAP_CELL_HEIGHT*len(amg_counts)).encode(
                      x=alt.X('AMG Count', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90)),
-                     y=alt.Y('VGF Name', title=None, axis=alt.Axis(labelLimit=0)),
+                     y=alt.Y('VGF Name', title=None, axis=alt.Axis(labelLimit=0), sort=vgf_order),
                      text='Number'
                     ).mark_text()
     return text
@@ -108,7 +116,7 @@ def make_viral_functional_df(annotations, genome_summary_frame, groupby_column='
     return pd.DataFrame(rows, columns=VIRAL_LIQUOR_HEADERS)
 
 
-def make_viral_functional_heatmap(functional_df):
+def make_viral_functional_heatmap(functional_df, vgf_order=None):
     # build heatmaps
     charts = list()
     for i, (group, frame) in enumerate(functional_df.groupby('Category', sort=False)):
@@ -126,7 +134,7 @@ def make_viral_functional_heatmap(functional_df):
         # TODO: Figure out how to angle title to take up less space
         c = alt.Chart(frame, title=alt.TitleParams(group)).encode(
             x=alt.X('Function', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90), sort=function_order),
-            y=alt.Y('VGF Name', axis=alt.Axis(title=None, labels=False, ticks=False)),
+            y=alt.Y('VGF Name', axis=alt.Axis(title=None, labels=False, ticks=False), sort=vgf_order),
             tooltip=[alt.Tooltip('VGF Name'),
                      alt.Tooltip('Category'),
                      alt.Tooltip('Function'),
@@ -158,8 +166,8 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     viral_distillate = make_viral_distillate(potential_amgs, genome_summary_form)
     viral_distillate.to_csv(path.join(output_dir, 'vgf_amg_summary.tsv'), sep='\t', index=None)
     # make liquor
-    amg_column = make_amg_count_column(potential_amgs)
-    viral_function_df = make_viral_functional_df(potential_amgs, genome_summary_form,
-                                                 groupby_column=groupby_column)
-    viral_functional_heatmap = make_viral_functional_heatmap(viral_function_df)
+    vgf_order = make_vgf_order(potential_amgs)
+    amg_column = make_amg_count_column(potential_amgs, vgf_order)
+    viral_function_df = make_viral_functional_df(potential_amgs, genome_summary_form, groupby_column=groupby_column)
+    viral_functional_heatmap = make_viral_functional_heatmap(viral_function_df, vgf_order)
     alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'vgf_amg_heatmap.html'))

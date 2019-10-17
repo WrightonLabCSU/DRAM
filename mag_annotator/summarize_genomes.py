@@ -363,8 +363,8 @@ def make_etc_coverage_heatmap(etc_coverage, mag_order=None, module_order=None):
             y=alt.Y('MAG', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order),
             tooltip=[alt.Tooltip('MAG', title='MAG'),
                      alt.Tooltip('module_name', title='Module Name'),
-                     alt.Tooltip('path_length', title='Module steps'),
-                     alt.Tooltip('path_length_coverage', title='Steps present'),
+                     alt.Tooltip('path_length', title='Module Subunits'),
+                     alt.Tooltip('path_length_coverage', title='Subunits present'),
                      alt.Tooltip('genes', title='Genes present'),
                      alt.Tooltip('missing_genes', title='Genes missing')
                      ]
