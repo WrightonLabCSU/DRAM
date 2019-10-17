@@ -43,16 +43,17 @@ def remove_prefix(text, prefix):
     return text  # or whatever
 
 
-def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc):
+def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
     """Takes kegg fasta file and gene ko link file, adds kos not already in headers to headers"""
-    if gene_ko_link_loc.endswith('.gz'):
-        gene_ko_link_fh = gzip.open(gene_ko_link_loc, 'rt')
-    else:
-        gene_ko_link_fh = open(gene_ko_link_loc)
     genes_ko_dict = defaultdict(list)
-    for line in gene_ko_link_fh:
-        gene, ko = line.strip().split()
-        genes_ko_dict[gene].append(remove_prefix(ko, 'ko:'))
+    if gene_ko_link_loc is not None:
+        if gene_ko_link_loc.endswith('.gz'):
+            gene_ko_link_fh = gzip.open(gene_ko_link_loc, 'rt')
+        else:
+            gene_ko_link_fh = open(gene_ko_link_loc)
+        for line in gene_ko_link_fh:
+            gene, ko = line.strip().split()
+            genes_ko_dict[gene].append(remove_prefix(ko, 'ko:'))
     for seq in read_sequence(kegg_fasta, format='fasta'):
         new_description = seq.metadata['description']
         for ko in genes_ko_dict[seq.metadata['id']]:
@@ -63,8 +64,6 @@ def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc):
 
 
 def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc=None, download_date=None, threads=10, verbose=True):
-    check_file_exists(kegg_loc)
-    check_file_exists(gene_ko_link_loc)
     if download_date is None:
         download_date = get_iso_date()
     if gene_ko_link_loc is not None:
