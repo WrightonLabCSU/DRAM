@@ -259,7 +259,6 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     # add auxiliary score
     gene_virsorter_category_dict = dict()
     gene_auxiliary_score_dict = dict()
-    gene_orders = list()
     for scaffold, dram_frame in annotations.groupby('scaffold'):
         if 'circular' in scaffold:
             virsorter_scaffold_name = scaffold[:re.search('_scaffold_\d*-circular[_,-]', scaffold).end() - 1]
@@ -267,7 +266,6 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
             virsorter_scaffold_name = scaffold[:re.search('_scaffold_\d*[_,-]', scaffold).end() - 1]
         virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
         gene_order = get_gene_order(dram_frame, virsorter_frame)
-        gene_orders += gene_order
         gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
                                              gene_order if dram_gene is not None})
         gene_auxiliary_score_dict.update(calculate_auxiliary_scores(gene_order))
@@ -276,8 +274,6 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
 
     # get metabolic flags
     scaffold_length_dict = {seq.metadata['id']: len(seq) for seq in read_sequence(input_fasta, format='fasta')}
-    # remove cazys which are often false positives
-    genome_summary_frame = genome_summary_frame.loc[[i != 'CAZY' for i in genome_summary_frame.subheader]]
     metabolic_genes = set(genome_summary_frame.index)
     annotations['is_transposon'] = [is_transposon(i) for i in annotations['pfam_hits']]
 
