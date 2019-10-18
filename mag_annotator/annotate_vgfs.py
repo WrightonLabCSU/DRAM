@@ -226,6 +226,21 @@ def get_amg_ids(amg_frame):
     return ko_amgs | ec_amgs | pfam_amgs
 
 
+def get_virsorter_affi_contigs_name(scaffold):
+    prophage_match = re.search(r'_gene_\d*_gene_\d*-\d*-\d*-cat_\d$', scaffold)
+    circular_match = re.search(r'-circular-cat_[1,2,3,4,5,6]$', scaffold)
+    plain_match = re.search(r'-cat_[1,2,3,4,5,6]$', scaffold)
+    if prophage_match is not None:
+        virsorter_scaffold_name = scaffold[:prophage_match.start()]
+    elif circular_match is not None:
+        virsorter_scaffold_name = scaffold[:circular_match.start()]
+    elif plain_match is not None:
+        virsorter_scaffold_name = scaffold[:plain_match.start()]
+    else:
+        raise ValueError("Can't find VIRSorter endings on fasta header: %s" % scaffold)
+    return virsorter_scaffold_name
+
+
 def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_uniref=True,
                   skip_trnascan=False, keep_tmp_dir=True, threads=10, verbose=True):
@@ -260,10 +275,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     gene_virsorter_category_dict = dict()
     gene_auxiliary_score_dict = dict()
     for scaffold, dram_frame in annotations.groupby('scaffold'):
-        if 'circular' in scaffold:
-            virsorter_scaffold_name = scaffold[:re.search('_scaffold_\d*-circular[_,-]', scaffold).end() - 1]
-        else:
-            virsorter_scaffold_name = scaffold[:re.search('_scaffold_\d*[_,-]', scaffold).end() - 1]
+        virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
         virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
         gene_order = get_gene_order(dram_frame, virsorter_frame)
         gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
