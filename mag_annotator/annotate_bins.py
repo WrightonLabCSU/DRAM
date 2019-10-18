@@ -276,26 +276,24 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series(name='vogdb_hits')
 
-        vogdb_res = vogdb_res.loc[significant]
-        vogdb_res_most_sig = list()
+        vogdb_res = vogdb_res.loc[significant].sort_values('evalue')
+        vogdb_res_most_sig_list = list()
         for gene, frame in vogdb_res.groupby('qid'):
-            frame = frame.sort_values('evalue')
-            vogdb_res_most_sig.append(frame.iloc[0])
-        vogdb_res_most_sig = pd.DataFrame(vogdb_res_most_sig)
+            vogdb_res_most_sig_list.append(frame.index[0])
+        vogdb_res_most_sig = vogdb_res.loc[vogdb_res_most_sig_list]
 
         vogdb_description_dict = dict()
         vogdb_category_dict = dict()
         if db_handler is not None:
-            vogdb_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
-                                                                  vogdb_res_most_sig.tid]),
+            vogdb_descriptions = db_handler.get_descriptions(set(vogdb_res_most_sig.tid),
                                                              'vogdb_description')
         else:
             vogdb_descriptions = None
         for _, row in vogdb_res_most_sig.iterrows():
             gene = row['qid']
-            vogdb_id = strip_endings(row['tid'], ['.hmm']).split('_')[0]
+            vogdb_id = row['tid']
             if vogdb_descriptions is None:
-                vogdb_description_dict[gene] = strip_endings(vogdb_id, ['.hmm'])
+                vogdb_description_dict[gene] = vogdb_id
             else:
                 description = vogdb_descriptions.get(vogdb_id)
                 categories_str = description.split('; ')[1]
