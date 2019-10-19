@@ -233,7 +233,7 @@ def get_virsorter_affi_contigs_name(scaffold):
     if prophage_match is not None:
         virsorter_scaffold_name = scaffold[:prophage_match.start()]
     elif circular_match is not None:
-        virsorter_scaffold_name = scaffold[:circular_match.start()]
+        virsorter_scaffold_name = scaffold[:circular_match.start()+9]
     elif plain_match is not None:
         virsorter_scaffold_name = scaffold[:plain_match.start()]
     else:
