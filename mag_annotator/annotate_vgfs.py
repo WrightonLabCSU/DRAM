@@ -227,13 +227,10 @@ def get_amg_ids(amg_frame):
 
 
 def get_virsorter_affi_contigs_name(scaffold):
-    prophage_match = re.search(r'_gene_\d*_gene_\d*-\d*-\d*-cat_\d$', scaffold)
-    circular_match = re.search(r'-circular-cat_[1,2,3,4,5,6]$', scaffold)
+    prophage_match = re.search(r'_gene_\d*_gene_\d*-\d*-\d*-cat_[1,2,3,4,5,6]$', scaffold)
     plain_match = re.search(r'-cat_[1,2,3,4,5,6]$', scaffold)
     if prophage_match is not None:
         virsorter_scaffold_name = scaffold[:prophage_match.start()]
-    elif circular_match is not None:
-        virsorter_scaffold_name = scaffold[:circular_match.start()+9]
     elif plain_match is not None:
         virsorter_scaffold_name = scaffold[:plain_match.start()]
     else:
