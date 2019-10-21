@@ -331,7 +331,7 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(amg_database_loc, 'amg_database', db_dict)
 
     if description_db_loc is not None:
-        db_dict['description_db'] = description_db_loc
+        db_dict['description_db'] = path.realpath(description_db_loc)
 
     if update_description_db:
         populate_description_db(db_dict)
