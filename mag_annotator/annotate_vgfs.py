@@ -120,17 +120,16 @@ def get_gene_order(dram_genes, virsorter_genes, min_overlap=.70):
                                                                                        virsorter_row.end_position))
         except StopIteration:
             break
-
     # clean up and add extras
     # if at end of both then just end
-    if (dram_gene_number == dram_gene_frame.shape[0]) and (virsorter_gene_number == virsorter_gene_frame.shape[0]):
+    if (dram_gene_number == dram_gene_frame.shape[0]-1) and (virsorter_gene_number == virsorter_gene_frame.shape[0]-1):
         pass
     # if not at end of dram annotations then add the rest
-    elif dram_gene_number != dram_genes.shape[0]:
+    elif dram_gene_number != dram_genes.shape[0]-1:
         for i in range(dram_gene_number, dram_gene_frame.shape[0]):
             merged_genes_rows.append((dram_gene_frame.index[i], None, None))
     # if not at end of virsorter genes then add the rest
-    elif virsorter_gene_number != virsorter_gene_frame.shape[0]:
+    elif virsorter_gene_number != virsorter_gene_frame.shape[0]-1:
         for i in range(virsorter_gene_number, virsorter_gene_frame.shape[0]):
             merged_genes_rows.append((None, virsorter_gene_frame.index[i],
                                       virsorter_gene_frame.viral_protein_cluster_category[i]))
@@ -168,6 +167,7 @@ def calculate_auxiliary_scores(gene_order):
                 auxiliary_score = 4
             else:  # if gene is at end of contig or no viral like or hallmark genes then score is 5
                 auxiliary_score = 5
+            print(i, auxiliary_score, hallmark_left, viral_like_left, hallmark_right, viral_like_right)
             gene_auxiliary_score_dict[dram_gene] = auxiliary_score
     return gene_auxiliary_score_dict
 
