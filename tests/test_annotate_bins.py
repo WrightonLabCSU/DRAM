@@ -6,9 +6,8 @@ import pandas as pd
 
 from mag_annotator.utils import make_mmseqs_db
 from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hits,\
-    get_reciprocal_best_hits, process_reciprocal_best_hits, get_kegg_description, get_uniref_description, \
-    get_viral_description, get_sig, get_scaffold_and_gene, get_unannotated,\
-    assign_grades
+    get_reciprocal_best_hits, process_reciprocal_best_hits, get_kegg_description, get_uniref_description, get_sig,\
+    get_unannotated, assign_grades
 
 
 @pytest.fixture()

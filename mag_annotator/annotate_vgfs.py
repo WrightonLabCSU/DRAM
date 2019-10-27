@@ -65,7 +65,7 @@ def is_transposon(pfam_hits):
     if pd.isna(pfam_hits):
         return False
     else:
-        pfams = {i[1:-1].split('.')[0] for i in re.findall('\[PF\d\d\d\d\d.\d*\]', pfam_hits)}
+        pfams = {i[1:-1].split('.')[0] for i in re.findall(r'\[PF\d\d\d\d\d.\d*\]', pfam_hits)}
         return len(pfams & TRANSPOSON_PFAMS) > 0
 
 
@@ -156,7 +156,7 @@ def calculate_auxiliary_scores(gene_order):
             if hallmark_left and hallmark_right:  # hallmark on both sides then cat 1
                 auxiliary_score = 1
             # hallmark on one side and viral like on other then cat 2
-            elif (hallmark_left or viral_like_left) and (hallmark_right or viral_like_right):
+            elif (hallmark_left and viral_like_right) or (viral_like_left and hallmark_right):
                 auxiliary_score = 2
             # viral like on both side then cat 3
             elif viral_like_left and viral_like_right:
