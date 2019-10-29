@@ -122,14 +122,14 @@ def get_gene_order(dram_genes, virsorter_genes, min_overlap=.70):
             break
     # clean up and add extras
     # if at end of both then just end
-    if (dram_gene_number == dram_gene_frame.shape[0]-1) and (virsorter_gene_number == virsorter_gene_frame.shape[0]-1):
+    if (dram_gene_number == dram_gene_frame.shape[0]) and (virsorter_gene_number == virsorter_gene_frame.shape[0]):
         pass
     # if not at end of dram annotations then add the rest
-    elif dram_gene_number != dram_genes.shape[0]-1:
+    elif dram_gene_number != dram_genes.shape[0]:
         for i in range(dram_gene_number, dram_gene_frame.shape[0]):
             merged_genes_rows.append((dram_gene_frame.index[i], None, None))
     # if not at end of virsorter genes then add the rest
-    elif virsorter_gene_number != virsorter_gene_frame.shape[0]-1:
+    elif virsorter_gene_number != virsorter_gene_frame.shape[0]:
         for i in range(virsorter_gene_number, virsorter_gene_frame.shape[0]):
             merged_genes_rows.append((None, virsorter_gene_frame.index[i],
                                       virsorter_gene_frame.viral_protein_cluster_category[i]))
