@@ -1,14 +1,15 @@
 # DRAM
 
 DRAM (Distilled and Refined Annotation of MAGs [Metagenome Assembled Genomes]) is a tool for annotating metagenomic
-assembled genomes that outputs predicted metabolisms. It will annotated MAG's using [KEGG](https://www.kegg.jp/) (if 
-provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/),
-[dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/) and the 
-[MEROPS](https://www.ebi.ac.uk/merops/) peptidase database. DRAM is ran in two stages. First the annotation is done to 
-give a full summary of the provided MAGs with all annotations from these databases. Second the annotations are 
-summarized to give an idea of what metabolisms each genome is capable of. These summarizations are given in the form of 
-tables. One table is counts of genes organized by the metabolisms they are a part of and the other is a measure of 
-completeness of KEGG modules.
+assembled genomes and [VIRSorter](https://github.com/simroux/VirSorter) identified viral contigs. DRAM annotates MAGs and viral
+contigs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/),
+[PFAM (https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), 
+[VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases.
+DRAM is ran in two stages. Additionally viral contigs are further analyzed to identify potential AMGs. This is done via assigning
+an auxilary score and flags representing the likelihood that a gene is metabolic and viral. The auxilary score represents the
+confidence that a gene is viral in origin based on surrounding genes.
+
+DRAM annotations can then be summarized from a microbial MAG or viral perspective. For both types of annotations 
 
 ## Installation
 To install DRAM some dependencies need to be installed first then DRAM can be installed from this repository. 
@@ -26,7 +27,7 @@ enviornment.yaml file.
     wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
     conda env create -f environment.yml -n DRAM
     ```
-    If this installation method is used then all further steps should be ran 
+    If this installation method is used then all further steps should be ran inside the created DRAM environment.
 
     _Manual Installation_
     
