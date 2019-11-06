@@ -436,7 +436,7 @@ def make_functional_heatmap(functional_df, mag_order=None):
     return function_heatmap
 
 
-def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column, viral=False):
+def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column):
     # read in data
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     if 'bin_taxnomy' in annotations:
@@ -467,11 +467,6 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
 
     # make output folder
     mkdir(output_dir)
-
-    # make genome stats
-    if not viral:
-        genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, groupby_column)
-        genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=False)
 
     # make genome metabolism summary
     genome_summary = path.join(output_dir, 'genome_summary.xlsx')
