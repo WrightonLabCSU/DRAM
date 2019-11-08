@@ -468,6 +468,10 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     # make output folder
     mkdir(output_dir)
 
+    # make genome stats
+    genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame)
+    genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t')
+
     # make genome metabolism summary
     genome_summary = path.join(output_dir, 'genome_summary.xlsx')
     make_genome_summary(annotations, genome_summary_form, genome_summary, trna_frame, rrna_frame, groupby_column)
