@@ -470,7 +470,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
 
     # make genome stats
     genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame)
-    genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t')
+    genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=None)
 
     # make genome metabolism summary
     genome_summary = path.join(output_dir, 'genome_summary.xlsx')
