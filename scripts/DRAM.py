@@ -5,9 +5,8 @@ import argparse
 from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations,\
                                               populate_description_db
 from mag_annotator.annotate_bins import annotate_bins
-from mag_annotator.annotate_vgfs import annotate_vgfs
 from mag_annotator.summarize_genomes import summarize_genomes
-from mag_annotator.summarize_vgfs import summarize_vgfs
+from mag_annotator.pull_sequences import pull_sequences
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -27,9 +26,11 @@ if __name__ == '__main__':
                                             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     distill_parser = subparsers.add_parser('distill', help="Summarize metabolic content of annotated genomes",
                                            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    strainer_parser = subparsers.add_parser('strainer', help="Strain annotations down to genes of interest",
+                                            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for downloading and processing databases for annotation and summarization
-    prepare_dbs_parser.add_argument('--output_dir', default="~/MAGotator_data", help="output directory")
+    prepare_dbs_parser.add_argument('--output_dir', default=".", help="output directory")
     prepare_dbs_parser.add_argument('--kegg_loc', default=None,
                                     help="KEGG protein file, should be a single .pep, please merge all KEGG pep files")
     prepare_dbs_parser.add_argument('--gene_ko_link_loc', default=None,
@@ -135,6 +136,18 @@ if __name__ == '__main__':
     distill_parser.add_argument("--groupby_column", help="Column from annotations to group as organism units",
                                 default='fasta')
     distill_parser.set_defaults(func=summarize_genomes)
+
+    # parser for getting genes
+    strainer_parser.add_argument('-i', '--input_annotations', required=True, help='annotations file to pull genes from')
+    strainer_parser.add_argument('-f', '--input_fasta', required=True, help='fasta file to filter')
+    strainer_parser.add_argument('-o', '--output_fasta', default='pull_genes.fasta',
+                                 help='location to write filtered fasta')
+    strainer_parser.add_argument('--fastas', nargs='*', default=None, help='space separated list of fastas to keep')
+    strainer_parser.add_argument('--scaffolds', nargs='*', default=None,
+                                 help='space separated list of scaffolds to keep')
+    strainer_parser.add_argument('--genes', nargs='*', default=None, help='space separated list of genes to keep')
+    strainer_parser.add_argument('--identifiers', nargs='*', default=None, help='database identifiers to keep')
+    strainer_parser.set_defaults(func=pull_sequences)
 
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}
