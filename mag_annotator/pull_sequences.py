@@ -33,7 +33,6 @@ def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, sc
     # get genes with ids
     if identifiers is not None:
         identifiers = set(identifiers)
-        print(identifiers)
         for i, row in annotations.iterrows():
             row_ids = get_ids_from_row(row)
             if len(set(row_ids) & set(identifiers)) > 0:
