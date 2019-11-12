@@ -8,6 +8,9 @@ from collections import defaultdict, Counter
 from mag_annotator.utils import get_database_locs
 from mag_annotator.summarize_genomes import get_ordered_uniques
 
+VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes', 'Xh': 'Viral genes with host benefits',
+                    'Xp': 'Viral genes with viral benefits', 'Xu': 'Viral genes with unknown function', 'Xx': 'Hypothetical genes'}
+VIRUS_STATS_COLUMNS = ['VIRSorter category', 'Circular', 'Prophage', 'Gene count', 'Strand switches', 'potential AMG count', 'Transposase present']
 VIRAL_DISTILLATE_COLUMNS = ['gene', 'scaffold', 'gene_id', 'gene_description', 'category', 'header',
                             'subheader', 'module', 'auxiliary_score', 'amg_flags']
 VIRAL_LIQUOR_HEADERS = ['Category', 'Function', 'AMG Genes', 'Genes Present', 'VGF Name', 'Present in VGF']
@@ -28,6 +31,41 @@ def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=Fa
                     if (remove_fs and 'F' not in amg_flags) or not remove_fs:
                         potential_amgs.append(gene)
     return annotations.loc[potential_amgs]
+
+
+def get_strand_switches(strandedness):
+    switches = 0
+    strand = strandedness[0]
+    for i in range(len(strandedness)):
+        if strandedness[i] != strand:
+            switches += 1
+            strand = strandedness[i]
+    return switches
+
+
+def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold'):
+    amg_counts = potential_amgs.groupby(groupby_column).size()
+    viral_stats_series = list()
+    for scaffold, frame in annotations.groupby(groupby_column):
+        # get virus information
+        virus_category = int(re.findall(r'-cat_\d$', scaffold)[0].split('_')[-1]) # viral category
+        virus_circular =  len(re.findall(r'-circular-cat_\d$', scaffold)) == 1 # virus is circular
+        virus_prophage = virus_category in [4, 5] # virus is prophage
+        virus_num_genes = len(frame) # number of genes on viral contig
+        virus_strand_switches =  get_strand_switches(frame.strandedness) # number of strand switches
+        if scaffold in  amg_counts:
+            virus_number_amgs = amg_counts[scaffold] # number of potential amgs
+        else:
+            virus_number_amgs = 0
+        virus_transposase_present = sum(frame.is_transposon) > 0 # transposase on contig
+        virus_data = pd.Series([virus_category, virus_circular, virus_prophage, virus_num_genes, virus_strand_switches, virus_number_amgs, virus_transposase_present], index=VIRUS_STATS_COLUMNS, name=scaffold)
+        # get vogdb categories
+        # when vogdb has multiple categories only the first is taken
+        gene_counts = Counter([i.split(';')[0] for i in frame.vogdb_categories.fillna('Xx')])
+        named_gene_counts = {VOGDB_TYPE_NAMES[key]: value for key, value in gene_counts.items()}
+        gene_counts_series = pd.Series(named_gene_counts, name=scaffold)
+        viral_stats_series.append(virus_data.append(gene_counts_series))
+    return pd.DataFrame(viral_stats_series).fillna(0)
 
 
 def get_ids_from_row(row):
@@ -163,11 +201,13 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     potential_amgs = filter_to_amgs(annotations, max_aux=max_auxiliary_score, remove_transposons=remove_transposons,
                                     remove_fs=remove_fs)
     # make distillate
+    viral_genome_stats = make_viral_stats_table(annotations, potential_amgs, groupby_column)
+    viral_genome_stats.to_csv(path.join(output_dir, 'viral_genome_summary.tsv'), sep='\t', index=None)
     viral_distillate = make_viral_distillate(potential_amgs, genome_summary_form)
-    viral_distillate.to_csv(path.join(output_dir, 'vgf_amg_summary.tsv'), sep='\t', index=None)
+    viral_distillate.to_csv(path.join(output_dir, 'viral_amg_summary.tsv'), sep='\t', index=None)
     # make liquor
     vgf_order = make_vgf_order(potential_amgs)
     amg_column = make_amg_count_column(potential_amgs, vgf_order)
     viral_function_df = make_viral_functional_df(potential_amgs, genome_summary_form, groupby_column=groupby_column)
     viral_functional_heatmap = make_viral_functional_heatmap(viral_function_df, vgf_order)
-    alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'vgf_amg_heatmap.html'))
+    alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'viral_liquor.html'))
