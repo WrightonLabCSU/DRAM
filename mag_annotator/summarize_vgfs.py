@@ -8,9 +8,11 @@ from collections import defaultdict, Counter
 from mag_annotator.utils import get_database_locs
 from mag_annotator.summarize_genomes import get_ordered_uniques
 
-VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes', 'Xh': 'Viral genes with host benefits',
-                    'Xp': 'Viral genes with viral benefits', 'Xu': 'Viral genes with unknown function', 'Xx': 'Hypothetical genes'}
-VIRUS_STATS_COLUMNS = ['VIRSorter category', 'Circular', 'Prophage', 'Gene count', 'Strand switches', 'potential AMG count', 'Transposase present']
+VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes',
+                    'Xh': 'Viral genes with host benefits', 'Xp': 'Viral genes with viral benefits',
+                    'Xu': 'Viral genes with unknown function', 'Xx': 'Hypothetical genes'}
+VIRUS_STATS_COLUMNS = ['VIRSorter category', 'Circular', 'Prophage', 'Gene count', 'Strand switches',
+                       'potential AMG count', 'Transposase present']
 VIRAL_DISTILLATE_COLUMNS = ['gene', 'scaffold', 'gene_id', 'gene_description', 'category', 'header',
                             'subheader', 'module', 'auxiliary_score', 'amg_flags']
 VIRAL_LIQUOR_HEADERS = ['Category', 'Function', 'AMG Genes', 'Genes Present', 'VGF Name', 'Present in VGF']
@@ -48,17 +50,18 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
     viral_stats_series = list()
     for scaffold, frame in annotations.groupby(groupby_column):
         # get virus information
-        virus_category = int(re.findall(r'-cat_\d$', scaffold)[0].split('_')[-1]) # viral category
-        virus_circular =  len(re.findall(r'-circular-cat_\d$', scaffold)) == 1 # virus is circular
-        virus_prophage = virus_category in [4, 5] # virus is prophage
-        virus_num_genes = len(frame) # number of genes on viral contig
-        virus_strand_switches =  get_strand_switches(frame.strandedness) # number of strand switches
-        if scaffold in  amg_counts:
-            virus_number_amgs = amg_counts[scaffold] # number of potential amgs
+        virus_category = int(re.findall(r'-cat_\d$', scaffold)[0].split('_')[-1])  # viral category
+        virus_circular = len(re.findall(r'-circular-cat_\d$', scaffold)) == 1  # virus is circular
+        virus_prophage = virus_category in [4, 5]  # virus is prophage
+        virus_num_genes = len(frame)  # number of genes on viral contig
+        virus_strand_switches = get_strand_switches(frame.strandedness)  # number of strand switches
+        if scaffold in amg_counts:
+            virus_number_amgs = amg_counts[scaffold]  # number of potential amgs
         else:
             virus_number_amgs = 0
-        virus_transposase_present = sum(frame.is_transposon) > 0 # transposase on contig
-        virus_data = pd.Series([virus_category, virus_circular, virus_prophage, virus_num_genes, virus_strand_switches, virus_number_amgs, virus_transposase_present], index=VIRUS_STATS_COLUMNS, name=scaffold)
+        virus_transposase_present = sum(frame.is_transposon) > 0  # transposase on contig
+        virus_data = pd.Series([virus_category, virus_circular, virus_prophage, virus_num_genes, virus_strand_switches,
+                                virus_number_amgs, virus_transposase_present], index=VIRUS_STATS_COLUMNS, name=scaffold)
         # get vogdb categories
         # when vogdb has multiple categories only the first is taken
         gene_counts = Counter([i.split(';')[0] for i in frame.vogdb_categories.fillna('Xx')])
@@ -187,19 +190,18 @@ def make_viral_functional_heatmap(functional_df, vgf_order=None):
     return function_heatmap
 
 
-def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3, remove_transposons=True,
+def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3, remove_transposons=False,
                    remove_fs=False):
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
-    annotations = annotations.fillna('')
     db_locs = get_database_locs()
     if 'genome_summary_form' not in db_locs:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     mkdir(output_dir)
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
     # get potential AMGs
-    potential_amgs = filter_to_amgs(annotations, max_aux=max_auxiliary_score, remove_transposons=remove_transposons,
-                                    remove_fs=remove_fs)
+    potential_amgs = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
+                                    remove_transposons=remove_transposons, remove_fs=remove_fs)
     # make distillate
     viral_genome_stats = make_viral_stats_table(annotations, potential_amgs, groupby_column)
     viral_genome_stats.to_csv(path.join(output_dir, 'viral_genome_summary.tsv'), sep='\t', index=None)
