@@ -10,9 +10,9 @@ from mag_annotator.summarize_vgfs import get_ids_from_row
 # TODO: update get_ids_from_row to get PFAM ids
 # TODO: pull sequences based on distillate categories
 
-def pull_sequences(annotations_loc, input_fasta, output_fasta, fastas=None, scaffolds=None, genes=None,
+def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, scaffolds=None, genes=None,
                    identifiers=None):
-    annotations = pd.read_csv(annotations_loc, sep='\t', index_col=0)
+    annotations = pd.read_csv(input_annotations, sep='\t', index_col=0)
 
     genes_to_keep = list()
 
