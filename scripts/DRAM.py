@@ -8,6 +8,8 @@ from mag_annotator.annotate_bins import annotate_bins
 from mag_annotator.summarize_genomes import summarize_genomes
 from mag_annotator.pull_sequences import pull_sequences
 
+# TODO: refactor parses to limit duplication
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 

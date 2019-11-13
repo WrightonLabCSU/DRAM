@@ -206,10 +206,10 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     viral_genome_stats = make_viral_stats_table(annotations, potential_amgs, groupby_column)
     viral_genome_stats.to_csv(path.join(output_dir, 'viral_genome_summary.tsv'), sep='\t')
     viral_distillate = make_viral_distillate(potential_amgs, genome_summary_form)
-    viral_distillate.to_csv(path.join(output_dir, 'viral_amg_summary.tsv'), sep='\t', index=None)
+    viral_distillate.to_csv(path.join(output_dir, 'amg_summary.tsv'), sep='\t', index=None)
     # make liquor
     vgf_order = make_vgf_order(potential_amgs)
     amg_column = make_amg_count_column(potential_amgs, vgf_order)
     viral_function_df = make_viral_functional_df(potential_amgs, genome_summary_form, groupby_column=groupby_column)
     viral_functional_heatmap = make_viral_functional_heatmap(viral_function_df, vgf_order)
-    alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'viral_liquor.html'))
+    alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'liquor.html'))

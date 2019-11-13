@@ -473,7 +473,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=None)
 
     # make genome metabolism summary
-    genome_summary = path.join(output_dir, 'genome_summary.xlsx')
+    genome_summary = path.join(output_dir, 'metabolism_summary.xlsx')
     make_genome_summary(annotations, genome_summary_form, genome_summary, trna_frame, rrna_frame, groupby_column)
 
     # make heatmaps
@@ -496,4 +496,4 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     function_heatmap = make_functional_heatmap(function_df, mag_order)
 
     liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
-    liquor.save(path.join(output_dir, 'heatmap.html'))
+    liquor.save(path.join(output_dir, 'liquor.html'))
