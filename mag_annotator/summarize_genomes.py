@@ -478,9 +478,9 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
 
     # make heatmaps
     if 'bin_taxonomy' in annotations:
-        mag_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')['fasta'])
+        mag_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
     else:
-        mag_order = None
+        mag_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
     module_nets = {module: build_module_net(module_df)
                    for module, module_df in module_steps_form.groupby('module') if module in HEATMAP_MODULES}
     module_coverage_frame = make_module_coverage_frame(annotations, module_nets, groupby_column)
