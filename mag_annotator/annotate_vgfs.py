@@ -206,7 +206,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
                 flags += 'F'
             flag_dict[gene] = flags
         # get 3 metabolic genes in a row flag
-        for i in range(len(scaffold_annotations)):
+        for i in range(len(scaffold_annotations)):  # this needs to be fixed. Will only give B to middle of 3 genes.
             if 0 < i < (len(scaffold_annotations) - 1):
                 gene = scaffold_annotations.index[i]
                 gene_flags = flag_dict[gene]
