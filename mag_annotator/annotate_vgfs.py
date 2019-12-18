@@ -215,7 +215,11 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
                 next_gene = scaffold_annotations.index[i + 1]
                 next_gene_flags = flag_dict[next_gene]
                 if 'M' in previous_gene_flags and 'M' in gene_flags and 'M' in next_gene_flags:
+                    if 'B' not in flag_dict[previous_gene]:
+                        flag_dict[previous_gene] += 'B'
                     flag_dict[gene] += 'B'
+                    if 'B' not in flag_dict[next_gene]:
+                        flag_dict[next_gene] += 'B'
     return flag_dict
 
 
