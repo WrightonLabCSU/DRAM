@@ -79,6 +79,35 @@ def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc=None, download_date=N
     return kegg_mmseqs_db
 
 
+def download_and_process_kofamscan(output_dir, version='1.1.0'):
+    # download and unzip kofamscan
+    kofamscan_tar_gz = path.join(output_dir, 'kofamscan.tar.gz')
+    download_file('ftp://ftp.genome.jp/pub/tools/kofamscan/kofamscan-%s.tar.gz' % version, kofamscan_tar_gz)
+    kofamscan_dir = path.join(output_dir, 'kofamscan-%s' % version)
+    run_process(['tar',  '-xzf', kofamscan_tar_gz, '-C', kofamscan_dir])
+    hmmsearch_loc = run_process(['which', 'hmmsearch']).strip()
+    parallel_loc = run_process(['which', 'parallel']).strip()
+    with open(path.join(kofamscan_dir, 'config.yml'), 'w') as f:
+        f.write("hmmsearch: %s\nparallel: %s" % (hmmsearch_loc, parallel_loc))
+    return kofamscan_dir
+
+
+def download_and_process_kofamscan_hmms(output_dir):
+    kofamscan_profile_tar_gz = path.join(output_dir, 'kofamscan_profiles.tar.gz')
+    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofamscan_profile_tar_gz)
+    kofamscan_profiles = path.join(output_dir, 'kofamscan_profiles')
+    run_process(['tar', '-xzf', kofamscan_profile_tar_gz, '-C', kofamscan_profiles])
+    return kofamscan_profiles
+
+
+def download_and_process_kofamscan_ko_list(output_dir):
+    kofamscan_ko_list_gz = path.join(output_dir, 'kofamscan_ko_list.tar.gz')
+    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofamscan_ko_list_gz)
+    kofamscan_ko_list = path.join(output_dir, 'kofamscan_ko_list.tsv')
+    run_process(['gunzip', kofamscan_ko_list_gz])
+    return kofamscan_ko_list
+
+
 def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
                                 verbose=True):
     """"""
@@ -427,6 +456,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
                                                                             verbose=verbose)
     output_dbs['vogdb_db_loc'] = download_and_process_vogdb(vogdb_loc, temporary, vogdb_release=vogdb_version,
                                                             verbose=verbose)
+    output_dbs['kofamscan_dir'] = download_and_process_kofamscan(output_dir)
 
     # add genome summary form and function heatmap form
     if genome_summary_form_loc is None:
