@@ -28,18 +28,18 @@ Nitrogen metabolism	Denitrification	nitric oxide => nitrous oxide	K04561, K15877
 Nitrogen metabolism	Denitrification	nitrous oxide => nitrogen	K00376 	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]
 Nitrogen metabolism	Nitrogen  fixation	nitrogen => ammonia	K02588, K02586	nitrogenase iron protein [RN:R05185]
 Nitrogen metabolism	Nitrogen  fixation	Nitrogen fixation altennative	K22896	vnfD; Vanadium-dependent nitrogenase alpha chain [EC:1.18.6.2] [RN:R12084]	vnfH
-Sulfur metabolism 	Sulfur metabolism	dissimilatory sulfate reduction (and oxidation) sulfate => sulfide	K11180, K11181	dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]	dsrA or dsrB
-Sulfur metabolism 	Sulfur metabolism	thiosulfate => sulfite	K08352	thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]	phsA, psrA
-Sulfur metabolism 	Sulfur metabolism	thiosulfate reduction, thiosulfate => sulfite	K01011	rhodanase	rdlA
-Sulfur metabolism 	Sulfur metabolism	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	K17222, K17223, K17224, K17225, K22622, K17226, K17227
-Sulfur metabolism 	Sulfur metabolism	tetrathionate => thiosulfate	K08357		ttrA
+Sulfur metabolism	Sulfur metabolism	dissimilatory sulfate reduction (and oxidation) sulfate => sulfide	K11180, K11181	dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]	dsrA or dsrB
+Sulfur metabolism	Sulfur metabolism	thiosulfate => sulfite	K08352	thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]	phsA, psrA
+Sulfur metabolism	Sulfur metabolism	thiosulfate reduction, thiosulfate => sulfite	K01011	rhodanase	rdlA
+Sulfur metabolism	Sulfur metabolism	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	K17222, K17223, K17224, K17225, K22622, K17226, K17227
+Sulfur metabolism	Sulfur metabolism	tetrathionate => thiosulfate	K08357		ttrA
 Other Reductases	Reductases and Electron transport chain components	selenate/Chlorate reduction	K17050	selenate/chlorate reductase subunit alpha
 Other Reductases	Reductases and Electron transport chain components	TMAO reductase	K07811	trimethylamine-N-oxide reductase (cytochrome c) [EC:1.7.2.3]
 Other Reductases	Reductases and Electron transport chain components	mercury reduction	EC:1.16.1.1	mercury(II) reductase
 Other Reductases	Reductases and Electron transport chain components	arsenate reduction, pt 1	EC:1.20.4.1	arsenate reductase (glutaredoxin); ArsC (ambiguous)
 Other Reductases	Reductases and Electron transport chain components	arsenate reduction, pt 2	EC:1.20.99.1	arsenate reductase (donor); arsenate:(acceptor) oxidoreductase
-Photosynthesis 	Photosynthesis	Photosystem I	K02689, K02690, K02691, K02692, K02693, K02694	psaA-F; photosystem I P700 chlorophyll a apoprotein A1
-Photosynthesis 	Photosynthesis	Photosystem II	K02703, K02706	psbA, psbD  photosystem II reaction center D1 protein [EC:1.10.3.9]	fhs (formyltetrahydrofolate (THF) synthetase)
+Photosynthesis	Photosynthesis	Photosystem I	K02689, K02690, K02691, K02692, K02693, K02694	psaA-F; photosystem I P700 chlorophyll a apoprotein A1
+Photosynthesis	Photosynthesis	Photosystem II	K02703, K02706	psbA, psbD  photosystem II reaction center D1 protein [EC:1.10.3.9]	fhs (formyltetrahydrofolate (THF) synthetase)
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	Key functional gene 	K00399, K00401, K00402	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	mcrA
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	acetate => methane, pt 1	K01895	acetyl-CoA synthetase [EC:6.2.1.1] [RN:R00235]
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	acetate => methane, pt 2	K00925	acetate kinase [EC:2.7.2.1] [RN:R00315]	ack
