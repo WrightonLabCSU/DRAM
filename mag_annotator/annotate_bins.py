@@ -25,6 +25,7 @@ from mag_annotator.database_handler import DatabaseHandler
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
 HMMSCAN_COLUMNS = ['qid', 'qlen', 'tid', 'tlen', 'evalue', 'qstart', 'qend', 'tstart', 'tend']
+MAG_DBS_TO_ANNOTATE = ['kegg', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb']
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -356,20 +357,22 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
             annotation_str = 'grade: %s' % annotation.grade
             if (annotation.grade == 'A') or (annotation.grade == 'C' and not pd.isna(annotation.kegg_hit)):
                 annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-            if annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
+            elif annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
                 annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
-            if annotation.grade == 'D':
+            elif annotation.grade == 'D':
                 annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
             else:
-                raise ValueError('%s is not a valid verbosity level for annotation summarization' % verbosity)
+                pass
         else:
             annotation_list = []
+            if 'grade' in annotations.columns:
+                annotation_list += ['grade: %s' % annotation.grade]
             if 'kegg_hit' in annotations.columns:
                 if not pd.isna(annotation.kegg_hit):
                     annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'kegg')]
             if 'uniref_hit' in annotations.columns:
                 if not pd.isna(annotation.uniref_hit):
-                    annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'uniref')]
+                    annotation_list += ['%s (db=%s)' % (annotation.uniref_hit, 'uniref')]
             if 'pfam_hits' in annotations.columns:
                 if not pd.isna(annotation.pfam_hits):
                     annotation_list += ['%s (db=%s)' % (annotation.pfam_hits, 'pfam')]
@@ -652,9 +655,6 @@ def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, 
         make_mmseqs_db(db_loc, custom_db_loc, threads=threads, verbose=verbose)
         custom_db_locs[db_name] = custom_db_loc
     return custom_db_locs
-
-
-MAG_DBS_TO_ANNOTATE = ['kegg', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb']
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
