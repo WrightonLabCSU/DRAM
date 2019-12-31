@@ -31,9 +31,16 @@ def get_ordered_uniques(seq):
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):
     for genome, frame in annotations.groupby(groupby_column, sort=False):
+        genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame.gene_id]
         id_dict = get_ids_from_annotation(frame)
-        genome_summary_frame[genome] = [id_dict[i] if i in id_dict else 0 for i in
-                                        [j.strip() for j in genome_summary_frame.gene_id.split(',')]]
+        counts = list()
+        for i in genome_summary_id_sets:
+            identifier_count = 0
+            for j in i:
+                if j in id_dict:
+                    identifier_count += id_dict[j]
+            counts.append(identifier_count)
+        genome_summary_frame[genome] = counts
     return genome_summary_frame
 
 
