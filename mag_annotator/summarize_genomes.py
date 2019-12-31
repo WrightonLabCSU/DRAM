@@ -3,16 +3,24 @@ from collections import Counter, defaultdict
 from os import path, mkdir
 import altair as alt
 import networkx as nx
+from itertools import tee
+import re
 
 from mag_annotator.utils import get_database_locs, get_ids_from_annotation
 
 # TODO: add RBH information to output
+# TODO: add flag to output table and not xlsx
+# TODO: add flag to output heatmap table
 
 FRAME_COLUMNS = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader']
 RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
-HEATMAP_MODULES = ['M00001', 'M00009', 'M00004']
+HEATMAP_MODULES = ['M00001', 'M00004', 'M00008', 'M00009', 'M00012', 'M00165', 'M00173', 'M00374', 'M00375',
+                   'M00376', 'M00377', 'M00422', 'M00567']
 HEATMAP_CELL_HEIGHT = 10
 HEATMAP_CELL_WIDTH = 10
+KO_REGEX = r'^K\d\d\d\d\d$'
+ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'MAG', 'path_length', 'path_length_coverage',
+                        'percent_coverage', 'genes', 'missing_genes']
 
 
 def get_ordered_uniques(seq):
@@ -23,8 +31,16 @@ def get_ordered_uniques(seq):
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):
     for genome, frame in annotations.groupby(groupby_column, sort=False):
+        genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame.gene_id]
         id_dict = get_ids_from_annotation(frame)
-        genome_summary_frame[genome] = [id_dict[i] if i in id_dict else 0 for i in genome_summary_frame.gene_id]
+        counts = list()
+        for i in genome_summary_id_sets:
+            identifier_count = 0
+            for j in i:
+                if j in id_dict:
+                    identifier_count += id_dict[j]
+            counts.append(identifier_count)
+        genome_summary_frame[genome] = counts
     return genome_summary_frame
 
 
@@ -172,7 +188,7 @@ def build_module_net(module_df):
     return module_net
 
 
-def get_module_coverage(kos, module_net):
+def get_module_step_coverage(kos, module_net):
     # prune network based on what kos were observed
     pruned_module_net = module_net.copy()
     module_kos_present = set()
@@ -203,8 +219,8 @@ def make_module_coverage_df(annotation_df, module_nets):
                 kos_to_genes[ko].append(gene_id)
     coverage_dict = {}
     for i, (module, net) in enumerate(module_nets.items()):
-        module_steps, module_steps_present, module_coverage, module_kos = get_module_coverage(set(kos_to_genes.keys()),
-                                                                                              net)
+        module_steps, module_steps_present, module_coverage, module_kos = \
+            get_module_step_coverage(set(kos_to_genes.keys()), net)
         module_genes = sorted([gene for ko in module_kos for gene in kos_to_genes[ko]])
         coverage_dict[module] = [net.graph['module_name'], module_steps, module_steps_present, module_coverage,
                                  len(module_kos), ','.join(module_kos), ','.join(module_genes)]
@@ -227,17 +243,145 @@ def make_module_coverage_frame(annotations, module_nets, groupby_column='fasta')
 def make_module_coverage_heatmap(module_coverage, mag_order=None):
     num_mags_in_frame = len(set(module_coverage['MAG']))
     c = alt.Chart(module_coverage, title='Module').encode(
-        x=alt.X('module_name', title=None, sort=mag_order, axis=alt.Axis(labelLimit=0, labelAngle=90)),
-        y=alt.Y('MAG', title=None, axis=alt.Axis(labelLimit=0)),
+        x=alt.X('module_name', title=None, sort=None, axis=alt.Axis(labelLimit=0, labelAngle=90)),
+        y=alt.Y('MAG', title=None, sort=mag_order, axis=alt.Axis(labelLimit=0)),
         tooltip=[alt.Tooltip('MAG', title='MAG'),
                  alt.Tooltip('module_name', title='Module Name'),
                  alt.Tooltip('steps', title='Module steps'),
                  alt.Tooltip('steps_present', title='Steps present')
                  ]
-    ).mark_rect().encode(color='step_coverage').properties(
+    ).mark_rect().encode(color=alt.Color('step_coverage', legend=alt.Legend(title='% Complete'))).properties(
         width=HEATMAP_CELL_WIDTH * len(HEATMAP_MODULES),
         height=HEATMAP_CELL_HEIGHT * num_mags_in_frame)
     return c
+
+
+def pairwise(iterable):
+    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
+
+
+def first_open_paren_is_all(str_):
+    """Go through string and return true"""
+    curr_level = 1
+    for i, char in enumerate(str_[1:-1]):
+        if char == ')':
+            curr_level -= 1
+        elif char == '(':
+            curr_level += 1
+        if curr_level == 0:
+            return False
+    return True
+
+
+def split_into_steps(definition, split_char=' '):
+    """Very fancy split on string of chars"""
+    curr_level = 0
+    step_starts = [-1]
+    for i, char in enumerate(definition):
+        if char is '(':
+            curr_level += 1
+        if char is ')':
+            curr_level -= 1
+        if (curr_level == 0) and (char in split_char):
+            step_starts.append(i)
+    step_starts.append(len(definition))
+    steps = list()
+    for a, b in pairwise(step_starts):
+        step = definition[a+1:b]
+        if step.startswith('(') and step.endswith(')'):
+            if first_open_paren_is_all(step):
+                step = step[1:-1]
+        steps.append(step)
+    return steps
+
+
+def is_ko(ko):
+    return re.match(KO_REGEX, ko) is not None
+
+
+def make_module_network(definition, network: nx.DiGraph = None, parent_nodes=('start',)):
+    if network is None:
+        network = nx.DiGraph()
+    last_steps = []
+    for step in split_into_steps(definition, ','):
+        prev_steps = parent_nodes
+        for substep in split_into_steps(step, '+'):
+            if is_ko(substep):
+                for prev_step in prev_steps:
+                    network.add_edge(prev_step, substep)
+                prev_steps = [substep]
+            else:
+                network, prev_steps = make_module_network(substep, network, prev_steps)
+        last_steps += prev_steps
+    return network, last_steps
+
+
+def get_module_coverage(module_net, genes_present):
+    max_coverage = -1
+    max_coverage_genes = list()
+    max_coverage_missing_genes = list()
+    max_path_len = 0
+    for net_path in nx.all_simple_paths(module_net, source='start', target='end'):
+        net_path = set(net_path[1:-1])
+        overlap = net_path & genes_present
+        coverage = len(overlap) / len(net_path)
+        if coverage > max_coverage:
+            max_coverage = coverage
+            max_coverage_genes = overlap
+            max_coverage_missing_genes = net_path - genes_present
+            max_path_len = len(net_path)
+    return max_path_len, len(max_coverage_genes), max_coverage, max_coverage_genes, max_coverage_missing_genes
+
+
+def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
+    etc_coverage_df_rows = list()
+    for _, module_row in etc_module_df.iterrows():
+        definition = module_row['definition']
+        # remove optional subunits
+        definition = re.sub(r'-K\d\d\d\d\d', '', definition)
+        module_net, _ = make_module_network(definition)
+        # add end node
+        no_out = [node for node in module_net.nodes() if module_net.out_degree(node) == 0]
+        for node in no_out:
+            module_net.add_edge(node, 'end')
+        # go through each genome and check pathway coverage
+        for group, frame in annotations.groupby(groupby_column):
+            # get annotation genes
+            grouped_ids = set(get_ids_from_annotation(frame).keys())
+            path_len, path_coverage_count, path_coverage_percent, genes, missing_genes = \
+                get_module_coverage(module_net, grouped_ids)
+            etc_coverage_df_rows.append([module_row['module_id'], module_row['module_name'],
+                                         module_row['complex'].replace('Complex ', ''), group, path_len,
+                                         path_coverage_count, path_coverage_percent, ','.join(genes),
+                                         ','.join(missing_genes)])
+    return pd.DataFrame(etc_coverage_df_rows, columns=ETC_COVERAGE_COLUMNS)
+
+
+def make_etc_coverage_heatmap(etc_coverage, mag_order=None, module_order=None):
+    num_mags_in_frame = len(set(etc_coverage['MAG']))
+    charts = list()
+    for i, (etc_complex, frame) in enumerate(etc_coverage.groupby('complex')):
+        # if this is the first chart then make y-ticks otherwise none
+        c = alt.Chart(frame, title=etc_complex).encode(
+            x=alt.X('module_name', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90),
+                    sort=module_order),
+            y=alt.Y('MAG', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order),
+            tooltip=[alt.Tooltip('MAG', title='MAG'),
+                     alt.Tooltip('module_name', title='Module Name'),
+                     alt.Tooltip('path_length', title='Module Subunits'),
+                     alt.Tooltip('path_length_coverage', title='Subunits present'),
+                     alt.Tooltip('genes', title='Genes present'),
+                     alt.Tooltip('missing_genes', title='Genes missing')
+                     ]
+        ).mark_rect().encode(color=alt.Color('percent_coverage', legend=alt.Legend(title='% Complete'))).properties(
+            width=HEATMAP_CELL_WIDTH * len(set(frame['module_name'])),
+            height=HEATMAP_CELL_HEIGHT * num_mags_in_frame)
+        charts.append(c)
+    concat_title = alt.TitleParams('ETC Complexes', anchor='middle')
+    return alt.hconcat(*charts, spacing=5, title=concat_title)
 
 
 def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta'):
@@ -296,11 +440,11 @@ def make_functional_heatmap(functional_df, mag_order=None):
             height=chart_height)
         charts.append(c)
     # merge and return
-    function_heatmap = alt.hconcat(*charts)
+    function_heatmap = alt.hconcat(*charts, spacing=5)
     return function_heatmap
 
 
-def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column, viral=False):
+def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column):
     # read in data
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     if 'bin_taxnomy' in annotations:
@@ -333,26 +477,31 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     mkdir(output_dir)
 
     # make genome stats
-    if not viral:
-        genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, groupby_column)
-        genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=False)
+    genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame)
+    genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=None)
 
     # make genome metabolism summary
-    genome_summary = path.join(output_dir, 'genome_summary.xlsx')
+    genome_summary = path.join(output_dir, 'metabolism_summary.xlsx')
     make_genome_summary(annotations, genome_summary_form, genome_summary, trna_frame, rrna_frame, groupby_column)
 
     # make heatmaps
     if 'bin_taxonomy' in annotations:
-        mag_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')['fasta'])
+        mag_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
     else:
-        mag_order = None
+        mag_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
     module_nets = {module: build_module_net(module_df)
                    for module, module_df in module_steps_form.groupby('module') if module in HEATMAP_MODULES}
     module_coverage_frame = make_module_coverage_frame(annotations, module_nets, groupby_column)
     module_coverage_heatmap = make_module_coverage_heatmap(module_coverage_frame, mag_order)
 
+    # make ETC heatmap
+    etc_module_df = pd.read_csv(db_locs['etc_module_database'], sep='\t')
+    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations)
+    etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
+
     # make functional heatmap
     function_df = make_functional_df(annotations, function_heatmap_form, groupby_column)
     function_heatmap = make_functional_heatmap(function_df, mag_order)
 
-    alt.hconcat(module_coverage_heatmap, function_heatmap).save(path.join(output_dir, 'heatmap.html'))
+    liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
+    liquor.save(path.join(output_dir, 'liquor.html'))

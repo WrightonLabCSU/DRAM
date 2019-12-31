@@ -25,6 +25,7 @@ from mag_annotator.database_handler import DatabaseHandler
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
 HMMSCAN_COLUMNS = ['qid', 'qlen', 'tid', 'tlen', 'evalue', 'qstart', 'qend', 'tstart', 'tend']
+MAG_DBS_TO_ANNOTATE = ['kegg', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb']
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -199,8 +200,9 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     return pd.Series(pfam_dict, name='pfam_hits')
 
 
-def get_sig(tcovlen, evalue):
+def get_sig(tstart, tend, evalue):
     """Check if hmm match is significant, based on dbCAN described parameters"""
+    tcovlen = tend - tstart
     if tcovlen >= 80 and evalue < 1e-5:
         return True
     elif tcovlen < 80 and evalue < 1e-3:
@@ -232,20 +234,19 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
 
         dbcan_res.columns = HMMSCAN_COLUMNS
 
-        dbcan_res['tcovlen'] = dbcan_res.tend - dbcan_res.tstart
-
-        dbcan_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in dbcan_res.iterrows()]
-        if dbcan_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
-            return pd.Series()
+        significant = [row_num for row_num, row in dbcan_res.iterrows() if get_sig(row.tstart, row.tend, row.evalue)]
+        if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
+            return pd.Series(name='cazy_hits')
+        dbcan_res_significant = dbcan_res.loc[significant]
 
         dbcan_dict = dict()
         if db_handler is not None:
             dbcan_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
-                                                                  dbcan_res[dbcan_res.significant].tid]),
+                                                                  dbcan_res_significant.tid]),
                                                              'dbcan_description')
         else:
             dbcan_descriptions = None
-        for gene, frame in dbcan_res[dbcan_res.significant].groupby('qid'):
+        for gene, frame in dbcan_res_significant.groupby('qid'):
             if dbcan_descriptions is None:
                 dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
             else:
@@ -253,7 +254,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
                                                            accession[:-4]) for accession in frame.tid])
         return pd.Series(dbcan_dict, name='cazy_hits')
     else:
-        return pd.Series()
+        return pd.Series(name='cazy_hits')
 
 
 def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=None, verbose=False):
@@ -272,38 +273,38 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
 
         vogdb_res.columns = HMMSCAN_COLUMNS
 
-        vogdb_res['tcovlen'] = vogdb_res.tend - vogdb_res.tstart
+        significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.tstart, row.tend, row.evalue)]
+        if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
+            return pd.Series(name='vogdb_hits')
 
-        vogdb_res['significant'] = [get_sig(row.tcovlen, row.evalue) for _, row in vogdb_res.iterrows()]
-        if vogdb_res['significant'].sum() == 0:  # if nothing significant then return nothing, don't get descriptions
-            return pd.Series()
+        vogdb_res = vogdb_res.loc[significant].sort_values('evalue')
+        vogdb_res_most_sig_list = list()
+        for gene, frame in vogdb_res.groupby('qid'):
+            vogdb_res_most_sig_list.append(frame.index[0])
+        vogdb_res_most_sig = vogdb_res.loc[vogdb_res_most_sig_list]
 
         vogdb_description_dict = dict()
         vogdb_category_dict = dict()
         if db_handler is not None:
-            vogdb_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
-                                                                  vogdb_res[vogdb_res.significant].tid]),
+            vogdb_descriptions = db_handler.get_descriptions(set(vogdb_res_most_sig.tid),
                                                              'vogdb_description')
         else:
             vogdb_descriptions = None
-        for gene, frame in vogdb_res[vogdb_res.significant].groupby('qid'):
+        for _, row in vogdb_res_most_sig.iterrows():
+            gene = row['qid']
+            vogdb_id = row['tid']
             if vogdb_descriptions is None:
-                vogdb_description_dict[gene] = ', '.join([strip_endings(i, ['.hmm']) for i in frame.tid])
+                vogdb_description_dict[gene] = vogdb_id
             else:
-                vogdb_hits = list()
-                vogdb_categories = list()
-                for i in frame.tid:
-                    vogdb_id = strip_endings(i, ['.hmm']).split('_')[0]
-                    description = vogdb_descriptions.get(vogdb_id)
-                    vogdb_hits.append((vogdb_id, description))
-                    categories_str = description.split('; ')[1]
-                    vogdb_categories += [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
-                vogdb_description_dict[gene] = ', '.join(['%s [%s]' % (i[1], i[0]) for i in vogdb_hits])
+                description = vogdb_descriptions.get(vogdb_id)
+                categories_str = description.split('; ')[1]
+                vogdb_categories = [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
+                vogdb_description_dict[gene] = description
                 vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
         return pd.DataFrame((pd.Series(vogdb_description_dict, name='vogdb_description'),
                              pd.Series(vogdb_category_dict, name='vogdb_categories'))).transpose()
     else:
-        return pd.Series()
+        return pd.Series(name='vogdb_hits')
 
 
 def get_gene_data(fasta_loc):
@@ -315,7 +316,9 @@ def get_gene_data(fasta_loc):
         split_label = seq.metadata['id'].split('_')
         scaffold = '_'.join(split_label[:-1])
         gene_position = split_label[-1]
-        df_dict[seq.metadata['id']] = [scaffold, gene_position] + seq.metadata['description'].split('#')[1:4]
+        start_position, end_position, strandedness = seq.metadata['description'].split('#')[1:4]
+        df_dict[seq.metadata['id']] = [scaffold, int(gene_position), int(start_position), int(end_position),
+                                       int(strandedness)]
     return pd.DataFrame.from_dict(df_dict, orient='index', columns=['scaffold', 'gene_position', 'start_position',
                                                                     'end_position', 'strandedness'])
 
@@ -350,35 +353,32 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
     """
     for seq in read_sequence(input_fasta, format='fasta'):
         annotation = annotations.loc[seq.metadata['id']]
-        if 'grade' in annotations.columns:
+        if 'grade' in annotations.columns and verbosity == 'short':
             annotation_str = 'grade: %s' % annotation.grade
-            if verbosity == 'short':
-                if (annotation.grade == 'A') or (annotation.grade == 'C' and not pd.isna(annotation.kegg_hit)):
-                    annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-                if annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
-                    annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
-                if annotation.grade == 'D':
-                    annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
-            elif verbosity == 'long':
-                if not pd.isna(annotation.kegg_hit):
-                    annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-                if not pd.isna(annotation.uniref_hit):
-                    annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'uniref')
-                if not pd.isna(annotation.pfam_hits):
-                    annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
+            if (annotation.grade == 'A') or (annotation.grade == 'C' and not pd.isna(annotation.kegg_hit)):
+                annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
+            elif annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
+                annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
+            elif annotation.grade == 'D':
+                annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
             else:
-                raise ValueError('%s is not a valid verbosity level for annotation summarization' % verbosity)
+                pass
         else:
             annotation_list = []
+            if 'grade' in annotations.columns:
+                annotation_list += ['grade: %s' % annotation.grade]
             if 'kegg_hit' in annotations.columns:
                 if not pd.isna(annotation.kegg_hit):
                     annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'kegg')]
             if 'uniref_hit' in annotations.columns:
                 if not pd.isna(annotation.uniref_hit):
-                    annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'uniref')]
+                    annotation_list += ['%s (db=%s)' % (annotation.uniref_hit, 'uniref')]
             if 'pfam_hits' in annotations.columns:
                 if not pd.isna(annotation.pfam_hits):
                     annotation_list += ['%s (db=%s)' % (annotation.pfam_hits, 'pfam')]
+            if 'bin_taxonomy' in annotations.columns:
+                if not pd.isna(annotation.bin_taxonomy):
+                    annotation_list += [annotation.bin_taxonomy]
             annotation_str = '; '.join(annotation_list)
         if name is not None:
             seq.metadata['id'] = '%s_%s' % (name, seq.metadata['id'])
@@ -471,7 +471,8 @@ RRNA_COLUMNS = ['fasta', 'begin', 'end', 'strand', 'type', 'e-value', 'note']
 
 
 def run_barrnap(fasta, output_loc, fasta_name, threads=10, verbose=True):
-    raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, verbose=verbose)
+    raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, check=False,
+                               verbose=verbose)
     if len(raw_rrna_str.strip()) > 0:
         raw_rrna_table = pd.read_csv(io.StringIO(raw_rrna_str), skiprows=1, sep='\t', header=None,
                                      names=RAW_RRNA_COLUMNS, index_col=0)
@@ -654,9 +655,6 @@ def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, 
         make_mmseqs_db(db_loc, custom_db_loc, threads=threads, verbose=verbose)
         custom_db_locs[db_name] = custom_db_loc
     return custom_db_locs
-
-
-MAG_DBS_TO_ANNOTATE = ['kegg', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb']
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,

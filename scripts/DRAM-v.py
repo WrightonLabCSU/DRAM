@@ -4,11 +4,9 @@ import argparse
 
 from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations,\
                                               populate_description_db
-from mag_annotator.annotate_bins import annotate_bins
-from mag_annotator.summarize_genomes import summarize_genomes
+from mag_annotator.annotate_vgfs import annotate_vgfs
+from mag_annotator.summarize_vgfs import summarize_vgfs
 from mag_annotator.pull_sequences import pull_sequences
-
-# TODO: refactor parses to limit duplication
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -24,15 +22,16 @@ if __name__ == '__main__':
                                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     print_db_locs_parser = subparsers.add_parser('print_config', help="Print database locations",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    annotate_parser = subparsers.add_parser('annotate', help="Annotate contigs/bins/MAGs",
+    annotate_parser = subparsers.add_parser('annotate', help="Annotate viral contigs",
                                             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    distill_parser = subparsers.add_parser('distill', help="Summarize metabolic content of annotated genomes",
+    distill_parser = subparsers.add_parser('distill',
+                                           help="Summarize AMGs in annotated viral genome fragments",
                                            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     strainer_parser = subparsers.add_parser('strainer', help="Strain annotations down to genes of interest",
                                             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for downloading and processing databases for annotation and summarization
-    prepare_dbs_parser.add_argument('--output_dir', default=".", help="output directory")
+    prepare_dbs_parser.add_argument('--output_dir', default="~/DRAM_data", help="output directory")
     prepare_dbs_parser.add_argument('--kegg_loc', default=None,
                                     help="KEGG protein file, should be a single .pep, please merge all KEGG pep files")
     prepare_dbs_parser.add_argument('--gene_ko_link_loc', default=None,
@@ -103,10 +102,10 @@ if __name__ == '__main__':
     # parser for printing out database configuration information
     print_db_locs_parser.set_defaults(func=print_database_locations)
 
-    # parser for annotating mags, you know the real thing
-    annotate_parser.add_argument('-i', '--input_fasta',
-                                 help="fasta file, optionally with wildcards to point to individual MAGs",
-                                 required=True)
+    # parser for annotating vgfs
+    annotate_parser.add_argument('-i', '--input_fasta', help="fasta file, output from ", required=True)
+    annotate_parser.add_argument('-v', '--virsorter_affi_contigs', help="VirSorter VIRSorter_affi-contigs.tab "
+                                                                             "output file", required=True)
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_parser.add_argument('--min_contig_size', type=int, default=5000,
                                  help='minimum contig size to be used for gene prediction')
@@ -119,8 +118,6 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--custom_fasta_loc', action='append',
                                  help="Location of fastas to annotated against, can be used multiple times but"
                                            "must match nubmer of custom_db_name's")
-    annotate_parser.add_argument('--gtdb_taxonomy', help='Summary file from gtdbtk taxonomy assignment from bins')
-    annotate_parser.add_argument('--checkm_quality', help='Summary of of checkM quality assessment from bins')
     annotate_parser.add_argument('--skip_uniref', action='store_true', default=False,
                                  help='Skip annotating with UniRef, drastically decreases run time and memory'
                                            'requirements')
@@ -128,16 +125,20 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_parser.add_argument('--verbose', action='store_true', default=False)
-    annotate_parser.set_defaults(func=annotate_bins)
+    annotate_parser.set_defaults(func=annotate_vgfs)
 
     # parser for summarizing genomes
     distill_parser.add_argument("-i", "--input_file", help="Annotations path")
     distill_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
-    distill_parser.add_argument("--rrna_path", help="rRNA output from annotation")
-    distill_parser.add_argument("--trna_path", help="tRNA output from annotation")
-    distill_parser.add_argument("--groupby_column", help="Column from annotations to group as organism units",
-                                default='fasta')
-    distill_parser.set_defaults(func=summarize_genomes)
+    distill_parser.add_argument("--groupby_column", help="Column from annotations to group as VGF units",
+                                default='scaffold')
+    distill_parser.add_argument("--max_auxiliary_score", type=int, default=3,
+                                help="Maximum auxiliary score to consider gene as potential AMG")
+    distill_parser.add_argument("--remove_transposons", default=False, action='store_true',
+                                help="Do not consider genes on scaffolds with transposons as potential AMGs")
+    distill_parser.add_argument("--remove_fs", default=False, action='store_true',
+                                help="Do not consider genes near ends of scaffolds as potential AMGs")
+    distill_parser.set_defaults(func=summarize_vgfs)
 
     # parser for getting genes
     strainer_parser.add_argument('-i', '--input_annotations', required=True, help='annotations file to pull genes from')

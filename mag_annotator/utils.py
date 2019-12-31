@@ -22,7 +22,7 @@ def download_file(url, output_file=None, verbose=True):
         run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
-def run_process(command, shell=False, capture_stdout=True, verbose=False):
+def run_process(command, shell=False, capture_stdout=True, check=True, verbose=False):
     """Standardization of parameters for using subprocess.run, provides verbose mode and option to run via shell"""
     stdout = subprocess.DEVNULL
     stderr = subprocess.DEVNULL
@@ -30,10 +30,10 @@ def run_process(command, shell=False, capture_stdout=True, verbose=False):
         stdout = None
         stderr = None
     if capture_stdout:
-        return subprocess.run(command, check=True, shell=shell, stdout=subprocess.PIPE,
+        return subprocess.run(command, check=check, shell=shell, stdout=subprocess.PIPE,
                               stderr=stderr).stdout.decode(errors='ignore')
     else:
-        subprocess.run(command, check=True, shell=shell, stdout=stdout, stderr=stderr)
+        subprocess.run(command, check=check, shell=shell, stdout=stdout, stderr=stderr)
 
 
 def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose=False):

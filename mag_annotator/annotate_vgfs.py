@@ -18,7 +18,7 @@ VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length
 
 VIRSORTER_HALLMARK_GENE_CATEGORIES = {'0', '3'}
 
-VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES = {'1', '2', '4'}
+VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES = {'1', '4'}
 
 TRANSPOSON_PFAMS = {'PF01609', 'PF00872', 'PF01610', 'PF01527', 'PF02371', 'PF01710', 'PF01385', 'PF01548', 'PF01526',
                     'PF01797', 'PF02899', 'PF05717', 'PF07592', 'PF03050', 'PF04754', 'PF04986', 'PF03400'}
@@ -65,7 +65,7 @@ def is_transposon(pfam_hits):
     if pd.isna(pfam_hits):
         return False
     else:
-        pfams = {i[1:-1].split('.')[0] for i in re.findall('\[PF\d\d\d\d\d.\d*\]', pfam_hits)}
+        pfams = {i[1:-1].split('.')[0] for i in re.findall(r'\[PF\d\d\d\d\d.\d*\]', pfam_hits)}
         return len(pfams & TRANSPOSON_PFAMS) > 0
 
 
@@ -120,7 +120,6 @@ def get_gene_order(dram_genes, virsorter_genes, min_overlap=.70):
                                                                                        virsorter_row.end_position))
         except StopIteration:
             break
-
     # clean up and add extras
     # if at end of both then just end
     if (dram_gene_number == dram_gene_frame.shape[0]) and (virsorter_gene_number == virsorter_gene_frame.shape[0]):
@@ -157,7 +156,7 @@ def calculate_auxiliary_scores(gene_order):
             if hallmark_left and hallmark_right:  # hallmark on both sides then cat 1
                 auxiliary_score = 1
             # hallmark on one side and viral like on other then cat 2
-            elif (hallmark_left or viral_like_left) and (hallmark_right or viral_like_right):
+            elif (hallmark_left and viral_like_right) or (viral_like_left and hallmark_right):
                 auxiliary_score = 2
             # viral like on both side then cat 3
             elif viral_like_left and viral_like_right:
@@ -168,6 +167,7 @@ def calculate_auxiliary_scores(gene_order):
                 auxiliary_score = 4
             else:  # if gene is at end of contig or no viral like or hallmark genes then score is 5
                 auxiliary_score = 5
+            print(i, auxiliary_score, hallmark_left, viral_like_left, hallmark_right, viral_like_right)
             gene_auxiliary_score_dict[dram_gene] = auxiliary_score
     return gene_auxiliary_score_dict
 
@@ -206,7 +206,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
                 flags += 'F'
             flag_dict[gene] = flags
         # get 3 metabolic genes in a row flag
-        for i in range(len(scaffold_annotations)):
+        for i in range(len(scaffold_annotations)):  # this needs to be fixed. Will only give B to middle of 3 genes.
             if 0 < i < (len(scaffold_annotations) - 1):
                 gene = scaffold_annotations.index[i]
                 gene_flags = flag_dict[gene]
@@ -228,6 +228,18 @@ def get_amg_ids(amg_frame):
     ec_amgs = set([j.strip() for i in amg_frame['EC'].dropna() for j in i.strip().split(';')])
     pfam_amgs = set([j.strip() for i in amg_frame['PFAM'].dropna() for j in i.strip().split(';')])
     return ko_amgs | ec_amgs | pfam_amgs
+
+
+def get_virsorter_affi_contigs_name(scaffold):
+    prophage_match = re.search(r'_gene_\d*_gene_\d*-\d*-\d*-cat_[1,2,3,4,5,6]$', scaffold)
+    plain_match = re.search(r'-cat_[1,2,3,4,5,6]$', scaffold)
+    if prophage_match is not None:
+        virsorter_scaffold_name = scaffold[:prophage_match.start()]
+    elif plain_match is not None:
+        virsorter_scaffold_name = scaffold[:plain_match.start()]
+    else:
+        raise ValueError("Can't find VIRSorter endings on fasta header: %s" % scaffold)
+    return virsorter_scaffold_name
 
 
 def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
@@ -263,15 +275,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     # add auxiliary score
     gene_virsorter_category_dict = dict()
     gene_auxiliary_score_dict = dict()
-    gene_orders = list()
     for scaffold, dram_frame in annotations.groupby('scaffold'):
-        if 'circular' in scaffold:
-            virsorter_scaffold_name = scaffold[:re.search('_scaffold_\d*-circular[_,-]', scaffold).end() - 1]
-        else:
-            virsorter_scaffold_name = scaffold[:re.search('_scaffold_\d*[_,-]', scaffold).end() - 1]
+        virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
         virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
         gene_order = get_gene_order(dram_frame, virsorter_frame)
-        gene_orders += gene_order
         gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
                                              gene_order if dram_gene is not None})
         gene_auxiliary_score_dict.update(calculate_auxiliary_scores(gene_order))
@@ -280,8 +287,6 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
 
     # get metabolic flags
     scaffold_length_dict = {seq.metadata['id']: len(seq) for seq in read_sequence(input_fasta, format='fasta')}
-    # remove cazys which are often false positives
-    genome_summary_frame = genome_summary_frame.loc[[i != 'CAZY' for i in genome_summary_frame.subheader]]
     metabolic_genes = set(genome_summary_frame.index)
     annotations['is_transposon'] = [is_transposon(i) for i in annotations['pfam_hits']]
 
