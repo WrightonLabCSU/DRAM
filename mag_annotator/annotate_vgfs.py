@@ -167,7 +167,6 @@ def calculate_auxiliary_scores(gene_order):
                 auxiliary_score = 4
             else:  # if gene is at end of contig or no viral like or hallmark genes then score is 5
                 auxiliary_score = 5
-            print(i, auxiliary_score, hallmark_left, viral_like_left, hallmark_right, viral_like_right)
             gene_auxiliary_score_dict[dram_gene] = auxiliary_score
     return gene_auxiliary_score_dict
 
