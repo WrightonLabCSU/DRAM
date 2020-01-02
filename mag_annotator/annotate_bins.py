@@ -25,6 +25,10 @@ from mag_annotator.database_handler import DatabaseHandler
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
 HMMSCAN_COLUMNS = ['qid', 'qlen', 'tid', 'tlen', 'evalue', 'qstart', 'qend', 'tstart', 'tend']
+HMMSCAN_ALL_COLUMNS = ['query_id', 'query_ascession', 'target_length', 'target_id', 'target_ascession', 'target_length',
+                       'full_evalue', 'full_score', 'full_bias', 'domain_number', 'domain_count', 'domain_cevalue',
+                       'doman_ievalue', 'domain_score', 'domain_bias', 'target_start', 'target_end', 'alignment_start',
+                       'alignment_end', 'query_start', 'query_end', 'accuracy', 'description']
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -211,6 +215,43 @@ def get_sig(tstart, tend, evalue):
 
 
 # TODO: refactor following to methods to a shared run hmm step and individual get description steps
+def parse_hmmsearch_domtblout(file):
+    df_lines = list()
+    for line in open(file):
+        if not line.startswith('#'):
+            line = line.split()
+            line = line[:22] + [' '.join(line[22:])]
+            df_lines.append(line)
+    return pd.DataFrame(df_lines, columns=HMMSCAN_ALL_COLUMNS)
+
+
+def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, threads=1, verbose=False):
+    output = path.join(output_dir, 'kofam_profile.b6')
+    run_process(['hmmsearch', '--domtblout', output, '--cpu', str(threads), kofam_hmm, gene_faa], verbose=verbose)
+    ko_hits = parse_hmmsearch_domtblout(output)
+
+    is_sig = list()
+    for ko, frame in ko_hits.groupby('target_id'):
+        ko_row = ko_list.loc[ko]
+        if ko_row['score_type'] == 'domain':
+            score = frame.domain_score
+        elif ko_row['score_type'] == 'full':
+            score = frame.full_score
+        elif ko_row['score_type'] == '-':
+            continue
+        else:
+            raise ValueError(ko_row['score_type'])
+        frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
+        is_sig.append(frame)
+    ko_hits_sig = pd.concat(is_sig)
+
+    kegg_dict = dict()
+    for gene, frame in ko_hits_sig.groupby('query_id'):
+        kegg_dict[gene] = '; '.join(['%s [%s]' % (ko_list.loc[ascession, 'definition'], ascession)
+                                     for ascession in frame.target_id])
+    return pd.Series(kegg_dict, name='kofam_hits')
+
+
 def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=None, verbose=False):
     """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
     Commands this is based on:
@@ -552,6 +593,12 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                                                      db_handler, get_kegg_description, start_time,
                                                      'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
                                                      verbose))
+    elif 'kofam' in db_locs and 'kofam_ko_list' in db_locs:
+        annotation_list.append(run_hmmscan_kofam(gene_faa, db_locs['kofam'], output_dir,
+                                                 pd.read_csv(db_locs['kofam_ko_list'], sep='\t', index_col=0),
+                                                 threads, verbose))
+    else:
+        pass
 
     # Get uniref hits
     if 'uniref' in db_locs and not skip_uniref:
