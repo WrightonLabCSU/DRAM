@@ -17,6 +17,7 @@ from mag_annotator.database_setup import create_description_db
 
 
 # TODO: check if dbcan or pfam is down, raise appropriate error
+# TODO: upgrade to pigz?
 
 
 def get_iso_date():
@@ -79,33 +80,25 @@ def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc=None, download_date=N
     return kegg_mmseqs_db
 
 
-def download_and_process_kofamscan(output_dir, version='1.1.0'):
-    # download and unzip kofamscan
-    kofamscan_tar_gz = path.join(output_dir, 'kofamscan.tar.gz')
-    download_file('ftp://ftp.genome.jp/pub/tools/kofamscan/kofamscan-%s.tar.gz' % version, kofamscan_tar_gz)
-    kofamscan_dir = path.join(output_dir, 'kofamscan-%s' % version)
-    run_process(['tar',  '-xzf', kofamscan_tar_gz, '-C', kofamscan_dir])
-    hmmsearch_loc = run_process(['which', 'hmmsearch']).strip()
-    parallel_loc = run_process(['which', 'parallel']).strip()
-    with open(path.join(kofamscan_dir, 'config.yml'), 'w') as f:
-        f.write("hmmsearch: %s\nparallel: %s" % (hmmsearch_loc, parallel_loc))
-    return kofamscan_dir
+def download_and_process_kofam_hmms(output_dir, verbose=False):
+    kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
+    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
+    kofam_profiles = path.join(output_dir, 'kofam_profiles')
+    mkdir(kofam_profiles)
+    run_process(['tar', '-xzf', kofam_profile_tar_gz, '-C', kofam_profiles], verbose=verbose)
+    merged_kofam_profiles = path.join(output_dir, 'kofam_profiles.hmm')
+    merge_files(path.join(kofam_profiles, 'profiles', '*.hmm'), merged_kofam_profiles)
+    run_process(['hmmpress', '-f', merged_kofam_profiles], verbose=verbose)
+    return merged_kofam_profiles
 
 
-def download_and_process_kofamscan_hmms(output_dir):
-    kofamscan_profile_tar_gz = path.join(output_dir, 'kofamscan_profiles.tar.gz')
-    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofamscan_profile_tar_gz)
-    kofamscan_profiles = path.join(output_dir, 'kofamscan_profiles')
-    run_process(['tar', '-xzf', kofamscan_profile_tar_gz, '-C', kofamscan_profiles])
-    return kofamscan_profiles
-
-
-def download_and_process_kofamscan_ko_list(output_dir):
-    kofamscan_ko_list_gz = path.join(output_dir, 'kofamscan_ko_list.tar.gz')
-    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofamscan_ko_list_gz)
-    kofamscan_ko_list = path.join(output_dir, 'kofamscan_ko_list.tsv')
-    run_process(['gunzip', kofamscan_ko_list_gz])
-    return kofamscan_ko_list
+def download_and_process_kofam_ko_list(output_dir, verbose=False):
+    kofam_ko_list_gz = path.join(output_dir, 'kofam_ko_list.tsv.gz')
+    download_file('ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', kofam_ko_list_gz, verbose=verbose)
+    # TODO: fix this so that it is gunzipped to the path
+    kofam_ko_list = path.join(output_dir, 'kofam_ko_list.tsv')
+    run_process(['gunzip', kofam_ko_list_gz], verbose=verbose)
+    return kofam_ko_list
 
 
 def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
@@ -334,15 +327,17 @@ def check_exists_and_add_to_description_db(loc, name, get_description_list, db_h
             db_handler.add_descriptions_to_database(description_list, name, clear_table=True)
 
 
-def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
-                       dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None,
-                       vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None,
-                       module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None,
-                       amg_database_loc=None, update_description_db=False):
-    """Processes pfam_hmm_dat"""
+def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_db_loc=None,
+                       pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None, dbcan_fam_activities=None,
+                       viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, vog_annotations=None,
+                       description_db_loc=None, genome_summary_form_loc=None, module_step_form_loc=None,
+                       etc_module_database_loc=None, function_heatmap_form_loc=None, amg_database_loc=None,
+                       update_description_db=False):
     db_dict = get_database_locs()
 
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(kofam_hmm_loc, 'kofam', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(kofam_ko_list_loc, 'kofam_ko_list', db_dict)
     db_dict = check_exists_and_add_to_location_dict(uniref_db_loc, 'uniref', db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_hmm_dat, 'pfam_hmm_dat', db_dict)
@@ -456,7 +451,8 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
                                                                             verbose=verbose)
     output_dbs['vogdb_db_loc'] = download_and_process_vogdb(vogdb_loc, temporary, vogdb_release=vogdb_version,
                                                             verbose=verbose)
-    output_dbs['kofamscan_dir'] = download_and_process_kofamscan(output_dir)
+    output_dbs['kofam_hmm_loc'] = download_and_process_kofam_hmms(temporary, verbose=verbose)
+    output_dbs['kofam_ko_list_loc'] = download_and_process_kofam_ko_list(temporary, verbose=verbose)
 
     # add genome summary form and function heatmap form
     if genome_summary_form_loc is None:
@@ -480,12 +476,14 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
     else:
         output_dbs['amg_database_loc'] = amg_database_loc
 
+    # move all files from temporary to output that will be kept
     for db_name, output_db in output_dbs.items():
         for db_file in glob('%s*' % output_db):
             move(db_file, path.join(output_dir, path.basename(db_file)))
         output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
 
     # get pfam and dbcan descriptions
+    # TODO: move this all up to be done with the rest of the downloading and processing
     if pfam_hmm_dat is None:
         pfam_hmm_dat = download_pfam_descriptions(output_dir, pfam_release=pfam_release, verbose=verbose)
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
@@ -515,6 +513,8 @@ def print_database_locations():
     db_locs = get_database_locs()
 
     print('KEGG db location: %s' % is_db_in_dict('kegg', db_locs))
+    print('KOfam db location: %s' % is_db_in_dict('kofam', db_locs))
+    print('KOfam KO list location: %s' % is_db_in_dict('kofam_ko_list', db_locs))
     print('UniRef db location: %s' % is_db_in_dict('uniref', db_locs))
     print('Pfam db location: %s' % is_db_in_dict('pfam', db_locs))
     print('dbCAN db location: %s' % is_db_in_dict('dbcan', db_locs))
