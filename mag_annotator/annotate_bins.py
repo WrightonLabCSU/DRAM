@@ -29,7 +29,7 @@ HMMSCAN_ALL_COLUMNS = ['query_id', 'query_ascession', 'target_length', 'target_i
                        'full_evalue', 'full_score', 'full_bias', 'domain_number', 'domain_count', 'domain_cevalue',
                        'doman_ievalue', 'domain_score', 'domain_bias', 'target_start', 'target_end', 'alignment_start',
                        'alignment_end', 'query_start', 'query_end', 'accuracy', 'description']
-MAG_DBS_TO_ANNOTATE = ['kegg', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb']
+MAG_DBS_TO_ANNOTATE = ['kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb']
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -248,9 +248,9 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, threads=1, verbo
 
     kegg_dict = dict()
     for gene, frame in ko_hits_sig.groupby('query_id'):
-        kegg_dict[gene] = '; '.join(['%s [%s]' % (ko_list.loc[ascession, 'definition'], ascession)
-                                     for ascession in frame.target_id])
-    return pd.Series(kegg_dict, name='kofam_hits')
+        kegg_dict[gene] = [','.join([i for i in frame.target_id]),
+                           '; '.join([frame.loc[i, 'definition'] for i in frame.target_id])]
+    return pd.DataFrame(kegg_dict, index=['kegg_id', 'kegg_hit']).transpose()
 
 
 def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=None, verbose=False):
@@ -597,11 +597,11 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                                                      'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
                                                      verbose))
     elif 'kofam' in db_locs and 'kofam_ko_list' in db_locs:
+        print('%s: Getting hits from kofam' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan_kofam(gene_faa, db_locs['kofam'], output_dir,
                                                  pd.read_csv(db_locs['kofam_ko_list'], sep='\t', index_col=0),
                                                  threads, verbose))
     else:
-        print(db_locs)
         warnings.warn('No KEGG source provided so distillation will be of limited use.')
 
     # Get uniref hits
