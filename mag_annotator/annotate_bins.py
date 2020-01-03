@@ -249,7 +249,7 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, threads=1, verbo
     kegg_dict = dict()
     for gene, frame in ko_hits_sig.groupby('query_id'):
         kegg_dict[gene] = [','.join([i for i in frame.target_id]),
-                           '; '.join([frame.loc[i, 'definition'] for i in frame.target_id])]
+                           '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
     return pd.DataFrame(kegg_dict, index=['kegg_id', 'kegg_hit']).transpose()
 
 
