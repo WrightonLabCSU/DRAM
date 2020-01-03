@@ -601,7 +601,8 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                                                  pd.read_csv(db_locs['kofam_ko_list'], sep='\t', index_col=0),
                                                  threads, verbose))
     else:
-        pass
+        print(db_locs)
+        warnings.warn('No KEGG source provided so distillation will be of limited use.')
 
     # Get uniref hits
     if 'uniref' in db_locs and not skip_uniref:
