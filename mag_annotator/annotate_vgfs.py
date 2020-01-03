@@ -167,7 +167,6 @@ def calculate_auxiliary_scores(gene_order):
                 auxiliary_score = 4
             else:  # if gene is at end of contig or no viral like or hallmark genes then score is 5
                 auxiliary_score = 5
-            print(i, auxiliary_score, hallmark_left, viral_like_left, hallmark_right, viral_like_right)
             gene_auxiliary_score_dict[dram_gene] = auxiliary_score
     return gene_auxiliary_score_dict
 
@@ -215,7 +214,11 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
                 next_gene = scaffold_annotations.index[i + 1]
                 next_gene_flags = flag_dict[next_gene]
                 if 'M' in previous_gene_flags and 'M' in gene_flags and 'M' in next_gene_flags:
+                    if 'B' not in flag_dict[previous_gene]:
+                        flag_dict[previous_gene] += 'B'
                     flag_dict[gene] += 'B'
+                    if 'B' not in flag_dict[next_gene]:
+                        flag_dict[next_gene] += 'B'
     return flag_dict
 
 
@@ -290,6 +293,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     verified_amgs = get_amg_ids(amg_database_frame.loc[amg_database_frame.verified])
     annotations['amg_flags'] = pd.Series(get_metabolic_flags(annotations, metabolic_genes, amgs,
                                                              verified_amgs, scaffold_length_dict))
+
+    # downgrade B flag auxiliary scores
+    annotations['virsorter_category'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] else row['virsorter_category'])
+                                                   for gene, row in annotations.iterrows()})
 
     # write annotations
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
