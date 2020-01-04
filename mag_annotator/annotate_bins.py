@@ -10,6 +10,7 @@ from glob import glob
 import warnings
 from functools import partial
 import io
+import time
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, get_database_locs, multigrep
 from mag_annotator.database_handler import DatabaseHandler
@@ -414,6 +415,13 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
     genbank_records = ''
     for i in range(1, fasta_records+1):
         seq = read_sequence(io.StringIO(concat_gff), format='gff3', into=Sequence, seq_num=i)
+        seq.metadata['LOCUS'] = {'locus_name': seq.metadata['id'],
+                                 'size': len(seq),
+                                 'unit': 'bp',
+                                 'mol_type': 'DNA',
+                                 'shape': 'linear',
+                                 'division': 'ENV',
+                                 'date': time.strftime('%d-%^b-%Y')}
         # need to capture genbank output so we can combine into a multi-genbank file
         capture_print = io.StringIO()
         seq.write(capture_print, format='genbank')
