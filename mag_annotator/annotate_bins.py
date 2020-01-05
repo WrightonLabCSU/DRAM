@@ -24,7 +24,6 @@ from mag_annotator.database_handler import DatabaseHandler
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
-HMMSCAN_COLUMNS = ['qid', 'qlen', 'tid', 'tlen', 'evalue', 'qstart', 'qend', 'tstart', 'tend']
 HMMSCAN_ALL_COLUMNS = ['query_id', 'query_ascession', 'target_length', 'target_id', 'target_ascession', 'target_length',
                        'full_evalue', 'full_score', 'full_bias', 'domain_number', 'domain_count', 'domain_cevalue',
                        'doman_ievalue', 'domain_score', 'domain_bias', 'target_start', 'target_end', 'alignment_start',
@@ -264,16 +263,10 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
     dbcan_output = path.join(output_loc, 'dbcan_results.unprocessed.txt')
     run_process(['hmmsearch', '--domtblout', dbcan_output, '--cpu', str(threads), dbcan_loc, genes_faa],
                 verbose=verbose)
-    processed_dbcan_output = path.join(output_loc, 'dbcan_results.tsv')
-    cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
-          "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (dbcan_output, processed_dbcan_output)
-    run_process(cmd, shell=True)
 
     # Process results
-    if path.isfile(processed_dbcan_output) and stat(processed_dbcan_output).st_size > 0:
-        dbcan_res = pd.read_csv(processed_dbcan_output, sep='\t', header=None)
-
-        dbcan_res.columns = HMMSCAN_COLUMNS
+    if path.isfile(dbcan_output) and stat(dbcan_output).st_size > 0:
+        dbcan_res = parse_hmmsearch_domtblout(dbcan_output)
 
         significant = [row_num for row_num, row in dbcan_res.iterrows() if get_sig(row.tstart, row.tend, row.evalue)]
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
@@ -303,16 +296,10 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
     vogdb_output = path.join(output_loc, 'vogdb_results.unprocessed.txt')
     run_process(['hmmsearch', '--domtblout', vogdb_output, '--cpu', str(threads), vogdb_loc, genes_faa],
                 verbose=verbose)
-    processed_vogdb_output = path.join(output_loc, 'vogdb_results.tsv')
-    cmd = "cat %s | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' |" \
-          "sed 's/ /\t/g' | sort -k 3,3 -k 8n -k 9n > %s" % (vogdb_output, processed_vogdb_output)
-    run_process(cmd, shell=True)
 
     # Process Results
-    if path.isfile(processed_vogdb_output) and stat(processed_vogdb_output).st_size > 0:
-        vogdb_res = pd.read_csv(processed_vogdb_output, sep='\t', header=None)
-
-        vogdb_res.columns = HMMSCAN_COLUMNS
+    if path.isfile(vogdb_output) and stat(vogdb_output).st_size > 0:
+        vogdb_res = parse_hmmsearch_domtblout(vogdb_output)
 
         significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.tstart, row.tend, row.evalue)]
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
