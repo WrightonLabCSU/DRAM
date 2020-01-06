@@ -268,7 +268,8 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
     if path.isfile(dbcan_output) and stat(dbcan_output).st_size > 0:
         dbcan_res = parse_hmmsearch_domtblout(dbcan_output)
 
-        significant = [row_num for row_num, row in dbcan_res.iterrows() if get_sig(row.tstart, row.tend, row.evalue)]
+        significant = [row_num for row_num, row in dbcan_res.iterrows() if get_sig(row.target_start, row.target_end,
+                                                                                   row.full_evalue)]
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series(name='cazy_hits')
         dbcan_res_significant = dbcan_res.loc[significant]
@@ -276,16 +277,16 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
         dbcan_dict = dict()
         if db_handler is not None:
             dbcan_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
-                                                                  dbcan_res_significant.tid]),
+                                                                  dbcan_res_significant.target_id]),
                                                              'dbcan_description')
         else:
             dbcan_descriptions = None
-        for gene, frame in dbcan_res_significant.groupby('qid'):
+        for gene, frame in dbcan_res_significant.groupby('query_id'):
             if dbcan_descriptions is None:
-                dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.tid])
+                dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.targed_id])
             else:
                 dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions.get(accession[:-4].split('_')[0]),
-                                                           accession[:-4]) for accession in frame.tid])
+                                                           accession[:-4]) for accession in frame.target_id])
         return pd.Series(dbcan_dict, name='cazy_hits')
     else:
         return pd.Series(name='cazy_hits')
@@ -301,26 +302,27 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
     if path.isfile(vogdb_output) and stat(vogdb_output).st_size > 0:
         vogdb_res = parse_hmmsearch_domtblout(vogdb_output)
 
-        significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.tstart, row.tend, row.evalue)]
+        significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.target_start, row.target_end,
+                                                                                   row.full_evalue)]
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series(name='vogdb_hits')
 
-        vogdb_res = vogdb_res.loc[significant].sort_values('evalue')
+        vogdb_res = vogdb_res.loc[significant].sort_values('full_evalue')
         vogdb_res_most_sig_list = list()
-        for gene, frame in vogdb_res.groupby('qid'):
+        for gene, frame in vogdb_res.groupby('query_id'):
             vogdb_res_most_sig_list.append(frame.index[0])
         vogdb_res_most_sig = vogdb_res.loc[vogdb_res_most_sig_list]
 
         vogdb_description_dict = dict()
         vogdb_category_dict = dict()
         if db_handler is not None:
-            vogdb_descriptions = db_handler.get_descriptions(set(vogdb_res_most_sig.tid),
+            vogdb_descriptions = db_handler.get_descriptions(set(vogdb_res_most_sig.target_id),
                                                              'vogdb_description')
         else:
             vogdb_descriptions = None
         for _, row in vogdb_res_most_sig.iterrows():
-            gene = row['qid']
-            vogdb_id = row['tid']
+            gene = row['query_id']
+            vogdb_id = row['target_id']
             if vogdb_descriptions is None:
                 vogdb_description_dict[gene] = vogdb_id
             else:
