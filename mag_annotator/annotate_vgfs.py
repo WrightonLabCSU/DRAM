@@ -241,7 +241,7 @@ def get_virsorter_affi_contigs_name(scaffold):
     return virsorter_scaffold_name
 
 
-def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
+def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_uniref=True,
                   skip_trnascan=False, keep_tmp_dir=True, threads=10, verbose=True):
     # set up
@@ -269,20 +269,21 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs, output_dir='.', min_conti
     # setting up scoring viral genes
     amg_database_frame = pd.read_csv(db_locs['amg_database'], sep='\t')
     genome_summary_frame = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
-    virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
 
     # add auxiliary score
-    gene_virsorter_category_dict = dict()
-    gene_auxiliary_score_dict = dict()
-    for scaffold, dram_frame in annotations.groupby('scaffold'):
-        virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
-        virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
-        gene_order = get_gene_order(dram_frame, virsorter_frame)
-        gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
-                                             gene_order if dram_gene is not None})
-        gene_auxiliary_score_dict.update(calculate_auxiliary_scores(gene_order))
-    annotations['virsorter_category'] = pd.Series(gene_virsorter_category_dict)
-    annotations['auxiliary_score'] = pd.Series(gene_auxiliary_score_dict)
+    if virsorter_affi_contigs is not None:
+        virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
+        gene_virsorter_category_dict = dict()
+        gene_auxiliary_score_dict = dict()
+        for scaffold, dram_frame in annotations.groupby('scaffold'):
+            virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
+            virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
+            gene_order = get_gene_order(dram_frame, virsorter_frame)
+            gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
+                                                 gene_order if dram_gene is not None})
+            gene_auxiliary_score_dict.update(calculate_auxiliary_scores(gene_order))
+        annotations['virsorter_category'] = pd.Series(gene_virsorter_category_dict)
+        annotations['auxiliary_score'] = pd.Series(gene_auxiliary_score_dict)
 
     # get metabolic flags
     scaffold_length_dict = {seq.metadata['id']: len(seq) for seq in read_sequence(input_fasta, format='fasta')}
