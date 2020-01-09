@@ -328,8 +328,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     copy2(path.join(tmp_dir, 'genes.annotated.faa'), path.join(output_dir, 'genes.faa'))
     copy2(path.join(tmp_dir, 'scaffolds.annotated.fa'), path.join(output_dir, 'scaffolds.fna'))
     copy2(path.join(tmp_dir, 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'))
-    copy2(path.join(tmp_dir, 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'))
-    copy2(path.join(tmp_dir, 'rrnas.tsv'), path.join(output_dir, 'rrnas.tsv'))
+    if path.isfile(path.join(tmp_dir, 'trnas.tsv')):
+        copy2(path.join(tmp_dir, 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'))
+    if path.isfile(path.join(tmp_dir, 'rrnas.tsv')):
+        copy2(path.join(tmp_dir, 'rrnas.tsv'), path.join(output_dir, 'rrnas.tsv'))
     copy2(path.join(tmp_dir, '%s.gbk' % fasta_name), path.join(output_dir, 'scaffolds.gbk'))
 
     # clean up
