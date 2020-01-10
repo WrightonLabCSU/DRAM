@@ -7,6 +7,7 @@ Base = declarative_base()
 
 KEGG_DESCRIPTION_TABLE_NAME = 'kegg_description'
 
+
 # TODO: set up init statements that can parse the line into desired parameters
 
 class KeggDescription(Base):

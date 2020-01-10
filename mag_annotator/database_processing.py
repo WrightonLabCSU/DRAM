@@ -7,12 +7,17 @@ import json
 import gzip
 import tarfile
 import pandas as pd
+from collections import defaultdict
+from skbio import read as read_sequence
+from skbio import write as write_sequence
 
 from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file, merge_files
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.database_setup import create_description_db
 
+
 # TODO: check if dbcan or pfam is down, raise appropriate error
+# TODO: upgrade to pigz?
 
 
 def get_iso_date():
@@ -33,13 +38,67 @@ def make_header_dict_from_mmseqs_db(mmseqs_db):
     return [{'id': i.split(' ')[0], 'description': i} for i in mmseqs_headers]
 
 
-def process_kegg_db(output_dir, kegg_loc, download_date=None, threads=10, verbose=True):
-    check_file_exists(kegg_loc)
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text  # or whatever
+
+
+def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
+    """Takes kegg fasta file and gene ko link file, adds kos not already in headers to headers"""
+    genes_ko_dict = defaultdict(list)
+    if gene_ko_link_loc is not None:
+        if gene_ko_link_loc.endswith('.gz'):
+            gene_ko_link_fh = gzip.open(gene_ko_link_loc, 'rt')
+        else:
+            gene_ko_link_fh = open(gene_ko_link_loc)
+        for line in gene_ko_link_fh:
+            gene, ko = line.strip().split()
+            genes_ko_dict[gene].append(remove_prefix(ko, 'ko:'))
+    for seq in read_sequence(kegg_fasta, format='fasta'):
+        new_description = seq.metadata['description']
+        for ko in genes_ko_dict[seq.metadata['id']]:
+            if ko not in new_description:
+                new_description += '; %s' % ko
+        seq.metadata['description'] = new_description
+        yield seq
+
+
+def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc=None, download_date=None, threads=10, verbose=True):
     if download_date is None:
         download_date = get_iso_date()
+    if gene_ko_link_loc is not None:
+        # add KOs to end of header where KO is not already there
+        kegg_mod_loc = path.join(output_dir, 'kegg.mod.fa')
+        write_sequence(generate_modified_kegg_fasta(kegg_loc, gene_ko_link_loc),
+                       format='fasta', into=kegg_mod_loc)
+    else:
+        kegg_mod_loc = kegg_loc
+    # make mmseqsdb from modified kegg fasta
     kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
-    make_mmseqs_db(kegg_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
+    make_mmseqs_db(kegg_mod_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
     return kegg_mmseqs_db
+
+
+def download_and_process_kofam_hmms(output_dir, verbose=False):
+    kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
+    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
+    kofam_profiles = path.join(output_dir, 'kofam_profiles')
+    mkdir(kofam_profiles)
+    run_process(['tar', '-xzf', kofam_profile_tar_gz, '-C', kofam_profiles], verbose=verbose)
+    merged_kofam_profiles = path.join(output_dir, 'kofam_profiles.hmm')
+    merge_files(path.join(kofam_profiles, 'profiles', '*.hmm'), merged_kofam_profiles)
+    run_process(['hmmpress', '-f', merged_kofam_profiles], verbose=verbose)
+    return merged_kofam_profiles
+
+
+def download_and_process_kofam_ko_list(output_dir, verbose=False):
+    kofam_ko_list_gz = path.join(output_dir, 'kofam_ko_list.tsv.gz')
+    download_file('ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', kofam_ko_list_gz, verbose=verbose)
+    # TODO: fix this so that it is gunzipped to the path
+    kofam_ko_list = path.join(output_dir, 'kofam_ko_list.tsv')
+    run_process(['gunzip', kofam_ko_list_gz], verbose=verbose)
+    return kofam_ko_list
 
 
 def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
@@ -47,7 +106,7 @@ def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref
     """"""
     if uniref_fasta_zipped is None:  # download database if not provided
         uniref_fasta_zipped = path.join(output_dir, 'uniref%s.fasta.gz' % uniref_version)
-        uniref_url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' %\
+        uniref_url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' % \
                      (uniref_version, uniref_version)
         download_file(uniref_url, uniref_fasta_zipped, verbose=verbose)
     else:
@@ -216,24 +275,45 @@ def process_vogdb_descriptions(vog_annotations):
     return annotations_list
 
 
-def download_and_process_genome_summary_form(output_dir):
+def download_and_process_genome_summary_form(output_dir, branch='master'):
     genome_summary_form = path.join(output_dir, 'genome_summary_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/genome_summary_form.tsv',
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/genome_summary_form.tsv' % branch,
                   genome_summary_form, verbose=True)
     return genome_summary_form
 
 
-def download_and_process_function_heatmap_form(output_dir):
-    function_heatmap_form = path.join(output_dir, 'function_heatmap_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/shafferm/checkMetab/master/data/function_heatmap_form.tsv',
+def download_and_process_module_step_form(output_dir, branch='master'):
+    function_heatmap_form = path.join(output_dir, 'module_step_form.%s.tsv' % get_iso_date())
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/module_step_form.tsv' % branch,
                   function_heatmap_form, verbose=True)
     return function_heatmap_form
+
+
+def download_and_process_etc_module_database(output_dir, branch='master'):
+    etc_module_database = path.join(output_dir, 'etc_mdoule_database.%s.tsv' % get_iso_date())
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/etc_module_database.tsv' % branch,
+                  etc_module_database, verbose=True)
+    return etc_module_database
+
+
+def download_and_process_function_heatmap_form(output_dir, branch='master'):
+    function_heatmap_form = path.join(output_dir, 'function_heatmap_form.%s.tsv' % get_iso_date())
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/function_heatmap_form.tsv' % branch,
+                  function_heatmap_form, verbose=True)
+    return function_heatmap_form
+
+
+def download_and_process_amg_database(output_dir, branch='master'):
+    amg_database = path.join(output_dir, 'amg_database.%s.tsv' % get_iso_date())
+    download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/amg_database.tsv' % branch,
+                  amg_database, verbose=True)
+    return amg_database
 
 
 def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
     if loc is not None:  # if location give and exists then add to dict, else raise ValueError
         if check_file_exists(loc):
-            dict_to_update[name] = path.abspath(loc)
+            dict_to_update[name] = path.realpath(loc)
     else:  # if location not given and is not in dict then set to none, else leave previous value
         if name not in dict_to_update:
             dict_to_update[name] = None
@@ -247,14 +327,17 @@ def check_exists_and_add_to_description_db(loc, name, get_description_list, db_h
             db_handler.add_descriptions_to_database(description_list, name, clear_table=True)
 
 
-def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None,
-                       dbcan_fam_activities=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None,
-                       vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None,
-                       function_heatmap_form_loc=None, update_description_db=False):
-    """Processes pfam_hmm_dat"""
+def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_db_loc=None,
+                       pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None, dbcan_fam_activities=None,
+                       viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, vog_annotations=None,
+                       description_db_loc=None, genome_summary_form_loc=None, module_step_form_loc=None,
+                       etc_module_database_loc=None, function_heatmap_form_loc=None, amg_database_loc=None,
+                       update_description_db=False):
     db_dict = get_database_locs()
 
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(kofam_hmm_loc, 'kofam', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(kofam_ko_list_loc, 'kofam_ko_list', db_dict)
     db_dict = check_exists_and_add_to_location_dict(uniref_db_loc, 'uniref', db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_db_loc, 'pfam', db_dict)
     db_dict = check_exists_and_add_to_location_dict(pfam_hmm_dat, 'pfam_hmm_dat', db_dict)
@@ -266,16 +349,19 @@ def set_database_paths(kegg_db_loc=None, uniref_db_loc=None, pfam_db_loc=None, p
     db_dict = check_exists_and_add_to_location_dict(vog_annotations, 'vog_annotations', db_dict)
 
     db_dict = check_exists_and_add_to_location_dict(genome_summary_form_loc, 'genome_summary_form', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(module_step_form_loc, 'module_step_form', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(etc_module_database_loc, 'etc_module_database', db_dict)
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
+    db_dict = check_exists_and_add_to_location_dict(amg_database_loc, 'amg_database', db_dict)
 
     if description_db_loc is not None:
-        db_dict['description_db'] = description_db_loc
+        db_dict['description_db'] = path.realpath(description_db_loc)
 
     if update_description_db:
         populate_description_db(db_dict)
 
     # change data paths
-    with open(path.abspath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
+    with open(path.realpath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
         f.write(json.dumps(db_dict))
 
 
@@ -305,24 +391,42 @@ def populate_description_db(db_dict=None):
                                            db_handler)
 
 
-def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref_loc=None, uniref_version='90',
-                      pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='7',
-                      dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None, peptidase_loc=None,
-                      vogdb_loc=None, vogdb_version='latest', vog_annotations=None, keep_database_files=False,
+def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_download_date=None, uniref_loc=None,
+                      uniref_version='90', pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None,
+                      dbcan_version='7', dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None,
+                      peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
+                      genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
+                      function_heatmap_form_loc=None, amg_database_loc=None, keep_database_files=False, branch='master',
                       threads=10, verbose=True):
     # check that all given files exist
     if kegg_loc is not None:
         check_file_exists(kegg_loc)
+    if gene_ko_link_loc is not None:
+        check_file_exists(gene_ko_link_loc)
     if uniref_loc is not None:
         check_file_exists(uniref_loc)
     if pfam_loc is not None:
         check_file_exists(pfam_loc)
+    if pfam_hmm_dat is not None:
+        check_file_exists(pfam_hmm_dat)
     if dbcan_loc is not None:
         check_file_exists(dbcan_loc)
+    if dbcan_fam_activities is not None:
+        check_file_exists(dbcan_fam_activities)
+    if vogdb_loc is not None:
+        check_file_exists(vogdb_loc)
     if viral_loc is not None:
         check_file_exists(viral_loc)
     if peptidase_loc is not None:
         check_file_exists(peptidase_loc)
+    if genome_summary_form_loc is not None:
+        check_file_exists(genome_summary_form_loc)
+    if module_step_form_loc is not None:
+        check_file_exists(module_step_form_loc)
+    if function_heatmap_form_loc is not None:
+        check_file_exists(function_heatmap_form_loc)
+    if amg_database_loc is not None:
+        check_file_exists(amg_database_loc)
 
     # setup
     if not path.isdir(output_dir):
@@ -333,7 +437,8 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
     # get databases
     output_dbs = dict()
     if kegg_loc is not None:
-        output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, kegg_download_date, threads, verbose)
+        output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, gene_ko_link_loc, kegg_download_date, threads,
+                                                    verbose)
     output_dbs['uniref_db_loc'] = download_and_process_uniref(uniref_loc, temporary, uniref_version=uniref_version,
                                                               threads=threads, verbose=verbose)
     output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary, pfam_release=pfam_release,
@@ -346,17 +451,39 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
                                                                             verbose=verbose)
     output_dbs['vogdb_db_loc'] = download_and_process_vogdb(vogdb_loc, temporary, vogdb_release=vogdb_version,
                                                             verbose=verbose)
+    output_dbs['kofam_hmm_loc'] = download_and_process_kofam_hmms(temporary, verbose=verbose)
+    output_dbs['kofam_ko_list_loc'] = download_and_process_kofam_ko_list(temporary, verbose=verbose)
 
     # add genome summary form and function heatmap form
-    output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary)
-    output_dbs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(temporary)
+    if genome_summary_form_loc is None:
+        output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary, branch)
+    else:
+        output_dbs['genome_summary_form_loc'] = genome_summary_form_loc
+    if module_step_form_loc is None:
+        output_dbs['module_step_form_loc'] = download_and_process_module_step_form(temporary, branch)
+    else:
+        output_dbs['module_step_form_loc'] = module_step_form_loc
+    if etc_module_database_loc is None:
+        output_dbs['etc_module_database_loc'] = download_and_process_etc_module_database(temporary, branch)
+    else:
+        output_dbs['etc_module_database_loc'] = etc_module_database_loc
+    if function_heatmap_form_loc is None:
+        output_dbs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(temporary, branch)
+    else:
+        output_dbs['function_heatmap_form_loc'] = function_heatmap_form_loc
+    if function_heatmap_form_loc is None:
+        output_dbs['amg_database_loc'] = download_and_process_amg_database(temporary, branch)
+    else:
+        output_dbs['amg_database_loc'] = amg_database_loc
 
+    # move all files from temporary to output that will be kept
     for db_name, output_db in output_dbs.items():
         for db_file in glob('%s*' % output_db):
             move(db_file, path.join(output_dir, path.basename(db_file)))
         output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
 
     # get pfam and dbcan descriptions
+    # TODO: move this all up to be done with the rest of the downloading and processing
     if pfam_hmm_dat is None:
         pfam_hmm_dat = download_pfam_descriptions(output_dir, pfam_release=pfam_release, verbose=verbose)
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
@@ -367,7 +494,7 @@ def prepare_databases(output_dir, kegg_loc=None, kegg_download_date=None, uniref
         vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
     output_dbs['vog_annotations'] = vog_annotations
 
-    output_dbs['description_db_loc'] = path.abspath(path.join(output_dir, 'description_db.sqlite'))
+    output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
 
     set_database_paths(**output_dbs, update_description_db=True)
 
@@ -385,13 +512,17 @@ def is_db_in_dict(key, dict_):
 def print_database_locations():
     db_locs = get_database_locs()
 
-    print('KEGG db loc: %s' % is_db_in_dict('kegg', db_locs))
-    print('UniRef db loc: %s' % is_db_in_dict('uniref', db_locs))
-    print('Pfam db loc: %s' % is_db_in_dict('pfam', db_locs))
-    print('dbCAN db loc: %s' % is_db_in_dict('dbcan', db_locs))
-    print('RefSeq Viral db loc: %s' % is_db_in_dict('viral', db_locs))
-    print('MEROPS peptidase db loc: %s' % is_db_in_dict('peptidase', db_locs))
-    print('VOGDB db loc: %s' % is_db_in_dict('vogdb', db_locs))
-    print('Description db loc: %s' % is_db_in_dict('description_db', db_locs))
-    print('Genome summary form loc: %s' % is_db_in_dict('genome_summary_form', db_locs))
-    print('Function heatmap form loc: %s' % is_db_in_dict('function_heatmap_form', db_locs))
+    print('KEGG db location: %s' % is_db_in_dict('kegg', db_locs))
+    print('KOfam db location: %s' % is_db_in_dict('kofam', db_locs))
+    print('KOfam KO list location: %s' % is_db_in_dict('kofam_ko_list', db_locs))
+    print('UniRef db location: %s' % is_db_in_dict('uniref', db_locs))
+    print('Pfam db location: %s' % is_db_in_dict('pfam', db_locs))
+    print('dbCAN db location: %s' % is_db_in_dict('dbcan', db_locs))
+    print('RefSeq Viral db location: %s' % is_db_in_dict('viral', db_locs))
+    print('MEROPS peptidase db location: %s' % is_db_in_dict('peptidase', db_locs))
+    print('VOGDB db location: %s' % is_db_in_dict('vogdb', db_locs))
+    print('Description db location: %s' % is_db_in_dict('description_db', db_locs))
+    print('Genome summary form location: %s' % is_db_in_dict('genome_summary_form', db_locs))
+    print('ETC module database location: %s' % is_db_in_dict('etc_module_database', db_locs))
+    print('Function heatmap form location: %s' % is_db_in_dict('function_heatmap_form', db_locs))
+    print('AMG database location: %s' % is_db_in_dict('amg_database', db_locs))

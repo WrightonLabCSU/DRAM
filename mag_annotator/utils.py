@@ -1,4 +1,6 @@
+import re
 import subprocess
+from collections import Counter
 from glob import glob
 from os import path
 from pkg_resources import resource_filename
@@ -20,7 +22,7 @@ def download_file(url, output_file=None, verbose=True):
         run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
-def run_process(command, shell=False, capture_stdout=True, verbose=False):
+def run_process(command, shell=False, capture_stdout=True, check=True, verbose=False):
     """Standardization of parameters for using subprocess.run, provides verbose mode and option to run via shell"""
     stdout = subprocess.DEVNULL
     stderr = subprocess.DEVNULL
@@ -28,10 +30,10 @@ def run_process(command, shell=False, capture_stdout=True, verbose=False):
         stdout = None
         stderr = None
     if capture_stdout:
-        return subprocess.run(command, check=True, shell=shell, stdout=subprocess.PIPE,
+        return subprocess.run(command, check=check, shell=shell, stdout=subprocess.PIPE,
                               stderr=stderr).stdout.decode(errors='ignore')
     else:
-        subprocess.run(command, check=True, shell=shell, stdout=stdout, stderr=stderr)
+        subprocess.run(command, check=check, shell=shell, stdout=stdout, stderr=stderr)
 
 
 def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose=False):
@@ -69,3 +71,19 @@ def merge_files(paths_to_files_to_merge, outfile, has_header=False):
                     if has_header:
                         _ = f.readline()
                     outfile_handle.write(f.read())
+
+
+def get_ids_from_annotation(frame):
+    id_list = list()
+    # get kegg ids
+    id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
+    # get ec numbers
+    for kegg_hit in frame.kegg_hit.dropna():
+        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
+    # get merops ids
+    id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
+    # get cazy ids
+    id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
+    # get pfam ids
+    id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna() for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', i)]
+    return Counter(id_list)

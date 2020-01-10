@@ -13,3 +13,7 @@ dependencies:
   - sqlalchemy
   - barrnap
   - altair
+  - openpyxl
+  - networkx
+  - ruby
+  - parallel

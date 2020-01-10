@@ -7,10 +7,10 @@ __version__ = version
 setup(
     name="DRAM",
     version=__version__,
-    scripts=['scripts/DRAM.py'],
+    scripts=['scripts/DRAM.py', 'scripts/DRAM-v.py'],
     packages=find_packages(),
     package_data={'mag_annotator': ['CONFIG']},
-    install_requires=['scikit-bio', 'pandas', 'altair', 'sqlalchemy'],
+    install_requires=['scikit-bio', 'pandas', 'altair', 'sqlalchemy', 'networkx', 'openpyxl', 'numpy'],
     description="Annotate contigs/bins from metagenomic assemblies and create predicted metabolisms",
     author="Michael Shaffer",
     author_email='michael.t.shaffer@colostate.edu',
