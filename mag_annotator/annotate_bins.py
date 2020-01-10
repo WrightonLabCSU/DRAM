@@ -445,8 +445,8 @@ def annotate_gff(input_gff, output_gff, annotations, prefix):
     f = open(input_gff)
     o = open(output_gff, 'w')
     for line in f:
+        line = line.strip()
         if not line.startswith('#') and not line.startswith('\n'):
-            line = line.strip()
             # replace id with new name
             old_scaffold = line.split('\t')[0]
             line = '%s_%s' % (prefix, line)
@@ -458,17 +458,18 @@ def annotate_gff(input_gff, output_gff, annotations, prefix):
             # get annotations to add from annotations file and add to end of line
             annotations_to_add = {i: annotations.loc[old_gene_name, i] for i in annotations.columns
                                   if i.endswith('_id')}
-            line += '%s;' % ';'.join(['%s=%s' % (key.strip(), value.strip())
+            line += '%s;' % ';'.join(['db_xref="%s:%s"' % (key.strip(), value.strip())
                                       for key, value in annotations_to_add.items()
                                       if not pd.isna(value) and value != ''])
         o.write('%s\n' % line)
 
 
-def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', output_gbk=None):
+def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', faa_loc='genes.faa', output_gbk=None):
     # scikit-bio can make a genbank for a concatenated gff and fasta file so make this first
     gff = open(gff_loc)
     fasta = open(fasta_loc)
     fasta_records = len([i for i in read_sequence(open(fasta_loc), format='fasta')])  # get number of fasta records
+    aa_records = {i.metadata['id']: i for i in read_sequence(faa_loc, format='fasta')}
     # the gff with fasta format is the gff then ##FASTA then the fasta
     concat_gff = '%s\n##FASTA\n%s' % (gff.read(), fasta.read())
 
@@ -484,6 +485,10 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
                                  'shape': 'linear',
                                  'division': 'ENV',
                                  'date': time.strftime('%d-%^b-%Y')}
+        seq_bounds = (seq.interval_metadata.lower_bound, seq.interval_metadata.upper_bound)
+        for interval in seq.interval_metadata.query([seq_bounds]):
+            interval.metadata['gene'] = interval.metadata['ID']
+            interval.metadata['translation'] = aa_records[interval.metadata['ID']]
         # need to capture genbank output so we can combine into a multi-genbank file
         capture_print = io.StringIO()
         seq.write(capture_print, format='genbank')
