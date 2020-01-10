@@ -118,9 +118,12 @@ if __name__ == '__main__':
                                                                                 "multiple times.")
     annotate_parser.add_argument('--custom_fasta_loc', action='append',
                                  help="Location of fastas to annotated against, can be used multiple times but"
-                                           "must match nubmer of custom_db_name's")
-    annotate_parser.add_argument('--gtdb_taxonomy', help='Summary file from gtdbtk taxonomy assignment from bins')
-    annotate_parser.add_argument('--checkm_quality', help='Summary of of checkM quality assessment from bins')
+                                      "must match nubmer of custom_db_name's")
+    annotate_parser.add_argument('--gtdb_taxonomy', action='append',
+                                 help='Summary file from gtdbtk taxonomy assignment from bins, can be used multiple'
+                                      'times')
+    annotate_parser.add_argument('--checkm_quality', action='append',
+                                 help='Summary of of checkM quality assessment from bins, can be used multiple times')
     annotate_parser.add_argument('--skip_uniref', action='store_true', default=False,
                                  help='Skip annotating with UniRef, drastically decreases run time and memory'
                                            'requirements')

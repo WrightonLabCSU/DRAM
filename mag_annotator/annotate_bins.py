@@ -708,7 +708,7 @@ def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_uniref=True,
-                  skip_trnascan=False, gtdb_taxonomy=None, checkm_quality=None, keep_tmp_dir=True, threads=10,
+                  skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True, threads=10,
                   verbose=True):
     # set up
     start_time = datetime.now()
@@ -746,11 +746,11 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     all_annotations = pd.concat(annotations_list, sort=False)
     all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
     # if given add taxonomy information
-    if gtdb_taxonomy is not None:
-        gtdb_taxonomy = pd.read_csv(gtdb_taxonomy, sep='\t', index_col=0)
+    if len(gtdb_taxonomy) == 0:
+        gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
         all_annotations['bin_taxonomy'] = [gtdb_taxonomy.loc[i, 'classification'] for i in all_annotations.fasta]
-    if checkm_quality is not None:
-        checkm_quality = pd.read_csv(checkm_quality, sep='\t', index_col=0)
+    if len(checkm_quality) == 0:
+        checkm_quality = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in checkm_quality])
         checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
         all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
         all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination'] for i in all_annotations.fasta]
