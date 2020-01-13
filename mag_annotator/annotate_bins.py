@@ -686,7 +686,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
     annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
     current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
-    make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
+    make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, annotated_faa, current_gbk)
 
     # get tRNAs and rRNAs
     if not skip_trnascan:
