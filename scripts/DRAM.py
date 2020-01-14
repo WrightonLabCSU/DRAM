@@ -121,8 +121,8 @@ if __name__ == '__main__':
                                       "must match nubmer of custom_db_name's")
     annotate_parser.add_argument('--gtdb_taxonomy', action='append',
                                  help='Summary file from gtdbtk taxonomy assignment from bins, can be used multiple'
-                                      'times')
-    annotate_parser.add_argument('--checkm_quality', action='append',
+                                      'times', default=())
+    annotate_parser.add_argument('--checkm_quality', action='append', default=(),
                                  help='Summary of of checkM quality assessment from bins, can be used multiple times')
     annotate_parser.add_argument('--skip_uniref', action='store_true', default=False,
                                  help='Skip annotating with UniRef, drastically decreases run time and memory'
