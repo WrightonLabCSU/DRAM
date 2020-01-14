@@ -1,6 +1,7 @@
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
 from skbio import Sequence
+from skbio.metadata import IntervalMetadata
 from os import path, mkdir, stat
 from shutil import rmtree, copy2
 import pandas as pd
@@ -514,6 +515,42 @@ def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
         warnings.warn('No tRNAs were detected, no trnas.tsv file will be created.')
 
 
+def add_trnas_to_gff(trnas, gff_loc, fasta_loc):
+    # get fasta length dict so we can merge, I'd love to be able to get this from somewhere else
+    len_dict = {i.metadata['id']: len(i) for i in read_sequence(fasta_loc, format='fasta')}
+    # read and process trnas to intervals
+    trnas = pd.read_csv(trnas, sep='\t')
+    trnas = trnas.drop(['Begin', 'End'], axis=1)  # get rid of the second begin and end columns used for pseudos
+    trnas.columns = [i.strip() for i in trnas.columns]  # strip whitespace from column names
+    trna_dict = dict()
+    for fasta, frame in trnas.groupby('Name'):
+        fasta = fasta.strip()
+        im = IntervalMetadata(len_dict[fasta])
+        for trna, row in frame.iterrows():
+            if row.Begin < row.End:
+                begin = row.Begin
+                end = row.End
+                strand = '+'
+            else:
+                begin = row.End
+                end = row.Begin
+                strand = '-'
+            metadata = {'source': 'tRNAscan-SE', 'type': 'tRNA', 'score': row.Score, 'strand': strand, 'phase': 0,
+                        'ID': '%s_tRNA_%s' % (fasta, row['tRNA #']), 'codon': row.Codon}
+            if not pd.isna(row.Note):
+                metadata['None'] = row.Note
+            im.add(bounds=[(begin, end)], metadata=metadata)
+        trna_dict[fasta] = im
+    # add trna intervals to gff
+    gff = read_sequence(gff_loc, format='gff3')
+    with open(gff_loc, 'w') as f:
+        for fasta, gff_intervals in gff:
+            gff_intervals = IntervalMetadata(len_dict[fasta], gff_intervals)
+            gff_intervals.merge(trna_dict[fasta])
+            gff_intervals.sort()
+            f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=fasta).getvalue())
+
+
 RAW_RRNA_COLUMNS = ['scaffold', 'tool_name', 'type', 'begin', 'end', 'e-value', 'strand', 'empty', 'note']
 RRNA_COLUMNS = ['fasta', 'begin', 'end', 'strand', 'type', 'e-value', 'note']
 
@@ -534,6 +571,33 @@ def run_barrnap(fasta, output_loc, fasta_name, threads=10, verbose=True):
         rrna_table.to_csv(processed_rrnas, sep='\t')
     else:
         warnings.warn('No rRNAs were detected, no rrnas.tsv file will be created.')
+
+
+def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
+    # get fasta length dict so we can merge, I'd love to be able to get this from somewhere else
+    len_dict = {i.metadata['id']: len(i) for i in read_sequence(fasta_loc, format='fasta')}
+    # read and process trnas to intervals
+    rrnas = pd.read_csv(rrnas, sep='\t')
+    rrna_dict = dict()
+    for fasta, frame in rrnas.groupby('Name'):
+        fasta = fasta.strip()
+        im = IntervalMetadata(len_dict[fasta])
+        for i, (rrna, row) in enumerate(frame.iterrows()):
+            metadata = {'source': 'barrnap', 'type': 'rRNA', 'score': row['e-value'], 'strand': row.strand, 'phase': 0,
+                        'ID': '%s_rRNA_%s' % (fasta, i), 'product': row.type,
+                        'pseudo': str(row.Note == 'pseudo')}
+            if not pd.isna(row.note):
+                metadata['Note'] = row.Note
+            im.add(bounds=[(row.begin, row.end)], metadata=metadata)
+        rrna_dict[fasta] = im
+    # add trna intervals to gff
+    gff = read_sequence(gff_loc, format='gff3')
+    with open(gff_loc, 'w') as f:
+        for fasta, gff_intervals in gff:
+            gff_intervals = IntervalMetadata(len_dict[fasta], gff_intervals)
+            gff_intervals.merge(rrna_dict[fasta])
+            gff_intervals.sort()
+            f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=fasta).getvalue())
 
 
 def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_description, start_time,
@@ -691,7 +755,9 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     # get tRNAs and rRNAs
     if not skip_trnascan:
         run_trna_scan(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
+        add_trnas_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, renamed_scaffolds)
     run_barrnap(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
+    add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
 
     # add fasta name to frame and index, append to list
     annotations.insert(0, 'fasta', fasta_name)
