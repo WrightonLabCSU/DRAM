@@ -523,9 +523,9 @@ def add_trnas_to_gff(trnas, gff_loc, fasta_loc):
     trnas = trnas.drop(['Begin', 'End'], axis=1)  # get rid of the second begin and end columns used for pseudos
     trnas.columns = [i.strip() for i in trnas.columns]  # strip whitespace from column names
     trna_dict = dict()
-    for fasta, frame in trnas.groupby('Name'):
-        fasta = fasta.strip()
-        im = IntervalMetadata(len_dict[fasta])
+    for scaffold, frame in trnas.groupby('Name'):
+        scaffold = scaffold.strip()
+        im = IntervalMetadata(len_dict[scaffold])
         for trna, row in frame.iterrows():
             if row.Begin < row.End:
                 begin = row.Begin
@@ -536,20 +536,20 @@ def add_trnas_to_gff(trnas, gff_loc, fasta_loc):
                 end = row.Begin
                 strand = '-'
             metadata = {'source': 'tRNAscan-SE', 'type': 'tRNA', 'score': row.Score, 'strand': strand, 'phase': 0,
-                        'ID': '%s_tRNA_%s' % (fasta, row['tRNA #']), 'codon': row.Codon}
+                        'ID': '%s_tRNA_%s' % (scaffold, row['tRNA #']), 'codon': row.Codon}
             if not pd.isna(row.Note):
                 metadata['None'] = row.Note
             im.add(bounds=[(begin, end)], metadata=metadata)
-        trna_dict[fasta] = im
+        trna_dict[scaffold] = im
     # add trna intervals to gff
     gff = read_sequence(gff_loc, format='gff3')
     with open(gff_loc, 'w') as f:
-        for fasta, gff_intervals in gff:
-            gff_intervals = IntervalMetadata(len_dict[fasta], gff_intervals)
-            if fasta in trna_dict:
-                gff_intervals.merge(trna_dict[fasta])
+        for scaffold, gff_intervals in gff:
+            gff_intervals = IntervalMetadata(len_dict[scaffold], gff_intervals)
+            if scaffold in trna_dict:
+                gff_intervals.merge(trna_dict[scaffold])
                 gff_intervals.sort()
-            f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=fasta).getvalue())
+            f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=scaffold).getvalue())
 
 
 RAW_RRNA_COLUMNS = ['scaffold', 'tool_name', 'type', 'begin', 'end', 'e-value', 'strand', 'empty', 'note']
@@ -580,26 +580,26 @@ def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
     # read and process trnas to intervals
     rrnas = pd.read_csv(rrnas, sep='\t')
     rrna_dict = dict()
-    for fasta, frame in rrnas.groupby('Name'):
-        fasta = fasta.strip()
-        im = IntervalMetadata(len_dict[fasta])
+    for scaffold, frame in rrnas.groupby('scaffold'):
+        scaffold = scaffold.strip()
+        im = IntervalMetadata(len_dict[scaffold])
         for i, (rrna, row) in enumerate(frame.iterrows()):
             metadata = {'source': 'barrnap', 'type': 'rRNA', 'score': row['e-value'], 'strand': row.strand, 'phase': 0,
-                        'ID': '%s_rRNA_%s' % (fasta, i), 'product': row.type,
+                        'ID': '%s_rRNA_%s' % (scaffold, i), 'product': row.type,
                         'pseudo': str(row.Note == 'pseudo')}
             if not pd.isna(row.note):
                 metadata['Note'] = row.Note
             im.add(bounds=[(row.begin, row.end)], metadata=metadata)
-        rrna_dict[fasta] = im
+        rrna_dict[scaffold] = im
     # add trna intervals to gff
     gff = read_sequence(gff_loc, format='gff3')
     with open(gff_loc, 'w') as f:
-        for fasta, gff_intervals in gff:
-            gff_intervals = IntervalMetadata(len_dict[fasta], gff_intervals)
-            if fasta in rrna_dict:
-                gff_intervals.merge(rrna_dict[fasta])
+        for scaffold, gff_intervals in gff:
+            gff_intervals = IntervalMetadata(len_dict[scaffold], gff_intervals)
+            if scaffold in rrna_dict:
+                gff_intervals.merge(rrna_dict[scaffold])
                 gff_intervals.sort()
-            f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=fasta).getvalue())
+            f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=scaffold).getvalue())
 
 
 def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_description, start_time,
