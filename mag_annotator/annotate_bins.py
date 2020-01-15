@@ -489,7 +489,8 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
         seq_bounds = (seq.interval_metadata.lower_bound, seq.interval_metadata.upper_bound)
         for interval in seq.interval_metadata.query([seq_bounds]):
             interval.metadata['gene'] = interval.metadata['ID']
-            interval.metadata['translation'] = aa_records[interval.metadata['ID']]
+            if interval.metadata['ID'] in aa_records:
+                interval.metadata['translation'] = aa_records[interval.metadata['ID']]
         # need to capture genbank output so we can combine into a multi-genbank file
         capture_print = io.StringIO()
         seq.write(capture_print, format='genbank')
