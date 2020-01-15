@@ -546,8 +546,9 @@ def add_trnas_to_gff(trnas, gff_loc, fasta_loc):
     with open(gff_loc, 'w') as f:
         for fasta, gff_intervals in gff:
             gff_intervals = IntervalMetadata(len_dict[fasta], gff_intervals)
-            gff_intervals.merge(trna_dict[fasta])
-            gff_intervals.sort()
+            if fasta in trna_dict:
+                gff_intervals.merge(trna_dict[fasta])
+                gff_intervals.sort()
             f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=fasta).getvalue())
 
 
@@ -595,8 +596,9 @@ def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
     with open(gff_loc, 'w') as f:
         for fasta, gff_intervals in gff:
             gff_intervals = IntervalMetadata(len_dict[fasta], gff_intervals)
-            gff_intervals.merge(rrna_dict[fasta])
-            gff_intervals.sort()
+            if fasta in rrna_dict:
+                gff_intervals.merge(rrna_dict[fasta])
+                gff_intervals.sort()
             f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=fasta).getvalue())
 
 
@@ -749,8 +751,6 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
     renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
     annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
-    current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
-    make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, annotated_faa, current_gbk)
 
     # get tRNAs and rRNAs
     if not skip_trnascan:
@@ -758,6 +758,10 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         add_trnas_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, renamed_scaffolds)
     run_barrnap(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
     add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
+
+    # make genbank file
+    current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
+    make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, annotated_faa, current_gbk)
 
     # add fasta name to frame and index, append to list
     annotations.insert(0, 'fasta', fasta_name)
