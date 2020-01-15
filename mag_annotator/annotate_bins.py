@@ -585,8 +585,7 @@ def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
         im = IntervalMetadata(len_dict[scaffold])
         for i, (rrna, row) in enumerate(frame.iterrows()):
             metadata = {'source': 'barrnap', 'type': 'rRNA', 'score': row['e-value'], 'strand': row.strand, 'phase': 0,
-                        'ID': '%s_rRNA_%s' % (scaffold, i), 'product': row.type,
-                        'pseudo': str(row.Note == 'pseudo')}
+                        'ID': '%s_rRNA_%s' % (scaffold, i), 'product': row.type}
             if not pd.isna(row.note):
                 metadata['Note'] = row.Note
             im.add(bounds=[(row.begin, row.end)], metadata=metadata)
