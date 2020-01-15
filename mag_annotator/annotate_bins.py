@@ -588,10 +588,10 @@ def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
             metadata = {'source': 'barrnap', 'type': 'rRNA', 'score': row['e-value'], 'strand': row.strand, 'phase': 0,
                         'ID': '%s_rRNA_%s' % (scaffold, i), 'product': row.type}
             if not pd.isna(row.note):
-                metadata['Note'] = row.Note
+                metadata['Note'] = row.note
             im.add(bounds=[(row.begin, row.end)], metadata=metadata)
         rrna_dict[scaffold] = im
-    # add trna intervals to gff
+    # add rrna intervals to gff
     gff = read_sequence(gff_loc, format='gff3')
     with open(gff_loc, 'w') as f:
         for scaffold, gff_intervals in gff:
