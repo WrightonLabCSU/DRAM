@@ -49,8 +49,8 @@ Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	trimethylamine
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	dimethylamine => monomethylamine	K16178	mtbB; dimethylamine--	mtbB
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	trimethylamine => dimethylamine	K16176	mtmB; methylamine--	mtmB
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	putative but not defining CO2 => methane	K00200	formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]
-Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methane => methanol, with oxygen	K10944, K10945, K10946	pmoA; Methane/ammonia monooxygenase subunit A (aka: Particulate methane monoxygenase, or subunit Beta) [EC:1.14.18.3] [RN:R09518]	pmoA
-Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methane => methanol, with oxygen	K16157, K16158, K16159, K16160, K16161, K16162	mmoX; Methane monooxygenase component A alpha chain (aka: Soluble methane monooxygenase, or methane hydroxylase) [EC1.14.13.25] [RN:R01142]
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methane => methanol, with oxygen (pmo)	K10944, K10945, K10946	pmoA; Methane/ammonia monooxygenase subunit A (aka: Particulate methane monoxygenase, or subunit Beta) [EC:1.14.18.3] [RN:R09518]	pmoA
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methane => methanol, with oxygen (mmo)	K16157, K16158, K16159, K16160, K16161, K16162	mmoX; Methane monooxygenase component A alpha chain (aka: Soluble methane monooxygenase, or methane hydroxylase) [EC1.14.13.25] [RN:R01142]
 SCFA  and alcohol conversions	SCFA  and alcohol conversions	pyruvate => acetyl CoA v1	K00163	pyruvate dehydrogenase E1 component [EC:1.2.4.1]
 SCFA  and alcohol conversions	SCFA  and alcohol conversions	pyruvate => acetyl CoA v2	K00174	2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit alpha [EC:1.2.7.3, 1.2.7.11]
 SCFA  and alcohol conversions	SCFA  and alcohol conversions	pyruvate => acetylCoA f+ formate v3	K00656	formate C-acetyltransferase [EC:2.3.1.54]
