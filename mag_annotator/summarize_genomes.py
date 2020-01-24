@@ -205,8 +205,8 @@ def get_module_step_coverage(kos, module_net):
         if ('end_step' in node) and pruned_module_net.in_degree(node) == 0:
             missing_steps.append(int(node.split('_')[-1]))
     # get statistics
-    num_steps = pruned_module_net.graph['num_steps']
-    num_steps_present = num_steps - len(missing_steps) + 1  # But should we +1?
+    num_steps = pruned_module_net.graph['num_steps'] + 1
+    num_steps_present = num_steps - len(missing_steps)
     coverage = num_steps_present / num_steps
     return num_steps, num_steps_present, coverage, sorted(module_kos_present)
 
