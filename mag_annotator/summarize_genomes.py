@@ -200,13 +200,13 @@ def get_module_step_coverage(kos, module_net):
             else:
                 module_kos_present = module_kos_present | ko_overlap
     # count number of missing steps
-    missing_steps = list()
+    missing_steps = 0
     for node, data in pruned_module_net.nodes.items():
         if ('end' in node) and pruned_module_net.in_degree(node) == 0:
-            missing_steps.append(int(node.split('_')[-1]))
+            missing_steps += 1
     # get statistics
     num_steps = pruned_module_net.graph['num_steps'] + 1
-    num_steps_present = num_steps - len(missing_steps)
+    num_steps_present = num_steps - missing_steps
     coverage = num_steps_present / num_steps
     return num_steps, num_steps_present, coverage, sorted(module_kos_present)
 
