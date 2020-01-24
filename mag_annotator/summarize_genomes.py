@@ -174,17 +174,13 @@ def build_module_net(module_df):
                             module_name=list(module_df.module_name)[0])
     for module_path, frame in module_df.groupby('path'):
         split_path = [int(i) for i in module_path.split(',')]
+        step = split_path[0]
         module_net.add_node(module_path, kos=set(frame.ko))
         # add incoming edge
-        if module_path[0] == 0:
-            module_net.add_edge('begin', module_path)
-        else:
-            module_net.add_edge('end_step_%s' % (split_path[0] - 1), module_path)
+        if step != 0:
+            module_net.add_edge('end_step_%s' % (step - 1), module_path)
         # add outgoing edge
-        if split_path[0] == num_steps:
-            module_net.add_edge(module_path, 'end')
-        else:
-            module_net.add_edge(module_path, 'end_step_%s' % split_path[0])
+        module_net.add_edge(module_path, 'end_step_%s' % step)
     return module_net
 
 
@@ -202,7 +198,7 @@ def get_module_step_coverage(kos, module_net):
     # count number of missing steps
     missing_steps = 0
     for node, data in pruned_module_net.nodes.items():
-        if ('end' in node) and pruned_module_net.in_degree(node) == 0:
+        if ('end_step' in node) and (pruned_module_net.in_degree(node) == 0):
             missing_steps += 1
     # get statistics
     num_steps = pruned_module_net.graph['num_steps'] + 1
