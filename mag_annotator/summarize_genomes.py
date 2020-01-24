@@ -202,7 +202,7 @@ def get_module_step_coverage(kos, module_net):
     # count number of missing steps
     missing_steps = list()
     for node, data in pruned_module_net.nodes.items():
-        if ('end_step' in node) and pruned_module_net.in_degree(node) == 0:
+        if ('end' in node) and pruned_module_net.in_degree(node) == 0:
             missing_steps.append(int(node.split('_')[-1]))
     # get statistics
     num_steps = pruned_module_net.graph['num_steps'] + 1
