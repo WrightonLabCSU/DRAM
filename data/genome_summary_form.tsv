@@ -3577,4 +3577,40 @@ K02233	E2.7.8.26, cobS, cobV; adenosylcobinamide-GDP ribazoletransferase [EC:2.7
 K06073	ABC.VB12.P, btuC; vitamin B12 transport system permease protein	Cobalamin salvage	Transporters	Vitamin B12 transport system
 K06074	ABC.VB12.A, btuD; vitamin B12 transport system ATP-binding protein [EC:3.6.3.33]	Cobalamin salvage	Transporters	Vitamin B12 transport system
 K06858	ABC.VB12.S1, btuF; vitamin B12 transport system substrate-binding protein	Cobalamin salvage	Transporters	Vitamin B12 transport system
-K16092	btuB; vitamin B12 transporter	Cobalamin salvage	Transporters	Vitamin B12 transport system	
+K16092	btuB; vitamin B12 transporter	Cobalamin salvage	Transporters	Vitamin B12 transport system
+K02406	flagellin	Flagellar Assembly	MISC	Flagella Structure
+K02407	flagellar hook-associated protein 2	Flagellar Assembly	MISC	Flagella Structure
+K02397	flagellar hook-associated protein 3 FlgL	Flagellar Assembly	MISC	Flagella Structure
+K02396	flagellar hook-associated protein 1 FlgK	Flagellar Assembly	MISC	Flagella Structure
+K02414	flagellar hook-length control protein FliK	Flagellar Assembly	MISC	Flagella Structure
+K02389	flagellar basal-body rod modification protein FlgD	Flagellar Assembly	MISC	Flagella Structure
+K02390	flagellar hook protein FlgE	Flagellar Assembly	MISC	Flagella Structure
+K02391	flagellar basal-body rod protein FlgF	Flagellar Assembly	MISC	Flagella Structure
+K02392	flagellar basal-body rod protein FlgG	Flagellar Assembly	MISC	Flagella Structure
+K02393	flagellar L-ring protein precursor FlgH	Flagellar Assembly	MISC	Flagella Structure
+K02394	flagellar P-ring protein precursor FlgI	Flagellar Assembly	MISC	Flagella Structure
+K02387	flagellar basal-body rod protein FlgB	Flagellar Assembly	MISC	Flagella Structure
+K02388	flagellar basal-body rod protein FlgC	Flagellar Assembly	MISC	Flagella Structure
+K02408	flagellar hook-basal body complex protein FliE	Flagellar Assembly	MISC	Flagella Structure
+K02409	flagellar M-ring protein FliF	Flagellar Assembly	MISC	Flagella Structure
+K02410	flagellar motor switch protein FliG	Flagellar Assembly	MISC	Flagella Structure
+K02416	flagellar motor switch protein FliM	Flagellar Assembly	MISC	Flagella Structure
+K02417	flagellar motor switch protein FliN/FliY	Flagellar Assembly	MISC	Flagella Structure
+K02400	flagellar biosynthesis protein FlhA	Flagellar Assembly	MISC	Flagella Structure
+K02401	flagellar biosynthetic protein FlhB	Flagellar Assembly	MISC	Flagella Structure
+K02411	flagellar assembly protein FliH	Flagellar Assembly	MISC	Flagella Structure
+K02412	flagellum-specific ATP synthase [EC:7.4.2.8]	Flagellar Assembly	MISC	Flagella Structure
+K02418	flagellar protein FliO/FliZ	Flagellar Assembly	MISC	Flagella Structure
+K02419	flagellar biosynthetic protein FliP	Flagellar Assembly	MISC	Flagella Structure
+K02420	flagellar biosynthetic protein FliQ	Flagellar Assembly	MISC	Flagella Structure
+K02421	flagellar biosynthetic protein FliR	Flagellar Assembly	MISC	Flagella Structure
+K13820	flagellar biosynthetic protein FliR/FlhB	Flagellar Assembly	MISC	Flagella Structure
+K02556	chemotaxis protein MotA	Flagellar Assembly	MISC	Flagella Structure
+K02557	chemotaxis protein MotB	Flagellar Assembly	MISC	Flagella Structure
+K21217	sodium-type polar flagellar protein MotX	Flagellar Assembly	MISC	Flagella Structure
+K21218	sodium-type flagellar protein MotY	Flagellar Assembly	MISC	Flagella Structure
+K02399	flagella synthesis protein FlgN	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone
+K02413	flagellar FliJ protein	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone
+K02422	flagellar protein FliS	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone
+K02423	flagellar protein FliT	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone
+K02386	flagella basal body P-ring formation protein FlgA	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone
