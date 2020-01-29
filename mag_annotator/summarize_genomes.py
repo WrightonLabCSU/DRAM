@@ -401,7 +401,8 @@ def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta
             rows.append([row.category, row.subcategory, row.function_name, ', '.join(functions_present),
                          row.long_function_name, row.gene_symbol, bin_name,
                          present_in_bin, '%s: %s' % (row.category,row.function_name)])
-    return pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['bin', 'present', 'category_function'])
+    return pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['bin', 'present',
+                                                                             'category_function_name'])
 
 
 def make_functional_heatmap(functional_df, mag_order=None):
