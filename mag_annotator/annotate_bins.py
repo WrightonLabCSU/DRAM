@@ -726,7 +726,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, tmp_dir, threads, verbose)
+    custom_tmp_dir = path.join(tmp_dir, 'custom_tmp_dir')
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, custom_tmp_dir, threads, verbose)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # iterate over list of fastas and annotate each individually

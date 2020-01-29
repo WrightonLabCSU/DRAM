@@ -276,7 +276,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, tmp_dir, threads, verbose)
+    custom_db_tmp_dir = path.join(tmp_dir, 'custom_db_tmp')
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, custom_db_tmp_dir, threads, verbose)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # iterate over list of fastas and annotate each individually
