@@ -499,5 +499,8 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     function_df = make_functional_df(annotations, function_heatmap_form, groupby_column)
     function_heatmap = make_functional_heatmap(function_df, mag_order)
 
+    liquor_df = pd.concat([module_coverage_frame, etc_module_df, function_df], axis=1, sort=False)
+    liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
+
     liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
     liquor.save(path.join(output_dir, 'liquor.html'))
