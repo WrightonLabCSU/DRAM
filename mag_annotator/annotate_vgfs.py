@@ -301,6 +301,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
         for scaffold, dram_frame in annotations.groupby('scaffold'):
             virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
             virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
+            if virsorter_frame.shape[0] == 0:
+                raise ValueError("No virsorter genes found for scaffold %s from input fasta" % scaffold)
             gene_order = get_gene_order(dram_frame, virsorter_frame)
             gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
                                                  gene_order if dram_gene is not None})
