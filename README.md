@@ -9,7 +9,7 @@ DRAM is ran in two stages. Additionally viral contigs are further analyzed to id
 an auxilary score and flags representing the likelihood that a gene is metabolic and viral. The auxilary score represents the
 confidence that a gene is viral in origin based on surrounding genes.
 
-DRAM annotations can then be summarized from a microbial MAG or viral perspective. For both types of annotations 
+For more detail on DRAM and how DRAM works please see the wiki: https://github.com/shafferm/DRAM/wiki
 
 ## Installation
 To install DRAM some dependencies need to be installed first then DRAM can be installed from this repository. 
