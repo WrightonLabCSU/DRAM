@@ -267,7 +267,8 @@ def get_virsorter_affi_contigs_name(scaffold):
 
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=5000,
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  skip_uniref=True, skip_trnascan=False, keep_tmp_dir=True, threads=10, verbose=True):
+                  genes_called=False, skip_uniref=True, skip_trnascan=False, keep_tmp_dir=True, threads=10,
+                  verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -289,7 +290,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     fasta_name = path.splitext(path.basename(input_fasta.strip('.gz')))[0]
     annotations = annotate_fasta(input_fasta, fasta_name, tmp_dir, db_locs, db_handler, min_contig_size, custom_db_locs,
                                  None, bit_score_threshold, rbh_bit_score_threshold, skip_uniref, skip_trnascan,
-                                 start_time, threads, verbose)
+                                 start_time, genes_called, threads, verbose)
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # setting up scoring viral genes

@@ -124,9 +124,11 @@ if __name__ == '__main__':
                                       'times')
     annotate_parser.add_argument('--checkm_quality', action='append',
                                  help='Summary of of checkM quality assessment from bins, can be used multiple times')
+    annotate_parser.add_argument('--genes_called', action='store_true', default=False,
+                                 help='if you are passing a file of amino acid sequences')
     annotate_parser.add_argument('--skip_uniref', action='store_true', default=False,
                                  help='Skip annotating with UniRef, drastically decreases run time and memory'
-                                           'requirements')
+                                      'requirements')
     annotate_parser.add_argument('--skip_trnascan', action='store_true', default=False)
     annotate_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
