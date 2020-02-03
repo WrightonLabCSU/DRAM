@@ -56,7 +56,10 @@ def get_virsorter_hits(virsorter_affi_contigs):
         entry_genes = split_entry[1:]
         entry_rows = [i.split('|') + [entry_name] for i in entry_genes]
         virsorter_rows += entry_rows
-    return pd.DataFrame(virsorter_rows, columns=VIRSORTER_COLUMN_NAMES).set_index('gene_name')
+    virsorter_hits = pd.DataFrame(virsorter_rows, columns=VIRSORTER_COLUMN_NAMES).set_index('gene_name')
+    virsorter_hits.index = [i.replace('(', '_').replace(')', '_') for i in virsorter_hits.index]
+    virsorter_hits['name'] = [i.replace('(', '_').replace(')', '_') for i in virsorter_hits['name']]
+    return virsorter_hits
 
 
 def get_overlap(row1, row2):
@@ -251,8 +254,6 @@ def get_amg_ids(amg_frame):
 
 
 def get_virsorter_affi_contigs_name(scaffold):
-    scaffold = scaffold.replace('(', '_')
-    scaffold = scaffold.replace(')', '_')
     prophage_match = re.search(r'_gene_\d*_gene_\d*-\d*-\d*-cat_[123456]$', scaffold)
     plain_match = re.search(r'-cat_[123456]$', scaffold)
     if prophage_match is not None:
