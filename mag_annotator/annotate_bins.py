@@ -759,16 +759,17 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
     # merge annotation dicts
     all_annotations = pd.concat(annotations_list, sort=False)
-    all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
-    # if given add taxonomy information
-    if len(gtdb_taxonomy) == 0:
-        gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
-        all_annotations['bin_taxonomy'] = [gtdb_taxonomy.loc[i, 'classification'] for i in all_annotations.fasta]
-    if len(checkm_quality) == 0:
-        checkm_quality = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in checkm_quality])
-        checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
-        all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
-        all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination'] for i in all_annotations.fasta]
+    if not genes_called:
+        all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
+        # if given add taxonomy information
+        if len(gtdb_taxonomy) == 0:
+            gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
+            all_annotations['bin_taxonomy'] = [gtdb_taxonomy.loc[i, 'classification'] for i in all_annotations.fasta]
+        if len(checkm_quality) == 0:
+            checkm_quality = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in checkm_quality])
+            checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
+            all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
+            all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination'] for i in all_annotations.fasta]
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # merge gene files
