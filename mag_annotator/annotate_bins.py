@@ -676,18 +676,18 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         create_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
     annotated_faa = path.join(output_dir, 'genes.annotated.faa')
     create_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
-    if filtered_fasta is None:
+    if filtered_fasta is not None:
         renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
         rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
     else:
         renamed_scaffolds = None
-    if gene_gff is None:
+    if gene_gff is not None:
         renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
         annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
         current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
         make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
 
-    if renamed_scaffolds is None:
+    if renamed_scaffolds is not None:
         # get tRNAs and rRNAs
         if not skip_trnascan:
             run_trna_scan(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
