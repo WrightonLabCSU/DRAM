@@ -667,7 +667,8 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     if 'kegg' in db_locs and 'uniref' in db_locs and not skip_uniref:
         grades = assign_grades(annotations)
         annotations = pd.concat([grades, annotations], axis=1, sort=False)
-    annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
+    if not is_called_genes:
+        annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
 
     # generate fna and faa output files with uniref annotations
     if gene_fna is not None:

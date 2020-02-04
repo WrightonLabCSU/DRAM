@@ -325,8 +325,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                                                              verified_amgs, scaffold_length_dict))
 
     # downgrade B flag auxiliary scores
-    annotations['virsorter_category'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] else row['virsorter_category'])
-                                                   for gene, row in annotations.iterrows()})
+    if virsorter_affi_contigs is not None:
+        annotations['virsorter_category'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] else
+                                                              row['virsorter_category'])
+                                                       for gene, row in annotations.iterrows()})
 
     # write annotations
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
