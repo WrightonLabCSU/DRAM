@@ -369,17 +369,17 @@ def assign_grades(annotations):
     grades = dict()
     for gene, row in annotations.iterrows():
         if row.kegg_RBH is True:
-            grade = 'A'
+            rank = 'A'
         elif row.uniref_RBH is True:
-            grade = 'B'
+            rank = 'B'
         elif not pd.isna(row.kegg_hit) or not pd.isna(row.uniref_hit):
-            grade = 'C'
+            rank = 'C'
         elif not pd.isna(row.pfam_hits):
-            grade = 'D'
+            rank = 'D'
         else:
-            grade = 'E'
-        grades[gene] = grade
-    return pd.Series(grades, name='grade')
+            rank = 'E'
+        grades[gene] = rank
+    return pd.Series(grades, name='rank')
 
 
 def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=None):
@@ -388,20 +388,20 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
     """
     for seq in read_sequence(input_fasta, format='fasta'):
         annotation = annotations.loc[seq.metadata['id']]
-        if 'grade' in annotations.columns and verbosity == 'short':
-            annotation_str = 'grade: %s' % annotation.grade
-            if (annotation.grade == 'A') or (annotation.grade == 'C' and not pd.isna(annotation.kegg_hit)):
+        if 'rank' in annotations.columns and verbosity == 'short':
+            annotation_str = 'rank: %s' % annotation.rank
+            if (annotation.rank == 'A') or (annotation.rank == 'C' and not pd.isna(annotation.kegg_hit)):
                 annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-            elif annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
+            elif annotation.rank == 'B' or (annotation.rank == 'C' and not pd.isna(annotation.uniref_hit)):
                 annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
-            elif annotation.grade == 'D':
+            elif annotation.rank == 'D':
                 annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
             else:
                 pass
         else:
             annotation_list = []
-            if 'grade' in annotations.columns:
-                annotation_list += ['grade: %s' % annotation.grade]
+            if 'rank' in annotations.columns:
+                annotation_list += ['rank: %s' % annotation.rank]
             if 'kegg_hit' in annotations.columns:
                 if not pd.isna(annotation.kegg_hit):
                     annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'kegg')]

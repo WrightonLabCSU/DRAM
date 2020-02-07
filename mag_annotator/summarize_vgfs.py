@@ -10,7 +10,7 @@ from mag_annotator.summarize_genomes import get_ordered_uniques
 
 VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes',
                     'Xh': 'Viral genes with host benefits', 'Xp': 'Viral genes with viral benefits',
-                    'Xu': 'Viral genes with unknown function', 'Xx': 'Hypothetical genes'}
+                    'Xu': 'Viral genes with unknown function', 'Xx': 'Viral hypothetical genes'}
 VIRUS_STATS_COLUMNS = ['VIRSorter category', 'Circular', 'Prophage', 'Gene count', 'Strand switches',
                        'potential AMG count', 'Transposase present']
 VIRAL_DISTILLATE_COLUMNS = ['gene', 'scaffold', 'gene_id', 'gene_description', 'category', 'header',
