@@ -246,7 +246,8 @@ def make_module_coverage_heatmap(module_coverage, mag_order=None):
                  alt.Tooltip('steps', title='Module steps'),
                  alt.Tooltip('steps_present', title='Steps present')
                  ]
-    ).mark_rect().encode(color=alt.Color('step_coverage', legend=alt.Legend(title='% Complete'))).properties(
+    ).mark_rect().encode(color=alt.Color('step_coverage', legend=alt.Legend(title='% Complete'),
+                                         scale=alt.Scale(domain=(0, 1)))).properties(
         width=HEATMAP_CELL_WIDTH * len(HEATMAP_MODULES),
         height=HEATMAP_CELL_HEIGHT * num_mags_in_frame)
     return c
@@ -374,7 +375,8 @@ def make_etc_coverage_heatmap(etc_coverage, mag_order=None, module_order=None):
                      alt.Tooltip('genes', title='Genes present'),
                      alt.Tooltip('missing_genes', title='Genes missing')
                      ]
-        ).mark_rect().encode(color=alt.Color('percent_coverage', legend=alt.Legend(title='% Complete'))).properties(
+        ).mark_rect().encode(color=alt.Color('percent_coverage', legend=alt.Legend(title='% Complete'),
+                                             scale=alt.Scale(domain=(0, 1)))).properties(
             width=HEATMAP_CELL_WIDTH * len(set(frame['module_name'])),
             height=HEATMAP_CELL_HEIGHT * num_mags_in_frame)
         charts.append(c)
@@ -422,7 +424,8 @@ def make_functional_heatmap(functional_df, mag_order=None):
         # set up colors for chart
         rect_colors = alt.Color('present',
                                 legend=alt.Legend(title="Function is Present", symbolType='square',
-                                                  values=[True, False]), sort=[True, False],
+                                                  values=[True, False]),
+                                sort=[True, False],
                                 scale=alt.Scale(range=['#e5f5f9', '#2ca25f']))
         # define chart
         # TODO: Figure out how to angle title to take up less space
@@ -511,3 +514,4 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
 
     liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
     liquor.save(path.join(output_dir, 'liquor.html'))
+    liquor.save(path.join(output_dir, 'liquor.png'))
