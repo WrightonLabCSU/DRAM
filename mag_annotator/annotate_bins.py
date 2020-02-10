@@ -537,7 +537,8 @@ def add_trnas_to_gff(trnas, gff_loc, fasta_loc):
                 end = row.Begin
                 strand = '-'
             metadata = {'source': 'tRNAscan-SE', 'type': 'tRNA', 'score': row.Score, 'strand': strand, 'phase': 0,
-                        'ID': '%s_tRNA_%s' % (scaffold, row['tRNA #']), 'codon': row.Codon}
+                        'ID': '%s_tRNA_%s' % (scaffold, row['tRNA #']), 'codon': row.Codon,
+                        'product': 'tRNA-%s' % row.Type}
             if not pd.isna(row.Note):
                 metadata['None'] = row.Note
             im.add(bounds=[(begin, end)], metadata=metadata)
@@ -586,7 +587,8 @@ def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
         im = IntervalMetadata(len_dict[scaffold])
         for i, (rrna, row) in enumerate(frame.iterrows()):
             metadata = {'source': 'barrnap', 'type': 'rRNA', 'score': row['e-value'], 'strand': row.strand, 'phase': 0,
-                        'ID': '%s_rRNA_%s' % (scaffold, i), 'product': row.type}
+                        'ID': '%s_rRNA_%s' % (scaffold, i), 'product': '%s ribosomal RNA' % row.type.split([0]),
+                        'gene': row.type}
             if not pd.isna(row.note):
                 metadata['Note'] = row.note
             im.add(bounds=[(row.begin, row.end)], metadata=metadata)
@@ -761,11 +763,6 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
     else:
         renamed_scaffolds = None
-    if gene_gff is not None:
-        renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
-        annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
-        current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
-        make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
 
     if renamed_scaffolds is not None:
         # get tRNAs and rRNAs
@@ -774,7 +771,11 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         run_barrnap(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
 
     if gene_gff is not None:
+        renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
+        annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
         add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
+        if not skip_trnascan:
+            add_trnas_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, renamed_scaffolds)
         # make genbank file
         current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
         make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, annotated_faa, current_gbk)
@@ -855,7 +856,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
             checkm_quality = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in checkm_quality])
             checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
             all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
-            all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination'] for i in all_annotations.fasta]
+            all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination']
+                                                    for i in all_annotations.fasta]
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # merge gene files
