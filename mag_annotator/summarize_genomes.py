@@ -52,7 +52,7 @@ def summarize_rrnas(rrnas_df, groupby_column='fasta'):
     for rna_type in RRNA_TYPES:
         row = [rna_type, '%s ribosomal RNA gene' % rna_type.split()[0], 'rRNA', 'rRNA', '', '']
         for genome, rrna_dict in genome_rrna_dict.items():
-            row.append(genome_rrna_dict[genome].get(type, 0))
+            row.append(genome_rrna_dict[genome].get(rna_type, 0))
         row_list.append(row)
     rrna_frame = pd.DataFrame(row_list, columns=FRAME_COLUMNS + list(genome_rrna_dict.keys()))
     return rrna_frame
@@ -70,7 +70,7 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
             gene_description = '%s pseudo tRNA with %s Codon'
         else:
             gene_id = '%s (%s)'
-            gene_description = '%s pseudo tRNA with %s Codon'
+            gene_description = '%s tRNA with %s Codon'
         gene_id = gene_id % (combo[0], combo[1])
         gene_description = gene_description % (combo[0], combo[1])
         module_description = '%s tRNA' % combo[0]
