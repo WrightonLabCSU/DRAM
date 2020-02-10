@@ -105,7 +105,7 @@ if __name__ == '__main__':
     # parser for annotating vgfs
     annotate_parser.add_argument('-i', '--input_fasta', help="fasta file, output from ", required=True)
     annotate_parser.add_argument('-v', '--virsorter_affi_contigs', help="VirSorter VIRSorter_affi-contigs.tab "
-                                                                             "output file", required=True)
+                                                                        "output file")
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_parser.add_argument('--min_contig_size', type=int, default=5000,
                                  help='minimum contig size to be used for gene prediction')
@@ -118,6 +118,8 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--custom_fasta_loc', action='append',
                                  help="Location of fastas to annotated against, can be used multiple times but"
                                            "must match nubmer of custom_db_name's")
+    annotate_parser.add_argument('--genes_called', action='store_true', default=False,
+                                 help='if you are passing a file of amino acid sequences')
     annotate_parser.add_argument('--skip_uniref', action='store_true', default=False,
                                  help='Skip annotating with UniRef, drastically decreases run time and memory'
                                            'requirements')

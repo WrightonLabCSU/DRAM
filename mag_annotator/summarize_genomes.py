@@ -20,7 +20,7 @@ HEATMAP_CELL_HEIGHT = 10
 HEATMAP_CELL_WIDTH = 10
 KO_REGEX = r'^K\d\d\d\d\d$'
 ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'MAG', 'path_length', 'path_length_coverage',
-                        'percent_coverage', 'genes', 'missing_genes']
+                        'percent_coverage', 'genes', 'missing_genes', 'complex_module_name']
 
 
 def get_ordered_uniques(seq):
@@ -174,17 +174,13 @@ def build_module_net(module_df):
                             module_name=list(module_df.module_name)[0])
     for module_path, frame in module_df.groupby('path'):
         split_path = [int(i) for i in module_path.split(',')]
+        step = split_path[0]
         module_net.add_node(module_path, kos=set(frame.ko))
         # add incoming edge
-        if module_path[0] == 0:
-            module_net.add_edge('begin', module_path)
-        else:
-            module_net.add_edge('end_step_%s' % (split_path[0] - 1), module_path)
+        if step != 0:
+            module_net.add_edge('end_step_%s' % (step - 1), module_path)
         # add outgoing edge
-        if split_path[0] == num_steps:
-            module_net.add_edge(module_path, 'end')
-        else:
-            module_net.add_edge(module_path, 'end_step_%s' % split_path[0])
+        module_net.add_edge(module_path, 'end_step_%s' % step)
     return module_net
 
 
@@ -200,13 +196,13 @@ def get_module_step_coverage(kos, module_net):
             else:
                 module_kos_present = module_kos_present | ko_overlap
     # count number of missing steps
-    missing_steps = list()
+    missing_steps = 0
     for node, data in pruned_module_net.nodes.items():
-        if ('end_step' in node) and pruned_module_net.in_degree(node) == 0:
-            missing_steps.append(int(node.split('_')[-1]))
+        if ('end_step' in node) and (pruned_module_net.in_degree(node) == 0):
+            missing_steps += 1
     # get statistics
-    num_steps = pruned_module_net.graph['num_steps']
-    num_steps_present = num_steps - len(missing_steps) + 1  # But should we +1?
+    num_steps = pruned_module_net.graph['num_steps'] + 1
+    num_steps_present = num_steps - missing_steps
     coverage = num_steps_present / num_steps
     return num_steps, num_steps_present, coverage, sorted(module_kos_present)
 
@@ -353,10 +349,12 @@ def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
             grouped_ids = set(get_ids_from_annotation(frame).keys())
             path_len, path_coverage_count, path_coverage_percent, genes, missing_genes = \
                 get_module_coverage(module_net, grouped_ids)
+            complex_module_name = 'Complex %s: %s' % (module_row['complex'].replace('Complex ', ''),
+                                                      module_row['module_name'])
             etc_coverage_df_rows.append([module_row['module_id'], module_row['module_name'],
                                          module_row['complex'].replace('Complex ', ''), group, path_len,
                                          path_coverage_count, path_coverage_percent, ','.join(genes),
-                                         ','.join(missing_genes)])
+                                         ','.join(missing_genes), complex_module_name])
     return pd.DataFrame(etc_coverage_df_rows, columns=ETC_COVERAGE_COLUMNS)
 
 
@@ -401,8 +399,10 @@ def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta
             functions_present = set.intersection(id_set, function_id_set)
             present_in_bin = len(functions_present) > 0
             rows.append([row.category, row.subcategory, row.function_name, ', '.join(functions_present),
-                         row.long_function_name, row.gene_symbol, bin_name, present_in_bin])
-    return pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['bin', 'present'])
+                         row.long_function_name, row.gene_symbol, bin_name,
+                         present_in_bin, '%s: %s' % (row.category,row.function_name)])
+    return pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['bin', 'present',
+                                                                             'category_function_name'])
 
 
 def make_functional_heatmap(functional_df, mag_order=None):
@@ -472,6 +472,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
     module_steps_form = pd.read_csv(db_locs['module_step_form'], sep='\t')
     function_heatmap_form = pd.read_csv(db_locs['function_heatmap_form'], sep='\t')
+    etc_module_df = pd.read_csv(db_locs['etc_module_database'], sep='\t')
 
     # make output folder
     mkdir(output_dir)
@@ -495,13 +496,18 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     module_coverage_heatmap = make_module_coverage_heatmap(module_coverage_frame, mag_order)
 
     # make ETC heatmap
-    etc_module_df = pd.read_csv(db_locs['etc_module_database'], sep='\t')
     etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations)
     etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
 
     # make functional heatmap
     function_df = make_functional_df(annotations, function_heatmap_form, groupby_column)
     function_heatmap = make_functional_heatmap(function_df, mag_order)
+
+    liquor_df = pd.concat([module_coverage_frame.pivot(index='MAG', columns='module_name', values='step_coverage'),
+                           etc_coverage_df.pivot(index='MAG', columns='complex_module_name', values='percent_coverage'),
+                           function_df.pivot(index='bin', columns='category_function_name', values='present')],
+                          axis=1, sort=False)
+    liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
 
     liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
     liquor.save(path.join(output_dir, 'liquor.html'))

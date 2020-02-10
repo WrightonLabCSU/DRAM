@@ -371,17 +371,17 @@ def assign_grades(annotations):
     grades = dict()
     for gene, row in annotations.iterrows():
         if row.kegg_RBH is True:
-            grade = 'A'
+            rank = 'A'
         elif row.uniref_RBH is True:
-            grade = 'B'
+            rank = 'B'
         elif not pd.isna(row.kegg_hit) or not pd.isna(row.uniref_hit):
-            grade = 'C'
+            rank = 'C'
         elif not pd.isna(row.pfam_hits):
-            grade = 'D'
+            rank = 'D'
         else:
-            grade = 'E'
-        grades[gene] = grade
-    return pd.Series(grades, name='grade')
+            rank = 'E'
+        grades[gene] = rank
+    return pd.Series(grades, name='rank')
 
 
 def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=None):
@@ -390,20 +390,20 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
     """
     for seq in read_sequence(input_fasta, format='fasta'):
         annotation = annotations.loc[seq.metadata['id']]
-        if 'grade' in annotations.columns and verbosity == 'short':
-            annotation_str = 'grade: %s' % annotation.grade
-            if (annotation.grade == 'A') or (annotation.grade == 'C' and not pd.isna(annotation.kegg_hit)):
+        if 'rank' in annotations.columns and verbosity == 'short':
+            annotation_str = 'rank: %s' % annotation.rank
+            if (annotation.rank == 'A') or (annotation.rank == 'C' and not pd.isna(annotation.kegg_hit)):
                 annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-            elif annotation.grade == 'B' or (annotation.grade == 'C' and not pd.isna(annotation.uniref_hit)):
+            elif annotation.rank == 'B' or (annotation.rank == 'C' and not pd.isna(annotation.uniref_hit)):
                 annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
-            elif annotation.grade == 'D':
+            elif annotation.rank == 'D':
                 annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
             else:
                 pass
         else:
             annotation_list = []
-            if 'grade' in annotations.columns:
-                annotation_list += ['grade: %s' % annotation.grade]
+            if 'rank' in annotations.columns:
+                annotation_list += ['rank: %s' % annotation.rank]
             if 'kegg_hit' in annotations.columns:
                 if not pd.isna(annotation.kegg_hit):
                     annotation_list += ['%s (db=%s)' % (annotation.kegg_hit, 'kegg')]
@@ -641,20 +641,26 @@ def strip_endings(text, suffixes: list):
 
 def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, custom_db_locs=(),
                    dbs_to_use=None, bit_score_threshold=60, rbh_bit_score_threshold=350, skip_uniref=True,
-                   skip_trnascan=False, start_time=datetime.now(), threads=1, verbose=False):
+                   skip_trnascan=False, start_time=datetime.now(), is_called_genes=False, threads=1, verbose=False):
     """Annotated a single multifasta file, all file based outputs will be in output_dir"""
     # make temporary directory
     tmp_dir = path.join(output_dir, 'tmp')
     mkdir(tmp_dir)
 
-    # first step filter fasta
-    print('%s: Filtering fasta' % str(datetime.now() - start_time))
-    filtered_fasta = path.join(tmp_dir, 'filtered_fasta.fa')
-    filter_fasta(fasta_loc, min_contig_size, filtered_fasta)
+    if is_called_genes:
+        filtered_fasta = None
+        gene_gff = None
+        gene_fna = None
+        gene_faa = fasta_loc
+    else:
+        # first step filter fasta
+        print('%s: Filtering fasta' % str(datetime.now() - start_time))
+        filtered_fasta = path.join(tmp_dir, 'filtered_fasta.fa')
+        filter_fasta(fasta_loc, min_contig_size, filtered_fasta)
 
-    # call genes with prodigal
-    print('%s: Calling genes with prodigal' % str(datetime.now() - start_time))
-    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir, verbose=verbose)
+        # call genes with prodigal
+        print('%s: Calling genes with prodigal' % str(datetime.now() - start_time))
+        gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir, verbose=verbose)
 
     # if dbs_to_use is not none then filter to only include databases listed
     if dbs_to_use is not None:
@@ -740,28 +746,38 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     if 'kegg' in db_locs and 'uniref' in db_locs and not skip_uniref:
         grades = assign_grades(annotations)
         annotations = pd.concat([grades, annotations], axis=1, sort=False)
-    annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
+    if not is_called_genes:
+        annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
 
     # generate fna and faa output files with uniref annotations
-    annotated_fna = path.join(output_dir, 'genes.annotated.fna')
-    create_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
+    if gene_fna is not None:
+        annotated_fna = path.join(output_dir, 'genes.annotated.fna')
+        create_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
     annotated_faa = path.join(output_dir, 'genes.annotated.faa')
     create_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
-    renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
-    rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
-    renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
-    annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
 
-    # get tRNAs and rRNAs
-    if not skip_trnascan:
-        run_trna_scan(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
-        add_trnas_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, renamed_scaffolds)
-    run_barrnap(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
-    add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
+    if filtered_fasta is not None:
+        renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
+        rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
+    else:
+        renamed_scaffolds = None
+    if gene_gff is not None:
+        renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
+        annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
+        current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
+        make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, current_gbk)
 
-    # make genbank file
-    current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
-    make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, annotated_faa, current_gbk)
+    if renamed_scaffolds is not None:
+        # get tRNAs and rRNAs
+        if not skip_trnascan:
+            run_trna_scan(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
+        run_barrnap(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
+
+    if gene_gff is not None:
+        add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
+        # make genbank file
+        current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
+        make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, annotated_faa, current_gbk)
 
     # add fasta name to frame and index, append to list
     annotations.insert(0, 'fasta', fasta_name)
@@ -791,8 +807,8 @@ def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_uniref=True,
-                  skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True, threads=10,
-                  verbose=True):
+                  skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), genes_called=False, keep_tmp_dir=True,
+                  threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -809,7 +825,9 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, tmp_dir, threads, verbose)
+    custom_dbs_dir = path.join(tmp_dir, 'custom_dbs')
+    mkdir(custom_dbs_dir)
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, custom_dbs_dir, threads, verbose)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # iterate over list of fastas and annotate each individually
@@ -822,21 +840,22 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         mkdir(fasta_dir)
         annotations_list.append(annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_locs, db_handler, min_contig_size,
                                                custom_db_locs, MAG_DBS_TO_ANNOTATE, bit_score_threshold,
-                                               rbh_bit_score_threshold, skip_uniref, skip_trnascan, start_time, threads,
-                                               verbose))
+                                               rbh_bit_score_threshold, skip_uniref, skip_trnascan, start_time,
+                                               genes_called, threads, verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
     # merge annotation dicts
     all_annotations = pd.concat(annotations_list, sort=False)
-    all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
-    # if given add taxonomy information
-    if len(gtdb_taxonomy) > 0:
-        gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
-        all_annotations['bin_taxonomy'] = [gtdb_taxonomy.loc[i, 'classification'] for i in all_annotations.fasta]
-    if len(checkm_quality) > 0:
-        checkm_quality = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in checkm_quality])
-        checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
-        all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
-        all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination'] for i in all_annotations.fasta]
+    if not genes_called:
+        all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
+        # if given add taxonomy information
+        if len(gtdb_taxonomy) > 0:
+            gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
+            all_annotations['bin_taxonomy'] = [gtdb_taxonomy.loc[i, 'classification'] for i in all_annotations.fasta]
+        if len(checkm_quality) > 0:
+            checkm_quality = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in checkm_quality])
+            checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
+            all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
+            all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination'] for i in all_annotations.fasta]
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     # merge gene files

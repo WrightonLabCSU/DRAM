@@ -56,7 +56,10 @@ def get_virsorter_hits(virsorter_affi_contigs):
         entry_genes = split_entry[1:]
         entry_rows = [i.split('|') + [entry_name] for i in entry_genes]
         virsorter_rows += entry_rows
-    return pd.DataFrame(virsorter_rows, columns=VIRSORTER_COLUMN_NAMES).set_index('gene_name')
+    virsorter_hits = pd.DataFrame(virsorter_rows, columns=VIRSORTER_COLUMN_NAMES).set_index('gene_name')
+    virsorter_hits.index = [i.replace('(', '_').replace(')', '_') for i in virsorter_hits.index]
+    virsorter_hits['name'] = [i.replace('(', '_').replace(')', '_') for i in virsorter_hits['name']]
+    return virsorter_hits
 
 
 def get_overlap(row1, row2):
@@ -251,8 +254,8 @@ def get_amg_ids(amg_frame):
 
 
 def get_virsorter_affi_contigs_name(scaffold):
-    prophage_match = re.search(r'_gene_\d*_gene_\d*-\d*-\d*-cat_[1,2,3,4,5,6]$', scaffold)
-    plain_match = re.search(r'-cat_[1,2,3,4,5,6]$', scaffold)
+    prophage_match = re.search(r'_gene_\d*_gene_\d*-\d*-\d*-cat_[123456]$', scaffold)
+    plain_match = re.search(r'-cat_[123456]$', scaffold)
     if prophage_match is not None:
         virsorter_scaffold_name = scaffold[:prophage_match.start()]
     elif plain_match is not None:
@@ -264,7 +267,8 @@ def get_virsorter_affi_contigs_name(scaffold):
 
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=5000,
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  skip_uniref=True, skip_trnascan=False, keep_tmp_dir=True, threads=10, verbose=True):
+                  genes_called=False, skip_uniref=True, skip_trnascan=False, keep_tmp_dir=True, threads=10,
+                  verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -276,7 +280,9 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, tmp_dir, threads, verbose)
+    custom_dbs_dir = path.join(tmp_dir, 'custom_dbs')
+    mkdir(custom_dbs_dir)
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, custom_dbs_dir, threads, verbose)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # iterate over list of fastas and annotate each individually
@@ -284,7 +290,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     fasta_name = path.splitext(path.basename(input_fasta.strip('.gz')))[0]
     annotations = annotate_fasta(input_fasta, fasta_name, tmp_dir, db_locs, db_handler, min_contig_size, custom_db_locs,
                                  None, bit_score_threshold, rbh_bit_score_threshold, skip_uniref, skip_trnascan,
-                                 start_time, threads, verbose)
+                                 start_time, genes_called, threads, verbose)
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # setting up scoring viral genes
@@ -299,6 +305,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
         for scaffold, dram_frame in annotations.groupby('scaffold'):
             virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
             virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
+            if virsorter_frame.shape[0] == 0:
+                raise ValueError("No virsorter genes found for scaffold %s from input fasta" % scaffold)
             gene_order = get_gene_order(dram_frame, virsorter_frame)
             gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
                                                  gene_order if dram_gene is not None})
@@ -317,8 +325,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                                                              verified_amgs, scaffold_length_dict))
 
     # downgrade B flag auxiliary scores
-    annotations['virsorter_category'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] else row['virsorter_category'])
-                                                   for gene, row in annotations.iterrows()})
+    if virsorter_affi_contigs is not None:
+        annotations['virsorter_category'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] else
+                                                              row['virsorter_category'])
+                                                       for gene, row in annotations.iterrows()})
 
     # write annotations
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
