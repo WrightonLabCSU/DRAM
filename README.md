@@ -3,13 +3,13 @@
 DRAM (Distilled and Refined Annotation of MAGs [Metagenome Assembled Genomes]) is a tool for annotating metagenomic
 assembled genomes and [VIRSorter](https://github.com/simroux/VirSorter) identified viral contigs. DRAM annotates MAGs and viral
 contigs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/),
-[PFAM (https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), 
+[PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), 
 [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases.
 DRAM is ran in two stages. Additionally viral contigs are further analyzed to identify potential AMGs. This is done via assigning
 an auxilary score and flags representing the likelihood that a gene is metabolic and viral. The auxilary score represents the
 confidence that a gene is viral in origin based on surrounding genes.
 
-DRAM annotations can then be summarized from a microbial MAG or viral perspective. For both types of annotations 
+For more detail on DRAM and how DRAM works please see the wiki: https://github.com/shafferm/DRAM/wiki
 
 ## Installation
 To install DRAM some dependencies need to be installed first then DRAM can be installed from this repository. 
