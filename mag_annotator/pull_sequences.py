@@ -34,7 +34,10 @@ def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, sc
     if (identifiers is not None) or (categories is not None):
         gene_to_ids = dict()
         for i, row in annotations.iterrows():
-            gene_to_ids[i] = set(get_ids_from_row(row))
+            row_ids = get_ids_from_row(row)
+            if len(row_ids) > 0:
+                gene_to_ids[i] = set(row_ids)
+
         # get genes with ids
         if identifiers is not None:
             identifiers = set(identifiers)
@@ -52,7 +55,6 @@ def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, sc
                         for gene, ids in gene_to_ids.items():
                             if len(ids & set(frame['gene_id'])) > 0:
                                 genes_to_keep.append(gene)
-                                break
 
     # make output
     output_fasta_generator = (i for i in read_sequence(input_fasta, format='fasta')
