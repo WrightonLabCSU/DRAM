@@ -47,7 +47,7 @@ def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, sc
             db_locs = get_database_locs()
             genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
             for level in ['module', 'sheet', 'header', 'subheader']:
-                for category, frame in genome_summary_form.loc[~pd.isna(genome_summary_form['level'])].groupby(level):
+                for category, frame in genome_summary_form.loc[~pd.isna(genome_summary_form[level])].groupby(level):
                     if category in categories:
                         for gene, ids in gene_to_ids.items():
                             if len(ids & set(frame['gene_id'])) > 0:
