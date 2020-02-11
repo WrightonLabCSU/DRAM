@@ -519,10 +519,19 @@ def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
 def add_trnas_to_gff(trnas, gff_loc, fasta_loc):
     # get fasta length dict so we can merge, I'd love to be able to get this from somewhere else
     len_dict = {i.metadata['id']: len(i) for i in read_sequence(fasta_loc, format='fasta')}
-    # read and process trnas to intervals
+    # read and process trnas
     trnas = pd.read_csv(trnas, sep='\t')
-    trnas = trnas.drop(['Begin', 'End'], axis=1)  # get rid of the second begin and end columns used for pseudos
-    trnas.columns = [i.strip() for i in trnas.columns]  # strip whitespace from column names
+    trnas.columns = [i.strip() for i in trnas.columns]
+    # if begin.1 or end.1 are in trnas then drop, else drop the second begin or end
+    if 'Begin.1' in trnas.columns:
+        trnas = trnas.drop(['Begin.1'])
+    else:
+        trnas = trnas.drop(['Begin'])
+    if 'End.1' in trnas.columns:
+        trnas = trnas.drop(['End.1'])
+    else:
+        trnas = trnas.drop(['End'])
+    # process trnas to intervals
     trna_dict = dict()
     for scaffold, frame in trnas.groupby('Name'):
         scaffold = scaffold.strip()
