@@ -514,4 +514,3 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
 
     liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
     liquor.save(path.join(output_dir, 'liquor.html'))
-    liquor.save(path.join(output_dir, 'liquor.png'))
