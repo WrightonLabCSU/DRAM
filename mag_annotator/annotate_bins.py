@@ -516,21 +516,35 @@ def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
         warnings.warn('No tRNAs were detected, no trnas.tsv file will be created.')
 
 
-def add_trnas_to_gff(trnas, gff_loc, fasta_loc):
-    # get fasta length dict so we can merge, I'd love to be able to get this from somewhere else
-    len_dict = {i.metadata['id']: len(i) for i in read_sequence(fasta_loc, format='fasta')}
+def get_dups(columns):
+    keep = list()
+    seen = list()
+    for column in columns:
+        if column in seen:
+            keep.append(False)
+        else:
+            seen.append(column)
+            keep.append(True)
+    return keep
+
+
+def process_trnas(trnas_loc):
     # read and process trnas
-    trnas = pd.read_csv(trnas, sep='\t')
+    trnas = pd.read_csv(trnas_loc, sep='\t')
     trnas.columns = [i.strip() for i in trnas.columns]
     # if begin.1 or end.1 are in trnas then drop, else drop the second begin or end
     if 'Begin.1' in trnas.columns:
-        trnas = trnas.drop(['Begin.1'])
-    else:
-        trnas = trnas.drop(['Begin'])
+        trnas = trnas.drop(['Begin.1'], axis=1)
     if 'End.1' in trnas.columns:
-        trnas = trnas.drop(['End.1'])
-    else:
-        trnas = trnas.drop(['End'])
+        trnas = trnas.drop(['End.1'], axis=1)
+    trnas = trnas.loc[:, get_dups(trnas.columns)]
+    return trnas
+
+
+def add_trnas_to_gff(trnas_loc, gff_loc, fasta_loc):
+    # get fasta length dict so we can merge, I'd love to be able to get this from somewhere else
+    len_dict = {i.metadata['id']: len(i) for i in read_sequence(fasta_loc, format='fasta')}
+    trnas = process_trnas(trnas_loc)
     # process trnas to intervals
     trna_dict = dict()
     for scaffold, frame in trnas.groupby('Name'):
