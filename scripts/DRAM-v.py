@@ -152,6 +152,8 @@ if __name__ == '__main__':
                                  help='space separated list of scaffolds to keep')
     strainer_parser.add_argument('--genes', nargs='*', default=None, help='space separated list of genes to keep')
     strainer_parser.add_argument('--identifiers', nargs='*', default=None, help='database identifiers to keep')
+    strainer_parser.add_argument('--categories', nargs='*', default=None,
+                                 help='distillate categories to keep genes from')
     strainer_parser.set_defaults(func=pull_sequences)
 
     args = parser.parse_args()
