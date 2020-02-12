@@ -207,12 +207,10 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     return pd.Series(pfam_dict, name='pfam_hits')
 
 
-def get_sig(tstart, tend, evalue):
+def get_sig(tstart, tend, tlen, evalue):
     """Check if hmm match is significant, based on dbCAN described parameters"""
-    tcovlen = tend - tstart
-    if tcovlen >= 80 and evalue < 1e-5:
-        return True
-    elif tcovlen < 80 and evalue < 1e-3:
+    perc_cov = (tend - tstart)/tlen
+    if perc_cov >= .35 and evalue <= 1e-15:
         return True
     else:
         return False
@@ -276,7 +274,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
         dbcan_res = parse_hmmsearch_domtblout(dbcan_output)
 
         significant = [row_num for row_num, row in dbcan_res.iterrows() if get_sig(row.target_start, row.target_end,
-                                                                                   row.full_evalue)]
+                                                                                   row.target_length, row.full_evalue)]
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series(name='cazy_hits')
         dbcan_res_significant = dbcan_res.loc[significant]
@@ -310,7 +308,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
         vogdb_res = parse_hmmsearch_domtblout(vogdb_output)
 
         significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.target_start, row.target_end,
-                                                                                   row.full_evalue)]
+                                                                                   row.target_length, row.full_evalue)]
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
             return pd.Series(name='vogdb_hits')
 
