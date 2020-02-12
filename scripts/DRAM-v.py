@@ -114,15 +114,15 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
                                  help='minimum bitScore of reverse best hits to retain hits')
     annotate_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be used"
-                                                                                "multiple times.")
+                                                                           "multiple times.")
     annotate_parser.add_argument('--custom_fasta_loc', action='append',
                                  help="Location of fastas to annotated against, can be used multiple times but"
-                                           "must match nubmer of custom_db_name's")
+                                      "must match nubmer of custom_db_name's")
     annotate_parser.add_argument('--genes_called', action='store_true', default=False,
                                  help='if you are passing a file of amino acid sequences')
     annotate_parser.add_argument('--skip_uniref', action='store_true', default=False,
                                  help='Skip annotating with UniRef, drastically decreases run time and memory'
-                                           'requirements')
+                                      'requirements')
     annotate_parser.add_argument('--skip_trnascan', action='store_true', default=False)
     annotate_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
@@ -143,17 +143,36 @@ if __name__ == '__main__':
     distill_parser.set_defaults(func=summarize_vgfs)
 
     # parser for getting genes
-    strainer_parser.add_argument('-i', '--input_annotations', required=True, help='annotations file to pull genes from')
-    strainer_parser.add_argument('-f', '--input_fasta', required=True, help='fasta file to filter')
-    strainer_parser.add_argument('-o', '--output_fasta', default='pull_genes.fasta',
-                                 help='location to write filtered fasta')
-    strainer_parser.add_argument('--fastas', nargs='*', default=None, help='space separated list of fastas to keep')
-    strainer_parser.add_argument('--scaffolds', nargs='*', default=None,
-                                 help='space separated list of scaffolds to keep')
-    strainer_parser.add_argument('--genes', nargs='*', default=None, help='space separated list of genes to keep')
-    strainer_parser.add_argument('--identifiers', nargs='*', default=None, help='database identifiers to keep')
-    strainer_parser.add_argument('--categories', nargs='*', default=None,
-                                 help='distillate categories to keep genes from')
+    input_group = strainer_parser.add_argument_group('Input and output files')
+    input_group.add_argument('-i', '--input_annotations', required=True, help='annotations file to pull genes from')
+    input_group.add_argument('-f', '--input_fasta', required=True, help='fasta file to filter')
+    input_group.add_argument('-o', '--output_fasta', default='pull_genes.fasta',
+                             help='location to write filtered fasta')
+    name_group = strainer_parser.add_argument_group('Specific names to keep')
+    name_group.add_argument('--fastas', nargs='*', default=None, help='space separated list of fastas to keep')
+    name_group.add_argument('--scaffolds', nargs='*', default=None,
+                            help='space separated list of scaffolds to keep')
+    name_group.add_argument('--genes', nargs='*', default=None, help='space separated list of genes to keep')
+    annotation_group = strainer_parser.add_argument_group('Annotation filters')
+    annotation_group.add_argument('--identifiers', nargs='*', default=None, help='database identifiers to keep')
+    annotation_group.add_argument('--categories', nargs='*', default=None,
+                                  help='distillate categories to keep genes from')
+    dramv_group = strainer_parser.add_argument_group('DRAM-v based filters')
+    dramv_group.add_argument('--amg_flags', default=None,
+                             help='AMG flags to keep, if any one is present then it will be kept')
+    dramv_group.add_argument('--aux_scores', nargs='*', default=None, type=int,
+                             help='space separate list of auxiliary scores to keep')
+    dramv_group.add_argument('--virsorter_category', nargs='*', default=None,
+                             help='space separate list of virsorter categories to keep')
+    amg_group = strainer_parser.add_argument_group('AMG filtering')
+    amg_group.add_argument('-a', '--putative_amgs', default=False, action='store_true',
+                           help='Only keep genes considered putative AMGs')
+    amg_group.add_argument('--max_auxiliary_score', type=int, default=3,
+                           help="Maximum auxiliary score to consider gene as potential AMG")
+    amg_group.add_argument('--remove_transposons', default=False, action='store_true',
+                           help="Do not consider genes on scaffolds with transposons as potential AMGs")
+    amg_group.add_argument('--remove_fs', default=False, action='store_true',
+                           help="Do not consider genes near ends of scaffolds as potential AMGs")
     strainer_parser.set_defaults(func=pull_sequences)
 
     args = parser.parse_args()

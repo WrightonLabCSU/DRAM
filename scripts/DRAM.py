@@ -145,17 +145,27 @@ if __name__ == '__main__':
     distill_parser.set_defaults(func=summarize_genomes)
 
     # parser for getting genes
-    strainer_parser.add_argument('-i', '--input_annotations', required=True, help='annotations file to pull genes from')
-    strainer_parser.add_argument('-f', '--input_fasta', required=True, help='fasta file to filter')
-    strainer_parser.add_argument('-o', '--output_fasta', default='pull_genes.fasta',
+    input_group = strainer_parser.add_argument_group('Input and output files')
+    input_group.add_argument('-i', '--input_annotations', required=True, help='annotations file to pull genes from')
+    input_group.add_argument('-f', '--input_fasta', required=True, help='fasta file to filter')
+    input_group.add_argument('-o', '--output_fasta', default='pull_genes.fasta',
                                  help='location to write filtered fasta')
-    strainer_parser.add_argument('--fastas', nargs='*', default=None, help='space separated list of fastas to keep')
-    strainer_parser.add_argument('--scaffolds', nargs='*', default=None,
-                                 help='space separated list of scaffolds to keep')
-    strainer_parser.add_argument('--genes', nargs='*', default=None, help='space separated list of genes to keep')
-    strainer_parser.add_argument('--identifiers', nargs='*', default=None, help='database identifiers to keep')
-    strainer_parser.add_argument('--categories', nargs='*', default=None,
-                                 help='distillate categories to keep genes from')
+    name_group = strainer_parser.add_argument_group('Specific names to keep')
+    name_group.add_argument('--fastas', nargs='*', default=None, help='space separated list of fastas to keep')
+    name_group.add_argument('--scaffolds', nargs='*', default=None,
+                             help='space separated list of scaffolds to keep')
+    name_group.add_argument('--genes', nargs='*', default=None, help='space separated list of genes to keep')
+    annotation_group = strainer_parser.add_argument_group('Annotation filters')
+    annotation_group.add_argument('--identifiers', nargs='*', default=None, help='database identifiers to keep')
+    annotation_group.add_argument('--categories', nargs='*', default=None,
+                                  help='distillate categories to keep genes from')
+    dram_group = strainer_parser.add_argument_group('DRAM based filters')
+    dram_group.add_argument('--taxonomy', nargs='*', default=None,
+                            help='Level of GTDBTk taxonomy to keep (e.g. c__Clostridia), space separated list')
+    dram_group.add_argument('--completeness', default=None, type=float,
+                            help='Minimum completeness of genome to keep genes')
+    dram_group.add_argument('--contamination', default=None, type=float,
+                            help='Maximum contamination of genome to keep genes')
     strainer_parser.set_defaults(func=pull_sequences)
 
     args = parser.parse_args()
