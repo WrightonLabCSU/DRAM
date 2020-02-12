@@ -76,14 +76,19 @@ def merge_files(paths_to_files_to_merge, outfile, has_header=False):
 def get_ids_from_annotation(frame):
     id_list = list()
     # get kegg ids
-    id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
+    if 'kegg_id' in frame:
+        id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
     # get ec numbers
-    for kegg_hit in frame.kegg_hit.dropna():
-        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
+    if 'kegg_hit' in frame:
+        for kegg_hit in frame.kegg_hit.dropna():
+            id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
     # get merops ids
-    id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
+    if 'peptidase_family' in frame:
+        id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
     # get cazy ids
-    id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
+    if 'cazy_hits' in frame:
+        id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
     # get pfam ids
-    id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna() for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', i)]
+    if 'pfam_hits' in frame:
+        id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna() for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', i)]
     return Counter(id_list)
