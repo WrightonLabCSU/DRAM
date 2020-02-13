@@ -565,7 +565,7 @@ def add_trnas_to_gff(trnas_loc, gff_loc, fasta_loc):
             im.add(bounds=[(begin, end)], metadata=metadata)
         trna_dict[scaffold] = im
     # add trna intervals to gff
-    gff = read_sequence(gff_loc, format='gff3')
+    gff = list(read_sequence(gff_loc, format='gff3'))
     with open(gff_loc, 'w') as f:
         for scaffold, gff_intervals in gff:
             gff_intervals = IntervalMetadata(len_dict[scaffold], gff_intervals)
@@ -615,7 +615,7 @@ def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
             im.add(bounds=[(row.begin, row.end)], metadata=metadata)
         rrna_dict[scaffold] = im
     # add rrna intervals to gff
-    gff = read_sequence(gff_loc, format='gff3')
+    gff = list(read_sequence(gff_loc, format='gff3'))
     with open(gff_loc, 'w') as f:
         for scaffold, gff_intervals in gff:
             gff_intervals = IntervalMetadata(len_dict[scaffold], gff_intervals)
