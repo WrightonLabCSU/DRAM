@@ -25,7 +25,9 @@ def get_iso_date():
 
 
 def check_file_exists(db_loc):
-    if path.isfile(db_loc):
+    if db_loc is None:
+        return True
+    elif path.isfile(db_loc):
         return True
     else:
         raise ValueError("Database location does not exist: %s" % db_loc)
@@ -128,21 +130,20 @@ def process_mmspro(full_alignment, output_dir, db_name='db', threads=10, verbose
     return mmseqs_profile
 
 
-def download_and_process_pfam(pfam_full_zipped=None, output_dir='.', pfam_release='32.0', threads=10, verbose=True):
+def download_and_process_pfam(pfam_full_zipped=None, output_dir='.', threads=10, verbose=True):
     if pfam_full_zipped is None:  # download database if not provided
         pfam_full_zipped = path.join(output_dir, 'Pfam-A.full.gz')
-        download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam%s/Pfam-A.full.gz' % pfam_release,
-                      pfam_full_zipped)
+        download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz', pfam_full_zipped)
     else:
         check_file_exists(pfam_full_zipped)
     pfam_profile = process_mmspro(pfam_full_zipped, output_dir, 'pfam', threads, verbose)
     return pfam_profile
 
 
-def download_pfam_descriptions(output_dir='.', pfam_release='32.0', verbose=True):
+def download_pfam_descriptions(output_dir='.', verbose=True):
     pfam_hmm_dat = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
-    download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam%s/Pfam-A.hmm.dat.gz' % pfam_release,
-                  pfam_hmm_dat, verbose=verbose)
+    download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz', pfam_hmm_dat,
+                  verbose=verbose)
     return pfam_hmm_dat
 
 
@@ -392,41 +393,26 @@ def populate_description_db(db_dict=None):
 
 
 def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_download_date=None, uniref_loc=None,
-                      uniref_version='90', pfam_loc=None, pfam_release='32.0', pfam_hmm_dat=None, dbcan_loc=None,
-                      dbcan_version='7', dbcan_fam_activities=None, dbcan_date='07312018', viral_loc=None,
-                      peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
-                      genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
-                      function_heatmap_form_loc=None, amg_database_loc=None, keep_database_files=False, branch='master',
-                      threads=10, verbose=True):
+                      uniref_version='90', pfam_loc=None, pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='8',
+                      dbcan_fam_activities=None, dbcan_date='07312019', viral_loc=None, peptidase_loc=None,
+                      vogdb_loc=None, vogdb_version='latest', vog_annotations=None, genome_summary_form_loc=None,
+                      module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None,
+                      amg_database_loc=None, keep_database_files=False, branch='master', threads=10, verbose=True):
     # check that all given files exist
-    if kegg_loc is not None:
-        check_file_exists(kegg_loc)
-    if gene_ko_link_loc is not None:
-        check_file_exists(gene_ko_link_loc)
-    if uniref_loc is not None:
-        check_file_exists(uniref_loc)
-    if pfam_loc is not None:
-        check_file_exists(pfam_loc)
-    if pfam_hmm_dat is not None:
-        check_file_exists(pfam_hmm_dat)
-    if dbcan_loc is not None:
-        check_file_exists(dbcan_loc)
-    if dbcan_fam_activities is not None:
-        check_file_exists(dbcan_fam_activities)
-    if vogdb_loc is not None:
-        check_file_exists(vogdb_loc)
-    if viral_loc is not None:
-        check_file_exists(viral_loc)
-    if peptidase_loc is not None:
-        check_file_exists(peptidase_loc)
-    if genome_summary_form_loc is not None:
-        check_file_exists(genome_summary_form_loc)
-    if module_step_form_loc is not None:
-        check_file_exists(module_step_form_loc)
-    if function_heatmap_form_loc is not None:
-        check_file_exists(function_heatmap_form_loc)
-    if amg_database_loc is not None:
-        check_file_exists(amg_database_loc)
+    check_file_exists(kegg_loc)
+    check_file_exists(gene_ko_link_loc)
+    check_file_exists(uniref_loc)
+    check_file_exists(pfam_loc)
+    check_file_exists(pfam_hmm_dat)
+    check_file_exists(dbcan_loc)
+    check_file_exists(dbcan_fam_activities)
+    check_file_exists(vogdb_loc)
+    check_file_exists(viral_loc)
+    check_file_exists(peptidase_loc)
+    check_file_exists(genome_summary_form_loc)
+    check_file_exists(module_step_form_loc)
+    check_file_exists(function_heatmap_form_loc)
+    check_file_exists(amg_database_loc)
 
     # setup
     if not path.isdir(output_dir):
@@ -441,7 +427,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
                                                     verbose)
     output_dbs['uniref_db_loc'] = download_and_process_uniref(uniref_loc, temporary, uniref_version=uniref_version,
                                                               threads=threads, verbose=verbose)
-    output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary, pfam_release=pfam_release,
+    output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary,
                                                           threads=threads, verbose=verbose)
     output_dbs['dbcan_db_loc'] = download_and_process_dbcan(dbcan_loc, temporary, dbcan_release=dbcan_version,
                                                             verbose=verbose)
@@ -485,7 +471,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
     # get pfam and dbcan descriptions
     # TODO: move this all up to be done with the rest of the downloading and processing
     if pfam_hmm_dat is None:
-        pfam_hmm_dat = download_pfam_descriptions(output_dir, pfam_release=pfam_release, verbose=verbose)
+        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
     if dbcan_fam_activities is None:
         dbcan_fam_activities = download_dbcan_descriptions(output_dir, dbcan_date, verbose=verbose)
