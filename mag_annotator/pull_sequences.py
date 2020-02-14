@@ -13,7 +13,7 @@ from mag_annotator.summarize_vgfs import get_ids_from_row, filter_to_amgs
 def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, scaffolds=None, genes=None,
                    identifiers=None, categories=None, taxonomy=None, completeness=None, contamination=None,
                    amg_flags=None, aux_scores=None, virsorter_category=None, putative_amgs=False, max_auxiliary_score=3,
-                   remove_transposons=False, remove_fs=False):
+                   remove_transposons=False, remove_fs=False, remove_js=False):
     annotations = pd.read_csv(input_annotations, sep='\t', index_col=0)
 
     # first filter based on specific names
@@ -77,7 +77,7 @@ def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, sc
     # DRAM-v specific filtering
     if putative_amgs:  # get potential amgs
         annotations = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
-                                     remove_transposons=remove_transposons, remove_fs=remove_fs)
+                                     remove_transposons=remove_transposons, remove_fs=remove_fs, remove_js=remove_js)
     else:
         # filter based on virsorter categories
         if virsorter_category is not None:

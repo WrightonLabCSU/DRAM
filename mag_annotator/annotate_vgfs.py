@@ -197,7 +197,8 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
     flag_dict = dict()
     metabolic_genes = set(metabolic_genes)
     for scaffold, scaffold_annotations in annotations.groupby('scaffold'):
-        is_j = scaffold.shape[0]
+        perc_xh = sum(['Xh' in i for i in scaffold_annotations['vogdb_categories']]) / scaffold_annotations.shape[0]
+        is_j = perc_xh >= 0.18
         for gene, row in scaffold_annotations.iterrows():
             # set up
             flags = ''
@@ -228,6 +229,8 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
             if (int(row.start_position) < length_from_end) or \
                     (int(row.end_position) > (scaffold_length_dict[row.scaffold] - length_from_end)):
                 flags += 'F'
+            if is_j:
+                flags += 'J'
             flag_dict[gene] = flags
         # get 3 metabolic genes in a row flag
         for i in range(len(scaffold_annotations)):  # this needs to be fixed. Will only give B to middle of 3 genes.

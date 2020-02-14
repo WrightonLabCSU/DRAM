@@ -139,6 +139,8 @@ if __name__ == '__main__':
                                 help="Do not consider genes on scaffolds with transposons as potential AMGs")
     distill_parser.add_argument("--remove_fs", default=False, action='store_true',
                                 help="Do not consider genes near ends of scaffolds as potential AMGs")
+    distill_parser.add_argument("--remove_js", default=False, action='store_true',
+                                help="Do not consider genes on possible non-viral contigs as potential AMGs")
     distill_parser.set_defaults(func=summarize_vgfs)
 
     # parser for getting genes
@@ -172,6 +174,8 @@ if __name__ == '__main__':
                            help="Do not consider genes on scaffolds with transposons as potential AMGs")
     amg_group.add_argument('--remove_fs', default=False, action='store_true',
                            help="Do not consider genes near ends of scaffolds as potential AMGs")
+    amg_group.add_argument("--remove_js", default=False, action='store_true',
+                           help="Do not consider genes on possible non-viral contigs as potential AMGs")
     strainer_parser.set_defaults(func=pull_sequences)
 
     args = parser.parse_args()

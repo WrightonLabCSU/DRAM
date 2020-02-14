@@ -12,7 +12,7 @@ VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure gene
                     'Xh': 'Viral genes with host benefits', 'Xp': 'Viral genes with viral benefits',
                     'Xu': 'Viral genes with unknown function', 'Xx': 'Viral hypothetical genes'}
 VIRUS_STATS_COLUMNS = ['VIRSorter category', 'Circular', 'Prophage', 'Gene count', 'Strand switches',
-                       'potential AMG count', 'Transposase present']
+                       'potential AMG count', 'Transposase present', 'Possible Non-Viral Contig']
 VIRAL_DISTILLATE_COLUMNS = ['gene', 'scaffold', 'gene_id', 'gene_description', 'category', 'header',
                             'subheader', 'module', 'auxiliary_score', 'amg_flags']
 VIRAL_LIQUOR_HEADERS = ['Category', 'Function', 'AMG Genes', 'Genes Present', 'VGF Name', 'Present in VGF']
@@ -22,16 +22,18 @@ HEATMAP_CELL_WIDTH = 10
 defaultdict_list = partial(defaultdict, list)
 
 
-def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False):
+def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False, remove_js=False):
     potential_amgs = list()
     for gene, row in annotations.iterrows():
         amg_flags = row['amg_flags']
         if not pd.isna(amg_flags):
-            if ('V' not in amg_flags) and ('M' in amg_flags) and (row['auxiliary_score'] <= max_aux) and \
-               ('A' not in amg_flags) and ('P' not in amg_flags):
-                if (remove_transposons and 'T' not in amg_flags) or not remove_transposons:
-                    if (remove_fs and 'F' not in amg_flags) or not remove_fs:
-                        potential_amgs.append(gene)
+            vmap_aux_check = ('V' not in amg_flags) and ('M' in amg_flags) and (row['auxiliary_score'] <= max_aux) and \
+                             ('A' not in amg_flags) and ('P' not in amg_flags)
+            remove_t = (remove_transposons and 'T' not in amg_flags) or not remove_transposons
+            remove_f = (remove_fs and 'F' not in amg_flags) or not remove_fs
+            remove_j = (remove_fs and 'J' not in amg_flags) or not remove_js
+            if vmap_aux_check and remove_t and remove_f and remove_j:
+                potential_amgs.append(gene)
     return annotations.loc[potential_amgs]
 
 
@@ -60,8 +62,10 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
         else:
             virus_number_amgs = 0
         virus_transposase_present = sum(frame.is_transposon) > 0  # transposase on contig
+        virus_j_present = sum(['J' in i for i in frame.amg_flags]) > 0
         virus_data = pd.Series([virus_category, virus_circular, virus_prophage, virus_num_genes, virus_strand_switches,
-                                virus_number_amgs, virus_transposase_present], index=VIRUS_STATS_COLUMNS, name=scaffold)
+                                virus_number_amgs, virus_transposase_present, virus_j_present],
+                               index=VIRUS_STATS_COLUMNS, name=scaffold)
         # get vogdb categories
         # when vogdb has multiple categories only the first is taken
         gene_counts = Counter([i.split(';')[0] for i in frame.vogdb_categories.fillna('Xx')])
@@ -191,7 +195,7 @@ def make_viral_functional_heatmap(functional_df, vgf_order=None):
 
 
 def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3, remove_transposons=False,
-                   remove_fs=False):
+                   remove_fs=False, remove_js=False):
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     db_locs = get_database_locs()
@@ -201,7 +205,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
     # get potential AMGs
     potential_amgs = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
-                                    remove_transposons=remove_transposons, remove_fs=remove_fs)
+                                    remove_transposons=remove_transposons, remove_fs=remove_fs, remove_js=remove_js)
     # make distillate
     viral_genome_stats = make_viral_stats_table(annotations, potential_amgs, groupby_column)
     viral_genome_stats.to_csv(path.join(output_dir, 'viral_genome_summary.tsv'), sep='\t')
