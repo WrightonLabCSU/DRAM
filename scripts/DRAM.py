@@ -45,7 +45,6 @@ if __name__ == '__main__':
                                     help="File path to pfam-A hmm file, if already downloaded")
     prepare_dbs_parser.add_argument('--pfam_hmm_dat', default=None, help="pfam hmm .dat file to get PF"
                                                                          "descriptions, if already downloaded")
-    prepare_dbs_parser.add_argument('--pfam_release', default='32.0', help="Pfam release to download")
     prepare_dbs_parser.add_argument('--dbcan_loc', default=None, help="File path to dbCAN, if already downloaded")
     prepare_dbs_parser.add_argument('--dbcan_fam_activities', default=None, help='CAZY family activities file, if'
                                                                                  'already downloaded')

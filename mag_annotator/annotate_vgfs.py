@@ -197,6 +197,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
     flag_dict = dict()
     metabolic_genes = set(metabolic_genes)
     for scaffold, scaffold_annotations in annotations.groupby('scaffold'):
+        is_j = scaffold.shape[0]
         for gene, row in scaffold_annotations.iterrows():
             # set up
             flags = ''
