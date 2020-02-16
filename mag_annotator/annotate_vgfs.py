@@ -299,7 +299,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # setting up scoring viral genes
     amg_database_frame = pd.read_csv(db_locs['amg_database'], sep='\t')
-    genome_summary_frame = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
+    genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
+    genome_summary_form = genome_summary_form.loc[genome_summary_form.potential_amg]
 
     # add auxiliary score
     if virsorter_affi_contigs is not None:
@@ -320,7 +321,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # get metabolic flags
     scaffold_length_dict = {seq.metadata['id']: len(seq) for seq in read_sequence(input_fasta, format='fasta')}
-    metabolic_genes = set(genome_summary_frame.index)
+    metabolic_genes = set(genome_summary_form.index)
     annotations['is_transposon'] = [is_transposon(i) for i in annotations['pfam_hits']]
 
     amgs = get_amg_ids(amg_database_frame)

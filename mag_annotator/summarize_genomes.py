@@ -473,6 +473,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
 
     # read in dbs
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
+    genome_summary_form = genome_summary_form.drop('potential_amg', axis=1)
     module_steps_form = pd.read_csv(db_locs['module_step_form'], sep='\t')
     function_heatmap_form = pd.read_csv(db_locs['function_heatmap_form'], sep='\t')
     etc_module_df = pd.read_csv(db_locs['etc_module_database'], sep='\t')

@@ -15,7 +15,7 @@ CAZY	CAZY	Beta Glucan	GH12, GH124, GH128, GH131, GH132, GH144, GH148, GH149, GH1
 CAZY	CAZY	Fucose Cleavage	GH107, GH139, GH141, GH151, GH29, GH95, GH43	alpha-L-fucosidase (EC 3.2.1.51); alpha-1,3/1,4-L-fucosidase (EC 3.2.1.111),   sulfated fucan endo-1,4-fucanase (EC 3.2.1.-)
 CAZY	CAZY	Arabinose cleavage	GH121, GH127, GH131, GH137, GH142, GH146, GH42, GH54, GH62	beta-L-arabinofuranosidase (EC 3.2.1.185), beta-L-arabinobiosidase (EC 3.2.1.-), alpha-L-arabinofuranosidase (EC 3.2.1.55)
 CAZY	CAZY	Rhamnose cleavage	GH78, GH106, GH145, PL24, PL25, PL27, PL28	alpha-L-rhamnosidase (EC 3.2.1.40); rhamnogalacturonan alpha-L-rhamnohydrolase (EC 3.2.1.174), L-Rhalpha-alpha-1,4-GlcA alpha-L-rhamnohydrolase (EC 3.2.1.-)
-CAZY	CAZY	Ppo laccase	K05909, AA1, AA2	Laccase / p-diphenol:oxygen oxidoreductase / ferroxidase (EC 1.10.3.2); ; ferroxidase (EC 1.10.3.-); Laccase-like multicopper oxidase (EC 1.10.3.-), manganese peroxidase (EC 1.11.1.13); versatile peroxidase (EC 1.11.1.16); lignin peroxidase (EC 1.11.1.14); peroxidase (EC 1.11.1.-)
+CAZY	CAZY	Polyphenolics	K05909, AA1, AA2, AA4, K05810, K00422	Laccase / p-diphenol:oxygen oxidoreductase / ferroxidase (EC 1.10.3.2); ; ferroxidase (EC 1.10.3.-); Laccase-like multicopper oxidase (EC 1.10.3.-), manganese peroxidase (EC 1.11.1.13); versatile peroxidase (EC 1.11.1.16); lignin peroxidase (EC 1.11.1.14); peroxidase (EC 1.11.1.-), AA4 vanillyl-alcohol oxidase (EC 1.1.3.38), Multicopper polyphenol oxidase, polyphenol oxidase [EC:1.10.3.1]
 Nitrogen metabolism	Nitrification	ammonia => nitrite	EC:1.14.99.39	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]
 Nitrogen metabolism	Nitrification	Bacterial/Archaeal ammonia oxidation	K10944, K10945, K10946	amoA; Methane/ammonia monooxygenase subunit A (aka: particulate ammonia monooxygenase) [EC:1.14.99.39] [RN:R00148]	amoA
 Nitrogen metabolism	Nitrification	Bacterial (aerobic-specific) ammonia oxidation	K10535	hao: Hydroxylamine dehydrogenase [EC:1.7.2.6] [RN:R10164]	hao
@@ -25,7 +25,7 @@ Nitrogen metabolism	Denitrification	nitrate => nitrite	K02567, K00370, K00371, K
 Nitrogen metabolism	Denitrification	nitrite => nitric oxide	K00362, K00370, K00368, K15864	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787], respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]
 Nitrogen metabolism	Denitrification	Dissimilatory nitrite reduction to ammonia (DNRA)	K03385, K15876	nrfA; Nitrite reductase (cytochrome c-552) [EC:1.7.2.2] [RN:R05712]; nrfH; cytochrome c nitrite reductase small subunit [EC:1.7.2.2] [RN:R05712]	nrfA
 Nitrogen metabolism	Denitrification	nitric oxide => nitrous oxide	K04561, K15877	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]
-Nitrogen metabolism	Denitrification	nitrous oxide => nitrogen	K00376 	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]
+Nitrogen metabolism	Denitrification	nitrous oxide => nitrogen	K00376¬†	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]
 Nitrogen metabolism	Nitrogen  fixation	nitrogen => ammonia	K02588, K02586	nitrogenase iron protein [RN:R05185]
 Nitrogen metabolism	Nitrogen  fixation	Nitrogen fixation altennative	K22896	vnfD; Vanadium-dependent nitrogenase alpha chain [EC:1.18.6.2] [RN:R12084]	vnfH
 Sulfur metabolism	Sulfur metabolism	dissimilatory sulfate reduction (and oxidation) sulfate => sulfide	K11180, K11181	dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]	dsrA or dsrB
@@ -44,10 +44,10 @@ Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	Key functional
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	acetate => methane, pt 1	K01895	acetyl-CoA synthetase [EC:6.2.1.1] [RN:R00235]
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	acetate => methane, pt 2	K00925	acetate kinase [EC:2.7.2.1] [RN:R00315]	ack
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	acetate => methane, pt 3	K00625	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]
-Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methanol => methane	K04480	mtaB	mtaB
-Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	trimethylamine => dimethylamine	K14083	mttB; trimethylamine---	mttB
-Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	dimethylamine => monomethylamine	K16178	mtbB; dimethylamine--	mtbB
-Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	monomethylamine => ammonia	K16176	mtmB; methylamine--	mtmB
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methanol => methane	K04480	mtaB; 5-hydroxybenzimidazolylcobamide Co-methyltransferase	mtaB
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	trimethylamine => dimethylamine	K14083	mttB; trimethylamine corrinoid protein Co-methyltransferase	mttB
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	dimethylamine => monomethylamine	K16178	mtbB; dimethylamine corrinoid protein Co-methyltransferase	mtbB
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	monomethylamine => ammonia	K16176	mtmB; methylamine corrinoid protein Co-methyltransferase	mtmB
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	putative but not defining CO2 => methane	K00200	formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methane => methanol, with oxygen (pmo)	K10944, K10945, K10946	pmoA; Methane/ammonia monooxygenase subunit A (aka: Particulate methane monoxygenase, or subunit Beta) [EC:1.14.18.3] [RN:R09518]	pmoA
 Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methane => methanol, with oxygen (mmo)	K16157, K16158, K16159, K16160, K16161, K16162	mmoX; Methane monooxygenase component A alpha chain (aka: Soluble methane monooxygenase, or methane hydroxylase) [EC1.14.13.25] [RN:R01142]
