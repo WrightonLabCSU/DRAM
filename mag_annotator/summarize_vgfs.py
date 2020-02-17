@@ -62,7 +62,7 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
         else:
             virus_number_amgs = 0
         virus_transposase_present = sum(frame.is_transposon) > 0  # transposase on contig
-        virus_j_present = sum(['J' in i for i in frame.amg_flags]) > 0
+        virus_j_present = sum(['J' in i if not pd.isna(i) else False for i in frame.amg_flags]) > 0
         virus_data = pd.Series([virus_category, virus_circular, virus_prophage, virus_num_genes, virus_strand_switches,
                                 virus_number_amgs, virus_transposase_present, virus_j_present],
                                index=VIRUS_STATS_COLUMNS, name=scaffold)
