@@ -197,7 +197,8 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
     flag_dict = dict()
     metabolic_genes = set(metabolic_genes)
     for scaffold, scaffold_annotations in annotations.groupby('scaffold'):
-        perc_xh = sum(['Xh' in i for i in scaffold_annotations['vogdb_categories']]) / scaffold_annotations.shape[0]
+        perc_xh = sum(['Xh' in i if not pd.isna(i) else False for i in scaffold_annotations['vogdb_categories']]) \
+                  / scaffold_annotations.shape[0]
         is_j = perc_xh >= 0.18
         for gene, row in scaffold_annotations.iterrows():
             # set up
