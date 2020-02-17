@@ -15,7 +15,7 @@ VIRUS_STATS_COLUMNS = ['VIRSorter category', 'Circular', 'Prophage', 'Gene count
                        'potential AMG count', 'Transposase present', 'Possible Non-Viral Contig']
 VIRAL_DISTILLATE_COLUMNS = ['gene', 'scaffold', 'gene_id', 'gene_description', 'category', 'header',
                             'subheader', 'module', 'auxiliary_score', 'amg_flags']
-VIRAL_LIQUOR_HEADERS = ['Category', 'Function', 'AMG Genes', 'Genes Present', 'VGF Name', 'Present in VGF']
+VIRAL_LIQUOR_HEADERS = ['Category', 'Function', 'AMG Genes', 'Genes Present', 'Contig Name', 'Present in Contig']
 HEATMAP_CELL_HEIGHT = 10
 HEATMAP_CELL_WIDTH = 10
 

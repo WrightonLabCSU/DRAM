@@ -171,10 +171,13 @@ def calculate_auxiliary_scores(gene_order):
             viral_like_left = len(set(left_categories) & set(VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES)) > 0
 
             right_categories = [right_virsorter_category for right_dram_gene, right_viral_gene, right_virsorter_category
-                                in gene_order[i + 1:] if right_viral_gene is not None]
+                                in gene_order[i+1:] if right_viral_gene is not None]
             hallmark_right = len(set(right_categories) & set(VIRSORTER_HALLMARK_GENE_CATEGORIES)) > 0
             viral_like_right = len(set(right_categories) & set(VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES)) > 0
-            if hallmark_left and hallmark_right:  # hallmark on both sides then cat 1
+            # if end of contig then 5:
+            if i == 0 or i == (len(gene_order)-1):
+                auxiliary_score = 5
+            elif hallmark_left and hallmark_right:  # hallmark on both sides then cat 1
                 auxiliary_score = 1
             # hallmark on one side and viral like on other then cat 2
             elif (hallmark_left and viral_like_right) or (viral_like_left and hallmark_right):
@@ -183,10 +186,13 @@ def calculate_auxiliary_scores(gene_order):
             elif viral_like_left and viral_like_right:
                 auxiliary_score = 3
             # not end of contig and hallmark or viral like on other side
-            elif ((hallmark_left or viral_like_left) and len(right_categories) > 0) or \
-                    (len(left_categories) > 0 and (hallmark_right or viral_like_right)):
+            elif (hallmark_left or viral_like_left) or (hallmark_right or viral_like_right):
                 auxiliary_score = 4
-            else:  # if gene is at end of contig or no viral like or hallmark genes then score is 5
+            # if gene is the only virsorter viral like or hallmark on contig then make it a 4
+            elif (virsorter_category in VIRSORTER_HALLMARK_GENE_CATEGORIES) or \
+               (virsorter_category in VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES):
+                auxiliary_score = 4
+            else:  # if  no viral like or hallmark genes then score is 5
                 auxiliary_score = 5
             gene_auxiliary_score_dict[dram_gene] = auxiliary_score
     return gene_auxiliary_score_dict
