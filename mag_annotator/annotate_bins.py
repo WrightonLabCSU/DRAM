@@ -288,7 +288,7 @@ def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=N
             dbcan_descriptions = None
         for gene, frame in dbcan_res_significant.groupby('query_id'):
             if dbcan_descriptions is None:
-                dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.targed_id])
+                dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.target_id])
             else:
                 dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions.get(accession[:-4].split('_')[0]),
                                                            accession[:-4]) for accession in frame.target_id])
@@ -662,6 +662,8 @@ def strip_endings(text, suffixes: list):
     return text
 
 
+# TODO: refactor so that generated annotations.tsv only is a function, break out all else
+# TODO: make it so that it only takes genes.faa, genes.fna and genes.gff
 def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, custom_db_locs=(),
                    dbs_to_use=None, bit_score_threshold=60, rbh_bit_score_threshold=350, skip_uniref=True,
                    skip_trnascan=False, start_time=datetime.now(), is_called_genes=False, threads=1, verbose=False):
