@@ -781,23 +781,27 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotated_faa = path.join(output_dir, 'genes.annotated.faa')
     create_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
 
-    if filtered_fasta is not None:
+    if not is_called_genes:
+        # rename scaffolds
         renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
         rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
-    else:
-        renamed_scaffolds = None
 
-    if renamed_scaffolds is not None:
         # get tRNAs and rRNAs
         if not skip_trnascan:
             run_trna_scan(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
+            if path.isfile(path.join(output_dir, 'trnas.tsv')) and stat(path.join(output_dir, 'trnas.tsv')).st_size > 0:
+                has_trnas = True
+            else:
+                has_trnas = False
+        else:
+            has_trnas = False
         run_barrnap(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
 
-    if gene_gff is not None:
+
         renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
         annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
         add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
-        if not skip_trnascan:
+        if has_trnas:
             add_trnas_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, renamed_scaffolds)
         # make genbank file
         current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
