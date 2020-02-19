@@ -316,7 +316,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
         copy2(path.join(tmp_dir, '%s.gbk' % fasta_name), path.join(output_dir, 'scaffolds.gbk'))
     else:
         annotations_list = list()
-        for seq in read_sequence(fasta_name, format='fasta'):
+        for seq in read_sequence(input_fasta, format='fasta'):
             if len(seq) >= min_contig_size:
                 print('%s: Annotating %s' % (str(datetime.now() - start_time), seq.metadata['id']))
                 contig_dir = path.join(tmp_dir, seq.metadata['id'])
