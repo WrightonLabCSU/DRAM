@@ -320,7 +320,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
             if len(seq) >= min_contig_size:
                 print('%s: Annotating %s' % (str(datetime.now() - start_time), seq.metadata['id']))
                 contig_dir = path.join(tmp_dir, seq.metadata['id'])
-                contig_loc = path.join(tmp_dir, '%s.fasta' % seq.metadata['id'])
+                mkdir(contig_dir)
+                contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
                 write_sequence((i for i in [seq]), format='fasta', into=contig_loc)
                 contig_annotations = annotate_fasta(contig_loc, fasta_name, contig_dir, db_locs, db_handler,
                                                     min_contig_size, custom_db_locs, None, bit_score_threshold,
