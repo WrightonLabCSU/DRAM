@@ -193,18 +193,21 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
     output_loc = path.join(output_loc, 'pfam_output.b6')
     run_process(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc], verbose=verbose)
     pfam_results = pd.read_csv(output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
-    pfam_dict = dict()
-    if db_handler is not None:
-        pfam_descriptions = db_handler.get_descriptions(set(pfam_results.tId), 'pfam_description')
-    else:
-        pfam_descriptions = None
-    for gene, pfam_frame in pfam_results.groupby('qId'):
-        if pfam_descriptions is None:
-            pfam_dict[gene] = '; '.join(pfam_frame.tId)
+    if pfam_results.shape[0] > 0:
+        pfam_dict = dict()
+        if db_handler is not None:
+            pfam_descriptions = db_handler.get_descriptions(set(pfam_results.tId), 'pfam_description')
         else:
-            pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
-                                         for ascession in pfam_frame.tId])
-    return pd.Series(pfam_dict, name='pfam_hits')
+            pfam_descriptions = None
+        for gene, pfam_frame in pfam_results.groupby('qId'):
+            if pfam_descriptions is None:
+                pfam_dict[gene] = '; '.join(pfam_frame.tId)
+            else:
+                pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
+                                             for ascession in pfam_frame.tId])
+        return pd.Series(pfam_dict, name='pfam_hits')
+    else:
+        return pd.Series(name='pfam_hits')
 
 
 def get_sig(tstart, tend, tlen, evalue):
@@ -233,28 +236,31 @@ def parse_hmmsearch_domtblout(file):
 def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, threads=1, verbose=False):
     output = path.join(output_dir, 'kofam_profile.b6')
     run_process(['hmmsearch', '--domtblout', output, '--cpu', str(threads), kofam_hmm, gene_faa], verbose=verbose)
-    ko_hits = parse_hmmsearch_domtblout(output)
+    if path.isfile(output) and stat(output).st_size > 0:
+        ko_hits = parse_hmmsearch_domtblout(output)
 
-    is_sig = list()
-    for ko, frame in ko_hits.groupby('target_id'):
-        ko_row = ko_list.loc[ko]
-        if ko_row['score_type'] == 'domain':
-            score = frame.domain_score
-        elif ko_row['score_type'] == 'full':
-            score = frame.full_score
-        elif ko_row['score_type'] == '-':
-            continue
-        else:
-            raise ValueError(ko_row['score_type'])
-        frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
-        is_sig.append(frame)
-    ko_hits_sig = pd.concat(is_sig)
+        is_sig = list()
+        for ko, frame in ko_hits.groupby('target_id'):
+            ko_row = ko_list.loc[ko]
+            if ko_row['score_type'] == 'domain':
+                score = frame.domain_score
+            elif ko_row['score_type'] == 'full':
+                score = frame.full_score
+            elif ko_row['score_type'] == '-':
+                continue
+            else:
+                raise ValueError(ko_row['score_type'])
+            frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
+            is_sig.append(frame)
+        ko_hits_sig = pd.concat(is_sig)
 
-    kegg_dict = dict()
-    for gene, frame in ko_hits_sig.groupby('query_id'):
-        kegg_dict[gene] = [','.join([i for i in frame.target_id]),
-                           '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
-    return pd.DataFrame(kegg_dict, index=['kegg_id', 'kegg_hit']).transpose()
+        kegg_dict = dict()
+        for gene, frame in ko_hits_sig.groupby('query_id'):
+            kegg_dict[gene] = [','.join([i for i in frame.target_id]),
+                               '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
+        return pd.DataFrame(kegg_dict, index=['kegg_id', 'kegg_hit']).transpose()
+    else:
+        return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
 
 
 def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=None, verbose=False):
