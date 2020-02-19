@@ -699,12 +699,12 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotation_list = list()
 
     # Get kegg hits
-    if 'kegg' in db_locs:
+    if db_locs.get('kegg') is not None:
         annotation_list.append(do_blast_style_search(query_db, db_locs['kegg'], tmp_dir,
                                                      db_handler, get_kegg_description, start_time,
                                                      'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
                                                      verbose))
-    elif 'kofam' in db_locs and 'kofam_ko_list' in db_locs:
+    elif db_locs.get('kofam') is not None and db_locs.get('kofam_ko_list') is not None:
         print('%s: Getting hits from kofam' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan_kofam(gene_faa, db_locs['kofam'], output_dir,
                                                  pd.read_csv(db_locs['kofam_ko_list'], sep='\t', index_col=0),
@@ -713,14 +713,14 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         warnings.warn('No KEGG source provided so distillation will be of limited use.')
 
     # Get uniref hits
-    if 'uniref' in db_locs and not skip_uniref:
+    if db_locs.get('uniref') is not None and not skip_uniref:
         annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], tmp_dir,
                                                      db_handler, get_uniref_description,
                                                      start_time, 'uniref', bit_score_threshold,
                                                      rbh_bit_score_threshold, threads, verbose))
 
     # Get viral hits
-    if 'viral' in db_locs:
+    if db_locs.get('viral') is not None:
         get_viral_description = partial(get_basic_description, db_name='viral')
         annotation_list.append(do_blast_style_search(query_db, db_locs['viral'], tmp_dir,
                                                      db_handler, get_viral_description,
@@ -728,26 +728,26 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                                                      rbh_bit_score_threshold, threads, verbose))
 
     # Get peptidase hits
-    if 'peptidase' in db_locs:
+    if db_locs.get('peptidase') is not None:
         annotation_list.append(do_blast_style_search(query_db, db_locs['peptidase'], tmp_dir,
                                                      db_handler, get_peptidase_description,
                                                      start_time, 'peptidase', bit_score_threshold,
                                                      rbh_bit_score_threshold, threads, verbose))
 
     # Get pfam hits
-    if 'pfam' in db_locs:
+    if db_locs.get('pfam') is not None:
         print('%s: Getting hits from pfam' % str(datetime.now() - start_time))
         annotation_list.append(run_mmseqs_pfam(query_db, db_locs['pfam'], tmp_dir, output_prefix='pfam',
                                                db_handler=db_handler, threads=threads, verbose=verbose))
 
     # use hmmer to detect cazy ids using dbCAN
-    if 'dbcan' in db_locs:
+    if db_locs.get('dbcan') is not None:
         print('%s: Getting hits from dbCAN' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan_dbcan(gene_faa, db_locs['dbcan'], tmp_dir, threads, db_handler=db_handler,
                                                  verbose=verbose))
 
     # use hmmer to detect vogdbs
-    if 'vogdb' in db_locs:
+    if db_locs.get('vogdb') is not None:
         print('%s: Getting hits from VOGDB' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan_vogdb(gene_faa, db_locs['vogdb'], tmp_dir, threads, db_handler=db_handler,
                                                  verbose=verbose))
@@ -796,7 +796,6 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         else:
             has_trnas = False
         run_barrnap(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
-
 
         renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
         annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
