@@ -31,7 +31,7 @@ UNIREF_DESCRIPTION_TABLE_NAME = 'uniref_description'
 class UniRefDescription(Base):
     __tablename__ = UNIREF_DESCRIPTION_TABLE_NAME
 
-    id = Column(String(20), primary_key=True, nullable=False, index=True)
+    id = Column(String(40), primary_key=True, nullable=False, index=True)
 
     description = Column(String(1000))
 
