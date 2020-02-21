@@ -93,3 +93,9 @@ def get_ids_from_annotation(frame):
         id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna()
                     for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', i)]
     return Counter(id_list)
+
+
+def divide_chunks(l, n):
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i:i + n]

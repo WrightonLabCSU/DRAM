@@ -6,7 +6,7 @@ import networkx as nx
 from itertools import tee
 import re
 
-from mag_annotator.utils import get_database_locs, get_ids_from_annotation
+from mag_annotator.utils import get_database_locs, get_ids_from_annotation, divide_chunks
 
 # TODO: add RBH information to output
 # TODO: add flag to output table and not xlsx
@@ -19,7 +19,7 @@ HEATMAP_MODULES = ['M00001', 'M00004', 'M00008', 'M00009', 'M00012', 'M00165', '
 HEATMAP_CELL_HEIGHT = 10
 HEATMAP_CELL_WIDTH = 10
 KO_REGEX = r'^K\d\d\d\d\d$'
-ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'MAG', 'path_length', 'path_length_coverage',
+ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'genome', 'path_length', 'path_length_coverage',
                         'percent_coverage', 'genes', 'missing_genes', 'complex_module_name']
 
 
@@ -232,16 +232,16 @@ def make_module_coverage_frame(annotations, module_nets, groupby_column='fasta')
     for scaffold, frame in annotations.groupby(groupby_column, sort=False):
         module_coverage_dict[scaffold] = make_module_coverage_df(frame, module_nets)
     module_coverage = pd.concat(module_coverage_dict)
-    module_coverage.index = module_coverage.index.set_names(['MAG', 'module'])
+    module_coverage.index = module_coverage.index.set_names(['genome', 'module'])
     return module_coverage.reset_index()
 
 
 def make_module_coverage_heatmap(module_coverage, mag_order=None):
-    num_mags_in_frame = len(set(module_coverage['MAG']))
+    num_mags_in_frame = len(set(module_coverage['genome']))
     c = alt.Chart(module_coverage, title='Module').encode(
         x=alt.X('module_name', title=None, sort=None, axis=alt.Axis(labelLimit=0, labelAngle=90)),
-        y=alt.Y('MAG', title=None, sort=mag_order, axis=alt.Axis(labelLimit=0)),
-        tooltip=[alt.Tooltip('MAG', title='MAG'),
+        y=alt.Y('genome', title=None, sort=mag_order, axis=alt.Axis(labelLimit=0)),
+        tooltip=[alt.Tooltip('genome', title='Genome'),
                  alt.Tooltip('module_name', title='Module Name'),
                  alt.Tooltip('steps', title='Module steps'),
                  alt.Tooltip('steps_present', title='Steps present')
@@ -360,15 +360,15 @@ def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
 
 
 def make_etc_coverage_heatmap(etc_coverage, mag_order=None, module_order=None):
-    num_mags_in_frame = len(set(etc_coverage['MAG']))
+    num_mags_in_frame = len(set(etc_coverage['genome']))
     charts = list()
     for i, (etc_complex, frame) in enumerate(etc_coverage.groupby('complex')):
         # if this is the first chart then make y-ticks otherwise none
         c = alt.Chart(frame, title=etc_complex).encode(
             x=alt.X('module_name', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90),
                     sort=module_order),
-            y=alt.Y('MAG', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order),
-            tooltip=[alt.Tooltip('MAG', title='MAG'),
+            y=alt.Y('genome', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order),
+            tooltip=[alt.Tooltip('genome', title='Genome'),
                      alt.Tooltip('module_name', title='Module Name'),
                      alt.Tooltip('path_length', title='Module Subunits'),
                      alt.Tooltip('path_length_coverage', title='Subunits present'),
@@ -402,8 +402,8 @@ def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta
             present_in_bin = len(functions_present) > 0
             rows.append([row.category, row.subcategory, row.function_name, ', '.join(functions_present),
                          row.long_function_name, row.gene_symbol, bin_name,
-                         present_in_bin, '%s: %s' % (row.category,row.function_name)])
-    return pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['bin', 'present',
+                         present_in_bin, '%s: %s' % (row.category, row.function_name)])
+    return pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['genome', 'present',
                                                                              'category_function_name'])
 
 
@@ -413,14 +413,14 @@ def make_functional_heatmap(functional_df, mag_order=None):
     for i, (group, frame) in enumerate(functional_df.groupby('category', sort=False)):
         # set variables for chart
         function_order = get_ordered_uniques(list(frame.function_name))
-        num_mags_in_frame = len(set(frame.bin))
+        num_mags_in_frame = len(set(frame['genome']))
         chart_width = HEATMAP_CELL_WIDTH * len(function_order)
         chart_height = HEATMAP_CELL_HEIGHT * num_mags_in_frame
         # if this is the first chart then make y-ticks otherwise none
         if i == 0:
-            y = alt.Y('bin', title=None, axis=alt.Axis(labelLimit=0), sort=mag_order)
+            y = alt.Y('genome', title=None, axis=alt.Axis(labelLimit=0), sort=mag_order)
         else:
-            y = alt.Y('bin', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order)
+            y = alt.Y('genome', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order)
         # set up colors for chart
         rect_colors = alt.Color('present',
                                 legend=alt.Legend(title="Function is Present", symbolType='square',
@@ -431,7 +431,7 @@ def make_functional_heatmap(functional_df, mag_order=None):
         # TODO: Figure out how to angle title to take up less space
         c = alt.Chart(frame, title=alt.TitleParams(group)).encode(
             x=alt.X('function_name', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90), sort=function_order),
-            tooltip=[alt.Tooltip('bin', title='MAG'),
+            tooltip=[alt.Tooltip('genome', title='Genome'),
                      alt.Tooltip('category', title='Category'),
                      alt.Tooltip('subcategory', title='Subcategory'),
                      alt.Tooltip('function_ids', title='Function IDs'),
@@ -445,6 +445,38 @@ def make_functional_heatmap(functional_df, mag_order=None):
     # merge and return
     function_heatmap = alt.hconcat(*charts, spacing=5)
     return function_heatmap
+
+
+def fill_liquor_dfs(annotations, module_steps_form, etc_module_df, function_heatmap_form, groupby_column='fasta'):
+    # make module coverage frame
+    module_nets = {module: build_module_net(module_df)
+                   for module, module_df in module_steps_form.groupby('module') if module in HEATMAP_MODULES}
+    module_coverage_frame = make_module_coverage_frame(annotations, module_nets, groupby_column)
+
+    # make ETC frame
+    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations)
+
+    # make functional frame
+    function_df = make_functional_df(annotations, function_heatmap_form, groupby_column)
+
+    return module_coverage_frame, etc_coverage_df, function_df
+
+
+def make_liquor_heatmap(module_coverage_frame, etc_coverage_df, function_df, mag_order=None):
+    module_coverage_heatmap = make_module_coverage_heatmap(module_coverage_frame, mag_order)
+    etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
+    function_heatmap = make_functional_heatmap(function_df, mag_order)
+
+    liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
+    return liquor
+
+
+def make_liquor_df(module_coverage_frame, etc_coverage_df, function_df):
+    liquor_df = pd.concat([module_coverage_frame.pivot(index='genome', columns='module_name', values='step_coverage'),
+                           etc_coverage_df.pivot(index='genome', columns='complex_module_name', values='percent_coverage'),
+                           function_df.pivot(index='genome', columns='category_function_name', values='present')],
+                          axis=1, sort=False)
+    return liquor_df
 
 
 def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column):
@@ -489,29 +521,26 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     genome_summary = path.join(output_dir, 'metabolism_summary.xlsx')
     make_genome_summary(annotations, genome_summary_form, genome_summary, trna_frame, rrna_frame, groupby_column)
 
-    # make heatmaps
+    # make liquor
     if 'bin_taxonomy' in annotations:
-        mag_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
+        genome_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
     else:
-        mag_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
-    module_nets = {module: build_module_net(module_df)
-                   for module, module_df in module_steps_form.groupby('module') if module in HEATMAP_MODULES}
-    module_coverage_frame = make_module_coverage_frame(annotations, module_nets, groupby_column)
-    module_coverage_heatmap = make_module_coverage_heatmap(module_coverage_frame, mag_order)
+        genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
 
-    # make ETC heatmap
-    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations)
-    etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
-
-    # make functional heatmap
-    function_df = make_functional_df(annotations, function_heatmap_form, groupby_column)
-    function_heatmap = make_functional_heatmap(function_df, mag_order)
-
-    liquor_df = pd.concat([module_coverage_frame.pivot(index='MAG', columns='module_name', values='step_coverage'),
-                           etc_coverage_df.pivot(index='MAG', columns='complex_module_name', values='percent_coverage'),
-                           function_df.pivot(index='bin', columns='category_function_name', values='present')],
-                          axis=1, sort=False)
+    module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_steps_form, etc_module_df,
+                                                                          function_heatmap_form, groupby_column='fasta')
+    liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
     liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
 
-    liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
-    liquor.save(path.join(output_dir, 'liquor.html'))
+    if len(genome_order) > 1500:
+        for i, genomes in enumerate(divide_chunks(genome_order, 1500)):
+            module_coverage_df_subset = module_coverage_df.loc[[genome in genomes
+                                                                for genome in module_coverage_df.genome]]
+            etc_coverage_df_subset = etc_coverage_df.loc[[genome in genomes for genome in etc_coverage_df.genome]]
+            function_df_subset = function_df.loc[[genome in genomes for genome in function_df.genome]]
+            liquor = make_liquor_heatmap(module_coverage_df_subset, etc_coverage_df_subset, function_df_subset,
+                                         genome_order)
+            liquor.save(path.join(output_dir, 'liquor_%s.html' % i))
+    else:
+        liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order)
+        liquor.save(path.join(output_dir, 'liquor.html'))

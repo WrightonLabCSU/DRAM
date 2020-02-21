@@ -5,15 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT
+from mag_annotator.utils import divide_chunks
 
 
 # TODO: store all sequence db locs within database handler class
-
-
-def divide_chunks(l, n):
-    # looping till length l
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
 
 
 class DatabaseHandler:
