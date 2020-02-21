@@ -52,7 +52,7 @@ _I don't have access to KEGG_
 Not a problem. Then use this command:
 
 ```bash
-DRAM.py prepare_databases --output_dir DRAM_data --kegg_loc kegg.pep
+DRAM.py prepare_databases --output_dir DRAM_data
 ```
 
 Similar to above you can still provide locations of databases you have already downloaded so you don't have to do it
