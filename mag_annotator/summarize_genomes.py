@@ -527,20 +527,29 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
 
-    module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_steps_form, etc_module_df,
-                                                                          function_heatmap_form, groupby_column='fasta')
-    liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
-    liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
-
     if len(genome_order) > 1500:
+        module_coverage_dfs = list()
+        etc_coverage_dfs = list()
+        function_dfs = list()
         for i, genomes in enumerate(divide_chunks(genome_order, 1500)):
-            module_coverage_df_subset = module_coverage_df.loc[[genome in genomes
-                                                                for genome in module_coverage_df.genome]]
-            etc_coverage_df_subset = etc_coverage_df.loc[[genome in genomes for genome in etc_coverage_df.genome]]
-            function_df_subset = function_df.loc[[genome in genomes for genome in function_df.genome]]
+            annotations_subset = annotations.loc[[i in genomes for i in annotations.fasta]]
+            dfs = fill_liquor_dfs(annotations_subset, module_steps_form, etc_module_df, function_heatmap_form,
+                                  groupby_column='fasta')
+            module_coverage_df_subset, etc_coverage_df_subset, function_df_subset = dfs
+            module_coverage_dfs.append(module_coverage_df_subset)
+            etc_coverage_dfs.append(etc_coverage_df_subset)
+            function_dfs.append(function_df_subset)
             liquor = make_liquor_heatmap(module_coverage_df_subset, etc_coverage_df_subset, function_df_subset,
                                          genome_order)
             liquor.save(path.join(output_dir, 'liquor_%s.html' % i))
+        liquor_df = make_liquor_df(pd.concat(module_coverage_dfs), pd.concat(etc_coverage_dfs), pd.concat(function_dfs))
+        liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
     else:
+        module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_steps_form,
+                                                                           etc_module_df,
+                                                                           function_heatmap_form,
+                                                                           groupby_column='fasta')
+        liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
+        liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
         liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order)
         liquor.save(path.join(output_dir, 'liquor.html'))
