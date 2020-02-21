@@ -170,7 +170,7 @@ def process_pfam_descriptions(pfam_hmm_dat):
     return description_list
 
 
-def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='7', verbose=True):
+def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='8', verbose=True):
     if dbcan_hmm is None:  # download database if not provided
         dbcan_hmm = path.join(output_dir, 'dbCAN-HMMdb-V%s.txt' % dbcan_release)
         download_file('http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,

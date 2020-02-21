@@ -48,7 +48,7 @@ if __name__ == '__main__':
     prepare_dbs_parser.add_argument('--dbcan_loc', default=None, help="File path to dbCAN, if already downloaded")
     prepare_dbs_parser.add_argument('--dbcan_fam_activities', default=None, help='CAZY family activities file, if'
                                                                                  'already downloaded')
-    prepare_dbs_parser.add_argument('--dbcan_version', default='7', type=str, help='version of dbCAN to use')
+    prepare_dbs_parser.add_argument('--dbcan_version', default='8', type=str, help='version of dbCAN to use')
     prepare_dbs_parser.add_argument('--vogdb_loc', default=None, help='hmm file for vogdb, if already downloaded')
     prepare_dbs_parser.add_argument('--viral_loc', default=None,
                                     help="File path to viral protein faa, if already downloaded")
