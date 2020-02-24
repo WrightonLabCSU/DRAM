@@ -17,7 +17,7 @@ To install DRAM some dependencies need to be installed first then DRAM can be in
 enviornment.yaml file.
     ```bash
     wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
-    conda env create -f environment.yml -n DRAM
+    conda env create -f environment.yaml -n DRAM
     ```
     If this installation method is used then all further steps should be run inside the newly created DRAM environment. This environment can be activated using this command:
     ```bash
@@ -52,7 +52,7 @@ _I don't have access to KEGG_
 Not a problem. Then use this command:
 
 ```bash
-DRAM.py prepare_databases --output_dir DRAM_data --kegg_loc kegg.pep
+DRAM.py prepare_databases --output_dir DRAM_data
 ```
 
 Similar to above you can still provide locations of databases you have already downloaded so you don't have to do it
