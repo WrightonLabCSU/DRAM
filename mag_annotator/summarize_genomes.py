@@ -21,6 +21,7 @@ HEATMAP_CELL_WIDTH = 10
 KO_REGEX = r'^K\d\d\d\d\d$'
 ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'genome', 'path_length', 'path_length_coverage',
                         'percent_coverage', 'genes', 'missing_genes', 'complex_module_name']
+GENOMES_PER_LIQUOR = 1000
 
 
 def get_ordered_uniques(seq):
@@ -527,11 +528,11 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
 
-    if len(genome_order) > 1500:
+    if len(genome_order) > GENOMES_PER_LIQUOR:
         module_coverage_dfs = list()
         etc_coverage_dfs = list()
         function_dfs = list()
-        for i, genomes in enumerate(divide_chunks(genome_order, 1500)):
+        for i, genomes in enumerate(divide_chunks(genome_order, GENOMES_PER_LIQUOR)):
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
             dfs = fill_liquor_dfs(annotations_subset, module_steps_form, etc_module_df, function_heatmap_form,
                                   groupby_column='fasta')

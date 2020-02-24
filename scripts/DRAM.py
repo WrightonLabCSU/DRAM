@@ -118,10 +118,10 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--custom_fasta_loc', action='append',
                                  help="Location of fastas to annotated against, can be used multiple times but"
                                       "must match nubmer of custom_db_name's")
-    annotate_parser.add_argument('--gtdb_taxonomy', action='append',
+    annotate_parser.add_argument('--gtdb_taxonomy', action='append', default=[],
                                  help='Summary file from gtdbtk taxonomy assignment from bins, can be used multiple'
                                       'times')
-    annotate_parser.add_argument('--checkm_quality', action='append',
+    annotate_parser.add_argument('--checkm_quality', action='append', default=[],
                                  help='Summary of of checkM quality assessment from bins, can be used multiple times')
     annotate_parser.add_argument('--genes_called', action='store_true', default=False,
                                  help='if you are passing a file of amino acid sequences')
