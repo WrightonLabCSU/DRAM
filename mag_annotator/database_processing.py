@@ -181,7 +181,7 @@ def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='8'
     return dbcan_hmm
 
 
-def download_dbcan_descriptions(output_dir='.', upload_date='07312018', verbose=True):
+def download_dbcan_descriptions(output_dir='.', upload_date='07312019', verbose=True):
     dbcan_fam_activities = path.join(output_dir, 'CAZyDB.%s.fam-activities.txt' % upload_date)
     download_file('http://bcb.unl.edu/dbCAN2/download/Databases/CAZyDB.%s.fam-activities.txt' % upload_date,
                   dbcan_fam_activities, verbose=verbose)
