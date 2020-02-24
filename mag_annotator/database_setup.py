@@ -33,7 +33,7 @@ class UniRefDescription(Base):
 
     id = Column(String(40), primary_key=True, nullable=False, index=True)
 
-    description = Column(String(1000))
+    description = Column(String(10000))
 
     @property
     def serialize(self):
