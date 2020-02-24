@@ -541,7 +541,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
             etc_coverage_dfs.append(etc_coverage_df_subset)
             function_dfs.append(function_df_subset)
             liquor = make_liquor_heatmap(module_coverage_df_subset, etc_coverage_df_subset, function_df_subset,
-                                         genome_order)
+                                         genomes)
             liquor.save(path.join(output_dir, 'liquor_%s.html' % i))
         liquor_df = make_liquor_df(pd.concat(module_coverage_dfs), pd.concat(etc_coverage_dfs), pd.concat(function_dfs))
         liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
