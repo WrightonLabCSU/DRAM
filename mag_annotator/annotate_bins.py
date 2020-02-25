@@ -689,6 +689,10 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         filtered_fasta = path.join(tmp_dir, 'filtered_fasta.fa')
         filter_fasta(fasta_loc, min_contig_size, filtered_fasta)
 
+        if stat(filtered_fasta).st_size == 0:
+            warnings.warn('No sequences were longer than min_contig_size')
+            return pd.DataFrame()
+
         # call genes with prodigal
         print('%s: Calling genes with prodigal' % str(datetime.now() - start_time))
         gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir, verbose=verbose)
