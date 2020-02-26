@@ -7,7 +7,7 @@ dependencies:
   - pytest
   - scikit-bio
   - prodigal
-  - mmseqs2
+  - mmseqs2!=10.6d92c
   - hmmer
   - trnascan-se >=2
   - sqlalchemy
