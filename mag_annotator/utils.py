@@ -44,14 +44,14 @@ def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose
         run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
 
 
-def multigrep(search_terms, search_against, output='.'):
+def multigrep(search_terms, search_against, split_char='\n', output='.'):
     # TODO: multiprocess this over the list of search terms
     """Search a list of exact substrings against a database, takes name of mmseqs db index with _h to search against"""
     hits_file = path.join(output, 'hits.txt')
     with open(hits_file, 'w') as f:
         f.write('%s\n' % '\n'.join(search_terms))
     results = run_process(['grep', '-a', '-F', '-f', hits_file, search_against], capture_stdout=True, verbose=False)
-    processed_results = [i.strip() for i in results.strip().split('\n')
+    processed_results = [i.strip() for i in results.strip().split(split_char)
                          if len(i) > 0]
     # remove(hits_file)
     return {i.split()[0]: i for i in processed_results if i != ''}

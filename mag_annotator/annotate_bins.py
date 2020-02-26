@@ -649,7 +649,7 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
     if '%s_description' % db_name in db_handler.get_database_names():
         header_dict = db_handler.get_descriptions(hits['%s_hit' % db_name], '%s_description' % db_name)
     else:
-        header_dict = multigrep(hits['%s_hit' % db_name], '%s_h' % target_db, working_dir)
+        header_dict = multigrep(hits['%s_hit' % db_name], '%s_h' % target_db, '\x00', working_dir)
     hits = get_description(hits, header_dict)
     return hits
 
