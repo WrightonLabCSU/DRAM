@@ -2,7 +2,6 @@ language: python
 python:
 - '3.6'
 - '3.7'
-- '3.8'
 cache: pip
 before_install:
 - wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O
