@@ -51,7 +51,7 @@ def multigrep(search_terms, search_against, output='.'):
     with open(hits_file, 'w') as f:
         f.write('%s\n' % '\n'.join(search_terms))
     results = run_process(['grep', '-a', '-F', '-f', hits_file, search_against], capture_stdout=True, verbose=False)
-    processed_results = [i.strip() for i in results.strip().split('\x00')
+    processed_results = [i.strip() for i in results.strip().split('\n')
                          if len(i) > 0]
     # remove(hits_file)
     return {i.split()[0]: i for i in processed_results if i != ''}

@@ -27,18 +27,20 @@ def test_init_db_handler():
 
 
 def test_add_descriptions_to_database(db_handler):
-    kegg_entries = {'K00001': 'The first KO', 'K00002': 'The second KO'}
+    kegg_entries = [{'id': 'K00001', 'description': 'The first KO'},
+                    {'id': 'K00002', 'description': 'The second KO'}]
     db_handler.add_descriptions_to_database(kegg_entries, 'kegg_description')
     assert len(db_handler.session.query(KeggDescription).all()) == 2
     # now test that clear table works
-    kegg_entry = {'K00003': 'The third KO'}
+    kegg_entry = [{'id': 'K00003', 'description': 'The third KO'}]
     db_handler.add_descriptions_to_database(kegg_entry, 'kegg_description', clear_table=True)
     assert len(db_handler.session.query(KeggDescription).all()) == 1
 
 
 @pytest.fixture()
 def db_w_entries(db_handler):
-    db_handler.add_descriptions_to_database({'K00001': 'The first KO', 'K00002': 'The second KO'}, 'kegg_description',
+    db_handler.add_descriptions_to_database([{'id': 'K00001', 'description': 'The first KO'},
+                                             {'id': 'K00002', 'description': 'The second KO'}], 'kegg_description',
                                             clear_table=True)
     return db_handler
 

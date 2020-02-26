@@ -181,10 +181,9 @@ def test_run_mmseqs_pfam():
 
 
 def test_get_sig():
-    assert not get_sig(1, 85, 1)
-    assert get_sig(1, 86, 1e-10)
-    assert not get_sig(1, 76, 1e-3)
-    assert get_sig(2, 77, 1e-19)
+    assert not get_sig(1, 85, 100, 1)
+    assert get_sig(1, 86, 100, 1e-16)
+    assert not get_sig(1, 29, 100, 1e-20)
 
 
 def test_run_hmmscan_dbcan():
@@ -287,7 +286,7 @@ def phix_annotations():
                          ['C', 'K7', 'U7', 'P7', 'a_bug7']],
                         index=['NC_001422.1_1', 'NC_001422.1_2', 'NC_001422.1_3', 'NC_001422.1_4', 'NC_001422.1_5',
                                'NC_001422.1_6', 'NC_001422.1_7'],
-                        columns=['grade', 'kegg_hit', 'uniref_hit', 'pfam_hits', 'bin_taxonomy'])
+                        columns=['rank', 'kegg_hit', 'uniref_hit', 'pfam_hits', 'bin_taxonomy'])
 
 
 def test_generate_annotated_fasta_short(phix_prodigal_genes, phix_annotations):
@@ -295,9 +294,9 @@ def test_generate_annotated_fasta_short(phix_prodigal_genes, phix_annotations):
                                                      name='phiX')
     short_fasta_header_dict = {seq.metadata['id']: seq.metadata['description'] for seq in fasta_generator_short}
 
-    assert short_fasta_header_dict['phiX_NC_001422.1_1'] == 'grade: A; K1 (db=kegg)'
-    assert short_fasta_header_dict['phiX_NC_001422.1_2'] == 'grade: B; U2 (db=uniref)'
-    assert short_fasta_header_dict['phiX_NC_001422.1_4'] == 'grade: D; P4 (db=pfam)'
+    assert short_fasta_header_dict['phiX_NC_001422.1_1'] == 'rank: A; K1 (db=kegg)'
+    assert short_fasta_header_dict['phiX_NC_001422.1_2'] == 'rank: B; U2 (db=uniref)'
+    assert short_fasta_header_dict['phiX_NC_001422.1_4'] == 'rank: D; P4 (db=pfam)'
 
 
 def test_generate_annotated_fasta_long(phix_prodigal_genes, phix_annotations):
@@ -305,7 +304,7 @@ def test_generate_annotated_fasta_long(phix_prodigal_genes, phix_annotations):
                                                     name='phiX')
     long_fasta_header_dict = {seq.metadata['id']: seq.metadata['description'] for seq in fasta_generator_long}
     print(long_fasta_header_dict)
-    assert long_fasta_header_dict['phiX_NC_001422.1_1'] == 'grade: A; K1 (db=kegg); U1 (db=uniref); a_bug1'
+    assert long_fasta_header_dict['phiX_NC_001422.1_1'] == 'rank: A; K1 (db=kegg); U1 (db=uniref); a_bug1'
 
 
 def test_create_annotated_fasta(phix_prodigal_genes, phix_annotations, tmpdir):
