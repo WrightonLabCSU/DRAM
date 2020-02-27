@@ -5,6 +5,7 @@ import altair as alt
 import networkx as nx
 from itertools import tee
 import re
+import numpy as np
 
 from mag_annotator.utils import get_database_locs, get_ids_from_annotation, divide_chunks
 
@@ -396,14 +397,20 @@ def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta
         genome_to_id_dict[genome] = set(id_list)
     # build long from data frame
     rows = list()
-    for _, row in function_heatmap_form.iterrows():
-        function_id_set = set([i.strip() for i in row.function_ids.strip().split(',')])
+    for function, frame in function_heatmap_form.groupby('function_name', sort=False):
         for bin_name, id_set in genome_to_id_dict.items():
-            functions_present = set.intersection(id_set, function_id_set)
-            present_in_bin = len(functions_present) > 0
+            presents_in_bin = list()
+            functions_present = set()
+            for _, row in frame.iterrows():
+                function_id_set = set([i.strip() for i in row.function_ids.strip().split(',')])
+                present_in_bin = id_set & function_id_set
+                functions_present = functions_present | present_in_bin
+                presents_in_bin.append(len(present_in_bin) > 0)
+            function_in_bin = np.all(presents_in_bin)
+            row = frame.iloc[0]
             rows.append([row.category, row.subcategory, row.function_name, ', '.join(functions_present),
-                         row.long_function_name, row.gene_symbol, bin_name,
-                         present_in_bin, '%s: %s' % (row.category, row.function_name)])
+                         '; '.join(set(frame.long_function_name)), row.gene_symbol, bin_name,
+                         function_in_bin, '%s: %s' % (row.category, row.function_name)])
     return pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['genome', 'present',
                                                                              'category_function_name'])
 
@@ -427,7 +434,7 @@ def make_functional_heatmap(functional_df, mag_order=None):
                                 legend=alt.Legend(title="Function is Present", symbolType='square',
                                                   values=[True, False]),
                                 sort=[True, False],
-                                scale=alt.Scale(range=['#e5f5f9', '#2ca25f']))
+                                scale=alt.Scale(range=['#2ca25f', '#e5f5f9']))
         # define chart
         # TODO: Figure out how to angle title to take up less space
         c = alt.Chart(frame, title=alt.TitleParams(group)).encode(
@@ -474,7 +481,8 @@ def make_liquor_heatmap(module_coverage_frame, etc_coverage_df, function_df, mag
 
 def make_liquor_df(module_coverage_frame, etc_coverage_df, function_df):
     liquor_df = pd.concat([module_coverage_frame.pivot(index='genome', columns='module_name', values='step_coverage'),
-                           etc_coverage_df.pivot(index='genome', columns='complex_module_name', values='percent_coverage'),
+                           etc_coverage_df.pivot(index='genome', columns='complex_module_name',
+                                                 values='percent_coverage'),
                            function_df.pivot(index='genome', columns='category_function_name', values='present')],
                           axis=1, sort=False)
     return liquor_df
