@@ -820,6 +820,9 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotations.insert(0, 'fasta', fasta_name)
     annotations.index = annotations.fasta + '_' + annotations.index
 
+    # write annotations to file to be merged later
+    annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
+
     # remove tmpdir
     rmtree(tmp_dir)
     return annotations
