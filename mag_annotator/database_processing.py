@@ -355,8 +355,7 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(amg_database_loc, 'amg_database', db_dict)
 
-    if description_db_loc is not None:
-        db_dict['description_db'] = path.realpath(description_db_loc)
+    db_dict = check_exists_and_add_to_location_dict(description_db_loc, 'description_db', db_dict)
 
     if update_description_db:
         populate_description_db(db_dict)
@@ -512,3 +511,16 @@ def print_database_locations():
     print('ETC module database location: %s' % is_db_in_dict('etc_module_database', db_locs))
     print('Function heatmap form location: %s' % is_db_in_dict('function_heatmap_form', db_locs))
     print('AMG database location: %s' % is_db_in_dict('amg_database', db_locs))
+
+
+def update_dram_forms(output_dir, branch='master'):
+    if not path.isdir(output_dir):
+        mkdir(output_dir)
+
+    form_locs = dict()
+    form_locs['genome_summary_form_loc'] = download_and_process_genome_summary_form(output_dir, branch)
+    form_locs['module_step_form_loc'] = download_and_process_module_step_form(output_dir, branch)
+    form_locs['etc_module_database_loc'] = download_and_process_etc_module_database(output_dir, branch)
+    form_locs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(output_dir, branch)
+    form_locs['amg_database_loc'] = download_and_process_amg_database(output_dir, branch)
+    set_database_paths(**form_locs, update_description_db=False)

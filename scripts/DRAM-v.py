@@ -3,7 +3,7 @@
 import argparse
 
 from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations,\
-                                              populate_description_db
+                                              populate_description_db, update_dram_forms
 from mag_annotator.annotate_vgfs import annotate_vgfs
 from mag_annotator.summarize_vgfs import summarize_vgfs
 from mag_annotator.pull_sequences import pull_sequences
@@ -20,6 +20,9 @@ if __name__ == '__main__':
                                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     update_description_db_parser = subparsers.add_parser('update_description_db', help='Update description database',
                                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    update_dram_forms_parser = subparsers.add_parser('update_dram_forms',
+                                                     help='Update DRAM distillate and liquor forms',
+                                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     print_db_locs_parser = subparsers.add_parser('print_config', help="Print database locations",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     annotate_parser = subparsers.add_parser('annotate', help="Annotate viral contigs",
@@ -97,6 +100,12 @@ if __name__ == '__main__':
 
     # parser for updating database descriptions
     update_description_db_parser.set_defaults(func=populate_description_db)
+
+    # parser for updating DRAM databases only
+    update_dram_forms_parser.add_argument('--output_dir', required=True,
+                                          help="Directory to store newly downloaded files, may want this to be the same"
+                                               " directory as the rest of your DRAM database files")
+    update_dram_forms_parser.set_defaults(func=update_dram_forms)
 
     # parser for printing out database configuration information
     print_db_locs_parser.set_defaults(func=print_database_locations)
