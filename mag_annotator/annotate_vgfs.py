@@ -26,7 +26,8 @@ TRANSPOSON_PFAMS = {'PF01609', 'PF00872', 'PF01610', 'PF01527', 'PF02371', 'PF01
                     'PF01797', 'PF02899', 'PF05717', 'PF07592', 'PF03050', 'PF04754', 'PF04986', 'PF03400'}
 
 CELL_ENTRY_CAZYS = {'CBM50', 'GH102', 'GH103', 'GH104', 'GH108', 'GH18', 'GH19', 'GH22', 'GH23', 'GH24', 'GH25', 'GH73',
-                    'PL9', 'CBM12', 'CBM14', 'CBM18', 'CBM19'}
+                    'PL9', 'CBM12', 'CBM14', 'CBM18', 'CBM19', 'AA15', 'AA10', 'GH32', 'GH58', 'PL16'}
+
 VIRAL_PEPTIDASES_MEROPS = {'A02H', 'A02G', 'A02F', 'A02E', 'A02D', 'A02C', 'A02B', 'A02A', 'A03B', 'A03A', 'A11B',
                            'A11A', 'A22B', 'A22A', 'A33', 'C01B', 'C01A', 'C02B', 'C02A', 'C03H', 'C03G', 'C03F',
                            'C03E', 'C03D', 'C03C', 'C03B', 'C03A', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C104',
@@ -71,17 +72,8 @@ def get_overlap(row1, row2):
     if overlap_len <= 0:
         return 0, 0
     else:
-        return overlap_len / (row1.end_position - row1.start_position), \
-               overlap_len / (row2.end_position - row2.start_position)
-
-
-def get_next_number_name_row(i, frame):
-    i += 1
-    if i == frame.shape[0]:
-        raise StopIteration()
-    row = frame.iloc[i]
-    row_name = row.name
-    return i, row_name, row
+        return overlap_len / (row1['end_position'] - row1['start_position']), \
+               overlap_len / (row2['end_position'] - row2['start_position'])
 
 
 def is_transposon(pfam_hits):
@@ -93,69 +85,65 @@ def is_transposon(pfam_hits):
 
 
 def get_gene_order(dram_genes, virsorter_genes, min_overlap=.70):
-    dram_gene_frame_list = list()
-    dram_gene_frame_list.append(dram_genes['start_position'].astype(int))
-    dram_gene_frame_list.append(dram_genes['end_position'].astype(int))
-    dram_gene_frame = pd.DataFrame(dram_gene_frame_list).transpose()
-    dram_gene_frame = dram_gene_frame.sort_values('start_position')
-    dram_gene_number, dram_gene, dram_row = get_next_number_name_row(-1, dram_gene_frame)
+    dram_genes['start_position'] = dram_genes['start_position'].astype(int)
+    dram_genes['end_position'] = dram_genes['end_position'].astype(int)
+    dram_genes = dram_genes.sort_values('start_position')
+    dram_gene_number = 0
 
-    virsorter_gene_frame_list = list()
-    virsorter_gene_frame_list.append(virsorter_genes['start_position'].astype(int))
-    virsorter_gene_frame_list.append(virsorter_genes['end_position'].astype(int))
-    virsorter_gene_frame_list.append(virsorter_genes['viral_protein_cluster_category'])
-    virsorter_gene_frame = pd.DataFrame(virsorter_gene_frame_list).transpose()
-    virsorter_gene_frame = virsorter_gene_frame.sort_values('start_position')
-    virsorter_gene_number, virsorter_gene, virsorter_row = get_next_number_name_row(-1, virsorter_gene_frame)
+    virsorter_genes['start_position'] = virsorter_genes['start_position'].astype(int)
+    virsorter_genes['end_position'] = virsorter_genes['end_position'].astype(int)
+    virsorter_genes = virsorter_genes.sort_values('start_position')
+    virsorter_gene_number = 0
 
     merged_genes_rows = list()
-    while True:
-        try:
-            # end if we are at the end of either list
-            forward_overlap, reverse_overlap = get_overlap(dram_row, virsorter_row)
-            if (forward_overlap > min_overlap) and (reverse_overlap > min_overlap):
-                merged_genes_rows.append((dram_gene, virsorter_gene, virsorter_row['viral_protein_cluster_category']))
-                dram_gene_number, dram_gene, dram_row = get_next_number_name_row(dram_gene_number, dram_gene_frame)
-                virsorter_gene_number, virsorter_gene, virsorter_row = get_next_number_name_row(virsorter_gene_number,
-                                                                                                virsorter_gene_frame)
-            else:  # if not significantly overlap then determine first gene
-                if dram_row['start_position'] < virsorter_row['start_position']:
+    while (dram_gene_number < dram_genes.shape[0]) and (virsorter_gene_number < virsorter_genes.shape[0]):
+        dram_row = dram_genes.iloc[dram_gene_number]
+        dram_gene = dram_genes.index[dram_gene_number]
+        virsorter_row = virsorter_genes.iloc[virsorter_gene_number]
+        print(virsorter_row)
+        virsorter_gene = virsorter_genes.index[virsorter_gene_number]
+        virsorter_gene_category = virsorter_row['viral_protein_cluster_category']
+        # end if we are at the end of either list
+        forward_overlap, reverse_overlap = get_overlap(dram_row, virsorter_row)
+        if (forward_overlap > min_overlap) and (reverse_overlap > min_overlap):
+            merged_genes_rows.append((dram_gene, virsorter_gene, virsorter_gene_category))
+            dram_gene_number += 1
+            virsorter_gene_number += 1
+        else:  # if not significantly overlap then determine first gene
+            if dram_row['start_position'] < virsorter_row['start_position']:
+                merged_genes_rows.append((dram_gene, None, None))
+                dram_gene_number += 1
+            elif dram_row['start_position'] > virsorter_row['start_position']:
+                merged_genes_rows.append((None, virsorter_gene, virsorter_gene_category))
+                virsorter_gene_number += 1
+            else:  # if the same start positions then shorter gene is the first
+                if dram_row['end_position'] < virsorter_row['end_position']:
                     merged_genes_rows.append((dram_gene, None, None))
-                    dram_gene_number, dram_gene, dram_row = get_next_number_name_row(dram_gene_number, dram_gene_frame)
-                elif dram_row['start_position'] > virsorter_row['start_position']:
-                    merged_genes_rows.append((None, virsorter_gene, virsorter_row['viral_protein_cluster_category']))
-                    virsorter_gene_number, virsorter_gene, virsorter_row = \
-                        get_next_number_name_row(virsorter_gene_number, virsorter_gene_frame)
-                else:  # if the same start positions then shorter gene is the first
-                    if dram_row['end_position'] < virsorter_row['end_position']:
-                        merged_genes_rows.append((dram_gene, None, None))
-                        dram_gene_number, dram_gene, dram_row = get_next_number_name_row(dram_gene_number,
-                                                                                         dram_gene_frame)
-                    elif dram_row['end_position'] > virsorter_row['end_position']:
-                        merged_genes_rows.append((None, virsorter_gene,
-                                                  virsorter_row['viral_protein_cluster_category']))
-                        virsorter_gene_number, virsorter_gene, virsorter_row = \
-                            get_next_number_name_row(virsorter_gene_number, virsorter_gene_frame)
-                    else:  # genes have the same start and end position so this shouldn't happen
-                        raise ValueError('This should never happen: %s, %s, %s, %s' % (dram_row.start_position,
-                                                                                       dram_row.end_position,
-                                                                                       virsorter_row.start_position,
-                                                                                       virsorter_row.end_position))
-        except StopIteration:
-            break
+                    dram_gene_number += 1
+                elif dram_row['end_position'] > virsorter_row['end_position']:
+                    merged_genes_rows.append((None, virsorter_gene,
+                                              virsorter_gene_category))
+                    virsorter_gene_number += 1
+                else:  # genes have the same start and end position so this shouldn't happen
+                    raise ValueError('This should never happen: %s, %s, %s, %s' % (dram_row.start_position,
+                                                                                   dram_row.end_position,
+                                                                                   virsorter_row.start_position,
+                                                                                   virsorter_row.end_position))
     # clean up and add extras
     # if at end of both then just end
-    if (dram_gene_number == dram_gene_frame.shape[0]) and (virsorter_gene_number == virsorter_gene_frame.shape[0]):
+    if (dram_gene_number == dram_genes.shape[0]) and (virsorter_gene_number == virsorter_genes.shape[0]):
         pass
     # if not at end of dram annotations then add the rest
     elif dram_gene_number != dram_genes.shape[0]:
-        for i in range(dram_gene_number, dram_gene_frame.shape[0]):
-            merged_genes_rows.append((dram_gene_frame.index[i], None, None))
+        for i in range(dram_gene_number, dram_genes.shape[0]):
+            dram_gene = dram_genes.index[i]
+            merged_genes_rows.append((dram_gene, None, None))
     # if not at end of virsorter genes then add the rest
-    elif virsorter_gene_number != virsorter_gene_frame.shape[0]:
-        for i in range(virsorter_gene_number, virsorter_gene_frame.shape[0]):
-            merged_genes_rows.append((None, virsorter_gene_frame.index[i],
-                                      virsorter_gene_frame.viral_protein_cluster_category[i]))
+    elif virsorter_gene_number != virsorter_genes.shape[0]:
+        for i in range(virsorter_gene_number, virsorter_genes.shape[0]):
+            virsorter_row = virsorter_genes.iloc[i]
+            merged_genes_rows.append((None, virsorter_genes.index[i],
+                                      virsorter_row['viral_protein_cluster_category']))
     # how can we be not at the end of either?
     else:
         return ValueError('How is this even possible?')
@@ -194,7 +182,7 @@ def calculate_auxiliary_scores(gene_order):
             elif (virsorter_category in VIRSORTER_HALLMARK_GENE_CATEGORIES) or \
                  (virsorter_category in VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES):
                 auxiliary_score = 4
-            else:  # if  no viral like or hallmark genes then score is 5
+            else:  # if no viral like or hallmark genes then score is 5
                 auxiliary_score = 5
             gene_auxiliary_score_dict[dram_gene] = auxiliary_score
     return gene_auxiliary_score_dict
@@ -235,8 +223,8 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
             if scaffold_annotations['is_transposon'].any():
                 flags += 'T'
             # within 5 kb of end of contig
-            if (int(row.start_position) < length_from_end) or \
-                    (int(row.end_position) > (scaffold_length_dict[row.scaffold] - length_from_end)):
+            if (int(row['start_position']) < length_from_end) or \
+               (int(row['end_position']) > (scaffold_length_dict[row['scaffold']] - length_from_end)):
                 flags += 'F'
             if is_j:
                 flags += 'J'
@@ -260,9 +248,9 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
 
 
 def get_amg_ids(amg_frame):
-    ko_amgs = set([j.strip() for i in amg_frame['KO'].dropna() for j in i.strip().split(';')])
-    ec_amgs = set([j.strip() for i in amg_frame['EC'].dropna() for j in i.strip().split(';')])
-    pfam_amgs = set([j.strip() for i in amg_frame['PFAM'].dropna() for j in i.strip().split(';')])
+    ko_amgs = {j.strip() for i in amg_frame['KO'].dropna() for j in i.strip().split(';')}
+    ec_amgs = {j.strip() for i in amg_frame['EC'].dropna() for j in i.strip().split(';')}
+    pfam_amgs = {j.strip() for i in amg_frame['PFAM'].dropna() for j in i.strip().split(';')}
     return ko_amgs | ec_amgs | pfam_amgs
 
 

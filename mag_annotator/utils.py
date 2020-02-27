@@ -77,13 +77,14 @@ def get_ids_from_annotation(frame):
     id_list = list()
     # get kegg ids
     if 'kegg_id' in frame:
-        id_list += [j for i in frame.kegg_id.dropna() for j in i.split(',')]
-        # get kegg ec numbers
+        id_list += [j.strip() for i in frame.kegg_id.dropna() for j in i.split(',')]
+    # get kegg ec numbers
+    if 'kegg_hit' in frame:
         for kegg_hit in frame.kegg_hit.dropna():
             id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
     # get merops ids
     if 'peptidase_family' in frame:
-        id_list += [j for i in frame.peptidase_family.dropna() for j in i.split(';')]
+        id_list += [j.strip() for i in frame.peptidase_family.dropna() for j in i.split(';')]
     # get cazy ids
     if 'cazy_hits' in frame:
         id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
