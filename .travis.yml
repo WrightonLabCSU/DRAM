@@ -15,7 +15,7 @@ before_install:
 - conda config --add channels conda-forge
 - conda info -a
 install:
-- conda create -n test-env pytest pytest-cov coveralls python=$TRAVIS_PYTHON_VERSION pandas scikit-bio prodigal
+- conda create -n test-env pytest pytest-cov python-coveralls python=$TRAVIS_PYTHON_VERSION pandas scikit-bio prodigal
   mmseqs2!=10.6d92c hmmer trnascan-se >=2 sqlalchemy barrnap altair openpyxl networkx ruby parallel
 - source activate test-env
 - conda list
