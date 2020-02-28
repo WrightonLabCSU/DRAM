@@ -13,7 +13,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name="DRAM-bio",
     version=__version__,
-    scripts=['scripts/DRAM.py', 'scripts/DRAM-v.py', 'scripts/DRM-setup.py'],
+    scripts=['scripts/DRAM.py', 'scripts/DRAM-v.py', 'scripts/DRAM-setup.py'],
     packages=find_packages(),
     description="Distilled and Refined Annotation of Metabolism: A tool for the annotation and curation of function for"
                 " microbial and viral genomes",
