@@ -10,7 +10,7 @@ CAZY	CAZY	Xylans	GH39, GH3, GH31, GH52, GH120, GH115, GH67	Xylan Oligo Cleavage 
 CAZY	CAZY	Alpha-mannan	GH99, GH76	Alpha-mannan Backbone Cleavage (Hemicellulose)
 CAZY	CAZY	Alpha-mannan	GH76, GH92, GH38, GH63, GH47, GH125, GH130	Alpha-mannan Oligo Cleavage (Hemicellulose)
 CAZY	CAZY	Beta-mannan	GH113, GH134, GH26, GH5	Beta-mannan Backbone Cleavage (Hemicellulose)
-CAZY	CAZY	Beta-mannan	GH26,GH130, GH113, CE2, CE17	Beta-mannan Oligo Cleavage (Hemicellulose)
+CAZY	CAZY	Beta-mannan	GH26,GH130, GH113, CE2, CE17, GH2	Beta-mannan Oligo Cleavage (Hemicellulose)
 CAZY	CAZY	Mixed-Linkage glucans	GH16, GH30, GH17, GH7, GH8, GH9, GH5, GH55, GH64, GH81, GH128, GH152, GH157, GH158	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
 CAZY	CAZY	Mixed-Linkage glucans	GH3, GH16, GH17, GH55, GH1	Mixed-Linkage glucans Oligo Cleavage (Hemicellulose)
 CAZY	CAZY	Starch	AA13, GH13, GH14, GH57, GH119, GH126	Starch Backbone Cleavage
