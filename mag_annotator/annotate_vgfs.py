@@ -268,19 +268,30 @@ def get_virsorter_affi_contigs_name(scaffold):
 
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=5000,
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  genes_called=False, skip_uniref=True, skip_trnascan=False, keep_tmp_dir=True, threads=10,
-                  verbose=True):
+                  genes_called=False, skip_uniref=True, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
+                  threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
+
+    # get database locations
+    db_locs = get_database_locs()
+    db_handler = DatabaseHandler(db_locs['description_db'])
+
+    # check for no conflicting options/configurations
+    if low_mem_mode:
+        if ('kofam' not in db_locs) or ('kofam_ko_list' not in db_locs):
+            raise ValueError('To run in low memory mode kofam must be configured for use in DRAM')
+        dbs_to_use = [i for i in db_handler.get_database_names() if i not in ('uniref', 'kegg')]
+    elif skip_uniref:
+        dbs_to_use = [i for i in db_handler.get_database_names() if i != 'uniref']
+    else:
+        dbs_to_use = db_handler.get_database_names()
 
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
 
-    # get database locations
-    db_locs = get_database_locs()
-    db_handler = DatabaseHandler(db_locs['description_db'])
     custom_dbs_dir = path.join(tmp_dir, 'custom_dbs')
     mkdir(custom_dbs_dir)
     custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, custom_dbs_dir, threads, verbose)
@@ -290,7 +301,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     fasta_name = path.splitext(path.basename(input_fasta.strip('.gz')))[0]
     if genes_called:
         annotations = annotate_fasta(input_fasta, fasta_name, tmp_dir, db_locs, db_handler, min_contig_size,
-                                     custom_db_locs, None, bit_score_threshold, rbh_bit_score_threshold, skip_uniref,
+                                     custom_db_locs, dbs_to_use, bit_score_threshold, rbh_bit_score_threshold,
                                      skip_trnascan, start_time, genes_called, threads, verbose)
         # copy results files to output
         copy2(path.join(tmp_dir, 'genes.annotated.fna'), path.join(output_dir, 'genes.fna'))
@@ -312,8 +323,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                 contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
                 write_sequence((i for i in [seq]), format='fasta', into=contig_loc)
                 contig_annotations = annotate_fasta(contig_loc, fasta_name, contig_dir, db_locs, db_handler,
-                                                    min_contig_size, custom_db_locs, None, bit_score_threshold,
-                                                    rbh_bit_score_threshold, skip_uniref, skip_trnascan, start_time,
+                                                    min_contig_size, custom_db_locs, dbs_to_use, bit_score_threshold,
+                                                    rbh_bit_score_threshold, skip_trnascan, start_time,
                                                     genes_called, threads, verbose)
                 annotations_list.append(contig_annotations)
         annotations = pd.concat(annotations_list, sort=False)

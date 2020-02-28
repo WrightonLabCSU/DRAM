@@ -43,7 +43,7 @@ _I have access to KEGG_
 Set up DRAM using the following command:
 
 ```bash
-DRAM.py prepare_databases --output_dir DRAM_data --kegg_loc kegg.pep
+DRAM-setup.py prepare_databases --output_dir DRAM_data --kegg_loc kegg.pep
 ```
 
 `kegg.pep` is the path to the amino acid FASTA file downloaded from KEGG. This can be any of the gene fasta files that are provided by the KEGG FTP server or a concatenated version of them. `DRAM_data` is the path  to the processed databases used by DRAM. If you already have any of the databases downloaded to your server and don't want to download them again then you can pass them to the `prepare_databases` command by use the `--{db_name}_loc` flags such as `--uniref_loc` and `--viral_loc`.
@@ -53,7 +53,7 @@ _I don't have access to KEGG_
 Not a problem. Then use this command:
 
 ```bash
-DRAM.py prepare_databases --output_dir DRAM_data
+DRAM-setup.py prepare_databases --output_dir DRAM_data
 ```
 
 Similar to above you can still provide locations of databases you have already downloaded so you don't have to do it

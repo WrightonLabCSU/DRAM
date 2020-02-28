@@ -4,6 +4,7 @@ import re
 from os import path, mkdir
 from functools import partial
 from collections import defaultdict, Counter
+from datetime import datetime
 
 from mag_annotator.utils import get_database_locs
 from mag_annotator.summarize_genomes import get_ordered_uniques
@@ -196,6 +197,8 @@ def make_viral_functional_heatmap(functional_df, vgf_order=None):
 
 def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3, remove_transposons=False,
                    remove_fs=False, remove_js=False):
+    start_time = datetime.now()
+
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     db_locs = get_database_locs()
@@ -203,17 +206,27 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     mkdir(output_dir)
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
+    print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
+
     # get potential AMGs
     potential_amgs = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
                                     remove_transposons=remove_transposons, remove_fs=remove_fs, remove_js=remove_js)
+    print('%s: Determined potential amgs' % (str(datetime.now() - start_time)))
+
     # make distillate
     viral_genome_stats = make_viral_stats_table(annotations, potential_amgs, groupby_column)
     viral_genome_stats.to_csv(path.join(output_dir, 'viral_contig_stats.tsv'), sep='\t')
+    print('%s: Calculated viral genome statistics' % (str(datetime.now() - start_time)))
+
     viral_distillate = make_viral_distillate(potential_amgs, genome_summary_form)
     viral_distillate.to_csv(path.join(output_dir, 'amg_summary.tsv'), sep='\t', index=None)
+    print('%s: Generated AMG summary' % (str(datetime.now() - start_time)))
+
     # make liquor
     vgf_order = make_vgf_order(potential_amgs)
     amg_column = make_amg_count_column(potential_amgs, vgf_order)
     viral_function_df = make_viral_functional_df(potential_amgs, genome_summary_form, groupby_column=groupby_column)
     viral_functional_heatmap = make_viral_functional_heatmap(viral_function_df, vgf_order)
     alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'liquor.html'))
+    print('%s: Generated liquor heatmap' % (str(datetime.now() - start_time)))
+    print("%s: Completed distillation" % str(datetime.now() - start_time))

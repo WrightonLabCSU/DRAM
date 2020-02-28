@@ -396,7 +396,8 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
                       dbcan_fam_activities=None, dbcan_date='07312019', viral_loc=None, peptidase_loc=None,
                       vogdb_loc=None, vogdb_version='latest', vog_annotations=None, genome_summary_form_loc=None,
                       module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None,
-                      amg_database_loc=None, keep_database_files=False, branch='master', threads=10, verbose=True):
+                      amg_database_loc=None, skip_uniref=False, keep_database_files=False, branch='master', threads=10,
+                      verbose=True):
     # check that all given files exist
     check_file_exists(kegg_loc)
     check_file_exists(gene_ko_link_loc)
@@ -424,8 +425,9 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
     if kegg_loc is not None:
         output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, gene_ko_link_loc, kegg_download_date, threads,
                                                     verbose)
-    output_dbs['uniref_db_loc'] = download_and_process_uniref(uniref_loc, temporary, uniref_version=uniref_version,
-                                                              threads=threads, verbose=verbose)
+    if not skip_uniref:
+        output_dbs['uniref_db_loc'] = download_and_process_uniref(uniref_loc, temporary, uniref_version=uniref_version,
+                                                                  threads=threads, verbose=verbose)
     output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary,
                                                           threads=threads, verbose=verbose)
     output_dbs['dbcan_db_loc'] = download_and_process_dbcan(dbcan_loc, temporary, dbcan_release=dbcan_version,
@@ -456,7 +458,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
         output_dbs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(temporary, branch)
     else:
         output_dbs['function_heatmap_form_loc'] = function_heatmap_form_loc
-    if function_heatmap_form_loc is None:
+    if amg_database_loc is None:
         output_dbs['amg_database_loc'] = download_and_process_amg_database(temporary, branch)
     else:
         output_dbs['amg_database_loc'] = amg_database_loc

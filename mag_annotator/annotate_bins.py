@@ -671,8 +671,8 @@ def strip_endings(text, suffixes: list):
 # TODO: refactor so that generated annotations.tsv only is a function, break out all else
 # TODO: make it so that it only takes genes.faa, genes.fna and genes.gff
 def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, custom_db_locs=(),
-                   dbs_to_use=None, bit_score_threshold=60, rbh_bit_score_threshold=350, skip_uniref=True,
-                   skip_trnascan=False, start_time=datetime.now(), is_called_genes=False, threads=1, verbose=False):
+                   dbs_to_use=None, bit_score_threshold=60, rbh_bit_score_threshold=350, skip_trnascan=False,
+                   start_time=datetime.now(), is_called_genes=False, threads=1, verbose=False):
     """Annotated a single multifasta file, all file based outputs will be in output_dir"""
     # make temporary directory
     tmp_dir = path.join(output_dir, 'tmp')
@@ -723,7 +723,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         warnings.warn('No KEGG source provided so distillation will be of limited use.')
 
     # Get uniref hits
-    if db_locs.get('uniref') is not None and not skip_uniref:
+    if db_locs.get('uniref') is not None:
         annotation_list.append(do_blast_style_search(query_db, db_locs['uniref'], tmp_dir,
                                                      db_handler, get_uniref_description,
                                                      start_time, 'uniref', bit_score_threshold,
@@ -778,7 +778,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotations = pd.concat(annotation_list, axis=1, sort=False)
 
     # get scaffold data and assign grades
-    if 'kegg' in db_locs and 'uniref' in db_locs and not skip_uniref:
+    if 'kegg' in db_locs and 'uniref' in db_locs:
         grades = assign_grades(annotations)
         annotations = pd.concat([grades, annotations], axis=1, sort=False)
     if not is_called_genes:
@@ -848,23 +848,34 @@ def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_uniref=True,
                   skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), genes_called=False, keep_tmp_dir=True,
-                  threads=10, verbose=True):
+                  low_mem_mode=False, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
     fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s')
+    print('%s: %s fastas found' % (str(datetime.now() - start_time), len(fasta_locs)))
+
+    # get database locations
+    db_locs = get_database_locs()
+    db_handler = DatabaseHandler(db_locs['description_db'])
+
+    # check for no conflicting options/configurations
+    if low_mem_mode:
+        if ('kofam' not in db_locs) or ('kofam_ko_list' not in db_locs):
+            raise ValueError('To run in low memory mode kofam must be configured for use in DRAM')
+        dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i not in ('uniref', 'kegg')]
+    elif skip_uniref:
+        dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i != 'uniref']
     else:
-        print('%s: %s fastas found' % (str(datetime.now() - start_time), len(fasta_locs)))
+        dbs_to_use = MAG_DBS_TO_ANNOTATE
 
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
 
-    # get database locations
-    db_locs = get_database_locs()
-    db_handler = DatabaseHandler(db_locs['description_db'])
+    # setup custom databases to be searched
     custom_dbs_dir = path.join(tmp_dir, 'custom_dbs')
     mkdir(custom_dbs_dir)
     custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, custom_dbs_dir, threads, verbose)
@@ -879,8 +890,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         fasta_dir = path.join(tmp_dir, fasta_name)
         mkdir(fasta_dir)
         annotations_list.append(annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_locs, db_handler, min_contig_size,
-                                               custom_db_locs, MAG_DBS_TO_ANNOTATE, bit_score_threshold,
-                                               rbh_bit_score_threshold, skip_uniref, skip_trnascan, start_time,
+                                               custom_db_locs, dbs_to_use, bit_score_threshold,
+                                               rbh_bit_score_threshold, skip_trnascan, start_time,
                                                genes_called, threads, verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
     # merge annotation dicts

@@ -6,6 +6,7 @@ import networkx as nx
 from itertools import tee
 import re
 import numpy as np
+from datetime import datetime
 
 from mag_annotator.utils import get_database_locs, get_ids_from_annotation, divide_chunks
 
@@ -489,6 +490,8 @@ def make_liquor_df(module_coverage_frame, etc_coverage_df, function_df):
 
 
 def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column):
+    start_time = datetime.now()
+
     # read in data
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     if 'bin_taxnomy' in annotations:
@@ -518,6 +521,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     module_steps_form = pd.read_csv(db_locs['module_step_form'], sep='\t')
     function_heatmap_form = pd.read_csv(db_locs['function_heatmap_form'], sep='\t')
     etc_module_df = pd.read_csv(db_locs['etc_module_database'], sep='\t')
+    print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # make output folder
     mkdir(output_dir)
@@ -525,10 +529,12 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     # make genome stats
     genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame)
     genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=None)
+    print('%s: Calculated genome statistics' % (str(datetime.now() - start_time)))
 
     # make genome metabolism summary
     genome_summary = path.join(output_dir, 'metabolism_summary.xlsx')
     make_genome_summary(annotations, genome_summary_form, genome_summary, trna_frame, rrna_frame, groupby_column)
+    print('%s: Generated genome metabolism summary' % (str(datetime.now() - start_time)))
 
     # make liquor
     if 'bin_taxonomy' in annotations:
@@ -562,3 +568,5 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
         liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
         liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order)
         liquor.save(path.join(output_dir, 'liquor.html'))
+    print('%s: Generated liquor heatmap and table' % (str(datetime.now() - start_time)))
+    print("%s: Completed distillation" % str(datetime.now() - start_time))
