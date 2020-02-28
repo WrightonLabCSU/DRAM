@@ -778,7 +778,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotations = pd.concat(annotation_list, axis=1, sort=False)
 
     # get scaffold data and assign grades
-    if 'kegg' in db_locs and 'uniref' in db_locs:
+    if 'kegg_RBH' in annotations.columns and 'uniref_RBH' in annotations.columns:
         grades = assign_grades(annotations)
         annotations = pd.concat([grades, annotations], axis=1, sort=False)
     if not is_called_genes:
