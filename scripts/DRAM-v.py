@@ -39,7 +39,7 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--skip_uniref', action='store_true', default=False,
                                  help='Skip annotating with UniRef, drastically decreases run time and memory'
                                       'requirements')
-    annotate_parser.add_argument('--low_mem', action='store_true', default=False,
+    annotate_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                  help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
                                       'provided. Drastically decreases memory usage')
     annotate_parser.add_argument('--skip_trnascan', action='store_true', default=False)
