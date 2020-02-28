@@ -99,3 +99,7 @@ if __name__ == '__main__':
 
     # parser for printing out database configuration information
     print_db_locs_parser.set_defaults(func=print_database_locations)
+
+    args = parser.parse_args()
+    args_dict = {i: j for i, j in vars(args).items() if i != 'func'}
+    args.func(**args_dict)
