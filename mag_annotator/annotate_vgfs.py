@@ -209,6 +209,8 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
                 flags += 'M'
             # is this a reported AMG reported
             if len(gene_annotations & set(amgs)) > 0:
+                if 'M' not in flags:
+                    flags += 'M'
                 flags += 'K'
             # is this a experimentally verified amg
             if len(gene_annotations & set(verified_amgs)) > 0:

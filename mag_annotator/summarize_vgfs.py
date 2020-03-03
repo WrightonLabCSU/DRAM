@@ -5,6 +5,7 @@ from os import path, mkdir
 from functools import partial
 from collections import defaultdict, Counter
 from datetime import datetime
+import warnings
 
 from mag_annotator.utils import get_database_locs
 from mag_annotator.summarize_genomes import get_ordered_uniques
@@ -96,19 +97,24 @@ def get_ids_from_row(row):
 def make_viral_distillate(potential_amgs, genome_summary_frame):
     rows = list()
     for gene, row in potential_amgs.iterrows():
+        curr_rows = list()
         gene_ids = get_ids_from_row(row) & set(genome_summary_frame.index)
         for gene_id in gene_ids:
             gene_summary = genome_summary_frame.loc[gene_id]
             if type(gene_summary) is pd.Series:
-                rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'], gene_summary['sheet'],
+                curr_rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'], gene_summary['sheet'],
                              gene_summary['header'], gene_summary['subheader'], gene_summary['module'],
                              row['auxiliary_score'], row['amg_flags']])
             else:
                 for sub_gene_id, sub_gene_summary in genome_summary_frame.loc[gene_id].iterrows():
-                    rows.append([gene, row['scaffold'], gene_id, sub_gene_summary['gene_description'],
+                    curr_rows.append([gene, row['scaffold'], gene_id, sub_gene_summary['gene_description'],
                                  sub_gene_summary['sheet'], sub_gene_summary['header'],
                                  sub_gene_summary['subheader'], sub_gene_summary['module'],
                                  row['auxiliary_score'], row['amg_flags']])
+            if len(curr_rows) > 0:
+                rows += curr_rows
+            else:
+                warnings.warn("No distillate information found for gene %s" % gene)
     return pd.DataFrame(rows, columns=VIRAL_DISTILLATE_COLUMNS)
 
 

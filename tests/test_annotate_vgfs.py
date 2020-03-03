@@ -196,9 +196,9 @@ def test_get_metabolic_flags():
                    'scaffold_3': 600,
                    'scaffold_4': 1000}
     flags1 = get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, length_dict, 100)
-    assert flags1 == {'scaffold_1_1': 'VKE',
+    assert flags1 == {'scaffold_1_1': 'VMKE',
                       'scaffold_1_2': 'F',
-                      'scaffold_2_1': 'VKETF',
+                      'scaffold_2_1': 'VMKETF',
                       'scaffold_3_1': 'MF',
                       'scaffold_4_1': 'MJB',
                       'scaffold_4_2': 'MJB',
