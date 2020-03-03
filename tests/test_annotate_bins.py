@@ -12,7 +12,8 @@ from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hit
     get_reciprocal_best_hits, process_reciprocal_best_hits, get_kegg_description, get_uniref_description, \
     get_basic_description, get_peptidase_description, get_sig, get_gene_data, get_unannotated, assign_grades, \
     generate_annotated_fasta, create_annotated_fasta, generate_renamed_fasta, rename_fasta, run_trna_scan, \
-    run_barrnap, do_blast_style_search, count_motifs, strip_endings, process_custom_dbs
+    run_barrnap, do_blast_style_search, count_motifs, strip_endings, process_custom_dbs, get_dups, \
+    parse_hmmsearch_domtblout
 
 
 @pytest.fixture()
@@ -329,16 +330,28 @@ def test_rename_fasta(fasta_loc, tmpdir):
 
 
 def test_run_trna_scan(tmpdir):
+    filt_fasta = tmpdir.mkdir('test_trnascan1')
+    no_trna = run_trna_scan(os.path.join('tests', 'data', 'e_coli_16S.fasta'), str(filt_fasta), 'no_trnas',
+                            threads=1, verbose=False)
+    assert no_trna is None
+
+    filt_fasta = tmpdir.mkdir('test_trnascan2')
     trnas_loc = os.path.join('tests', 'data', 'trnas.fa')
-    filt_fasta = tmpdir.mkdir('test_trnascan')
-    run_trna_scan(trnas_loc, str(filt_fasta), 'phiX', threads=1, verbose=False)
-    assert os.path.isfile(os.path.join(filt_fasta, 'trnas.tsv'))
+    trnas = run_trna_scan(trnas_loc, str(filt_fasta), 'phiX', threads=1, verbose=False)
+    assert trnas.shape == (6, 8)
 
 
-def test_run_barrnap(fasta_loc, tmpdir):
-    filt_fasta = tmpdir.mkdir('test_barrnap')
-    run_barrnap(fasta_loc, str(filt_fasta), 'phiX', threads=1, verbose=False)
-    assert os.path.isfile(os.path.join(filt_fasta, 'rrnas.tsv'))
+def test_run_barrnap(fasta_loc):
+    no_rrnas = run_barrnap(fasta_loc, 'phiX', threads=1, verbose=False)
+    assert no_rrnas is None
+
+    rrna_table = run_barrnap(os.path.join('tests', 'data', 'e_coli_16S.fasta'), 'coli', threads=1, verbose=False)
+    assert rrna_table.shape == (1, 7)
+    assert rrna_table.loc['NC_000913.3', 'type'] == '16S rRNA'
+    assert rrna_table.loc['NC_000913.3', 'fasta'] == 'coli'
+    assert rrna_table.loc['NC_000913.3', 'begin'] == 100
+    assert rrna_table.loc['NC_000913.3', 'end'] == 1637
+    assert rrna_table.loc['NC_000913.3', 'strand'] == '-'
 
 
 class FakeDatabaseHandler():
@@ -371,6 +384,20 @@ def test_process_custom_dbs(phix_proteins, tmpdir):
     custom_db_dir = tmpdir.mkdir('custom_dbs')
     process_custom_dbs([phix_proteins], ['phix'], str(custom_db_dir))
     assert os.path.isfile(os.path.join(custom_db_dir, 'phix.custom.mmsdb'))
+    empty_custom_db_dir = tmpdir.mkdir('empty_custom_dbs')
+    process_custom_dbs(None, None, empty_custom_db_dir)
+    assert len(os.listdir(empty_custom_db_dir)) == 0
+
+
+def test_get_dubs():
+    w_dups = [True, False, True, True]
+    assert get_dups(w_dups) == [True, True, False, False]
+    no_dups = ['a', 'b', 'c']
+    assert get_dups(no_dups) == [True, True, True]
+
+
+def test_parse_hmmsearch_domtblout():
+    pass
 
 
 def test_annotate_fasta():

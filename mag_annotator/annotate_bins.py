@@ -507,17 +507,24 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
         open(output_gbk, 'w').write(genbank_records)
 
 
-def run_trna_scan(fasta, output_loc, fasta_name, threads=10, verbose=True):
+def run_trna_scan(fasta, tmp_dir, fasta_name, threads=10, verbose=True):
     """Run tRNAscan-SE on scaffolds and create a table of tRNAs as a separate output"""
-    raw_trnas = path.join(output_loc, 'raw_trnas.txt')
+    raw_trnas = path.join(tmp_dir, 'raw_trnas.txt')
     run_process(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], verbose=verbose)
     if path.isfile(raw_trnas) and stat(raw_trnas).st_size > 0:
-        processed_trnas = path.join(output_loc, 'trnas.tsv')
         trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
+        trna_frame.columns = [i.strip() for i in trna_frame.columns]
+        # if begin.1 or end.1 are in trnas then drop, else drop the second begin or end
+        if 'Begin.1' in trna_frame.columns:
+            trna_frame = trna_frame.drop(['Begin.1'], axis=1)
+        if 'End.1' in trna_frame.columns:
+            trna_frame = trna_frame.drop(['End.1'], axis=1)
+        trna_frame = trna_frame.loc[:, get_dups(trna_frame.columns)]
         trna_frame.insert(0, 'fasta', fasta_name)
-        trna_frame.to_csv(processed_trnas, sep='\t')
+        return trna_frame
     else:
         warnings.warn('No tRNAs were detected, no trnas.tsv file will be created.')
+        return None
 
 
 def get_dups(columns):
@@ -532,23 +539,10 @@ def get_dups(columns):
     return keep
 
 
-def process_trnas(trnas_loc):
-    # read and process trnas
-    trnas = pd.read_csv(trnas_loc, sep='\t')
-    trnas.columns = [i.strip() for i in trnas.columns]
-    # if begin.1 or end.1 are in trnas then drop, else drop the second begin or end
-    if 'Begin.1' in trnas.columns:
-        trnas = trnas.drop(['Begin.1'], axis=1)
-    if 'End.1' in trnas.columns:
-        trnas = trnas.drop(['End.1'], axis=1)
-    trnas = trnas.loc[:, get_dups(trnas.columns)]
-    return trnas
-
-
 def add_trnas_to_gff(trnas_loc, gff_loc, fasta_loc):
     # get fasta length dict so we can merge, I'd love to be able to get this from somewhere else
     len_dict = {i.metadata['id']: len(i) for i in read_sequence(fasta_loc, format='fasta')}
-    trnas = process_trnas(trnas_loc)
+    trnas = pd.read_csv(trnas_loc, sep='\t')
     # process trnas to intervals
     trna_dict = dict()
     for scaffold, frame in trnas.groupby('Name'):
@@ -585,22 +579,21 @@ RAW_RRNA_COLUMNS = ['scaffold', 'tool_name', 'type', 'begin', 'end', 'e-value', 
 RRNA_COLUMNS = ['fasta', 'begin', 'end', 'strand', 'type', 'e-value', 'note']
 
 
-def run_barrnap(fasta, output_loc, fasta_name, threads=10, verbose=True):
+def run_barrnap(fasta, fasta_name, threads=10, verbose=True):
     raw_rrna_str = run_process(['barrnap', '--threads', str(threads), fasta], capture_stdout=True, check=False,
                                verbose=verbose)
-    if len(raw_rrna_str.strip()) > 0:
-        raw_rrna_table = pd.read_csv(io.StringIO(raw_rrna_str), skiprows=1, sep='\t', header=None,
-                                     names=RAW_RRNA_COLUMNS, index_col=0)
-        rrna_table_rows = list()
-        for gene, row in raw_rrna_table.iterrows():
-            rrna_row_dict = {entry.split('=')[0]: entry.split('=')[1] for entry in row['note'].split(';')}
-            rrna_table_rows.append([fasta_name, row.begin, row.end, row.strand, rrna_row_dict['Name'].replace('_', ' '),
-                                    row['e-value'], rrna_row_dict.get('note', '')])
-        rrna_table = pd.DataFrame(rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS)
-        processed_rrnas = path.join(output_loc, 'rrnas.tsv')
-        rrna_table.to_csv(processed_rrnas, sep='\t')
+    raw_rrna_table = pd.read_csv(io.StringIO(raw_rrna_str), skiprows=1, sep='\t', header=None,
+                                 names=RAW_RRNA_COLUMNS, index_col=0)
+    rrna_table_rows = list()
+    for gene, row in raw_rrna_table.iterrows():
+        rrna_row_dict = {entry.split('=')[0]: entry.split('=')[1] for entry in row['note'].split(';')}
+        rrna_table_rows.append([fasta_name, row.begin, row.end, row.strand, rrna_row_dict['Name'].replace('_', ' '),
+                                row['e-value'], rrna_row_dict.get('note', '')])
+    if len(raw_rrna_table) > 0:
+        return pd.DataFrame(rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS)
     else:
         warnings.warn('No rRNAs were detected, no rrnas.tsv file will be created.')
+        return None
 
 
 def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
@@ -796,22 +789,21 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
         rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
 
-        # get tRNAs and rRNAs
-        if not skip_trnascan:
-            run_trna_scan(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
-            if path.isfile(path.join(output_dir, 'trnas.tsv')) and stat(path.join(output_dir, 'trnas.tsv')).st_size > 0:
-                has_trnas = True
-            else:
-                has_trnas = False
-        else:
-            has_trnas = False
-        run_barrnap(renamed_scaffolds, output_dir, fasta_name, threads=threads, verbose=verbose)
-
         renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
         annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
-        add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
-        if has_trnas:
-            add_trnas_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, renamed_scaffolds)
+
+        # get tRNAs and rRNAs
+        if not skip_trnascan:
+            trna_table = run_trna_scan(renamed_scaffolds, tmp_dir, fasta_name, threads=threads, verbose=verbose)
+            if trna_table is not None:
+                trna_table.to_csv(path.join(output_dir, 'trnas.tsv'), sep='\t')
+                add_trnas_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, renamed_scaffolds)
+
+        rrna_table = run_barrnap(renamed_scaffolds, fasta_name, threads=threads, verbose=verbose)
+        if rrna_table is not None:
+            rrna_table.to_csv(path.join(output_dir, 'rrnas.tsv'), sep='\t')
+            add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
+
         # make genbank file
         current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
         make_gbk_from_gff_and_fasta(renamed_gffs, renamed_scaffolds, annotated_faa, current_gbk)
