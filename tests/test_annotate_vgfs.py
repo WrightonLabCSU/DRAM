@@ -111,14 +111,14 @@ def test_get_gene_order(dram_genes, virsorter_genes, gene_order1):
                           ('dram_gene4', 'virsorter_gene4', '1'),
                           ('dram_gene5', 'virsorter_gene5', '-'),
                           ('dram_gene6', None, None),
-                          (None, 'virsorter_gene6', '2'),]
+                          (None, 'virsorter_gene6', '2')]
     offset1_dram_genes = pd.DataFrame([['dram_gene1', 0, 10],
                                       ['dram_gene2', 17, 27],
                                       ['dram_gene3', 30, 40],
                                       ['dram_gene4', 45, 55],
                                       ['dram_gene5', 56, 72],
                                       ['dram_gene6', 75, 76]],
-                                     columns=['gene_name', 'start_position', 'end_position']).set_index('gene_name')
+                                      columns=['gene_name', 'start_position', 'end_position']).set_index('gene_name')
     offset1_virsorter_genes = pd.DataFrame([['virsorter_gene1', 11, 15, '-'],
                                            ['virsorter_gene2', 17, 27, '4'],
                                            ['virsorter_gene3', 29, 34, '-'],

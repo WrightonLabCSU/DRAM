@@ -1,0 +1,14 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+NP_040710.1          -             38 Microvir_J           PF04726.13    37   6.9e-31   95.7  14.1   1   1   6.7e-32   7.4e-31   95.6  14.1     1    37     2    38     2    38 0.99 J [Escherichia virus phiX174]
+#
+# Program:         hmmsearch
+# Version:         3.3 (Nov 2019)
+# Pipeline mode:   SEARCH
+# Query file:      Microvir_J.hmm
+# Target file:     NC_001422.faa
+# Option settings: hmmsearch --domtblout hits.txt Microvir_J.hmm NC_001422.faa 
+# Current dir:     /Users/shafferm/lab/DRAM/tests/data
+# Date:            Tue Mar  3 11:53:34 2020
+# [ok]

@@ -4,8 +4,12 @@ import os
 from io import StringIO
 from datetime import datetime
 from functools import partial
+from filecmp import cmp
+import time
+from shutil import copy
 
 import pandas as pd
+from skbio.io import read as read_sequence
 
 from mag_annotator.utils import make_mmseqs_db
 from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hits, \
@@ -13,7 +17,8 @@ from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hit
     get_basic_description, get_peptidase_description, get_sig, get_gene_data, get_unannotated, assign_grades, \
     generate_annotated_fasta, create_annotated_fasta, generate_renamed_fasta, rename_fasta, run_trna_scan, \
     run_barrnap, do_blast_style_search, count_motifs, strip_endings, process_custom_dbs, get_dups, \
-    parse_hmmsearch_domtblout
+    parse_hmmsearch_domtblout, annotate_gff, make_gbk_from_gff_and_fasta, make_trnas_interval, make_rrnas_interval,\
+    add_intervals_to_gff
 
 
 @pytest.fixture()
@@ -177,26 +182,10 @@ def test_get_peptidase_description():
                                                                            ' YP_611907~'
 
 
-def test_run_mmseqs_pfam():
-    pass
-
-
 def test_get_sig():
     assert not get_sig(1, 85, 100, 1)
     assert get_sig(1, 86, 100, 1e-16)
     assert not get_sig(1, 29, 100, 1e-20)
-
-
-def test_run_hmmscan_dbcan():
-    pass
-
-
-def test_run_hmmscan_vogdb():
-    pass
-
-
-def run_hmmscan_vogdb():
-    pass
 
 
 @pytest.fixture()
@@ -266,14 +255,16 @@ def test_assign_grades():
     annotations_data = [[True, 'K00001', False, 'KOER09234OK', ['PF00001']],
                         [False, 'K00002', True, 'KLODKJFSO234KL', ['PF01234']],
                         [False, 'K00003', False, 'EIORWU234KLKDS', pd.np.NaN],
-                        [False, pd.np.NaN, False, pd.np.NaN, pd.np.NaN]]
-    annotations = pd.DataFrame(annotations_data, index=['gene1', 'gene2', 'gene3', 'gene4'],
+                        [False, pd.np.NaN, False, pd.np.NaN, pd.np.NaN],
+                        [False, pd.np.NaN, False, pd.np.NaN, ['PF01235']]]
+    annotations = pd.DataFrame(annotations_data, index=['gene1', 'gene2', 'gene3', 'gene4', 'gene5'],
                                columns=['kegg_RBH', 'kegg_hit', 'uniref_RBH', 'uniref_hit', 'pfam_hits'])
     test_grades = assign_grades(annotations)
     assert test_grades.loc['gene1'] == 'A'
     assert test_grades.loc['gene2'] == 'B'
     assert test_grades.loc['gene3'] == 'C'
     assert test_grades.loc['gene4'] == 'E'
+    assert test_grades.loc['gene5'] == 'D'
 
 
 @pytest.fixture()
@@ -304,7 +295,6 @@ def test_generate_annotated_fasta_long(phix_prodigal_genes, phix_annotations):
     fasta_generator_long = generate_annotated_fasta(phix_prodigal_genes, phix_annotations, verbosity='long',
                                                     name='phiX')
     long_fasta_header_dict = {seq.metadata['id']: seq.metadata['description'] for seq in fasta_generator_long}
-    print(long_fasta_header_dict)
     assert long_fasta_header_dict['phiX_NC_001422.1_1'] == 'rank: A; K1 (db=kegg); U1 (db=uniref); a_bug1'
 
 
@@ -354,8 +344,9 @@ def test_run_barrnap(fasta_loc):
     assert rrna_table.loc['NC_000913.3', 'strand'] == '-'
 
 
-class FakeDatabaseHandler():
-    def get_database_names(self):
+class FakeDatabaseHandler:
+    @staticmethod
+    def get_database_names():
         return []
 
 
@@ -387,6 +378,8 @@ def test_process_custom_dbs(phix_proteins, tmpdir):
     empty_custom_db_dir = tmpdir.mkdir('empty_custom_dbs')
     process_custom_dbs(None, None, empty_custom_db_dir)
     assert len(os.listdir(empty_custom_db_dir)) == 0
+    with pytest.raises(ValueError):
+        process_custom_dbs(['thing1', 'thing2'], ['thing1'], empty_custom_db_dir)
 
 
 def test_get_dubs():
@@ -397,12 +390,242 @@ def test_get_dubs():
 
 
 def test_parse_hmmsearch_domtblout():
-    pass
+    parsed_hit = parse_hmmsearch_domtblout(os.path.join('tests', 'data', 'hmmsearch_hit.txt'))
+    assert parsed_hit.shape == (1, 23)
+    assert parsed_hit.loc[0, 'query_id'] == 'NP_040710.1'
+    assert parsed_hit.loc[0, 'query_length'] == 38
+    assert parsed_hit.loc[0, 'target_id'] == 'Microvir_J'
+    assert parsed_hit.loc[0, 'target_ascession'] == 'PF04726.13'
+    assert parsed_hit.loc[0, 'full_evalue'] == 6.900000e-31
 
 
-def test_annotate_fasta():
-    pass
+@pytest.fixture()
+def annotated_fake_gff_loc():
+    return os.path.join('tests', 'data', 'annotated_fake_gff.gff')
 
 
-def test_annotate_bins():
-    pass
+@pytest.fixture()
+def fake_phix_annotations():
+    return pd.DataFrame([[pd.np.NaN],
+                         ['GH13'],
+                         [pd.np.NaN],
+                         [pd.np.NaN],
+                         [pd.np.NaN],
+                         [pd.np.NaN],
+                         [pd.np.NaN]],
+                        index=['NC_001422.1_1', 'NC_001422.1_2', 'NC_001422.1_3', 'NC_001422.1_4',
+                               'NC_001422.1_5', 'NC_001422.1_6', 'NC_001422.1_7'],
+                        columns=['cazy_id'])
+
+
+def test_annotate_gff(annotated_fake_gff_loc, fake_phix_annotations, tmpdir):
+    gff_output = tmpdir.mkdir('gff_annotate')
+    fake_gff_loc = os.path.join('tests', 'data', 'fake_gff.gff')
+    test_annotated_gff_loc = os.path.join(gff_output, 'annotated.gff')
+    annotate_gff(fake_gff_loc, test_annotated_gff_loc, fake_phix_annotations, 'fake')
+    assert cmp(annotated_fake_gff_loc, test_annotated_gff_loc)
+
+
+test_gbk = """LOCUS       NC_001422.1   5386 bp   DNA   linear   ENV   %s
+FEATURES             Location/Qualifiers
+     CDS             51..221
+                     /gene=fake_NC_001422.1_1
+                     /codon_start=1
+                     /score=3.3
+                     /inference=Prodigal_v2.6.3
+     CDS             390..848
+                     /db_xref="cazy:GH13"
+                     /gene=fake_NC_001422.1_2
+                     /codon_start=1
+                     /score=54.2
+                     /inference=Prodigal_v2.6.3
+     CDS             848..964
+                     /gene=fake_NC_001422.1_3
+                     /codon_start=1
+                     /score=15.0
+                     /inference=Prodigal_v2.6.3
+     CDS             1001..2284
+                     /gene=fake_NC_001422.1_4
+                     /codon_start=1
+                     /score=134.2
+                     /inference=Prodigal_v2.6.3
+     CDS             2395..2922
+                     /gene=fake_NC_001422.1_5
+                     /codon_start=1
+                     /score=46.7
+                     /inference=Prodigal_v2.6.3
+     CDS             2931..3917
+                     /gene=fake_NC_001422.1_6
+                     /codon_start=1
+                     /score=135.9
+                     /inference=Prodigal_v2.6.3
+     CDS             3981..5384
+                     /gene=fake_NC_001422.1_7
+                     /codon_start=1
+                     /score=128.0
+                     /inference=Prodigal_v2.6.3
+ORIGIN
+        1 gagttttatc gcttccatga cgcagaagtt aacactttcg gatatttctg atgagtcgaa
+       61 aaattatctt gataaagcag gaattactac tgcttgttta cgaattaaat cgaagtggac
+      121 tgctggcgga aaatgagaaa attcgaccta tccttgcgca gctcgagaag ctcttacttt
+      181 gcgacctttc gccatcaact aacgattctg tcaaaaactg acgcgttgga tgaggagaag
+      241 tggcttaata tgcttggcac gttcgtcaag gactggttta gatatgagtc acattttgtt
+      301 catggtagag attctcttgt tgacatttta aaagagcgtg gattactatc tgagtccgat
+      361 gctgttcaac cactaatagg taagaaatca tgagtcaagt tactgaacaa tccgtacgtt
+      421 tccagaccgc tttggcctct attaagctca ttcaggcttc tgccgttttg gatttaaccg
+      481 aagatgattt cgattttctg acgagtaaca aagtttggat tgctactgac cgctctcgtg
+      541 ctcgtcgctg cgttgaggct tgcgtttatg gtacgctgga ctttgtggga taccctcgct
+      601 ttcctgctcc tgttgagttt attgctgccg tcattgctta ttatgttcat cccgtcaaca
+      661 ttcaaacggc ctgtctcatc atggaaggcg ctgaatttac ggaaaacatt attaatggcg
+      721 tcgagcgtcc ggttaaagcc gctgaattgt tcgcgtttac cttgcgtgta cgcgcaggaa
+      781 acactgacgt tcttactgac gcagaagaaa acgtgcgtca aaaattacgt gcggaaggag
+      841 tgatgtaatg tctaaaggta aaaaacgttc tggcgctcgc cctggtcgtc cgcagccgtt
+      901 gcgaggtact aaaggcaagc gtaaaggcgc tcgtctttgg tatgtaggtg gtcaacaatt
+      961 ttaattgcag gggcttcggc cccttacttg aggataaatt atgtctaata ttcaaactgg
+     1021 cgccgagcgt atgccgcatg acctttccca tcttggcttc cttgctggtc agattggtcg
+     1081 tcttattacc atttcaacta ctccggttat cgctggcgac tccttcgaga tggacgccgt
+     1141 tggcgctctc cgtctttctc cattgcgtcg tggccttgct attgactcta ctgtagacat
+     1201 ttttactttt tatgtccctc atcgtcacgt ttatggtgaa cagtggatta agttcatgaa
+     1261 ggatggtgtt aatgccactc ctctcccgac tgttaacact actggttata ttgaccatgc
+     1321 cgcttttctt ggcacgatta accctgatac caataaaatc cctaagcatt tgtttcaggg
+     1381 ttatttgaat atctataaca actattttaa agcgccgtgg atgcctgacc gtaccgaggc
+     1441 taaccctaat gagcttaatc aagatgatgc tcgttatggt ttccgttgct gccatctcaa
+     1501 aaacatttgg actgctccgc ttcctcctga gactgagctt tctcgccaaa tgacgacttc
+     1561 taccacatct attgacatta tgggtctgca agctgcttat gctaatttgc atactgacca
+     1621 agaacgtgat tacttcatgc agcgttacca tgatgttatt tcttcatttg gaggtaaaac
+     1681 ctcttatgac gctgacaacc gtcctttact tgtcatgcgc tctaatctct gggcatctgg
+     1741 ctatgatgtt gatggaactg accaaacgtc gttaggccag ttttctggtc gtgttcaaca
+     1801 gacctataaa cattctgtgc cgcgtttctt tgttcctgag catggcacta tgtttactct
+     1861 tgcgcttgtt cgttttccgc ctactgcgac taaagagatt cagtacctta acgctaaagg
+     1921 tgctttgact tataccgata ttgctggcga ccctgttttg tatggcaact tgccgccgcg
+     1981 tgaaatttct atgaaggatg ttttccgttc tggtgattcg tctaagaagt ttaagattgc
+     2041 tgagggtcag tggtatcgtt atgcgccttc gtatgtttct cctgcttatc accttcttga
+     2101 aggcttccca ttcattcagg aaccgccttc tggtgatttg caagaacgcg tacttattcg
+     2161 ccaccatgat tatgaccagt gtttccagtc cgttcagttg ttgcagtgga atagtcaggt
+     2221 taaatttaat gtgaccgttt atcgcaatct gccgaccact cgcgattcaa tcatgacttc
+     2281 gtgataaaag attgagtgtg aggttataac gccgaagcgg taaaaatttt aatttttgcc
+     2341 gctgaggggt tgaccaagcg aagcgcggta ggttttctgc ttaggagttt aatcatgttt
+     2401 cagactttta tttctcgcca taattcaaac tttttttctg ataagctggt tctcacttct
+     2461 gttactccag cttcttcggc acctgtttta cagacaccta aagctacatc gtcaacgtta
+     2521 tattttgata gtttgacggt taatgctggt aatggtggtt ttcttcattg cattcagatg
+     2581 gatacatctg tcaacgccgc taatcaggtt gtttctgttg gtgctgatat tgcttttgat
+     2641 gccgacccta aattttttgc ctgtttggtt cgctttgagt cttcttcggt tccgactacc
+     2701 ctcccgactg cctatgatgt ttatcctttg aatggtcgcc atgatggtgg ttattatacc
+     2761 gtcaaggact gtgtgactat tgacgtcctt ccccgtacgc cgggcaataa cgtttatgtt
+     2821 ggtttcatgg tttggtctaa ctttaccgct actaaatgcc gcggattggt ttcgctgaat
+     2881 caggttatta aagagattat ttgtctccag ccacttaagt gaggtgattt atgtttggtg
+     2941 ctattgctgg cggtattgct tctgctcttg ctggtggcgc catgtctaaa ttgtttggag
+     3001 gcggtcaaaa agccgcctcc ggtggcattc aaggtgatgt gcttgctacc gataacaata
+     3061 ctgtaggcat gggtgatgct ggtattaaat ctgccattca aggctctaat gttcctaacc
+     3121 ctgatgaggc cgcccctagt tttgtttctg gtgctatggc taaagctggt aaaggacttc
+     3181 ttgaaggtac gttgcaggct ggcacttctg ccgtttctga taagttgctt gatttggttg
+     3241 gacttggtgg caagtctgcc gctgataaag gaaaggatac tcgtgattat cttgctgctg
+     3301 catttcctga gcttaatgct tgggagcgtg ctggtgctga tgcttcctct gctggtatgg
+     3361 ttgacgccgg atttgagaat caaaaagagc ttactaaaat gcaactggac aatcagaaag
+     3421 agattgccga gatgcaaaat gagactcaaa aagagattgc tggcattcag tcggcgactt
+     3481 cacgccagaa tacgaaagac caggtatatg cacaaaatga gatgcttgct tatcaacaga
+     3541 aggagtctac tgctcgcgtt gcgtctatta tggaaaacac caatctttcc aagcaacagc
+     3601 aggtttccga gattatgcgc caaatgctta ctcaagctca aacggctggt cagtatttta
+     3661 ccaatgacca aatcaaagaa atgactcgca aggttagtgc tgaggttgac ttagttcatc
+     3721 agcaaacgca gaatcagcgg tatggctctt ctcatattgg cgctactgca aaggatattt
+     3781 ctaatgtcgt cactgatgct gcttctggtg tggttgatat ttttcatggt attgataaag
+     3841 ctgttgccga tacttggaac aatttctgga aagacggtaa agctgatggt attggctcta
+     3901 atttgtctag gaaataaccg tcaggattga caccctccca attgtatgtt ttcatgcctc
+     3961 caaatcttgg aggctttttt atggttcgtt cttattaccc ttctgaatgt cacgctgatt
+     4021 attttgactt tgagcgtatc gaggctctta aacctgctat tgaggcttgt ggcatttcta
+     4081 ctctttctca atccccaatg cttggcttcc ataagcagat ggataaccgc atcaagctct
+     4141 tggaagagat tctgtctttt cgtatgcagg gcgttgagtt cgataatggt gatatgtatg
+     4201 ttgacggcca taaggctgct tctgacgttc gtgatgagtt tgtatctgtt actgagaagt
+     4261 taatggatga attggcacaa tgctacaatg tgctccccca acttgatatt aataacacta
+     4321 tagaccaccg ccccgaaggg gacgaaaaat ggtttttaga gaacgagaag acggttacgc
+     4381 agttttgccg caagctggct gctgaacgcc ctcttaagga tattcgcgat gagtataatt
+     4441 accccaaaaa gaaaggtatt aaggatgagt gttcaagatt gctggaggcc tccactatga
+     4501 aatcgcgtag aggctttgct attcagcgtt tgatgaatgc aatgcgacag gctcatgctg
+     4561 atggttggtt tatcgttttt gacactctca cgttggctga cgaccgatta gaggcgtttt
+     4621 atgataatcc caatgctttg cgtgactatt ttcgtgatat tggtcgtatg gttcttgctg
+     4681 ccgagggtcg caaggctaat gattcacacg ccgactgcta tcagtatttt tgtgtgcctg
+     4741 agtatggtac agctaatggc cgtcttcatt tccatgcggt gcactttatg cggacacttc
+     4801 ctacaggtag cgttgaccct aattttggtc gtcgggtacg caatcgccgc cagttaaata
+     4861 gcttgcaaaa tacgtggcct tatggttaca gtatgcccat cgcagttcgc tacacgcagg
+     4921 acgctttttc acgttctggt tggttgtggc ctgttgatgc taaaggtgag ccgcttaaag
+     4981 ctaccagtta tatggctgtt ggtttctatg tggctaaata cgttaacaaa aagtcagata
+     5041 tggaccttgc tgctaaaggt ctaggagcta aagaatggaa caactcacta aaaaccaagc
+     5101 tgtcgctact tcccaagaag ctgttcagaa tcagaatgag ccgcaacttc gggatgaaaa
+     5161 tgctcacaat gacaaatctg tccacggagt gcttaatcca acttaccaag ctgggttacg
+     5221 acgcgacgcc gttcaaccag atattgaagc agaacgcaaa aagagagatg agattgaggc
+     5281 tgggaaaagt tactgtagcc gacgttttgg cggcgcaacc tgtgacgaca aatctgctca
+     5341 aatttatgcg cgcttcgata aaaatgattg gcgtatccaa cctgca
+//
+""" % time.strftime('%d-%b-%Y').upper()
+
+
+def test_make_gbk_from_gff_and_fasta(annotated_fake_gff_loc, fasta_loc, phix_proteins, tmpdir):
+    gbk = make_gbk_from_gff_and_fasta(annotated_fake_gff_loc, fasta_loc, phix_proteins)
+    assert test_gbk == gbk
+    gbk_test_file = os.path.join(tmpdir.mkdir('gbk_test'), 'test.gbk')
+    make_gbk_from_gff_and_fasta(annotated_fake_gff_loc, fasta_loc, phix_proteins, gbk_test_file)
+    assert os.path.isfile(gbk_test_file)
+
+
+def test_make_trnas_interval():
+    test_scaffold = 'scaffold_1'
+    i = 1
+
+    test_row1 = {'Begin': 1, 'End': 13, 'Score': 1000, 'Codon': 'AUG', 'Type': 'AUG codon coding tRNA',
+                 'Note': pd.np.NaN}
+    begin1, end1, metadata1 = make_trnas_interval(test_scaffold, test_row1, i)
+    assert begin1 == 1
+    assert end1 == 13
+    assert metadata1 == {'source': 'tRNAscan-SE', 'type': 'tRNA', 'score': 1000, 'strand': '+', 'phase': 0,
+                         'ID': 'scaffold_1_tRNA_1', 'codon': 'AUG', 'product': 'tRNA-AUG codon coding tRNA'}
+
+    test_row2 = {'End': 1, 'Begin': 13, 'Score': 1000, 'Codon': 'AUG', 'Type': 'AUG codon coding tRNA',
+                 'Note': 'a note'}
+    begin2, end2, metadata2 = make_trnas_interval(test_scaffold, test_row2, i)
+    assert begin2 == 1
+    assert end2 == 13
+    assert metadata2 == {'source': 'tRNAscan-SE', 'type': 'tRNA', 'score': 1000, 'strand': '-', 'phase': 0,
+                         'ID': 'scaffold_1_tRNA_1', 'codon': 'AUG', 'product': 'tRNA-AUG codon coding tRNA',
+                         'Note': 'a note'}
+
+
+def test_make_rrnas_interval():
+    test_scaffold = 'scaffold_1'
+    i = 1
+
+    test_row1 = {'begin': 1, 'end': 13, 'e-value': 1000, 'strand': '+', 'type': '16S ribosomal rRNA gene',
+                 'note': 'its a pseudo'}
+    begin1, end1, metadata1 = make_rrnas_interval(test_scaffold, test_row1, i)
+    assert begin1 == 1
+    assert end1 == 13
+    assert metadata1 == {'source': 'barrnap', 'type': 'rRNA', 'score': 1000, 'strand': '+', 'phase': 0,
+                         'ID': 'scaffold_1_rRNA_1', 'product': '16S ribosomal RNA',
+                         'gene': '16S ribosomal rRNA gene', 'Note': 'its a pseudo'}
+
+
+annotated_fake_gff_w_rna = """##gff-version 3
+fake_NC_001422.1	Prodigal_v2.6.3	CDS	51	221	3.3	+	0	ID=fake_NC_001422.1_1
+fake_NC_001422.1	Prodigal_v2.6.3	CDS	390	848	54.2	+	0	ID=fake_NC_001422.1_2;Dbxref="cazy:GH13"
+fake_NC_001422.1	Prodigal_v2.6.3	CDS	848	964	15.0	+	0	ID=fake_NC_001422.1_3
+fake_NC_001422.1	barrnap	rRNA	990\t1000\t101.0\t+\t0\tID=fake_NC_001422.1_rRNA_1;gene=16S ribosomal rRNA gene;product=16S ribosomal RNA
+fake_NC_001422.1	Prodigal_v2.6.3	CDS	1001	2284	134.2	+	0	ID=fake_NC_001422.1_4
+fake_NC_001422.1	Prodigal_v2.6.3	CDS	2395	2922	46.7	+	0	ID=fake_NC_001422.1_5
+fake_NC_001422.1	Prodigal_v2.6.3	CDS	2931	3917	135.9	+	0	ID=fake_NC_001422.1_6
+fake_NC_001422.1	Prodigal_v2.6.3	CDS	3981	5384	128.0	+	0	ID=fake_NC_001422.1_7
+"""
+
+
+def test_add_intervals_to_gff(annotated_fake_gff_loc, tmpdir):
+    add_intervals_test_loc = tmpdir.mkdir('fake_rrnas_loc')
+    annotate_fake_gff_loc_w_rna = os.path.join(add_intervals_test_loc, 'fake.gff')
+    copy(annotated_fake_gff_loc, annotate_fake_gff_loc_w_rna)
+    fake_rrnas_loc = os.path.join(add_intervals_test_loc, 'rrnas.tsv')
+    fake_rrnas = pd.DataFrame([['fake_NC_001422.1', 990, 1000, 101.0, '+', '16S ribosomal rRNA gene', pd.np.NaN]],
+                              columns=['scaffold', 'begin', 'end', 'e-value', 'strand', 'type', 'note'])
+    fake_rrnas.to_csv(fake_rrnas_loc, sep='\t')
+    add_intervals_to_gff(fake_rrnas_loc, annotate_fake_gff_loc_w_rna, {'fake_NC_001422.1': 6000}, make_rrnas_interval,
+                         'scaffold')
+    assert os.path.isfile(annotate_fake_gff_loc_w_rna)
+    gff = list(read_sequence(annotate_fake_gff_loc_w_rna, format='gff3'))
+    assert type(gff) is list
+    assert open(annotate_fake_gff_loc_w_rna).read() == annotated_fake_gff_w_rna

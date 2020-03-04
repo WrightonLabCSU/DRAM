@@ -183,20 +183,20 @@ def get_peptidase_description(peptidase_hits, header_dict):
     return pd.concat([new_df.transpose(), peptidase_hits.drop('peptidase_hit', axis=1)], axis=1, sort=False)
 
 
-def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', db_handler=None,
-                    threads=10, verbose=False):
+def run_mmseqs_profile_search(query_db, pfam_profile, output_loc, output_prefix='mmpro_results', db_handler=None,
+                              threads=10, verbose=False):
     """Use mmseqs to run a search against pfam, currently keeping all hits and not doing any extra filtering"""
     tmp_dir = path.join(output_loc, 'tmp')
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
     run_process(['mmseqs', 'search', query_db, pfam_profile, output_db, tmp_dir, '-k', '5', '-s', '7', '--threads',
                  str(threads)], verbose=verbose)
-    output_loc = path.join(output_loc, 'pfam_output.b6')
+    output_loc = path.join(output_loc, '%s_output.b6' % output_prefix)
     run_process(['mmseqs', 'convertalis', query_db, pfam_profile, output_db, output_loc], verbose=verbose)
     pfam_results = pd.read_csv(output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     if pfam_results.shape[0] > 0:
         pfam_dict = dict()
         if db_handler is not None:
-            pfam_descriptions = db_handler.get_descriptions(set(pfam_results.tId), 'pfam_description')
+            pfam_descriptions = db_handler.get_descriptions(set(pfam_results.tId), '%s_description' % output_prefix)
         else:
             pfam_descriptions = None
         for gene, pfam_frame in pfam_results.groupby('qId'):
@@ -205,9 +205,9 @@ def run_mmseqs_pfam(query_db, pfam_profile, output_loc, output_prefix='mmpro_res
             else:
                 pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
                                              for ascession in pfam_frame.tId])
-        return pd.Series(pfam_dict, name='pfam_hits')
+        return pd.Series(pfam_dict, name='%s_hits' % output_prefix)
     else:
-        return pd.Series(name='pfam_hits')
+        return pd.Series(name='%s_hits' % output_prefix)
 
 
 def get_sig(tstart, tend, tlen, evalue):
@@ -263,6 +263,7 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, threads=1, verbo
         return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
 
 
+# refactor hmmscan_dbcan and hmmscan_vogdb to merge
 def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=None, verbose=False):
     """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
     Commands this is based on:
@@ -445,13 +446,14 @@ def rename_fasta(input_fasta, output_fasta, prefix):
     write_sequence(generate_renamed_fasta(input_fasta, prefix), format='fasta', into=output_fasta)
 
 
+# TODO: add annotations that don't end with '_id'
 def annotate_gff(input_gff, output_gff, annotations, prefix):
     """Go through a gff and add a prefix to the scaffold and gene number for all ID's"""
     f = open(input_gff)
     o = open(output_gff, 'w')
     for line in f:
         line = line.strip()
-        if not line.startswith('#') and not line.startswith('\n'):
+        if not line.startswith('#'):
             # replace id with new name
             old_scaffold = line.split('\t')[0]
             line = '%s_%s' % (prefix, line)
@@ -461,11 +463,13 @@ def annotate_gff(input_gff, output_gff, annotations, prefix):
             gene_name = '%s_%s' % (prefix, old_gene_name)
             line = re.sub(r'ID=\d*_\d*;', 'ID=%s;' % gene_name, line)
             # get annotations to add from annotations file and add to end of line
-            annotations_to_add = {i: annotations.loc[old_gene_name, i] for i in annotations.columns
-                                  if i.endswith('_id')}
-            line += '%s;' % ';'.join(['db_xref="%s:%s"' % (key.strip(), value.strip())
-                                      for key, value in annotations_to_add.items()
-                                      if not pd.isna(value) and value != ''])
+            annotations_to_add = {strip_endings(i, ['_id']): annotations.loc[old_gene_name, i]
+                                  for i in annotations.columns if i.endswith('_id')}
+            database_information = ['Dbxref="%s:%s"' % (key.strip(), value.strip())
+                                    for key, value in annotations_to_add.items()
+                                    if not pd.isna(value) and value != '']
+            if len(database_information) > 0:
+                line += '%s;' % ';'.join(database_information)
         o.write('%s\n' % line)
 
 
@@ -489,7 +493,7 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
                                  'mol_type': 'DNA',
                                  'shape': 'linear',
                                  'division': 'ENV',
-                                 'date': time.strftime('%d-%^b-%Y')}
+                                 'date': time.strftime('%d-%b-%Y').upper()}
         seq_bounds = (seq.interval_metadata.lower_bound, seq.interval_metadata.upper_bound)
         for interval in seq.interval_metadata.query([seq_bounds]):
             interval.metadata['gene'] = interval.metadata['ID']
@@ -505,6 +509,18 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
         return genbank_records
     else:
         open(output_gbk, 'w').write(genbank_records)
+
+
+def get_dups(columns):
+    keep = list()
+    seen = list()
+    for column in columns:
+        if column in seen:
+            keep.append(False)
+        else:
+            seen.append(column)
+            keep.append(True)
+    return keep
 
 
 def run_trna_scan(fasta, tmp_dir, fasta_name, threads=10, verbose=True):
@@ -525,54 +541,6 @@ def run_trna_scan(fasta, tmp_dir, fasta_name, threads=10, verbose=True):
     else:
         warnings.warn('No tRNAs were detected, no trnas.tsv file will be created.')
         return None
-
-
-def get_dups(columns):
-    keep = list()
-    seen = list()
-    for column in columns:
-        if column in seen:
-            keep.append(False)
-        else:
-            seen.append(column)
-            keep.append(True)
-    return keep
-
-
-def add_trnas_to_gff(trnas_loc, gff_loc, fasta_loc):
-    # get fasta length dict so we can merge, I'd love to be able to get this from somewhere else
-    len_dict = {i.metadata['id']: len(i) for i in read_sequence(fasta_loc, format='fasta')}
-    trnas = pd.read_csv(trnas_loc, sep='\t')
-    # process trnas to intervals
-    trna_dict = dict()
-    for scaffold, frame in trnas.groupby('Name'):
-        scaffold = scaffold.strip()
-        im = IntervalMetadata(len_dict[scaffold])
-        for trna, row in frame.iterrows():
-            if row.Begin < row.End:
-                begin = row.Begin
-                end = row.End
-                strand = '+'
-            else:
-                begin = row.End
-                end = row.Begin
-                strand = '-'
-            metadata = {'source': 'tRNAscan-SE', 'type': 'tRNA', 'score': row.Score, 'strand': strand, 'phase': 0,
-                        'ID': '%s_tRNA_%s' % (scaffold, row['tRNA #']), 'codon': row.Codon,
-                        'product': 'tRNA-%s' % row.Type}
-            if not pd.isna(row.Note):
-                metadata['None'] = row.Note
-            im.add(bounds=[(begin, end)], metadata=metadata)
-        trna_dict[scaffold] = im
-    # add trna intervals to gff
-    gff = list(read_sequence(gff_loc, format='gff3'))
-    with open(gff_loc, 'w') as f:
-        for scaffold, gff_intervals in gff:
-            gff_intervals = IntervalMetadata(len_dict[scaffold], gff_intervals)
-            if scaffold in trna_dict:
-                gff_intervals.merge(trna_dict[scaffold])
-                gff_intervals.sort()
-            f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=scaffold).getvalue())
 
 
 RAW_RRNA_COLUMNS = ['scaffold', 'tool_name', 'type', 'begin', 'end', 'e-value', 'strand', 'empty', 'note']
@@ -596,30 +564,53 @@ def run_barrnap(fasta, fasta_name, threads=10, verbose=True):
         return None
 
 
-def add_rrnas_to_gff(rrnas, gff_loc, fasta_loc):
+def make_trnas_interval(scaffold, row, i):
+    if row['Begin'] < row['End']:
+        begin = row['Begin']
+        end = row['End']
+        strand = '+'
+    else:
+        begin = row['End']
+        end = row['Begin']
+        strand = '-'
+    metadata = {'source': 'tRNAscan-SE', 'type': 'tRNA', 'score': row['Score'], 'strand': strand, 'phase': 0,
+                'ID': '%s_tRNA_%s' % (scaffold, i), 'codon': row['Codon'], 'product': 'tRNA-%s' % row['Type']}
+    if not pd.isna(row['Note']):
+        metadata['Note'] = row['Note']
+    return begin, end, metadata
+
+
+def make_rrnas_interval(scaffold, row, i):
+    metadata = {'source': 'barrnap', 'type': 'rRNA', 'score': row['e-value'], 'strand': row['strand'], 'phase': 0,
+                'ID': '%s_rRNA_%s' % (scaffold, i), 'product': '%s ribosomal RNA' % row['type'].split()[0],
+                'gene': row['type']}
+    if not pd.isna(row['note']):
+        metadata['Note'] = row['note']
+    return row['begin'], row['end'], metadata
+
+
+# TODO: make it take an input and output gff location and not overwrite
+# TODO: for some reason 1 is getting added to intervals when added to gff
+def add_intervals_to_gff(annotations_loc, gff_loc, len_dict, interval_function, groupby_column):
     # get fasta length dict so we can merge, I'd love to be able to get this from somewhere else
-    len_dict = {i.metadata['id']: len(i) for i in read_sequence(fasta_loc, format='fasta')}
-    # read and process trnas to intervals
-    rrnas = pd.read_csv(rrnas, sep='\t')
-    rrna_dict = dict()
-    for scaffold, frame in rrnas.groupby('scaffold'):
+    annotation_frame = pd.read_csv(annotations_loc, sep='\t')
+    # process trnas to intervals
+    annotation_dict = dict()
+    for scaffold, frame in annotation_frame.groupby(groupby_column):
         scaffold = scaffold.strip()
         im = IntervalMetadata(len_dict[scaffold])
-        for i, (rrna, row) in enumerate(frame.iterrows()):
-            metadata = {'source': 'barrnap', 'type': 'rRNA', 'score': row['e-value'], 'strand': row.strand, 'phase': 0,
-                        'ID': '%s_rRNA_%s' % (scaffold, i), 'product': '%s ribosomal RNA' % row.type.split()[0],
-                        'gene': row.type}
-            if not pd.isna(row.note):
-                metadata['Note'] = row.note
-            im.add(bounds=[(row.begin, row.end)], metadata=metadata)
-        rrna_dict[scaffold] = im
-    # add rrna intervals to gff
+        for i, (_, row) in enumerate(frame.iterrows()):
+            i += 1
+            begin, end, metadata = interval_function(scaffold, row, i)
+            im.add(bounds=[(begin-1, end)], metadata=metadata)
+        annotation_dict[scaffold] = im
+    # add trna intervals to gff
     gff = list(read_sequence(gff_loc, format='gff3'))
     with open(gff_loc, 'w') as f:
         for scaffold, gff_intervals in gff:
             gff_intervals = IntervalMetadata(len_dict[scaffold], gff_intervals)
-            if scaffold in rrna_dict:
-                gff_intervals.merge(rrna_dict[scaffold])
+            if scaffold in annotation_dict:
+                gff_intervals.merge(annotation_dict[scaffold])
                 gff_intervals.sort()
             f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=scaffold).getvalue())
 
@@ -740,8 +731,8 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     # Get pfam hits
     if db_locs.get('pfam') is not None:
         print('%s: Getting hits from pfam' % str(datetime.now() - start_time))
-        annotation_list.append(run_mmseqs_pfam(query_db, db_locs['pfam'], tmp_dir, output_prefix='pfam',
-                                               db_handler=db_handler, threads=threads, verbose=verbose))
+        annotation_list.append(run_mmseqs_profile_search(query_db, db_locs['pfam'], tmp_dir, output_prefix='pfam',
+                                                         db_handler=db_handler, threads=threads, verbose=verbose))
 
     # use hmmer to detect cazy ids using dbCAN
     if db_locs.get('dbcan') is not None:
@@ -793,16 +784,19 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
 
         # get tRNAs and rRNAs
+        len_dict = {i.metadata['id']: len(i) for i in read_sequence(renamed_scaffolds, format='fasta')}
         if not skip_trnascan:
             trna_table = run_trna_scan(renamed_scaffolds, tmp_dir, fasta_name, threads=threads, verbose=verbose)
             if trna_table is not None:
                 trna_table.to_csv(path.join(output_dir, 'trnas.tsv'), sep='\t')
-                add_trnas_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, renamed_scaffolds)
+                add_intervals_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, len_dict,
+                                     make_trnas_interval, 'Name')
 
         rrna_table = run_barrnap(renamed_scaffolds, fasta_name, threads=threads, verbose=verbose)
         if rrna_table is not None:
             rrna_table.to_csv(path.join(output_dir, 'rrnas.tsv'), sep='\t')
-            add_rrnas_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, renamed_scaffolds)
+            add_intervals_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, len_dict,
+                                 make_rrnas_interval, 'scaffold')
 
         # make genbank file
         current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
