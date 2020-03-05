@@ -132,19 +132,23 @@ def make_genome_summary(annotations, genome_summary_frame, output_file, trna_fra
             frame.to_excel(writer, sheet_name=sheet, index=False)
 
 
+# TODO: add assembly stats like N50, longest contig, total assembled length etc
 def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_column='fasta'):
     rows = list()
     columns = ['genome', 'number of scaffolds']
     if 'bin_taxonomy' in annotations.columns:
         columns.append('taxonomy')
     if 'bin_completeness' in annotations.columns:
-        columns.append('completeness')
+        columns.append('completeness score')
     if 'bin_contamination' in annotations.columns:
-        columns.append('contamination')
+        columns.append('contamination score')
     if rrna_frame is not None:
         columns += RRNA_TYPES
     if trna_frame is not None:
         columns.append('tRNA count')
+    if 'bin_completeness' in annotations.columns and 'bin_contamination' in annotations.columns \
+        and rrna_frame is not None and trna_frame is not None:
+        columns.append('assembly quality')
     for genome, frame in annotations.groupby(groupby_column, sort=False):
         row = [genome, len(set(frame['scaffold']))]
         if 'bin_taxonomy' in frame.columns:
@@ -153,18 +157,30 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_col
             row.append(frame['bin_completeness'][0])
         if 'bin_contamination' in frame.columns:
             row.append(frame['bin_contamination'][0])
+        has_rrna = list()
         if rrna_frame is not None:
             genome_rrnas = rrna_frame.loc[rrna_frame.fasta == genome]
             for rrna in RRNA_TYPES:
                 sixteens = genome_rrnas.loc[genome_rrnas.type == rrna]
                 if sixteens.shape[0] == 0:
                     row.append('')
+                    has_rrna.append(False)
                 elif sixteens.shape[0] == 1:
                     row.append('%s, (%s, %s)' % (sixteens.index[0], sixteens.begin[0], sixteens.end[0]))
+                    has_rrna.append(True)
                 else:
                     row.append('%s present' % sixteens.shape[0])
+                    has_rrna.append(False)
         if trna_frame is not None:
             row.append(trna_frame.loc[trna_frame[groupby_column] == genome].shape[0])
+        if 'assembly quality' in columns:
+            if frame['bin_completeness'][0] > 90 and frame['bin_contamination'][0] < 5 and np.all(has_rrna) and \
+               len(set(trna_frame.loc[trna_frame[groupby_column] == genome].Type)) >= 18:
+                row.append('high')
+            elif frame['bin_completeness'][0] >= 50 and frame['bin_contamination'][0] < 10:
+                row.append('med')
+            else:
+                row.append('low')
         rows.append(row)
     genome_stats = pd.DataFrame(rows, columns=columns)
     return genome_stats
