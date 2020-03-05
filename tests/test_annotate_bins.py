@@ -328,7 +328,7 @@ def test_run_trna_scan(tmpdir):
     filt_fasta = tmpdir.mkdir('test_trnascan2')
     trnas_loc = os.path.join('tests', 'data', 'trnas.fa')
     trnas = run_trna_scan(trnas_loc, str(filt_fasta), 'phiX', threads=1, verbose=False)
-    assert trnas.shape == (6, 8)
+    assert trnas.shape == (6, 9)
 
 
 def test_run_barrnap(fasta_loc):
@@ -336,12 +336,12 @@ def test_run_barrnap(fasta_loc):
     assert no_rrnas is None
 
     rrna_table = run_barrnap(os.path.join('tests', 'data', 'e_coli_16S.fasta'), 'coli', threads=1, verbose=False)
-    assert rrna_table.shape == (1, 7)
-    assert rrna_table.loc['NC_000913.3', 'type'] == '16S rRNA'
-    assert rrna_table.loc['NC_000913.3', 'fasta'] == 'coli'
-    assert rrna_table.loc['NC_000913.3', 'begin'] == 100
-    assert rrna_table.loc['NC_000913.3', 'end'] == 1637
-    assert rrna_table.loc['NC_000913.3', 'strand'] == '-'
+    assert rrna_table.shape == (1, 8)
+    assert rrna_table.loc[0, 'type'] == '16S rRNA'
+    assert rrna_table.loc[0, 'fasta'] == 'coli'
+    assert rrna_table.loc[0, 'begin'] == 100
+    assert rrna_table.loc[0, 'end'] == 1637
+    assert rrna_table.loc[0, 'strand'] == '-'
 
 
 class FakeDatabaseHandler:

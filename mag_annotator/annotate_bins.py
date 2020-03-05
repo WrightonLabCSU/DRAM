@@ -528,7 +528,7 @@ def run_trna_scan(fasta, tmp_dir, fasta_name, threads=10, verbose=True):
     raw_trnas = path.join(tmp_dir, 'raw_trnas.txt')
     run_process(['tRNAscan-SE', '-G', '-o', raw_trnas, '--thread', str(threads), fasta], verbose=verbose)
     if path.isfile(raw_trnas) and stat(raw_trnas).st_size > 0:
-        trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2], index_col=0)
+        trna_frame = pd.read_csv(raw_trnas, sep='\t', skiprows=[0, 2])
         trna_frame.columns = [i.strip() for i in trna_frame.columns]
         # if begin.1 or end.1 are in trnas then drop, else drop the second begin or end
         if 'Begin.1' in trna_frame.columns:
@@ -558,7 +558,7 @@ def run_barrnap(fasta, fasta_name, threads=10, verbose=True):
         rrna_table_rows.append([fasta_name, row.begin, row.end, row.strand, rrna_row_dict['Name'].replace('_', ' '),
                                 row['e-value'], rrna_row_dict.get('note', '')])
     if len(raw_rrna_table) > 0:
-        return pd.DataFrame(rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS)
+        return pd.DataFrame(rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS).reset_index()
     else:
         warnings.warn('No rRNAs were detected, no rrnas.tsv file will be created.')
         return None
@@ -788,13 +788,13 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         if not skip_trnascan:
             trna_table = run_trna_scan(renamed_scaffolds, tmp_dir, fasta_name, threads=threads, verbose=verbose)
             if trna_table is not None:
-                trna_table.to_csv(path.join(output_dir, 'trnas.tsv'), sep='\t')
+                trna_table.to_csv(path.join(output_dir, 'trnas.tsv'), sep='\t', index=False)
                 add_intervals_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, len_dict,
                                      make_trnas_interval, 'Name')
 
         rrna_table = run_barrnap(renamed_scaffolds, fasta_name, threads=threads, verbose=verbose)
         if rrna_table is not None:
-            rrna_table.to_csv(path.join(output_dir, 'rrnas.tsv'), sep='\t')
+            rrna_table.to_csv(path.join(output_dir, 'rrnas.tsv'), sep='\t', index=False)
             add_intervals_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, len_dict,
                                  make_rrnas_interval, 'scaffold')
 
