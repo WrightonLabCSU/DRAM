@@ -101,10 +101,13 @@ def make_viral_distillate(potential_amgs, genome_summary_frame):
         gene_ids = get_ids_from_row(row) & set(genome_summary_frame.index)
         for gene_id in gene_ids:
             gene_summary = genome_summary_frame.loc[gene_id]
-            if type(gene_summary) is pd.Series:
+            if gene_summary.shape[0] == 0:
+                curr_rows.append([gene, row['scaffold'], gene_id, '', '', '', '', '', row['auxiliary_score'],
+                                  row['amg_flags']])
+            elif type(gene_summary) is pd.Series:
                 curr_rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'], gene_summary['sheet'],
-                             gene_summary['header'], gene_summary['subheader'], gene_summary['module'],
-                             row['auxiliary_score'], row['amg_flags']])
+                                 gene_summary['header'], gene_summary['subheader'], gene_summary['module'],
+                                 row['auxiliary_score'], row['amg_flags']])
             else:
                 for sub_gene_id, sub_gene_summary in genome_summary_frame.loc[gene_id].iterrows():
                     curr_rows.append([gene, row['scaffold'], gene_id, sub_gene_summary['gene_description'],

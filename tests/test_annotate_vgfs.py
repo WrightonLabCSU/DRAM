@@ -183,9 +183,10 @@ def test_get_metabolic_flags():
                                 ['scaffold_3', 500, 582, None, False, 'K12345'],
                                 ['scaffold_4', 101, 110, 'Xh', False, 'K12345'],
                                 ['scaffold_4', 111, 120, 'Xh', False, 'K12345'],
-                                ['scaffold_4', 121, 130, 'Xh', False, 'K12345']],
+                                ['scaffold_4', 121, 130, 'Xh', False, 'K12345'],
+                                ['scaffold_4', 131, 139, 'Xh', False, 'K12345']],
                                index=['scaffold_1_1', 'scaffold_1_2', 'scaffold_2_1', 'scaffold_3_1', 'scaffold_4_1',
-                                      'scaffold_4_2', 'scaffold_4_3'],
+                                      'scaffold_4_2', 'scaffold_4_3', 'scaffold_4_4'],
                                columns=['scaffold', 'start_position', 'end_position', 'vogdb_categories',
                                         'is_transposon', 'kegg_id'])
     metabolic_genes = {'K12345'}
@@ -202,7 +203,8 @@ def test_get_metabolic_flags():
                       'scaffold_3_1': 'MF',
                       'scaffold_4_1': 'MJB',
                       'scaffold_4_2': 'MJB',
-                      'scaffold_4_3': 'MJB'}
+                      'scaffold_4_3': 'MJB',
+                      'scaffold_4_4': 'MJB'}
 
 
 def test_get_amg_ids():
