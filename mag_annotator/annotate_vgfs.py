@@ -380,8 +380,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # downgrade B flag auxiliary scores
     if virsorter_affi_contigs is not None:
-        annotations['auxiliary_score'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] else
-                                                           row['auxiliary_score'])
+        annotations['auxiliary_score'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] and row['auxiliary_score'] < 4
+                                                           else row['auxiliary_score'])
                                                     for gene, row in annotations.iterrows()})
 
     # write annotations

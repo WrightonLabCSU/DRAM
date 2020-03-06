@@ -97,27 +97,24 @@ def get_ids_from_row(row):
 def make_viral_distillate(potential_amgs, genome_summary_frame):
     rows = list()
     for gene, row in potential_amgs.iterrows():
-        curr_rows = list()
         gene_ids = get_ids_from_row(row) & set(genome_summary_frame.index)
-        for gene_id in gene_ids:
-            gene_summary = genome_summary_frame.loc[gene_id]
-            if gene_summary.shape[0] == 0:
-                curr_rows.append([gene, row['scaffold'], gene_id, '', '', '', '', '', row['auxiliary_score'],
-                                  row['amg_flags']])
-            elif type(gene_summary) is pd.Series:
-                curr_rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'], gene_summary['sheet'],
-                                 gene_summary['header'], gene_summary['subheader'], gene_summary['module'],
-                                 row['auxiliary_score'], row['amg_flags']])
-            else:
-                for sub_gene_id, sub_gene_summary in genome_summary_frame.loc[gene_id].iterrows():
-                    curr_rows.append([gene, row['scaffold'], gene_id, sub_gene_summary['gene_description'],
-                                 sub_gene_summary['sheet'], sub_gene_summary['header'],
-                                 sub_gene_summary['subheader'], sub_gene_summary['module'],
-                                 row['auxiliary_score'], row['amg_flags']])
-            if len(curr_rows) > 0:
-                rows += curr_rows
-            else:
-                warnings.warn("No distillate information found for gene %s" % gene)
+        if len(gene_ids) > 0:
+            for gene_id in gene_ids:
+                gene_summary = genome_summary_frame.loc[gene_id]
+                if type(gene_summary) is pd.Series:
+                    rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'], gene_summary['sheet'],
+                                     gene_summary['header'], gene_summary['subheader'], gene_summary['module'],
+                                     row['auxiliary_score'], row['amg_flags']])
+                else:
+                    for sub_gene_id, sub_gene_summary in genome_summary_frame.loc[gene_id].iterrows():
+                        rows.append([gene, row['scaffold'], gene_id, sub_gene_summary['gene_description'],
+                                     sub_gene_summary['sheet'], sub_gene_summary['header'],
+                                     sub_gene_summary['subheader'], sub_gene_summary['module'],
+                                     row['auxiliary_score'], row['amg_flags']])
+        else:
+            warnings.warn("No distillate information found for gene %s" % gene)
+            rows.append([gene, row['scaffold'], '', '', '', '', '', '', row['auxiliary_score'],
+                         row['amg_flags']])
     return pd.DataFrame(rows, columns=VIRAL_DISTILLATE_COLUMNS)
 
 
