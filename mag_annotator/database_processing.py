@@ -489,30 +489,24 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
         rmtree(temporary)
 
 
-def is_db_in_dict(key, dict_):
-    if key in dict_:
-        return dict_[key]
-    else:
-        return str(None)
+def print_database_locations(db_locs=None):
+    if db_locs is None:
+        db_locs = get_database_locs()
 
-
-def print_database_locations():
-    db_locs = get_database_locs()
-
-    print('KEGG db location: %s' % is_db_in_dict('kegg', db_locs))
-    print('KOfam db location: %s' % is_db_in_dict('kofam', db_locs))
-    print('KOfam KO list location: %s' % is_db_in_dict('kofam_ko_list', db_locs))
-    print('UniRef db location: %s' % is_db_in_dict('uniref', db_locs))
-    print('Pfam db location: %s' % is_db_in_dict('pfam', db_locs))
-    print('dbCAN db location: %s' % is_db_in_dict('dbcan', db_locs))
-    print('RefSeq Viral db location: %s' % is_db_in_dict('viral', db_locs))
-    print('MEROPS peptidase db location: %s' % is_db_in_dict('peptidase', db_locs))
-    print('VOGDB db location: %s' % is_db_in_dict('vogdb', db_locs))
-    print('Description db location: %s' % is_db_in_dict('description_db', db_locs))
-    print('Genome summary form location: %s' % is_db_in_dict('genome_summary_form', db_locs))
-    print('ETC module database location: %s' % is_db_in_dict('etc_module_database', db_locs))
-    print('Function heatmap form location: %s' % is_db_in_dict('function_heatmap_form', db_locs))
-    print('AMG database location: %s' % is_db_in_dict('amg_database', db_locs))
+    print('KEGG db location: %s' % db_locs.get('kegg'))
+    print('KOfam db location: %s' % db_locs.get('kofam'))
+    print('KOfam KO list location: %s' % db_locs.get('kofam_ko_list'))
+    print('UniRef db location: %s' % db_locs.get('uniref'))
+    print('Pfam db location: %s' % db_locs.get('pfam'))
+    print('dbCAN db location: %s' % db_locs.get('dbcan'))
+    print('RefSeq Viral db location: %s' % db_locs.get('viral'))
+    print('MEROPS peptidase db location: %s' % db_locs.get('peptidase'))
+    print('VOGDB db location: %s' % db_locs.get('vogdb'))
+    print('Description db location: %s' % db_locs.get('description_db'))
+    print('Genome summary form location: %s' % db_locs.get('genome_summary_form'))
+    print('ETC module database location: %s' % db_locs.get('etc_module_database'))
+    print('Function heatmap form location: %s' % db_locs.get('function_heatmap_form'))
+    print('AMG database location: %s' % db_locs.get('amg_database'))
 
 
 def update_dram_forms(output_dir, branch='master'):

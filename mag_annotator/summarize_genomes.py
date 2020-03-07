@@ -34,7 +34,7 @@ def get_ordered_uniques(seq):
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame.gene_id]
+        genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
         id_dict = get_ids_from_annotation(frame)
         counts = list()
         for i in genome_summary_id_sets:
