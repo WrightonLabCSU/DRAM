@@ -63,9 +63,7 @@ def summarize_rrnas(rrnas_df, groupby_column='fasta'):
 
 def summarize_trnas(trnas_df, groupby_column='fasta'):
     # first build the frame
-    combos = set()
-    for index, line in trnas_df.iterrows():
-        combos.add((line.Type, line.Codon, line.Note))
+    combos = {(line.Type, line.Codon, line.Note) for _, line in trnas_df.iterrows()}
     frame_rows = list()
     for combo in combos:
         if combo[2] == 'pseudo':
@@ -96,8 +94,8 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
     return trna_frame
 
 
-def make_genome_summary(annotations, genome_summary_frame, output_file, trna_frame=None, rrna_frame=None,
-                        groupby_column='fasta', remove_empty_rows=False, remove_empty_cols=False):
+def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna_frame=None,
+                        groupby_column='fasta'):
     summary_frames = list()
     # get ko summaries
     summary_frames.append(fill_genome_summary_frame(annotations, genome_summary_frame.copy(), groupby_column))
@@ -112,23 +110,15 @@ def make_genome_summary(annotations, genome_summary_frame, output_file, trna_fra
 
     # merge summary frames
     summarized_genomes = pd.concat(summary_frames, sort=False)
+    return summarized_genomes
 
-    # post processing
-    summarized_genomes_numbers_only = summarized_genomes[summarized_genomes.columns[7:]]
-    if remove_empty_rows:  # filter out empty rows and columns if viral
-        # remove all zero rows for viral
-        summarized_genomes = summarized_genomes.loc[summarized_genomes_numbers_only.sum(axis=1) > 0]
-    if remove_empty_cols:
-        # remove all zero columns so viruses with no AMGs
-        good_columns = summarized_genomes_numbers_only.columns[summarized_genomes_numbers_only.sum(axis=0) > 0]
-        summarized_genomes = summarized_genomes[list(summarized_genomes.columns[:7]) + list(good_columns)]
 
+def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
     # turn all this into an xlsx
     with pd.ExcelWriter(output_file) as writer:
         for sheet, frame in summarized_genomes.groupby('sheet', sort=False):
             frame = frame.sort_values(['header', 'subheader', 'module', 'gene_id'])
             frame = frame.drop(['sheet'], axis=1)
-            frame = frame.dropna(axis=1, how='all')
             frame.to_excel(writer, sheet_name=sheet, index=False)
 
 
@@ -147,7 +137,7 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_col
     if trna_frame is not None:
         columns.append('tRNA count')
     if 'bin_completeness' in annotations.columns and 'bin_contamination' in annotations.columns \
-        and rrna_frame is not None and trna_frame is not None:
+       and rrna_frame is not None and trna_frame is not None:
         columns.append('assembly quality')
     for genome, frame in annotations.groupby(groupby_column, sort=False):
         row = [genome, len(set(frame['scaffold']))]
@@ -172,7 +162,7 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_col
                     row.append('%s present' % sixteens.shape[0])
                     has_rrna.append(False)
         if trna_frame is not None:
-            row.append(trna_frame.loc[trna_frame[groupby_column] == genome].shape[0])
+            row.append(trna_frame.loc[trna_frame[groupby_column] == genome].shape[0])  # TODO: remove psuedo from count?
         if 'assembly quality' in columns:
             if frame['bin_completeness'][0] > 90 and frame['bin_contamination'][0] < 5 and np.all(has_rrna) and \
                len(set(trna_frame.loc[trna_frame[groupby_column] == genome].Type)) >= 18:
@@ -187,14 +177,16 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_col
 
 
 def build_module_net(module_df):
+    """Starts with a data from including a single module"""
     # build net from a set of module paths
-    num_steps = max([int(i.split(',')[0]) for i in set(module_df.path)])
-    module_net = nx.DiGraph(num_steps=num_steps, module_id=list(module_df.module)[0],
-                            module_name=list(module_df.module_name)[0])
+    num_steps = max([int(i.split(',')[0]) for i in set(module_df['path'])])
+    module_net = nx.DiGraph(num_steps=num_steps, module_id=list(module_df['module'])[0],
+                            module_name=list(module_df['module_name'])[0])
+    # go through all path/step combinations
     for module_path, frame in module_df.groupby('path'):
         split_path = [int(i) for i in module_path.split(',')]
         step = split_path[0]
-        module_net.add_node(module_path, kos=set(frame.ko))
+        module_net.add_node(module_path, kos=set(frame['ko']))
         # add incoming edge
         if step != 0:
             module_net.add_edge('end_step_%s' % (step - 1), module_path)
@@ -228,7 +220,7 @@ def get_module_step_coverage(kos, module_net):
 
 def make_module_coverage_df(annotation_df, module_nets):
     kos_to_genes = defaultdict(list)
-    for gene_id, ko_list in annotation_df.kegg_id.iteritems():
+    for gene_id, ko_list in annotation_df['kegg_id'].iteritems():
         if type(ko_list) is str:
             for ko in ko_list.split(','):
                 kos_to_genes[ko].append(gene_id)
@@ -248,8 +240,8 @@ def make_module_coverage_df(annotation_df, module_nets):
 def make_module_coverage_frame(annotations, module_nets, groupby_column='fasta'):
     # go through each scaffold to check for modules
     module_coverage_dict = dict()
-    for scaffold, frame in annotations.groupby(groupby_column, sort=False):
-        module_coverage_dict[scaffold] = make_module_coverage_df(frame, module_nets)
+    for group, frame in annotations.groupby(groupby_column, sort=False):
+        module_coverage_dict[group] = make_module_coverage_df(frame, module_nets)
     module_coverage = pd.concat(module_coverage_dict)
     module_coverage.index = module_coverage.index.set_names(['genome', 'module'])
     return module_coverage.reset_index()
@@ -282,7 +274,7 @@ def pairwise(iterable):
 def first_open_paren_is_all(str_):
     """Go through string and return true"""
     curr_level = 1
-    for i, char in enumerate(str_[1:-1]):
+    for char in str_[1:-1]:
         if char == ')':
             curr_level -= 1
         elif char == '(':
@@ -319,6 +311,7 @@ def is_ko(ko):
 
 
 def make_module_network(definition, network: nx.DiGraph = None, parent_nodes=('start',)):
+    # TODO: Figure out how to add 'end' step to last step at end
     if network is None:
         network = nx.DiGraph()
     last_steps = []
@@ -335,7 +328,7 @@ def make_module_network(definition, network: nx.DiGraph = None, parent_nodes=('s
     return network, last_steps
 
 
-def get_module_coverage(module_net, genes_present):
+def get_module_coverage(module_net: nx.DiGraph, genes_present: set):
     max_coverage = -1
     max_coverage_genes = list()
     max_coverage_missing_genes = list()
@@ -373,8 +366,8 @@ def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
                                                       module_row['module_name'])
             etc_coverage_df_rows.append([module_row['module_id'], module_row['module_name'],
                                          module_row['complex'].replace('Complex ', ''), group, path_len,
-                                         path_coverage_count, path_coverage_percent, ','.join(genes),
-                                         ','.join(missing_genes), complex_module_name])
+                                         path_coverage_count, path_coverage_percent, ','.join(sorted(genes)),
+                                         ','.join(sorted(missing_genes)), complex_module_name])
     return pd.DataFrame(etc_coverage_df_rows, columns=ETC_COVERAGE_COLUMNS)
 
 
@@ -426,8 +419,9 @@ def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta
             function_in_bin = np.all(presents_in_bin)
             row = frame.iloc[0]
             rows.append([row.category, row.subcategory, row.function_name, ', '.join(functions_present),
-                         '; '.join(set(frame.long_function_name)), row.gene_symbol, bin_name,
-                         function_in_bin, '%s: %s' % (row.category, row.function_name)])
+                         '; '.join(get_ordered_uniques(frame.long_function_name)),
+                         '; '.join(get_ordered_uniques(frame.gene_symbol)), bin_name, function_in_bin,
+                         '%s: %s' % (row.category, row.function_name)])
     return pd.DataFrame(rows, columns=list(function_heatmap_form.columns) + ['genome', 'present',
                                                                              'category_function_name'])
 
@@ -472,14 +466,12 @@ def make_functional_heatmap(functional_df, mag_order=None):
     return function_heatmap
 
 
-def fill_liquor_dfs(annotations, module_steps_form, etc_module_df, function_heatmap_form, groupby_column='fasta'):
-    # make module coverage frame
-    module_nets = {module: build_module_net(module_df)
-                   for module, module_df in module_steps_form.groupby('module') if module in HEATMAP_MODULES}
+# TODO: refactor this to handle splitting large numbers of genomes into multiple heatmaps here
+def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_form, groupby_column='fasta'):
     module_coverage_frame = make_module_coverage_frame(annotations, module_nets, groupby_column)
 
     # make ETC frame
-    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations)
+    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations, groupby_column)
 
     # make functional frame
     function_df = make_functional_df(annotations, function_heatmap_form, groupby_column)
@@ -516,11 +508,11 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     if trna_path is None:
         trna_frame = None
     else:
-        trna_frame = pd.read_csv(trna_path, sep='\t', index_col=0)
+        trna_frame = pd.read_csv(trna_path, sep='\t')
     if rrna_path is None:
         rrna_frame = None
     else:
-        rrna_frame = pd.read_csv(rrna_path, sep='\t', index_col=0)
+        rrna_frame = pd.read_csv(rrna_path, sep='\t')
 
     # get db_locs and read in dbs
     db_locs = get_database_locs()
@@ -549,7 +541,8 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
 
     # make genome metabolism summary
     genome_summary = path.join(output_dir, 'metabolism_summary.xlsx')
-    make_genome_summary(annotations, genome_summary_form, genome_summary, trna_frame, rrna_frame, groupby_column)
+    summarized_genomes = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, groupby_column)
+    write_summarized_genomes_to_xlsx(summarized_genomes, genome_summary)
     print('%s: Generated genome metabolism summary' % (str(datetime.now() - start_time)))
 
     # make liquor
@@ -558,13 +551,16 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
 
+    # make module coverage frame
+    module_nets = {module: build_module_net(module_df)
+                   for module, module_df in module_steps_form.groupby('module') if module in HEATMAP_MODULES}
     if len(genome_order) > GENOMES_PER_LIQUOR:
         module_coverage_dfs = list()
         etc_coverage_dfs = list()
         function_dfs = list()
         for i, genomes in enumerate(divide_chunks(genome_order, GENOMES_PER_LIQUOR)):
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
-            dfs = fill_liquor_dfs(annotations_subset, module_steps_form, etc_module_df, function_heatmap_form,
+            dfs = fill_liquor_dfs(annotations_subset, module_nets, etc_module_df, function_heatmap_form,
                                   groupby_column='fasta')
             module_coverage_df_subset, etc_coverage_df_subset, function_df_subset = dfs
             module_coverage_dfs.append(module_coverage_df_subset)
@@ -576,7 +572,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
         liquor_df = make_liquor_df(pd.concat(module_coverage_dfs), pd.concat(etc_coverage_dfs), pd.concat(function_dfs))
         liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
     else:
-        module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_steps_form,
+        module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_nets,
                                                                            etc_module_df,
                                                                            function_heatmap_form,
                                                                            groupby_column='fasta')

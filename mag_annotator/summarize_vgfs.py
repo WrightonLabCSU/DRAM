@@ -80,17 +80,17 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
 def get_ids_from_row(row):
     id_list = list()
     # get kegg ids
-    if not pd.isna(row.kegg_id):
-        id_list += [j for j in row.kegg_id.split(',')]
+    if 'kegg_id' in row and not pd.isna(row['kegg_id']):
+        id_list += [j for j in row['kegg_id'].split(',')]
     # get ec numbers
-    if not pd.isna(row.kegg_hit):
-        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', row.kegg_hit)]
+    if 'kegg_hit' in row and not pd.isna(row['kegg_hit']):
+        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', row['kegg_hit'])]
     # get merops ids
-    if not pd.isna(row.peptidase_family):
-        id_list += [j for j in row.peptidase_family.split(';')]
+    if 'peptidase_family' in row and not pd.isna(row['peptidase_family']):
+        id_list += [j for j in row['peptidase_family'].split(';')]
     # get cazy ids
-    if not pd.isna(row.cazy_hits):
-        id_list += [j.strip().split(' ')[0] for j in row.cazy_hits.split(';')]
+    if 'cazy_hits' in row and not pd.isna(row['cazy_hits']):
+        id_list += [j.strip().split(' ')[0] for j in row['cazy_hits'].split(';')]
     return set(id_list)
 
 
@@ -102,11 +102,11 @@ def make_viral_distillate(potential_amgs, genome_summary_frame):
             for gene_id in gene_ids:
                 gene_summary = genome_summary_frame.loc[gene_id]
                 if type(gene_summary) is pd.Series:
-                    rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'], gene_summary['sheet'],
-                                     gene_summary['header'], gene_summary['subheader'], gene_summary['module'],
-                                     row['auxiliary_score'], row['amg_flags']])
+                    rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'],
+                                 gene_summary['sheet'], gene_summary['header'], gene_summary['subheader'],
+                                 gene_summary['module'], row['auxiliary_score'], row['amg_flags']])
                 else:
-                    for sub_gene_id, sub_gene_summary in genome_summary_frame.loc[gene_id].iterrows():
+                    for sub_gene_id, sub_gene_summary in gene_summary.iterrows():
                         rows.append([gene, row['scaffold'], gene_id, sub_gene_summary['gene_description'],
                                      sub_gene_summary['sheet'], sub_gene_summary['header'],
                                      sub_gene_summary['subheader'], sub_gene_summary['module'],
@@ -221,7 +221,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
 
     # make distillate
     viral_genome_stats = make_viral_stats_table(annotations, potential_amgs, groupby_column)
-    viral_genome_stats.to_csv(path.join(output_dir, 'viral_contig_stats.tsv'), sep='\t')
+    viral_genome_stats.to_csv(path.join(output_dir, 'vMAG_stats.tsv'), sep='\t')
     print('%s: Calculated viral genome statistics' % (str(datetime.now() - start_time)))
 
     viral_distillate = make_viral_distillate(potential_amgs, genome_summary_form)
