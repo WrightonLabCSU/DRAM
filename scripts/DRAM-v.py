@@ -36,8 +36,8 @@ if __name__ == '__main__':
                                       "must match nubmer of custom_db_name's")
     annotate_parser.add_argument('--genes_called', action='store_true', default=False,
                                  help='if you are passing a file of amino acid sequences')
-    annotate_parser.add_argument('--skip_uniref', action='store_true', default=False,
-                                 help='Skip annotating with UniRef, drastically decreases run time and memory'
+    annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
+                                 help='Annotate these fastas against UniRef, drastically decreases run time and memory '
                                       'requirements')
     annotate_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                  help='Skip annotating with uniref and use kofam instead of KEGG genes even if '

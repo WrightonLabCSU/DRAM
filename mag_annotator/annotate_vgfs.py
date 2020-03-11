@@ -271,7 +271,7 @@ def get_virsorter_affi_contigs_name(scaffold):
 
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=5000,
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  genes_called=False, skip_uniref=True, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
+                  genes_called=False, use_uniref=False, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
                   threads=10, verbose=True):
     # set up
     start_time = datetime.now()
@@ -286,10 +286,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
         if ('kofam' not in db_locs) or ('kofam_ko_list' not in db_locs):
             raise ValueError('To run in low memory mode kofam must be configured for use in DRAM')
         dbs_to_use = [i for i in db_handler.get_database_names() if i not in ('uniref', 'kegg')]
-    elif skip_uniref:
-        dbs_to_use = [i for i in db_handler.get_database_names() if i != 'uniref']
-    else:
+    elif use_uniref:
         dbs_to_use = db_handler.get_database_names()
+    else:
+        dbs_to_use = [i for i in db_handler.get_database_names() if i != 'uniref']
 
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')

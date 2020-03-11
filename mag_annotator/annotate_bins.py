@@ -832,7 +832,7 @@ def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, 
 
 
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_uniref=True,
+                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
                   skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), genes_called=False, keep_tmp_dir=True,
                   low_mem_mode=False, threads=10, verbose=True):
     # set up
@@ -852,10 +852,10 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         if ('kofam' not in db_locs) or ('kofam_ko_list' not in db_locs):
             raise ValueError('To run in low memory mode kofam must be configured for use in DRAM')
         dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i not in ('uniref', 'kegg')]
-    elif skip_uniref:
-        dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i != 'uniref']
-    else:
+    elif use_uniref:  # TODO: Update to not use uniref as default in MAG_DBS_TO_ANNOTATE
         dbs_to_use = MAG_DBS_TO_ANNOTATE
+    else:
+        dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i != 'uniref']
 
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')
