@@ -3,7 +3,6 @@ from shutil import copy2
 from datetime import datetime
 from shutil import move, rmtree
 from glob import glob
-from pkg_resources import resource_filename
 import json
 import gzip
 import tarfile
@@ -320,7 +319,10 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
                        viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, vog_annotations=None,
                        description_db_loc=None, genome_summary_form_loc=None, module_step_form_loc=None,
                        etc_module_database_loc=None, function_heatmap_form_loc=None, amg_database_loc=None,
-                       config_loc=None, update_description_db=False):
+                       start_time=None, config_loc=None, update_description_db=False):
+    if start_time is None:
+        start_time = datetime.now()
+        print('%s: Setting database paths' % str(datetime.now() - start_time))
     db_dict = get_database_locs()
 
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
@@ -343,6 +345,7 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
     db_dict = check_exists_and_add_to_location_dict(amg_database_loc, 'amg_database', db_dict)
 
     db_dict = check_exists_and_add_to_location_dict(description_db_loc, 'description_db', db_dict)
+    print('%s: Database locations added to CONFIG' % str(datetime.now() - start_time))
 
     if update_description_db:
         populate_description_db(db_dict)
@@ -352,9 +355,13 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
         get_config_loc()
     with open(config_loc, 'w') as f:
         f.write(json.dumps(db_dict))
+    print('%s: Database locations set')
 
 
-def populate_description_db(db_dict=None):
+def populate_description_db(db_dict=None, start_time=None):
+    if start_time is None:
+        start_time = datetime.now()
+        print('%s: Populating description database' % str(datetime.now() - start_time))
     # setup
     if db_dict is None:
         db_dict = get_database_locs()
@@ -362,22 +369,31 @@ def populate_description_db(db_dict=None):
         remove(db_dict['description_db'])
     create_description_db(db_dict['description_db'])
     db_handler = DatabaseHandler(db_dict['description_db'])
+    print('%s: Database connection established' % str(datetime.now() - start_time))
 
     # fill database
     check_exists_and_add_to_description_db(db_dict['kegg'], 'kegg_description', make_header_dict_from_mmseqs_db,
                                            db_handler)
+    print('%s: KEGG descriptions added to description database' % str(datetime.now() - start_time))
     check_exists_and_add_to_description_db(db_dict['uniref'], 'uniref_description', make_header_dict_from_mmseqs_db,
                                            db_handler)
+    print('%s: UniRef descriptions added to description database' % str(datetime.now() - start_time))
     check_exists_and_add_to_description_db(db_dict['pfam_hmm_dat'], 'pfam_description', process_pfam_descriptions,
                                            db_handler)
+    print('%s: PFAM descriptions added to description database' % str(datetime.now() - start_time))
     check_exists_and_add_to_description_db(db_dict['dbcan_fam_activities'], 'dbcan_description',
                                            process_dbcan_descriptions, db_handler)
+    print('%s: dbCAN descriptions added to description database' % str(datetime.now() - start_time))
     check_exists_and_add_to_description_db(db_dict['viral'], 'viral_description', make_header_dict_from_mmseqs_db,
                                            db_handler)
+    print('%s: RefSeq viral descriptions added to description database' % str(datetime.now() - start_time))
     check_exists_and_add_to_description_db(db_dict['peptidase'], 'peptidase_description',
                                            make_header_dict_from_mmseqs_db, db_handler)
+    print('%s: MEROPS descriptions added to description database' % str(datetime.now() - start_time))
     check_exists_and_add_to_description_db(db_dict['vog_annotations'], 'vogdb_description', process_vogdb_descriptions,
                                            db_handler)
+    print('%s: VOGdb descriptions added to description database' % str(datetime.now() - start_time))
+    print('%s: Description database populated' % str(datetime.now() - start_time))
 
 
 def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_download_date=None, uniref_loc=None,
@@ -387,6 +403,8 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
                       module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None,
                       amg_database_loc=None, skip_uniref=False, keep_database_files=False, branch='master', threads=10,
                       verbose=True):
+    start_time = datetime.now()
+    print('%s: Database preparation started' % str(datetime.now()))
     # check that all given files exist
     check_file_exists(kegg_loc)
     check_file_exists(gene_ko_link_loc)
@@ -414,32 +432,44 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
     if kegg_loc is not None:
         output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, gene_ko_link_loc, kegg_download_date, threads,
                                                     verbose)
+        print('%s: KEGG database processed' % str(datetime.now() - start_time))
     if not skip_uniref:
         output_dbs['uniref_db_loc'] = download_and_process_uniref(uniref_loc, temporary, uniref_version=uniref_version,
                                                                   threads=threads, verbose=verbose)
+        print('%s: UniRef database processed' % str(datetime.now() - start_time))
     output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary,
                                                           threads=threads, verbose=verbose)
+    print('%s: PFAM database processed' % str(datetime.now() - start_time))
     output_dbs['dbcan_db_loc'] = download_and_process_dbcan(dbcan_loc, temporary, dbcan_release=dbcan_version,
                                                             verbose=verbose)
+    print('%s: dbCAN database processed' % str(datetime.now() - start_time))
     output_dbs['viral_db_loc'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads,
                                                                    verbose=verbose)
+    print('%s: RefSeq viral database processed' % str(datetime.now() - start_time))
     output_dbs['peptidase_db_loc'] = download_and_process_merops_peptidases(peptidase_loc, temporary, threads=threads,
                                                                             verbose=verbose)
+    print('%s: MEROPS database processed' % str(datetime.now() - start_time))
     output_dbs['vogdb_db_loc'] = download_and_process_vogdb(vogdb_loc, temporary, vogdb_release=vogdb_version,
                                                             verbose=verbose)
+    print('%s: VOGdb database processed' % str(datetime.now() - start_time))
     output_dbs['kofam_hmm_loc'] = download_and_process_kofam_hmms(temporary, verbose=verbose)
+    print('%s: KOfam database processed' % str(datetime.now() - start_time))
     output_dbs['kofam_ko_list_loc'] = download_and_process_kofam_ko_list(temporary, verbose=verbose)
+    print('%s: KOfam ko list processed' % str(datetime.now() - start_time))
 
     # get pfam, dbcan and vogdb descriptions
     if pfam_hmm_dat is None:
         pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
+    print('%s: PFAM hmm dat processed' % str(datetime.now() - start_time))
     if dbcan_fam_activities is None:
         dbcan_fam_activities = download_dbcan_descriptions(output_dir, dbcan_date, verbose=verbose)
     output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
+    print('%s: dbCAN fam activities processed' % str(datetime.now() - start_time))
     if vog_annotations is None:
         vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
     output_dbs['vog_annotations'] = vog_annotations
+    print('%s: VOGdb annotations processed' % str(datetime.now() - start_time))
 
     # add genome summary form and function heatmap form
     if genome_summary_form_loc is None:
@@ -462,19 +492,23 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
         output_dbs['amg_database_loc'] = download_and_process_amg_database(temporary, branch)
     else:
         output_dbs['amg_database_loc'] = amg_database_loc
+    print('%s: DRAM databases and forms downloaded' % str(datetime.now() - start_time))
 
     # move all files from temporary to output that will be kept
     for db_name, output_db in output_dbs.items():
         for db_file in glob('%s*' % output_db):
             move(db_file, path.join(output_dir, path.basename(db_file)))
         output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
+    print('%s: Files moved to final destination' % str(datetime.now() - start_time))
 
     output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
 
-    set_database_paths(**output_dbs, update_description_db=True)
+    set_database_paths(**output_dbs, update_description_db=True, start_time=start_time)
 
     if not keep_database_files:
         rmtree(temporary)
+        print('%s: Files moved to final destination' % str(datetime.now() - start_time))
+    print('%s: Database preparation completed' % str(datetime.now() - start_time))
 
 
 def print_database_locations(db_locs=None):
