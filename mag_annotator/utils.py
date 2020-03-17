@@ -13,8 +13,10 @@ def get_config_loc():
     return path.abspath(resource_filename('mag_annotator', 'CONFIG'))
 
 
-def get_database_locs():
-    return json.loads(open(get_config_loc()).read())
+def get_database_locs(config_loc=None):
+    if config_loc is None:
+        config_loc = get_config_loc()
+    return json.loads(open(config_loc).read())
 
 
 def download_file(url, output_file=None, verbose=True):

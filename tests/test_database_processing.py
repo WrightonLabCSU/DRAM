@@ -3,10 +3,11 @@ import pytest
 import os
 import json
 
+from mag_annotator.utils import get_database_locs
 from mag_annotator.database_processing import check_file_exists, make_header_dict_from_mmseqs_db, remove_prefix, \
     generate_modified_kegg_fasta, process_kegg_db, process_mmspro, process_pfam_descriptions, \
     process_dbcan_descriptions, process_vogdb_descriptions, check_exists_and_add_to_location_dict, export_config, \
-    print_database_locations
+    print_database_locations, set_database_paths
 
 
 def test_check_file_exists():
@@ -137,3 +138,23 @@ def test_print_database_locations(capsys):
     out, err = capsys.readouterr()
     assert 'Description db: ' in out
     assert len(err) == 0
+
+
+def test_set_database_paths(tmpdir):
+    test_config_dir = tmpdir.mkdir('test_config')
+    # first test that adding nothing doesn't change CONFIG
+    test_config = os.path.join(test_config_dir, 'CONFIG')
+    pretest_db_dict = get_database_locs()
+    set_database_paths(config_loc=test_config)
+    test_db_dict = get_database_locs(test_config)
+    assert type(test_db_dict) is dict
+    assert pretest_db_dict == test_db_dict
+    # test that adding something that doesn't exist throws error
+    test_fake_database = os.path.join(test_config_dir, 'fake_database.mmsdb')
+    with pytest.raises(ValueError):
+        set_database_paths(kegg_db_loc=test_fake_database)
+    # test that adding something real is really added
+    kegg_loc = os.path.join('tests', 'data', 'fake_gff.gff')
+    set_database_paths(kegg_db_loc=kegg_loc, config_loc=test_config)
+    test_db_dict = get_database_locs(test_config)
+    assert test_db_dict['kegg'] == os.path.realpath(kegg_loc)

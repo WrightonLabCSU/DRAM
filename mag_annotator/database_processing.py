@@ -335,7 +335,7 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
                        viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, vog_annotations=None,
                        description_db_loc=None, genome_summary_form_loc=None, module_step_form_loc=None,
                        etc_module_database_loc=None, function_heatmap_form_loc=None, amg_database_loc=None,
-                       update_description_db=False):
+                       config_loc=None, update_description_db=False):
     db_dict = get_database_locs()
 
     db_dict = check_exists_and_add_to_location_dict(kegg_db_loc, 'kegg', db_dict)
@@ -363,7 +363,9 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
         populate_description_db(db_dict)
 
     # change data paths
-    with open(path.realpath(resource_filename('mag_annotator', 'CONFIG')), 'w') as f:
+    if config_loc is None:
+        get_config_loc()
+    with open(config_loc, 'w') as f:
         f.write(json.dumps(db_dict))
 
 
