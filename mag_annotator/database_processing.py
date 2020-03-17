@@ -113,8 +113,6 @@ def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref
         uniref_url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' % \
                      (uniref_version, uniref_version)
         download_file(uniref_url, uniref_fasta_zipped, verbose=verbose)
-    else:
-        check_file_exists(uniref_fasta_zipped)
     uniref_mmseqs_db = path.join(output_dir, 'uniref%s.%s.mmsdb' % (uniref_version, get_iso_date()))
     make_mmseqs_db(uniref_fasta_zipped, uniref_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
     return uniref_mmseqs_db
@@ -136,8 +134,6 @@ def download_and_process_pfam(pfam_full_zipped=None, output_dir='.', threads=10,
     if pfam_full_zipped is None:  # download database if not provided
         pfam_full_zipped = path.join(output_dir, 'Pfam-A.full.gz')
         download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz', pfam_full_zipped)
-    else:
-        check_file_exists(pfam_full_zipped)
     pfam_profile = process_mmspro(pfam_full_zipped, output_dir, 'pfam', threads, verbose)
     return pfam_profile
 
@@ -150,7 +146,6 @@ def download_pfam_descriptions(output_dir='.', verbose=True):
 
 
 def process_pfam_descriptions(pfam_hmm_dat):
-    check_file_exists(pfam_hmm_dat)
     if pfam_hmm_dat.endswith('.gz'):
         f = gzip.open(pfam_hmm_dat, 'r').read().decode('utf-8')
     else:
@@ -177,8 +172,6 @@ def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='8'
         dbcan_hmm = path.join(output_dir, 'dbCAN-HMMdb-V%s.txt' % dbcan_release)
         download_file('http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,
                       verbose=verbose)
-    else:
-        check_file_exists(dbcan_hmm)
     run_process(['hmmpress', '-f', dbcan_hmm], verbose=verbose)
     return dbcan_hmm
 
@@ -191,7 +184,6 @@ def download_dbcan_descriptions(output_dir='.', upload_date='07312019', verbose=
 
 
 def process_dbcan_descriptions(dbcan_fam_activities):
-    check_file_exists(dbcan_fam_activities)
     f = open(dbcan_fam_activities)
     description_list = list()
     for line in f.readlines():
@@ -224,8 +216,6 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
         # then merge files from above
         merged_viral_faas = path.join(output_dir, 'viral.merged.protein.faa.gz')
         run_process(['cat %s > %s' % (' '.join(glob(viral_faa_glob)), merged_viral_faas)], shell=True)
-    else:
-        check_file_exists(merged_viral_faas)
 
     # make mmseqs database
     refseq_viral_mmseqs_db = path.join(output_dir, 'refseq_viral.%s.mmsdb' % get_iso_date())
@@ -238,8 +228,6 @@ def download_and_process_merops_peptidases(peptidase_faa=None, output_dir='.', t
         peptidase_faa = path.join(output_dir, 'merops_peptidases_nr.faa')
         merops_url = 'ftp://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
         download_file(merops_url, peptidase_faa, verbose=verbose)
-    else:
-        check_file_exists(peptidase_faa)
     peptidase_mmseqs_db = path.join(output_dir, 'peptidases.%s.mmsdb' % get_iso_date())
     make_mmseqs_db(peptidase_faa, peptidase_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
     return peptidase_mmseqs_db
@@ -250,8 +238,6 @@ def download_and_process_vogdb(vog_hmm_targz=None, output_dir='.', vogdb_release
         vog_hmm_targz = path.join(output_dir, 'vog.hmm.tar.gz')
         vogdb_url = 'http://fileshare.csb.univie.ac.at/vog/%s/vog.hmm.tar.gz' % vogdb_release
         download_file(vogdb_url, vog_hmm_targz, verbose=verbose)
-    else:
-        check_file_exists(vog_hmm_targz)
     hmm_dir = path.join(output_dir, 'vogdb_hmms')
     mkdir(hmm_dir)
     vogdb_targz = tarfile.open(vog_hmm_targz)
@@ -270,7 +256,6 @@ def download_vog_annotations(output_dir, vogdb_version='latest', verbose=True):
 
 
 def process_vogdb_descriptions(vog_annotations):
-    check_file_exists(vog_annotations)
     annotations_table = pd.read_csv(vog_annotations, sep='\t', index_col=0)
     annotations_list = [{'id': vog, 'description': '%s; %s' % (row['ConsensusFunctionalDescription'],
                                                                row['FunctionalCategory'])}
@@ -445,6 +430,17 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
     output_dbs['kofam_hmm_loc'] = download_and_process_kofam_hmms(temporary, verbose=verbose)
     output_dbs['kofam_ko_list_loc'] = download_and_process_kofam_ko_list(temporary, verbose=verbose)
 
+    # get pfam, dbcan and vogdb descriptions
+    if pfam_hmm_dat is None:
+        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
+    output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
+    if dbcan_fam_activities is None:
+        dbcan_fam_activities = download_dbcan_descriptions(output_dir, dbcan_date, verbose=verbose)
+    output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
+    if vog_annotations is None:
+        vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
+    output_dbs['vog_annotations'] = vog_annotations
+
     # add genome summary form and function heatmap form
     if genome_summary_form_loc is None:
         output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary, branch)
@@ -472,18 +468,6 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
         for db_file in glob('%s*' % output_db):
             move(db_file, path.join(output_dir, path.basename(db_file)))
         output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
-
-    # get pfam and dbcan descriptions
-    # TODO: move this all up to be done with the rest of the downloading and processing
-    if pfam_hmm_dat is None:
-        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
-    output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
-    if dbcan_fam_activities is None:
-        dbcan_fam_activities = download_dbcan_descriptions(output_dir, dbcan_date, verbose=verbose)
-    output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
-    if vog_annotations is None:
-        vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
-    output_dbs['vog_annotations'] = vog_annotations
 
     output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
 
