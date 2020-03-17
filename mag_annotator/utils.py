@@ -9,8 +9,12 @@ from urllib.request import urlopen
 import warnings
 
 
+def get_config_loc():
+    return path.abspath(resource_filename('mag_annotator', 'CONFIG'))
+
+
 def get_database_locs():
-    return json.loads(open(path.abspath(resource_filename('mag_annotator', 'CONFIG'))).read())
+    return json.loads(open(get_config_loc()).read())
 
 
 def download_file(url, output_file=None, verbose=True):

@@ -1,10 +1,12 @@
 import pytest
 
 import os
+import json
 
 from mag_annotator.database_processing import check_file_exists, make_header_dict_from_mmseqs_db, remove_prefix, \
     generate_modified_kegg_fasta, process_kegg_db, process_mmspro, process_pfam_descriptions, \
-    process_dbcan_descriptions, process_vogdb_descriptions, check_exists_and_add_to_location_dict
+    process_dbcan_descriptions, process_vogdb_descriptions, check_exists_and_add_to_location_dict, export_config, \
+    print_database_locations
 
 
 def test_check_file_exists():
@@ -117,4 +119,21 @@ def test_check_exists_and_add_to_location_dict(phix_proteins):
     assert test_dict3 == {'fake': 'abc123'}
 
 
+def test_export_config(capsys, tmpdir):
+    export_config()
+    out, err = capsys.readouterr()
+    assert len(err) == 0
+    assert 'description_db' in out
+    assert out.startswith('{')
+    assert out.strip().endswith('}')
 
+    test_exported_config = os.path.join(tmpdir.mkdir('test_export'), 'test_CONFIG')
+    export_config(test_exported_config)
+    assert type(json.loads(open(test_exported_config).read())) is dict
+
+
+def test_print_database_locations(capsys):
+    print_database_locations()
+    out, err = capsys.readouterr()
+    assert 'Description db: ' in out
+    assert len(err) == 0

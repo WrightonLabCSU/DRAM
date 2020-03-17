@@ -1,4 +1,5 @@
 from os import path, mkdir, remove
+from shutil import copy2
 from datetime import datetime
 from shutil import move, rmtree
 from glob import glob
@@ -11,7 +12,8 @@ from collections import defaultdict
 from skbio import read as read_sequence
 from skbio import write as write_sequence
 
-from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file, merge_files
+from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file, merge_files,\
+    get_config_loc
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.database_setup import create_description_db
 
@@ -493,20 +495,24 @@ def print_database_locations(db_locs=None):
     if db_locs is None:
         db_locs = get_database_locs()
 
-    print('KEGG db location: %s' % db_locs.get('kegg'))
-    print('KOfam db location: %s' % db_locs.get('kofam'))
-    print('KOfam KO list location: %s' % db_locs.get('kofam_ko_list'))
-    print('UniRef db location: %s' % db_locs.get('uniref'))
-    print('Pfam db location: %s' % db_locs.get('pfam'))
-    print('dbCAN db location: %s' % db_locs.get('dbcan'))
-    print('RefSeq Viral db location: %s' % db_locs.get('viral'))
-    print('MEROPS peptidase db location: %s' % db_locs.get('peptidase'))
-    print('VOGDB db location: %s' % db_locs.get('vogdb'))
-    print('Description db location: %s' % db_locs.get('description_db'))
-    print('Genome summary form location: %s' % db_locs.get('genome_summary_form'))
-    print('ETC module database location: %s' % db_locs.get('etc_module_database'))
-    print('Function heatmap form location: %s' % db_locs.get('function_heatmap_form'))
-    print('AMG database location: %s' % db_locs.get('amg_database'))
+    print('KEGG db: %s' % db_locs.get('kegg'))
+    print('KOfam db: %s' % db_locs.get('kofam'))
+    print('KOfam KO list: %s' % db_locs.get('kofam_ko_list'))
+    print('UniRef db: %s' % db_locs.get('uniref'))
+    print('Pfam db: %s' % db_locs.get('pfam'))
+    print('Pfam hmm dat: %s' % db_locs.get('pfam_hmm_dat'))
+    print('dbCAN db: %s' % db_locs.get('dbcan'))
+    print('dbCAN family activities: %s' % db_locs.get('dbcan_fam_activities'))
+    print('RefSeq Viral db: %s' % db_locs.get('viral'))
+    print('MEROPS peptidase db: %s' % db_locs.get('peptidase'))
+    print('VOGDB db: %s' % db_locs.get('vogdb'))
+    print('VOG annotations: %s' % db_locs.get('vog_annotations'))
+    print('Description db: %s' % db_locs.get('description_db'))
+    print('Genome summary form: %s' % db_locs.get('genome_summary_form'))
+    print('Module step form: %s' % db_locs.get('module_step_form'))
+    print('ETC module database: %s' % db_locs.get('etc_module_database'))
+    print('Function heatmap form: %s' % db_locs.get('function_heatmap_form'))
+    print('AMG database: %s' % db_locs.get('amg_database'))
 
 
 def update_dram_forms(output_dir, branch='master'):
@@ -520,3 +526,14 @@ def update_dram_forms(output_dir, branch='master'):
     form_locs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(output_dir, branch)
     form_locs['amg_database_loc'] = download_and_process_amg_database(output_dir, branch)
     set_database_paths(**form_locs, update_description_db=False)
+
+
+def export_config(output_file=None):
+    if output_file is None:
+        print(open(get_config_loc()).read())
+    else:
+        copy2(get_config_loc(), output_file)
+
+
+def import_config(config_loc):
+    copy2(config_loc, get_config_loc())

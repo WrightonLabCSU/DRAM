@@ -3,7 +3,7 @@
 import argparse
 
 from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations,\
-                                              populate_description_db, update_dram_forms
+                                              populate_description_db, update_dram_forms, export_config, import_config
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -22,6 +22,10 @@ if __name__ == '__main__':
                                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     print_db_locs_parser = subparsers.add_parser('print_config', help="Print database locations",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    import_config_parser = subparsers.add_parser('import_config', help="Import CONFIG file",
+                                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    export_config_parser = subparsers.add_parser('export_config', help="Export CONFIG file",
+                                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for downloading and processing databases for annotation and summarization
     prepare_dbs_parser.add_argument('--output_dir', default=".", help="output directory")
@@ -33,6 +37,9 @@ if __name__ == '__main__':
                                     help="Date KEGG was download to include in database name")
     prepare_dbs_parser.add_argument('--uniref_loc', default=None, help="File path to uniref, if already downloaded")
     prepare_dbs_parser.add_argument('--uniref_version', default='90', help="UniRef version to download")
+    prepare_dbs_parser.add_argument('--skip_uniref', default=False, action='store_true',
+                                    help="Do not download and process uniref90. Saves time and memory usage and does "
+                                         "not impact DRAM distillation")
     prepare_dbs_parser.add_argument('--pfam_loc', default=None,
                                     help="File path to pfam-A hmm file, if already downloaded")
     prepare_dbs_parser.add_argument('--pfam_hmm_dat', default=None, help="pfam hmm .dat file to get PF"
@@ -42,6 +49,8 @@ if __name__ == '__main__':
                                                                                  'already downloaded')
     prepare_dbs_parser.add_argument('--dbcan_version', default='8', type=str, help='version of dbCAN to use')
     prepare_dbs_parser.add_argument('--vogdb_loc', default=None, help='hmm file for vogdb, if already downloaded')
+    prepare_dbs_parser.add_argument('--vog_annotations', default=None, help='vogdb annotations file, if already'
+                                                                            'downloaded')
     prepare_dbs_parser.add_argument('--viral_loc', default=None,
                                     help="File path to viral protein faa, if already downloaded")
     prepare_dbs_parser.add_argument('--peptidase_loc', default=None,
@@ -65,6 +74,9 @@ if __name__ == '__main__':
 
     # parser for setting database locations when you already have processed database files
     set_db_locs_parser.add_argument('--kegg_db_loc', default=None, help='mmseqs2 database file from kegg .pep file')
+    set_db_locs_parser.add_argument('--kofam_hmm_loc', default=None, help='hmm file for KOfam, already processed with'
+                                                                          'hmmpress')
+    set_db_locs_parser.add_argument('--kofam_ko_list_loc', default=None, help='KOfam ko list file')
     set_db_locs_parser.add_argument('--uniref_db_loc', default=None, help='mmseqs2 database file from uniref .faa')
     set_db_locs_parser.add_argument('--pfam_db_loc', default=None, help='mmseqs2 database file from pfam .hmm')
     set_db_locs_parser.add_argument('--pfam_hmm_dat', default=None, help='pfam hmm .dat file to get PF descriptions')
@@ -73,6 +85,8 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--dbcan_fam_activities', default=None, help='CAZY family activities file')
     set_db_locs_parser.add_argument('--vogdb_db_loc', default=None,
                                     help='hmm file for vogdb, already processed with hmmpress')
+    set_db_locs_parser.add_argument('--vog_annotations', default=None,
+                                    help='vog annotations file')
     set_db_locs_parser.add_argument('--viral_db_loc', default=None,
                                     help='mmseqs2 database file from ref seq viral gene collection')
     set_db_locs_parser.add_argument('--peptidase_db_loc', default=None,
@@ -99,6 +113,15 @@ if __name__ == '__main__':
 
     # parser for printing out database configuration information
     print_db_locs_parser.set_defaults(func=print_database_locations)
+
+    # parser for printing out or saving CONFIG to file
+    export_config_parser.add_argument('--output_file', help="File to save exported CONFIG file to, by default will"
+                                                            "print CONFIG")
+    export_config_parser.set_defaults(func=export_config)
+
+    # parser for importing CONFIG file
+    import_config_parser.add_argument('--config_loc', help="CONFIG file to replace current CONFIG with")
+    import_config_parser.set_defaults(func=import_config)
 
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}

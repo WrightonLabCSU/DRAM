@@ -1,8 +1,9 @@
 import pytest
 
 import os
+import json
 
-from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep
+from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep, get_database_locs, get_config_loc
 
 
 def test_run_process():
@@ -76,3 +77,15 @@ def test_multigrep(multigrep_inputs):
     assert dict_['gene1'] == 'gene1 something about gene1'
     assert dict_['gene3'] == 'gene3 data including gene3'
     assert dict_['gene5'] == 'gene5 data including gene5'
+
+
+def test_get_config_loc():
+    test_config_loc = get_config_loc()
+    assert os.path.isfile(test_config_loc)
+    assert type(json.loads(open(test_config_loc).read())) is dict
+
+
+def test_get_database_locs():
+    test_database_locs = get_database_locs()
+    assert type(test_database_locs) is dict
+    assert 'description_db' in test_database_locs
