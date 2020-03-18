@@ -40,8 +40,6 @@ if __name__ == '__main__':
                                       'times')
     annotate_parser.add_argument('--checkm_quality', action='append', default=[],
                                  help='Summary of of checkM quality assessment from bins, can be used multiple times')
-    annotate_parser.add_argument('--genes_called', action='store_true', default=False,
-                                 help='if you are passing a file of amino acid sequences')
     annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
                                  help='Annotate these fastas against UniRef, drastically decreases run time and memory '
                                       'requirements')

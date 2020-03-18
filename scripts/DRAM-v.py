@@ -34,8 +34,6 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--custom_fasta_loc', action='append',
                                  help="Location of fastas to annotated against, can be used multiple times but"
                                       "must match nubmer of custom_db_name's")
-    annotate_parser.add_argument('--genes_called', action='store_true', default=False,
-                                 help='if you are passing a file of amino acid sequences')
     annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
                                  help='Annotate these fastas against UniRef, drastically decreases run time and memory '
                                       'requirements')

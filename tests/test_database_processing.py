@@ -4,7 +4,7 @@ import os
 import json
 
 from mag_annotator.utils import get_database_locs
-from mag_annotator.database_processing import check_file_exists, make_header_dict_from_mmseqs_db, remove_prefix, \
+from mag_annotator.database_processing import check_file_exists, make_header_dict_from_mmseqs_db, \
     generate_modified_kegg_fasta, process_kegg_db, process_mmspro, process_pfam_descriptions, \
     process_dbcan_descriptions, process_vogdb_descriptions, check_exists_and_add_to_location_dict, export_config, \
     print_database_locations, set_database_paths
@@ -30,11 +30,6 @@ def test_make_header_dict_from_mmseqs_db():
                             {'id': 'NP_040708.1', 'description': 'NP_040708.1 D [Escherichia virus phiX174]'},
                             {'id': 'NP_040707.1', 'description': 'NP_040707.1 C [Escherichia virus phiX174]'},
                             {'id': 'NP_040706.1', 'description': 'NP_040706.1 K [Escherichia virus phiX174]'}]
-
-
-def test_remove_prefix():
-    assert remove_prefix('prefix', 'pre') == 'fix'
-    assert remove_prefix('postfix', 'pre') == 'postfix'
 
 
 @pytest.fixture()

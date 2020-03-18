@@ -1,8 +1,6 @@
 from datetime import datetime
 from os import path, mkdir
-from shutil import rmtree, copy2
 import re
-from glob import glob
 
 import pandas as pd
 import numpy as np
@@ -10,8 +8,8 @@ from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.annotate_bins import process_custom_dbs, annotate_fasta
-from mag_annotator.utils import get_database_locs, get_ids_from_annotation, merge_files
+from mag_annotator.annotate_bins import annotate_fastas
+from mag_annotator.utils import get_database_locs, get_ids_from_annotation
 
 VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length', 'strandedness',
                           'viral_protein_cluster_hit', 'viral_protein_cluster_hit_score',
@@ -100,7 +98,6 @@ def get_gene_order(dram_genes, virsorter_genes, min_overlap=.70):
         dram_row = dram_genes.iloc[dram_gene_number]
         dram_gene = dram_genes.index[dram_gene_number]
         virsorter_row = virsorter_genes.iloc[virsorter_gene_number]
-        print(virsorter_row)
         virsorter_gene = virsorter_genes.index[virsorter_gene_number]
         virsorter_gene_category = virsorter_row['viral_protein_cluster_category']
         # end if we are at the end of either list
@@ -271,79 +268,32 @@ def get_virsorter_affi_contigs_name(scaffold):
 
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=5000,
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  genes_called=False, use_uniref=False, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
+                  use_uniref=False, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
                   threads=10, verbose=True):
     # set up
     start_time = datetime.now()
-    print('%s: Annotation started' % str(datetime.now()))
+    print('%s: Viral annotation started' % str(datetime.now()))
 
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
 
-    # check for no conflicting options/configurations
-    if low_mem_mode:
-        if ('kofam' not in db_locs) or ('kofam_ko_list' not in db_locs):
-            raise ValueError('To run in low memory mode kofam must be configured for use in DRAM')
-        dbs_to_use = [i for i in db_handler.get_database_names() if i not in ('uniref', 'kegg')]
-    elif use_uniref:
-        dbs_to_use = db_handler.get_database_names()
-    else:
-        dbs_to_use = [i for i in db_handler.get_database_names() if i != 'uniref']
-
+    # split sequences into seperate fastas
     mkdir(output_dir)
-    tmp_dir = path.join(output_dir, 'working_dir')
-    mkdir(tmp_dir)
+    contig_dir = path.join(output_dir, 'vMAGs')
+    mkdir(contig_dir)
+    contig_locs = list()
+    for seq in read_sequence(input_fasta, format='fasta'):
+        if len(seq) >= min_contig_size:
+            print('%s: Annotating %s' % (str(datetime.now() - start_time), seq.metadata['id']))
+            contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
+            write_sequence((i for i in [seq]), format='fasta', into=contig_loc)
+            contig_locs.append(contig_loc)
 
-    custom_dbs_dir = path.join(tmp_dir, 'custom_dbs')
-    mkdir(custom_dbs_dir)
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, custom_dbs_dir, threads, verbose)
-    print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
-
-    # iterate over list of fastas and annotate each individually
-    fasta_name = path.splitext(path.basename(input_fasta.strip('.gz')))[0]
-    if genes_called:
-        annotations = annotate_fasta(input_fasta, fasta_name, tmp_dir, db_locs, db_handler, min_contig_size,
-                                     custom_db_locs, dbs_to_use, bit_score_threshold, rbh_bit_score_threshold,
-                                     skip_trnascan, start_time, genes_called, threads, verbose)
-        # copy results files to output
-        copy2(path.join(tmp_dir, 'genes.annotated.fna'), path.join(output_dir, 'genes.fna'))
-        copy2(path.join(tmp_dir, 'genes.annotated.faa'), path.join(output_dir, 'genes.faa'))
-        copy2(path.join(tmp_dir, 'scaffolds.annotated.fa'), path.join(output_dir, 'scaffolds.fna'))
-        copy2(path.join(tmp_dir, 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'))
-        if path.isfile(path.join(tmp_dir, 'trnas.tsv')):
-            copy2(path.join(tmp_dir, 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'))
-        if path.isfile(path.join(tmp_dir, 'rrnas.tsv')):
-            copy2(path.join(tmp_dir, 'rrnas.tsv'), path.join(output_dir, 'rrnas.tsv'))
-        copy2(path.join(tmp_dir, '%s.gbk' % fasta_name), path.join(output_dir, 'scaffolds.gbk'))
-    else:
-        annotations_list = list()
-        for seq in read_sequence(input_fasta, format='fasta'):
-            if len(seq) >= min_contig_size:
-                print('%s: Annotating %s' % (str(datetime.now() - start_time), seq.metadata['id']))
-                contig_dir = path.join(tmp_dir, seq.metadata['id'])
-                mkdir(contig_dir)
-                contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
-                write_sequence((i for i in [seq]), format='fasta', into=contig_loc)
-                contig_annotations = annotate_fasta(contig_loc, fasta_name, contig_dir, db_locs, db_handler,
-                                                    min_contig_size, custom_db_locs, dbs_to_use, bit_score_threshold,
-                                                    rbh_bit_score_threshold, skip_trnascan, start_time,
-                                                    genes_called, threads, verbose)
-                annotations_list.append(contig_annotations)
-        annotations = pd.concat(annotations_list, sort=False)
-        # copy results files to output
-        merge_files(path.join(tmp_dir, '*', '*.annotated.fna'), path.join(output_dir, 'genes.fna'))
-        merge_files(path.join(tmp_dir, '*', '*.annotated.faa'), path.join(output_dir, 'genes.faa'))
-        merge_files(path.join(tmp_dir, '*', 'scaffolds.annotated.fa'), path.join(output_dir, 'scaffolds.fna'))
-        merge_files(path.join(tmp_dir, '*', 'genes.annotated.gff'), path.join(output_dir, 'genes.gff'), True)
-        merge_files(path.join(tmp_dir, '*', 'trnas.tsv'), path.join(output_dir, 'trnas.tsv'), True)
-        merge_files(path.join(tmp_dir, '*', 'rrnas.tsv'), path.join(output_dir, 'rrnas.tsv'), True)
-        # make output gbk dir
-        gbk_dir = path.join(output_dir, 'genbank')
-        mkdir(gbk_dir)
-        for gbk in glob(path.join(tmp_dir, '*', '*.gbk')):
-            copy2(gbk, path.join(gbk_dir, path.basename(gbk)))
-
+    # annotate vMAGs
+    annotations = annotate_fastas(contig_locs, output_dir, db_locs, db_handler, min_contig_size, bit_score_threshold,
+                                  rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref, skip_trnascan,
+                                  keep_tmp_dir, low_mem_mode, start_time, threads, verbose)
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # setting up scoring viral genes
@@ -386,9 +336,5 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # write annotations
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
-
-    # clean up
-    if not keep_tmp_dir:
-        rmtree(tmp_dir)
 
     print("%s: Completed annotations" % str(datetime.now() - start_time))

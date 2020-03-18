@@ -108,3 +108,15 @@ def divide_chunks(l, n):
     # looping till length l
     for i in range(0, len(l), n):
         yield l[i:i + n]
+
+
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text  # or whatever
+
+
+def remove_suffix(text, suffix):
+    if text.endswith(suffix):
+        return text[:len(suffix)]
+    return text  # or whatever

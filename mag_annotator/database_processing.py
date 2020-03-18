@@ -11,8 +11,8 @@ from collections import defaultdict
 from skbio import read as read_sequence
 from skbio import write as write_sequence
 
-from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file, merge_files,\
-    get_config_loc
+from mag_annotator.utils import run_process, make_mmseqs_db, get_database_locs, download_file, merge_files, \
+    get_config_loc, remove_prefix
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.database_setup import create_description_db
 
@@ -39,12 +39,6 @@ def make_header_dict_from_mmseqs_db(mmseqs_db):
     mmseqs_headers = mmseqs_headers_handle.read().decode(errors='ignore')
     mmseqs_headers = [i.strip() for i in mmseqs_headers.strip().split('\n\x00') if len(i) > 0]
     return [{'id': i.split(' ')[0], 'description': i} for i in mmseqs_headers]
-
-
-def remove_prefix(text, prefix):
-    if text.startswith(prefix):
-        return text[len(prefix):]
-    return text  # or whatever
 
 
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):

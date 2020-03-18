@@ -3,7 +3,8 @@ import pytest
 import os
 import json
 
-from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep, get_database_locs, get_config_loc
+from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep, get_database_locs, \
+    get_config_loc, remove_prefix, remove_suffix
 
 
 def test_run_process():
@@ -89,3 +90,13 @@ def test_get_database_locs():
     test_database_locs = get_database_locs()
     assert type(test_database_locs) is dict
     assert 'description_db' in test_database_locs
+
+
+def test_remove_prefix():
+    assert remove_prefix('prefix', 'pre') == 'fix'
+    assert remove_prefix('postfix', 'pre') == 'postfix'
+
+
+def test_remove_suffix():
+    assert remove_suffix('suffix', 'fix') == 'suf'
+    assert remove_suffix('postfix', 'suf') == 'postfix'
