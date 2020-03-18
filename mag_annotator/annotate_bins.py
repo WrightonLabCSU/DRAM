@@ -895,10 +895,12 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
     merge_files([i.genes_faa_loc for i in annotations_list], path.join(output_dir, 'genes.faa'))
     merge_files([i.scaffolds_loc for i in annotations_list], path.join(output_dir, 'scaffolds.fna'))
     merge_files([i.gff_loc for i in annotations_list], path.join(output_dir, 'genes.gff'), True)
-    merge_files([i.trnas_loc for i in annotations_list if i.trnas_loc is not None], path.join(output_dir, 'trnas.tsv'),
-                True)
-    merge_files([i.rrnas_loc for i in annotations_list if i.rrnas_loc is not None], path.join(output_dir, 'rrnas.tsv'),
-                True)
+    trnas_locs = [i.trnas_loc for i in annotations_list if i.trnas_loc is not None]
+    if len(trnas_locs) > 0:
+        merge_files(trnas_locs, path.join(output_dir, 'trnas.tsv'), True)
+    rrnas_locs = [i.rrnas_loc for i in annotations_list if i.rrnas_loc is not None]
+    if len(rrnas_locs) > 0:
+        merge_files(rrnas_locs, path.join(output_dir, 'rrnas.tsv'), True)
 
     # make output gbk dir
     gbk_dir = path.join(output_dir, 'genbank')
