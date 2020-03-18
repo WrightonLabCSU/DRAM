@@ -819,17 +819,23 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     if not skip_trnascan:
         trna_table = run_trna_scan(renamed_scaffolds, tmp_dir, fasta_name, threads=threads, verbose=verbose)
         if trna_table is not None:
-            trna_table.to_csv(path.join(output_dir, 'trnas.tsv'), sep='\t', index=False)
-            add_intervals_to_gff(path.join(output_dir, 'trnas.tsv'), renamed_gffs, len_dict,
+            trna_loc = path.join(output_dir, 'trnas.tsv')
+            trna_table.to_csv(trna_loc, sep='\t', index=False)
+            add_intervals_to_gff(trna_loc, renamed_gffs, len_dict,
                                  make_trnas_interval, 'Name')
+        else:
+            trna_loc = None
     else:
-        trna_table = None
+        trna_loc = None
 
     rrna_table = run_barrnap(renamed_scaffolds, fasta_name, threads=threads, verbose=verbose)
     if rrna_table is not None:
-        rrna_table.to_csv(path.join(output_dir, 'rrnas.tsv'), sep='\t', index=False)
-        add_intervals_to_gff(path.join(output_dir, 'rrnas.tsv'), renamed_gffs, len_dict,
+        rrna_loc = path.join(output_dir, 'rrnas.tsv')
+        rrna_table.to_csv(rrna_loc, sep='\t', index=False)
+        add_intervals_to_gff(rrna_loc, renamed_gffs, len_dict,
                              make_rrnas_interval, 'scaffold')
+    else:
+        rrna_loc = None
 
     # make genbank file
     current_gbk = path.join(output_dir, '%s.gbk' % fasta_name)
@@ -845,8 +851,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotations.to_csv(annotations_loc, sep='\t')
 
     return Annotation(name=fasta_name, scaffolds=renamed_scaffolds, genes_faa=annotated_faa, genes_fna=annotated_fna,
-                      gff=renamed_gffs, gbk=current_gbk, annotations=annotations_loc, trnas=trna_table,
-                      rrnas=rrna_table)
+                      gff=renamed_gffs, gbk=current_gbk, annotations=annotations_loc, trnas=trna_loc, rrnas=rrna_loc)
 
 
 def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, bit_score_threshold=60,
@@ -881,7 +886,7 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
         print('%s: Annotating %s' % (str(datetime.now() - start_time), fasta_name))
         fasta_dir = path.join(tmp_dir, fasta_name)
         mkdir(fasta_dir)
-        annotations_list.append(annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size,
+        annotations_list.append(annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_locs, db_handler, min_contig_size,
                                                custom_db_locs, bit_score_threshold, rbh_bit_score_threshold,
                                                skip_trnascan, start_time, threads, keep_tmp_dir, verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
