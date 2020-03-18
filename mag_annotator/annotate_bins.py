@@ -799,11 +799,6 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     annotations = annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_locs, bit_score_threshold,
                                 rbh_bit_score_threshold, threads, verbose)
     annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
-    # add fasta name to frame and index, append to list
-    annotations.insert(0, 'fasta', fasta_name)
-    annotations.index = annotations.fasta + '_' + annotations.index
-    annotations_loc = path.join(output_dir, 'annotations.tsv')
-    annotations.to_csv(annotations_loc, sep='\t')
 
     # generate fna and faa output files with annotations
     annotated_fna = path.join(output_dir, 'genes.annotated.fna')
@@ -842,6 +837,12 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
 
     if not keep_tmp_dir:
         rmtree(tmp_dir)
+
+    # add fasta name to frame and index, append to list
+    annotations.insert(0, 'fasta', fasta_name)
+    annotations.index = annotations.fasta + '_' + annotations.index
+    annotations_loc = path.join(output_dir, 'annotations.tsv')
+    annotations.to_csv(annotations_loc, sep='\t')
 
     return Annotation(name=fasta_name, scaffolds=renamed_scaffolds, genes_faa=annotated_faa, genes_fna=annotated_fna,
                       gff=renamed_gffs, gbk=current_gbk, annotations=annotations_loc, trnas=trna_table,
