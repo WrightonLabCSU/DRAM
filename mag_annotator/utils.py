@@ -63,20 +63,16 @@ def multigrep(search_terms, search_against, split_char='\n', output='.'):
     return {i.split()[0]: i for i in processed_results if i != ''}
 
 
-def merge_files(paths_to_files_to_merge, outfile, has_header=False):
+def merge_files(files_to_merge, outfile, has_header=False):
     """It's in the name, if has_header assumes all files have the same header"""
-    files_to_merge = glob(paths_to_files_to_merge)
-    if len(files_to_merge) == 0:
-        warnings.warn('No files to merge found with path %s' % paths_to_files_to_merge)
-    else:
-        with open(outfile, 'w') as outfile_handle:
-            if has_header:
-                outfile_handle.write(open(files_to_merge[0]).readline())
-            for file in files_to_merge:
-                with open(file) as f:
-                    if has_header:
-                        _ = f.readline()
-                    outfile_handle.write(f.read())
+    with open(outfile, 'w') as outfile_handle:
+        if has_header:
+            outfile_handle.write(open(files_to_merge[0]).readline())
+        for file in files_to_merge:
+            with open(file) as f:
+                if has_header:
+                    _ = f.readline()
+                outfile_handle.write(f.read())
 
 
 def get_ids_from_annotation(frame):

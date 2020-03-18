@@ -885,6 +885,7 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
                                                custom_db_locs, bit_score_threshold, rbh_bit_score_threshold,
                                                skip_trnascan, start_time, threads, keep_tmp_dir, verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
+
     # merge annotation dicts
     all_annotations = pd.concat([i.get_annotations() for i in annotations_list], sort=False)
     all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])

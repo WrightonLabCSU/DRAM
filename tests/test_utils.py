@@ -33,19 +33,23 @@ def merge_test_dir(tmpdir):
 
 @pytest.fixture()
 def files_to_merge_no_header(merge_test_dir):
+    files_to_merge = list()
     for i in range(3):
         merge_file = merge_test_dir.join('merge_test.%s.txt' % str(i))
         merge_file.write('test%s\n' % str(i))
-    return os.path.join(str(merge_test_dir), 'merge_test.*.txt')
+        files_to_merge.append(merge_file)
+    return files_to_merge
 
 
 @pytest.fixture()
 def files_to_merge_w_header(merge_test_dir):
+    files_to_merge = list()
     header = 'gene_name'
     for i in range(3):
         merge_file = merge_test_dir.join('merge_test_w_header.%s.txt' % str(i))
         merge_file.write('%s\ntest%s\n' % (header, str(i)))
-    return os.path.join(str(merge_test_dir), 'merge_test_w_header.*.txt')
+        files_to_merge.append(merge_file)
+    return files_to_merge
 
 
 def test_merge_files(files_to_merge_no_header, files_to_merge_w_header, merge_test_dir):
