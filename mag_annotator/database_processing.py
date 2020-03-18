@@ -349,7 +349,7 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
         config_loc = get_config_loc()
     with open(config_loc, 'w') as f:
         f.write(json.dumps(db_dict))
-    print('%s: Database locations set')
+    print('%s: Database locations set' % str(datetime.now() - start_time))
 
 
 def populate_description_db(db_dict=None, start_time=None):
