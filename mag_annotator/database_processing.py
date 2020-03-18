@@ -346,7 +346,7 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
 
     # change data paths
     if config_loc is None:
-        get_config_loc()
+        config_loc = get_config_loc()
     with open(config_loc, 'w') as f:
         f.write(json.dumps(db_dict))
     print('%s: Database locations set')
