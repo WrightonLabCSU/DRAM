@@ -841,7 +841,8 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         rmtree(tmp_dir)
 
     return Annotation(name=fasta_name, scaffolds=renamed_scaffolds, genes_faa=annotated_faa, genes_fna=annotated_fna,
-                      gff=renamed_gffs, gbk=current_gbk, annotations=annotations, trnas=trna_table, rrnas=rrna_table)
+                      gff=renamed_gffs, gbk=current_gbk, annotations=annotations_loc, trnas=trna_table,
+                      rrnas=rrna_table)
 
 
 def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, bit_score_threshold=60,
@@ -889,8 +890,8 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
     merge_files([i.genes_faa_loc for i in annotations_list], path.join(output_dir, 'genes.faa'))
     merge_files([i.scaffolds_loc for i in annotations_list], path.join(output_dir, 'scaffolds.fna'))
     merge_files([i.gff_loc for i in annotations_list], path.join(output_dir, 'genes.gff'), True)
-    merge_files([i.trnas_loc for i in annotations_list], path.join(output_dir, 'trnas.tsv'), True)
-    merge_files([i.rrnas_loc for i in annotations_list], path.join(output_dir, 'rrnas.tsv'), True)
+    merge_files([i.trnas_loc for i in annotations_list if i is not None], path.join(output_dir, 'trnas.tsv'), True)
+    merge_files([i.rrnas_loc for i in annotations_list if i is not None], path.join(output_dir, 'rrnas.tsv'), True)
 
     # make output gbk dir
     gbk_dir = path.join(output_dir, 'genbank')
