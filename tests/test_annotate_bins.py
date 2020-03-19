@@ -18,7 +18,7 @@ from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hit
     generate_annotated_fasta, create_annotated_fasta, generate_renamed_fasta, rename_fasta, run_trna_scan, \
     run_barrnap, do_blast_style_search, count_motifs, strip_endings, process_custom_dbs, get_dups, \
     parse_hmmsearch_domtblout, annotate_gff, make_gbk_from_gff_and_fasta, make_trnas_interval, make_rrnas_interval,\
-    add_intervals_to_gff
+    add_intervals_to_gff, filter_db_locs
 
 
 @pytest.fixture()
@@ -373,13 +373,12 @@ def test_strip_endings():
 
 def test_process_custom_dbs(phix_proteins, tmpdir):
     custom_db_dir = tmpdir.mkdir('custom_dbs')
-    process_custom_dbs([phix_proteins], ['phix'], str(custom_db_dir))
-    assert os.path.isfile(os.path.join(custom_db_dir, 'phix.custom.mmsdb'))
-    empty_custom_db_dir = tmpdir.mkdir('empty_custom_dbs')
-    process_custom_dbs(None, None, empty_custom_db_dir)
-    assert len(os.listdir(empty_custom_db_dir)) == 0
+    process_custom_dbs([phix_proteins], ['phix'], os.path.join(custom_db_dir, 'custom_dbs0'))
+    assert os.path.isfile(os.path.join(custom_db_dir, 'custom_dbs0', 'phix.custom.mmsdb'))
+    process_custom_dbs(None, None, os.path.join(custom_db_dir, 'custom_dbs1'))
+    assert len(os.listdir(os.path.join(custom_db_dir, 'custom_dbs1'))) == 0
     with pytest.raises(ValueError):
-        process_custom_dbs(['thing1', 'thing2'], ['thing1'], empty_custom_db_dir)
+        process_custom_dbs(['thing1', 'thing2'], ['thing1'], os.path.join(custom_db_dir, 'custom_dbs2'))
 
 
 def test_get_dubs():
@@ -629,3 +628,16 @@ def test_add_intervals_to_gff(annotated_fake_gff_loc, tmpdir):
     gff = list(read_sequence(annotate_fake_gff_loc_w_rna, format='gff3'))
     assert type(gff) is list
     assert open(annotate_fake_gff_loc_w_rna).read() == annotated_fake_gff_w_rna
+
+
+def test_filter_db_locs():
+    test1 = filter_db_locs({'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''})
+    assert test1 == {'kegg': '/a/fake/loc'}
+    with pytest.raises(ValueError):
+        test2 = filter_db_locs({'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}, low_mem_mode=True)
+    test3 = filter_db_locs({'kofam': '1', 'kofam_ko_list': '2', 'kegg': '/a/fake/loc', 'viral': ''}, low_mem_mode=True)
+    assert test3 == {'kofam': '1', 'kofam_ko_list': '2'}
+    test4 = filter_db_locs({'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}, use_uniref=True)
+    assert test4 == {'uniref': 'a fake locations', 'kegg': '/a/fake/loc'}
+    test5 = filter_db_locs({'kegg': '/a/fake/loc', 'viral': ''}, use_uniref=True)
+    assert test5 == {'kegg': '/a/fake/loc'}

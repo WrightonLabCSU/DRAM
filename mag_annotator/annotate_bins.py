@@ -654,6 +654,8 @@ def strip_endings(text, suffixes: list):
 
 def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, verbose=False):
     # if none is passed from argparse then set to tuple of len 0
+    mkdir(output_dir)
+
     if custom_fasta_loc is None:
         custom_fasta_loc = ()
     if custom_db_name is None:
@@ -854,10 +856,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                       gff=renamed_gffs, gbk=current_gbk, annotations=annotations_loc, trnas=trna_loc, rrnas=rrna_loc)
 
 
-def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, bit_score_threshold=60,
-                    rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
-                    skip_trnascan=False, keep_tmp_dir=True, low_mem_mode=False, start_time=datetime.now(), threads=10,
-                    verbose=True):
+def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False):
     # check for no conflicting options/configurations
     if low_mem_mode:
         if ('kofam' not in db_locs) or ('kofam_ko_list' not in db_locs):
@@ -865,17 +864,26 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
         dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i not in ('uniref', 'kegg')]
     elif use_uniref:
         dbs_to_use = MAG_DBS_TO_ANNOTATE
+        if 'uniref' not in db_locs:
+            warnings.warn('Sequences will not be annoated against uniref as it is not configured for use in DRAM')
     else:
         dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i != 'uniref']
     db_locs = {key: value for key, value in db_locs.items() if key in dbs_to_use}
+    return db_locs
+
+
+def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, bit_score_threshold=60,
+                    rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
+                    skip_trnascan=False, keep_tmp_dir=True, low_mem_mode=False, start_time=datetime.now(), threads=10,
+                    verbose=True):
+    # check for no conflicting options/configurations
+    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref)
 
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
 
     # setup custom databases to be searched
-    custom_dbs_dir = path.join(tmp_dir, 'custom_dbs')
-    mkdir(custom_dbs_dir)
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, custom_dbs_dir, threads, verbose)
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'), threads, verbose)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # iterate over list of fastas and annotate each individually
@@ -951,5 +959,63 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
         all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination']
                                                 for i in all_annotations.fasta]
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
+
+    print("%s: Completed annotations" % str(datetime.now() - start_time))
+
+
+def annotate_called_genes(input_faa, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
+                          custom_db_name=(), custom_fasta_loc=(), use_uniref=False, keep_tmp_dir=True,
+                          low_mem_mode=False, threads=10, verbose=True):
+    # set up
+    start_time = datetime.now()
+    print('%s: Annotation started' % str(datetime.now()))
+
+    # get database locations
+    db_locs = get_database_locs()
+    db_handler = DatabaseHandler(db_locs['description_db'])
+    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref)
+
+    mkdir(output_dir)
+    tmp_dir = path.join(output_dir, 'working_dir')
+    mkdir(tmp_dir)
+
+    # setup custom databases to be searched
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'), threads,
+                                        verbose)
+    print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
+
+    # annotate
+    annotation_locs = list()
+    faa_locs = list()
+    for fasta_loc in glob(input_faa):
+        # set up
+        fasta_name = path.splitext(path.basename(remove_suffix(input_faa, '.gz')))[0]
+        fasta_dir = path.join(tmp_dir, fasta_name)
+        mkdir(fasta_dir)
+
+        # annotate
+        annotations = annotate_orfs(fasta_loc, db_locs, fasta_dir, start_time, db_handler, custom_db_locs,
+                                    bit_score_threshold, rbh_bit_score_threshold, threads, verbose)
+
+        annotated_faa = path.join(fasta_dir, 'genes.faa')
+        create_annotated_fasta(input_faa, annotations, annotated_faa, name=fasta_name)
+        faa_locs.append(annotated_faa)
+
+        # add fasta name to frame and index, write file
+        annotations.insert(0, 'fasta', fasta_name)
+        annotations.index = annotations.fasta + '_' + annotations.index
+        annotation_loc = path.join(fasta_dir, 'annotations.tsv')
+        annotations.to_csv(annotation_loc, sep='\t')
+        annotation_locs.append(annotation_loc)
+
+    # merge
+    all_annotations = pd.concat(annotation_locs, sort=False)
+    all_annotations = all_annotations.sort_values('fasta')
+    all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
+    merge_files(faa_locs, path.join(output_dir, 'genes.faa'))
+
+    # clean up
+    if not keep_tmp_dir:
+        rmtree(tmp_dir)
 
     print("%s: Completed annotations" % str(datetime.now() - start_time))

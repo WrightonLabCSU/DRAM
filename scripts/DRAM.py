@@ -2,7 +2,7 @@
 
 import argparse
 
-from mag_annotator.annotate_bins import annotate_bins
+from mag_annotator.annotate_bins import annotate_bins, annotate_called_genes
 from mag_annotator.summarize_genomes import summarize_genomes
 from mag_annotator.pull_sequences import pull_sequences
 
@@ -12,8 +12,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     subparsers = parser.add_subparsers()
-    annotate_parser = subparsers.add_parser('annotate', help="Annotate contigs/bins/MAGs",
+    annotate_parser = subparsers.add_parser('annotate', help="Annotate genomes/contigs/bins/MAGs",
                                             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    annotate_genes_parser = subparsers.add_parser('annotate_genes', help="Annotate already called genes, limited "
+                                                                         "functionality compared to annotate",
+                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     distill_parser = subparsers.add_parser('distill', help="Summarize metabolic content of annotated genomes",
                                            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     strainer_parser = subparsers.add_parser('strainer', help="Strain annotations down to genes of interest",
@@ -21,7 +24,7 @@ if __name__ == '__main__':
 
     # parser for annotating mags, you know the real thing
     annotate_parser.add_argument('-i', '--input_fasta',
-                                 help="fasta file, optionally with wildcards to point to individual MAGs",
+                                 help="fasta file, optionally with wildcards to point to multiple fastas",
                                  required=True)
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_parser.add_argument('--min_contig_size', type=int, default=5000,
@@ -51,6 +54,30 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_parser.add_argument('--verbose', action='store_true', default=False)
     annotate_parser.set_defaults(func=annotate_bins)
+
+    # parser for annotating already called genes
+    annotate_genes_parser.add_argument('-i', '--input_fasta', help="fasta file, optionally with wildcards to point to"
+                                                                   "individual MAGs", required=True)
+    annotate_genes_parser.add_argument('-o', '--output_dir', help="output directory")
+    annotate_genes_parser.add_argument('--bit_score_threshold', type=int, default=60,
+                                       help='minimum bitScore of search to retain hits')
+    annotate_genes_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
+                                       help='minimum bitScore of reverse best hits to retain hits')
+    annotate_genes_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be "
+                                                                                 "used multiple times.")
+    annotate_genes_parser.add_argument('--custom_fasta_loc', action='append',
+                                       help="Location of fastas to annotated against, can be used multiple times but"
+                                            "must match nubmer of custom_db_name's")
+    annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,
+                                       help='Annotate these fastas against UniRef, drastically decreases run time and '
+                                            'memory requirements')
+    annotate_genes_parser.add_argument('--low_mem_mode', action='store_true', default=False,
+                                       help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
+                                            'provided. Drastically decreases memory usage')
+    annotate_genes_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
+    annotate_genes_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
+    annotate_genes_parser.add_argument('--verbose', action='store_true', default=False)
+    annotate_genes_parser.set_defaults(func=annotate_called_genes)
 
     # parser for summarizing genomes
     distill_parser.add_argument("-i", "--input_file", help="Annotations path")
