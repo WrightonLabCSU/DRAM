@@ -1009,7 +1009,7 @@ def annotate_called_genes(input_faa, output_dir='.', bit_score_threshold=60, rbh
         annotation_locs.append(annotation_loc)
 
     # merge
-    all_annotations = pd.concat(annotation_locs, sort=False)
+    all_annotations = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in annotation_locs], sort=False)
     all_annotations = all_annotations.sort_values('fasta')
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
     merge_files(faa_locs, path.join(output_dir, 'genes.faa'))
