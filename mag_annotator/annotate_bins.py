@@ -474,18 +474,23 @@ def annotate_gff(input_gff, output_gff, annotations, prefix):
 
 
 def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', faa_loc='genes.faa', output_gbk=None):
+    # filter scaffolds out of fasta which are not in genes.gff
+    gff_frame = pd.read_csv(gff_loc, sep='\t', comment='#', header=None)
+    gff_scaffolds = set(gff_frame[0])
+    capture_fasta = io.StringIO()
+    write_sequence((i for i in read_sequence(fasta_loc, format='fasta') if i.metadata['id'] in gff_scaffolds),
+                   into=capture_fasta, format='fasta')
     # scikit-bio can make a genbank for a concatenated gff and fasta file so make this first
     gff = open(gff_loc)
-    fasta = open(fasta_loc)
     fasta_records = len([i for i in read_sequence(open(fasta_loc), format='fasta')])  # get number of fasta records
     aa_records = {i.metadata['id']: i for i in read_sequence(faa_loc, format='fasta')}
     # the gff with fasta format is the gff then ##FASTA then the fasta
-    concat_gff = '%s\n##FASTA\n%s' % (gff.read(), fasta.read())
+    concat_gff = '%s\n##FASTA\n%s' % (gff.read(), capture_fasta.getvalue())
 
     # now we can only ready one record from the gff/fasta hybrid at a time
     # read a record at a time till end of the fasta
     genbank_records = ''
-    for i in range(1, fasta_records + 1):
+    for i in range(1, capture_fasta.getvalue().count('>') + 1):
         seq = read_sequence(io.StringIO(concat_gff), format='gff3', into=Sequence, seq_num=i)
         seq.metadata['LOCUS'] = {'locus_name': seq.metadata['id'],
                                  'size': len(seq),
