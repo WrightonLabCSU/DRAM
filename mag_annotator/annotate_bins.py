@@ -602,7 +602,11 @@ def add_intervals_to_gff(annotations_loc, gff_loc, len_dict, interval_function, 
         for i, (_, row) in enumerate(frame.iterrows()):
             i += 1
             begin, end, metadata = interval_function(scaffold, row, i)
-            im.add(bounds=[(begin-1, end)], metadata=metadata)
+            begin -= 1
+            if begin < 0:
+                begin = 0
+                warnings.warn('Interval added to gff started less than zero, set to zero')
+            im.add(bounds=[(begin, end)], metadata=metadata)
         annotation_dict[scaffold] = im
     # add trna intervals to gff
     gff = list(read_sequence(gff_loc, format='gff3'))
