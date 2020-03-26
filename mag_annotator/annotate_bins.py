@@ -32,7 +32,7 @@ HMMSCAN_ALL_COLUMNS = ['query_id', 'query_ascession', 'query_length', 'target_id
                        'alignment_end', 'query_start', 'query_end', 'accuracy', 'description']
 HMMSCAN_COLUMN_TYPES = [str, str, int, str, str, int, float, float, float, int, int, float, float, float, float, int,
                         int, int, int, int, int, float, str]
-MAG_DBS_TO_ANNOTATE = ['kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb']
+MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb')
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -865,18 +865,18 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                       gff=renamed_gffs, gbk=current_gbk, annotations=annotations_loc, trnas=trna_loc, rrnas=rrna_loc)
 
 
-def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False):
+def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, master_list=MAG_DBS_TO_ANNOTATE):
     # check for no conflicting options/configurations
     if low_mem_mode:
         if ('kofam' not in db_locs) or ('kofam_ko_list' not in db_locs):
             raise ValueError('To run in low memory mode KOfam must be configured for use in DRAM')
-        dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i not in ('uniref', 'kegg')]
+        dbs_to_use = [i for i in master_list if i not in ('uniref', 'kegg')]
     elif use_uniref:
-        dbs_to_use = MAG_DBS_TO_ANNOTATE
+        dbs_to_use = master_list
         if 'uniref' not in db_locs:
             warnings.warn('Sequences will not be annoated against uniref as it is not configured for use in DRAM')
     else:
-        dbs_to_use = [i for i in MAG_DBS_TO_ANNOTATE if i != 'uniref']
+        dbs_to_use = [i for i in master_list if i != 'uniref']
     db_locs = {key: value for key, value in db_locs.items() if key in dbs_to_use}
     return db_locs
 
@@ -886,8 +886,6 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
                     skip_trnascan=False, keep_tmp_dir=True, low_mem_mode=False, start_time=datetime.now(), threads=10,
                     verbose=True):
     # check for no conflicting options/configurations
-    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref)
-
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
 
@@ -951,6 +949,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
+    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref)
 
     mkdir(output_dir)
 
