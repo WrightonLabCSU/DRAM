@@ -482,7 +482,6 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
                    into=capture_fasta, format='fasta')
     # scikit-bio can make a genbank for a concatenated gff and fasta file so make this first
     gff = open(gff_loc)
-    fasta_records = len([i for i in read_sequence(open(fasta_loc), format='fasta')])  # get number of fasta records
     aa_records = {i.metadata['id']: i for i in read_sequence(faa_loc, format='fasta')}
     # the gff with fasta format is the gff then ##FASTA then the fasta
     concat_gff = '%s\n##FASTA\n%s' % (gff.read(), capture_fasta.getvalue())

@@ -277,7 +277,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref, db_handler.get_database_names())
+    db_locs_anno = filter_db_locs(db_locs, low_mem_mode, use_uniref, db_handler.get_database_names())
 
     # split sequences into seperate fastas
     mkdir(output_dir)
@@ -292,9 +292,9 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
             contig_locs.append(contig_loc)
 
     # annotate vMAGs
-    annotations = annotate_fastas(contig_locs, output_dir, db_locs, db_handler, min_contig_size, bit_score_threshold,
-                                  rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref, skip_trnascan,
-                                  keep_tmp_dir, low_mem_mode, start_time, threads, verbose)
+    annotations = annotate_fastas(contig_locs, output_dir, db_locs_anno, db_handler, min_contig_size,
+                                  bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,
+                                  use_uniref, skip_trnascan, keep_tmp_dir, low_mem_mode, start_time, threads, verbose)
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # setting up scoring viral genes

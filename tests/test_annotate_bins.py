@@ -316,8 +316,6 @@ def test_rename_fasta(fasta_loc, tmpdir):
     rename_fasta(fasta_loc, str(filt_fasta), 'phiX')
     assert os.path.isfile(filt_fasta)
 
-# SKIPPING TESTS FOR annotate_gff AND make_gbk_from_gff_and_fasta BECAUSE THEY WILL BE REWRITTEN
-
 
 def test_run_trna_scan(tmpdir):
     filt_fasta = tmpdir.mkdir('test_trnascan1')
@@ -417,9 +415,13 @@ def fake_phix_annotations():
                         columns=['cazy_id'])
 
 
-def test_annotate_gff(annotated_fake_gff_loc, fake_phix_annotations, tmpdir):
+@pytest.fixture()
+def fake_gff_loc():
+    return os.path.join('tests', 'data', 'fake_gff.gff')
+
+
+def test_annotate_gff(annotated_fake_gff_loc, fake_phix_annotations, fake_gff_loc, tmpdir):
     gff_output = tmpdir.mkdir('gff_annotate')
-    fake_gff_loc = os.path.join('tests', 'data', 'fake_gff.gff')
     test_annotated_gff_loc = os.path.join(gff_output, 'annotated.gff')
     annotate_gff(fake_gff_loc, test_annotated_gff_loc, fake_phix_annotations, 'fake')
     assert cmp(annotated_fake_gff_loc, test_annotated_gff_loc)
@@ -428,38 +430,37 @@ def test_annotate_gff(annotated_fake_gff_loc, fake_phix_annotations, tmpdir):
 test_gbk = """LOCUS       NC_001422.1   5386 bp   DNA   linear   ENV   %s
 FEATURES             Location/Qualifiers
      CDS             51..221
-                     /gene=fake_NC_001422.1_1
+                     /gene=1_1
                      /codon_start=1
                      /score=3.3
                      /inference=Prodigal_v2.6.3
      CDS             390..848
-                     /db_xref="cazy:GH13"
-                     /gene=fake_NC_001422.1_2
+                     /gene=1_2
                      /codon_start=1
                      /score=54.2
                      /inference=Prodigal_v2.6.3
      CDS             848..964
-                     /gene=fake_NC_001422.1_3
+                     /gene=1_3
                      /codon_start=1
                      /score=15.0
                      /inference=Prodigal_v2.6.3
      CDS             1001..2284
-                     /gene=fake_NC_001422.1_4
+                     /gene=1_4
                      /codon_start=1
                      /score=134.2
                      /inference=Prodigal_v2.6.3
      CDS             2395..2922
-                     /gene=fake_NC_001422.1_5
+                     /gene=1_5
                      /codon_start=1
                      /score=46.7
                      /inference=Prodigal_v2.6.3
      CDS             2931..3917
-                     /gene=fake_NC_001422.1_6
+                     /gene=1_6
                      /codon_start=1
                      /score=135.9
                      /inference=Prodigal_v2.6.3
      CDS             3981..5384
-                     /gene=fake_NC_001422.1_7
+                     /gene=1_7
                      /codon_start=1
                      /score=128.0
                      /inference=Prodigal_v2.6.3
@@ -558,11 +559,12 @@ ORIGIN
 """ % time.strftime('%d-%b-%Y').upper()
 
 
-def test_make_gbk_from_gff_and_fasta(annotated_fake_gff_loc, fasta_loc, phix_proteins, tmpdir):
-    gbk = make_gbk_from_gff_and_fasta(annotated_fake_gff_loc, fasta_loc, phix_proteins)
-    assert test_gbk == gbk
+# TODO: Make better, add features that should carry over with the right names
+def test_make_gbk_from_gff_and_fasta(fake_gff_loc, fasta_loc, phix_proteins, tmpdir):
+    gbk = make_gbk_from_gff_and_fasta(fake_gff_loc, fasta_loc, phix_proteins)
+    assert gbk == test_gbk
     gbk_test_file = os.path.join(tmpdir.mkdir('gbk_test'), 'test.gbk')
-    make_gbk_from_gff_and_fasta(annotated_fake_gff_loc, fasta_loc, phix_proteins, gbk_test_file)
+    make_gbk_from_gff_and_fasta(fake_gff_loc, fasta_loc, phix_proteins, gbk_test_file)
     assert os.path.isfile(gbk_test_file)
 
 
