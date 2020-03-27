@@ -38,7 +38,7 @@ Nitrogen metabolism	Nitrification	Bacterial (aerobic-specific) ammonia oxidation
 Nitrogen metabolism	Nitrification	Bacterial (anaerobic-specific) ammonia oxidation	K20932, K20933, K20934, K20935	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	hzs
 Nitrogen metabolism	Nitrification	nitrite => nitrate	K00370, K00371	nxrA; Nitrite oxidoreductase, alpha subunit [EC:1.7.99.-] [RN:R00978]; nxrB; Nitrite oxidoreductase, beta subunit [EC:1.7.99.-] [RN:R00978]
 Nitrogen metabolism	Denitrification	nitrate => nitrite	K02567, K00370, K00371, K02568	periplasmic nitrate reductase NapA [EC:1.7.99.-] [RN:R00798] or nitrate reductase 1 NarG [EC:1.7.99.-] [RN:R00798]
-Nitrogen metabolism	Denitrification	nitrite => nitric oxide	K00362, K00370, K00368, K15864	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787], respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]
+Nitrogen metabolism	Denitrification	nitrite => nitric oxide	K00362, K00368, K15864	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787]
 Nitrogen metabolism	Denitrification	Dissimilatory nitrite reduction to ammonia (DNRA)	K03385, K15876	nrfA; Nitrite reductase (cytochrome c-552) [EC:1.7.2.2] [RN:R05712]; nrfH; cytochrome c nitrite reductase small subunit [EC:1.7.2.2] [RN:R05712]	nrfA
 Nitrogen metabolism	Denitrification	nitric oxide => nitrous oxide	K04561, K15877	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]
 Nitrogen metabolism	Denitrification	nitrous oxide => nitrogen	K00376	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]
