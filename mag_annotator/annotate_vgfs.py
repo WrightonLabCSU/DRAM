@@ -11,21 +11,17 @@ from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.annotate_bins import filter_db_locs, annotate_fastas
 from mag_annotator.utils import get_database_locs, get_ids_from_annotation
 
+VMAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'viral', 'vogdb')
 VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length', 'strandedness',
                           'viral_protein_cluster_hit', 'viral_protein_cluster_hit_score',
                           'viral_protein_cluster_hit_evalue', 'viral_protein_cluster_category', 'pfam_hit',
                           'pfam_hit_score', 'pfam_hit_evalue', 'name']
-
 VIRSORTER_HALLMARK_GENE_CATEGORIES = {'0', '3'}
-
 VIRSORTER_VIRAL_LIKE_GENE_CATEGORIES = {'1', '4'}
-
 TRANSPOSON_PFAMS = {'PF01609', 'PF00872', 'PF01610', 'PF01527', 'PF02371', 'PF01710', 'PF01385', 'PF01548', 'PF01526',
                     'PF01797', 'PF02899', 'PF05717', 'PF07592', 'PF03050', 'PF04754', 'PF04986', 'PF03400'}
-
 CELL_ENTRY_CAZYS = {'CBM50', 'GH102', 'GH103', 'GH104', 'GH108', 'GH18', 'GH19', 'GH22', 'GH23', 'GH24', 'GH25', 'GH73',
                     'PL9', 'CBM12', 'CBM14', 'CBM18', 'CBM19', 'AA15', 'AA10', 'GH32', 'GH58', 'PL16'}
-
 VIRAL_PEPTIDASES_MEROPS = {'A02H', 'A02G', 'A02F', 'A02E', 'A02D', 'A02C', 'A02B', 'A02A', 'A03B', 'A03A', 'A11B',
                            'A11A', 'A22B', 'A22A', 'A33', 'C01B', 'C01A', 'C02B', 'C02A', 'C03H', 'C03G', 'C03F',
                            'C03E', 'C03D', 'C03C', 'C03B', 'C03A', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C104',
@@ -277,7 +273,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    db_locs_anno = filter_db_locs(db_locs, low_mem_mode, use_uniref, db_handler.get_database_names())
+    db_locs_anno = filter_db_locs(db_locs, low_mem_mode, use_uniref, VMAG_DBS_TO_ANNOTATE)
 
     # split sequences into seperate fastas
     mkdir(output_dir)
