@@ -481,12 +481,12 @@ def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_fo
     return module_coverage_frame, etc_coverage_df, function_df
 
 
-def make_liquor_heatmap(module_coverage_frame, etc_coverage_df, function_df, mag_order=None, labels=False):
+def make_liquor_heatmap(module_coverage_frame, etc_coverage_df, function_df, mag_order=None, labels=None):
     module_coverage_heatmap = make_module_coverage_heatmap(module_coverage_frame, mag_order)
     etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
-    if labels is not False:
+    if labels is not None:
         function_df = function_df.copy()
-        function_df['genome'] = labels
+        function_df['genome'] = [labels[i] for i in function_df['genome']]
         mag_order = labels
     function_heatmap = make_functional_heatmap(function_df, mag_order)
 
@@ -567,13 +567,13 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     # make liquor
     if 'bin_taxonomy' in annotations:
         genome_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
-        labels = list()
+        labels = dict()
         for genome in genome_order:
             taxa_string = annotations.loc[annotations[groupby_column] == genome]['bin_taxonomy'][0]
-            labels.append(get_phylum_and_most_specific(taxa_string))
+            labels[genome] = get_phylum_and_most_specific(taxa_string)
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
-        labels = False
+        labels = None
 
     # make module coverage frame
     module_nets = {module: build_module_net(module_df)
@@ -586,8 +586,6 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
         # generates slice start and slice end to grab from genomes and labels from 0 to end of genome order
         for i, j in pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order) - 1]):
             genomes = genome_order[i:j]
-            if labels is not False:
-                labels = labels[i:j]
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
             dfs = fill_liquor_dfs(annotations_subset, module_nets, etc_module_df, function_heatmap_form,
                                   groupby_column='fasta')
