@@ -9,7 +9,8 @@ from mag_annotator.summarize_genomes import get_ordered_uniques, fill_genome_sum
     summarize_trnas, build_module_net, get_module_step_coverage, make_module_coverage_df, make_module_coverage_frame, \
     make_module_coverage_heatmap, pairwise, first_open_paren_is_all, split_into_steps, is_ko, make_module_network, \
     get_module_coverage, make_etc_coverage_df, make_etc_coverage_heatmap, make_functional_df, make_functional_heatmap, \
-    fill_liquor_dfs, make_liquor_heatmap, make_liquor_df, make_genome_summary, write_summarized_genomes_to_xlsx
+    fill_liquor_dfs, make_liquor_heatmap, make_liquor_df, make_genome_summary, write_summarized_genomes_to_xlsx,\
+    get_phylum_and_most_specific
 
 
 def test_get_ordered_uniques():
@@ -266,3 +267,14 @@ def test_make_liquor_df(module_coverage_frame, etc_coverage_df, functional_df):
                                       'Category1: B function'])
     test_liquor_df = make_liquor_df(module_coverage_frame, etc_coverage_df, functional_df)
     pd.testing.assert_frame_equal(test_liquor_df, liquor_df)
+
+
+def test_get_phylum_and_most_specific():
+    assert get_phylum_and_most_specific('d__Bacteria;p__Bacteroidota;c__;o__;f__;g__;s__') == \
+           'd__Bacteria;p__Bacteroidota'
+    assert get_phylum_and_most_specific('d__Archaea;p__;c__;o__;f__;g__;s__') == 'd__Archaea'
+    assert get_phylum_and_most_specific('d__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Rikenellaceae;'
+                                        'g__Alistipes;s__') == 'p__Bacteroidota;g__Alistipes'
+    assert get_phylum_and_most_specific('d__Bacteria;p__Firmicutes;c__Bacilli;o__Lactobacillales;f__Enterococcaceae;'
+                                        'g__Enterococcus_D;s__Enterococcus_D gallinarum') == \
+           'p__Firmicutes;s__Enterococcus_D gallinarum'

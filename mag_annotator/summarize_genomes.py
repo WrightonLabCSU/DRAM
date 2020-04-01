@@ -24,6 +24,7 @@ KO_REGEX = r'^K\d\d\d\d\d$'
 ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'genome', 'path_length', 'path_length_coverage',
                         'percent_coverage', 'genes', 'missing_genes', 'complex_module_name']
 GENOMES_PER_LIQUOR = 1000
+TAXONOMY_LEVELS = ['d', 'p', 'c', 'o', 'f', 'g', 's']
 
 
 def get_ordered_uniques(seq):
@@ -427,7 +428,7 @@ def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta
                                                                              'category_function_name'])
 
 
-def make_functional_heatmap(functional_df, mag_order=None):
+def make_functional_heatmap(functional_df, mag_order=None, labels=False):
     # build heatmaps
     charts = list()
     for i, (group, frame) in enumerate(functional_df.groupby('category', sort=False)):
@@ -440,7 +441,7 @@ def make_functional_heatmap(functional_df, mag_order=None):
         if i == 0:
             y = alt.Y('genome', title=None, axis=alt.Axis(labelLimit=0), sort=mag_order)
         else:
-            y = alt.Y('genome', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order)
+            y = alt.Y('genome', axis=alt.Axis(title=None, labels=labels, ticks=False), sort=mag_order)
         # set up colors for chart
         rect_colors = alt.Color('present',
                                 legend=alt.Legend(title="Function is Present", symbolType='square',
@@ -480,10 +481,10 @@ def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_fo
     return module_coverage_frame, etc_coverage_df, function_df
 
 
-def make_liquor_heatmap(module_coverage_frame, etc_coverage_df, function_df, mag_order=None):
+def make_liquor_heatmap(module_coverage_frame, etc_coverage_df, function_df, mag_order=None, labels=False):
     module_coverage_heatmap = make_module_coverage_heatmap(module_coverage_frame, mag_order)
     etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
-    function_heatmap = make_functional_heatmap(function_df, mag_order)
+    function_heatmap = make_functional_heatmap(function_df, mag_order, labels)
 
     liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
     return liquor
@@ -496,6 +497,19 @@ def make_liquor_df(module_coverage_frame, etc_coverage_df, function_df):
                            function_df.pivot(index='genome', columns='category_function_name', values='present')],
                           axis=1, sort=False)
     return liquor_df
+
+
+def get_phylum_and_most_specific(taxa_str):
+    taxa_ranks = [i[3:] for i in taxa_str.split(';')]
+    phylum = taxa_ranks[1]
+    most_specific_rank =TAXONOMY_LEVELS[sum([len(i) > 0 for i in taxa_ranks])-1]
+    most_specific_taxa = taxa_ranks[sum([len(i) > 0 for i in taxa_ranks]) - 1]
+    if most_specific_rank == 'd':
+        return 'd__%s' % most_specific_taxa
+    if most_specific_rank == 'p':
+        return 'd__%s;p__%s' % (taxa_ranks[0], most_specific_taxa)
+    else:
+        return 'p__%s;%s__%s' % (phylum, most_specific_rank, most_specific_taxa)
 
 
 def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column):
@@ -549,17 +563,27 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     # make liquor
     if 'bin_taxonomy' in annotations:
         genome_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
+        labels = list()
+        for bin in genome_order:
+            taxa_string = annotations.loc[annotations[groupby_column] == bin]['bin_taxonomy'][0]
+            labels.append(get_phylum_and_most_specific(taxa_string))
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
+        labels = False
 
     # make module coverage frame
     module_nets = {module: build_module_net(module_df)
                    for module, module_df in module_steps_form.groupby('module') if module in HEATMAP_MODULES}
+
     if len(genome_order) > GENOMES_PER_LIQUOR:
         module_coverage_dfs = list()
         etc_coverage_dfs = list()
         function_dfs = list()
-        for i, genomes in enumerate(divide_chunks(genome_order, GENOMES_PER_LIQUOR)):
+        # generates slice start and slice end to grab from genomes and labels from 0 to end of genome order
+        for i, j in pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order) - 1]):
+            genomes = genome_order[i:j]
+            if labels is not False:
+                labels = labels[i:j]
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
             dfs = fill_liquor_dfs(annotations_subset, module_nets, etc_module_df, function_heatmap_form,
                                   groupby_column='fasta')
@@ -568,7 +592,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
             etc_coverage_dfs.append(etc_coverage_df_subset)
             function_dfs.append(function_df_subset)
             liquor = make_liquor_heatmap(module_coverage_df_subset, etc_coverage_df_subset, function_df_subset,
-                                         genomes)
+                                         genomes, labels)
             liquor.save(path.join(output_dir, 'liquor_%s.html' % i))
         liquor_df = make_liquor_df(pd.concat(module_coverage_dfs), pd.concat(etc_coverage_dfs), pd.concat(function_dfs))
         liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
@@ -579,7 +603,7 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
                                                                            groupby_column='fasta')
         liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
         liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
-        liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order)
+        liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order, labels)
         liquor.save(path.join(output_dir, 'liquor.html'))
     print('%s: Generated liquor heatmap and table' % (str(datetime.now() - start_time)))
     print("%s: Completed distillation" % str(datetime.now() - start_time))
