@@ -481,11 +481,11 @@ def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_fo
     return module_coverage_frame, etc_coverage_df, function_df
 
 
-def rename_genomes_to_taxa(function_df, labels):
+def rename_genomes_to_taxa(function_df, labels, mag_order):
     function_df = function_df.copy()
     new_genome_column = [labels[i] for i in function_df['genome']]
     function_df['genome'] = pd.Series(new_genome_column, index=function_df.index)
-    mag_order = get_ordered_uniques(new_genome_column)
+    mag_order = [labels[i] for i in mag_order]
     return function_df, mag_order
 
 
@@ -493,7 +493,7 @@ def make_liquor_heatmap(module_coverage_frame, etc_coverage_df, function_df, mag
     module_coverage_heatmap = make_module_coverage_heatmap(module_coverage_frame, mag_order)
     etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
     if labels is not None:
-        function_df, mag_order = rename_genomes_to_taxa(function_df, labels)
+        function_df, mag_order = rename_genomes_to_taxa(function_df, labels, mag_order)
     function_heatmap = make_functional_heatmap(function_df, mag_order)
 
     liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
