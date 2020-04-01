@@ -505,9 +505,9 @@ def get_phylum_and_most_specific(taxa_str):
     most_specific_rank =TAXONOMY_LEVELS[sum([len(i) > 0 for i in taxa_ranks])-1]
     most_specific_taxa = taxa_ranks[sum([len(i) > 0 for i in taxa_ranks]) - 1]
     if most_specific_rank == 'd':
-        return 'd__%s' % most_specific_taxa
+        return 'd__%s;p__' % most_specific_taxa
     if most_specific_rank == 'p':
-        return 'd__%s;p__%s' % (taxa_ranks[0], most_specific_taxa)
+        return 'p__%s;c__' % most_specific_taxa
     else:
         return 'p__%s;%s__%s' % (phylum, most_specific_rank, most_specific_taxa)
 

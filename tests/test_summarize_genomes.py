@@ -271,8 +271,8 @@ def test_make_liquor_df(module_coverage_frame, etc_coverage_df, functional_df):
 
 def test_get_phylum_and_most_specific():
     assert get_phylum_and_most_specific('d__Bacteria;p__Bacteroidota;c__;o__;f__;g__;s__') == \
-           'd__Bacteria;p__Bacteroidota'
-    assert get_phylum_and_most_specific('d__Archaea;p__;c__;o__;f__;g__;s__') == 'd__Archaea'
+           'p__Bacteroidota;c__'
+    assert get_phylum_and_most_specific('d__Archaea;p__;c__;o__;f__;g__;s__') == 'd__Archaea;p__'
     assert get_phylum_and_most_specific('d__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Rikenellaceae;'
                                         'g__Alistipes;s__') == 'p__Bacteroidota;g__Alistipes'
     assert get_phylum_and_most_specific('d__Bacteria;p__Firmicutes;c__Bacilli;o__Lactobacillales;f__Enterococcaceae;'
