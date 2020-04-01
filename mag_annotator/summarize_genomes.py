@@ -8,7 +8,7 @@ import re
 import numpy as np
 from datetime import datetime
 
-from mag_annotator.utils import get_database_locs, get_ids_from_annotation, divide_chunks
+from mag_annotator.utils import get_database_locs, get_ids_from_annotation
 
 # TODO: add RBH information to output
 # TODO: add flag to output table and not xlsx
@@ -428,7 +428,7 @@ def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta
                                                                              'category_function_name'])
 
 
-def make_functional_heatmap(functional_df, mag_order=None, labels=False):
+def make_functional_heatmap(functional_df, mag_order=None):
     # build heatmaps
     charts = list()
     for i, (group, frame) in enumerate(functional_df.groupby('category', sort=False)):
@@ -441,7 +441,7 @@ def make_functional_heatmap(functional_df, mag_order=None, labels=False):
         if i == 0:
             y = alt.Y('genome', title=None, axis=alt.Axis(labelLimit=0), sort=mag_order)
         else:
-            y = alt.Y('genome', axis=alt.Axis(title=None, labels=labels, ticks=False), sort=mag_order)
+            y = alt.Y('genome', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order)
         # set up colors for chart
         rect_colors = alt.Color('present',
                                 legend=alt.Legend(title="Function is Present", symbolType='square',
@@ -484,7 +484,11 @@ def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_fo
 def make_liquor_heatmap(module_coverage_frame, etc_coverage_df, function_df, mag_order=None, labels=False):
     module_coverage_heatmap = make_module_coverage_heatmap(module_coverage_frame, mag_order)
     etc_heatmap = make_etc_coverage_heatmap(etc_coverage_df, mag_order=mag_order)
-    function_heatmap = make_functional_heatmap(function_df, mag_order, labels)
+    if labels is not False:
+        function_df = function_df.copy()
+        function_df['genome'] = labels
+        mag_order = labels
+    function_heatmap = make_functional_heatmap(function_df, mag_order)
 
     liquor = alt.hconcat(alt.hconcat(module_coverage_heatmap, etc_heatmap), function_heatmap)
     return liquor
@@ -502,7 +506,7 @@ def make_liquor_df(module_coverage_frame, etc_coverage_df, function_df):
 def get_phylum_and_most_specific(taxa_str):
     taxa_ranks = [i[3:] for i in taxa_str.split(';')]
     phylum = taxa_ranks[1]
-    most_specific_rank =TAXONOMY_LEVELS[sum([len(i) > 0 for i in taxa_ranks])-1]
+    most_specific_rank = TAXONOMY_LEVELS[sum([len(i) > 0 for i in taxa_ranks])-1]
     most_specific_taxa = taxa_ranks[sum([len(i) > 0 for i in taxa_ranks]) - 1]
     if most_specific_rank == 'd':
         return 'd__%s;p__' % most_specific_taxa
@@ -564,8 +568,8 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     if 'bin_taxonomy' in annotations:
         genome_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
         labels = list()
-        for bin in genome_order:
-            taxa_string = annotations.loc[annotations[groupby_column] == bin]['bin_taxonomy'][0]
+        for genome in genome_order:
+            taxa_string = annotations.loc[annotations[groupby_column] == genome]['bin_taxonomy'][0]
             labels.append(get_phylum_and_most_specific(taxa_string))
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
