@@ -574,8 +574,12 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     if 'bin_taxonomy' in annotations:
         genome_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
         labels = dict()
+        seen = set()
         for genome in genome_order:
             taxa_string = annotations.loc[annotations[groupby_column] == genome]['bin_taxonomy'][0]
+            while taxa_string in seen:
+                taxa_string += 'x'
+            seen.add(taxa_string)
             labels[genome] = get_phylum_and_most_specific(taxa_string)
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
@@ -590,8 +594,8 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
         etc_coverage_dfs = list()
         function_dfs = list()
         # generates slice start and slice end to grab from genomes and labels from 0 to end of genome order
-        for i, j in pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order) - 1]):
-            genomes = genome_order[i:j]
+        for i, (start, end) in enumerate(pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order) - 1])):
+            genomes = genome_order[start:end]
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
             dfs = fill_liquor_dfs(annotations_subset, module_nets, etc_module_df, function_heatmap_form,
                                   groupby_column='fasta')
