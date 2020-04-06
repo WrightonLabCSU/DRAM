@@ -50,6 +50,10 @@ def get_virsorter_hits(virsorter_affi_contigs):
         split_entry = entry.strip().split('\n')
         entry_data = split_entry[0].split('|')
         entry_name = entry_data[0]
+        if '=' in entry_name or ';' in entry_name:
+            raise ValueError('FASTA headers must not have = or ; before the first space (%s). To run DRAM-v you must '
+                             'rerun VIRSorter with = and ; removed from the headers or run DRAM-v.py '
+                             'remove_bad_characters and then rerun DRAM-v' % entry_name)
         entry_genes = split_entry[1:]
         entry_rows = [i.split('|') + [entry_name] for i in entry_genes]
         virsorter_rows += entry_rows
@@ -275,6 +279,11 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     db_handler = DatabaseHandler(db_locs['description_db'])
     db_locs_anno = filter_db_locs(db_locs, low_mem_mode, use_uniref, VMAG_DBS_TO_ANNOTATE)
 
+    if virsorter_affi_contigs is not None:
+        virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
+    else:
+        virsorter_hits = None
+
     # split sequences into seperate fastas
     mkdir(output_dir)
     contig_dir = path.join(output_dir, 'vMAGs')
@@ -283,6 +292,13 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     for seq in read_sequence(input_fasta, format='fasta'):
         if len(seq) >= min_contig_size:
             print('%s: Annotating %s' % (str(datetime.now() - start_time), seq.metadata['id']))
+            if '=' in seq.metadata['id'] or ';' in seq.metadata['id']:
+                raise ValueError('FASTA headers must not have = or ; before the first space (%s). To run DRAM-v you '
+                                 'must rerun VIRSorter with = and ; removed from the headers or run DRAM-v.py '
+                                 'remove_bad_characters and then rerun DRAM-v' % seq.metadata['id'])
+            if get_virsorter_affi_contigs_name(seq.metadata['id']) not in virsorter_hits.name:
+                raise ValueError("No virsorter calls found in %s for scaffold %s from input fasta" %
+                                 (virsorter_affi_contigs, seq.metadata['id']))
             contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
             write_sequence((i for i in [seq]), format='fasta', into=contig_loc)
             contig_locs.append(contig_loc)
@@ -299,15 +315,12 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     genome_summary_form = genome_summary_form.loc[genome_summary_form.potential_amg]
 
     # add auxiliary score
-    if virsorter_affi_contigs is not None:
-        virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
+    if virsorter_hits is not None:
         gene_virsorter_category_dict = dict()
         gene_auxiliary_score_dict = dict()
         for scaffold, dram_frame in annotations.groupby('scaffold'):
             virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
             virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
-            if virsorter_frame.shape[0] == 0:
-                raise ValueError("No virsorter genes found for scaffold %s from input fasta" % scaffold)
             gene_order = get_gene_order(dram_frame, virsorter_frame)
             gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
                                                  gene_order if dram_gene is not None})
