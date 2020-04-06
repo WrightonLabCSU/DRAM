@@ -77,9 +77,10 @@ def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc=None, download_date=N
     return kegg_mmseqs_db
 
 
-def download_and_process_kofam_hmms(output_dir, verbose=False):
-    kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
-    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
+def download_and_process_kofam_hmms(kofam_profile_tar_gz=None, output_dir='.', verbose=False):
+    if kofam_profile_tar_gz is None:
+        kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
+        download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
     kofam_profiles = path.join(output_dir, 'kofam_profiles')
     mkdir(kofam_profiles)
     run_process(['tar', '-xzf', kofam_profile_tar_gz, '-C', kofam_profiles], verbose=verbose)
@@ -89,9 +90,10 @@ def download_and_process_kofam_hmms(output_dir, verbose=False):
     return merged_kofam_profiles
 
 
-def download_and_process_kofam_ko_list(output_dir, verbose=False):
-    kofam_ko_list_gz = path.join(output_dir, 'kofam_ko_list.tsv.gz')
-    download_file('ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', kofam_ko_list_gz, verbose=verbose)
+def download_and_process_kofam_ko_list(kofam_ko_list_gz=None, output_dir='.', verbose=False):
+    if kofam_ko_list_gz is None:
+        kofam_ko_list_gz = path.join(output_dir, 'kofam_ko_list.tsv.gz')
+        download_file('ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', kofam_ko_list_gz, verbose=verbose)
     # TODO: fix this so that it is gunzipped to the path
     kofam_ko_list = path.join(output_dir, 'kofam_ko_list.tsv')
     run_process(['gunzip', kofam_ko_list_gz], verbose=verbose)
@@ -390,18 +392,20 @@ def populate_description_db(db_dict=None, start_time=None):
     print('%s: Description database populated' % str(datetime.now() - start_time))
 
 
-def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_download_date=None, uniref_loc=None,
-                      uniref_version='90', pfam_loc=None, pfam_hmm_dat=None, dbcan_loc=None, dbcan_version='8',
-                      dbcan_fam_activities=None, dbcan_date='07312019', viral_loc=None, peptidase_loc=None,
-                      vogdb_loc=None, vogdb_version='latest', vog_annotations=None, genome_summary_form_loc=None,
-                      module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None,
-                      amg_database_loc=None, skip_uniref=False, keep_database_files=False, branch='master', threads=10,
-                      verbose=True):
+def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None,
+                      kegg_download_date=None, uniref_loc=None, uniref_version='90', pfam_loc=None, pfam_hmm_dat=None,
+                      dbcan_loc=None, dbcan_version='8', dbcan_fam_activities=None, dbcan_date='07312019',
+                      viral_loc=None, peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
+                      genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
+                      function_heatmap_form_loc=None, amg_database_loc=None, skip_uniref=False,
+                      keep_database_files=False, branch='master', threads=10, verbose=True):
     start_time = datetime.now()
     print('%s: Database preparation started' % str(datetime.now()))
     # check that all given files exist
     check_file_exists(kegg_loc)
     check_file_exists(gene_ko_link_loc)
+    check_file_exists(kofam_hmm_loc)
+    check_file_exists(kofam_ko_list_loc)
     check_file_exists(uniref_loc)
     check_file_exists(pfam_loc)
     check_file_exists(pfam_hmm_dat)
@@ -446,9 +450,9 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kegg_dow
     output_dbs['vogdb_db_loc'] = download_and_process_vogdb(vogdb_loc, temporary, vogdb_release=vogdb_version,
                                                             verbose=verbose)
     print('%s: VOGdb database processed' % str(datetime.now() - start_time))
-    output_dbs['kofam_hmm_loc'] = download_and_process_kofam_hmms(temporary, verbose=verbose)
+    output_dbs['kofam_hmm_loc'] = download_and_process_kofam_hmms(kofam_hmm_loc, temporary, verbose=verbose)
     print('%s: KOfam database processed' % str(datetime.now() - start_time))
-    output_dbs['kofam_ko_list_loc'] = download_and_process_kofam_ko_list(temporary, verbose=verbose)
+    output_dbs['kofam_ko_list_loc'] = download_and_process_kofam_ko_list(kofam_ko_list_loc, temporary, verbose=verbose)
     print('%s: KOfam ko list processed' % str(datetime.now() - start_time))
 
     # get pfam, dbcan and vogdb descriptions

@@ -339,7 +339,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
                 vogdb_description_dict[gene] = vogdb_id
             else:
                 description = vogdb_descriptions.get(vogdb_id)
-                categories_str = description.split('; ')[1]
+                categories_str = description.split('; ')[-1]
                 vogdb_categories = [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
                 vogdb_description_dict[gene] = description
                 vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
