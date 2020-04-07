@@ -296,9 +296,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                 raise ValueError('FASTA headers must not have = or ; before the first space (%s). To run DRAM-v you '
                                  'must rerun VIRSorter with = and ; removed from the headers or run DRAM-v.py '
                                  'remove_bad_characters and then rerun DRAM-v' % seq.metadata['id'])
-            if get_virsorter_affi_contigs_name(seq.metadata['id']) not in virsorter_hits.name:
-                raise ValueError("No virsorter calls found in %s for scaffold %s from input fasta" %
-                                 (virsorter_affi_contigs, seq.metadata['id']))
+            if virsorter_hits is not None:
+                if get_virsorter_affi_contigs_name(seq.metadata['id']) not in virsorter_hits['name']:
+                    raise ValueError("No virsorter calls found in %s for scaffold %s from input fasta" %
+                                     (virsorter_affi_contigs, seq.metadata['id']))
             contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
             write_sequence((i for i in [seq]), format='fasta', into=contig_loc)
             contig_locs.append(contig_loc)
