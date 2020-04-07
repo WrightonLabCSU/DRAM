@@ -2,7 +2,7 @@
 
 import argparse
 
-from mag_annotator.annotate_vgfs import annotate_vgfs
+from mag_annotator.annotate_vgfs import annotate_vgfs, remove_bad_chars
 from mag_annotator.summarize_vgfs import summarize_vgfs
 from mag_annotator.pull_sequences import pull_sequences
 
@@ -17,6 +17,9 @@ if __name__ == '__main__':
                                            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     strainer_parser = subparsers.add_parser('strainer', help="Strain annotations down to genes of interest",
                                             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    remove_parser = subparsers.add_parser('remove_bad_characters', help="Removes ; and = from fasta headers and "
+                                                                        "VIRSorter_affi-contigs.tab files",
+                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for annotating vgfs
     annotate_parser.add_argument('-i', '--input_fasta', help="fasta file, output from ", required=True)
@@ -95,6 +98,13 @@ if __name__ == '__main__':
     amg_group.add_argument("--remove_js", default=False, action='store_true',
                            help="Do not consider genes on possible non-viral contigs as potential AMGs")
     strainer_parser.set_defaults(func=pull_sequences)
+
+    fasta_or_affi = remove_parser.add_mutually_exclusive_group(required=True)
+    fasta_or_affi.add_argument('-i', '--input_fasta', help='Fasta file to remove ; and = from headers')
+    fasta_or_affi.add_argument('-v', '--input_virsorter_affi_contigs', help='Fasta file to remove ; and = from headers')
+    remove_parser.add_argument('-o', '--output', required=True, help='Name of output file. If cleaning a fasta file the'
+                                                                     ' output file name must have no = or ;.')
+    remove_parser.set_defaults(func=remove_bad_chars)
 
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}

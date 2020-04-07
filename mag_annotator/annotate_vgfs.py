@@ -42,6 +42,48 @@ VIRAL_PEPTIDASES_MEROPS = {'A02H', 'A02G', 'A02F', 'A02E', 'A02D', 'A02C', 'A02B
                            'T01B', 'T01A', 'T03', 'U32', 'U40'}
 
 
+def remove_bad_chars_fasta(fasta):
+    new_headers = list()
+    new_seqs = list()
+    for seq in read_sequence(fasta, format='fasta'):
+        new_header = seq.metadata['id']
+        new_header = new_header.replace(';', '_').replace('=', '_')
+        if new_header in new_headers:
+            raise ValueError('Replacement of ; or = with _ generated reduntant sequence headers, must be modified '
+                             'manually')
+        seq.metadata['id'] = new_header
+        new_seqs.append(seq)
+    return new_seqs
+
+
+def remove_bad_chars_virsorter_affi_contigs(virsorter_in):
+    new_lines = list()
+    for line in open(virsorter_in).readlines():
+        if line.startswith('>'):
+            line = line.lstrip('>')
+            split_line = line.split('|')
+            split_line[0] = split_line[0].replace(';', '_').replace('=', '_')
+            new_lines.append('>%s' % '|'.join(split_line))
+        else:
+            split_line = line.split('|')
+            split_line[0] = split_line[0].replace(';', '_').replace('=', '_')
+            new_lines.append('|'.join(split_line))
+    return ''.join(new_lines)
+
+
+def remove_bad_chars(input_fasta=None, input_virsorter_affi_contigs=None, output=None):
+    if input_fasta is None and input_virsorter_affi_contigs is None:
+        raise ValueError('Must provide either input fasta or virsorter affi contigs')
+    elif input_fasta is not None:
+        if ';' in output or '=' in output:
+            raise ValueError('Cannot have = or ; in output fasta to work with DRAM-v, please change output fasta name')
+        new_seqs = remove_bad_chars_fasta(input_fasta)
+        write_sequence((seq for seq in new_seqs), format='fasta', into=output)
+    else:
+        virsorter_out = remove_bad_chars_virsorter_affi_contigs(input_virsorter_affi_contigs)
+        open(output, 'w').write(virsorter_out)
+
+
 def get_virsorter_hits(virsorter_affi_contigs):
     raw_file = open(virsorter_affi_contigs).read()
 
@@ -291,13 +333,12 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     contig_locs = list()
     for seq in read_sequence(input_fasta, format='fasta'):
         if len(seq) >= min_contig_size:
-            print('%s: Annotating %s' % (str(datetime.now() - start_time), seq.metadata['id']))
             if '=' in seq.metadata['id'] or ';' in seq.metadata['id']:
                 raise ValueError('FASTA headers must not have = or ; before the first space (%s). To run DRAM-v you '
                                  'must rerun VIRSorter with = and ; removed from the headers or run DRAM-v.py '
                                  'remove_bad_characters and then rerun DRAM-v' % seq.metadata['id'])
             if virsorter_hits is not None:
-                if get_virsorter_affi_contigs_name(seq.metadata['id']) not in virsorter_hits['name']:
+                if get_virsorter_affi_contigs_name(seq.metadata['id']) not in virsorter_hits['name'].values:
                     raise ValueError("No virsorter calls found in %s for scaffold %s from input fasta" %
                                      (virsorter_affi_contigs, seq.metadata['id']))
             contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
@@ -307,7 +348,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     # annotate vMAGs
     annotations = annotate_fastas(contig_locs, output_dir, db_locs_anno, db_handler, min_contig_size,
                                   bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,
-                                  use_uniref, skip_trnascan, keep_tmp_dir, low_mem_mode, start_time, threads, verbose)
+                                  skip_trnascan, keep_tmp_dir, start_time, threads, verbose)
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # setting up scoring viral genes
