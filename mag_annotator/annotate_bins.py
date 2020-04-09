@@ -375,13 +375,13 @@ def assign_grades(annotations):
     """Grade genes based on reverse best hits to KEGG, UniRef and Pfam"""
     grades = dict()
     for gene, row in annotations.iterrows():
-        if row.kegg_RBH is True:
+        if row.get('kegg_RBH') is True:
             rank = 'A'
-        elif row.uniref_RBH is True:
+        elif row.get('uniref_RBH') is True:
             rank = 'B'
-        elif not pd.isna(row.kegg_hit) or not pd.isna(row.uniref_hit):
+        elif not pd.isna(row.get('kegg_hit')) or not pd.isna(row.get('uniref_hit')):
             rank = 'C'
-        elif not pd.isna(row.pfam_hits):
+        elif not pd.isna(row.get('pfam_hits')):
             rank = 'D'
         else:
             rank = 'E'
@@ -780,9 +780,8 @@ def annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_
     annotations = pd.concat(annotation_list, axis=1, sort=False)
 
     # get scaffold data and assign grades
-    if 'kegg_RBH' in annotations.columns and 'uniref_RBH' in annotations.columns:
-        grades = assign_grades(annotations)
-        annotations = pd.concat([grades, annotations], axis=1, sort=False)
+    grades = assign_grades(annotations)
+    annotations = pd.concat([grades, annotations], axis=1, sort=False)
     return annotations
 
 

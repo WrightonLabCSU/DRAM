@@ -265,6 +265,20 @@ def test_assign_grades():
     assert test_grades.loc['gene3'] == 'C'
     assert test_grades.loc['gene4'] == 'E'
     assert test_grades.loc['gene5'] == 'D'
+    # test no uniref
+    annotations_data2 = [[True, 'K00001', ['PF00001']],
+                         [False, 'K00002', ['PF01234']],
+                         [False, 'K00003', pd.np.NaN],
+                         [False, pd.np.NaN, pd.np.NaN],
+                         [False, pd.np.NaN, ['PF01235']]]
+    annotations2 = pd.DataFrame(annotations_data2, index=['gene1', 'gene2', 'gene3', 'gene4', 'gene5'],
+                                columns=['kegg_RBH', 'kegg_hit', 'pfam_hits'])
+    test_grades2 = assign_grades(annotations2)
+    assert test_grades2.loc['gene1'] == 'A'
+    assert test_grades2.loc['gene2'] == 'C'
+    assert test_grades2.loc['gene3'] == 'C'
+    assert test_grades2.loc['gene4'] == 'E'
+    assert test_grades2.loc['gene5'] == 'D'
 
 
 @pytest.fixture()
