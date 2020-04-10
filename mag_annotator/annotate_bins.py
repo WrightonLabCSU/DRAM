@@ -880,15 +880,15 @@ def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, master_list=MA
 
 
 def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, bit_score_threshold=60,
-                    rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
-                    skip_trnascan=False, keep_tmp_dir=True, low_mem_mode=False, start_time=datetime.now(), threads=10,
-                    verbose=True):
+                    rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
+                    keep_tmp_dir=True, start_time=datetime.now(), threads=10, verbose=True):
     # check for no conflicting options/configurations
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
 
     # setup custom databases to be searched
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'), threads, verbose)
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'), threads,
+                                        verbose)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # iterate over list of fastas and annotate each individually
@@ -952,8 +952,8 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
     mkdir(output_dir)
 
     all_annotations = annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size, bit_score_threshold,
-                                      rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref,
-                                      skip_trnascan, keep_tmp_dir, low_mem_mode, start_time, threads, verbose)
+                                      rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, skip_trnascan,
+                                      keep_tmp_dir, start_time, threads, verbose)
     # if given add taxonomy information
     if len(gtdb_taxonomy) > 0:
         gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
