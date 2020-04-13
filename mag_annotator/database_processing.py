@@ -85,7 +85,7 @@ def download_and_process_kofam_hmms(kofam_profile_tar_gz=None, output_dir='.', v
     mkdir(kofam_profiles)
     run_process(['tar', '-xzf', kofam_profile_tar_gz, '-C', kofam_profiles], verbose=verbose)
     merged_kofam_profiles = path.join(output_dir, 'kofam_profiles.hmm')
-    merge_files(path.join(kofam_profiles, 'profiles', '*.hmm'), merged_kofam_profiles)
+    merge_files(glob(path.join(kofam_profiles, 'profiles', '*.hmm')), merged_kofam_profiles)
     run_process(['hmmpress', '-f', merged_kofam_profiles], verbose=verbose)
     return merged_kofam_profiles
 
@@ -238,7 +238,7 @@ def download_and_process_vogdb(vog_hmm_targz=None, output_dir='.', vogdb_release
     vogdb_targz = tarfile.open(vog_hmm_targz)
     vogdb_targz.extractall(hmm_dir)
     vog_hmms = path.join(output_dir, 'vog_%s_hmms.txt' % vogdb_release)
-    merge_files(path.join(hmm_dir, 'VOG*.hmm'), vog_hmms)
+    merge_files(glob(path.join(hmm_dir, 'VOG*.hmm')), vog_hmms)
     run_process(['hmmpress', '-f', vog_hmms], verbose=verbose)
     return vog_hmms
 
@@ -303,11 +303,10 @@ def check_exists_and_add_to_location_dict(loc, name, dict_to_update):
     return dict_to_update
 
 
-def check_exists_and_add_to_description_db(loc, name, get_description_list, db_handler):
+def add_to_description_db(loc, name, get_description_list, db_handler):
     if loc is not None:  # if location give and exists then add to dict, else raise ValueError
-        if check_file_exists(loc):
-            description_list = get_description_list(loc)
-            db_handler.add_descriptions_to_database(description_list, name, clear_table=True)
+        description_list = get_description_list(loc)
+        db_handler.add_descriptions_to_database(description_list, name, clear_table=True)
 
 
 def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_db_loc=None,
@@ -340,11 +339,14 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(amg_database_loc, 'amg_database', db_dict)
 
-    db_dict = check_exists_and_add_to_location_dict(description_db_loc, 'description_db', db_dict)
+    if description_db_loc is not None:
+        db_dict['description_db'] = description_db_loc
     print('%s: Database locations added to CONFIG' % str(datetime.now() - start_time))
 
     if update_description_db:
         populate_description_db(db_dict)
+        check_file_exists(description_db_loc)
+        print('%s: Database descriptions updated')
 
     # change data paths
     if config_loc is None:
@@ -368,26 +370,26 @@ def populate_description_db(db_dict=None, start_time=None):
     print('%s: Database connection established' % str(datetime.now() - start_time))
 
     # fill database
-    check_exists_and_add_to_description_db(db_dict['kegg'], 'kegg_description', make_header_dict_from_mmseqs_db,
-                                           db_handler)
+    add_to_description_db(db_dict['kegg'], 'kegg_description', make_header_dict_from_mmseqs_db,
+                          db_handler)
     print('%s: KEGG descriptions added to description database' % str(datetime.now() - start_time))
-    check_exists_and_add_to_description_db(db_dict['uniref'], 'uniref_description', make_header_dict_from_mmseqs_db,
-                                           db_handler)
+    add_to_description_db(db_dict['uniref'], 'uniref_description', make_header_dict_from_mmseqs_db,
+                          db_handler)
     print('%s: UniRef descriptions added to description database' % str(datetime.now() - start_time))
-    check_exists_and_add_to_description_db(db_dict['pfam_hmm_dat'], 'pfam_description', process_pfam_descriptions,
-                                           db_handler)
+    add_to_description_db(db_dict['pfam_hmm_dat'], 'pfam_description', process_pfam_descriptions,
+                          db_handler)
     print('%s: PFAM descriptions added to description database' % str(datetime.now() - start_time))
-    check_exists_and_add_to_description_db(db_dict['dbcan_fam_activities'], 'dbcan_description',
-                                           process_dbcan_descriptions, db_handler)
+    add_to_description_db(db_dict['dbcan_fam_activities'], 'dbcan_description',
+                          process_dbcan_descriptions, db_handler)
     print('%s: dbCAN descriptions added to description database' % str(datetime.now() - start_time))
-    check_exists_and_add_to_description_db(db_dict['viral'], 'viral_description', make_header_dict_from_mmseqs_db,
-                                           db_handler)
+    add_to_description_db(db_dict['viral'], 'viral_description', make_header_dict_from_mmseqs_db,
+                          db_handler)
     print('%s: RefSeq viral descriptions added to description database' % str(datetime.now() - start_time))
-    check_exists_and_add_to_description_db(db_dict['peptidase'], 'peptidase_description',
-                                           make_header_dict_from_mmseqs_db, db_handler)
+    add_to_description_db(db_dict['peptidase'], 'peptidase_description',
+                          make_header_dict_from_mmseqs_db, db_handler)
     print('%s: MEROPS descriptions added to description database' % str(datetime.now() - start_time))
-    check_exists_and_add_to_description_db(db_dict['vog_annotations'], 'vogdb_description', process_vogdb_descriptions,
-                                           db_handler)
+    add_to_description_db(db_dict['vog_annotations'], 'vogdb_description', process_vogdb_descriptions,
+                          db_handler)
     print('%s: VOGdb descriptions added to description database' % str(datetime.now() - start_time))
     print('%s: Description database populated' % str(datetime.now() - start_time))
 
@@ -505,7 +507,6 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
 
     if not keep_database_files:
         rmtree(temporary)
-        print('%s: Files moved to final destination' % str(datetime.now() - start_time))
     print('%s: Database preparation completed' % str(datetime.now() - start_time))
 
 
