@@ -153,3 +153,8 @@ def test_set_database_paths(tmpdir):
     set_database_paths(kegg_db_loc=kegg_loc, config_loc=test_config)
     test_db_dict = get_database_locs(test_config)
     assert test_db_dict['kegg'] == os.path.realpath(kegg_loc)
+    # test that adding something with use_current_locs False works
+    set_database_paths(kegg_db_loc=kegg_loc, config_loc=test_config, use_current_locs=False)
+    test_db_dict = get_database_locs(test_config)
+    assert test_db_dict['kegg'] == os.path.realpath(kegg_loc)
+    assert test_db_dict['description_db'] is None
