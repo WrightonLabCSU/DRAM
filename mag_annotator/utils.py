@@ -1,12 +1,10 @@
 import re
 import subprocess
 from collections import Counter
-from glob import glob
 from os import path
 from pkg_resources import resource_filename
 import json
 from urllib.request import urlopen
-import warnings
 
 
 def get_config_loc():

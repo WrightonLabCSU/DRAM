@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     # parser for annotating already called genes
     annotate_genes_parser.add_argument('-i', '--input_faa', help="fasta file, optionally with wildcards to point to"
-                                                                   "individual MAGs", required=True)
+                                                                 "individual MAGs", required=True)
     annotate_genes_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_genes_parser.add_argument('--bit_score_threshold', type=int, default=60,
                                        help='minimum bitScore of search to retain hits')

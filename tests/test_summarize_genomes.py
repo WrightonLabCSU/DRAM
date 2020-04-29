@@ -277,4 +277,4 @@ def test_get_phylum_and_most_specific():
                                         'g__Alistipes;s__') == 'p__Bacteroidota;g__Alistipes'
     assert get_phylum_and_most_specific('d__Bacteria;p__Firmicutes;c__Bacilli;o__Lactobacillales;f__Enterococcaceae;'
                                         'g__Enterococcus_D;s__Enterococcus_D gallinarum') == \
-           'p__Firmicutes;s__Enterococcus_D gallinarum'
+                                        'p__Firmicutes;s__Enterococcus_D gallinarum'

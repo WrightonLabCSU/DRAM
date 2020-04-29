@@ -20,9 +20,8 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: add real logging
 # TODO: add silent mode
 # TODO: add abx resistance genes
-# TODO: add skip uniref90 flag
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
-# TODO: fix GBKs
+# TODO: add ability to handle [] in file names
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -60,7 +59,6 @@ def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', tar
     """Uses mmseqs2 to do a blast style search of a query db against a target db, filters to only include best hits
     Returns a file location of a blast out format 6 file with search results
     """
-    # TODO: Return both tsv and mmsdb
     # make query to target db
     tmp_dir = path.join(output_dir, 'tmp')
     query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
