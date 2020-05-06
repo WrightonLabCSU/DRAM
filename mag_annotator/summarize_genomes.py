@@ -126,7 +126,9 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
 # TODO: add assembly stats like N50, longest contig, total assembled length etc
 def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_column='fasta'):
     rows = list()
-    columns = ['genome', 'number of scaffolds']
+    columns = ['genome']
+    if 'scaffold' in annotations.columns:
+        columns.append('number of scaffolds')
     if 'bin_taxonomy' in annotations.columns:
         columns.append('taxonomy')
     if 'bin_completeness' in annotations.columns:
@@ -141,7 +143,9 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_col
        and rrna_frame is not None and trna_frame is not None:
         columns.append('assembly quality')
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        row = [genome, len(set(frame['scaffold']))]
+        row = [genome]
+        if 'scaffold' in frame.columns:
+            row.append(len(set(frame['scaffold'])))
         if 'bin_taxonomy' in frame.columns:
             row.append(frame['bin_taxonomy'][0])
         if 'bin_completeness' in frame.columns:
