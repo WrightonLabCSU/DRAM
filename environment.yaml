@@ -12,7 +12,7 @@ dependencies:
   - trnascan-se >=2
   - sqlalchemy
   - barrnap
-  - altair
+  - altair >=4
   - openpyxl
   - networkx
   - ruby

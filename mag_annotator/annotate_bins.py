@@ -20,9 +20,8 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: add real logging
 # TODO: add silent mode
 # TODO: add abx resistance genes
-# TODO: add skip uniref90 flag
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
-# TODO: fix GBKs
+# TODO: add ability to handle [] in file names
 
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -60,7 +59,6 @@ def get_best_hits(query_db, target_db, output_dir='.', query_prefix='query', tar
     """Uses mmseqs2 to do a blast style search of a query db against a target db, filters to only include best hits
     Returns a file location of a blast out format 6 file with search results
     """
-    # TODO: Return both tsv and mmsdb
     # make query to target db
     tmp_dir = path.join(output_dir, 'tmp')
     query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
@@ -339,7 +337,7 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
                 vogdb_description_dict[gene] = vogdb_id
             else:
                 description = vogdb_descriptions.get(vogdb_id)
-                categories_str = description.split('; ')[1]
+                categories_str = description.split('; ')[-1]
                 vogdb_categories = [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
                 vogdb_description_dict[gene] = description
                 vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
@@ -375,13 +373,13 @@ def assign_grades(annotations):
     """Grade genes based on reverse best hits to KEGG, UniRef and Pfam"""
     grades = dict()
     for gene, row in annotations.iterrows():
-        if row.kegg_RBH is True:
+        if row.get('kegg_RBH') is True:
             rank = 'A'
-        elif row.uniref_RBH is True:
+        elif row.get('uniref_RBH') is True:
             rank = 'B'
-        elif not pd.isna(row.kegg_hit) or not pd.isna(row.uniref_hit):
+        elif not pd.isna(row.get('kegg_hit')) or not pd.isna(row.get('uniref_hit')):
             rank = 'C'
-        elif not pd.isna(row.pfam_hits):
+        elif not pd.isna(row.get('pfam_hits')):
             rank = 'D'
         else:
             rank = 'E'
@@ -397,10 +395,15 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
         annotation = annotations.loc[seq.metadata['id']]
         if 'rank' in annotations.columns and verbosity == 'short':
             annotation_str = 'rank: %s' % annotation['rank']
-            if (annotation['rank'] == 'A') or (annotation['rank'] == 'C' and not pd.isna(annotation.kegg_hit)):
+            if annotation['rank'] == 'A':
                 annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-            elif annotation['rank'] == 'B' or (annotation['rank'] == 'C' and not pd.isna(annotation.uniref_hit)):
+            elif annotation['rank'] == 'B':
                 annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
+            elif annotation['rank'] == 'C':
+                if 'kegg_hit' in annotation:
+                    annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
+                if 'uniref_hit' in annotation:
+                    annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
             elif annotation['rank'] == 'D':
                 annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
             else:
@@ -780,9 +783,8 @@ def annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_
     annotations = pd.concat(annotation_list, axis=1, sort=False)
 
     # get scaffold data and assign grades
-    if 'kegg_RBH' in annotations.columns and 'uniref_RBH' in annotations.columns:
-        grades = assign_grades(annotations)
-        annotations = pd.concat([grades, annotations], axis=1, sort=False)
+    grades = assign_grades(annotations)
+    annotations = pd.concat([grades, annotations], axis=1, sort=False)
     return annotations
 
 

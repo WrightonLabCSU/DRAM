@@ -265,13 +265,27 @@ def test_assign_grades():
     assert test_grades.loc['gene3'] == 'C'
     assert test_grades.loc['gene4'] == 'E'
     assert test_grades.loc['gene5'] == 'D'
+    # test no uniref
+    annotations_data2 = [[True, 'K00001', ['PF00001']],
+                         [False, 'K00002', ['PF01234']],
+                         [False, 'K00003', pd.np.NaN],
+                         [False, pd.np.NaN, pd.np.NaN],
+                         [False, pd.np.NaN, ['PF01235']]]
+    annotations2 = pd.DataFrame(annotations_data2, index=['gene1', 'gene2', 'gene3', 'gene4', 'gene5'],
+                                columns=['kegg_RBH', 'kegg_hit', 'pfam_hits'])
+    test_grades2 = assign_grades(annotations2)
+    assert test_grades2.loc['gene1'] == 'A'
+    assert test_grades2.loc['gene2'] == 'C'
+    assert test_grades2.loc['gene3'] == 'C'
+    assert test_grades2.loc['gene4'] == 'E'
+    assert test_grades2.loc['gene5'] == 'D'
 
 
 @pytest.fixture()
 def phix_annotations():
     return pd.DataFrame([['A', 'K1', 'U1', None, 'a_bug1'],
                          ['B', 'K2', 'U2', 'P2', 'a_bug2'],
-                         ['C', 'K3', 'U3', 'P3', 'a_bug3'],
+                         ['C', None, 'U3', 'P3', 'a_bug3'],
                          ['D', 'K4', 'U4', 'P4', 'a_bug4'],
                          ['A', 'K5', 'U5', 'P5', 'a_bug5'],
                          ['E', 'K6', 'U6', 'P6', 'a_bug6'],
@@ -289,6 +303,33 @@ def test_generate_annotated_fasta_short(phix_prodigal_genes, phix_annotations):
     assert short_fasta_header_dict['phiX_NC_001422.1_1'] == 'rank: A; K1 (db=kegg)'
     assert short_fasta_header_dict['phiX_NC_001422.1_2'] == 'rank: B; U2 (db=uniref)'
     assert short_fasta_header_dict['phiX_NC_001422.1_4'] == 'rank: D; P4 (db=pfam)'
+
+
+@pytest.fixture()
+def phix_annotations_no_kegg():
+    return pd.DataFrame([['B', 'U1', None, 'a_bug1'],
+                         ['B', 'U2', 'P2', 'a_bug2'],
+                         ['C', 'U3', 'P3', 'a_bug3'],
+                         ['D', 'U4', 'P4', 'a_bug4'],
+                         ['B', 'U5', 'P5', 'a_bug5'],
+                         ['E', 'U6', 'P6', 'a_bug6'],
+                         ['C', 'U7', 'P7', 'a_bug7']],
+                        index=['NC_001422.1_1', 'NC_001422.1_2', 'NC_001422.1_3', 'NC_001422.1_4', 'NC_001422.1_5',
+                               'NC_001422.1_6', 'NC_001422.1_7'],
+                        columns=['rank', 'uniref_hit', 'pfam_hits', 'bin_taxonomy'])
+
+
+def test_generate_annotated_fasta_short_no_kegg(phix_prodigal_genes, phix_annotations_no_kegg):
+    # drop kegg hit column
+    fasta_generator_short_no_kegg = generate_annotated_fasta(phix_prodigal_genes, phix_annotations_no_kegg,
+                                                             verbosity='short', name='phiX')
+    short_fasta_header_dict_no_kegg = {seq.metadata['id']: seq.metadata['description']
+                                       for seq in fasta_generator_short_no_kegg}
+    print(short_fasta_header_dict_no_kegg)
+
+    assert short_fasta_header_dict_no_kegg['phiX_NC_001422.1_1'] == 'rank: B; U1 (db=uniref)'
+    assert short_fasta_header_dict_no_kegg['phiX_NC_001422.1_2'] == 'rank: B; U2 (db=uniref)'
+    assert short_fasta_header_dict_no_kegg['phiX_NC_001422.1_4'] == 'rank: D; P4 (db=pfam)'
 
 
 def test_generate_annotated_fasta_long(phix_prodigal_genes, phix_annotations):

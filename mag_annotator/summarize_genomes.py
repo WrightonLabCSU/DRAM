@@ -126,7 +126,9 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
 # TODO: add assembly stats like N50, longest contig, total assembled length etc
 def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_column='fasta'):
     rows = list()
-    columns = ['genome', 'number of scaffolds']
+    columns = ['genome']
+    if 'scaffold' in annotations.columns:
+        columns.append('number of scaffolds')
     if 'bin_taxonomy' in annotations.columns:
         columns.append('taxonomy')
     if 'bin_completeness' in annotations.columns:
@@ -141,7 +143,9 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_col
        and rrna_frame is not None and trna_frame is not None:
         columns.append('assembly quality')
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        row = [genome, len(set(frame['scaffold']))]
+        row = [genome]
+        if 'scaffold' in frame.columns:
+            row.append(len(set(frame['scaffold'])))
         if 'bin_taxonomy' in frame.columns:
             row.append(frame['bin_taxonomy'][0])
         if 'bin_completeness' in frame.columns:
@@ -439,7 +443,8 @@ def make_functional_heatmap(functional_df, mag_order=None):
         chart_height = HEATMAP_CELL_HEIGHT * num_mags_in_frame
         # if this is the first chart then make y-ticks otherwise none
         if i == 0:
-            y = alt.Y('genome', title=None, axis=alt.Axis(labelLimit=0), sort=mag_order)
+            y = alt.Y('genome', title=None, sort=mag_order,
+                      axis=alt.Axis(labelLimit=0, labelExpr="replace(datum.label, /_\d*$/gi, '')"))
         else:
             y = alt.Y('genome', axis=alt.Axis(title=None, labels=False, ticks=False), sort=mag_order)
         # set up colors for chart
@@ -522,6 +527,16 @@ def get_phylum_and_most_specific(taxa_str):
         return 'p__%s;%s__%s' % (phylum, most_specific_rank, most_specific_taxa)
 
 
+def make_strings_no_repeats(genome_taxa_dict):
+    labels = dict()
+    seen = Counter()
+    for genome, taxa_string in genome_taxa_dict.items():
+        final_taxa_string = '%s_%s' % (taxa_string, str(seen[taxa_string]))
+        seen[taxa_string] += 1
+        labels[genome] = final_taxa_string
+    return labels
+
+
 def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column):
     start_time = datetime.now()
 
@@ -573,10 +588,8 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
     # make liquor
     if 'bin_taxonomy' in annotations:
         genome_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
-        labels = dict()
-        for genome in genome_order:
-            taxa_string = annotations.loc[annotations[groupby_column] == genome]['bin_taxonomy'][0]
-            labels[genome] = get_phylum_and_most_specific(taxa_string)
+        labels = make_strings_no_repeats({row[groupby_column]: get_phylum_and_most_specific(row['bin_taxonomy'])
+                                          for _, row in annotations.iterrows()})
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
         labels = None
@@ -590,8 +603,9 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
         etc_coverage_dfs = list()
         function_dfs = list()
         # generates slice start and slice end to grab from genomes and labels from 0 to end of genome order
-        for i, j in pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order) - 1]):
-            genomes = genome_order[i:j]
+        pairwise_iter = pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order) - 1])
+        for i, (start, end) in enumerate(pairwise_iter):
+            genomes = genome_order[start:end]
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
             dfs = fill_liquor_dfs(annotations_subset, module_nets, etc_module_df, function_heatmap_form,
                                   groupby_column='fasta')

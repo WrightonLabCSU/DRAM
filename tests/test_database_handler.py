@@ -63,6 +63,7 @@ def test_get_descriptions(db_w_entries):
     assert type(description_dict) is dict
     assert len(description_dict) == 0
 
+
 def test_get_database_names(db_w_entries):
     names = db_w_entries.get_database_names()
     assert len(names) == 7

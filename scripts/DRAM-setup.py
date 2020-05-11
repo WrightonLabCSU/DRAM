@@ -33,28 +33,36 @@ if __name__ == '__main__':
                                     help="KEGG protein file, should be a single .pep, please merge all KEGG pep files")
     prepare_dbs_parser.add_argument('--gene_ko_link_loc', default=None,
                                     help="KEGG gene ko link, can be gzipped or not")
+    prepare_dbs_parser.add_argument('--kofam_hmm_loc', default=None, help='hmm file for KOfam (profiles.tar.gz)')
+    prepare_dbs_parser.add_argument('--kofam_ko_list_loc', default=None, help='KOfam ko list file (ko_list.gz)')
     prepare_dbs_parser.add_argument('--kegg_download_date', default=None,
                                     help="Date KEGG was download to include in database name")
-    prepare_dbs_parser.add_argument('--uniref_loc', default=None, help="File path to uniref, if already downloaded")
+    prepare_dbs_parser.add_argument('--uniref_loc', default=None, help="File path to uniref, if already downloaded "
+                                                                       "(uniref90.fasta.gz)")
     prepare_dbs_parser.add_argument('--uniref_version', default='90', help="UniRef version to download")
     prepare_dbs_parser.add_argument('--skip_uniref', default=False, action='store_true',
                                     help="Do not download and process uniref90. Saves time and memory usage and does "
                                          "not impact DRAM distillation")
     prepare_dbs_parser.add_argument('--pfam_loc', default=None,
-                                    help="File path to pfam-A hmm file, if already downloaded")
-    prepare_dbs_parser.add_argument('--pfam_hmm_dat', default=None, help="pfam hmm .dat file to get PF"
-                                                                         "descriptions, if already downloaded")
-    prepare_dbs_parser.add_argument('--dbcan_loc', default=None, help="File path to dbCAN, if already downloaded")
-    prepare_dbs_parser.add_argument('--dbcan_fam_activities', default=None, help='CAZY family activities file, if'
-                                                                                 'already downloaded')
+                                    help="File path to pfam-A full file, if already downloaded (Pfam-A.full.gz)")
+    prepare_dbs_parser.add_argument('--pfam_hmm_dat', default=None,
+                                    help="pfam hmm .dat file to get PF descriptions, if already downloaded "
+                                         "(Pfam-A.hmm.dat.gz)")
+    prepare_dbs_parser.add_argument('--dbcan_loc', default=None, help="File path to dbCAN, if already downloaded "
+                                                                      "(dbCAN-HMMdb-V8.txt)")
+    prepare_dbs_parser.add_argument('--dbcan_fam_activities', default=None,
+                                    help='CAZY family activities file, if already downloaded '
+                                         '(CAZyDB.07312019.fam-activities.txt)')
     prepare_dbs_parser.add_argument('--dbcan_version', default='8', type=str, help='version of dbCAN to use')
-    prepare_dbs_parser.add_argument('--vogdb_loc', default=None, help='hmm file for vogdb, if already downloaded')
-    prepare_dbs_parser.add_argument('--vog_annotations', default=None, help='vogdb annotations file, if already'
-                                                                            'downloaded')
+    prepare_dbs_parser.add_argument('--vogdb_loc', default=None,
+                                    help='hmm file for vogdb, if already downloaded (vog.hmm.tar.gz)')
+    prepare_dbs_parser.add_argument('--vog_annotations', default=None,
+                                    help='vogdb annotations file, if already downloaded (vog.annotations.tsv.gz)')
     prepare_dbs_parser.add_argument('--viral_loc', default=None,
-                                    help="File path to viral protein faa, if already downloaded")
+                                    help="File path to merged viral protein faa, if already downloaded "
+                                         "(viral.x.protein.faa.gz)")
     prepare_dbs_parser.add_argument('--peptidase_loc', default=None,
-                                    help="File path to MEROPS peptidase fasta, if already downloaded")
+                                    help="File path to MEROPS peptidase fasta, if already downloaded (pepunit.lib)")
     prepare_dbs_parser.add_argument('--genome_summary_form_loc', default=None, help="File path to genome summary form,"
                                                                                     "if already downloaded")
     prepare_dbs_parser.add_argument('--module_step_form_loc', default=None, help="File path to module step form, if"

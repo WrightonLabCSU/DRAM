@@ -2,13 +2,12 @@ from sqlalchemy import Column, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 
 # TODO: Do all processing of descriptions here
+# TODO: set up init statements that can parse the line into desired parameters
 
 Base = declarative_base()
 
 KEGG_DESCRIPTION_TABLE_NAME = 'kegg_description'
 
-
-# TODO: set up init statements that can parse the line into desired parameters
 
 class KeggDescription(Base):
     __tablename__ = KEGG_DESCRIPTION_TABLE_NAME
