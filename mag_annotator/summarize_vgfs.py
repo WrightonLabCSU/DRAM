@@ -233,6 +233,6 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     amg_column = make_amg_count_column(potential_amgs, vgf_order)
     viral_function_df = make_viral_functional_df(potential_amgs, genome_summary_form, groupby_column=groupby_column)
     viral_functional_heatmap = make_viral_functional_heatmap(viral_function_df, vgf_order)
-    alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'liquor.html'))
-    print('%s: Generated liquor heatmap' % (str(datetime.now() - start_time)))
+    alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'product.html'))
+    print('%s: Generated product heatmap' % (str(datetime.now() - start_time)))
     print("%s: Completed distillation" % str(datetime.now() - start_time))

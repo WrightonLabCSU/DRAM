@@ -615,17 +615,17 @@ def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_colu
             function_dfs.append(function_df_subset)
             liquor = make_liquor_heatmap(module_coverage_df_subset, etc_coverage_df_subset, function_df_subset,
                                          genomes, labels)
-            liquor.save(path.join(output_dir, 'liquor_%s.html' % i))
+            liquor.save(path.join(output_dir, 'product_%s.html' % i))
         liquor_df = make_liquor_df(pd.concat(module_coverage_dfs), pd.concat(etc_coverage_dfs), pd.concat(function_dfs))
-        liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
+        liquor_df.to_csv(path.join(output_dir, 'product.tsv'), sep='\t')
     else:
         module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_nets,
                                                                            etc_module_df,
                                                                            function_heatmap_form,
                                                                            groupby_column='fasta')
         liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
-        liquor_df.to_csv(path.join(output_dir, 'liquor.tsv'), sep='\t')
+        liquor_df.to_csv(path.join(output_dir, 'product.tsv'), sep='\t')
         liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order, labels)
-        liquor.save(path.join(output_dir, 'liquor.html'))
-    print('%s: Generated liquor heatmap and table' % (str(datetime.now() - start_time)))
+        liquor.save(path.join(output_dir, 'product.html'))
+    print('%s: Generated product heatmap and table' % (str(datetime.now() - start_time)))
     print("%s: Completed distillation" % str(datetime.now() - start_time))
