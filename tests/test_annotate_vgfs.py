@@ -201,10 +201,13 @@ def test_get_metabolic_flags():
                       'scaffold_1_2': 'F',
                       'scaffold_2_1': 'VMKETF',
                       'scaffold_3_1': 'MF',
-                      'scaffold_4_1': 'MJB',
-                      'scaffold_4_2': 'MJB',
-                      'scaffold_4_3': 'MJB',
-                      'scaffold_4_4': 'MJB'}
+                      'scaffold_4_1': 'MB',
+                      'scaffold_4_2': 'MB',
+                      'scaffold_4_3': 'MB',
+                      'scaffold_4_4': 'MB'}
+                      # 'scaffold_4_2': 'MJB',
+                      # 'scaffold_4_3': 'MJB',
+                      # 'scaffold_4_4': 'MJB'}
 
 
 def test_get_amg_ids():
