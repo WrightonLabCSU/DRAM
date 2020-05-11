@@ -395,10 +395,15 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
         annotation = annotations.loc[seq.metadata['id']]
         if 'rank' in annotations.columns and verbosity == 'short':
             annotation_str = 'rank: %s' % annotation['rank']
-            if (annotation['rank'] == 'A') or (annotation['rank'] == 'C' and not pd.isna(annotation.kegg_hit)):
+            if annotation['rank'] == 'A':
                 annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
-            elif annotation['rank'] == 'B' or (annotation['rank'] == 'C' and not pd.isna(annotation.uniref_hit)):
+            elif annotation['rank'] == 'B':
                 annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
+            elif annotation['rank'] == 'C':
+                if 'kegg_hit' in annotation:
+                    annotation_str += '; %s (db=%s)' % (annotation.kegg_hit, 'kegg')
+                if 'uniref_hit' in annotation:
+                    annotation_str += '; %s (db=%s)' % (annotation.uniref_hit, 'uniref')
             elif annotation['rank'] == 'D':
                 annotation_str += '; %s (db=%s)' % (annotation.pfam_hits, 'pfam')
             else:
