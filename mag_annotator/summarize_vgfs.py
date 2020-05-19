@@ -23,8 +23,8 @@ HEATMAP_CELL_WIDTH = 10
 
 defaultdict_list = partial(defaultdict, list)
 
-
-def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False, remove_js=False):
+def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False):
+    # def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False, remove_js=False):
     potential_amgs = list()
     for gene, row in annotations.iterrows():
         amg_flags = row['amg_flags']
@@ -33,8 +33,9 @@ def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=Fa
                              ('A' not in amg_flags) and ('P' not in amg_flags)
             remove_t = (remove_transposons and 'T' not in amg_flags) or not remove_transposons
             remove_f = (remove_fs and 'F' not in amg_flags) or not remove_fs
-            remove_j = (remove_fs and 'J' not in amg_flags) or not remove_js
-            if vmap_aux_check and remove_t and remove_f and remove_j:
+            # remove_j = (remove_fs and 'J' not in amg_flags) or not remove_js
+            # if vmap_aux_check and remove_t and remove_f and remove_j:
+            if vmap_aux_check and remove_t and remove_f:
                 potential_amgs.append(gene)
     return annotations.loc[potential_amgs]
 
@@ -64,7 +65,9 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
         else:
             virus_number_amgs = 0
         virus_transposase_present = sum(frame.is_transposon) > 0  # transposase on contig
-        virus_j_present = sum(['J' in i if not pd.isna(i) else False for i in frame.amg_flags]) > 0
+        # virus_j_present = sum(['J' in i if not pd.isna(i) else False for i in frame.amg_flags]) > 0
+        virus_j_present = sum([i == 'Xh' if not pd.isna(i) else False
+                               for i in frame['vogdb_categories']]) / frame.shape[0]
         virus_data = pd.Series([virus_category, virus_circular, virus_prophage, virus_num_genes, virus_strand_switches,
                                 virus_number_amgs, virus_transposase_present, virus_j_present],
                                index=VIRUS_STATS_COLUMNS, name=scaffold)
