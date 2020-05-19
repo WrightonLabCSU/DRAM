@@ -935,6 +935,8 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
     return all_annotations
 
 
+# TODO: Add force flag to remove output dir if it already exists
+# TODO: Add continute flag to continue if output directory already exists
 def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
                   skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True,

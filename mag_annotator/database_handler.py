@@ -14,7 +14,7 @@ from mag_annotator.utils import divide_chunks
 class DatabaseHandler:
     def __init__(self, database_loc):
         if not path.exists(database_loc):
-            raise ValueError('Database does not exist at this path')
+            raise ValueError('Database does not exist at path %s' % database_loc)
         engine = create_engine('sqlite:///%s' % database_loc)
         db_session = sessionmaker(bind=engine)
         self.session = db_session()
