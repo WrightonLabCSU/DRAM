@@ -450,7 +450,7 @@ def rename_fasta(input_fasta, output_fasta, prefix):
 
 
 # TODO: add annotations that don't end with '_id'
-def annotate_gff(input_gff, output_gff, annotations, prefix):
+def annotate_gff(input_gff, output_gff, annotations, prefix=None):
     """Go through a gff and add a prefix to the scaffold and gene number for all ID's"""
     f = open(input_gff)
     o = open(output_gff, 'w')
@@ -459,11 +459,14 @@ def annotate_gff(input_gff, output_gff, annotations, prefix):
         if not line.startswith('#'):
             # replace id with new name
             old_scaffold = line.split('\t')[0]
-            line = '%s_%s' % (prefix, line)
             match = re.search(r'ID=\d*_\d*;', line)
             gene_number = match.group().split('_')[-1][:-1]
             old_gene_name = '%s_%s' % (old_scaffold, gene_number)
-            gene_name = '%s_%s' % (prefix, old_gene_name)
+            if prefix is not None: # add prefix to line name and gene name if given
+                line = '%s_%s' % (prefix, line)
+                gene_name = '%s_%s' % (prefix, old_gene_name)
+            else:
+                gene_name = old_gene_name
             line = re.sub(r'ID=\d*_\d*;', 'ID=%s;' % gene_name, line)
             # get annotations to add from annotations file and add to end of line
             annotations_to_add = {strip_endings(i, ['_id']): annotations.loc[old_gene_name, i]
@@ -790,7 +793,7 @@ def annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_
 
 def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, custom_db_locs=(),
                    bit_score_threshold=60, rbh_bit_score_threshold=350, skip_trnascan=False, start_time=datetime.now(),
-                   threads=1, keep_tmp_dir=False, verbose=False):
+                   threads=1, rename_bins=True, keep_tmp_dir=False, verbose=False):
     """Annotated a single multifasta file, all file based outputs will be in output_dir"""
     # make temporary directory
     tmp_dir = path.join(output_dir, 'tmp')
@@ -812,19 +815,23 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                                 rbh_bit_score_threshold, threads, verbose)
     annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
 
+    if rename_bins:
+        # rename scaffolds to match prodigal names
+        renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
+        rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
+    else:
+        prefix = None
+        renamed_scaffolds = filtered_fasta
+
     # generate fna and faa output files with annotations
     annotated_fna = path.join(output_dir, 'genes.annotated.fna')
-    create_annotated_fasta(gene_fna, annotations, annotated_fna, name=fasta_name)
+    create_annotated_fasta(gene_fna, annotations, annotated_fna, name=prefix)
     annotated_faa = path.join(output_dir, 'genes.annotated.faa')
-    create_annotated_fasta(gene_faa, annotations, annotated_faa, name=fasta_name)
-
-    # rename scaffolds to match prodigal names
-    renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
-    rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
+    create_annotated_fasta(gene_faa, annotations, annotated_faa, name=prefix)
 
     # rename gff entries to match prodigal names
     renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
-    annotate_gff(gene_gff, renamed_gffs, annotations, prefix=fasta_name)
+    annotate_gff(gene_gff, renamed_gffs, annotations, prefix=prefix)
 
     # get tRNAs and rRNAs
     len_dict = {i.metadata['id']: len(i) for i in read_sequence(renamed_scaffolds, format='fasta')}
@@ -833,8 +840,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         if trna_table is not None:
             trna_loc = path.join(output_dir, 'trnas.tsv')
             trna_table.to_csv(trna_loc, sep='\t', index=False)
-            add_intervals_to_gff(trna_loc, renamed_gffs, len_dict,
-                                 make_trnas_interval, 'Name')
+            add_intervals_to_gff(trna_loc, renamed_gffs, len_dict, make_trnas_interval, 'Name')
         else:
             trna_loc = None
     else:
@@ -844,8 +850,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     if rrna_table is not None:
         rrna_loc = path.join(output_dir, 'rrnas.tsv')
         rrna_table.to_csv(rrna_loc, sep='\t', index=False)
-        add_intervals_to_gff(rrna_loc, renamed_gffs, len_dict,
-                             make_rrnas_interval, 'scaffold')
+        add_intervals_to_gff(rrna_loc, renamed_gffs, len_dict, make_rrnas_interval, 'scaffold')
     else:
         rrna_loc = None
 
@@ -858,7 +863,8 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
 
     # add fasta name to frame and index, append to list
     annotations.insert(0, 'fasta', fasta_name)
-    annotations.index = annotations.fasta + '_' + annotations.index
+    if rename_bins:
+        annotations.index = annotations.fasta + '_' + annotations.index
     annotations_loc = path.join(output_dir, 'annotations.tsv')
     annotations.to_csv(annotations_loc, sep='\t')
 
@@ -884,7 +890,7 @@ def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, master_list=MA
 
 def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, bit_score_threshold=60,
                     rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
-                    keep_tmp_dir=True, start_time=datetime.now(), threads=10, verbose=True):
+                    rename_bins=True, keep_tmp_dir=True, start_time=datetime.now(), threads=10, verbose=True):
     # check for no conflicting options/configurations
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
@@ -904,7 +910,7 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
         mkdir(fasta_dir)
         annotations_list.append(annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_locs, db_handler, min_contig_size,
                                                custom_db_locs, bit_score_threshold, rbh_bit_score_threshold,
-                                               skip_trnascan, start_time, threads, keep_tmp_dir, verbose))
+                                               skip_trnascan, start_time, threads, rename_bins, keep_tmp_dir, verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # merge annotation dicts
@@ -935,19 +941,29 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
     return all_annotations
 
 
-# TODO: Add force flag to remove output dir if it already exists
-# TODO: Add continute flag to continue if output directory already exists
-def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
+def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
                   rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
                   skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True,
+                  low_mem_mode=False, threads=10, verbose=True):
+    fasta_locs = glob(input_fasta)
+    if len(fasta_locs) == 0:
+        raise ValueError('Given fasta locations returns no paths: %s')
+    print('%s fastas found' % len(fasta_locs))
+    rename_bins = True
+    annotate_bins(fasta_locs, output_dir, min_contig_size, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
+                  custom_fasta_loc, use_uniref, skip_trnascan, gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir,
+                  low_mem_mode, threads, verbose)
+
+
+# TODO: Add force flag to remove output dir if it already exists
+# TODO: Add continute flag to continue if output directory already exists
+def annotate_bins(fasta_locs, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
+                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
+                  skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), rename_bins=True, keep_tmp_dir=True,
                   low_mem_mode=False, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
-    fasta_locs = glob(input_fasta)
-    if len(fasta_locs) == 0:
-        raise ValueError('Given fasta locations returns no paths: %s')
-    print('%s: %s fastas found' % (str(datetime.now() - start_time), len(fasta_locs)))
 
     # get database locations
     db_locs = get_database_locs()
@@ -958,7 +974,7 @@ def annotate_bins(input_fasta, output_dir='.', min_contig_size=5000, bit_score_t
 
     all_annotations = annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size, bit_score_threshold,
                                       rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, skip_trnascan,
-                                      keep_tmp_dir, start_time, threads, verbose)
+                                      rename_bins, keep_tmp_dir, start_time, threads, verbose)
     # if given add taxonomy information
     if len(gtdb_taxonomy) > 0:
         gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])

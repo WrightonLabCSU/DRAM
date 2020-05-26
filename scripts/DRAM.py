@@ -2,7 +2,7 @@
 
 import argparse
 
-from mag_annotator.annotate_bins import annotate_bins, annotate_called_genes
+from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes
 from mag_annotator.summarize_genomes import summarize_genomes
 from mag_annotator.pull_sequences import pull_sequences
 
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_parser.add_argument('--verbose', action='store_true', default=False)
-    annotate_parser.set_defaults(func=annotate_bins)
+    annotate_parser.set_defaults(func=annotate_bins_cmd)
 
     # parser for annotating already called genes
     annotate_genes_parser.add_argument('-i', '--input_faa', help="fasta file, optionally with wildcards to point to"
