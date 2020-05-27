@@ -815,14 +815,14 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                                 rbh_bit_score_threshold, threads, verbose)
     annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
 
+    renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
     if rename_bins:
         # rename scaffolds to match prodigal names
         prefix = fasta_name
-        renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
         rename_fasta(filtered_fasta, renamed_scaffolds, prefix=prefix)
     else:
         prefix = None
-        renamed_scaffolds = filtered_fasta
+        copy2(filtered_fasta, renamed_scaffolds)
 
     # generate fna and faa output files with annotations
     annotated_fna = path.join(output_dir, 'genes.annotated.fna')
