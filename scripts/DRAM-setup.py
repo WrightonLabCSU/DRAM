@@ -4,11 +4,14 @@ import argparse
 
 from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations,\
                                               populate_description_db, update_dram_forms, export_config, import_config
+from mag_annotator import __version__ as version
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     subparsers = parser.add_subparsers()
+    version_parser = subparsers.add_parser('version', help='print DRAM version')
     prepare_dbs_parser = subparsers.add_parser('prepare_databases',
                                                help="Download and process databases for annotation",
                                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -26,6 +29,11 @@ if __name__ == '__main__':
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     export_config_parser = subparsers.add_parser('export_config', help="Export CONFIG file",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    # parser for printing version
+    def print_version():
+        print(version)
+    version_parser.set_defaults(func=print_version)
 
     # parser for downloading and processing databases for annotation and summarization
     prepare_dbs_parser.add_argument('--output_dir', default=".", help="output directory")
