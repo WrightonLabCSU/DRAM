@@ -817,8 +817,9 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
 
     if rename_bins:
         # rename scaffolds to match prodigal names
+        prefix = fasta_name
         renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
-        rename_fasta(filtered_fasta, renamed_scaffolds, prefix=fasta_name)
+        rename_fasta(filtered_fasta, renamed_scaffolds, prefix=prefix)
     else:
         prefix = None
         renamed_scaffolds = filtered_fasta
