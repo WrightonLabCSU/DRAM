@@ -537,7 +537,7 @@ def make_strings_no_repeats(genome_taxa_dict):
     return labels
 
 
-def summarize_genomes(input_file, trna_path, rrna_path, output_dir, groupby_column):
+def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.', groupby_column='fasta'):
     start_time = datetime.now()
 
     # read in data

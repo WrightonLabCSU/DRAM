@@ -204,8 +204,10 @@ def make_viral_functional_heatmap(functional_df, vgf_order=None):
     return function_heatmap
 
 
-def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3, remove_transposons=False,
-                   remove_fs=False, remove_js=False):
+# def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3, remove_transposons=False,
+#                    remove_fs=False, remove_js=False):
+def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3,
+                   remove_transposons=False, remove_fs=False):
     start_time = datetime.now()
 
     # set up
@@ -218,8 +220,10 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # get potential AMGs
+    # potential_amgs = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
+    #                                 remove_transposons=remove_transposons, remove_fs=remove_fs, remove_js=remove_js)
     potential_amgs = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
-                                    remove_transposons=remove_transposons, remove_fs=remove_fs, remove_js=remove_js)
+                                    remove_transposons=remove_transposons, remove_fs=remove_fs)
     print('%s: Determined potential amgs' % (str(datetime.now() - start_time)))
 
     # make distillate
