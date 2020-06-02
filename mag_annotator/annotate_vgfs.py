@@ -88,7 +88,7 @@ def get_virsorter_hits(virsorter_affi_contigs):
     raw_file = open(virsorter_affi_contigs).read()
 
     virsorter_rows = list()
-    for entry in raw_file.split('>')[1:]:
+    for entry in raw_file[1:].split('\n>'):
         split_entry = entry.strip().split('\n')
         entry_data = split_entry[0].split('|')
         entry_name = entry_data[0]
