@@ -308,7 +308,7 @@ def get_virsorter_affi_contigs_name(scaffold):
     return virsorter_scaffold_name
 
 
-def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=5000,
+def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500,
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
                   use_uniref=False, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
                   threads=10, verbose=True):

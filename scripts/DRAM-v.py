@@ -26,7 +26,7 @@ if __name__ == '__main__':
     annotate_parser.add_argument('-v', '--virsorter_affi_contigs', help="VirSorter VIRSorter_affi-contigs.tab "
                                                                         "output file")
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
-    annotate_parser.add_argument('--min_contig_size', type=int, default=5000,
+    annotate_parser.add_argument('--min_contig_size', type=int, default=2500,
                                  help='minimum contig size to be used for gene prediction')
     annotate_parser.add_argument('--bit_score_threshold', type=int, default=60,
                                  help='minimum bitScore of search to retain hits')
