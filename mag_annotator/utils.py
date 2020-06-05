@@ -112,5 +112,5 @@ def remove_prefix(text, prefix):
 
 def remove_suffix(text, suffix):
     if text.endswith(suffix):
-        return text[:len(suffix)]
+        return text[:-1*len(suffix)]
     return text  # or whatever
