@@ -46,7 +46,6 @@ Nitrogen metabolism	Nitrogen fixation	nitrogen => ammonia	K02588, K02586	nitroge
 Nitrogen metabolism	Nitrogen fixation	Nitrogen fixation altennative	K22896	vnfD; Vanadium-dependent nitrogenase alpha chain [EC:1.18.6.2] [RN:R12084]	vnfH
 Sulfur metabolism	Sulfur metabolism	dissimilatory sulfate reduction (and oxidation) sulfate => sulfide	K11180, K11181	dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]	dsrA or dsrB
 Sulfur metabolism	Sulfur metabolism	thiosulfate => sulfite	K08352	thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]	phsA, psrA
-Sulfur metabolism	Sulfur metabolism	thiosulfate reduction, thiosulfate => sulfite	K01011	rhodanase	rdlA
 Sulfur metabolism	Sulfur metabolism	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	K17222, K17223, K17224, K17225, K22622, K17226, K17227
 Sulfur metabolism	Sulfur metabolism	tetrathionate => thiosulfate	K08357		ttrA
 Other Reductases	Reductases and Electron transport chain components	selenate/Chlorate reduction	K17050	selenate/chlorate reductase subunit alpha

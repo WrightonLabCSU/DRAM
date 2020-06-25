@@ -36,7 +36,7 @@ MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
     """Removes sequences shorter than a set minimum from fasta files, outputs an object or to a file"""
-    kept_seqs = (seq for seq in read_sequence(fasta_loc, format='fasta') if len(seq) > min_len)
+    kept_seqs = (seq for seq in read_sequence(fasta_loc, format='fasta') if len(seq) >= min_len)
     if output_loc is None:
         return list(kept_seqs)
     else:
@@ -379,7 +379,8 @@ def assign_grades(annotations):
             rank = 'B'
         elif not pd.isna(row.get('kegg_hit')) or not pd.isna(row.get('uniref_hit')):
             rank = 'C'
-        elif not pd.isna(row.get('pfam_hits')):
+        elif not pd.isna(row.get('pfam_hits')) or not pd.isna(row.get('cazy_hits'))\
+                or not pd.isna(row.get('peptidase_hit')):
             rank = 'D'
         else:
             rank = 'E'
