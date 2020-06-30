@@ -575,7 +575,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     mkdir(output_dir)
 
     # make genome stats
-    genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame)
+    genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, groupby_column=groupby_column)
     genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=None)
     print('%s: Calculated genome statistics' % (str(datetime.now() - start_time)))
 
@@ -628,7 +628,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
         module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_nets,
                                                                            etc_module_df,
                                                                            function_heatmap_form,
-                                                                           groupby_column='fasta')
+                                                                           groupby_column=groupby_column)
         liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
         liquor_df.to_csv(path.join(output_dir, 'product.tsv'), sep='\t')
         liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order, labels)
