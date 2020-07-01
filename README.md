@@ -29,6 +29,14 @@ enviornment.yaml file.
     
     If you do not install via a conda enviornment, then the dependencies [pandas](https://pandas.pydata.org/), [networkx](https://networkx.github.io/), [scikit-bio](http://scikit-bio.org/), [prodigal](https://github.com/hyattpd/Prodigal), [mmseqs2](https://github.com/soedinglab/mmseqs2), [hmmer](http://hmmer.org/) and [tRNAscan-SE](http://lowelab.ucsc.edu/tRNAscan-SE/) need to be installed manually.
 
+1. Install from pip
+
+    You can install DRAM from pip.
+    ```bash
+   pip install DRAM-bio
+   ```
+
+Alternately you can install the latest version by install from github.
 1. Download this repository using `git clone https://github.com/shafferm/DRAM.git`
 2. Change directory into the DRAM directory and install DRAM using `pip install -e .`
 
@@ -62,9 +70,11 @@ again.
 To test that your set up worked use the command `DRAM.py print_config` and the location of all databases provided 
 will be shown as well as the presence of additional annotation information.
 
-*NOTE:* Setting up DRAM can take a long time (up to 5 hours) depending on the number of processors which you tell 
-it to use (using the `--threads` argument) and the speed of your internet connection. On my university server using 10 
-processors it takes about 2 hours to process the data when databases do not need to be downloaded.
+*NOTE:* Setting up DRAM can take a long time (up to 5 hours) and uses a large about of memory (512 gb) by default. To
+use less memory you can use the `--skip_uniref` flag which will reduce memory usage to ~64 gb if you do not provide KEGG
+ Genes and 128 gb if you do. Depending on the number of processors which you tell  it to use (using the `--threads` 
+argument) and the speed of your internet connection. On a less than 5 year old server with 10 processors it takes about
+ 2 hours to process the data when databases do not need to be downloaded.
 
 ## Usage
 
