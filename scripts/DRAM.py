@@ -29,6 +29,15 @@ if __name__ == '__main__':
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_parser.add_argument('--min_contig_size', type=int, default=2500,
                                  help='minimum contig size to be used for gene prediction')
+    prodigal_mode_choices = ['train', 'meta', 'single']
+    annotate_parser.add_argument('--prodigal_mode', type='str', default='meta', choices=prodigal_mode_choices,
+                                 help='Mode of prodigal to use for gene calling. NOTE: normal or single mode require '
+                                      'genomes which are high quality with low contamination and long contigs (average '
+                                      'length >3 Kbp).')
+    # prodigal_trans_table_choices = ['auto'] + [str(i) for i in range(1, 26)]
+    prodigal_trans_table_choices = [str(i) for i in range(1, 26)]
+    annotate_parser.add_argument('--trans_table', type='str', default='11', choices=prodigal_trans_table_choices,
+                                 help='Translation table for prodigal to use for gene calling.')
     annotate_parser.add_argument('--bit_score_threshold', type=int, default=60,
                                  help='minimum bitScore of search to retain hits')
     annotate_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,

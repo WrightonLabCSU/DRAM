@@ -43,14 +43,14 @@ def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
         write_sequence(kept_seqs, format='fasta', into=output_loc)
 
 
-def run_prodigal(fasta_loc, output_dir, verbose=False):
+def run_prodigal(fasta_loc, output_dir, mode='meta', trans_table='11', verbose=False):
     """Runs the prodigal gene caller on a given fasta file, outputs resulting files to given directory"""
     output_gff = path.join(output_dir, 'genes.gff')
     output_fna = path.join(output_dir, 'genes.fna')
     output_faa = path.join(output_dir, 'genes.faa')
 
-    run_process(['prodigal', '-i', fasta_loc, '-p', 'meta', '-f', 'gff', '-o', output_gff, '-a', output_faa, '-d',
-                 output_fna], verbose=verbose)
+    run_process(['prodigal', '-i', fasta_loc, '-p', mode, '-g', trans_table, '-f', 'gff', '-o', output_gff, '-a',
+                 output_faa, '-d', output_fna], verbose=verbose)
     return output_gff, output_fna, output_faa
 
 
@@ -792,9 +792,10 @@ def annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_
     return annotations
 
 
-def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, custom_db_locs=(),
-                   bit_score_threshold=60, rbh_bit_score_threshold=350, skip_trnascan=False, start_time=datetime.now(),
-                   threads=1, rename_bins=True, keep_tmp_dir=False, verbose=False):
+def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, prodigal_mode='meta',
+                   trans_table='11', custom_db_locs=(), bit_score_threshold=60, rbh_bit_score_threshold=350,
+                   skip_trnascan=False, start_time=datetime.now(), threads=1, rename_bins=True, keep_tmp_dir=False,
+                   verbose=False):
     """Annotated a single multifasta file, all file based outputs will be in output_dir"""
     # make temporary directory
     tmp_dir = path.join(output_dir, 'tmp')
@@ -809,7 +810,8 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
         return pd.DataFrame()
 
     # predict ORFs with prodigal
-    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir, verbose=verbose)
+    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir, mode=prodigal_mode, trans_table=trans_table,
+                                                verbose=verbose)
 
     # annotate ORFs
     annotations = annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_locs, bit_score_threshold,
@@ -890,9 +892,10 @@ def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, master_list=MA
     return db_locs
 
 
-def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, bit_score_threshold=60,
-                    rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), skip_trnascan=False,
-                    rename_bins=True, keep_tmp_dir=True, start_time=datetime.now(), threads=10, verbose=True):
+def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, prodigal_mode='meta',
+                    trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
+                    custom_fasta_loc=(), skip_trnascan=False, rename_bins=True, keep_tmp_dir=True,
+                    start_time=datetime.now(), threads=10, verbose=True):
     # check for no conflicting options/configurations
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
@@ -911,8 +914,9 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
         fasta_dir = path.join(tmp_dir, fasta_name)
         mkdir(fasta_dir)
         annotations_list.append(annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_locs, db_handler, min_contig_size,
-                                               custom_db_locs, bit_score_threshold, rbh_bit_score_threshold,
-                                               skip_trnascan, start_time, threads, rename_bins, keep_tmp_dir, verbose))
+                                               prodigal_mode, trans_table, custom_db_locs, bit_score_threshold,
+                                               rbh_bit_score_threshold, skip_trnascan, start_time, threads, rename_bins,
+                                               keep_tmp_dir, verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # merge annotation dicts
@@ -943,29 +947,44 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
     return all_annotations
 
 
-def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
-                  skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True,
-                  low_mem_mode=False, threads=10, verbose=True):
+def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodigal_mode='meta', trans_table='11',
+                      bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
+                      use_uniref=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True,
+                      low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s')
     print('%s fastas found' % len(fasta_locs))
     rename_bins = True
-    annotate_bins(fasta_locs, output_dir, min_contig_size, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
-                  custom_fasta_loc, use_uniref, skip_trnascan, gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir,
-                  low_mem_mode, threads, verbose)
+    annotate_bins(fasta_locs, output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
+                  rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref, skip_trnascan, gtdb_taxonomy,
+                  checkm_quality, rename_bins, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
 # TODO: Add force flag to remove output dir if it already exists
 # TODO: Add continute flag to continue if output directory already exists
-def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
-                  skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), rename_bins=True, keep_tmp_dir=True,
-                  low_mem_mode=False, threads=10, verbose=True):
+def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
+                  bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
+                  use_uniref=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), rename_bins=True,
+                  keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
+
+    # check inputs
+    prodigal_modes = ['train', 'meta', 'single']
+    if prodigal_mode not in prodigal_modes:
+        raise ValueError('Prodigal mode must be one of %s.' % ', '.join(prodigal_modes))
+    elif prodigal_mode in ['normal', 'single']:
+        warnings.warn('When running prodigal in single mode your bins must have long contigs (average length >3 Kbp), '
+                      'be long enough (total length > 500 Kbp) and have very low contamination in order for prodigal '
+                      'training to work well.')
+
+    # prodigal_trans_tables = ['auto'] + [str(i) for i in range(1, 26)]
+    prodigal_trans_tables = [str(i) for i in range(1, 26)]
+    if not trans_table in prodigal_trans_tables:
+        # raise ValueError('Prodigal translation table must be 1-25 or auto')
+        raise ValueError('Prodigal translation table must be 1-25')
 
     # get database locations
     db_locs = get_database_locs()
@@ -974,9 +993,10 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, bit_score_th
 
     mkdir(output_dir)
 
-    all_annotations = annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size, bit_score_threshold,
-                                      rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, skip_trnascan,
-                                      rename_bins, keep_tmp_dir, start_time, threads, verbose)
+    all_annotations = annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size, prodigal_mode,
+                                      trans_table, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
+                                      custom_fasta_loc, skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads,
+                                      verbose)
     # if given add taxonomy information
     if len(gtdb_taxonomy) > 0:
         gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
