@@ -29,16 +29,12 @@ enviornment.yaml file.
     
     If you do not install via a conda enviornment, then the dependencies [pandas](https://pandas.pydata.org/), [networkx](https://networkx.github.io/), [scikit-bio](http://scikit-bio.org/), [prodigal](https://github.com/hyattpd/Prodigal), [mmseqs2](https://github.com/soedinglab/mmseqs2), [hmmer](http://hmmer.org/) and [tRNAscan-SE](http://lowelab.ucsc.edu/tRNAscan-SE/) need to be installed manually.
 
-1. Install from pip
+1. Install DRAM from pip
 
     You can install DRAM from pip.
     ```bash
    pip install DRAM-bio
    ```
-
-Alternately you can install the latest version by install from github.
-1. Download this repository using `git clone https://github.com/shafferm/DRAM.git`
-2. Change directory into the DRAM directory and install DRAM using `pip install -e .`
 
 You have now installed DRAM.
 
