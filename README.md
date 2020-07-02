@@ -3,7 +3,7 @@
 
 DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes and [VirSorter](https://github.com/simroux/VirSorter) identified viral contigs. DRAM annotates MAGs and viral contigs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene and then a distill step to curate these annotations into useful functional categories. Additionally viral contigs are further analyzed during to identify potential AMGs. This is done via assigning an auxiliary score and flags representing the confidence that a gene is both metabolic and viral.
 
-For more detail on DRAM and how DRAM works please see the wiki: https://github.com/shafferm/DRAM/wiki
+For more detail on DRAM and how DRAM works please see our [preprint](https://www.biorxiv.org/content/10.1101/2020.06.29.177501v1) as well as the [wiki](https://github.com/shafferm/DRAM/wiki).
 
 ## Installation
 To install DRAM some dependencies need to be installed first then DRAM can be installed from this repository. In the future DRAM will be available via both pip and conda.
@@ -100,3 +100,7 @@ memory usage depends on the databases used. When annotating with UniRef90 around
 gene database has been provided and UniRef90 is not used then memory usage is around 100 GB of RAM. If KOfam is used to 
 annotate KEGG and UniRef90 is not used then less than 50 GB of RAM is required. DRAM can be run with any number of 
 processors on a single node.
+
+## Citing DRAM
+The DRAM manuscript is available as a preprint [here](https://www.biorxiv.org/content/10.1101/2020.06.29.177501v1). If 
+DRAM helps you out in your research then please cite it.
