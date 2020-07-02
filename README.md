@@ -94,3 +94,13 @@ Then after your annotation is finished you can summarize these annotations with 
 DRAM.py distill -i annotation/annotations.tsv -o genome_summaries --trna_path annotation/trnas.tsv --rrna_path --rrna_path annotation/rrnas.tsv
 ```
 This will generate the distillate and liquor files.
+
+## System Requirements
+DRAM has a large memory burden and is designed to be run on high performance computers. DRAM annotates against a large 
+variety of databases which must be processed and stored. Setting up DRAM with KEGG Genes and UniRef90 will take up ~500 
+GB of storage after processing and require ~512 GB of RAM while using KOfam and skipping UniRef90 will mean all 
+processed databases will take up ~30 GB on disk and will only use ~128 GB of RAM while processing. DRAM annotation 
+memory usage depends on the databases used. When annotating with UniRef90 around 220 GB of RAM is required. If the KEGG 
+gene database has been provided and UniRef90 is not used then memory usage is around 100 GB of RAM. If KOfam is used to 
+annotate KEGG and UniRef90 is not used then less than 50 GB of RAM is required. DRAM can be run with any number of 
+processors on a single node.
