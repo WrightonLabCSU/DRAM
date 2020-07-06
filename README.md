@@ -63,7 +63,7 @@ DRAM-setup.py prepare_databases --output_dir DRAM_data
 Similar to above you can still provide locations of databases you have already downloaded so you don't have to do it
 again.
 
-To test that your set up worked use the command `DRAM.py print_config` and the location of all databases provided 
+To test that your set up worked use the command `DRAM-setup.py print_config` and the location of all databases provided 
 will be shown as well as the presence of additional annotation information.
 
 *NOTE:* Setting up DRAM can take a long time (up to 5 hours) and uses a large about of memory (512 gb) by default. To
