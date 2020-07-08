@@ -1019,6 +1019,11 @@ def annotate_called_genes(input_faa, output_dir='.', bit_score_threshold=60, rbh
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
 
+    fasta_locs = glob(input_faa)
+    if len(fasta_locs) == 0:
+        raise ValueError('Given fasta locations returns no paths: %s')
+    print('%s fastas found' % len(fasta_locs))
+
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
@@ -1036,7 +1041,7 @@ def annotate_called_genes(input_faa, output_dir='.', bit_score_threshold=60, rbh
     # annotate
     annotation_locs = list()
     faa_locs = list()
-    for fasta_loc in glob(input_faa):
+    for fasta_loc in fasta_locs:
         # set up
         fasta_name = path.splitext(path.basename(remove_suffix(input_faa, '.gz')))[0]
         fasta_dir = path.join(tmp_dir, fasta_name)
