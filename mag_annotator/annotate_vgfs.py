@@ -1,6 +1,7 @@
 from datetime import datetime
 from os import path, mkdir
 import re
+import warnings
 
 import pandas as pd
 import numpy as np
@@ -309,13 +310,22 @@ def get_virsorter_affi_contigs_name(scaffold):
     return virsorter_scaffold_name
 
 
-def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500,
-                  bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  use_uniref=False, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
+def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500, prodigal_mode='meta',
+                  trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
+                  custom_fasta_loc=(), use_uniref=False, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
                   threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Viral annotation started' % str(datetime.now()))
+
+    # check inputs
+    prodigal_modes = ['train', 'meta', 'single']
+    if prodigal_mode not in prodigal_modes:
+        raise ValueError('Prodigal mode must be one of %s.' % ', '.join(prodigal_modes))
+    elif prodigal_mode in ['normal', 'single']:
+        warnings.warn('When running prodigal in single mode your bins must have long contigs (average length >3 Kbp), '
+                      'be long enough (total length > 500 Kbp) and have very low contamination in order for prodigal '
+                      'training to work well.')
 
     # get database locations
     db_locs = get_database_locs()
@@ -348,9 +358,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # annotate vMAGs
     rename_bins = False
-    annotations = annotate_fastas(contig_locs, output_dir, db_locs_anno, db_handler, min_contig_size,
-                                  bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,
-                                  skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads, verbose)
+    annotations = annotate_fastas(contig_locs, output_dir, db_locs_anno, db_handler, min_contig_size, prodigal_mode,
+                                  trans_table, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
+                                  custom_fasta_loc, skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads,
+                                  verbose)
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # setting up scoring viral genes
