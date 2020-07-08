@@ -59,6 +59,7 @@ def remove_bad_chars_fasta(fasta):
 def remove_bad_chars_virsorter_affi_contigs(virsorter_in):
     new_lines = list()
     for line in open(virsorter_in).readlines():
+        line = line.strip()
         if line.startswith('>'):
             line = line.lstrip('>')
             split_line = line.split('|')
@@ -68,7 +69,7 @@ def remove_bad_chars_virsorter_affi_contigs(virsorter_in):
             split_line = line.split('|')
             split_line[0] = split_line[0].replace(';', '_').replace('=', '_')
             new_lines.append('|'.join(split_line))
-    return ''.join(new_lines)
+    return '%s\n' % '\n'.join(new_lines)
 
 
 def remove_bad_chars(input_fasta=None, input_virsorter_affi_contigs=None, output=None):
