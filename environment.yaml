@@ -17,3 +17,6 @@ dependencies:
   - networkx
   - ruby
   - parallel
+  - pip
+  - pip:
+      - DRAM-bio
