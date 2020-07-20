@@ -362,15 +362,21 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
     print('%s: Database locations set' % str(datetime.now() - start_time))
 
 
-def populate_description_db(db_dict=None, start_time=None):
+def populate_description_db(output_loc=None, db_dict=None, start_time=None):
     if start_time is None:
         start_time = datetime.now()
         print('%s: Populating description database' % str(datetime.now() - start_time))
     # setup
     if db_dict is None:
         db_dict = get_database_locs()
-    if path.exists(db_dict['description_db']):
+
+    if db_dict['description_db'] is None and output_loc is not None:
+        db_dict['description_db'] = output_loc
+    elif db_dict['description_db'] is None and output_loc is None:
+        raise ValueError('Must provide output location if description db location is not set in configuration')
+    elif path.exists(db_dict['description_db']):
         remove(db_dict['description_db'])
+
     create_description_db(db_dict['description_db'])
     db_handler = DatabaseHandler(db_dict['description_db'])
     print('%s: Database connection established' % str(datetime.now() - start_time))
@@ -409,6 +415,12 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
                       keep_database_files=False, branch='master', threads=10, verbose=True):
     start_time = datetime.now()
     print('%s: Database preparation started' % str(datetime.now()))
+
+    # check inputs
+    if skip_uniref and uniref_loc is not None:
+        raise ValueError('Cannot skip UniRef processing and provide a location of UniRef. Skipping UniRef will cause '
+                         'provided UniRef file to not be used.')
+
     # check that all given files exist
     check_file_exists(kegg_loc)
     check_file_exists(gene_ko_link_loc)
