@@ -6,35 +6,28 @@ DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating m
 For more detail on DRAM and how DRAM works please see our [preprint](https://www.biorxiv.org/content/10.1101/2020.06.29.177501v1) as well as the [wiki](https://github.com/shafferm/DRAM/wiki).
 
 ## Installation
-To install DRAM some dependencies need to be installed first then DRAM can be installed from this repository. In the future DRAM will be available via both pip and conda.
+To install DRAM some dependencies need to be installed first then DRAM can be installed from this repository. In the future DRAM will be available from conda. Dependencies can be installed via conda or manually.
+    
+_Conda Installation_
 
-0. Install Dependencies
-    
-    Dependencies can be installed via conda or manually.
-    
-    _Conda Installation_
-    
-    Installed DRAM into a new [conda](https://docs.conda.io/en/latest/) environment using the provided 
+Install DRAM into a new [conda](https://docs.conda.io/en/latest/) environment using the provided 
 enviornment.yaml file.
-    ```bash
-    wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
-    conda env create -f environment.yaml -n DRAM
-    ```
-    If this installation method is used then all further steps should be run inside the newly created DRAM environment. This environment can be activated using this command:
-    ```bash
-    conda activate DRAM
-    ```
+```bash
+wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
+conda env create -f environment.yaml -n DRAM
+```
+If this installation method is used then all further steps should be run inside the newly created DRAM environment. This environment can be activated using this command:
+```bash
+conda activate DRAM
+```
 
-    _Manual Installation_
-    
-    If you do not install via a conda enviornment, then the dependencies [pandas](https://pandas.pydata.org/), [networkx](https://networkx.github.io/), [scikit-bio](http://scikit-bio.org/), [prodigal](https://github.com/hyattpd/Prodigal), [mmseqs2](https://github.com/soedinglab/mmseqs2), [hmmer](http://hmmer.org/) and [tRNAscan-SE](http://lowelab.ucsc.edu/tRNAscan-SE/) need to be installed manually.
+_Manual Installation_
 
-1. Install DRAM from pip
-
-    You can install DRAM from pip.
-    ```bash
-   pip install DRAM-bio
-   ```
+If you do not install via a conda environment, then the dependencies [pandas](https://pandas.pydata.org/), [networkx](https://networkx.github.io/), [scikit-bio](http://scikit-bio.org/), [prodigal](https://github.com/hyattpd/Prodigal), [mmseqs2](https://github.com/soedinglab/mmseqs2), [hmmer](http://hmmer.org/) and [tRNAscan-SE](http://lowelab.ucsc.edu/tRNAscan-SE/) need to be installed manually. Then you can install DRAM using pip:
+```bash
+pip install DRAM-bio
+```
+Alternatively if you would like to install a development version of DRAM then you can install DRAM by cloning this repository and install using pip and the local repository.
 
 You have now installed DRAM.
 
