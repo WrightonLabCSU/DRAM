@@ -636,6 +636,7 @@ K02692	psaD; photosystem I subunit II	Photosystem I	Energy	Photosynthesis		TRUE
 K02693	psaE; photosystem I subunit IV	Photosystem I	Energy	Photosynthesis		TRUE
 K02694	psaF; photosystem I subunit III	Photosystem I	Energy	Photosynthesis		TRUE
 K00281	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
+K00283	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
 K00605	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
 K00382	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
 K02437	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
