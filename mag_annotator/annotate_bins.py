@@ -608,7 +608,10 @@ def add_intervals_to_gff(annotations_loc, gff_loc, len_dict, interval_function, 
     # process trnas to intervals
     annotation_dict = dict()
     for scaffold, frame in annotation_frame.groupby(groupby_column):
-        scaffold = scaffold.strip()
+        if type(scaffold) is not str:
+            scaffold = str(scaffold)
+        else:
+            scaffold = scaffold.strip()
         im = IntervalMetadata(len_dict[scaffold])
         for i, (_, row) in enumerate(frame.iterrows()):
             i += 1
