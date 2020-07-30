@@ -810,7 +810,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
 
     if stat(filtered_fasta).st_size == 0:
         warnings.warn('No sequences were longer than min_contig_size')
-        return pd.DataFrame()
+        return None
 
     # predict ORFs with prodigal
     gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir, mode=prodigal_mode, trans_table=trans_table,
@@ -923,18 +923,18 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     # merge annotation dicts
-    all_annotations = pd.concat([i.get_annotations() for i in annotations_list], sort=False)
+    all_annotations = pd.concat([i.get_annotations() for i in annotations_list if i is not None], sort=False)
     all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
 
     # merge gene files
-    merge_files([i.genes_fna_loc for i in annotations_list], path.join(output_dir, 'genes.fna'))
-    merge_files([i.genes_faa_loc for i in annotations_list], path.join(output_dir, 'genes.faa'))
-    merge_files([i.scaffolds_loc for i in annotations_list], path.join(output_dir, 'scaffolds.fna'))
-    merge_files([i.gff_loc for i in annotations_list], path.join(output_dir, 'genes.gff'), True)
-    trnas_locs = [i.trnas_loc for i in annotations_list if i.trnas_loc is not None]
+    merge_files([i.genes_fna_loc for i in annotations_list if i is not None], path.join(output_dir, 'genes.fna'))
+    merge_files([i.genes_faa_loc for i in annotations_list if i is not None], path.join(output_dir, 'genes.faa'))
+    merge_files([i.scaffolds_loc for i in annotations_list if i is not None], path.join(output_dir, 'scaffolds.fna'))
+    merge_files([i.gff_loc for i in annotations_list if i is not None], path.join(output_dir, 'genes.gff'), True)
+    trnas_locs = [i.trnas_loc for i in annotations_list if i is not None if i.trnas_loc is not None]
     if len(trnas_locs) > 0:
         merge_files(trnas_locs, path.join(output_dir, 'trnas.tsv'), True)
-    rrnas_locs = [i.rrnas_loc for i in annotations_list if i.rrnas_loc is not None]
+    rrnas_locs = [i.rrnas_loc for i in annotations_list if i is not None if i.rrnas_loc is not None]
     if len(rrnas_locs) > 0:
         merge_files(rrnas_locs, path.join(output_dir, 'rrnas.tsv'), True)
 
@@ -942,7 +942,8 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
     gbk_dir = path.join(output_dir, 'genbank')
     mkdir(gbk_dir)
     for anno in annotations_list:
-        copy2(anno.gbk_loc, path.join(gbk_dir, '%s.gbk' % anno.name))
+        if anno is not None:
+            copy2(anno.gbk_loc, path.join(gbk_dir, '%s.gbk' % anno.name))
 
     # clean up
     if not keep_tmp_dir:
