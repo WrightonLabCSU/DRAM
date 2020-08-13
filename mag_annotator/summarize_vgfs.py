@@ -7,7 +7,7 @@ from collections import defaultdict, Counter
 from datetime import datetime
 import warnings
 
-from mag_annotator.utils import get_database_locs
+from mag_annotator.utils import get_database_locs, get_ids_from_row
 from mag_annotator.summarize_genomes import get_ordered_uniques
 
 VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes',
@@ -78,23 +78,6 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
         gene_counts_series = pd.Series(named_gene_counts, name=scaffold)
         viral_stats_series.append(virus_data.append(gene_counts_series))
     return pd.DataFrame(viral_stats_series).fillna(0)
-
-
-def get_ids_from_row(row):
-    id_list = list()
-    # get kegg ids
-    if 'kegg_id' in row and not pd.isna(row['kegg_id']):
-        id_list += [j for j in row['kegg_id'].split(',')]
-    # get ec numbers
-    if 'kegg_hit' in row and not pd.isna(row['kegg_hit']):
-        id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', row['kegg_hit'])]
-    # get merops ids
-    if 'peptidase_family' in row and not pd.isna(row['peptidase_family']):
-        id_list += [j for j in row['peptidase_family'].split(';')]
-    # get cazy ids
-    if 'cazy_hits' in row and not pd.isna(row['cazy_hits']):
-        id_list += [j.strip().split(' ')[0] for j in row['cazy_hits'].split(';')]
-    return set(id_list)
 
 
 def make_viral_distillate(potential_amgs, genome_summary_frame):

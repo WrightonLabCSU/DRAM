@@ -4,7 +4,7 @@ import argparse
 
 from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes
 from mag_annotator.summarize_genomes import summarize_genomes
-from mag_annotator.pull_sequences import pull_sequences
+from mag_annotator.pull_sequences import pull_sequences, get_gene_neighborhoods
 
 # TODO: refactor parses to limit duplication
 
@@ -21,6 +21,8 @@ if __name__ == '__main__':
                                            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     strainer_parser = subparsers.add_parser('strainer', help="Strain annotations down to genes of interest",
                                             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    neighborhood_parser = subparsers.add_parser('neighborhoods', help="Find neighborhoods around genes of interest",
+                                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for annotating mags, you know the real thing
     annotate_parser.add_argument('-i', '--input_fasta',
@@ -120,6 +122,23 @@ if __name__ == '__main__':
     dram_group.add_argument('--contamination', default=None, type=float,
                             help='Maximum contamination of genome to keep genes')
     strainer_parser.set_defaults(func=pull_sequences)
+
+    # parser for getting gene neighborhoods
+    neighborhood_parser.add_argument("-i", "--input_file", help="Annotations path")
+    neighborhood_parser.add_argument("-o", "--output_dir", help="Directory to write gene neighborhoods")
+    neighborhood_parser.add_argument("--genes", nargs='*', help="Gene names from DRAM to find neighborhoods around")
+    neighborhood_parser.add_argument("--identifiers", nargs='*',
+                                     help="Database identifiers assigned by DRAM to find neighborhoods around")
+    neighborhood_parser.add_argument("--categories", help="Distillate categories to build gene neighborhoods around.")
+    neighborhood_parser.add_argument("--genes_loc", help="Location of genes.fna/genes.faa file to filter to "
+                                                         "neighborhoods")
+    neighborhood_parser.add_argument("--scaffolds_loc", help="Location of scaffolds.fna file to filter to "
+                                                             "neighborhoods")
+    neighborhood_parser.add_argument("--distance_genes", type=int, help="Number of genes away from center to include "
+                                                                        "in neighborhoods")
+    neighborhood_parser.add_argument("--distance_bp", type=int, help="Number of genes away from center to include "
+                                                                     "in neighborhoods")
+    neighborhood_parser.set_defaults(func=get_gene_neighborhoods)
 
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}

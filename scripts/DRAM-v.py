@@ -4,7 +4,7 @@ import argparse
 
 from mag_annotator.annotate_vgfs import annotate_vgfs, remove_bad_chars
 from mag_annotator.summarize_vgfs import summarize_vgfs
-from mag_annotator.pull_sequences import pull_sequences
+from mag_annotator.pull_sequences import pull_sequences, get_gene_neighborhoods
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -20,6 +20,8 @@ if __name__ == '__main__':
     remove_parser = subparsers.add_parser('remove_bad_characters', help="Removes ; and = from fasta headers and "
                                                                         "VIRSorter_affi-contigs.tab files",
                                           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    neighborhood_parser = subparsers.add_parser('neighborhoods', help="Find neighborhoods around genes of interest",
+                                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for annotating vgfs
     annotate_parser.add_argument('-i', '--input_fasta', help="fasta file, output from ", required=True)
@@ -107,6 +109,23 @@ if __name__ == '__main__':
     amg_group.add_argument("--remove_js", default=False, action='store_true',
                            help="Do not consider genes on possible non-viral contigs as potential AMGs")
     strainer_parser.set_defaults(func=pull_sequences)
+
+    # parser for getting gene neighborhoods
+    neighborhood_parser.add_argument("-i", "--input_file", help="Annotations path")
+    neighborhood_parser.add_argument("-o", "--output_dir", help="Directory to write gene neighborhoods")
+    neighborhood_parser.add_argument("--genes", nargs='*', help="Gene names from DRAM to find neighborhoods around")
+    neighborhood_parser.add_argument("--identifiers", nargs='*',
+                                     help="Database identifiers assigned by DRAM to find neighborhoods around")
+    neighborhood_parser.add_argument("--categories", help="Distillate categories to build gene neighborhoods around.")
+    neighborhood_parser.add_argument("--genes_loc", help="Location of genes.fna/genes.faa file to filter to "
+                                                         "neighborhoods")
+    neighborhood_parser.add_argument("--scaffolds_loc", help="Location of scaffolds.fna file to filter to "
+                                                             "neighborhoods")
+    neighborhood_parser.add_argument("--distance_genes", type=int, help="Number of genes away from center to include "
+                                                                        "in neighborhoods")
+    neighborhood_parser.add_argument("--distance_bp", type=int, help="Number of genes away from center to include "
+                                                                     "in neighborhoods")
+    neighborhood_parser.set_defaults(func=get_gene_neighborhoods)
 
     fasta_or_affi = remove_parser.add_mutually_exclusive_group(required=True)
     fasta_or_affi.add_argument('-i', '--input_fasta', help='Fasta file to remove ; and = from headers')

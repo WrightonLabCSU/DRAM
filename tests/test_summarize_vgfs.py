@@ -3,8 +3,8 @@ import pytest
 import pandas as pd
 import altair as alt
 
-from mag_annotator.summarize_vgfs import filter_to_amgs, get_strand_switches, get_ids_from_row, make_viral_distillate, \
-    make_vgf_order, make_amg_count_column, make_viral_functional_df, make_viral_functional_heatmap
+from mag_annotator.summarize_vgfs import filter_to_amgs, get_strand_switches, make_viral_distillate, make_vgf_order, \
+    make_amg_count_column, make_viral_functional_df, make_viral_functional_heatmap
 
 
 @pytest.fixture()
@@ -35,17 +35,6 @@ def test_get_strand_switches():
     assert get_strand_switches(['+', '+', '+']) == 0
     assert get_strand_switches(['-']) == 0
     assert get_strand_switches(['+', '+', '-', '-']) == 1
-
-
-def test_get_ids_from_row():
-    id_set1 = get_ids_from_row(pd.Series({'kegg_id': 'K00001,K00003'}))
-    assert id_set1 == {'K00001', 'K00003'}
-    id_set2 = get_ids_from_row(pd.Series({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}))
-    assert id_set2 == {'EC:0.0.0.0', 'EC:1.1.1.1'}
-    id_set3 = get_ids_from_row(pd.Series({'peptidase_family': 'ABC1;BCD2'}))
-    assert id_set3 == {'ABC1', 'BCD2'}
-    id_set4 = get_ids_from_row(pd.Series({'cazy_hits': 'GH4 some things;GT6 other things'}))
-    assert id_set4 == {'GH4', 'GT6'}
 
 
 @pytest.fixture()

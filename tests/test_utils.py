@@ -2,9 +2,10 @@ import pytest
 
 import os
 import json
+import pandas as pd
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep, get_database_locs, \
-    get_config_loc, remove_prefix, remove_suffix
+    get_config_loc, remove_prefix, remove_suffix, get_ids_from_row, get_genes_from_identifiers
 
 
 def test_run_process():
@@ -104,3 +105,59 @@ def test_remove_prefix():
 def test_remove_suffix():
     assert remove_suffix('suffix', 'fix') == 'suf'
     assert remove_suffix('postfix', 'suf') == 'postfix'
+
+
+def test_get_ids_from_row():
+    id_set1 = get_ids_from_row(pd.Series({'kegg_id': 'K00001,K00003'}))
+    assert id_set1 == {'K00001', 'K00003'}
+    id_set2 = get_ids_from_row(pd.Series({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}))
+    assert id_set2 == {'EC:0.0.0.0', 'EC:1.1.1.1'}
+    id_set3 = get_ids_from_row(pd.Series({'peptidase_family': 'ABC1;BCD2'}))
+    assert id_set3 == {'ABC1', 'BCD2'}
+    id_set4 = get_ids_from_row(pd.Series({'cazy_hits': 'GH4 some things;GT6 other things'}))
+    assert id_set4 == {'GH4', 'GT6'}
+
+
+@pytest.fixture()
+def annotations():
+    return pd.DataFrame([['bin.1', 'scaffold_1', None],
+                         ['bin.1', 'scaffold_1', 'K00001'],
+                         ['bin.1', 'scaffold_1', 'K00016'],
+                         ['bin.1', 'scaffold_1', None],
+                         ['bin.1', 'scaffold_2', None],
+                         ['bin.2', 'scaffold_1', None],
+                         ['bin.2', 'scaffold_1', None],
+                         ['bin.2', 'scaffold_1', 'K00001,K13954']],
+                        index=['gene1', 'gene2', 'gene3', 'gene4', 'gene5', 'gene6', 'gene7', 'gene8'],
+                        columns=['fasta', 'scaffold', 'kegg_id'])
+
+
+def test_get_genes_from_identifiers(annotations):
+    # filter by genes
+    genes_to_keep = ['gene1', 'gene4', 'gene8']
+    kept_genes = get_genes_from_identifiers(annotations, genes=genes_to_keep)
+    assert set(kept_genes) == set(genes_to_keep)
+    # filter by scaffolds
+    scaffolds_to_keep = ['scaffold_2']
+    kept_genes = get_genes_from_identifiers(annotations, scaffolds=scaffolds_to_keep)
+    assert set(kept_genes) == {'gene5'}
+    # filter by bin
+    bins_to_keep = ['bin.2']
+    kept_genes = get_genes_from_identifiers(annotations, fastas=bins_to_keep)
+    assert set(kept_genes) == {'gene6', 'gene7', 'gene8'}
+    # filter by bin and scaffold
+    kept_genes = get_genes_from_identifiers(annotations, fastas=['bin.2'], scaffolds=['scaffold_2'])
+    assert set(kept_genes) == {'gene5', 'gene6', 'gene7', 'gene8'}
+    # filter by ko
+    kept_genes = get_genes_from_identifiers(annotations, identifiers=['K00001'])
+    assert set(kept_genes) == {'gene2', 'gene8'}
+    # filter by bin and ko
+    kept_genes = get_genes_from_identifiers(annotations, fastas=['bin.1'], identifiers=['K00001'])
+    assert set(kept_genes) == {'gene2'}
+
+# def test_get_gene_neighborhood
+#     # test distance in bp works
+#
+#     # test distance in genes works
+#
+#     # test distances work together
