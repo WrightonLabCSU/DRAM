@@ -119,6 +119,8 @@ if __name__ == '__main__':
     set_db_locs_parser.set_defaults(func=set_database_paths)
 
     # parser for updating database descriptions
+    update_description_db_parser.add_argument('--output_loc', help="Location to store desciption database, will be "
+                                                                   "stored in location set in CONFIG if not given")
     update_description_db_parser.set_defaults(func=populate_description_db)
 
     # parser for updating DRAM databases only
