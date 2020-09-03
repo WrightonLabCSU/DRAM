@@ -250,13 +250,16 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, threads=1, verbo
                 raise ValueError(ko_row['score_type'])
             frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
             is_sig.append(frame)
-        ko_hits_sig = pd.concat(is_sig)
+        if len(is_sig) == 0:
+            return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
+        else:
+            ko_hits_sig = pd.concat(is_sig)
 
-        kegg_dict = dict()
-        for gene, frame in ko_hits_sig.groupby('query_id'):
-            kegg_dict[gene] = [','.join([i for i in frame.target_id]),
-                               '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
-        return pd.DataFrame(kegg_dict, index=['kegg_id', 'kegg_hit']).transpose()
+            kegg_dict = dict()
+            for gene, frame in ko_hits_sig.groupby('query_id'):
+                kegg_dict[gene] = [','.join([i for i in frame.target_id]),
+                                   '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
+            return pd.DataFrame(kegg_dict, index=['kegg_id', 'kegg_hit']).transpose()
     else:
         return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
 

@@ -404,6 +404,7 @@ def populate_description_db(output_loc=None, db_dict=None, start_time=None):
                           db_handler)
     print('%s: VOGdb descriptions added to description database' % str(datetime.now() - start_time))
     print('%s: Description database populated' % str(datetime.now() - start_time))
+    # TODO: if output loc is given then set in config file where the description database is
 
 
 def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None,
