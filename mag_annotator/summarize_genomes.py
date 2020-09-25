@@ -161,8 +161,8 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_col
                     row.append('')
                     has_rrna.append(False)
                 elif sixteens.shape[0] == 1:
-                    row.append('%s, (%s, %s)' % (sixteens[groupby_column].iloc[0], sixteens.begin.iloc[0],
-                                                 sixteens.end.iloc[0]))
+                    row.append('%s (%s, %s)' % (sixteens['scaffold'].iloc[0], sixteens.begin.iloc[0],
+                                                sixteens.end.iloc[0]))
                     has_rrna.append(True)
                 else:
                     row.append('%s present' % sixteens.shape[0])
