@@ -23,6 +23,7 @@ HEATMAP_CELL_WIDTH = 10
 
 defaultdict_list = partial(defaultdict, list)
 
+
 def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False):
     # def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False, remove_js=False):
     potential_amgs = list()

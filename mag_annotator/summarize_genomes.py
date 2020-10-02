@@ -609,7 +609,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
         etc_coverage_dfs = list()
         function_dfs = list()
         # generates slice start and slice end to grab from genomes and labels from 0 to end of genome order
-        pairwise_iter = pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order) - 1])
+        pairwise_iter = pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order)])
         for i, (start, end) in enumerate(pairwise_iter):
             genomes = genome_order[start:end]
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
