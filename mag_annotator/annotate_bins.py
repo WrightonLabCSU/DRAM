@@ -1007,13 +1007,33 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
     # if given add taxonomy information
     if len(gtdb_taxonomy) > 0:
         gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
-        all_annotations['bin_taxonomy'] = [gtdb_taxonomy.loc[i, 'classification'] for i in all_annotations.fasta]
+        taxonomy = list()
+        for i in all_annotations.fasta:
+            # add taxonomy
+            if i in gtdb_taxonomy.index:
+                taxonomy.append(gtdb_taxonomy.loc[i, 'classification'])
+            else:
+                taxonomy.append(i)
+                warnings.warn('Bin %s was not found in taxonomy file, replaced with bin name.')
+        all_annotations['bin_taxonomy'] = taxonomy
     if len(checkm_quality) > 0:
         checkm_quality = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in checkm_quality])
         checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
-        all_annotations['bin_completeness'] = [checkm_quality.loc[i, 'Completeness'] for i in all_annotations.fasta]
-        all_annotations['bin_contamination'] = [checkm_quality.loc[i, 'Contamination']
-                                                for i in all_annotations.fasta]
+
+        completeness = list()
+        contamination = list()
+        for i in all_annotations.fasta:
+            # add completeness and contamination
+            if i in checkm_quality.index:
+                completeness.append(checkm_quality.loc[i, 'Completeness'])
+                contamination.append(checkm_quality.loc[i, 'Contamination'])
+            else:
+                completeness.append(0)
+                contamination.append(100)
+                warnings.warn('Bin %s was not found in quality file, '
+                              'replaced with completeness 0 and contamination 100.')
+        all_annotations['bin_completeness'] = completeness
+        all_annotations['bin_contamination'] = contamination
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     print("%s: Completed annotations" % str(datetime.now() - start_time))
