@@ -97,6 +97,7 @@ if __name__ == '__main__':
     distill_parser.add_argument("--trna_path", help="tRNA output from annotation")
     distill_parser.add_argument("--groupby_column", help="Column from annotations to group as organism units",
                                 default='fasta')
+    distill_parser.add_argument("--custom_distillate", help="Custom distillate form to add your own modules")
     distill_parser.set_defaults(func=summarize_genomes)
 
     # parser for getting genes

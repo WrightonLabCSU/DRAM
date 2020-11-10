@@ -537,7 +537,8 @@ def make_strings_no_repeats(genome_taxa_dict):
     return labels
 
 
-def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.', groupby_column='fasta'):
+def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.', groupby_column='fasta',
+                      custom_distillate=None):
     start_time = datetime.now()
 
     # read in data
@@ -565,6 +566,8 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
 
     # read in dbs
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t')
+    if custom_distillate is not None:
+        genome_summary_form = pd.concat([genome_summary_form, pd.read_csv(custom_distillate, sep='\t')])
     genome_summary_form = genome_summary_form.drop('potential_amg', axis=1)
     module_steps_form = pd.read_csv(db_locs['module_step_form'], sep='\t')
     function_heatmap_form = pd.read_csv(db_locs['function_heatmap_form'], sep='\t')
