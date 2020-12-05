@@ -114,6 +114,10 @@ def get_ids_from_row(row):
     # get cazy ids
     if 'cazy_hits' in row and not pd.isna(row['cazy_hits']):
         id_list += [j.strip().split(' ')[0] for j in row['cazy_hits'].split(';')]
+    # get pfam ids
+    if 'pfam_hits' in row and not pd.isna(row['pfam_hits']):
+        id_list += [j[1:-1].split('.')[0]
+                    for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', row['pfam_hits'])]
     return set(id_list)
 
 
