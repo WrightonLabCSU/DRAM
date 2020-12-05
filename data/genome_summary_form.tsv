@@ -3627,3 +3627,49 @@ K02322	DPB1; DNA polymerase II large subunit [EC:2.7.7.7]	DNA polymerase II comp
 K02323	DPB2; DNA polymerase II small subunit [EC:2.7.7.7]	DNA polymerase II complex, archaea	MISC	Information systems		FALSE
 K15342	cas1; CRISP-associated protein Cas1	Universal Cas proteins	MISC	CRISPR		FALSE
 K09951	cas2; CRISPR-associated protein Cas2	Universal Cas proteins	MISC	CRISPR		FALSE
+K01812	glucuronate isomerase	Pentose and glucuronate interconversions	carbon utilization	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
+K00041	tagaturonate reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
+K01685	altronate hydrolase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
+K16849	altronate dehydratase small subunit	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
+K16850	altronate dehydratase large subunit	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
+K00874	2-dehydro-3-deoxygluconokinase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
+K01625	2-dehydro-3-deoxyphosphogluconate aldolase / (4S)-4-hydroxy-2-oxoglutarate aldolase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
+K01785	aldose 1-epimerase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galactose degradation	TRUE
+K00849	galactokinase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galactose degradation	TRUE
+K00965	UDPglucose--hexose-1-phosphate uridylyltransferase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galactose degradation	TRUE
+K01784	UDP-glucose 4-epimerase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galactose degradation	TRUE
+K01190	beta-galactosidase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	lactose degradation	TRUE
+K12111	evolved beta-galactosidase subunit alpha	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	lactose degradation	TRUE
+K12112	evolved beta-galactosidase subunit beta	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	lactose degradation	TRUE
+K12309	beta-galactosidase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	lactose degradation	TRUE
+K01203	sucrase-isomaltase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
+K01193	beta-fructofuranosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
+K12047	maltase-glucoamylase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
+K01187	alpha-glucosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
+K12316	lysosomal alpha-glucosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
+K12317	neutral alpha-glucosidase C	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
+K15922	sulfoquinovosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
+K00690	sucrose phosphorylase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
+K00847	fructokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fructose degradation	TRUE
+K00844	hexokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fructose degradation	TRUE
+K00844	hexokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
+K02793	mannose PTS system EIIA component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
+K02794	mannose PTS system EIIAB component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
+K02795	mannose PTS system EIIC component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
+K02796	mannose PTS system EIID component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
+K01809	mannose-6-phosphate isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
+K01818	L-fucose/D-arabinose isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fucose degradation	TRUE
+K00879	L-fuculokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fucose degradation	TRUE
+K01628	L-fuculose-phosphate aldolase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fucose degradation	TRUE
+K01805	xylose isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (isomerase pathway)	TRUE
+K00854	xylulokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (isomerase pathway)	TRUE
+K17743	D-xylose reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
+K00011	aldehyde reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
+K05351	D-xylulose reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
+K00008	L-iditol 2-dehydrogenase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
+K00854	xylulokinase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
+K14275	D-xylonate dehydratase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (xylonate hydratase pathway)	TRUE
+K00078	dihydrodiol dehydrogenase / D-xylose 1-dehydrogenase (NADP)	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (weimburg/dahms)	TRUE
+K14273	D-xylose 1-dehydrogenase (NADP+)	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (weimburg/dahms)	TRUE
+K14274	xylono-1,5-lactonase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (weimburg/dahms)	TRUE
+K14275	D-xylonate dehydratase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (weimburg/dahms)	TRUE
