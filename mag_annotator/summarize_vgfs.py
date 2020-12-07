@@ -189,9 +189,9 @@ def make_viral_functional_heatmap(functional_df, vgf_order=None):
 
 
 # def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3, remove_transposons=False,
-#                    remove_fs=False, remove_js=False):
+#                    remove_fs=False, remove_js=False, custom_distillate=None):
 def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3,
-                   remove_transposons=False, remove_fs=False):
+                   remove_transposons=False, remove_fs=False, custom_distillate=None):
     start_time = datetime.now()
 
     # set up
@@ -201,6 +201,8 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     mkdir(output_dir)
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
+    if custom_distillate is not None:
+        genome_summary_form = pd.concat([genome_summary_form, pd.read_csv(custom_distillate, sep='\t')])
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # get potential AMGs

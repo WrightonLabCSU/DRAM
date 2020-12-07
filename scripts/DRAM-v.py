@@ -73,6 +73,7 @@ if __name__ == '__main__':
                                 help="Do not consider genes near ends of scaffolds as potential AMGs")
     # distill_parser.add_argument("--remove_js", default=False, action='store_true',
     #                             help="Do not consider genes on possible non-viral contigs as potential AMGs")
+    distill_parser.add_argument("--custom_distillate", help="Custom distillate form to add your own modules")
     distill_parser.set_defaults(func=summarize_vgfs)
 
     # parser for getting genes
