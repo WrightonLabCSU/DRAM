@@ -240,7 +240,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
         for gene, row in scaffold_annotations.iterrows():
             # set up
             flags = ''
-            gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())
+            gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())  # TODO: Fix
             # is viral
             if not pd.isna(row['vogdb_categories']):
                 if len({'Xr', 'Xs'} & set(row['vogdb_categories'].split(';'))) > 0:

@@ -7,7 +7,7 @@ from collections import defaultdict, Counter
 from datetime import datetime
 import warnings
 
-from mag_annotator.utils import get_database_locs, get_ids_from_row
+from mag_annotator.utils import get_database_locs, get_ids_from_row, get_ids_from_annotation
 from mag_annotator.summarize_genomes import get_ordered_uniques
 
 VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes',
@@ -22,6 +22,22 @@ HEATMAP_CELL_HEIGHT = 10
 HEATMAP_CELL_WIDTH = 10
 
 defaultdict_list = partial(defaultdict, list)
+
+
+def add_custom_ms(annotations, distillate_form):
+    metabolic_genes = set(distillate_form.index)
+
+    new_amg_flags = list()
+    for gene, row in annotations.iterrows():
+        if 'M' in row['amg_flags']:
+            new_amg_flags.append(row['amg_flags'])
+        else:
+            gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())
+            if len(metabolic_genes & gene_annotations) > 0:
+                new_amg_flags.append(row['amg_flags'] + 'M')
+            else:
+                new_amg_flags.append(row['amg_flags'])
+    return new_amg_flags
 
 
 def filter_to_amgs(annotations, max_aux=4, remove_transposons=True, remove_fs=False):
@@ -202,7 +218,10 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     mkdir(output_dir)
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
     if custom_distillate is not None:
-        genome_summary_form = pd.concat([genome_summary_form, pd.read_csv(custom_distillate, sep='\t')])
+        custom_distillate_form = pd.read_csv(custom_distillate, sep='\t')
+        genome_summary_form = pd.concat([genome_summary_form, custom_distillate_form])
+        # add M's from custom distillate
+        annotations['amg_flags'] = add_custom_m(annotations, custom_distillate_form)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # get potential AMGs
