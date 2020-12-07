@@ -29,8 +29,6 @@ def add_custom_ms(annotations, distillate_form):
 
     new_amg_flags = list()
     for gene, row in annotations.iterrows():
-        if pd.isna(row['amg_flags']):
-            row['amg_flags'] = ''
         if 'M' in row['amg_flags']:
             new_amg_flags.append(row['amg_flags'])
         else:
@@ -213,14 +211,14 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     start_time = datetime.now()
 
     # set up
-    annotations = pd.read_csv(input_file, sep='\t', index_col=0)
+    annotations = pd.read_csv(input_file, sep='\t', index_col=0).fillna('')
     db_locs = get_database_locs()
     if 'genome_summary_form' not in db_locs:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     mkdir(output_dir)
     genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
     if custom_distillate is not None:
-        custom_distillate_form = pd.read_csv(custom_distillate, sep='\t')
+        custom_distillate_form = pd.read_csv(custom_distillate, sep='\t', index_col=0)
         genome_summary_form = pd.concat([genome_summary_form, custom_distillate_form])
         # add M's from custom distillate
         annotations['amg_flags'] = add_custom_ms(annotations, custom_distillate_form)
@@ -229,7 +227,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     # get potential AMGs
     # potential_amgs = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
     #                                 remove_transposons=remove_transposons, remove_fs=remove_fs, remove_js=remove_js)
-    potential_amgs = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
+    potential_amgs = filter_to_amgs(annotations, max_aux=max_auxiliary_score,
                                     remove_transposons=remove_transposons, remove_fs=remove_fs)
     print('%s: Determined potential amgs' % (str(datetime.now() - start_time)))
 
