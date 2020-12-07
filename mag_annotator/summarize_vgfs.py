@@ -221,7 +221,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
         custom_distillate_form = pd.read_csv(custom_distillate, sep='\t')
         genome_summary_form = pd.concat([genome_summary_form, custom_distillate_form])
         # add M's from custom distillate
-        annotations['amg_flags'] = add_custom_m(annotations, custom_distillate_form)
+        annotations['amg_flags'] = add_custom_ms(annotations, custom_distillate_form)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # get potential AMGs
