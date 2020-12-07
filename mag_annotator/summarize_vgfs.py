@@ -29,6 +29,8 @@ def add_custom_ms(annotations, distillate_form):
 
     new_amg_flags = list()
     for gene, row in annotations.iterrows():
+        if pd.isna(row['amg_flags']):
+            row['amg_flags'] = ''
         if 'M' in row['amg_flags']:
             new_amg_flags.append(row['amg_flags'])
         else:
