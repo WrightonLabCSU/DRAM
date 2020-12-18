@@ -90,7 +90,7 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
                                index=VIRUS_STATS_COLUMNS, name=scaffold)
         # get vogdb categories
         # when vogdb has multiple categories only the first is taken
-        gene_counts = Counter([i.split(';')[0] for i in frame.vogdb_categories.fillna('Xx')])
+        gene_counts = Counter([i.split(';')[0] for i in frame.vogdb_categories.replace('', 'Xx')])
         named_gene_counts = {VOGDB_TYPE_NAMES[key]: value for key, value in gene_counts.items()}
         gene_counts_series = pd.Series(named_gene_counts, name=scaffold)
         viral_stats_series.append(virus_data.append(gene_counts_series))
