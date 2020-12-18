@@ -310,6 +310,48 @@ def get_virsorter_affi_contigs_name(scaffold):
     return virsorter_scaffold_name
 
 
+def add_dramv_scores_and_flags(annotations, db_locs=None, virsorter_hits=None, input_fasta=None):
+    # setting up scoring viral genes
+    amg_database_frame = pd.read_csv(db_locs['amg_database'], sep='\t')
+    genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
+    genome_summary_form = genome_summary_form.loc[genome_summary_form.potential_amg]
+
+    # add auxiliary score
+    if virsorter_hits is not None:
+        gene_virsorter_category_dict = dict()
+        gene_auxiliary_score_dict = dict()
+        for scaffold, dram_frame in annotations.groupby('scaffold'):
+            virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
+            virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
+            gene_order = get_gene_order(dram_frame, virsorter_frame)
+            gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
+                                                 gene_order if dram_gene is not None})
+            gene_auxiliary_score_dict.update(calculate_auxiliary_scores(gene_order))
+        annotations['virsorter_category'] = pd.Series(gene_virsorter_category_dict)
+        annotations['auxiliary_score'] = pd.Series(gene_auxiliary_score_dict)
+
+    # get metabolic flags
+    scaffold_length_dict = {seq.metadata['id']: len(seq) for seq in read_sequence(input_fasta, format='fasta')}
+    metabolic_genes = set(genome_summary_form.index)
+    if 'pfam_hits' in annotations:
+        annotations['is_transposon'] = [is_transposon(i) for i in annotations['pfam_hits']]
+    else:
+        annotations['is_transposon'] = False
+
+    amgs = get_amg_ids(amg_database_frame)
+    verified_amgs = get_amg_ids(amg_database_frame.loc[amg_database_frame.verified])
+    annotations['amg_flags'] = pd.Series(get_metabolic_flags(annotations, metabolic_genes, amgs,
+                                                             verified_amgs, scaffold_length_dict))
+
+    # downgrade B flag auxiliary scores
+    if virsorter_hits is not None:
+        annotations['auxiliary_score'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] and row['auxiliary_score'] < 4
+                                                           else row['auxiliary_score'])
+                                                    for gene, row in annotations.iterrows()})
+
+    return annotations
+
+
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500, prodigal_mode='meta',
                   trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
                   custom_fasta_loc=(), use_uniref=False, low_mem_mode=False, skip_trnascan=False, keep_tmp_dir=True,
@@ -362,45 +404,9 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                                   trans_table, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
                                   custom_fasta_loc, skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads,
                                   verbose)
-    print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
+    print('%s: Annotations complete, assigning auxiliary scores and flags' % str(datetime.now() - start_time))
 
-    # setting up scoring viral genes
-    amg_database_frame = pd.read_csv(db_locs['amg_database'], sep='\t')
-    genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
-    genome_summary_form = genome_summary_form.loc[genome_summary_form.potential_amg]
-
-    # add auxiliary score
-    if virsorter_hits is not None:
-        gene_virsorter_category_dict = dict()
-        gene_auxiliary_score_dict = dict()
-        for scaffold, dram_frame in annotations.groupby('scaffold'):
-            virsorter_scaffold_name = get_virsorter_affi_contigs_name(scaffold)
-            virsorter_frame = virsorter_hits.loc[virsorter_hits.name == virsorter_scaffold_name]
-            gene_order = get_gene_order(dram_frame, virsorter_frame)
-            gene_virsorter_category_dict.update({dram_gene: virsorter_category for dram_gene, _, virsorter_category in
-                                                 gene_order if dram_gene is not None})
-            gene_auxiliary_score_dict.update(calculate_auxiliary_scores(gene_order))
-        annotations['virsorter_category'] = pd.Series(gene_virsorter_category_dict)
-        annotations['auxiliary_score'] = pd.Series(gene_auxiliary_score_dict)
-
-    # get metabolic flags
-    scaffold_length_dict = {seq.metadata['id']: len(seq) for seq in read_sequence(input_fasta, format='fasta')}
-    metabolic_genes = set(genome_summary_form.index)
-    if 'pfam_hits' in annotations:
-        annotations['is_transposon'] = [is_transposon(i) for i in annotations['pfam_hits']]
-    else:
-        annotations['is_transposon'] = False
-
-    amgs = get_amg_ids(amg_database_frame)
-    verified_amgs = get_amg_ids(amg_database_frame.loc[amg_database_frame.verified])
-    annotations['amg_flags'] = pd.Series(get_metabolic_flags(annotations, metabolic_genes, amgs,
-                                                             verified_amgs, scaffold_length_dict))
-
-    # downgrade B flag auxiliary scores
-    if virsorter_affi_contigs is not None:
-        annotations['auxiliary_score'] = pd.Series({gene: (4 if 'B' in row['amg_flags'] and row['auxiliary_score'] < 4
-                                                           else row['auxiliary_score'])
-                                                    for gene, row in annotations.iterrows()})
+    annotations = add_dramv_scores_and_flags(annotations, db_locs, virsorter_hits, input_fasta)
 
     # write annotations
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
