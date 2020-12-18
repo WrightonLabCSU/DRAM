@@ -8,7 +8,7 @@ import re
 import numpy as np
 from datetime import datetime
 
-from mag_annotator.utils import get_database_locs, get_ids_from_annotation
+from mag_annotator.utils import get_database_locs, get_ids_from_annotation, get_ids_from_row
 
 # TODO: add RBH information to output
 # TODO: add flag to output table and not xlsx
@@ -34,8 +34,8 @@ def get_ordered_uniques(seq):
 
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):
+    genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
         id_dict = get_ids_from_annotation(frame)
         counts = list()
         for i in genome_summary_id_sets:
@@ -45,6 +45,26 @@ def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column)
                     identifier_count += id_dict[j]
             counts.append(identifier_count)
         genome_summary_frame[genome] = counts
+    return genome_summary_frame
+
+
+def fill_genome_summary_frame_gene_names(annotations, genome_summary_frame, groupby_column):
+    genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
+    for genome, frame in annotations.groupby(groupby_column, sort=False):
+        # make dict of identifiers to gene names
+        id_gene_dict = defaultdict(list)
+        for gene, row in frame.iterrows():
+            ids = get_ids_from_row(row)
+            for id_ in ids:
+                id_gene_dict[id_].append(gene)
+        # fill in genome summary_frame
+        values = list()
+        for id_set in genome_summary_id_sets:
+            this_value = list()
+            for id_ in id_set:
+                this_value += id_gene_dict[id_]
+            values.append(','.join(this_value))
+        genome_summary_frame[genome] = values
     return genome_summary_frame
 
 
@@ -538,7 +558,7 @@ def make_strings_no_repeats(genome_taxa_dict):
 
 
 def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.', groupby_column='fasta',
-                      custom_distillate=None):
+                      custom_distillate=None, distillate_gene_names=False):
     start_time = datetime.now()
 
     # read in data
@@ -584,7 +604,11 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
 
     # make genome metabolism summary
     genome_summary = path.join(output_dir, 'metabolism_summary.xlsx')
-    summarized_genomes = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame, groupby_column)
+    if distillate_gene_names:
+        summarized_genomes = fill_genome_summary_frame_gene_names(annotations, genome_summary_form, groupby_column)
+    else:
+        summarized_genomes = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame,
+                                                 groupby_column)
     write_summarized_genomes_to_xlsx(summarized_genomes, genome_summary)
     print('%s: Generated genome metabolism summary' % (str(datetime.now() - start_time)))
 
