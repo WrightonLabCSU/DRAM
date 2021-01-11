@@ -843,6 +843,13 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
     renamed_gffs = path.join(output_dir, 'genes.annotated.gff')
     annotate_gff(gene_gff, renamed_gffs, annotations, prefix=prefix)
 
+    # add fasta name to frame and index, append to list
+    annotations.insert(0, 'fasta', fasta_name)
+    if rename_bins:
+        annotations.index = annotations.fasta + '_' + annotations.index
+    annotations_loc = path.join(output_dir, 'annotations.tsv')
+    annotations.to_csv(annotations_loc, sep='\t')
+
     # get tRNAs and rRNAs
     len_dict = {i.metadata['id']: len(i) for i in read_sequence(renamed_scaffolds, format='fasta')}
     if not skip_trnascan:
@@ -870,13 +877,6 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
 
     if not keep_tmp_dir:
         rmtree(tmp_dir)
-
-    # add fasta name to frame and index, append to list
-    annotations.insert(0, 'fasta', fasta_name)
-    if rename_bins:
-        annotations.index = annotations.fasta + '_' + annotations.index
-    annotations_loc = path.join(output_dir, 'annotations.tsv')
-    annotations.to_csv(annotations_loc, sep='\t')
 
     return Annotation(name=fasta_name, scaffolds=renamed_scaffolds, genes_faa=annotated_faa, genes_fna=annotated_fna,
                       gff=renamed_gffs, gbk=current_gbk, annotations=annotations_loc, trnas=trna_loc, rrnas=rrna_loc)
