@@ -499,7 +499,8 @@ def make_gbk_from_gff_and_fasta(gff_loc='genes.gff', fasta_loc='scaffolds.fna', 
     # now we can only ready one record from the gff/fasta hybrid at a time
     # read a record at a time till end of the fasta
     genbank_records = ''
-    for i in range(1, capture_fasta.getvalue().count('>') + 1):
+    # +1 because there is no \n> for the first line in the file and +1 because we are indexing starting at 1
+    for i in range(1, capture_fasta.getvalue().count('\n>') + 1 + 1):
         seq = read_sequence(io.StringIO(concat_gff), format='gff3', into=Sequence, seq_num=i)
         seq.metadata['LOCUS'] = {'locus_name': seq.metadata['id'],
                                  'size': len(seq),
