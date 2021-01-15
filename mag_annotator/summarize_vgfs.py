@@ -72,9 +72,14 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
     viral_stats_series = list()
     for scaffold, frame in annotations.groupby(groupby_column):
         # get virus information
-        virus_category = int(re.findall(r'-cat_\d$', scaffold)[0].split('_')[-1])  # viral category
+        virus_categories = re.findall(r'-cat_\d$', scaffold)[0].split('_')
+        if len(virus_categories) > 0:
+            virus_category = int(virus_categories[-1])  # viral category
+            virus_prophage = virus_category in [4, 5]  # virus is prophage
+        else:
+            virus_category = None
+            virus_prophage = None
         virus_circular = len(re.findall(r'-circular-cat_\d$', scaffold)) == 1  # virus is circular
-        virus_prophage = virus_category in [4, 5]  # virus is prophage
         virus_num_genes = len(frame)  # number of genes on viral contig
         virus_strand_switches = get_strand_switches(frame.strandedness)  # number of strand switches
         if scaffold in amg_counts:
