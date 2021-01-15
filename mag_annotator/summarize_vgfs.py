@@ -72,9 +72,9 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
     viral_stats_series = list()
     for scaffold, frame in annotations.groupby(groupby_column):
         # get virus information
-        virus_categories = re.findall(r'-cat_\d$', scaffold)[0].split('_')
+        virus_categories = re.findall(r'-cat_\d$', scaffold)
         if len(virus_categories) > 0:
-            virus_category = int(virus_categories[-1])  # viral category
+            virus_category = int(virus_categories[0].split('_')[-1])  # viral category
             virus_prophage = virus_category in [4, 5]  # virus is prophage
         else:
             virus_category = None
