@@ -1020,6 +1020,7 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
         for i in set(taxonomy_missing_bins):
             warnings.warn('Bin %s was not found in taxonomy file, replaced with bin name.' % i)
         all_annotations['bin_taxonomy'] = taxonomy
+    # if given add quality information
     if len(checkm_quality) > 0:
         checkm_quality = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in checkm_quality])
         checkm_quality.index = [strip_endings(i, ['.fa', '.fasta', '.fna']) for i in checkm_quality.index]
