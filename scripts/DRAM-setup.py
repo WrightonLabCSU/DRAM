@@ -57,11 +57,11 @@ if __name__ == '__main__':
                                     help="pfam hmm .dat file to get PF descriptions, if already downloaded "
                                          "(Pfam-A.hmm.dat.gz)")
     prepare_dbs_parser.add_argument('--dbcan_loc', default=None, help="File path to dbCAN, if already downloaded "
-                                                                      "(dbCAN-HMMdb-V8.txt)")
+                                                                      "(dbCAN-HMMdb-V9.txt)")
     prepare_dbs_parser.add_argument('--dbcan_fam_activities', default=None,
                                     help='CAZY family activities file, if already downloaded '
-                                         '(CAZyDB.07312019.fam-activities.txt)')
-    prepare_dbs_parser.add_argument('--dbcan_version', default='8', type=str, help='version of dbCAN to use')
+                                         '(CAZyDB.07302020.fam-activities.txt)')
+    prepare_dbs_parser.add_argument('--dbcan_version', default='9', type=str, help='version of dbCAN to use')
     prepare_dbs_parser.add_argument('--vogdb_loc', default=None,
                                     help='hmm file for vogdb, if already downloaded (vog.hmm.tar.gz)')
     prepare_dbs_parser.add_argument('--vog_annotations', default=None,

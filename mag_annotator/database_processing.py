@@ -163,16 +163,20 @@ def process_pfam_descriptions(pfam_hmm_dat):
     return description_list
 
 
-def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='8', verbose=True):
+def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='9', verbose=True):
     if dbcan_hmm is None:  # download database if not provided
         dbcan_hmm = path.join(output_dir, 'dbCAN-HMMdb-V%s.txt' % dbcan_release)
-        download_file('http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,
-                      verbose=verbose)
+        if int(dbcan_release) < 9:
+            download_file('http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,
+                          verbose=verbose)
+        else:
+            download_file('http://bcb.unl.edu/dbCAN2/download/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,
+                          verbose=verbose)
     run_process(['hmmpress', '-f', dbcan_hmm], verbose=verbose)
     return dbcan_hmm
 
 
-def download_dbcan_descriptions(output_dir='.', upload_date='07312019', verbose=True):
+def download_dbcan_descriptions(output_dir='.', upload_date='07302020', verbose=True):
     dbcan_fam_activities = path.join(output_dir, 'CAZyDB.%s.fam-activities.txt' % upload_date)
     download_file('http://bcb.unl.edu/dbCAN2/download/Databases/CAZyDB.%s.fam-activities.txt' % upload_date,
                   dbcan_fam_activities, verbose=verbose)
@@ -409,7 +413,7 @@ def populate_description_db(output_loc=None, db_dict=None, start_time=None):
 
 def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None,
                       kegg_download_date=None, uniref_loc=None, uniref_version='90', pfam_loc=None, pfam_hmm_dat=None,
-                      dbcan_loc=None, dbcan_version='8', dbcan_fam_activities=None, dbcan_date='07312019',
+                      dbcan_loc=None, dbcan_version='9', dbcan_fam_activities=None, dbcan_date='07312019',
                       viral_loc=None, peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
                       genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
                       function_heatmap_form_loc=None, amg_database_loc=None, skip_uniref=False,
