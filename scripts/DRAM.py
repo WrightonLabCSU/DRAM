@@ -100,6 +100,10 @@ if __name__ == '__main__':
     distill_parser.add_argument("--custom_distillate", help="Custom distillate form to add your own modules")
     distill_parser.add_argument("--distillate_gene_names", action='store_true', default=False,
                                 help="Give names of genes instead of counts in genome metabolism summary")
+    distill_parser.add_argument("--genomes_per_product", help="Number of genomes per product.html output. Decrease "
+                                                              "value if getting JavaScript Error: Maximum call stack "
+                                                              "size exceeded when viewing product.html in browser.",
+                                default=1000, type=int)
     distill_parser.set_defaults(func=summarize_genomes)
 
     # parser for getting genes

@@ -23,7 +23,6 @@ HEATMAP_CELL_WIDTH = 10
 KO_REGEX = r'^K\d\d\d\d\d$'
 ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'genome', 'path_length', 'path_length_coverage',
                         'percent_coverage', 'genes', 'missing_genes', 'complex_module_name']
-GENOMES_PER_LIQUOR = 1000
 TAXONOMY_LEVELS = ['d', 'p', 'c', 'o', 'f', 'g', 's']
 
 
@@ -558,7 +557,7 @@ def make_strings_no_repeats(genome_taxa_dict):
 
 
 def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.', groupby_column='fasta',
-                      custom_distillate=None, distillate_gene_names=False):
+                      custom_distillate=None, distillate_gene_names=False, genomes_per_product=1000):
     start_time = datetime.now()
 
     # read in data
@@ -631,12 +630,12 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     module_nets = {module: build_module_net(module_df)
                    for module, module_df in module_steps_form.groupby('module') if module in HEATMAP_MODULES}
 
-    if len(genome_order) > GENOMES_PER_LIQUOR:
+    if len(genome_order) > genomes_per_product:
         module_coverage_dfs = list()
         etc_coverage_dfs = list()
         function_dfs = list()
         # generates slice start and slice end to grab from genomes and labels from 0 to end of genome order
-        pairwise_iter = pairwise(list(range(0, len(genome_order), GENOMES_PER_LIQUOR)) + [len(genome_order)])
+        pairwise_iter = pairwise(list(range(0, len(genome_order), genomes_per_product)) + [len(genome_order)])
         for i, (start, end) in enumerate(pairwise_iter):
             genomes = genome_order[start:end]
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
