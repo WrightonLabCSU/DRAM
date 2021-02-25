@@ -1,5 +1,5 @@
 category	subcategory	function_name	function_ids	long_function_name	gene_symbol
-CAZy	CAZy	Polyphenolics	K05909, AA1, AA2, AA4, K00422	Polyphenolics Cleavage
+CAZy	CAZy	Polyphenolics	K05909, AA1, AA2, K00422	Polyphenolics Cleavage
 CAZy	CAZy	Crystalline Cellulose	GH7, GH48, AA10, AA15, AA16, AA9, AA10, AA11, AA13	Crystalline Cellulose Backbone Cleavage
 CAZy	CAZy	Amorphous Cellulose	GH5, GH6, GH7, GH8, GH9, GH10, GH124, GH12, GH44, GH45	Amorphous Cellulose Backbone Cleavage
 CAZy	CAZy	Amorphous Cellulose	GH94, GH1, GH2, GH3, GH5, GH9, GH16, GH116	Amorphous Cellulose Oligo Cleavage
