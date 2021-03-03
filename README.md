@@ -3,7 +3,7 @@
 
 DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes and [VirSorter](https://github.com/simroux/VirSorter) identified viral contigs. DRAM annotates MAGs and viral contigs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene and then a distill step to curate these annotations into useful functional categories. Additionally viral contigs are further analyzed during to identify potential AMGs. This is done via assigning an auxiliary score and flags representing the confidence that a gene is both metabolic and viral.
 
-For more detail on DRAM and how DRAM works please see our [preprint](https://www.biorxiv.org/content/10.1101/2020.06.29.177501v1) as well as the [wiki](https://github.com/shafferm/DRAM/wiki).
+For more detail on DRAM and how DRAM works please see our [paper](https://academic.oup.com/nar/article/48/16/8883/5884738) as well as the [wiki](https://github.com/shafferm/DRAM/wiki).
 
 ## Installation
 To install DRAM some dependencies need to be installed first then DRAM can be installed from this repository. In the future DRAM will be available from conda. Dependencies can be installed via conda or manually.
@@ -95,5 +95,5 @@ annotate KEGG and UniRef90 is not used then less than 50 GB of RAM is required. 
 processors on a single node.
 
 ## Citing DRAM
-The DRAM manuscript is available as a preprint [here](https://www.biorxiv.org/content/10.1101/2020.06.29.177501v1). If 
-DRAM helps you out in your research then please cite it.
+The DRAM was published in Nucleic Acids Research in 2020 and is availabe [here](https://academic.oup.com/nar/article/48/16/8883/5884738). If 
+DRAM helps you out in your research please cite it.
