@@ -347,10 +347,7 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(amg_database_loc, 'amg_database', db_dict)
 
-    if description_db_loc is not None:
-        db_dict['description_db'] = description_db_loc
-    elif 'description_db' not in db_dict:
-        db_dict['description_db'] = None
+    db_dict = check_exists_and_add_to_location_dict(description_db_loc, 'description_db', db_dict)
     print('%s: Database locations added to CONFIG' % str(datetime.now() - start_time))
 
     if update_description_db:
@@ -413,7 +410,7 @@ def populate_description_db(output_loc=None, db_dict=None, start_time=None):
 
 def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None,
                       kegg_download_date=None, uniref_loc=None, uniref_version='90', pfam_loc=None, pfam_hmm_dat=None,
-                      dbcan_loc=None, dbcan_version='9', dbcan_fam_activities=None, dbcan_date='07312019',
+                      dbcan_loc=None, dbcan_version='9', dbcan_fam_activities=None, dbcan_date='07302020',
                       viral_loc=None, peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
                       genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
                       function_heatmap_form_loc=None, amg_database_loc=None, skip_uniref=False,
