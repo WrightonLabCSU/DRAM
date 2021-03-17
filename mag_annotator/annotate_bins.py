@@ -971,6 +971,7 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
 
 # TODO: Add force flag to remove output dir if it already exists
 # TODO: Add continute flag to continue if output directory already exists
+# TODO: make fasta loc either a string or list to remove annotate_bins_cmd and annotate_called_genes_cmd?
 def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
                   use_uniref=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), rename_bins=True,
@@ -1047,17 +1048,23 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
     print("%s: Completed annotations" % str(datetime.now() - start_time))
 
 
-def annotate_called_genes(input_faa, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
+def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
+                              custom_db_name=(), custom_fasta_loc=(), use_uniref=False, keep_tmp_dir=True,
+                              low_mem_mode=False, threads=10, verbose=True):
+    fasta_locs = glob(input_faa)
+    if len(fasta_locs) == 0:
+        raise ValueError('Given fasta locations returns no paths: %s')
+    print('%s fastas found' % len(fasta_locs))
+    annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
+                          custom_fasta_loc, use_uniref, keep_tmp_dir, low_mem_mode, threads, verbose)
+
+
+def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
                           custom_db_name=(), custom_fasta_loc=(), use_uniref=False, keep_tmp_dir=True,
                           low_mem_mode=False, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
-
-    fasta_locs = glob(input_faa)
-    if len(fasta_locs) == 0:
-        raise ValueError('Given fasta locations returns no paths: %s')
-    print('%s fastas found' % len(fasta_locs))
 
     # get database locations
     db_locs = get_database_locs()
@@ -1078,7 +1085,7 @@ def annotate_called_genes(input_faa, output_dir='.', bit_score_threshold=60, rbh
     faa_locs = list()
     for fasta_loc in fasta_locs:
         # set up
-        fasta_name = path.splitext(path.basename(remove_suffix(input_faa, '.gz')))[0]
+        fasta_name = path.splitext(path.basename(remove_suffix(fasta_loc, '.gz')))[0]
         fasta_dir = path.join(tmp_dir, fasta_name)
         mkdir(fasta_dir)
 
@@ -1087,7 +1094,7 @@ def annotate_called_genes(input_faa, output_dir='.', bit_score_threshold=60, rbh
                                     bit_score_threshold, rbh_bit_score_threshold, threads, verbose)
 
         annotated_faa = path.join(fasta_dir, 'genes.faa')
-        create_annotated_fasta(input_faa, annotations, annotated_faa, name=fasta_name)
+        create_annotated_fasta(fasta_loc, annotations, annotated_faa, name=fasta_name)
         faa_locs.append(annotated_faa)
 
         # add fasta name to frame and index, write file

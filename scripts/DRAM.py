@@ -2,7 +2,7 @@
 
 import argparse
 
-from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes
+from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes_cmd
 from mag_annotator.summarize_genomes import summarize_genomes
 from mag_annotator.pull_sequences import pull_sequences, get_gene_neighborhoods
 
@@ -25,6 +25,7 @@ if __name__ == '__main__':
                                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for annotating mags, you know the real thing
+    # TODO: add don't rename flag and give warning that all contig names must be unique
     annotate_parser.add_argument('-i', '--input_fasta',
                                  help="fasta file, optionally with wildcards to point to multiple fastas",
                                  required=True)
@@ -88,7 +89,7 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_genes_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_genes_parser.add_argument('--verbose', action='store_true', default=False)
-    annotate_genes_parser.set_defaults(func=annotate_called_genes)
+    annotate_genes_parser.set_defaults(func=annotate_called_genes_cmd)
 
     # parser for summarizing genomes
     distill_parser.add_argument("-i", "--input_file", help="Annotations path")
