@@ -961,7 +961,7 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
                       low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
-        raise ValueError('Given fasta locations returns no paths: %s')
+        raise ValueError('Given fasta locations returns no paths: %s' % input_fasta)
     print('%s fastas found' % len(fasta_locs))
     rename_bins = True
     annotate_bins(fasta_locs, output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
@@ -1053,7 +1053,7 @@ def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60,
                               low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
     if len(fasta_locs) == 0:
-        raise ValueError('Given fasta locations returns no paths: %s')
+        raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
     print('%s fastas found' % len(fasta_locs))
     annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
                           custom_fasta_loc, use_uniref, keep_tmp_dir, low_mem_mode, threads, verbose)
