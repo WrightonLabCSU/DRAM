@@ -346,14 +346,12 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
     db_dict = check_exists_and_add_to_location_dict(etc_module_database_loc, 'etc_module_database', db_dict)
     db_dict = check_exists_and_add_to_location_dict(function_heatmap_form_loc, 'function_heatmap_form', db_dict)
     db_dict = check_exists_and_add_to_location_dict(amg_database_loc, 'amg_database', db_dict)
-
-    db_dict = check_exists_and_add_to_location_dict(description_db_loc, 'description_db', db_dict)
     print('%s: Database locations added to CONFIG' % str(datetime.now() - start_time))
 
     if update_description_db:
         populate_description_db(db_dict['description_db'], db_dict, start_time)
-        check_file_exists(description_db_loc)
         print('%s: Database descriptions updated' % str(datetime.now() - start_time))
+    db_dict = check_exists_and_add_to_location_dict(description_db_loc, 'description_db', db_dict)
 
     # change data paths
     if config_loc is None:
