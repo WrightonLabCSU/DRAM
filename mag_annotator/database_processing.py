@@ -349,7 +349,9 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
     print('%s: Database locations added to CONFIG' % str(datetime.now() - start_time))
 
     if update_description_db:
-        populate_description_db(db_dict['description_db'], db_dict, start_time)
+        if description_db_loc is None:
+            description_db_loc = db_dict['description_db']
+        populate_description_db(description_db_loc, db_dict, start_time)
         print('%s: Database descriptions updated' % str(datetime.now() - start_time))
     db_dict = check_exists_and_add_to_location_dict(description_db_loc, 'description_db', db_dict)
 
