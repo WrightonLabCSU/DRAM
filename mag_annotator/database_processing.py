@@ -371,9 +371,9 @@ def populate_description_db(output_loc=None, db_dict=None, start_time=None):
     if db_dict is None:
         db_dict = get_database_locs()
 
-    if db_dict['description_db'] is None and output_loc is not None:
+    if db_dict.get('description_db') is None and output_loc is not None:
         db_dict['description_db'] = output_loc
-    elif db_dict['description_db'] is None and output_loc is None:
+    elif db_dict.get('description_db') is None and output_loc is None:
         raise ValueError('Must provide output location if description db location is not set in configuration')
     elif path.exists(db_dict['description_db']):
         remove(db_dict['description_db'])
