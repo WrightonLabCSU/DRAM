@@ -1049,19 +1049,19 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
 
 
 def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
-                              custom_db_name=(), custom_fasta_loc=(), use_uniref=False, keep_tmp_dir=True,
-                              low_mem_mode=False, threads=10, verbose=True):
+                              custom_db_name=(), custom_fasta_loc=(), use_uniref=False, rename_genes=True,
+                              keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
     print('%s fastas found' % len(fasta_locs))
     annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
-                          custom_fasta_loc, use_uniref, keep_tmp_dir, low_mem_mode, threads, verbose)
+                          custom_fasta_loc, use_uniref, rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
 def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
-                          custom_db_name=(), custom_fasta_loc=(), use_uniref=False, keep_tmp_dir=True,
-                          low_mem_mode=False, threads=10, verbose=True):
+                          custom_db_name=(), custom_fasta_loc=(), use_uniref=False, rename_genes=True,
+                          keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -1099,7 +1099,8 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
 
         # add fasta name to frame and index, write file
         annotations.insert(0, 'fasta', fasta_name)
-        annotations.index = annotations.fasta + '_' + annotations.index
+        if rename_genes:
+            annotations.index = annotations.fasta + '_' + annotations.index
         annotation_loc = path.join(fasta_dir, 'annotations.tsv')
         annotations.to_csv(annotation_loc, sep='\t')
         annotation_locs.append(annotation_loc)

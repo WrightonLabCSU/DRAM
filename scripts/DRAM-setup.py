@@ -102,7 +102,7 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--vogdb_db_loc', default=None,
                                     help='hmm file for vogdb, already processed with hmmpress')
     set_db_locs_parser.add_argument('--vog_annotations', default=None,
-                                    help='vog annotations file')
+                                    help='vog annotations file') # add loc to vog_annotations to match the rest
     set_db_locs_parser.add_argument('--viral_db_loc', default=None,
                                     help='mmseqs2 database file from ref seq viral gene collection')
     set_db_locs_parser.add_argument('--peptidase_db_loc', default=None,
