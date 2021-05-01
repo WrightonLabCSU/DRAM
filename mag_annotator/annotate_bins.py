@@ -1116,3 +1116,7 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
         rmtree(tmp_dir)
 
     print("%s: Completed annotations" % str(datetime.now() - start_time))
+
+
+def merge_annotations(input_files, output_file):
+    pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in glob(input_files)]).to_csv(output_file, sep='\t')

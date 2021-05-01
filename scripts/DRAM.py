@@ -2,7 +2,7 @@
 
 import argparse
 
-from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes_cmd
+from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes_cmd, merge_annotations
 from mag_annotator.summarize_genomes import summarize_genomes
 from mag_annotator.pull_sequences import pull_sequences, get_gene_neighborhoods
 
@@ -23,6 +23,9 @@ if __name__ == '__main__':
                                             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     neighborhood_parser = subparsers.add_parser('neighborhoods', help="Find neighborhoods around genes of interest",
                                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    merge_annotations_parser = subparsers.add_parser('merge_annotations', help="Merge multiple annotations to one "
+                                                                               "larger set",
+                                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # parser for annotating mags, you know the real thing
     # TODO: add don't rename flag and give warning that all contig names must be unique
@@ -147,6 +150,13 @@ if __name__ == '__main__':
     neighborhood_parser.add_argument("--distance_bp", type=int, help="Number of genes away from center to include "
                                                                      "in neighborhoods")
     neighborhood_parser.set_defaults(func=get_gene_neighborhoods)
+
+    # parser for merging annotations
+    # TODO: build out beyond annotations
+    merge_annotations_parser.add_argument("-i", "--input_files", help="Path with wildcards pointing to annotations.tsv "
+                                                                      "files")
+    merge_annotations_parser.add_argument("-o", "--output_file", help="Path to output annotations.tsv file")
+    merge_annotations_parser.set_defaults(func=merge_annotations)
 
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}

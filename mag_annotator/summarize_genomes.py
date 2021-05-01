@@ -615,13 +615,13 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     if 'bin_taxonomy' in annotations:
         genome_order = get_ordered_uniques(annotations.sort_values('bin_taxonomy')[groupby_column])
         # if gtdb format then get phylum and most specific
-        if all([i[:3] == 'd__' and len(i.split(';')) == 7 for i in annotations['bin_taxonomy']]):
+        if all([i[:3] == 'd__' and len(i.split(';')) == 7 for i in annotations['bin_taxonomy'].fillna('')]):
             taxa_str_parser = get_phylum_and_most_specific
         # else just throw in what is there
         else:
             taxa_str_parser = lambda x: x
         labels = make_strings_no_repeats({row[groupby_column]: taxa_str_parser(row['bin_taxonomy'])
-                                          for _, row in annotations.iterrows()})
+                                         for _, row in annotations.iterrows()})
     else:
         genome_order = get_ordered_uniques(annotations.sort_values(groupby_column)[groupby_column])
         labels = None
