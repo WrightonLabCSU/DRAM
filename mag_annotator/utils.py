@@ -19,6 +19,7 @@ def get_database_locs(config_loc=None):
 
 
 def download_file(url, output_file=None, verbose=True):
+    # TODO: catching error 4 and give error message to retry or retry automatically
     if verbose:
         print('downloading %s' % url)
     if output_file is None:

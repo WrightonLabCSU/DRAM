@@ -1009,6 +1009,16 @@ K10946	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Complete nitrification,
 K10535	hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
 K00370	nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
 K00371	nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
+K20935	hdh; hydrazine dehydrogenase	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K20932	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K20933	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K20934	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K20935	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K10535	hox, hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K00368	nir, nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K15864	nir, nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K00370	nxr, nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K00371	nxr, nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
 K01661	naphthoate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
 K01851	salicylate biosynthesis isochorismate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
 K01911	O-succinylbenzoic acid--CoA ligase	Menaquinone biosynthesis	MISC	MISC		TRUE
