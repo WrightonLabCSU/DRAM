@@ -318,7 +318,8 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
         significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.target_start, row.target_end,
                                                                                    row.target_length, row.full_evalue)]
         if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
-            return pd.Series(name='vogdb_categories')
+            return pd.DataFrame((pd.Series(name='vogdb_description'),
+                                 pd.Series(name='vogdb_categories'))).transpose()
 
         vogdb_res = vogdb_res.loc[significant].sort_values('full_evalue')
         vogdb_res_most_sig_list = list()
@@ -347,7 +348,8 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
         return pd.DataFrame((pd.Series(vogdb_description_dict, name='vogdb_description'),
                              pd.Series(vogdb_category_dict, name='vogdb_categories'))).transpose()
     else:
-        return pd.Series(name='vogdb_categories')
+        return pd.DataFrame((pd.Series(name='vogdb_description'),
+                             pd.Series(name='vogdb_categories'))).transpose()
 
 
 def get_gene_data(fasta_loc):
