@@ -312,42 +312,43 @@ def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=N
                 verbose=verbose)
 
     # Process Results
+    vogdb_id_dict = dict()
+    vogdb_hit_dict = dict()
+    vogdb_category_dict = dict()
+
     if path.isfile(vogdb_output) and stat(vogdb_output).st_size > 0:
         vogdb_res = parse_hmmsearch_domtblout(vogdb_output)
 
         significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.target_start, row.target_end,
                                                                                    row.target_length, row.full_evalue)]
-        if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
-            return pd.Series(name='vogdb_hits')
+        if len(significant) != 0:  # if nothing significant then return nothing, don't get descriptions
+            vogdb_res = vogdb_res.loc[significant].sort_values('full_evalue')
+            vogdb_res_most_sig_list = list()
+            for gene, frame in vogdb_res.groupby('query_id'):
+                vogdb_res_most_sig_list.append(frame.index[0])
+            vogdb_res_most_sig = vogdb_res.loc[vogdb_res_most_sig_list]
 
-        vogdb_res = vogdb_res.loc[significant].sort_values('full_evalue')
-        vogdb_res_most_sig_list = list()
-        for gene, frame in vogdb_res.groupby('query_id'):
-            vogdb_res_most_sig_list.append(frame.index[0])
-        vogdb_res_most_sig = vogdb_res.loc[vogdb_res_most_sig_list]
-
-        vogdb_description_dict = dict()
-        vogdb_category_dict = dict()
-        if db_handler is not None:
-            vogdb_descriptions = db_handler.get_descriptions(set(vogdb_res_most_sig.target_id),
-                                                             'vogdb_description')
-        else:
-            vogdb_descriptions = None
-        for _, row in vogdb_res_most_sig.iterrows():
-            gene = row['query_id']
-            vogdb_id = row['target_id']
-            if vogdb_descriptions is None:
-                vogdb_description_dict[gene] = vogdb_id
+            if db_handler is not None:
+                vogdb_descriptions = db_handler.get_descriptions(set(vogdb_res_most_sig.target_id),
+                                                                 'vogdb_description')
             else:
-                description = vogdb_descriptions.get(vogdb_id)
-                categories_str = description.split('; ')[-1]
-                vogdb_categories = [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
-                vogdb_description_dict[gene] = description
-                vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
-        return pd.DataFrame((pd.Series(vogdb_description_dict, name='vogdb_description'),
-                             pd.Series(vogdb_category_dict, name='vogdb_categories'))).transpose()
-    else:
-        return pd.Series(name='vogdb_hits')
+                vogdb_descriptions = None
+            for _, row in vogdb_res_most_sig.iterrows():
+                gene = row['query_id']
+                vogdb_id = row['target_id']
+                if vogdb_descriptions is None:
+                    vogdb_hit_dict[gene] = vogdb_id
+                else:
+                    description = vogdb_descriptions.get(vogdb_id)
+                    categories_str = description.split('; ')[-1]
+                    vogdb_categories = [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
+                    vogdb_hit_dict[gene] = description
+                    vogdb_id_dict[gene] = description.split(' ')[0]
+                    vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
+
+    return pd.DataFrame((pd.Series(vogdb_id_dict, name='vogdb_id'),
+                         pd.Series(vogdb_category_dict, name='vogdb_categories'),
+                         pd.Series(vogdb_hit_dict, name='vogdb_hit'))).transpose()
 
 
 def get_gene_data(fasta_loc):
