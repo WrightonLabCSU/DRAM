@@ -2,7 +2,7 @@
 
 import argparse
 
-from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes_cmd, merge_annotations
+from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes_cmd, merge_annotations_cmd
 from mag_annotator.summarize_genomes import summarize_genomes
 from mag_annotator.pull_sequences import pull_sequences, get_gene_neighborhoods
 
@@ -153,10 +153,10 @@ if __name__ == '__main__':
 
     # parser for merging annotations
     # TODO: build out beyond annotations
-    merge_annotations_parser.add_argument("-i", "--input_files", help="Path with wildcards pointing to annotations.tsv "
-                                                                      "files")
-    merge_annotations_parser.add_argument("-o", "--output_file", help="Path to output annotations.tsv file")
-    merge_annotations_parser.set_defaults(func=merge_annotations)
+    merge_annotations_parser.add_argument("-i", "--input_dirs", help="Path with wildcards pointing to DRAM annotation "
+                                                                     "output directories")
+    merge_annotations_parser.add_argument("-o", "--output_file", help="Path to output merged annotations files")
+    merge_annotations_parser.set_defaults(func=merge_annotations_cmd)
 
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}
