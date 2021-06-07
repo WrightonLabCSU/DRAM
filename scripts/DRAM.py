@@ -155,7 +155,7 @@ if __name__ == '__main__':
     # TODO: build out beyond annotations
     merge_annotations_parser.add_argument("-i", "--input_dirs", help="Path with wildcards pointing to DRAM annotation "
                                                                      "output directories")
-    merge_annotations_parser.add_argument("-o", "--output_file", help="Path to output merged annotations files")
+    merge_annotations_parser.add_argument("-o", "--output_dir", help="Path to output merged annotations files")
     merge_annotations_parser.set_defaults(func=merge_annotations_cmd)
 
     args = parser.parse_args()
