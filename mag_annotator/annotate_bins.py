@@ -1155,7 +1155,7 @@ def merge_annotations_cmd(input_dirs, output_dir):
         if not path.isfile(rrnas):
             warnings.warn("No rrnas.tsv file found in directory %s" % annotation_dir)
             rrnas = None
-        Annotation(name=name, scaffolds=scaffolds, genes_faa=genes_faa, genes_fna=genes_fna, gff=gff, gbk=gbk,
-                   annotations=annotations, trnas=trnas, rrnas=rrnas)
+        annotations_list.append(Annotation(name=name, scaffolds=scaffolds, genes_faa=genes_faa, genes_fna=genes_fna,
+                                           gff=gff, gbk=gbk, annotations=annotations, trnas=trnas, rrnas=rrnas))
     # run merge_annotations
     merge_annotations(annotations_list, output_dir)
