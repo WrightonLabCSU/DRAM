@@ -1101,7 +1101,7 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     print("%s: Completed annotations" % str(datetime.now() - start_time))
 
 
-def merge_annotations(annotations_list, output_dir):
+def merge_annotations(annotations_list, output_dir, write_annotations=False):
     # merge annotation dicts
     all_annotations = pd.concat([i.get_annotations() for i in annotations_list if i is not None], sort=False)
     all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
@@ -1129,8 +1129,10 @@ def merge_annotations(annotations_list, output_dir):
             else:
                 for gbk_loc in glob(path.join(anno.gbk_loc, '*.gbk')):
                     copy2(gbk_loc, gbk_dir)
-
-    return all_annotations
+    if write_annotations:
+        all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'))
+    else:
+        return all_annotations
 
 
 def merge_annotations_cmd(input_dirs, output_dir):
@@ -1156,4 +1158,4 @@ def merge_annotations_cmd(input_dirs, output_dir):
                                            gff=gff, gbk=gbk, annotations=annotations, trnas=trnas, rrnas=rrnas))
     # run merge_annotations
     mkdir(output_dir)
-    merge_annotations(annotations_list, output_dir)
+    merge_annotations(annotations_list, output_dir, write_annotations=True)
