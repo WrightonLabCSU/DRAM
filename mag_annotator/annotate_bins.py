@@ -467,7 +467,7 @@ def annotate_gff(input_gff, output_gff, annotations, prefix=None):
             match = re.search(r'ID=\d*_\d*;', line)
             gene_number = match.group().split('_')[-1][:-1]
             old_gene_name = '%s_%s' % (old_scaffold, gene_number)
-            if prefix is not None: # add prefix to line name and gene name if given
+            if prefix is not None:  # add prefix to line name and gene name if given
                 line = '%s_%s' % (prefix, line)
                 gene_name = '%s_%s' % (prefix, old_gene_name)
             else:
@@ -974,7 +974,7 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
 
     # prodigal_trans_tables = ['auto'] + [str(i) for i in range(1, 26)]
     prodigal_trans_tables = [str(i) for i in range(1, 26)]
-    if not trans_table in prodigal_trans_tables:
+    if trans_table not in prodigal_trans_tables:
         # raise ValueError('Prodigal translation table must be 1-25 or auto')
         raise ValueError('Prodigal translation table must be 1-25')
 
@@ -1021,9 +1021,9 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
                 completeness.append(0)
                 contamination.append(100)
                 quality_missing_bins.append(i)
-            for i in set(quality_missing_bins):
+            for j in set(quality_missing_bins):
                 warnings.warn('Bin %s was not found in quality file, '
-                              'replaced with completeness 0 and contamination 100.' % i)
+                              'replaced with completeness 0 and contamination 100.' % j)
         all_annotations['bin_completeness'] = completeness
         all_annotations['bin_contamination'] = contamination
     all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
@@ -1130,7 +1130,7 @@ def merge_annotations(annotations_list, output_dir, write_annotations=False):
                 for gbk_loc in glob(path.join(anno.gbk_loc, '*.gbk')):
                     copy2(gbk_loc, gbk_dir)
     if write_annotations:
-        all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'))
+        all_annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
     else:
         return all_annotations
 
