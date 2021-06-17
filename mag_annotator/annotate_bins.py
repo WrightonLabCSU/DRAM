@@ -231,25 +231,29 @@ def parse_hmmsearch_domtblout(file):
     return hmmsearch_frame
 
 
-def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, threads=1, verbose=False):
+def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, use_dbcan2_thresholds=False, threads=1, verbose=False):
     output = path.join(output_dir, 'kofam_profile.b6')
     run_process(['hmmsearch', '--domtblout', output, '--cpu', str(threads), kofam_hmm, gene_faa], verbose=verbose)
     if path.isfile(output) and stat(output).st_size > 0:
         ko_hits = parse_hmmsearch_domtblout(output)
 
-        is_sig = list()
-        for ko, frame in ko_hits.groupby('target_id'):
-            ko_row = ko_list.loc[ko]
-            if ko_row['score_type'] == 'domain':
-                score = frame.domain_score
-            elif ko_row['score_type'] == 'full':
-                score = frame.full_score
-            elif ko_row['score_type'] == '-':
-                continue
-            else:
-                raise ValueError(ko_row['score_type'])
-            frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
-            is_sig.append(frame)
+        if use_dbcan2_thresholds:
+            is_sig = [row for _, row in ko_hits.iterrows() if get_sig(row.target_start, row.target_end,
+                                                                      row.target_length, row.full_evalue)]
+        else:
+            is_sig = list()
+            for ko, frame in ko_hits.groupby('target_id'):
+                ko_row = ko_list.loc[ko]
+                if ko_row['score_type'] == 'domain':
+                    score = frame.domain_score
+                elif ko_row['score_type'] == 'full':
+                    score = frame.full_score
+                elif ko_row['score_type'] == '-':
+                    continue
+                else:
+                    raise ValueError(ko_row['score_type'])
+                frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
+                is_sig.append(frame)
         if len(is_sig) == 0:
             return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
         else:
@@ -719,7 +723,7 @@ class Annotation:
 
 
 def annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_locs=(), bit_score_threshold=60,
-                  rbh_bit_score_threshold=350, threads=10, verbose=False):
+                  rbh_bit_score_threshold=350, kofam_use_dbcan2_thresholds=False, threads=10, verbose=False):
     # run reciprocal best hits searches
     print('%s: Turning genes from prodigal to mmseqs2 db' % str(datetime.now() - start_time))
     query_db = path.join(tmp_dir, 'gene.mmsdb')
@@ -737,7 +741,7 @@ def annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_
         print('%s: Getting hits from kofam' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan_kofam(gene_faa, db_locs['kofam'], tmp_dir,
                                                  pd.read_csv(db_locs['kofam_ko_list'], sep='\t', index_col=0),
-                                                 threads, verbose))
+                                                 kofam_use_dbcan2_thresholds, threads, verbose))
     else:
         warnings.warn('No KEGG source provided so distillation will be of limited use.')
 
@@ -804,8 +808,8 @@ def annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_
 
 def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_contig_size=5000, prodigal_mode='meta',
                    trans_table='11', custom_db_locs=(), bit_score_threshold=60, rbh_bit_score_threshold=350,
-                   skip_trnascan=False, start_time=datetime.now(), threads=1, rename_bins=True, keep_tmp_dir=False,
-                   verbose=False):
+                   kofam_use_dbcan2_thresholds=False, skip_trnascan=False, start_time=datetime.now(), threads=1,
+                   rename_bins=True, keep_tmp_dir=False, verbose=False):
     """Annotated a single multifasta file, all file based outputs will be in output_dir"""
     # make temporary directory
     tmp_dir = path.join(output_dir, 'tmp')
@@ -826,7 +830,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
 
     # annotate ORFs
     annotations = annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_locs, bit_score_threshold,
-                                rbh_bit_score_threshold, threads, verbose)
+                                rbh_bit_score_threshold, kofam_use_dbcan2_thresholds, threads, verbose)
     annotations = pd.concat([get_gene_data(gene_faa), annotations], axis=1, sort=False)
 
     renamed_scaffolds = path.join(output_dir, 'scaffolds.annotated.fa')
@@ -905,8 +909,8 @@ def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, master_list=MA
 
 def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, prodigal_mode='meta',
                     trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
-                    custom_fasta_loc=(), skip_trnascan=False, rename_bins=True, keep_tmp_dir=True,
-                    start_time=datetime.now(), threads=10, verbose=True):
+                    custom_fasta_loc=(), kofam_use_dbcan2_thresholds=False, skip_trnascan=False, rename_bins=True,
+                    keep_tmp_dir=True, start_time=datetime.now(), threads=10, verbose=True):
     # check for no conflicting options/configurations
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
@@ -926,8 +930,8 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
         mkdir(fasta_dir)
         annotations_list.append(annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_locs, db_handler, min_contig_size,
                                                prodigal_mode, trans_table, custom_db_locs, bit_score_threshold,
-                                               rbh_bit_score_threshold, skip_trnascan, start_time, threads, rename_bins,
-                                               keep_tmp_dir, verbose))
+                                               rbh_bit_score_threshold, kofam_use_dbcan2_thresholds, skip_trnascan,
+                                               start_time, threads, rename_bins, keep_tmp_dir, verbose))
     print('%s: Annotations complete, processing annotations' % str(datetime.now() - start_time))
 
     all_annotations = merge_annotations(annotations_list, output_dir)
@@ -940,16 +944,17 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
 
 def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodigal_mode='meta', trans_table='11',
                       bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                      use_uniref=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True,
-                      low_mem_mode=False, threads=10, verbose=True):
+                      use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(),
+                      checkm_quality=(), keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s' % input_fasta)
     print('%s fastas found' % len(fasta_locs))
     rename_bins = True
     annotate_bins(fasta_locs, output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
-                  rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref, skip_trnascan, gtdb_taxonomy,
-                  checkm_quality, rename_bins, keep_tmp_dir, low_mem_mode, threads, verbose)
+                  rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref, kofam_use_dbcan2_thresholds,
+                  skip_trnascan, gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir, low_mem_mode, threads,
+                  verbose)
 
 
 # TODO: Add force flag to remove output dir if it already exists
@@ -957,8 +962,8 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
 # TODO: make fasta loc either a string or list to remove annotate_bins_cmd and annotate_called_genes_cmd?
 def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  use_uniref=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(), rename_bins=True,
-                  keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                  use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(),
+                  checkm_quality=(), rename_bins=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -987,8 +992,8 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
 
     all_annotations = annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size, prodigal_mode,
                                       trans_table, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
-                                      custom_fasta_loc, skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads,
-                                      verbose)
+                                      custom_fasta_loc, kofam_use_dbcan2_thresholds, skip_trnascan, rename_bins,
+                                      keep_tmp_dir, start_time, threads, verbose)
     # if given add taxonomy information
     if len(gtdb_taxonomy) > 0:
         gtdb_taxonomy = pd.concat([pd.read_csv(i, sep='\t', index_col=0) for i in gtdb_taxonomy])
@@ -1032,19 +1037,21 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
 
 
 def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
-                              custom_db_name=(), custom_fasta_loc=(), use_uniref=False, rename_genes=True,
-                              keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                              custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
+                              kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True,
+                              low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
     print('%s fastas found' % len(fasta_locs))
     annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
-                          custom_fasta_loc, use_uniref, rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose)
+                          custom_fasta_loc, use_uniref, kofam_use_dbcan2_thresholds, rename_genes, keep_tmp_dir,
+                          low_mem_mode, threads, verbose)
 
 
 def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
-                          custom_db_name=(), custom_fasta_loc=(), use_uniref=False, rename_genes=True,
-                          keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                          custom_db_name=(), custom_fasta_loc=(), use_uniref=False, kofam_use_dbcan2_thresholds=False,
+                          rename_genes=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -1074,7 +1081,8 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
 
         # annotate
         annotations = annotate_orfs(fasta_loc, db_locs, fasta_dir, start_time, db_handler, custom_db_locs,
-                                    bit_score_threshold, rbh_bit_score_threshold, threads, verbose)
+                                    bit_score_threshold, rbh_bit_score_threshold, kofam_use_dbcan2_thresholds, threads,
+                                    verbose)
 
         annotated_faa = path.join(fasta_dir, 'genes.faa')
         create_annotated_fasta(fasta_loc, annotations, annotated_faa, name=fasta_name)

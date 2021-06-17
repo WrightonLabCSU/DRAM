@@ -43,6 +43,9 @@ if __name__ == '__main__':
                                  help='minimum bitScore of search to retain hits')
     annotate_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
                                  help='minimum bitScore of reverse best hits to retain hits')
+    annotate_parser.add_argument('--kofam_use_dbcan2_thresholds', action='store_true', default=False,
+                                 help='Use dbcan2 suggested HMM cutoffs for KOfam annotation instead of KOfam '
+                                      'recommended cutoffs. This will be ignored if annotating with KEGG Genes.')
     annotate_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be used"
                                                                            "multiple times.")
     annotate_parser.add_argument('--custom_fasta_loc', action='append',
