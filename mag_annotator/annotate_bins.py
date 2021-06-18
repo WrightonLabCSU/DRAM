@@ -237,9 +237,10 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, use_dbcan2_thres
     if path.isfile(output) and stat(output).st_size > 0:
         ko_hits = parse_hmmsearch_domtblout(output)
 
+        # check what method for determining what is significant should be used
         if use_dbcan2_thresholds:
-            is_sig = [row for _, row in ko_hits.iterrows() if get_sig(row.target_start, row.target_end,
-                                                                      row.target_length, row.full_evalue)]
+            ko_hits_sig = ko_hits.loc[[get_sig(row.target_start, row.target_end,
+                                               row.target_length, row.full_evalue) for _, row in ko_hits.iterrows()]]
         else:
             is_sig = list()
             for ko, frame in ko_hits.groupby('target_id'):
@@ -254,11 +255,11 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, use_dbcan2_thres
                     raise ValueError(ko_row['score_type'])
                 frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
                 is_sig.append(frame)
-        if len(is_sig) == 0:
+            ko_hits_sig = pd.concat(is_sig)
+        # if there are any significant results then parse to dataframe
+        if len(ko_hits_sig) == 0:
             return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
         else:
-            ko_hits_sig = pd.concat(is_sig)
-
             kegg_dict = dict()
             for gene, frame in ko_hits_sig.groupby('query_id'):
                 kegg_dict[gene] = [','.join([i for i in frame.target_id]),
