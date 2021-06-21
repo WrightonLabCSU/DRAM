@@ -231,7 +231,8 @@ def parse_hmmsearch_domtblout(file):
     return hmmsearch_frame
 
 
-def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, use_dbcan2_thresholds=False, threads=1, verbose=False):
+def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, top_hit=True, use_dbcan2_thresholds=False, threads=1,
+                      verbose=False):
     output = path.join(output_dir, 'kofam_profile.b6')
     run_process(['hmmsearch', '--domtblout', output, '--cpu', str(threads), kofam_hmm, gene_faa], verbose=verbose)
     if path.isfile(output) and stat(output).st_size > 0:
@@ -262,8 +263,14 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, use_dbcan2_thres
         else:
             kegg_dict = dict()
             for gene, frame in ko_hits_sig.groupby('query_id'):
-                kegg_dict[gene] = [','.join([i for i in frame.target_id]),
-                                   '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
+                # TODO: take top hit for full length genes and all hits for domains?
+                # TODO: if top hit then give all e-value and bitscore info
+                if top_hit:
+                    best_hit = frame[frame.full_evalue == frame.full_evalue.min()]
+                    kegg_dict[gene] = [best_hit['target_id'], ko_list.loc[best_hit['target_id'], 'definition']]
+                else:
+                    kegg_dict[gene] = [','.join([i for i in frame.target_id]),
+                                       '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
             return pd.DataFrame(kegg_dict, index=['kegg_id', 'kegg_hit']).transpose()
     else:
         return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
@@ -742,7 +749,8 @@ def annotate_orfs(gene_faa, db_locs, tmp_dir, start_time, db_handler, custom_db_
         print('%s: Getting hits from kofam' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan_kofam(gene_faa, db_locs['kofam'], tmp_dir,
                                                  pd.read_csv(db_locs['kofam_ko_list'], sep='\t', index_col=0),
-                                                 kofam_use_dbcan2_thresholds, threads, verbose))
+                                                 use_dbcan2_thresholds=kofam_use_dbcan2_thresholds, threads=threads,
+                                                 verbose=verbose))
     else:
         warnings.warn('No KEGG source provided so distillation will be of limited use.')
 
