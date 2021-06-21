@@ -267,7 +267,8 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, top_hit=True, us
                 # TODO: if top hit then give all e-value and bitscore info
                 if top_hit:
                     best_hit = frame[frame.full_evalue == frame.full_evalue.min()]
-                    kegg_dict[gene] = [best_hit['target_id'], ko_list.loc[best_hit['target_id'], 'definition']]
+                    ko_id = best_hit['target_id'].iloc[0]
+                    kegg_dict[gene] = [ko_id, ko_list.loc[ko_id, 'definition']]
                 else:
                     kegg_dict[gene] = [','.join([i for i in frame.target_id]),
                                        '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
