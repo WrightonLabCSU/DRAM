@@ -256,7 +256,10 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, top_hit=True, us
                     raise ValueError(ko_row['score_type'])
                 frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
                 is_sig.append(frame)
-            ko_hits_sig = pd.concat(is_sig)
+            if len(is_sig) > 0:
+                ko_hits_sig = pd.concat(is_sig)
+            else:
+                ko_hits_sig = []
         # if there are any significant results then parse to dataframe
         if len(ko_hits_sig) == 0:
             return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
