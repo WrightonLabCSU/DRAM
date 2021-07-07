@@ -80,7 +80,7 @@ In the output `annotation` folder there will be various files. `genes.faa` and `
 Then after your annotation is finished you can summarize these annotations with the following command:
 
 ```bash
-DRAM.py distill -i annotation/annotations.tsv -o genome_summaries --trna_path annotation/trnas.tsv --rrna_path --rrna_path annotation/rrnas.tsv
+DRAM.py distill -i annotation/annotations.tsv -o genome_summaries --trna_path annotation/trnas.tsv --rrna_path annotation/rrnas.tsv
 ```
 This will generate the distillate and liquor files.
 
