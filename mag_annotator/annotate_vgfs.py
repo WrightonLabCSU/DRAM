@@ -43,21 +43,56 @@ VIRAL_PEPTIDASES_MEROPS = {'A02H', 'A02G', 'A02F', 'A02E', 'A02D', 'A02C', 'A02B
                            'T01B', 'T01A', 'T03', 'U32', 'U40'}
 
 
+def is_affi_tab_not_fasta(input_file:str) -> bool:
+    """
+    Checks that a file is a VIRSorter affi tab file.
+
+    :param input_file:
+        the input file that the user provided.
+    :returns:
+        True if there are 11 delimiters on the second line.
+    """
+    with open(input_file) as input_io:
+        num_delimiter = input_io.readlines()[1].count('|')
+    if num_delimiter == 11 :
+        return True
+    return False
+
+
 def remove_bad_chars_fasta(fasta):
+    if is_affi_tab_not_fasta(fasta):
+        raise ValueError("The input file format matches virsorter affi contigs not fasta, please check "
+                         "that the flags match the file type: '-v' for virsorter, and '-i' for fasta.")
+
     new_headers = list()
     new_seqs = list()
     for seq in read_sequence(fasta, format='fasta'):
         new_header = seq.metadata['id']
         new_header = new_header.replace(';', '_').replace('=', '_')
         if new_header in new_headers:
-            raise ValueError('Replacement of ; or = with _ generated reduntant sequence headers, must be modified '
+            raise ValueError('Replacement of ; or = with _ generated redundant sequence headers, must be modified '
                              'manually')
         seq.metadata['id'] = new_header
         new_seqs.append(seq)
     return new_seqs
 
 
-def remove_bad_chars_virsorter_affi_contigs(virsorter_in):
+def remove_bad_chars_virsorter_affi_contigs(virsorter_in:str) -> str:
+    """
+    Determine and call the appropriate function to cleans incompatible characters from VIRSorter
+    or VIRSorter2 affi headers.
+
+    :param virsorter_in:
+        Path to a affi tab file provide for DRAM by VIRSorter or VIRSorter2.
+    :returns:
+        String of file contents with headers cleaned.
+    :raises ValueError:
+        If the input format does not match VIRSorter or VIRSorter2.
+    """
+    if not is_affi_tab_not_fasta(virsorter_in):
+        raise ValueError("The input file format does not match virsorter affi contigs, please check "
+                         "that the flags match the file type: '-v' for virsorter, and '-i' for "
+                         "fasta.")
     new_lines = list()
     for line in open(virsorter_in).readlines():
         line = line.strip()
@@ -73,7 +108,21 @@ def remove_bad_chars_virsorter_affi_contigs(virsorter_in):
     return '%s\n' % '\n'.join(new_lines)
 
 
-def remove_bad_chars(input_fasta=None, input_virsorter_affi_contigs=None, output=None):
+def remove_bad_chars(input_fasta:str=None, input_virsorter_affi_contigs:str=None, output:str=None):
+    """
+    Determine and call the function to cleans incompatible characters from headers of virsorter
+    affi or fasta file.
+
+    :param input_fasta:
+        Path to a fasta file provide for DRAM by VIRSorter or VIRSorter2
+    :param input_virsorter_affi_contigs:
+        Path to a affi tab file provide for DRAM by VIRSorter
+        or VIRSorter2
+    :param output:
+        Desired path for the new file clean of incompatible characters
+    :raises ValueError:
+        Check format, and invalid arguments.
+    """
     if input_fasta is None and input_virsorter_affi_contigs is None:
         raise ValueError('Must provide either input fasta or virsorter affi contigs')
     elif input_fasta is not None:
@@ -298,7 +347,12 @@ def get_amg_ids(amg_frame):
     return ko_amgs | ec_amgs | pfam_amgs
 
 
-def get_virsorter_affi_contigs_name(scaffold):
+def get_virsorter2_affi_contigs_name(scaffold):
+    virsorter_scaffold_name = scaffold.replace('|', '_')
+    return virsorter_scaffold_name
+
+
+def get_virsorter_original_affi_contigs_name(scaffold):
     prophage_match = re.search(r'_gene_\d*_gene_\d*-\d*-\d*-cat_[123456]$', scaffold)
     plain_match = re.search(r'-cat_[123456]$', scaffold)
     if prophage_match is not None:
@@ -306,8 +360,20 @@ def get_virsorter_affi_contigs_name(scaffold):
     elif plain_match is not None:
         virsorter_scaffold_name = scaffold[:plain_match.start()]
     else:
-        raise ValueError("Can't find VIRSorter endings on fasta header: %s" % scaffold)
+        raise ValueError("Format is not VIRSorter2, and can't find VIRSorter "
+                         "endings on fasta header: %s" % scaffold)
     return virsorter_scaffold_name
+
+
+def get_virsorter_affi_contigs_name(scaffold):
+    """
+    :param scaffold: A raw string from the fasta header
+    :returns: A string returned from the appropriate parser
+    """
+    virsorter2_match = re.search(r'\|\|', scaffold)
+    if virsorter2_match is not None:
+        return get_virsorter2_affi_contigs_name(scaffold)
+    return get_virsorter_original_affi_contigs_name(scaffold)
 
 
 def add_dramv_scores_and_flags(annotations, db_locs=None, virsorter_hits=None, input_fasta=None):
@@ -379,7 +445,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     else:
         virsorter_hits = None
 
-    # split sequences into seperate fastas
+    # split sequences into separate fastas
     mkdir(output_dir)
     contig_dir = path.join(output_dir, 'vMAGs')
     mkdir(contig_dir)
