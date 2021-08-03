@@ -92,7 +92,7 @@ def get_ids_from_annotation(frame):
         id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
         # get cazy ec numbers
         for cazy_hit in frame.cazy_hits.dropna():
-            id_list += [i[1:-1].replace(' ', ':') for i in re.findall(r'\(EC \d*.\d*.\d*.\d*\)', cazy_hit)]
+            id_list += [i[1:-1].split('_')[0] for i in re.findall(r'\[[A-Z]*\d*?\]', cazy_hit)]
     # get pfam ids
     if 'pfam_hits' in frame:
         id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna()
@@ -114,7 +114,7 @@ def get_ids_from_row(row):
         id_list += [j for j in row['peptidase_family'].split(';')]
     # get cazy ids
     if 'cazy_hits' in row and not pd.isna(row['cazy_hits']):
-        id_list += [j.strip().split(' ')[0] for j in row['cazy_hits'].split(';')]
+        id_list += [i[1:-1].split('_')[0] for i in re.findall(r'\[[A-Z]*\d*?\]', row['cazy_hits'])]
     # get pfam ids
     if 'pfam_hits' in row and not pd.isna(row['pfam_hits']):
         id_list += [j[1:-1].split('.')[0]
