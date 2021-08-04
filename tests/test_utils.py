@@ -114,7 +114,7 @@ def test_get_ids_from_row():
     assert id_set2 == {'EC:0.0.0.0', 'EC:1.1.1.1'}
     id_set3 = get_ids_from_row(pd.Series({'peptidase_family': 'ABC1;BCD2'}))
     assert id_set3 == {'ABC1', 'BCD2'}
-    id_set4 = get_ids_from_row(pd.Series({'cazy_hits': 'GH4 some things;GT6 other things'}))
+    id_set4 = get_ids_from_row(pd.Series({'cazy_hits': 'GH4 some things [GH4]; GT6 other things [GT6]'}))
     assert id_set4 == {'GH4', 'GT6'}
 
 
