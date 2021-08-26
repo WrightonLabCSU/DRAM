@@ -105,7 +105,7 @@ def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref
     """"""
     if uniref_fasta_zipped is None:  # download database if not provided
         uniref_fasta_zipped = path.join(output_dir, 'uniref%s.fasta.gz' % uniref_version)
-        uniref_url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' % \
+        uniref_url = 'https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' % \
                      (uniref_version, uniref_version)
         download_file(uniref_url, uniref_fasta_zipped, verbose=verbose)
     uniref_mmseqs_db = path.join(output_dir, 'uniref%s.%s.mmsdb' % (uniref_version, get_iso_date()))
