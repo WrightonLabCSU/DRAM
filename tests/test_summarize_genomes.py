@@ -24,7 +24,7 @@ def annotations():
     return pd.DataFrame([['genome', 'K00001'],
                          ['genome', pd.np.NaN]],
                         index=['genome_scaffold_1_1', 'genome_scaffold_1_2'],
-                        columns=['fasta', 'kegg_id'])
+                        columns=['fasta', 'ko_id'])
 
 
 @pytest.fixture()
@@ -120,7 +120,7 @@ def test_annotations_df():
     return pd.DataFrame([['', 'scaffold_1'],
                          ['K12345', 'scaffold_1'],
                          ['K00001', 'scaffold_1']],
-                        index=['gene_1', 'gene_2', 'gene_3'], columns=['kegg_id', 'scaffold'])
+                        index=['gene_1', 'gene_2', 'gene_3'], columns=['ko_id', 'scaffold'])
 
 
 def test_make_module_coverage_df(test_annotations_df, test_module_net):
