@@ -438,7 +438,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    db_locs_anno = filter_db_locs(db_locs, low_mem_mode, use_uniref, VMAG_DBS_TO_ANNOTATE)
+    db_locs_anno = filter_db_locs(db_locs, low_mem_mode, use_uniref, True, VMAG_DBS_TO_ANNOTATE)
 
     if virsorter_affi_contigs is not None:
         virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)

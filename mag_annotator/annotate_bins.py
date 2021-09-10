@@ -904,18 +904,25 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_locs, db_handler, min_c
                       gff=renamed_gffs, gbk=current_gbk, annotations=annotations_loc, trnas=trna_loc, rrnas=rrna_loc)
 
 
-def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, master_list=MAG_DBS_TO_ANNOTATE):
-    # check for no conflicting options/configurations
+def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, use_vogdb=False, master_list=MAG_DBS_TO_ANNOTATE):
+    dbs_to_use = master_list
+    # filter out dbs for low mem mode
     if low_mem_mode:
         if ('kofam' not in db_locs) or ('kofam_ko_list' not in db_locs):
             raise ValueError('To run in low memory mode KOfam must be configured for use in DRAM')
-        dbs_to_use = [i for i in master_list if i not in ('uniref', 'kegg')]
-    elif use_uniref:
-        dbs_to_use = master_list
+        dbs_to_use = [i for i in dbs_to_use if i not in ('uniref', 'kegg', 'vogdb')]
+    # check on uniref status
+    if use_uniref:
         if 'uniref' not in db_locs:
             warnings.warn('Sequences will not be annoated against uniref as it is not configured for use in DRAM')
     else:
-        dbs_to_use = [i for i in master_list if i != 'uniref']
+        dbs_to_use = [i for i in dbs_to_use if i != 'uniref']
+    # check on vogdb status
+    if use_vogdb:
+        if 'vogdb' not in db_locs:
+            warnings.warn('Sequences will not be annoated against VOGDB as it is not configured for use in DRAM')
+    else:
+        dbs_to_use = [i for i in dbs_to_use if i != 'vogdb']
     db_locs = {key: value for key, value in db_locs.items() if key in dbs_to_use}
     return db_locs
 
@@ -957,17 +964,18 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
 
 def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodigal_mode='meta', trans_table='11',
                       bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                      use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(),
-                      checkm_quality=(), keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                      use_uniref=False, use_vogdb=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
+                      gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True, low_mem_mode=False, threads=10,
+                      verbose=True):
     fasta_locs = glob(input_fasta)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s' % input_fasta)
     print('%s fastas found' % len(fasta_locs))
     rename_bins = True
     annotate_bins(fasta_locs, output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
-                  rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref, kofam_use_dbcan2_thresholds,
-                  skip_trnascan, gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir, low_mem_mode, threads,
-                  verbose)
+                  rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref, use_vogdb,
+                  kofam_use_dbcan2_thresholds, skip_trnascan, gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir,
+                  low_mem_mode, threads, verbose)
 
 
 # TODO: Add force flag to remove output dir if it already exists
@@ -975,8 +983,9 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
 # TODO: make fasta loc either a string or list to remove annotate_bins_cmd and annotate_called_genes_cmd?
 def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(),
-                  checkm_quality=(), rename_bins=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                  use_uniref=False, use_vogdb=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
+                  gtdb_taxonomy=(), checkm_quality=(), rename_bins=True, keep_tmp_dir=True, low_mem_mode=False,
+                  threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -999,7 +1008,7 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref)
+    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref, use_vogdb)
 
     mkdir(output_dir)
 
@@ -1050,7 +1059,7 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
 
 
 def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
-                              custom_db_name=(), custom_fasta_loc=(), use_uniref=False,
+                              custom_db_name=(), custom_fasta_loc=(), use_uniref=False, use_vogdb=False,
                               kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True,
                               low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
@@ -1058,13 +1067,14 @@ def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60,
         raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
     print('%s fastas found' % len(fasta_locs))
     annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
-                          custom_fasta_loc, use_uniref, kofam_use_dbcan2_thresholds, rename_genes, keep_tmp_dir,
-                          low_mem_mode, threads, verbose)
+                          custom_fasta_loc, use_uniref, use_vogdb, kofam_use_dbcan2_thresholds, rename_genes,
+                          keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
 def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
-                          custom_db_name=(), custom_fasta_loc=(), use_uniref=False, kofam_use_dbcan2_thresholds=False,
-                          rename_genes=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                          custom_db_name=(), custom_fasta_loc=(), use_uniref=False, use_vogdb=False,
+                          kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True, low_mem_mode=False,
+                          threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Annotation started' % str(datetime.now()))
@@ -1072,7 +1082,7 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     # get database locations
     db_locs = get_database_locs()
     db_handler = DatabaseHandler(db_locs['description_db'])
-    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref)
+    db_locs = filter_db_locs(db_locs, low_mem_mode, use_uniref, use_vogdb)
 
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')
