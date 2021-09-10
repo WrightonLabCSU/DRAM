@@ -138,9 +138,9 @@ def test_get_kegg_description():
     print(kegg_hits_add_description.head())
     assert kegg_hits_add_description.shape == (3, 4)
     assert kegg_hits_add_description.loc['gene2', 'ko_id'] == 'K05810'
-    assert kegg_hits_add_description.loc['gene2', 'kegg_id'] == 'aar:Acear_0854'
+    assert kegg_hits_add_description.loc['gene2', 'kegg_genes_id'] == 'aar:Acear_0854'
     assert kegg_hits_add_description.loc['gene1', 'ko_id'] == ''
-    assert kegg_hits_add_description.loc['gene1', 'kegg_id'] == 'aad:TC41_2367'
+    assert kegg_hits_add_description.loc['gene1', 'kegg_genes_id'] == 'aad:TC41_2367'
 
 
 def test_get_uniref_description():

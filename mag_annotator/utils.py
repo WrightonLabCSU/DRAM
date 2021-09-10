@@ -78,8 +78,8 @@ def merge_files(files_to_merge, outfile, has_header=False):
 def get_ids_from_annotation(frame):
     id_list = list()
     # get kegg gene ids
-    if 'kegg_id' in frame:
-        id_list += [j.strip() for i in frame.kegg_id.dropna() for j in i.split(',')]
+    if 'kegg_genes_id' in frame:
+        id_list += [j.strip() for i in frame.kegg_genes_id.dropna() for j in i.split(',')]
     # get kegg orthology ids
     if 'ko_id' in frame:
         id_list += [j.strip() for i in frame.ko_id.dropna() for j in i.split(',')]
@@ -107,8 +107,8 @@ def get_ids_from_annotation(frame):
 def get_ids_from_row(row):
     id_list = list()
     # get kegg gene ids
-    if 'kegg_id' in row and not pd.isna(row['kegg_id']):
-        id_list += row['kegg_id']
+    if 'kegg_genes_id' in row and not pd.isna(row['kegg_genes_id']):
+        id_list += row['kegg_genes_id']
     # get kegg orthology ids
     if 'ko_id' in row and not pd.isna(row['ko_id']):
         id_list += [j for j in row['ko_id'].split(',')]

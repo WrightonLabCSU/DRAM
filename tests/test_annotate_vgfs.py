@@ -188,7 +188,7 @@ def test_get_metabolic_flags():
                                index=['scaffold_1_1', 'scaffold_1_2', 'scaffold_2_1', 'scaffold_3_1', 'scaffold_4_1',
                                       'scaffold_4_2', 'scaffold_4_3', 'scaffold_4_4'],
                                columns=['scaffold', 'start_position', 'end_position', 'vogdb_categories',
-                                        'is_transposon', 'kegg_id'])
+                                        'is_transposon', 'kegg_genes_id'])
     metabolic_genes = {'K12345'}
     amgs = {'K00001'}
     verified_amgs = {'K00001'}

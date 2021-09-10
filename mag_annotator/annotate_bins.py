@@ -133,8 +133,9 @@ def get_kegg_description(kegg_hits, header_dict):
             ko_list.append('')
         else:
             ko_list.append(','.join(kos))
-    new_df = pd.DataFrame([kegg_hits['kegg_hit'].values, ko_list, gene_description], index=['kegg_id', 'ko_id', 'kegg_hit'],
-                          columns=kegg_hits.index)
+    # TODO: change kegg_id to kegg_genes_id so that people get an error and not the wrong identifier
+    new_df = pd.DataFrame([kegg_hits['kegg_hit'].values, ko_list, gene_description],
+                          index=['kegg_genes_id', 'ko_id', 'kegg_hit'], columns=kegg_hits.index)
     return pd.concat([new_df.transpose(), kegg_hits.drop('kegg_hit', axis=1)], axis=1, sort=False)
 
 
