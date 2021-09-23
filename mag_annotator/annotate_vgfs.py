@@ -418,10 +418,10 @@ def add_dramv_scores_and_flags(annotations, db_locs=None, virsorter_hits=None, i
     return annotations
 
 
-def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500, prodigal_mode='meta',
-                  trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
-                  custom_fasta_loc=(), use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
-                  keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500, split_contigs=False,
+                  prodigal_mode='meta', trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350,
+                  custom_db_name=(), custom_fasta_loc=(), use_uniref=False, kofam_use_dbcan2_thresholds=False,
+                  skip_trnascan=False, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Viral annotation started' % str(datetime.now()))
@@ -445,24 +445,28 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     else:
         virsorter_hits = None
 
-    # split sequences into separate fastas
-    mkdir(output_dir)
-    contig_dir = path.join(output_dir, 'vMAGs')
-    mkdir(contig_dir)
-    contig_locs = list()
-    for seq in read_sequence(input_fasta, format='fasta'):
-        if len(seq) >= min_contig_size:
-            if '=' in seq.metadata['id'] or ';' in seq.metadata['id']:
-                raise ValueError('FASTA headers must not have = or ; before the first space (%s). To run DRAM-v you '
-                                 'must rerun VIRSorter with = and ; removed from the headers or run DRAM-v.py '
-                                 'remove_bad_characters and then rerun DRAM-v' % seq.metadata['id'])
-            if virsorter_hits is not None:
-                if get_virsorter_affi_contigs_name(seq.metadata['id']) not in virsorter_hits['name'].values:
-                    raise ValueError("No virsorter calls found in %s for scaffold %s from input fasta" %
-                                     (virsorter_affi_contigs, seq.metadata['id']))
-            contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
-            write_sequence((i for i in [seq]), format='fasta', into=contig_loc)
-            contig_locs.append(contig_loc)
+    if split_contigs:
+        # split sequences into separate fastas
+        mkdir(output_dir)
+        contig_dir = path.join(output_dir, 'vMAGs')
+        mkdir(contig_dir)
+
+        contig_locs = list()
+        for seq in read_sequence(input_fasta, format='fasta'):
+            if len(seq) >= min_contig_size:
+                if '=' in seq.metadata['id'] or ';' in seq.metadata['id']:
+                    raise ValueError('FASTA headers must not have = or ; before the first space (%s). To run DRAM-v you '
+                                     'must rerun VIRSorter with = and ; removed from the headers or run DRAM-v.py '
+                                     'remove_bad_characters and then rerun DRAM-v' % seq.metadata['id'])
+                if virsorter_hits is not None:
+                    if get_virsorter_affi_contigs_name(seq.metadata['id']) not in virsorter_hits['name'].values:
+                        raise ValueError("No virsorter calls found in %s for scaffold %s from input fasta" %
+                                         (virsorter_affi_contigs, seq.metadata['id']))
+                contig_loc = path.join(contig_dir, '%s.fasta' % seq.metadata['id'])
+                write_sequence((i for i in [seq]), format='fasta', into=contig_loc)
+                contig_locs.append(contig_loc)
+    else:
+        contig_locs = [input_fasta]
 
     # annotate vMAGs
     rename_bins = False

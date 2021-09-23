@@ -114,8 +114,7 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
     return trna_frame
 
 
-def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna_frame=None,
-                        groupby_column='fasta'):
+def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna_frame=None, groupby_column='fasta'):
     summary_frames = list()
     # get ko summaries
     summary_frames.append(fill_genome_summary_frame(annotations, genome_summary_frame.copy(), groupby_column))

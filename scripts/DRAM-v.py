@@ -30,6 +30,8 @@ if __name__ == '__main__':
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_parser.add_argument('--min_contig_size', type=int, default=2500,
                                  help='minimum contig size to be used for gene prediction')
+    annotate_parser.add_argument('--split_contigs', action='store_true', default=False,
+                                 help='Split contigs from input fasta into separate')
     prodigal_mode_choices = ['train', 'meta', 'single']
     annotate_parser.add_argument('--prodigal_mode', type=str, default='meta', choices=prodigal_mode_choices,
                                  help='Mode of prodigal to use for gene calling. NOTE: normal or single mode require '
