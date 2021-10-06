@@ -6,7 +6,7 @@ from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes
 from mag_annotator.summarize_genomes import summarize_genomes
 from mag_annotator.pull_sequences import pull_sequences, get_gene_neighborhoods
 
-# TODO: refactor parses to limit duplication
+# TODO: refactor parsers to limit duplication
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     # parser for annotating mags, you know the real thing
     # TODO: add don't rename flag and give warning that all contig names must be unique
-    annotate_parser.add_argument('-i', '--input_fasta',
+    annotate_parser.add_argument('-i', '--input_fasta', action='append',
                                  help="fasta file, optionally with wildcards to point to multiple fastas",
                                  required=True)
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
@@ -160,6 +160,7 @@ if __name__ == '__main__':
     neighborhood_parser.set_defaults(func=get_gene_neighborhoods)
 
     # parser for merging annotations
+    # TODO: Make it work with append so you can use multiple -i's
     merge_annotations_parser.add_argument("-i", "--input_dirs", help="Path with wildcards pointing to DRAM annotation "
                                                                      "output directories")
     merge_annotations_parser.add_argument("-o", "--output_dir", help="Path to output merged annotations files")

@@ -927,6 +927,9 @@ def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, use_vogdb=Fals
     return db_locs
 
 
+def get_fasta_name(fasta_loc):
+    return path.splitext(path.basename(remove_suffix(fasta_loc, '.gz')))[0]
+
 def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, prodigal_mode='meta',
                     trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
                     custom_fasta_loc=(), kofam_use_dbcan2_thresholds=False, skip_trnascan=False, rename_bins=True,
@@ -944,7 +947,7 @@ def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size
     annotations_list = list()
     for fasta_loc in fasta_locs:
         # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
-        fasta_name = path.splitext(path.basename(remove_suffix(fasta_loc, '.gz')))[0]
+        fasta_name = get_fasta_name(fasta_loc)
         print('%s: Annotating %s' % (str(datetime.now() - start_time), fasta_name))
         fasta_dir = path.join(tmp_dir, fasta_name)
         mkdir(fasta_dir)
@@ -967,12 +970,14 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
                       use_uniref=False, use_vogdb=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
                       gtdb_taxonomy=(), checkm_quality=(), keep_tmp_dir=True, low_mem_mode=False, threads=10,
                       verbose=True):
-    fasta_locs = glob(input_fasta)
+    fasta_locs = [j for i in input_fasta for j in glob(i)]
     if len(fasta_locs) == 0:
-        raise ValueError('Given fasta locations returns no paths: %s' % input_fasta)
+        raise ValueError('Given fasta locations return no paths: %s' % input_fasta)
+    elif len(fasta_locs) != len(set(fasta_locs)):
+        warnings.warn('At least one bin appears twice in this search.')
     print('%s fastas found' % len(fasta_locs))
     rename_bins = True
-    annotate_bins(fasta_locs, output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
+    annotate_bins(list(set(fasta_locs)), output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
                   rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, use_uniref, use_vogdb,
                   kofam_use_dbcan2_thresholds, skip_trnascan, gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir,
                   low_mem_mode, threads, verbose)
@@ -1098,7 +1103,7 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     faa_locs = list()
     for fasta_loc in fasta_locs:
         # set up
-        fasta_name = path.splitext(path.basename(remove_suffix(fasta_loc, '.gz')))[0]
+        fasta_name = get_fasta_name(fasta_loc)
         fasta_dir = path.join(tmp_dir, fasta_name)
         mkdir(fasta_dir)
 
