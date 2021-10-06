@@ -930,6 +930,7 @@ def filter_db_locs(db_locs, low_mem_mode=False, use_uniref=False, use_vogdb=Fals
 def get_fasta_name(fasta_loc):
     return path.splitext(path.basename(remove_suffix(fasta_loc, '.gz')))[0]
 
+
 def annotate_fastas(fasta_locs, output_dir, db_locs, db_handler, min_contig_size=5000, prodigal_mode='meta',
                     trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
                     custom_fasta_loc=(), kofam_use_dbcan2_thresholds=False, skip_trnascan=False, rename_bins=True,
@@ -973,8 +974,9 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
     fasta_locs = [j for i in input_fasta for j in glob(i)]
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations return no paths: %s' % input_fasta)
-    elif len(fasta_locs) != len(set(fasta_locs)):
-        warnings.warn('At least one bin appears twice in this search.')
+    fasta_names = [get_fasta_name(i) for i in fasta_locs]
+    if len(fasta_names) != len(set(fasta_names)):
+        raise ValueError('Genome file names must be unique. At least one name appears twice in this search.')
     print('%s fastas found' % len(fasta_locs))
     rename_bins = True
     annotate_bins(list(set(fasta_locs)), output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
