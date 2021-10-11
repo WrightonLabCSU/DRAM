@@ -110,15 +110,23 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, target_
     forward_hits = forward_hits.set_index('qId')
     reverse_hits = pd.read_csv(reverse_output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     reverse_hits = reverse_hits.set_index('qId')
-    hits = pd.DataFrame(index=['%s_hit' % target_prefix, '%s_RBH' % target_prefix, '%s_identity' % target_prefix,
-                               '%s_bitScore' % target_prefix, '%s_eVal' % target_prefix])
-    for forward_hit, row in forward_hits.iterrows():
+    def check_hit(row:pd.Series):
         rbh = False
         if row.tId in reverse_hits.index:
-            if forward_hit == reverse_hits.loc[row.tId].tId:
+            if row.name == reverse_hits.loc[row.tId].tId:
                 rbh = True
-        hits[forward_hit] = [row.tId, rbh, row.seqIdentity, row.bitScore, row.eVal]
-    return hits.transpose()
+        return {'%s_hit' % target_prefix:      row.tId,
+                'RBH':                         rbh,
+                '%s_identity' % target_prefix: row.seqIdentity,
+                '%s_bitScore' % target_prefix: row.bitScore,
+                '%s_eVal' % target_prefix:     row.eVal,
+                'index':                       row.name
+                }
+    hits =  forward_hits.apply(check_hit, axis=1, result_type='expand')
+    # NOTE these lines may not be necessary
+    hits.set_index('index', drop=True, inplace=True)
+    hits.index.name = None
+    return hits
 
 
 def get_kegg_description(kegg_hits, header_dict):
