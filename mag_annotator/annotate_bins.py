@@ -116,7 +116,7 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, target_
             if row.name == reverse_hits.loc[row.tId].tId:
                 rbh = True
         return {'%s_hit' % target_prefix:      row.tId,
-                'RBH':                         rbh,
+                '%s_RBH' % target_prefix:      rbh,
                 '%s_identity' % target_prefix: row.seqIdentity,
                 '%s_bitScore' % target_prefix: row.bitScore,
                 '%s_eVal' % target_prefix:     row.eVal,
