@@ -108,7 +108,7 @@ def test_remove_suffix():
 
 
 def test_get_ids_from_row():
-    id_set1 = get_ids_from_row(pd.Series({'kegg_id': 'K00001,K00003'}))
+    id_set1 = get_ids_from_row(pd.Series({'ko_id': 'K00001,K00003'}))
     assert id_set1 == {'K00001', 'K00003'}
     id_set2 = get_ids_from_row(pd.Series({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}))
     assert id_set2 == {'EC:0.0.0.0', 'EC:1.1.1.1'}
@@ -129,7 +129,7 @@ def annotations():
                          ['bin.2', 'scaffold_1', None],
                          ['bin.2', 'scaffold_1', 'K00001,K13954']],
                         index=['gene1', 'gene2', 'gene3', 'gene4', 'gene5', 'gene6', 'gene7', 'gene8'],
-                        columns=['fasta', 'scaffold', 'kegg_id'])
+                        columns=['fasta', 'scaffold', 'ko_id'])
 
 
 def test_get_genes_from_identifiers(annotations):

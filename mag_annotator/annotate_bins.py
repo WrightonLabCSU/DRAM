@@ -133,7 +133,9 @@ def get_kegg_description(kegg_hits, header_dict):
             ko_list.append('')
         else:
             ko_list.append(','.join(kos))
-    new_df = pd.DataFrame([ko_list, gene_description], index=['kegg_id', 'kegg_hit'], columns=kegg_hits.index)
+    # TODO: change kegg_id to kegg_genes_id so that people get an error and not the wrong identifier
+    new_df = pd.DataFrame([kegg_hits['kegg_hit'].values, ko_list, gene_description],
+                          index=['kegg_genes_id', 'ko_id', 'kegg_hit'], columns=kegg_hits.index)
     return pd.concat([new_df.transpose(), kegg_hits.drop('kegg_hit', axis=1)], axis=1, sort=False)
 
 
@@ -262,7 +264,7 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, top_hit=True, us
                 ko_hits_sig = []
         # if there are any significant results then parse to dataframe
         if len(ko_hits_sig) == 0:
-            return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
+            return pd.DataFrame(columns=['ko_id', 'kegg_hit'])
         else:
             kegg_dict = dict()
             for gene, frame in ko_hits_sig.groupby('query_id'):
@@ -275,9 +277,9 @@ def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, top_hit=True, us
                 else:
                     kegg_dict[gene] = [','.join([i for i in frame.target_id]),
                                        '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
-            return pd.DataFrame(kegg_dict, index=['kegg_id', 'kegg_hit']).transpose()
+            return pd.DataFrame(kegg_dict, index=['ko_id', 'kegg_hit']).transpose()
     else:
-        return pd.DataFrame(columns=['kegg_id', 'kegg_hit'])
+        return pd.DataFrame(columns=['ko_id', 'kegg_hit'])
 
 
 # refactor hmmscan_dbcan and hmmscan_vogdb to merge

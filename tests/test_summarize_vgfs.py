@@ -14,7 +14,7 @@ def annotations():
                          ['scaffold_1', 'K00001', 'MFTJ', 3],
                          ['scaffold_1', 'K11111', 'MKE', 2]],
                         index=['gene_1', 'gene_2', 'gene_3', 'gene_4'],
-                        columns=['scaffold', 'kegg_id', 'amg_flags', 'auxiliary_score'])
+                        columns=['scaffold', 'ko_id', 'amg_flags', 'auxiliary_score'])
 
 
 @pytest.fixture()
@@ -22,7 +22,7 @@ def pamgs():
     return pd.DataFrame([['scaffold_1', 'K00001', 'MFTJ', 3],
                          ['scaffold_1', 'K11111', 'MKE', 2]],
                         index=['gene_3', 'gene_4'],
-                        columns=['scaffold', 'kegg_id', 'amg_flags', 'auxiliary_score'])
+                        columns=['scaffold', 'ko_id', 'amg_flags', 'auxiliary_score'])
 
 
 def test_filter_to_amgs(annotations, pamgs):
