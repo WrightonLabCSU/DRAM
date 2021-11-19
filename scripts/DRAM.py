@@ -62,7 +62,7 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--checkm_quality', action='append', default=[],
                                  help='Summary of of checkM quality assessment from bins, can be used multiple times')
     annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
-                                 help='Annotate these fastas against UniRef, drastically decreases run time and memory '
+                                 help='Annotate these fastas against UniRef, drastically increases run time and memory '
                                       'requirements')
     annotate_parser.add_argument('--use_vogdb', action='store_true', default=False,
                                  help='Annotate these fastas against VOGDB, drastically decreases run time')
@@ -92,7 +92,7 @@ if __name__ == '__main__':
                                        help="Location of fastas to annotated against, can be used multiple times but"
                                             "must match nubmer of custom_db_name's")
     annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,
-                                       help='Annotate these fastas against UniRef, drastically decreases run time and '
+                                       help='Annotate these fastas against UniRef, drastically increases run time and '
                                             'memory requirements')
     annotate_genes_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                        help='Skip annotating with uniref and use kofam instead of KEGG genes even if '

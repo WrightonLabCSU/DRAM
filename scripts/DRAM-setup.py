@@ -79,6 +79,8 @@ if __name__ == '__main__':
                                     help="File path to etc module database, if already downloaded")
     prepare_dbs_parser.add_argument('--function_heatmap_form_loc', default=None,
                                     help="File path to function heatmap form, if already downloaded")
+    prepare_dbs_parser.add_argument('--amg_database_loc', default=None,
+                                    help="File path to amg database, if already downloaded")
     prepare_dbs_parser.add_argument('--branch', default='master', help="git branch from which to download forms; THIS "
                                                                        "SHOULD NOT BE CHANGED BY REGULAR USERS")
     prepare_dbs_parser.add_argument('--keep_database_files', default=False, action='store_true',
