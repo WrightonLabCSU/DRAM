@@ -420,8 +420,9 @@ def add_dramv_scores_and_flags(annotations, db_locs=None, virsorter_hits=None, i
 
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500, split_contigs=False,
                   prodigal_mode='meta', trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350,
-                  custom_db_name=(), custom_fasta_loc=(), use_uniref=False, kofam_use_dbcan2_thresholds=False,
-                  skip_trnascan=False, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                  custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(), use_uniref=False,
+                  kofam_use_dbcan2_thresholds=False, skip_trnascan=False, keep_tmp_dir=True, low_mem_mode=False,
+                  threads=10, verbose=True):
     # set up
     start_time = datetime.now()
     print('%s: Viral annotation started' % str(datetime.now()))
@@ -472,8 +473,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     rename_bins = False
     annotations = annotate_fastas(contig_locs, output_dir, db_locs_anno, db_handler, min_contig_size, prodigal_mode,
                                   trans_table, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
-                                  custom_fasta_loc, kofam_use_dbcan2_thresholds, skip_trnascan, rename_bins,
-                                  keep_tmp_dir, start_time, threads, verbose)
+                                  custom_fasta_loc, custom_hmm_name, custom_hmm_loc, kofam_use_dbcan2_thresholds,
+                                  skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads, verbose)
     print('%s: Annotations complete, assigning auxiliary scores and flags' % str(datetime.now() - start_time))
 
     annotations = add_dramv_scores_and_flags(annotations, db_locs, virsorter_hits, input_fasta)

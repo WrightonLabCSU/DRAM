@@ -51,8 +51,13 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be used"
                                                                            "multiple times.")
     annotate_parser.add_argument('--custom_fasta_loc', action='append',
-                                 help="Location of fastas to annotated against, can be used multiple times but"
+                                 help="Location of fastas to annotate against, can be used multiple times but"
                                       "must match nubmer of custom_db_name's")
+    annotate_parser.add_argument('--custom_hmm_name', action='append', help="Names of custom hmm databases, can be used"
+                                                                            "multiple times.")
+    annotate_parser.add_argument('--custom_hmm_loc', action='append',
+                                 help="Location of hmms to annotate against, can be used multiple times but"
+                                      "must match nubmer of custom_hmm_name's")
     annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
                                  help='Annotate these fastas against UniRef, drastically increases run time and memory '
                                       'requirements')
