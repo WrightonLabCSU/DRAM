@@ -1,3 +1,11 @@
+import re
+import io
+import time
+import warnings
+from glob import glob
+from functools import partial
+from datetime import datetime
+from typing import Callable
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
 from skbio import Sequence
@@ -5,13 +13,6 @@ from skbio.metadata import IntervalMetadata
 from os import path, mkdir, stat
 from shutil import rmtree, copy2
 import pandas as pd
-from datetime import datetime
-import re
-from glob import glob
-import warnings
-from functools import partial
-import io
-import time
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep, remove_suffix
 from mag_annotator.database_handler import DatabaseHandler
@@ -218,8 +219,9 @@ def run_mmseqs_profile_search(query_db, pfam_profile, output_loc, output_prefix=
         return pd.Series(name='%s_hits' % output_prefix)
 
 
-def get_sig(tstart, tend, tlen, evalue):
+def get_sig_row(row):
     """Check if hmm match is significant, based on dbCAN described parameters"""
+    tstart, tend, tlen, evalue = row[['target_start', 'target_end', 'target_length', 'full_evalue']].values
     perc_cov = (tend - tstart)/tlen
     if perc_cov >= .35 and evalue <= 1e-15:
         return True
@@ -241,140 +243,130 @@ def parse_hmmsearch_domtblout(file):
     return hmmsearch_frame
 
 
-def run_hmmscan_kofam(gene_faa, kofam_hmm, output_dir, ko_list, top_hit=True, use_dbcan2_thresholds=False, threads=1,
-                      verbose=False):
-    output = path.join(output_dir, 'kofam_profile.b6')
-    run_process(['hmmsearch', '--domtblout', output, '--cpu', str(threads), kofam_hmm, gene_faa], verbose=verbose)
-    if path.isfile(output) and stat(output).st_size > 0:
-        ko_hits = parse_hmmsearch_domtblout(output)
-
-        # check what method for determining what is significant should be used
-        if use_dbcan2_thresholds:
-            ko_hits_sig = ko_hits.loc[[get_sig(row.target_start, row.target_end,
-                                               row.target_length, row.full_evalue) for _, row in ko_hits.iterrows()]]
+def sig_scores(hits:pd.DataFrame, score_db:pd.DataFrame) -> pd.DataFrame:
+    is_sig = list()
+    for ko, frame in hits.groupby('target_id'):
+        ko_row = score_db.loc[ko]
+        if ko_row['score_type'] == 'domain':
+            score = frame.domain_score
+        elif ko_row['score_type'] == 'full':
+            score = frame.full_score
+        elif ko_row['score_type'] == '-':
+            continue
         else:
-            is_sig = list()
-            for ko, frame in ko_hits.groupby('target_id'):
-                ko_row = ko_list.loc[ko]
-                if ko_row['score_type'] == 'domain':
-                    score = frame.domain_score
-                elif ko_row['score_type'] == 'full':
-                    score = frame.full_score
-                elif ko_row['score_type'] == '-':
-                    continue
-                else:
-                    raise ValueError(ko_row['score_type'])
-                frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
-                is_sig.append(frame)
-            if len(is_sig) > 0:
-                ko_hits_sig = pd.concat(is_sig)
-            else:
-                ko_hits_sig = []
+            raise ValueError(ko_row['score_type'])
+        frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
+        is_sig.append(frame)
+    if len(is_sig) > 0:
+        return pd.concat(is_sig)
+    else:
+        return pd.DataFrame()
+
+
+def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
+    hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+    if len(hits_sig) == 0:
+        # if nothing significant then return nothing, don't get descriptions
+        return pd.Series()
+    if db_handler is None:
+        hits_df = hits_sig.groupby('query_id').apply(
+            lambda x: '; '.join(x['target_id'].apply(lambda y:y[:-4]).unique())
+        )
+    else:
+        descriptions = db_handler.get_descriptions(
+            hits_sig.target_id.apply(lambda x: strip_endings(x, ['.hmm']).split('_')[0]).unique(),
+            'dbcan_description')
+        hits_df = hits_sig.groupby('query_id').apply(
+            lambda x: '; '.join(x['target_id'].apply(
+                lambda y:f"{descriptions.get(y[:-4].split('_')[0])} [{y[:-4]}]").unique())
+        )
+    hits_df = pd.DataFrame(hits_df)
+    # Temporaraly remove this untill we decide what dbcan reusults should be.
+    # hits_df.reset_index(inplace=True)
+    # hits_df.columns = [f"{db_name}_id", f"{db_name}_hits"]
+    hits_df.columns = [f"{db_name}_hits"]
+    hits_df.rename_axis(None, inplace=True)
+    return hits_df
+
+def genaric_hmmscan_formater(hits:pd.DataFrame,  db_name:str, use_hmmer_thresholds:bool=True, db_handler=None,
+                             top_hit:bool=True):
+    if use_hmmer_thresholds:
+        hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+    else:
+        hits_sig = hits
+    if len(hits_sig) == 0:
+        # if nothing significant then return nothing, don't get descriptions
+        return pd.DataFrame()
+    if top_hit:
+        # Get the best hits
+        hits_sig = hits_sig.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    if db_handler is None:
+        pass
+    else:
+        hits_df = hits_sig[['target_id', 'query_id']]
+    hits_df.set_index('query_id', inplace=True, drop=True)
+    hits_df.rename_axis(None, inplace=True)
+    hits_df.columns = [f"{db_name}_id"]
+    return hits_df
+
+def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
+    hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+    if len(hits_sig) == 0:
+        # if nothing significant then return nothing, don't get descriptions
+        return pd.DataFrame()
+    # Get the best hits
+    hits_best = hits_sig.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    if db_handler is None:
+        hits_df = hits_best[['target_id', 'query_id']].copy()
+    else:
+        # get_descriptions
+        desc_col = f"{db_name}_descriptions"
+        descriptions = pd.DataFrame(
+            db_handler.get_descriptions(hits_best['target_id'].unique(), 'vogdb_description'),
+            index=[desc_col]).T
+        categories = descriptions[desc_col].apply(lambda x: x.split('; ')[-1])
+        descriptions[f"{db_name}_categories"] = categories.apply(
+            lambda x: ';'.join(set([x[i:i + 2] for i in range(0, len(x), 2)])))
+        descriptions['target_id'] = descriptions.index
+        hits_df = pd.merge(hits_best[['query_id', 'target_id']], descriptions, on=f'target_id')
+    hits_df.set_index('query_id', inplace=True, drop=True)
+    hits_df.rename_axis(None, inplace=True)
+    hits_df.rename(columns={'target_id': f"{db_name}_id"}, inplace=True)
+    return hits_df
+
+
+def kofam_hmmscan_formater(ko_hits:pd.DataFrame, info_db_path:str=None, use_dbcan2_thresholds:bool=False, top_hit:bool=True):
+        info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
+        if use_dbcan2_thresholds:
+            ko_hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+        else:
+            ko_hits_sig = sig_scores(ko_hits, info_db)
         # if there are any significant results then parse to dataframe
         if len(ko_hits_sig) == 0:
-            return pd.DataFrame(columns=['ko_id', 'kegg_hit'])
-        else:
-            kegg_dict = dict()
-            for gene, frame in ko_hits_sig.groupby('query_id'):
-                # TODO: take top hit for full length genes and all hits for domains?
-                # TODO: if top hit then give all e-value and bitscore info
-                if top_hit:
-                    best_hit = frame[frame.full_evalue == frame.full_evalue.min()]
-                    ko_id = best_hit['target_id'].iloc[0]
-                    kegg_dict[gene] = [ko_id, ko_list.loc[ko_id, 'definition']]
-                else:
-                    kegg_dict[gene] = [','.join([i for i in frame.target_id]),
-                                       '; '.join([ko_list.loc[i, 'definition'] for i in frame.target_id])]
-            return pd.DataFrame(kegg_dict, index=['ko_id', 'kegg_hit']).transpose()
-    else:
-        return pd.DataFrame(columns=['ko_id', 'kegg_hit'])
-
-
-# refactor hmmscan_dbcan and hmmscan_vogdb to merge
-def run_hmmscan_dbcan(genes_faa, dbcan_loc, output_loc, threads=10, db_handler=None, verbose=False):
-    """Run hmmscan of genes against dbcan, apparently I can speed it up using hmmsearch in the reverse
-    Commands this is based on:
-    hmmscan --domtblout ~/dbCAN_test_1 dbCAN-HMMdb-V7.txt ~/shale_checkMetab_test/DRAM/genes.faa
-    cat ~/dbCAN_test_1 | grep -v '^#' | awk '{print $1,$3,$4,$6,$13,$16,$17,$18,$19}' | sed 's/ /\t/g' | \
-    sort -k 3,3 -k 8n -k 9n > dbCAN_test_1.good_cols.tsv
-    """
-    # Run hmmscan
-    dbcan_output = path.join(output_loc, 'dbcan_results.unprocessed.txt')
-    run_process(['hmmsearch', '--domtblout', dbcan_output, '--cpu', str(threads), dbcan_loc, genes_faa],
-                verbose=verbose)
-
-    # Process results
-    if path.isfile(dbcan_output) and stat(dbcan_output).st_size > 0:
-        dbcan_res = parse_hmmsearch_domtblout(dbcan_output)
-
-        significant = [row_num for row_num, row in dbcan_res.iterrows() if get_sig(row.target_start, row.target_end,
-                                                                                   row.target_length, row.full_evalue)]
-        if len(significant) == 0:  # if nothing significant then return nothing, don't get descriptions
-            return pd.Series(name='cazy_hits')
-        dbcan_res_significant = dbcan_res.loc[significant]
-
-        dbcan_dict = dict()
-        if db_handler is not None:
-            dbcan_descriptions = db_handler.get_descriptions(set([strip_endings(i, ['.hmm']).split('_')[0] for i in
-                                                                  dbcan_res_significant.target_id]),
-                                                             'dbcan_description')
-        else:
-            dbcan_descriptions = None
-        for gene, frame in dbcan_res_significant.groupby('query_id'):
-            if dbcan_descriptions is None:
-                dbcan_dict[gene] = '; '.join([i[:-4] for i in frame.target_id])
+            return pd.DataFrame()
+        kegg_dict = dict()
+        for gene, frame in ko_hits_sig.groupby('query_id'):
+            # TODO: take top hit for full length genes and all hits for domains?
+            # TODO: if top hit then give all e-value and bitscore info
+            if top_hit:
+                best_hit = frame[frame.full_evalue == frame.full_evalue.min()]
+                ko_id = best_hit['target_id'].iloc[0]
+                kegg_dict[gene] = [ko_id, info_db.loc[ko_id, 'definition']]
             else:
-                dbcan_dict[gene] = '; '.join(['%s [%s]' % (dbcan_descriptions.get(accession[:-4].split('_')[0]),
-                                                           accession[:-4]) for accession in frame.target_id])
-        return pd.Series(dbcan_dict, name='cazy_hits')
-    else:
-        return pd.Series(name='cazy_hits')
+                kegg_dict[gene] = [','.join([i for i in frame.target_id]),
+                                   '; '.join([info_db.loc[i, 'definition'] for i in frame.target_id])]
+        return pd.DataFrame(kegg_dict, index=['ko_id', 'kegg_hit']).transpose()
 
 
-def run_hmmscan_vogdb(genes_faa, vogdb_loc, output_loc, threads=10, db_handler=None, verbose=False):
-    # run hmmscan
-    vogdb_output = path.join(output_loc, 'vogdb_results.unprocessed.txt')
-    run_process(['hmmsearch', '--domtblout', vogdb_output, '--cpu', str(threads), vogdb_loc, genes_faa],
-                verbose=verbose)
-
-    # Process Results
-    vogdb_id_dict = dict()
-    vogdb_hit_dict = dict()
-    vogdb_category_dict = dict()
-
-    if path.isfile(vogdb_output) and stat(vogdb_output).st_size > 0:
-        vogdb_res = parse_hmmsearch_domtblout(vogdb_output)
-
-        significant = [row_num for row_num, row in vogdb_res.iterrows() if get_sig(row.target_start, row.target_end,
-                                                                                   row.target_length, row.full_evalue)]
-        if len(significant) != 0:  # if nothing significant then return nothing, don't get descriptions
-            vogdb_res = vogdb_res.loc[significant].sort_values('full_evalue')
-            vogdb_res_most_sig_list = list()
-            for gene, frame in vogdb_res.groupby('query_id'):
-                vogdb_res_most_sig_list.append(frame.index[0])
-            vogdb_res_most_sig = vogdb_res.loc[vogdb_res_most_sig_list]
-
-            if db_handler is not None:
-                vogdb_descriptions = db_handler.get_descriptions(set(vogdb_res_most_sig.target_id),
-                                                                 'vogdb_description')
-            else:
-                vogdb_descriptions = None
-            for _, row in vogdb_res_most_sig.iterrows():
-                gene = row['query_id']
-                vogdb_id = row['target_id']
-                if vogdb_descriptions is None:
-                    vogdb_hit_dict[gene] = vogdb_id
-                else:
-                    description = vogdb_descriptions.get(vogdb_id)
-                    categories_str = description.split('; ')[-1]
-                    vogdb_categories = [categories_str[0 + i:2 + i] for i in range(0, len(categories_str), 2)]
-                    vogdb_hit_dict[gene] = description
-                    vogdb_id_dict[gene] = description.split(' ')[0]
-                    vogdb_category_dict[gene] = ';'.join(set(vogdb_categories))
-
-    return pd.DataFrame((pd.Series(vogdb_id_dict, name='vogdb_id'),
-                         pd.Series(vogdb_category_dict, name='vogdb_categories'),
-                         pd.Series(vogdb_hit_dict, name='vogdb_hit'))).transpose()
+def run_hmmscan(genes_faa:str, db_loc:str, db_name:str, output_loc:str, formater:Callable,
+                threads:int=2, db_handler=None, verbose:bool=False):
+    output = path.join(output_loc, f'{db_name}_results.unprocessed.b6')
+    run_process(['hmmsearch', '--domtblout', output, '--cpu', str(threads), db_loc, genes_faa], verbose=verbose)
+    # Parse hmmsearch output
+    if not (path.isfile(output) and stat(output).st_size > 0):
+        return pd.DataFrame()
+    hits = parse_hmmsearch_domtblout(output)
+    return formater(hits)
 
 
 def get_gene_data(fasta_loc):
@@ -731,6 +723,7 @@ def process_custom_hmms(custom_hmm_loc, custom_hmm_name, verbose=False):
     for i in range(len(custom_hmm_name)):
         run_process(['hmmpress', '-f', custom_hmm_loc[i]], verbose=verbose)  # all are pressed just in case
         custom_hmm_locs[custom_hmm_name[i]] = custom_hmm_loc[i]
+    return custom_hmm_locs
 
 
 class Annotation:
@@ -775,11 +768,17 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
                                                      verbose))
     elif db_handler.db_locs.get('kofam') is not None and db_handler.db_locs.get('kofam_ko_list') is not None:
         print('%s: Getting hits from kofam' % str(datetime.now() - start_time))
-        annotation_list.append(run_hmmscan_kofam(gene_faa, db_handler.db_locs['kofam'], tmp_dir,
-                                                 pd.read_csv(db_handler.db_locs['kofam_ko_list'], sep='\t',
-                                                             index_col=0),
-                                                 use_dbcan2_thresholds=kofam_use_dbcan2_thresholds, threads=threads,
-                                                 verbose=verbose))
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa, db_loc=db_locs['kofam'],
+                                           db_name='kofam',
+                                           output_loc=tmp_dir, #check_impliments
+                                           threads=threads, #check_impliments
+                                           verbose=verbose,
+                                           formater=partial(
+                                               kofam_hmmscan_formater,
+                                               info_db_path=db_locs['kofam_ko_list'],
+                                               top_hit=True,
+                                               use_dbcan2_thresholds=kofam_use_dbcan2_thresholds
+                                           )))
     else:
         warnings.warn('No KEGG source provided so distillation will be of limited use.')
 
@@ -815,16 +814,31 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
     # use hmmer to detect cazy ids using dbCAN
     if db_handler.db_locs.get('dbcan') is not None:
         print('%s: Getting hits from dbCAN' % str(datetime.now() - start_time))
-        annotation_list.append(run_hmmscan_dbcan(gene_faa, db_handler.db_locs['dbcan'], tmp_dir, threads,
-                                                 db_handler=db_handler, verbose=verbose))
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
+                                           db_loc=db_locs['dbcan'],
+                                           db_name='cazy',
+                                           output_loc=tmp_dir,
+                                           threads=threads,
+                                           formater=partial(
+                                               dbcan_hmmscan_formater,
+                                               db_name='cazy',
+                                               db_handler=db_handler
+                                           )))
 
     # use hmmer to detect vogdbs
     if db_handler.db_locs.get('vogdb') is not None:
         print('%s: Getting hits from VOGDB' % str(datetime.now() - start_time))
-        annotation_list.append(run_hmmscan_vogdb(gene_faa, db_handler.db_locs['vogdb'], tmp_dir, threads,
-                                                 db_handler=db_handler, verbose=verbose))
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
+                                           db_loc=db_locs['vogdb'],
+                                           db_name='vogdb',
+                                           threads=threads,
+                                           output_loc=tmp_dir,
+                                           formater=partial(
+                                               vogdb_hmmscan_formater,
+                                               db_name='vogdb',
+                                               db_handler=db_handler
+                                           )))
 
-    # get hits to blast style custom databases
     for db_name, db_loc in custom_db_locs.items():
         print('%s: Getting hits from %s' % (str(datetime.now() - start_time), db_name))
         get_custom_description = partial(get_basic_description, db_name=db_name)
@@ -836,7 +850,18 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
     # get hits to hmm style custom databases
     for hmm_name, hmm_loc in custom_hmm_locs.items():
         # TODO: build this code
-        pass
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
+                                           db_loc=hmm_loc,
+                                           db_name=hmm_name,
+                                           threads=threads,
+                                           output_loc=tmp_dir,
+                                           formater=partial(
+                                               genaric_hmmscan_formater,
+                                               db_name=hmm_name,
+                                               top_hit=True,
+                                               db_handler=None,
+                                               use_hmmer_thresholds=True
+                                           )))
 
     # heme regulatory motif count
     annotation_list.append(pd.Series(count_motifs(gene_faa, '(C..CH)'), name='heme_regulatory_motif_count'))
