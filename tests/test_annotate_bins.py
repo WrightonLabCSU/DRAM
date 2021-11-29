@@ -18,7 +18,7 @@ from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hit
     generate_annotated_fasta, create_annotated_fasta, generate_renamed_fasta, rename_fasta, run_trna_scan, \
     run_barrnap, do_blast_style_search, count_motifs, strip_endings, process_custom_dbs, get_dups, \
     parse_hmmsearch_domtblout, annotate_gff, make_gbk_from_gff_and_fasta, make_trnas_interval, make_rrnas_interval,\
-    add_intervals_to_gff, filter_db_locs
+    add_intervals_to_gff
 
 
 @pytest.fixture()
@@ -674,16 +674,3 @@ def test_add_intervals_to_gff(annotated_fake_gff_loc, tmpdir):
     gff = list(read_sequence(annotate_fake_gff_loc_w_rna, format='gff3'))
     assert type(gff) is list
     assert open(annotate_fake_gff_loc_w_rna).read() == annotated_fake_gff_w_rna
-
-
-def test_filter_db_locs():
-    test1 = filter_db_locs({'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''})
-    assert test1 == {'kegg': '/a/fake/loc'}
-    with pytest.raises(ValueError):
-        test2 = filter_db_locs({'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}, low_mem_mode=True)
-    test3 = filter_db_locs({'kofam': '1', 'kofam_ko_list': '2', 'kegg': '/a/fake/loc', 'viral': ''}, low_mem_mode=True)
-    assert test3 == {'kofam': '1', 'kofam_ko_list': '2'}
-    test4 = filter_db_locs({'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}, use_uniref=True)
-    assert test4 == {'uniref': 'a fake locations', 'kegg': '/a/fake/loc'}
-    test5 = filter_db_locs({'kegg': '/a/fake/loc', 'viral': ''}, use_uniref=True)
-    assert test5 == {'kegg': '/a/fake/loc'}

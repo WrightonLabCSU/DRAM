@@ -9,8 +9,8 @@ from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.annotate_bins import filter_db_locs, annotate_fastas
-from mag_annotator.utils import get_database_locs, get_ids_from_annotation
+from mag_annotator.annotate_bins import annotate_fastas
+from mag_annotator.utils import get_ids_from_annotation
 
 VMAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'viral', 'vogdb')
 VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length', 'strandedness',
@@ -43,7 +43,7 @@ VIRAL_PEPTIDASES_MEROPS = {'A02H', 'A02G', 'A02F', 'A02E', 'A02D', 'A02C', 'A02B
                            'T01B', 'T01A', 'T03', 'U32', 'U40'}
 
 
-def is_affi_tab_not_fasta(input_file:str) -> bool:
+def is_affi_tab_not_fasta(input_file: str) -> bool:
     """
     Checks that a file is a VIRSorter affi tab file.
 
@@ -54,7 +54,7 @@ def is_affi_tab_not_fasta(input_file:str) -> bool:
     """
     with open(input_file) as input_io:
         num_delimiter = input_io.readlines()[1].count('|')
-    if num_delimiter == 11 :
+    if num_delimiter == 11:
         return True
     return False
 
@@ -77,7 +77,7 @@ def remove_bad_chars_fasta(fasta):
     return new_seqs
 
 
-def remove_bad_chars_virsorter_affi_contigs(virsorter_in:str) -> str:
+def remove_bad_chars_virsorter_affi_contigs(virsorter_in: str) -> str:
     """
     Determine and call the appropriate function to cleans incompatible characters from VIRSorter
     or VIRSorter2 affi headers.
@@ -108,7 +108,7 @@ def remove_bad_chars_virsorter_affi_contigs(virsorter_in:str) -> str:
     return '%s\n' % '\n'.join(new_lines)
 
 
-def remove_bad_chars(input_fasta:str=None, input_virsorter_affi_contigs:str=None, output:str=None):
+def remove_bad_chars(input_fasta: str = None, input_virsorter_affi_contigs: str = None, output: str = None):
     """
     Determine and call the function to cleans incompatible characters from headers of virsorter
     affi or fasta file.
@@ -376,10 +376,10 @@ def get_virsorter_affi_contigs_name(scaffold):
     return get_virsorter_original_affi_contigs_name(scaffold)
 
 
-def add_dramv_scores_and_flags(annotations, db_locs=None, virsorter_hits=None, input_fasta=None):
+def add_dramv_scores_and_flags(annotations, db_handler, virsorter_hits=None, input_fasta=None):
     # setting up scoring viral genes
-    amg_database_frame = pd.read_csv(db_locs['amg_database'], sep='\t')
-    genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
+    amg_database_frame = pd.read_csv(db_handler.dram_sheet_locs['amg_database'], sep='\t')
+    genome_summary_form = pd.read_csv(db_handler.dram_sheet_locs['genome_summary_form'], sep='\t', index_col=0)
     genome_summary_form = genome_summary_form.loc[genome_summary_form.potential_amg]
 
     # add auxiliary score
@@ -437,9 +437,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                       'training to work well.')
 
     # get database locations
-    db_locs = get_database_locs()
-    db_handler = DatabaseHandler(db_locs['description_db'])
-    db_locs_anno = filter_db_locs(db_locs, low_mem_mode, use_uniref, True, VMAG_DBS_TO_ANNOTATE)
+    db_handler = DatabaseHandler()
+    db_handler.filter_db_locs(low_mem_mode, use_uniref, True, VMAG_DBS_TO_ANNOTATE)
 
     if virsorter_affi_contigs is not None:
         virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
@@ -456,8 +455,8 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
         for seq in read_sequence(input_fasta, format='fasta'):
             if len(seq) >= min_contig_size:
                 if '=' in seq.metadata['id'] or ';' in seq.metadata['id']:
-                    raise ValueError('FASTA headers must not have = or ; before the first space (%s). To run DRAM-v you '
-                                     'must rerun VIRSorter with = and ; removed from the headers or run DRAM-v.py '
+                    raise ValueError('FASTA headers must not have = or ; before the first space (%s). To run DRAM-v '
+                                     'you must rerun VIRSorter with = and ; removed from the headers or run DRAM-v.py '
                                      'remove_bad_characters and then rerun DRAM-v' % seq.metadata['id'])
                 if virsorter_hits is not None:
                     if get_virsorter_affi_contigs_name(seq.metadata['id']) not in virsorter_hits['name'].values:
@@ -471,13 +470,13 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # annotate vMAGs
     rename_bins = False
-    annotations = annotate_fastas(contig_locs, output_dir, db_locs_anno, db_handler, min_contig_size, prodigal_mode,
-                                  trans_table, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
-                                  custom_fasta_loc, custom_hmm_name, custom_hmm_loc, kofam_use_dbcan2_thresholds,
-                                  skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads, verbose)
+    annotations = annotate_fastas(contig_locs, output_dir, db_handler, min_contig_size, prodigal_mode, trans_table,
+                                  bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,
+                                  custom_hmm_name, custom_hmm_loc, kofam_use_dbcan2_thresholds, skip_trnascan,
+                                  rename_bins, keep_tmp_dir, start_time, threads, verbose)
     print('%s: Annotations complete, assigning auxiliary scores and flags' % str(datetime.now() - start_time))
 
-    annotations = add_dramv_scores_and_flags(annotations, db_locs, virsorter_hits, input_fasta)
+    annotations = add_dramv_scores_and_flags(annotations, db_handler, virsorter_hits, input_fasta)
 
     # write annotations
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')

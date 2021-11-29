@@ -7,8 +7,8 @@ from collections import defaultdict, Counter
 from datetime import datetime
 import warnings
 
-from mag_annotator.utils import get_database_locs, get_ids_from_row, get_ids_from_annotation
-from mag_annotator.summarize_genomes import get_ordered_uniques
+from mag_annotator.database_handler import DatabaseHandler
+from mag_annotator.utils import get_ids_from_row, get_ids_from_annotation, get_ordered_uniques
 
 VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes',
                     'Xh': 'Viral genes with host benefits', 'Xp': 'Viral genes with viral benefits',
@@ -217,11 +217,11 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
 
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0).fillna('')
-    db_locs = get_database_locs()
-    if 'genome_summary_form' not in db_locs:
+    database_handler = DatabaseHandler()
+    if database_handler.dram_sheet_locs.get('genome_summary_form') is None:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     mkdir(output_dir)
-    genome_summary_form = pd.read_csv(db_locs['genome_summary_form'], sep='\t', index_col=0)
+    genome_summary_form = pd.read_csv(database_handler.dram_sheet_locs['genome_summary_form'], sep='\t', index_col=0)
     if custom_distillate is not None:
         custom_distillate_form = pd.read_csv(custom_distillate, sep='\t', index_col=0)
         genome_summary_form = pd.concat([genome_summary_form, custom_distillate_form])
