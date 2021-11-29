@@ -14,7 +14,7 @@ from skbio.io import read as read_sequence
 from mag_annotator.utils import make_mmseqs_db
 from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hits, \
     get_reciprocal_best_hits, process_reciprocal_best_hits, get_kegg_description, get_uniref_description, \
-    get_basic_description, get_peptidase_description, get_sig, get_gene_data, get_unannotated, assign_grades, \
+    get_basic_description, get_peptidase_description, get_sig_row, get_gene_data, get_unannotated, assign_grades, \
     generate_annotated_fasta, create_annotated_fasta, generate_renamed_fasta, rename_fasta, run_trna_scan, \
     run_barrnap, do_blast_style_search, count_motifs, strip_endings, process_custom_dbs, get_dups, \
     parse_hmmsearch_domtblout, annotate_gff, make_gbk_from_gff_and_fasta, make_trnas_interval, make_rrnas_interval,\
@@ -185,11 +185,11 @@ def test_get_peptidase_description():
                                                                            ' YP_611907~'
 
 
-def test_get_sig():
-    assert not get_sig(1, 85, 100, 1)
-    assert get_sig(1, 86, 100, 1e-16)
-    assert not get_sig(1, 29, 100, 1e-20)
-
+def test_get_sig_row():
+    names = ['target_start', 'target_end', 'target_length', 'full_evalue']
+    assert not get_sig_row(pd.Series([1, 85, 100, 1], index=names))
+    assert get_sig_row(pd.Series([1, 86, 100, 1e-16], index=names))
+    assert not get_sig_row(pd.Series([1, 29, 100, 1e-20], index=names))
 
 @pytest.fixture()
 def phix_prodigal_genes():

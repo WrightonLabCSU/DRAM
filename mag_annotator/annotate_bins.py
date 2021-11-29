@@ -268,32 +268,27 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     if len(hits_sig) == 0:
         # if nothing significant then return nothing, don't get descriptions
         return pd.Series()
-    if db_handler is None:
-        hits_df = hits_sig.groupby('query_id').apply(
-            lambda x: '; '.join(x['target_id'].apply(lambda y:y[:-4]).unique())
-        )
-    else:
+    hits_df = hits_sig.groupby('query_id').apply(
+        lambda x: '; '.join(x['target_id'].apply(lambda y:y[:-4]).unique())
+    )
+    hits_df = pd.DataFrame(hits_df)
+    hits_df.columns = [f"{db_name}_id"]
+    if db_handler is not None:
         descriptions = db_handler.get_descriptions(
             hits_sig.target_id.apply(lambda x: strip_endings(x, ['.hmm']).split('_')[0]).unique(),
             'dbcan_description')
-        hits_df = hits_sig.groupby('query_id').apply(
-            lambda x: '; '.join(x['target_id'].apply(
-                lambda y:f"{descriptions.get(y[:-4].split('_')[0])} [{y[:-4]}]").unique())
+        hits_df[f"{db_name}_hits"] = hits_df.apply(
+                lambda x:';'.join([descriptions.get(i) for i in x.split(';')])
         )
-    hits_df = pd.DataFrame(hits_df)
-    # Temporaraly remove this untill we decide what dbcan reusults should be.
-    # hits_df.reset_index(inplace=True)
-    # hits_df.columns = [f"{db_name}_id", f"{db_name}_hits"]
-    hits_df.columns = [f"{db_name}_hits"]
     hits_df.rename_axis(None, inplace=True)
     return hits_df
 
-def genaric_hmmscan_formater(hits:pd.DataFrame,  db_name:str, use_hmmer_thresholds:bool=True, db_handler=None,
+def generic_hmmscan_formater(hits:pd.DataFrame,  db_name:str, use_hmmer_thresholds:bool=True, db_handler=None,
                              top_hit:bool=True):
     if use_hmmer_thresholds:
         hits_sig = hits[hits.apply(get_sig_row, axis=1)]
     else:
-        hits_sig = hits
+        pass
     if len(hits_sig) == 0:
         # if nothing significant then return nothing, don't get descriptions
         return pd.DataFrame()
@@ -322,7 +317,7 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
         # get_descriptions
         desc_col = f"{db_name}_descriptions"
         descriptions = pd.DataFrame(
-            db_handler.get_descriptions(hits_best['target_id'].unique(), 'vogdb_description'),
+            db_handler.get_descriptions(hits_best['target_id'].unique(), f"{db_name}_hits"),
             index=[desc_col]).T
         categories = descriptions[desc_col].apply(lambda x: x.split('; ')[-1])
         descriptions[f"{db_name}_categories"] = categories.apply(
@@ -656,7 +651,7 @@ def add_intervals_to_gff(annotations_loc, gff_loc, len_dict, interval_function, 
             f.write(gff_intervals.write(io.StringIO(), format='gff3', seq_id=scaffold).getvalue())
 
 
-def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_description, start_time,
+def do_blast_style_search(query_db, target_db, working_dir, db_handler, formater, start_time,
                           db_name='database', bit_score_threshold=60, rbh_bit_score_threshold=350, threads=10,
                           verbose=False):
     """A convenience function to do a blast style reciprocal best hits search"""
@@ -675,7 +670,7 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, get_desc
         header_dict = db_handler.get_descriptions(hits['%s_hit' % db_name], '%s_description' % db_name)
     else:
         header_dict = multigrep(hits['%s_hit' % db_name], '%s_h' % target_db, '\x00', working_dir)
-    hits = get_description(hits, header_dict)
+    hits = formater(hits, header_dict)
     return hits
 
 
@@ -762,20 +757,23 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
 
     # Get kegg hits
     if db_handler.db_locs.get('kegg') is not None:
+        #TODO Change the get_kegg_description name in function do_blast_style_search to formater
+        #TODO think about how this can be consitent with blast and mmseqs
         annotation_list.append(do_blast_style_search(query_db, db_handler.db_locs['kegg'], tmp_dir,
                                                      db_handler, get_kegg_description, start_time,
                                                      'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
                                                      verbose))
     elif db_handler.db_locs.get('kofam') is not None and db_handler.db_locs.get('kofam_ko_list') is not None:
         print('%s: Getting hits from kofam' % str(datetime.now() - start_time))
-        annotation_list.append(run_hmmscan(genes_faa=gene_faa, db_loc=db_locs['kofam'],
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
+                                           db_loc=db_handler.db_locs['kofam'],
                                            db_name='kofam',
                                            output_loc=tmp_dir, #check_impliments
                                            threads=threads, #check_impliments
                                            verbose=verbose,
                                            formater=partial(
                                                kofam_hmmscan_formater,
-                                               info_db_path=db_locs['kofam_ko_list'],
+                                               info_db_path=db_handler.db_locs['kofam_ko_list'],
                                                top_hit=True,
                                                use_dbcan2_thresholds=kofam_use_dbcan2_thresholds
                                            )))
@@ -815,7 +813,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
     if db_handler.db_locs.get('dbcan') is not None:
         print('%s: Getting hits from dbCAN' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan(genes_faa=gene_faa,
-                                           db_loc=db_locs['dbcan'],
+                                           db_loc=db_handler.db_locs['dbcan'],
                                            db_name='cazy',
                                            output_loc=tmp_dir,
                                            threads=threads,
@@ -829,7 +827,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
     if db_handler.db_locs.get('vogdb') is not None:
         print('%s: Getting hits from VOGDB' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan(genes_faa=gene_faa,
-                                           db_loc=db_locs['vogdb'],
+                                           db_loc=db_handler.db_locs['vogdb'],
                                            db_name='vogdb',
                                            threads=threads,
                                            output_loc=tmp_dir,
@@ -856,7 +854,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
                                            threads=threads,
                                            output_loc=tmp_dir,
                                            formater=partial(
-                                               genaric_hmmscan_formater,
+                                               generic_hmmscan_formater,
                                                db_name=hmm_name,
                                                top_hit=True,
                                                db_handler=None,
