@@ -14,7 +14,7 @@ import pandas as pd
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_description_db
 from mag_annotator.utils import divide_chunks
 
-SEARCH_DATABASES = ('kegg', 'ko_fam', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb')
+SEARCH_DATABASES = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb')
 DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database', 'function_heatmap_form',
                'amg_database')
 DATABASE_DESCRIPTIONS = ('pfam_hmm_dat', 'dbcan_fam_activities', 'vog_annotations')
@@ -100,7 +100,7 @@ class DatabaseHandler:
             else:  # if the location doesn't exist then raise error
                 raise ValueError("Database location does not exist: %s" % loc)
         self.db_locs['kegg'] = check_exists_and_add_to_location_dict(kegg_db_loc, self.db_locs.get('kegg'))
-        self.db_locs['ko_fam'] = check_exists_and_add_to_location_dict(kofam_hmm_loc, self.db_locs.get('kofam'))
+        self.db_locs['kofam'] = check_exists_and_add_to_location_dict(kofam_hmm_loc, self.db_locs.get('kofam'))
         self.db_locs['kofam_ko_list'] = check_exists_and_add_to_location_dict(kofam_ko_list_loc,
                                                                               self.db_locs.get('kofam_ko_list'))
         self.db_locs['uniref'] = check_exists_and_add_to_location_dict(uniref_db_loc, self.db_locs.get('uniref'))
