@@ -47,5 +47,3 @@ class DatabaseHandler:
     def get_database_names():
         return TABLE_NAME_TO_CLASS_DICT.keys()
 
-des = db_handler.session.query(TABLE_NAME_TO_CLASS_DICT['dbcan_description']).all()
-{i.id: i.description for i in des}
