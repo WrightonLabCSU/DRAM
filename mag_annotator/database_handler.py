@@ -29,6 +29,7 @@ DATABASE_DESCRIPTIONS = ('pfam_hmm_dat', 'dbcan_fam_activities', 'vog_annotation
 def get_config_loc():
     return path.abspath(resource_filename('mag_annotator', 'CONFIG'))
 
+
 class DatabaseHandler:
     def __init__(self, config_loc=None):
         if config_loc is None:
@@ -214,20 +215,28 @@ class DatabaseHandler:
         create_description_db(self.description_loc)
 
         # fill database
-        self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['kegg']), 'kegg',
-                                          clear_table=True)
-        self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['uniref']), 'uniref',
-                                          clear_table=True)
-        self.add_descriptions_to_database(self.process_pfam_descriptions(self.db_description_locs['pfam_hmm_dat']),
-                                          'pfam_description', clear_table=True)
-        self.add_descriptions_to_database(self.process_dbcan_descriptions(
-            self.db_description_locs['dbcan_fam_activities']),'dbcan_description', clear_table=True)
-        self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['viral']),
-                                          'viral_description', clear_table=True)
-        self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['peptidase']),
-                                          'peptidase_description', clear_table=True)
-        self.add_descriptions_to_database(self.process_vogdb_descriptions(self.db_description_locs['vog_annotations']),
-                                          'vogdb_description', clear_table=True)
+        if self.db_locs.get('kegg') is not None:
+            self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['kegg']), 'kegg',
+                                              clear_table=True)
+        if self.db_locs.get('uniref') is not None:
+            self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['uniref']), 'uniref',
+                                              clear_table=True)
+        if self.db_description_locs.get('pfam_hmm_dat') is not None:
+            self.add_descriptions_to_database(self.process_pfam_descriptions(self.db_description_locs['pfam_hmm_dat']),
+                                              'pfam_description', clear_table=True)
+        if self.db_description_locs.get('dbcan_fam_activities') is not None:
+            self.add_descriptions_to_database(self.process_dbcan_descriptions(
+                self.db_description_locs['dbcan_fam_activities']), 'dbcan_description', clear_table=True)
+        if self.db_locs.get('viral') is not None:
+            self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['viral']),
+                                              'viral_description', clear_table=True)
+        if self.db_locs.get('peptidase') is not None:
+            self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['peptidase']),
+                                              'peptidase_description', clear_table=True)
+        if self.db_description_locs.get('vog_annotations') is not None:
+            self.add_descriptions_to_database(
+                self.process_vogdb_descriptions(self.db_description_locs['vog_annotations']), 'vogdb_description',
+                clear_table=True)
 
         if update_config:  # if new description db is set then save it
             self.write_config()
@@ -244,17 +253,17 @@ class DatabaseHandler:
         print('RefSeq Viral db: %s' % self.db_locs.get('viral'))
         print('MEROPS peptidase db: %s' % self.db_locs.get('peptidase'))
         print('VOGDB db: %s' % self.db_locs.get('vogdb'))
-        # database descriptions used during description db population
         print()
+        # database descriptions used during description db population
         print('Descriptions of search database entries')
         print('Pfam hmm dat: %s' % self.db_description_locs.get('pfam_hmm_dat'))
         print('dbCAN family activities: %s' % self.db_description_locs.get('dbcan_fam_activities'))
         print('VOG annotations: %s' % self.db_description_locs.get('vog_annotations'))
+        print()
         # description database
-        print()
         print('Description db: %s' % self.description_loc)
-        # DRAM sheets
         print()
+        # DRAM sheets
         print('DRAM distillation sheets')
         print('Genome summary form: %s' % self.dram_sheet_locs.get('genome_summary_form'))
         print('Module step form: %s' % self.dram_sheet_locs.get('module_step_form'))
