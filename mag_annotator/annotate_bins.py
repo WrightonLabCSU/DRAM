@@ -333,7 +333,7 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
 def kofam_hmmscan_formater(ko_hits:pd.DataFrame, info_db_path:str=None, use_dbcan2_thresholds:bool=False, top_hit:bool=True):
         info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
         if use_dbcan2_thresholds:
-            ko_hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+            ko_hits_sig = ko_hits[ko_hits.apply(get_sig_row, axis=1)]
         else:
             ko_hits_sig = sig_scores(ko_hits, info_db)
         # if there are any significant results then parse to dataframe
