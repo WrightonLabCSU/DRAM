@@ -338,7 +338,7 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
 def kofam_hmmscan_formater(ko_hits:pd.DataFrame, info_db_path:str=None, use_dbcan2_thresholds:bool=False, top_hit:bool=True):
         info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
         if use_dbcan2_thresholds:
-            ko_hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+            ko_hits_sig = ko_hits[ko_hits.apply(get_sig_row, axis=1)]
         else:
             ko_hits_sig = sig_scores(ko_hits, info_db)
         # if there are any significant results then parse to dataframe
@@ -768,14 +768,14 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
                                                      verbose))
     elif db_handler.db_locs.get('kofam') is not None and db_handler.db_locs.get('kofam_ko_list') is not None:
         print('%s: Getting hits from kofam' % str(datetime.now() - start_time))
-        annotation_list.append(run_hmmscan(genes_faa=gene_faa, db_loc=db_locs['kofam'],
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa, db_loc=db_handler.db_locs['kofam'],
                                            db_name='kofam',
                                            output_loc=tmp_dir, #check_impliments
                                            threads=threads, #check_impliments
                                            verbose=verbose,
                                            formater=partial(
                                                kofam_hmmscan_formater,
-                                               info_db_path=db_locs['kofam_ko_list'],
+                                               info_db_path=db_handler.db_locs['kofam_ko_list'],
                                                top_hit=True,
                                                use_dbcan2_thresholds=kofam_use_dbcan2_thresholds
                                            )))
@@ -815,7 +815,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
     if db_handler.db_locs.get('dbcan') is not None:
         print('%s: Getting hits from dbCAN' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan(genes_faa=gene_faa,
-                                           db_loc=db_locs['dbcan'],
+                                           db_loc=db_handler.db_locs['dbcan'],
                                            db_name='cazy',
                                            output_loc=tmp_dir,
                                            threads=threads,
@@ -829,7 +829,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
     if db_handler.db_locs.get('vogdb') is not None:
         print('%s: Getting hits from VOGDB' % str(datetime.now() - start_time))
         annotation_list.append(run_hmmscan(genes_faa=gene_faa,
-                                           db_loc=db_locs['vogdb'],
+                                           db_loc=db_handler.db_locs['vogdb'],
                                            db_name='vogdb',
                                            threads=threads,
                                            output_loc=tmp_dir,
