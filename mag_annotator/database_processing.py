@@ -356,8 +356,8 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
 
     db_handler = DatabaseHandler()
+    db_handler.populate_description_db(output_dbs['description_db_loc'], update_config=False)
     db_handler.set_database_paths(**output_dbs)
-    db_handler.populate_description_db()
     print('%s: DRAM description database populated' % str(datetime.now() - start_time))
 
     if not keep_database_files:

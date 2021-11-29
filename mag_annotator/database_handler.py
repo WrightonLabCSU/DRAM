@@ -203,7 +203,7 @@ class DatabaseHandler:
         return annotations_list
 
     # TODO: Make option to build on description database that already exists?
-    def populate_description_db(self, output_loc=None):
+    def populate_description_db(self, output_loc=None, update_config=True):
         if self.description_loc is None and output_loc is None:  # description db location must be set somewhere
             raise ValueError('Must provide output location if description db location is not set in configuration')
         if output_loc is not None:  # if new description db location is set then save it there
@@ -229,7 +229,7 @@ class DatabaseHandler:
         self.add_descriptions_to_database(self.process_vogdb_descriptions(self.db_description_locs['vog_annotations']),
                                           'vogdb_description', clear_table=True)
 
-        if output_loc is not None:  # if new description db is set then save it
+        if update_config:  # if new description db is set then save it
             self.write_config()
 
     def print_database_locations(self):
