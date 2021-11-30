@@ -274,12 +274,8 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     hits_df = pd.DataFrame(hits_df)
     hits_df.columns = [f"{db_name}_id"]
     if db_handler is not None:
-        descriptions = db_handler.get_descriptions(
-            hits_sig.target_id.apply(lambda x: strip_endings(x, ['.hmm']).split('_')[0]).unique(),
-            'dbcan_description')
-        hits_df[f"{db_name}_hits"] = hits_df.apply(
-                lambda x:';'.join([descriptions.get(i) for i in x.split(';')])
-        )
+        hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_id"].apply(
+            lambda x:'; '.join(db_handler.get_descriptions(x.split('; '), 'dbcan_description').values()))
     hits_df.rename_axis(None, inplace=True)
     return hits_df
 
@@ -315,9 +311,9 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
         hits_df = hits_best[['target_id', 'query_id']].copy()
     else:
         # get_descriptions
-        desc_col = f"{db_name}_descriptions"
+        desc_col = f"{db_name}_hits"
         descriptions = pd.DataFrame(
-            db_handler.get_descriptions(hits_best['target_id'].unique(), f"{db_name}_hits"),
+            db_handler.get_descriptions(hits_best['target_id'].unique(), f"{db_name}_description"),
             index=[desc_col]).T
         categories = descriptions[desc_col].apply(lambda x: x.split('; ')[-1])
         descriptions[f"{db_name}_categories"] = categories.apply(
@@ -328,6 +324,8 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     hits_df.rename_axis(None, inplace=True)
     hits_df.rename(columns={'target_id': f"{db_name}_id"}, inplace=True)
     return hits_df
+
+
 
 
 def kofam_hmmscan_formater(ko_hits:pd.DataFrame, info_db_path:str=None, use_dbcan2_thresholds:bool=False, top_hit:bool=True):
