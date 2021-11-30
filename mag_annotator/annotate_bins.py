@@ -326,8 +326,6 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     return hits_df
 
 
-
-
 def kofam_hmmscan_formater(ko_hits:pd.DataFrame, info_db_path:str=None, use_dbcan2_thresholds:bool=False, top_hit:bool=True):
         info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
         if use_dbcan2_thresholds:

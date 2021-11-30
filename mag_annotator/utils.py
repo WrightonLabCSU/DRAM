@@ -79,11 +79,12 @@ def get_ids_from_annotation(frame):
     if 'peptidase_family' in frame:
         id_list += [j.strip() for i in frame.peptidase_family.dropna() for j in i.split(';')]
     # get cazy ids
+    if 'cazy_id' in frame:
+        id_list += [j for i in frame.cazy_id.dropna() for j in i.split('; ')]
+    # get cazy ec numbers
     if 'cazy_hits' in frame:
-        id_list += [j.split(' ')[0] for i in frame.cazy_hits.dropna() for j in i.split(';')]
-        # get cazy ec numbers
-        for cazy_hit in frame.cazy_hits.dropna():
-            id_list += [i[1:-1].split('_')[0] for i in re.findall(r'\[[A-Z]*\d*?\]', cazy_hit)]
+        id_list += [f"{j[1:3]}:{j[4:-1]}" for i in frame.cazy_hits.dropna()
+                    for j in re.findall(r'\(EC [\d+\.]+[\d-]\)', i)]
     # get pfam ids
     if 'pfam_hits' in frame:
         id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna()
