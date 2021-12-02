@@ -90,6 +90,32 @@ def get_ids_from_annotation(frame):
         id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna()
                     for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', i)]
     return Counter(id_list)
+def get_ids_from_annotation(frame):
+    id_list = list()
+    # get kegg gene ids
+    if 'kegg_genes_id' in frame:
+        id_list += [j.strip() for i in frame.kegg_genes_id.dropna() for j in i.split(',')]
+    # get kegg orthology ids
+    if 'ko_id' in frame:
+        id_list += [j.strip() for i in frame.ko_id.dropna() for j in i.split(',')]
+    # get kegg ec numbers
+    if 'kegg_hit' in frame:
+        for kegg_hit in frame.kegg_hit.dropna():
+            id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', kegg_hit)]
+    # get merops ids
+    if 'peptidase_family' in frame:
+        id_list += [j.strip() for i in frame.peptidase_family.dropna() for j in i.split(';')]
+    # get cazy ids
+    if 'cazy_id' in frame:
+        id_list += [j.split(' ')[0] for i in frame.cazy_.dropna() for j in i.split(';')]
+        # get cazy ec numbers
+        for cazy_hit in frame.cazy_hits.dropna():
+            id_list += [i[1:-1].split('_')[0] for i in re.findall(r'\[[A-Z]*\d*?\]', cazy_hit)]
+    # get pfam ids
+    if 'pfam_hits' in frame:
+        id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna()
+                    for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', i)]
+    return Counter(id_list)
 
 
 # unify this with get_ids_from_annotation
