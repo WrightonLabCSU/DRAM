@@ -14,6 +14,7 @@ from os import path, mkdir, stat
 from shutil import rmtree, copy2
 import pandas as pd
 
+
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep, remove_suffix
 from mag_annotator.database_handler import DatabaseHandler
 
@@ -279,6 +280,7 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     hits_df.rename_axis(None, inplace=True)
     return hits_df
 
+
 def generic_hmmscan_formater(hits:pd.DataFrame,  db_name:str, use_hmmer_thresholds:bool=True, db_handler=None,
                              top_hit:bool=True):
     if use_hmmer_thresholds:
@@ -293,12 +295,12 @@ def generic_hmmscan_formater(hits:pd.DataFrame,  db_name:str, use_hmmer_threshol
         hits_sig = hits_sig.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
     if db_handler is None:
         pass
-    else:
-        hits_df = hits_sig[['target_id', 'query_id']]
+    hits_df = hits_sig[['target_id', 'query_id']]
     hits_df.set_index('query_id', inplace=True, drop=True)
     hits_df.rename_axis(None, inplace=True)
     hits_df.columns = [f"{db_name}_id"]
     return hits_df
+
 
 def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     hits_sig = hits[hits.apply(get_sig_row, axis=1)]
@@ -327,26 +329,26 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
 
 
 def kofam_hmmscan_formater(ko_hits:pd.DataFrame, info_db_path:str=None, use_dbcan2_thresholds:bool=False, top_hit:bool=True):
-        info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
-        if use_dbcan2_thresholds:
-            ko_hits_sig = ko_hits[ko_hits.apply(get_sig_row, axis=1)]
+    info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
+    if use_dbcan2_thresholds:
+        ko_hits_sig = ko_hits[ko_hits.apply(get_sig_row, axis=1)]
+    else:
+        ko_hits_sig = sig_scores(ko_hits, info_db)
+    # if there are any significant results then parse to dataframe
+    if len(ko_hits_sig) == 0:
+        return pd.DataFrame()
+    kegg_dict = dict()
+    for gene, frame in ko_hits_sig.groupby('query_id'):
+        # TODO: take top hit for full length genes and all hits for domains?
+        # TODO: if top hit then give all e-value and bitscore info
+        if top_hit:
+            best_hit = frame[frame.full_evalue == frame.full_evalue.min()]
+            ko_id = best_hit['target_id'].iloc[0]
+            kegg_dict[gene] = [ko_id, info_db.loc[ko_id, 'definition']]
         else:
-            ko_hits_sig = sig_scores(ko_hits, info_db)
-        # if there are any significant results then parse to dataframe
-        if len(ko_hits_sig) == 0:
-            return pd.DataFrame()
-        kegg_dict = dict()
-        for gene, frame in ko_hits_sig.groupby('query_id'):
-            # TODO: take top hit for full length genes and all hits for domains?
-            # TODO: if top hit then give all e-value and bitscore info
-            if top_hit:
-                best_hit = frame[frame.full_evalue == frame.full_evalue.min()]
-                ko_id = best_hit['target_id'].iloc[0]
-                kegg_dict[gene] = [ko_id, info_db.loc[ko_id, 'definition']]
-            else:
-                kegg_dict[gene] = [','.join([i for i in frame.target_id]),
-                                   '; '.join([info_db.loc[i, 'definition'] for i in frame.target_id])]
-        return pd.DataFrame(kegg_dict, index=['ko_id', 'kegg_hit']).transpose()
+            kegg_dict[gene] = [','.join([i for i in frame.target_id]),
+                               '; '.join([info_db.loc[i, 'definition'] for i in frame.target_id])]
+    return pd.DataFrame(kegg_dict, index=['ko_id', 'kegg_hit']).transpose()
 
 
 def run_hmmscan(genes_faa:str, db_loc:str, db_name:str, output_loc:str, formater:Callable,
@@ -485,8 +487,9 @@ def annotate_gff(input_gff, output_gff, annotations, prefix=None):
             # get annotations to add from annotations file and add to end of line
             annotations_to_add = {strip_endings(i, ['_id']): annotations.loc[old_gene_name, i]
                                   for i in annotations.columns if i.endswith('_id')}
-            database_information = ['Dbxref="%s:%s"' % (key.strip(), value.strip())
-                                    for key, value in annotations_to_add.items()
+            database_information = ['Dbxref="%s:%s"' % (key.strip(), value.strip().replace(':', '_'))
+                                    for key, values in annotations_to_add.items()
+                                    for value in str(values).split('; ')
                                     if not pd.isna(value) and value != '']
             if len(database_information) > 0:
                 line += '%s;' % ';'.join(database_information)
