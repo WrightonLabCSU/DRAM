@@ -445,9 +445,9 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     else:
         virsorter_hits = None
 
+    mkdir(output_dir)
     if split_contigs:
         # split sequences into separate fastas
-        mkdir(output_dir)
         contig_dir = path.join(output_dir, 'vMAGs')
         mkdir(contig_dir)
 
