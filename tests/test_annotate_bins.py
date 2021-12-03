@@ -18,7 +18,8 @@ from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hit
     generate_annotated_fasta, create_annotated_fasta, generate_renamed_fasta, rename_fasta, run_trna_scan, \
     run_barrnap, do_blast_style_search, count_motifs, strip_endings, process_custom_dbs, get_dups, \
     parse_hmmsearch_domtblout, annotate_gff, make_gbk_from_gff_and_fasta, make_trnas_interval, make_rrnas_interval,\
-    add_intervals_to_gff
+    add_intervals_to_gff, vogdb_hmmscan_formater, generic_hmmscan_formater, dbcan_hmmscan_formater, \
+    kofam_hmmscan_formater
 
 
 @pytest.fixture()
@@ -463,12 +464,48 @@ def fake_phix_annotations():
 def fake_gff_loc():
     return os.path.join('tests', 'data', 'fake_gff.gff')
 
-
+#TODO
 def test_annotate_gff(annotated_fake_gff_loc, fake_phix_annotations, fake_gff_loc, tmpdir):
     gff_output = tmpdir.mkdir('gff_annotate')
     test_annotated_gff_loc = os.path.join(gff_output, 'annotated.gff')
     annotate_gff(fake_gff_loc, test_annotated_gff_loc, fake_phix_annotations, 'fake')
     assert cmp(annotated_fake_gff_loc, test_annotated_gff_loc)
+
+def test_kofam_hmmscan_formater():
+    #TODO Not Done
+    output_expt = pd.DataFrame({"bin_1.scaffold_1": "GT4; GT5",
+                           "bin_1.scaffold_2": "GH1"}, index=["cazy_id"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = kofam_hmmscan_formater(hits=hits,
+                                         info_db_path=db_handler.db_locs['kofam_ko_list'],
+                                         top_hit=True,
+                                         use_dbcan2_thresholds=kofam_use_dbcan2_thresholds)
+
+def test_vogdb_hmmscan_formater():
+    #TODO Not Done
+    output_expt = pd.DataFrame({"bin_1.scaffold_1": "GT4; GT5",
+                           "bin_1.scaffold_2": "GH1"}, index=["cazy_id"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_vogdb.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = vogdb_hmmscan_formater(hits=hits, db_name='vogdb')
+
+def test_generic_hmmscan_formater():
+    # os.path.join('tests', 'data', 'unformatted_gen.b6')
+    #TODO Not Done
+    pass
+
+
+def test_dbcan_hmmscan_formater():
+    # TODO can we test with db-handler?
+    output_expt = pd.DataFrame({"bin_1.scaffold_1": "GT4; GT5",
+                           "bin_1.scaffold_2": "GH1"}, index=["cazy_id"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_cazy.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = dbcan_hmmscan_formater(hits=hits, db_name='cazy')
+    hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    output_rcvd
+    assert output_rcvd.equals(output_expt), "Error in dbcan_hmmscan_formater"
 
 
 test_gbk = """LOCUS       NC_001422.1   5386 bp   DNA   linear   ENV   %s

@@ -489,8 +489,9 @@ def annotate_gff(input_gff, output_gff, annotations, prefix=None):
                                   for i in annotations.columns if i.endswith('_id')}
             database_information = ['Dbxref="%s:%s"' % (key.strip(), value.strip().replace(':', '_'))
                                     for key, values in annotations_to_add.items()
-                                    for value in str(values).split('; ')
-                                    if not pd.isna(value) and value != '']
+                                    if not pd.isna(values)
+                                    for value in values.split('; ')
+                                    if value != '']
             if len(database_information) > 0:
                 line += '%s;' % ';'.join(database_information)
         o.write('%s\n' % line)
