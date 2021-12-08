@@ -13,7 +13,8 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: add negate, aka pull not from given list
 
 
-def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=None, identifiers=None, categories=None):
+def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=None, identifiers=None, categories=None,
+                               custom_distillate=None):
     specific_genes_to_keep = list()
     # filter fastas
     if fastas is not None:
@@ -55,6 +56,8 @@ def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=N
         if categories is not None:
             database_handler = DatabaseHandler()
             genome_summary_form = pd.read_csv(database_handler.db_locs['genome_summary_form'], sep='\t')
+            if custom_distillate is not None:
+                genome_summary_form = pd.concat([genome_summary_form, pd.read_csv(custom_distillate, sep='\t')])
             for level in ['module', 'sheet', 'header', 'subheader']:
                 for category, frame in genome_summary_form.loc[~pd.isna(genome_summary_form[level])].groupby(level):
                     if category in categories:
@@ -69,12 +72,12 @@ def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=N
 def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, scaffolds=None, genes=None,
                    identifiers=None, categories=None, taxonomy=None, completeness=None, contamination=None,
                    amg_flags=None, aux_scores=None, virsorter_category=None, putative_amgs=False,
-                   max_auxiliary_score=3, remove_transposons=False, remove_fs=False):
+                   max_auxiliary_score=3, remove_transposons=False, remove_fs=False, custom_distillate=None):
     annotations = pd.read_csv(input_annotations, sep='\t', index_col=0)
 
     # first filter based on specific names
     annotation_genes_to_keep = get_genes_from_identifiers(annotations, genes, fastas, scaffolds, identifiers,
-                                                          categories)
+                                                          categories, custom_distillate)
     annotations = annotations.loc[annotation_genes_to_keep]
     if len(annotations) == 0:
         raise ValueError("Categories or identifiers provided yielded no annotations")
@@ -149,7 +152,7 @@ def find_neighborhoods(annotations, genes_from_ids, distance_bp=None, distance_g
 
 
 def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None, categories=None, genes_loc=None,
-                           scaffolds_loc=None, distance_genes=None, distance_bp=None):
+                           scaffolds_loc=None, distance_genes=None, distance_bp=None, custom_distillate=None):
     # check inputs, make output
     if distance_genes is None and distance_bp is None:
         raise ValueError("Must provide distance away in bp, genes or both.")
@@ -157,7 +160,7 @@ def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None,
     # get data
     annotations = pd.read_csv(input_file, sep='\t', index_col=0)
     genes_from_ids = get_genes_from_identifiers(annotations, genes=genes, identifiers=identifiers,
-                                                categories=categories)
+                                                categories=categories, custom_distillate=custom_distillate)
     if len(genes_from_ids) == 0:
         raise ValueError("No genes were found based on your filtering parameters. No neighborhoods will be generated.")
 

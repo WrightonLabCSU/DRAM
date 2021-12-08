@@ -149,6 +149,7 @@ if __name__ == '__main__':
     annotation_group.add_argument('--identifiers', nargs='*', default=None, help='database identifiers to keep')
     annotation_group.add_argument('--categories', nargs='*', default=None,
                                   help='distillate categories to keep genes from')
+    annotation_group.add_argument('--custom_distillate', help="Custom distillate form to add your own modules")
     dram_group = strainer_parser.add_argument_group('DRAM based filters')
     dram_group.add_argument('--taxonomy', nargs='*', default=None,
                             help='Level of GTDBTk taxonomy to keep (e.g. c__Clostridia), space separated list')
@@ -164,6 +165,7 @@ if __name__ == '__main__':
     neighborhood_parser.add_argument("--genes", nargs='*', help="Gene names from DRAM to find neighborhoods around")
     neighborhood_parser.add_argument("--identifiers", nargs='*',
                                      help="Database identifiers assigned by DRAM to find neighborhoods around")
+    neighborhood_parser.add_argument('--custom_distillate', help="Custom distillate form to add your own modules")
     neighborhood_parser.add_argument("--categories", help="Distillate categories to build gene neighborhoods around.")
     neighborhood_parser.add_argument("--genes_loc", help="Location of genes.fna/genes.faa file to filter to "
                                                          "neighborhoods")
