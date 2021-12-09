@@ -471,6 +471,8 @@ def test_annotate_gff(annotated_fake_gff_loc, fake_phix_annotations, fake_gff_lo
     annotate_gff(fake_gff_loc, test_annotated_gff_loc, fake_phix_annotations, 'fake')
     assert cmp(annotated_fake_gff_loc, test_annotated_gff_loc)
 
+#hits_df = pd.DataFrame({f"{db_name}_id": ['D00001', 'D00002'],}, index=[1,2])
+#hits_df = pd.merge(hits_df, hmm_info[['definition']], left_on=f"{db_name}_id", right_index=True, how='left')
 def test_kofam_hmmscan_formater():
     #TODO Not Done
     output_expt = pd.DataFrame({"bin_1.scaffold_1": "GT4; GT5",

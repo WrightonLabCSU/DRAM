@@ -61,7 +61,7 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--custom_hmm_loc', action='append',
                                  help="Location of hmms to annotate against, can be used multiple times but"
                                       "must match nubmer of custom_hmm_name's")
-    annotate_parser.add_argument('--custom_hmm_cutoffs_locs', action='append',
+    annotate_parser.add_argument('--custom_hmm_cutoffs_loc', action='append',
                                  help="Location of file with custom HMM cutoffs and descriptions, can be used "
                                       "multiple times.")
     annotate_parser.add_argument('--gtdb_taxonomy', action='append', default=[],
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--custom_hmm_loc', action='append',
                                        help="Location of hmms to annotate against, can be used multiple times but"
                                             "must match nubmer of custom_hmm_name's")
-    annotate_genes_parser.add_argument('--custom_hmm_cutoffs_locs', action='append',
+    annotate_genes_parser.add_argument('--custom_hmm_cutoffs_loc', action='append',
                                        help="Location of file with custom HMM cutoffs and descriptions, can be used "
                                             "multiple times.")
     annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,
