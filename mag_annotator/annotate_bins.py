@@ -244,19 +244,20 @@ def parse_hmmsearch_domtblout(file):
     return hmmsearch_frame
 
 
+# continue exit()
 def sig_scores(hits:pd.DataFrame, score_db:pd.DataFrame) -> pd.DataFrame:
     is_sig = list()
-    for ko, frame in hits.groupby('target_id'):
-        ko_row = score_db.loc[ko]
-        if ko_row['score_type'] == 'domain':
+    for i, frame in hits.groupby('target_id'):
+        row = score_db.loc[i]
+        if row['score_type'] == 'domain':
             score = frame.domain_score
-        elif ko_row['score_type'] == 'full':
+        elif row['score_type'] == 'full':
             score = frame.full_score
-        elif ko_row['score_type'] == '-':
+        elif row['score_type'] == '-':
             continue
         else:
-            raise ValueError(ko_row['score_type'])
-        frame = frame.loc[score.astype(float) > float(ko_row.threshold)]
+            raise ValueError(row['score_type'])
+        frame = frame.loc[score.astype(float) > float(row.threshold)]
         is_sig.append(frame)
     if len(is_sig) > 0:
         return pd.concat(is_sig)
@@ -281,25 +282,53 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     return hits_df
 
 
-def generic_hmmscan_formater(hits:pd.DataFrame,  db_name:str, use_hmmer_thresholds:bool=True, db_handler=None,
-                             top_hit:bool=True):
-    if use_hmmer_thresholds:
+#TODO decide if we need use_hmmer_thresholds:bool=False
+def generic_hmmscan_formater(hits:pd.DataFrame,  db_name:str, hmm_info_path:str=None, top_hit:bool=True):
+    if hmm_info_path is None:
+        hmm_info = None
         hits_sig = hits[hits.apply(get_sig_row, axis=1)]
     else:
-        pass
+        hmm_info = pd.read_csv(hmm_info_path, sep='\t', index_col=0)
+        hits_sig = sig_scores(hits, hmm_info)
     if len(hits_sig) == 0:
         # if nothing significant then return nothing, don't get descriptions
         return pd.DataFrame()
     if top_hit:
         # Get the best hits
         hits_sig = hits_sig.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
-    if db_handler is None:
-        pass
     hits_df = hits_sig[['target_id', 'query_id']]
     hits_df.set_index('query_id', inplace=True, drop=True)
     hits_df.rename_axis(None, inplace=True)
     hits_df.columns = [f"{db_name}_id"]
+    if hmm_info is not None:
+        hits_df = hits_df.merge(hmm_info[['definition']], how='left', left_on=f"{db_name}_id", right_index=True)
+        hits_df.rename(columns={'definition': f"{db_name}_hits"}, inplace=True)
     return hits_df
+
+
+def kofam_hmmscan_formater(hits:pd.DataFrame, hmm_info_path:str=None, use_dbcan2_thresholds:bool=False,
+                           top_hit:bool=True):
+    hmm_info = pd.read_csv(hmm_info_path, sep='\t', index_col=0)
+    if use_dbcan2_thresholds:
+        hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+    else:
+        hits_sig = sig_scores(hits, hmm_info)
+    # if there are any significant results then parse to dataframe
+    if len(hits_sig) == 0:
+        return pd.DataFrame()
+    kegg_dict = dict()
+    for gene, frame in hits_sig.groupby('query_id'):
+        # TODO: take top hit for full length genes and all hits for domains?
+        # TODO: if top hit then give all e-value and bitscore info
+        if top_hit:
+            best_hit = frame[frame.full_evalue == frame.full_evalue.min()]
+            ko_id = best_hit['target_id'].iloc[0]
+            kegg_dict[gene] = [ko_id, hmm_info.loc[ko_id, 'definition']]
+        else:
+            kegg_dict[gene] = [','.join([i for i in frame.target_id]),
+                               '; '.join([hmm_info.loc[i, 'definition'] for i in frame.target_id])]
+    return pd.DataFrame(kegg_dict, index=['ko_id', 'kegg_hit']).transpose()
+
 
 
 def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
@@ -326,29 +355,6 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     hits_df.rename_axis(None, inplace=True)
     hits_df.rename(columns={'target_id': f"{db_name}_id"}, inplace=True)
     return hits_df
-
-
-def kofam_hmmscan_formater(ko_hits:pd.DataFrame, info_db_path:str=None, use_dbcan2_thresholds:bool=False, top_hit:bool=True):
-    info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
-    if use_dbcan2_thresholds:
-        ko_hits_sig = ko_hits[ko_hits.apply(get_sig_row, axis=1)]
-    else:
-        ko_hits_sig = sig_scores(ko_hits, info_db)
-    # if there are any significant results then parse to dataframe
-    if len(ko_hits_sig) == 0:
-        return pd.DataFrame()
-    kegg_dict = dict()
-    for gene, frame in ko_hits_sig.groupby('query_id'):
-        # TODO: take top hit for full length genes and all hits for domains?
-        # TODO: if top hit then give all e-value and bitscore info
-        if top_hit:
-            best_hit = frame[frame.full_evalue == frame.full_evalue.min()]
-            ko_id = best_hit['target_id'].iloc[0]
-            kegg_dict[gene] = [ko_id, info_db.loc[ko_id, 'definition']]
-        else:
-            kegg_dict[gene] = [','.join([i for i in frame.target_id]),
-                               '; '.join([info_db.loc[i, 'definition'] for i in frame.target_id])]
-    return pd.DataFrame(kegg_dict, index=['ko_id', 'kegg_hit']).transpose()
 
 
 def run_hmmscan(genes_faa:str, db_loc:str, db_name:str, output_loc:str, formater:Callable,
@@ -720,6 +726,17 @@ def process_custom_hmms(custom_hmm_loc, custom_hmm_name, verbose=False):
         custom_hmm_locs[custom_hmm_name[i]] = custom_hmm_loc[i]
     return custom_hmm_locs
 
+def process_custom_hmm_cutoffs(custom_hmm_cutoffs_loc, custom_hmm_name, verbose=False):
+    if custom_hmm_cutoffs_loc is None:
+        return {}
+    if custom_hmm_name is None:
+        raise ValueError("You can't use the custom_hmm_cutoffs_loc argument without the custom_hmm_name and"
+                         " custom_hmm_locs aguments specified.")
+    if len(custom_hmm_cutoffs_loc) != len(custom_hmm_name):
+        warnings.warn(f"Custom hmm cutoffs and descriptions were only provided to the first {len(custom_hmm_cutoffs_loc)}."
+                      " The rest of the custom hmms will use standard cutoffs and have no descriptions.")
+    return {custom_hmm_name[i]:j for i, j in enumerate(custom_hmm_cutoffs_loc)}
+
 
 class Annotation:
     def __init__(self, name, scaffolds, genes_faa, genes_fna, gff, gbk, annotations, trnas, rrnas):
@@ -743,7 +760,6 @@ class Annotation:
 
     def get_rrnas(self):
         return pd.read_csv(self.rrnas_loc, sep='\t')
-
 
 def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), custom_hmm_locs=(),
                   custom_hmm_cutoffs_locs=(), bit_score_threshold=60, rbh_bit_score_threshold=350,
@@ -773,7 +789,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
                                            verbose=verbose,
                                            formater=partial(
                                                kofam_hmmscan_formater,
-                                               info_db_path=db_handler.db_locs['kofam_ko_list'],
+                                               hmm_info_path=db_handler.db_locs['kofam_ko_list'],
                                                top_hit=True,
                                                use_dbcan2_thresholds=kofam_use_dbcan2_thresholds
                                            )))
@@ -847,7 +863,6 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
 
     # get hits to hmm style custom databases
     for hmm_name, hmm_loc in custom_hmm_locs.items():
-        # TODO: build this code
         annotation_list.append(run_hmmscan(genes_faa=gene_faa,
                                            db_loc=hmm_loc,
                                            db_name=hmm_name,
@@ -856,9 +871,8 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
                                            formater=partial(
                                                generic_hmmscan_formater,
                                                db_name=hmm_name,
-                                               top_hit=True,
-                                               db_handler=None,
-                                               use_hmmer_thresholds=True
+                                               hmm_info_path=custom_hmm_cutoffs_locs.get(hmm_name),
+                                               top_hit=True
                                            )))
 
     # heme regulatory motif count
@@ -967,7 +981,7 @@ def get_fasta_name(fasta_loc):
 
 def annotate_fastas(fasta_locs, output_dir, db_handler, min_contig_size=5000, prodigal_mode='meta', trans_table='11',
                     bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                    custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_locs=(), kofam_use_dbcan2_thresholds=False,
+                    custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), kofam_use_dbcan2_thresholds=False,
                     skip_trnascan=False, rename_bins=True, keep_tmp_dir=True, start_time=datetime.now(), threads=10,
                     verbose=True):
     # check for no conflicting options/configurations
@@ -978,6 +992,7 @@ def annotate_fastas(fasta_locs, output_dir, db_handler, min_contig_size=5000, pr
     custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'), threads,
                                         verbose)
     custom_hmm_locs = process_custom_hmms(custom_hmm_loc, custom_hmm_name)
+    custom_hmm_cutoffs_locs= process_custom_hmm_cutoffs(custom_hmm_cutoffs_loc, custom_hmm_name)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # iterate over list of fastas and annotate each individually
@@ -1005,7 +1020,7 @@ def annotate_fastas(fasta_locs, output_dir, db_handler, min_contig_size=5000, pr
 
 def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodigal_mode='meta', trans_table='11',
                       bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                      custom_hmm_name=(), custom_hmm_loc=(), use_uniref=False, use_vogdb=False,
+                      custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, use_vogdb=False,
                       kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                       keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = [j for i in input_fasta for j in glob(i)]
@@ -1018,8 +1033,8 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
     rename_bins = True
     annotate_bins(list(set(fasta_locs)), output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
                   rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, custom_hmm_name, custom_hmm_loc,
-                  use_uniref, use_vogdb, kofam_use_dbcan2_thresholds, skip_trnascan, gtdb_taxonomy, checkm_quality,
-                  rename_bins, keep_tmp_dir, low_mem_mode, threads, verbose)
+                  custom_hmm_cutoffs_loc, use_uniref, use_vogdb, kofam_use_dbcan2_thresholds, skip_trnascan,
+                  gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
 # TODO: Add force flag to remove output dir if it already exists
@@ -1027,7 +1042,7 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
 # TODO: make fasta loc either a string or list to remove annotate_bins_cmd and annotate_called_genes_cmd?
 def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_locs=(), use_uniref=False, use_vogdb=False,
+                  custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, use_vogdb=False,
                   kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                   rename_bins=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     # set up
@@ -1057,7 +1072,7 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
 
     all_annotations = annotate_fastas(fasta_locs, output_dir, db_handler, min_contig_size, prodigal_mode, trans_table,
                                       bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,
-                                      custom_hmm_name, custom_hmm_loc, custom_hmm_cutoffs_locs,
+                                      custom_hmm_name, custom_hmm_loc, custom_hmm_cutoffs_loc,
                                       kofam_use_dbcan2_thresholds, skip_trnascan, rename_bins, keep_tmp_dir, start_time,
                                       threads, verbose)
     # if given add taxonomy information
@@ -1104,20 +1119,21 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
 
 def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
                               custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
-                              use_uniref=False, use_vogdb=False, kofam_use_dbcan2_thresholds=False, rename_genes=True,
-                              keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                              custom_hmm_cutoffs_loc=(), use_uniref=False, use_vogdb=False,
+                              kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True,
+                              low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
     print('%s fastas found' % len(fasta_locs))
     annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, custom_db_name,
-                          custom_fasta_loc, custom_hmm_loc, custom_hmm_name, use_uniref, use_vogdb,
+                          custom_fasta_loc, custom_hmm_loc, custom_hmm_name, custom_hmm_cutoffs_loc, use_uniref, use_vogdb,
                           kofam_use_dbcan2_thresholds, rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
 def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
                           custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
-                          custom_hmm_cutoffs_locs=(), use_uniref=False, use_vogdb=False,
+                          custom_hmm_cutoffs_loc=(), use_uniref=False, use_vogdb=False,
                           kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True, low_mem_mode=False,
                           threads=10, verbose=True):
     # set up
@@ -1136,6 +1152,7 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'), threads,
                                         verbose)
     custom_hmm_locs = process_custom_hmms(custom_hmm_loc, custom_hmm_name)
+    custom_hmm_cutoffs_locs= process_custom_hmm_cutoffs(custom_hmm_cutoffs_loc, custom_hmm_name)
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # annotate
