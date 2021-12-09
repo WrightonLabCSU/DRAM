@@ -471,31 +471,84 @@ def test_annotate_gff(annotated_fake_gff_loc, fake_phix_annotations, fake_gff_lo
     annotate_gff(fake_gff_loc, test_annotated_gff_loc, fake_phix_annotations, 'fake')
     assert cmp(annotated_fake_gff_loc, test_annotated_gff_loc)
 
-#hits_df = pd.DataFrame({f"{db_name}_id": ['D00001', 'D00002'],}, index=[1,2])
-#hits_df = pd.merge(hits_df, hmm_info[['definition']], left_on=f"{db_name}_id", right_index=True, how='left')
-def test_kofam_hmmscan_formater():
-    #TODO Not Done
-    output_expt = pd.DataFrame({"bin_1.scaffold_1": "GT4; GT5",
-                           "bin_1.scaffold_2": "GH1"}, index=["cazy_id"]).T
+
+def test_kofam_hmmscan_formater_dbcan():
+    output_expt = pd.DataFrame({
+        "bin_1.scaffold_1": ["K00001", "KO1; description 1"],
+        "bin_1.scaffold_2": ["K00002", "KO2; description 2"]
+    }, index=["ko_id", "kegg_hit"]).T
     input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
     hits = parse_hmmsearch_domtblout(input_b6)
-    output_rcvd = kofam_hmmscan_formater(hits=hits,
-                                         info_db_path=db_handler.db_locs['kofam_ko_list'],
-                                         top_hit=True,
-                                         use_dbcan2_thresholds=kofam_use_dbcan2_thresholds)
+    output_rcvd = kofam_hmmscan_formater(
+        hits=hits,
+        hmm_info_path=os.path.join('tests', 'data', 'hmm_thresholds.txt'),
+        top_hit=True,
+        use_dbcan2_thresholds=True)
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in kofam_hmmscan_formater with dbcam cuts"
+
+
+def test_kofam_hmmscan_formater():
+    output_expt = pd.DataFrame({
+        "bin_1.scaffold_2": ["K00002", "KO2; description 2"]
+    }, index=["ko_id", "kegg_hit"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = kofam_hmmscan_formater(
+        hits=hits,
+        hmm_info_path=os.path.join('tests', 'data', 'hmm_thresholds.txt'),
+        top_hit=True,
+        use_dbcan2_thresholds=False)
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in kofam_hmmscan_formater"
+
+
+def test_generic_hmmscan_formater_custom_cuts():
+    output_expt = pd.DataFrame({
+        "bin_1.scaffold_2": ["K00002", "KO2; description 2"]
+    }, index=["test_id", "test_hits"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = generic_hmmscan_formater(
+        hits,
+        hmm_info_path=os.path.join('tests', 'data', 'hmm_thresholds.txt'),
+        db_name='test',
+        top_hit=True)
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in generic_hmmscan_formater, with custom cuts"
+
+
+def test_generic_hmmscan_formater():
+    output_expt = pd.DataFrame({
+        "bin_1.scaffold_1": ["K00001"],
+        "bin_1.scaffold_2": ["K00002"]
+    }, index=["test_id"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = generic_hmmscan_formater(
+        hits,
+        db_name='test',
+        top_hit=True)
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in generic_hmmscan_formater"
+
 
 def test_vogdb_hmmscan_formater():
     #TODO Not Done
-    output_expt = pd.DataFrame({"bin_1.scaffold_1": "GT4; GT5",
-                           "bin_1.scaffold_2": "GH1"}, index=["cazy_id"]).T
+    output_expt = pd.DataFrame({
+        "bin_1.scaffold_1": "VOG00001",
+        "bin_1.scaffold_2": "VOG00002"
+    }, index=["vogdb_id"]).T
     input_b6 = os.path.join('tests', 'data', 'unformatted_vogdb.b6')
     hits = parse_hmmsearch_domtblout(input_b6)
     output_rcvd = vogdb_hmmscan_formater(hits=hits, db_name='vogdb')
-
-def test_generic_hmmscan_formater():
-    # os.path.join('tests', 'data', 'unformatted_gen.b6')
-    #TODO Not Done
-    pass
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in vogdb_hmmscan_formater"
 
 
 def test_dbcan_hmmscan_formater():
@@ -505,8 +558,10 @@ def test_dbcan_hmmscan_formater():
     input_b6 = os.path.join('tests', 'data', 'unformatted_cazy.b6')
     hits = parse_hmmsearch_domtblout(input_b6)
     output_rcvd = dbcan_hmmscan_formater(hits=hits, db_name='cazy')
-    hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
-    output_rcvd
+    #hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    # output_rcvd
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
     assert output_rcvd.equals(output_expt), "Error in dbcan_hmmscan_formater"
 
 

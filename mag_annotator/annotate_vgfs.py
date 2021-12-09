@@ -482,3 +482,4 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
     print("%s: Completed annotations" % str(datetime.now() - start_time))
+
