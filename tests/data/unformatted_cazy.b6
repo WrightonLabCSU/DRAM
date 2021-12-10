@@ -1,0 +1,26 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+bin_1.scaffold_2 -            463 GH1.hmm              -            429    6e-115  377.0  10.2   1   1  7.3e-117  7.3e-115  376.7  10.2     5   427     6   459     3   461 0.92 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+bin_1.scaffold_2 -            463 GH5.hmm              -            275     6e-08   25.2   7.3   1   1   4.1e-09   4.1e-07   22.5   7.3    34   261    45   443    14   456 0.57 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+bin_1.scaffold_1 -            478 GT35.hmm             -            674   1.1e-07   23.4   0.0   1   1   2.5e-09   2.5e-07   22.1   0.0   377   527   251   385   245   476 0.76 rank: A; erb:A4V01_04670 starch synthase; K00703 (db=kegg)
+bin_1.scaffold_1 -            478 GT4.hmm              -            160   1.6e-16   53.1   0.0   1   1   3.1e-18   3.1e-16   52.2   0.0    11   142   296   431   288   440 0.87 rank: A; erb:A4V01_04670 starch synthase; K00703 (db=kegg)
+bin_1.scaffold_1 -            478 GT5.hmm              -            472  1.2e-182  600.3   0.6   1   1  1.4e-184  1.4e-182  600.2   0.6     1   471     2   474     2   475 0.98 rank: A; erb:A4V01_04670 starch synthase; K00703 (db=kegg)
+bin_1.other -            155 CBM76.hmm            -            161   0.00079   11.9   0.0   1   1   1.1e-05    0.0011   11.5   0.0    81   153    21    91    11    97 0.82 rank: C; erb:A4V01_09140 hypothetical protein (db=kegg)
+bin_1.scaffold_2 -            463 GH5_19.hmm           -            273   2.6e-05   16.4   0.1   1   1   4.3e-07   4.3e-05   15.6   0.1    24   121    61   155    42   160 0.79 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+bin_1.scaffold_2 -            463 GH5_36.hmm           -            287   0.00029   12.9   0.6   1   1   4.6e-06   0.00046   12.2   0.6    18   107    61   147    54   208 0.79 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+bin_1.scaffold_2 -            463 GH5_39.hmm           -            293   0.00054   12.1   0.0   1   1   8.7e-06   0.00087   11.4   0.0     9   105    61   158    57   181 0.77 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+bin_1.scaffold_2 -            463 GH5_46.hmm           -            257   7.1e-06   18.2   0.0   1   1   1.6e-07   1.6e-05   17.1   0.0    17    66    60   111    53   120 0.80 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+bin_1.scaffold_2 -            463 GH5_4.hmm            -            276   0.00024   13.5   0.7   1   2   7.9e-06   0.00079   11.8   0.0    13    74    62   124    58   153 0.85 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+bin_1.scaffold_2 -            463 GH5_4.hmm            -            276   0.00024   13.5   0.7   2   2     0.059       5.9   -0.9   0.1   190   269   321   409   305   416 0.67 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+bin_1.scaffold_2 -            463 GH5_5.hmm            -            282   0.00019   13.3   0.0   1   1   3.4e-06   0.00034   12.6   0.0    24    80    56   113    45   121 0.83 rank: A; erb:A4V01_06220 glycosyl hydrolase family 1 (db=kegg)
+#
+# Program:         hmmsearch
+# Version:         3.3.2 (Nov 2020)
+# Pipeline mode:   SEARCH
+# Query file:      /home/projects/DRAM/dbs_20210218/dbCAN-HMMdb-V9.txt
+# Target file:     ./genes_small
+# Option settings: hmmsearch --domtblout orfs_test/cazy_results.unprocessed.b6 --cpu 10 /home/projects/DRAM/dbs_20210218/dbCAN-HMMdb-V9.txt ./genes_small
+# Current dir:     /home/projects/DRAM/scratch_space_rory/nov19_custom_hmm/function_tests
+# Date:            Tue Nov 30 11:28:59 2021
+# [ok]

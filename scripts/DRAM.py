@@ -61,7 +61,7 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--custom_hmm_loc', action='append', default=(),
                                  help="Location of hmms to annotate against, can be used multiple times but"
                                       "must match nubmer of custom_hmm_name's")
-    annotate_parser.add_argument('--custom_hmm_cutoffs_locs', action='append', default=(),
+    annotate_parser.add_argument('--custom_hmm_cutoffs_loc', action='append', default=(),
                                  help="Location of file with custom HMM cutoffs and descriptions, can be used "
                                       "multiple times.")
     annotate_parser.add_argument('--gtdb_taxonomy', action='append', default=(),
@@ -94,17 +94,17 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--kofam_use_dbcan2_thresholds', action='store_true', default=False,
                                        help='Use dbcan2 suggested HMM cutoffs for KOfam annotation instead of KOfam '
                                             'recommended cutoffs. This will be ignored if annotating with KEGG Genes.')
-    annotate_genes_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be "
-                                                                                 "used multiple times.")
-    annotate_genes_parser.add_argument('--custom_fasta_loc', action='append',
+    annotate_genes_parser.add_argument('--custom_db_name', action='append', default=(),
+                                       help="Names of custom databases, can be used multiple times.")
+    annotate_genes_parser.add_argument('--custom_fasta_loc', action='append', default=(),
                                        help="Location of fastas to annotate against, can be used multiple times but"
                                             "must match nubmer of custom_db_name's")
-    annotate_genes_parser.add_argument('--custom_hmm_name', action='append',
+    annotate_genes_parser.add_argument('--custom_hmm_name', action='append', default=(),
                                        help="Names of custom hmm databases, can be used multiple times.")
-    annotate_genes_parser.add_argument('--custom_hmm_loc', action='append',
+    annotate_genes_parser.add_argument('--custom_hmm_loc', action='append', default=(),
                                        help="Location of hmms to annotate against, can be used multiple times but"
                                             "must match nubmer of custom_hmm_name's")
-    annotate_genes_parser.add_argument('--custom_hmm_cutoffs_locs', action='append',
+    annotate_genes_parser.add_argument('--custom_hmm_cutoffs_loc', action='append', default=(),
                                        help="Location of file with custom HMM cutoffs and descriptions, can be used "
                                             "multiple times.")
     annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,

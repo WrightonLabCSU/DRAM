@@ -8,7 +8,7 @@ NP_040710.1          -             38 Microvir_J           PF04726.13    37   6.
 # Pipeline mode:   SEARCH
 # Query file:      Microvir_J.hmm
 # Target file:     NC_001422.faa
-# Option settings: hmmsearch --domtblout hits.txt Microvir_J.hmm NC_001422.faa 
+# Option settings: hmmsearch --domtblout hits.txt Microvir_J.hmm NC_001422.faa
 # Current dir:     /Users/shafferm/lab/DRAM/tests/data
 # Date:            Tue Mar  3 11:53:34 2020
 # [ok]
