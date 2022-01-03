@@ -5,12 +5,13 @@ import pandas as pd
 import networkx as nx
 import altair as alt
 
-from mag_annotator.summarize_genomes import get_ordered_uniques, fill_genome_summary_frame, summarize_rrnas, \
+from mag_annotator.summarize_genomes import fill_genome_summary_frame, summarize_rrnas, \
     summarize_trnas, build_module_net, get_module_step_coverage, make_module_coverage_df, make_module_coverage_frame, \
     make_module_coverage_heatmap, pairwise, first_open_paren_is_all, split_into_steps, is_ko, make_module_network, \
     get_module_coverage, make_etc_coverage_df, make_etc_coverage_heatmap, make_functional_df, make_functional_heatmap, \
     fill_liquor_dfs, make_liquor_heatmap, make_liquor_df, make_genome_summary, write_summarized_genomes_to_xlsx,\
     get_phylum_and_most_specific
+from mag_annotator.utils import get_ordered_uniques
 
 
 def test_get_ordered_uniques():

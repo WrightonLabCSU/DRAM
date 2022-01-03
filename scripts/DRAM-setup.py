@@ -2,8 +2,9 @@
 
 import argparse
 
-from mag_annotator.database_processing import prepare_databases, set_database_paths, print_database_locations,\
-                                              populate_description_db, update_dram_forms, export_config, import_config
+from mag_annotator.database_processing import prepare_databases, update_dram_forms
+from mag_annotator.database_handler import set_database_paths, print_database_locations, populate_description_db, \
+    export_config, import_config
 from mag_annotator import __version__ as version
 
 
@@ -123,6 +124,9 @@ if __name__ == '__main__':
     # parser for updating database descriptions
     update_description_db_parser.add_argument('--output_loc', help="Location to store desciption database, will be "
                                                                    "stored in location set in CONFIG if not given")
+    update_description_db_parser.add_argument('--config_loc', help="Location of CONFIG file to use for finding "
+                                                                   "databases, by default the location in the built in "
+                                                                   "CONFIG will be used")
     update_description_db_parser.set_defaults(func=populate_description_db)
 
     # parser for updating DRAM databases only
@@ -132,6 +136,9 @@ if __name__ == '__main__':
     update_dram_forms_parser.set_defaults(func=update_dram_forms)
 
     # parser for printing out database configuration information
+    print_db_locs_parser.add_argument('--config_loc', help="Location of CONFIG to print locations from, by "
+                                                                   "default the locations from the built in CONFIG "
+                                                                   "will be used")
     print_db_locs_parser.set_defaults(func=print_database_locations)
 
     # parser for printing out or saving CONFIG to file
@@ -140,7 +147,9 @@ if __name__ == '__main__':
     export_config_parser.set_defaults(func=export_config)
 
     # parser for importing CONFIG file
-    import_config_parser.add_argument('--config_loc', help="CONFIG file to replace current CONFIG with")
+    import_config_parser.add_argument('--config_loc', help="CONFIG file to replace current CONFIG with. This will "
+                                                           "overwrite your previous configuration, export it if you "
+                                                           "would like to save it for future use.")
     import_config_parser.set_defaults(func=import_config)
 
     args = parser.parse_args()
