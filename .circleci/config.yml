@@ -1,0 +1,44 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+# TODO More Circleci features may be usfull
+
+# Define jobs
+jobs:
+  build-and-test:
+    docker:
+      - image: ubuntu:focal
+    steps:
+      - checkout
+      - run:
+          name: Setup Miniconda
+          command: |
+            apt update
+            apt install -y wget
+            cd $HOME
+            wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+            export MINICONDA_PREFIX="$HOME/miniconda"
+            bash miniconda.sh -b -p $MINICONDA_PREFIX
+            export PATH="$MINICONDA_PREFIX/bin:$PATH"
+            conda config --set always_yes yes
+            conda update -q conda
+            conda config --add channels bioconda
+            conda config --add channels conda-forge
+            conda info -a
+      - run:
+          name: Run tests in enviroment
+          # This assumes pytest is installed via the install-package step above
+          command: |
+            export PATH="$HOME/miniconda/bin:$PATH"
+            conda update -y conda
+            conda create -n myenv python=$PYTHON_VERSION
+            wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
+            conda env create -f environment.yaml -n DRAM
+            source activate DRAM
+            pytest
+# Invoke jobs via workflows
+workflows:
+  alltests: 
+    jobs:
+      - build-and-test
