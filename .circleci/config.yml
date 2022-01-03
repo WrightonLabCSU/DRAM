@@ -39,6 +39,6 @@ jobs:
             pytest
 # Invoke jobs via workflows
 workflows:
-  alltests: 
+  all-tests: 
     jobs:
       - build-and-test
