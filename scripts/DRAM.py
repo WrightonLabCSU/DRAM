@@ -53,13 +53,21 @@ if __name__ == '__main__':
                                       'recommended cutoffs. This will be ignored if annotating with KEGG Genes.')
     annotate_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be used"
                                                                            "multiple times.")
-    annotate_parser.add_argument('--custom_fasta_loc', action='append',
-                                 help="Location of fastas to annotated against, can be used multiple times but"
+    annotate_parser.add_argument('--custom_fasta_loc', action='append', default=(),
+                                 help="Location of fastas to annotate against, can be used multiple times but"
                                       "must match nubmer of custom_db_name's")
-    annotate_parser.add_argument('--gtdb_taxonomy', action='append', default=[],
+    annotate_parser.add_argument('--custom_hmm_name', action='append',  default=(),
+                                 help="Names of custom hmm databases, can be used multiple times.")
+    annotate_parser.add_argument('--custom_hmm_loc', action='append', default=(),
+                                 help="Location of hmms to annotate against, can be used multiple times but"
+                                      "must match nubmer of custom_hmm_name's")
+    annotate_parser.add_argument('--custom_hmm_cutoffs_loc', action='append', default=(),
+                                 help="Location of file with custom HMM cutoffs and descriptions, can be used "
+                                      "multiple times.")
+    annotate_parser.add_argument('--gtdb_taxonomy', action='append', default=(),
                                  help='Summary file from gtdbtk taxonomy assignment from bins, can be used multiple'
                                       'times')
-    annotate_parser.add_argument('--checkm_quality', action='append', default=[],
+    annotate_parser.add_argument('--checkm_quality', action='append', default=(),
                                  help='Summary of of checkM quality assessment from bins, can be used multiple times')
     annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
                                  help='Annotate these fastas against UniRef, drastically increases run time and memory '
@@ -86,11 +94,19 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--kofam_use_dbcan2_thresholds', action='store_true', default=False,
                                        help='Use dbcan2 suggested HMM cutoffs for KOfam annotation instead of KOfam '
                                             'recommended cutoffs. This will be ignored if annotating with KEGG Genes.')
-    annotate_genes_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be "
-                                                                                 "used multiple times.")
-    annotate_genes_parser.add_argument('--custom_fasta_loc', action='append',
-                                       help="Location of fastas to annotated against, can be used multiple times but"
+    annotate_genes_parser.add_argument('--custom_db_name', action='append', default=(),
+                                       help="Names of custom databases, can be used multiple times.")
+    annotate_genes_parser.add_argument('--custom_fasta_loc', action='append', default=(),
+                                       help="Location of fastas to annotate against, can be used multiple times but"
                                             "must match nubmer of custom_db_name's")
+    annotate_genes_parser.add_argument('--custom_hmm_name', action='append', default=(),
+                                       help="Names of custom hmm databases, can be used multiple times.")
+    annotate_genes_parser.add_argument('--custom_hmm_loc', action='append', default=(),
+                                       help="Location of hmms to annotate against, can be used multiple times but"
+                                            "must match nubmer of custom_hmm_name's")
+    annotate_genes_parser.add_argument('--custom_hmm_cutoffs_loc', action='append', default=(),
+                                       help="Location of file with custom HMM cutoffs and descriptions, can be used "
+                                            "multiple times.")
     annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,
                                        help='Annotate these fastas against UniRef, drastically increases run time and '
                                             'memory requirements')
@@ -133,6 +149,7 @@ if __name__ == '__main__':
     annotation_group.add_argument('--identifiers', nargs='*', default=None, help='database identifiers to keep')
     annotation_group.add_argument('--categories', nargs='*', default=None,
                                   help='distillate categories to keep genes from')
+    annotation_group.add_argument('--custom_distillate', help="Custom distillate form to add your own modules")
     dram_group = strainer_parser.add_argument_group('DRAM based filters')
     dram_group.add_argument('--taxonomy', nargs='*', default=None,
                             help='Level of GTDBTk taxonomy to keep (e.g. c__Clostridia), space separated list')
@@ -148,6 +165,7 @@ if __name__ == '__main__':
     neighborhood_parser.add_argument("--genes", nargs='*', help="Gene names from DRAM to find neighborhoods around")
     neighborhood_parser.add_argument("--identifiers", nargs='*',
                                      help="Database identifiers assigned by DRAM to find neighborhoods around")
+    neighborhood_parser.add_argument('--custom_distillate', help="Custom distillate form to add your own modules")
     neighborhood_parser.add_argument("--categories", help="Distillate categories to build gene neighborhoods around.")
     neighborhood_parser.add_argument("--genes_loc", help="Location of genes.fna/genes.faa file to filter to "
                                                          "neighborhoods")
