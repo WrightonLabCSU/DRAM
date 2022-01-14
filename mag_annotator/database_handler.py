@@ -216,11 +216,11 @@ class DatabaseHandler:
 
         # fill database
         if self.db_locs.get('kegg') is not None:
-            self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['kegg']), 'kegg',
+            self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['kegg']), 'kegg_description',
                                               clear_table=True)
         if self.db_locs.get('uniref') is not None:
-            self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['uniref']), 'uniref',
-                                              clear_table=True)
+            self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['uniref']) ,
+                                              'uniref_description', clear_table=True)
         if self.db_description_locs.get('pfam_hmm_dat') is not None:
             self.add_descriptions_to_database(self.process_pfam_descriptions(self.db_description_locs['pfam_hmm_dat']),
                                               'pfam_description', clear_table=True)
