@@ -53,16 +53,20 @@ def test_get_description(db_w_entries):
         db_w_entries.get_description('K00003', 'kegg_description')
 
 
-def test_get_descriptions(db_w_entries):
+def test_get_descriptions_two(db_w_entries):
     description_dict = db_w_entries.get_descriptions(['K00001', 'K00002'], 'kegg_description')
-    assert type(description_dict) is dict
+    assert isinstance(description_dict, dict)
     assert len(description_dict) == 2
+
+
+def test_get_descriptions_three(db_w_entries):
     description_dict = db_w_entries.get_descriptions(['K00001', 'K00002', 'K00003'], 'kegg_description')
-    assert type(description_dict) is dict
+    assert isinstance(description_dict, dict)
     assert len(description_dict) == 2
+
+def test_get_descriptions_none(db_w_entries):
     description_dict = db_w_entries.get_descriptions(['K00003'], 'kegg_description')
-    assert type(description_dict) is dict
-    assert len(description_dict) == 0
+    assert description_dict is None
 
 
 def test_get_database_names(db_w_entries):
