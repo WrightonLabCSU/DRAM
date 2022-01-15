@@ -197,9 +197,6 @@ def run_mmseqs_profile_search(query_db, pfam_profile, output_loc, output_prefix=
                               threads=10, verbose=False):
     """Use mmseqs to run a search against pfam, currently keeping all hits and not doing any extra filtering"""
     print(query_db, pfam_profile, output_loc)
-
-
-
     tmp_dir = path.join(output_loc, 'tmp')
     output_db = path.join(output_loc, '%s.mmsdb' % output_prefix)
     run_process(['mmseqs', 'search', query_db, pfam_profile, output_db, tmp_dir, '-k', '5', '-s', '7', '--threads',
