@@ -76,10 +76,10 @@ class DatabaseHandler:
         descriptions = list()
         for chunk in divide_chunks(list(ids), 499):
             descriptions += self.session.query(description_class).filter(description_class.id.in_(chunk)).all()
-
         if len(descriptions) == 0:
             warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
+            return
         return {i.id: i.description for i in descriptions}
 
     @staticmethod
