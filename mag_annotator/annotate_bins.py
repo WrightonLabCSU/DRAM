@@ -209,9 +209,9 @@ def run_mmseqs_profile_search(query_db, pfam_profile, output_loc, output_prefix=
         if db_handler is not None:
             pfam_descriptions = db_handler.get_descriptions(set(pfam_results.tId), '%s_description' % output_prefix)
         else:
-            pfam_descriptions = None
+            pfam_descriptions = {}
         for gene, pfam_frame in pfam_results.groupby('qId'):
-            if pfam_descriptions is None:
+            if len(pfam_descriptions) < 1:
                 pfam_dict[gene] = '; '.join(pfam_frame.tId)
             else:
                 pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)

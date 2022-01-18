@@ -66,7 +66,8 @@ def test_get_descriptions_three(db_w_entries):
 
 def test_get_descriptions_none(db_w_entries):
     description_dict = db_w_entries.get_descriptions(['K00003'], 'kegg_description')
-    assert description_dict is None
+    assert isinstance(description_dict, dict)
+    assert len(description_dict) == 0
 
 
 def test_get_database_names(db_w_entries):

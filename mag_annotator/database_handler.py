@@ -79,7 +79,6 @@ class DatabaseHandler:
         if len(descriptions) == 0:
             warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
-            return
         return {i.id: i.description for i in descriptions}
 
     @staticmethod
@@ -155,7 +154,20 @@ class DatabaseHandler:
         mmseqs_headers_handle = open('%s_h' % mmseqs_db, 'rb')
         mmseqs_headers = mmseqs_headers_handle.read().decode(errors='ignore')
         mmseqs_headers = [i.strip() for i in mmseqs_headers.strip().split('\n\x00') if len(i) > 0]
-        return [{'id': i.split(' ')[0], 'description': i} for i in mmseqs_headers]
+        mmseqs_headers_split = []
+        mmseqs_ids_unique = set()
+        mmseqs_ids_not_unique = set()
+        # TODO this could be faster with numpy
+        for i in mmseqs_headers:
+            header = {'id': i.split(' ')[0], 'description': i}
+            if header['id'] not in mmseqs_ids_unique:
+                mmseqs_headers_split += [header]
+                mmseqs_ids_unique.add(header['id'])
+            else:
+                mmseqs_ids_not_unique.add(header['id'])
+        if len(mmseqs_ids_not_unique) > 0:
+            warnings.warn(f'There are {len(mmseqs_ids_not_unique)} non unique headers in {mmseqs_db}! You should definitly investigate this!')
+        return mmseqs_headers_split
 
     @staticmethod
     def process_pfam_descriptions(pfam_hmm_dat):
