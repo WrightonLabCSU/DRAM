@@ -671,7 +671,7 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, formater
     reverse_hits = get_reciprocal_best_hits(query_db, target_db, working_dir, 'gene', db_name,
                                             bit_score_threshold, rbh_bit_score_threshold, threads, verbose=verbose)
     hits = process_reciprocal_best_hits(forward_hits, reverse_hits, db_name)
-    print('%s: Getting descriptions of hits from %s' % (str(datetime.now() - start_time), db_natypeime))
+    print('%s: Getting descriptions of hits from %s' % (str(datetime.now() - start_time), db_name))
     if '%s_description' % db_name in db_handler.get_database_names():
         header_dict = db_handler.get_descriptions(hits['%s_hit' % db_name], '%s_description' % db_name)
     else:
