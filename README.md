@@ -11,7 +11,7 @@ To install DRAM some dependencies need to be installed first then DRAM can be in
 _Conda Installation_
 
 Install DRAM into a new [conda](https://docs.conda.io/en/latest/) environment using the provided 
-enviornment.yaml file.
+environment.yaml file.
 ```bash
 wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
 conda env create -f environment.yaml -n DRAM
