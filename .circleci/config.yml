@@ -36,9 +36,9 @@ jobs:
             wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
             conda env create -f environment.yaml -n DRAM
             source activate DRAM
-            pytest
+            for i in tests/test*.py; pytest $i ; done
 # Invoke jobs via workflows
 workflows:
-  all-tests: 
+  all-tests:
     jobs:
       - build-and-test
