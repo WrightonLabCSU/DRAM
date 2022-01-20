@@ -32,10 +32,10 @@ jobs:
           command: |
             export PATH="$HOME/miniconda/bin:$PATH"
             conda update -y conda
-            conda create -n DRAM python=$PYTHON_VERSION
+            conda create -n DRAM python=3.9
             source activate DRAM
             conda install  pandas pytest scikit-bio sqlalchemy openpyxl networkx altair
-            pytest
+            pytest test test_annotate_vgfs.py
 # Invoke jobs via workflows
 workflows:
   all-tests:
