@@ -32,11 +32,10 @@ jobs:
           command: |
             export PATH="$HOME/miniconda/bin:$PATH"
             conda update -y conda
-            conda create -n myenv python=$PYTHON_VERSION
-            wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
-            conda env create -f environment.yaml -n DRAM
+            conda create -n DRAM python=$PYTHON_VERSION
             source activate DRAM
-            for i in tests/test*.py;do pytest $i ; done
+            conda install  pandas pytest scikit-bio sqlalchemy openpyxl networkx altair
+            pytest
 # Invoke jobs via workflows
 workflows:
   all-tests:
