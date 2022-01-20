@@ -32,13 +32,19 @@ jobs:
           command: |
             export PATH="$HOME/miniconda/bin:$PATH"
             conda update -y conda
-            conda create -n myenv python=$PYTHON_VERSION
-            wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
-            conda env create -f environment.yaml -n DRAM
+            conda create -n DRAM python=3.9
             source activate DRAM
-            pytest
+            conda install  pandas pytest pandas pytest scikit-bio prodigal mmseqs2!=10.6d92c hmmer!=3.3.1 trnascan-se >=2 sqlalchemy barrnap altair >=4 openpyxl networkx ruby parallel dram
+            pytest tests/test_annotate_bins.py
+            pytest tests/test_annotate_vgfs.py
+            pytest tests/test_database_handler.py
+            pytest tests/test_database_processing.py
+            pytest tests/test_database_setup.py
+            pytest tests/test_summarize_genomes.py
+            pytest tests/test_summarize_vgfs.py
+            pytest tests/test_utils.py
 # Invoke jobs via workflows
 workflows:
-  all-tests: 
+  all-tests:
     jobs:
       - build-and-test

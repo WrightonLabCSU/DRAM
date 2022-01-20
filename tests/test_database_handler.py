@@ -51,17 +51,14 @@ def test_get_description(db_w_entries):
     assert description == 'The first KO'
     with pytest.raises(NoResultFound):
         db_w_entries.get_description('K00003', 'kegg_description')
-
-
-def test_get_descriptions(db_w_entries):
     description_dict = db_w_entries.get_descriptions(['K00001', 'K00002'], 'kegg_description')
-    assert type(description_dict) is dict
+    assert isinstance(description_dict, dict)
     assert len(description_dict) == 2
     description_dict = db_w_entries.get_descriptions(['K00001', 'K00002', 'K00003'], 'kegg_description')
-    assert type(description_dict) is dict
+    assert isinstance(description_dict, dict)
     assert len(description_dict) == 2
     description_dict = db_w_entries.get_descriptions(['K00003'], 'kegg_description')
-    assert type(description_dict) is dict
+    assert isinstance(description_dict, dict)
     assert len(description_dict) == 0
 
 
