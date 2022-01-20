@@ -35,7 +35,14 @@ jobs:
             conda create -n DRAM python=3.9
             source activate DRAM
             conda install  pandas pytest scikit-bio sqlalchemy openpyxl networkx altair
+            pytest tests/test_annotate_bins.py
             pytest tests/test_annotate_vgfs.py
+            pytest tests/test_database_handler.py
+            pytest tests/test_database_processing.py
+            pytest tests/test_database_setup.py
+            pytest tests/test_summarize_genomes.py
+            pytest tests/test_summarize_vgfs.py
+            pytest tests/test_utils.py
 # Invoke jobs via workflows
 workflows:
   all-tests:
