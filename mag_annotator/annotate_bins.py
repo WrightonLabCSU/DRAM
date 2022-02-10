@@ -880,6 +880,8 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
 
     # merge dataframes
     print('%s: Merging ORF annotations' % str(datetime.now() - start_time))
+    
+    annotation_list = [annotation for annotation in annotation_list if not annotation.empty]
     annotations = pd.concat(annotation_list, axis=1, sort=False)
 
     # get scaffold data and assign grades
