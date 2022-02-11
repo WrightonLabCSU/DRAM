@@ -2,7 +2,8 @@
 
 import argparse
 
-from mag_annotator.database_processing import prepare_databases, update_dram_forms
+from mag_annotator.database_processing import prepare_databases, update_dram_forms, \
+    DEFAULT_DBCAN_DATE, DEFAULT_DBCAN_RELEASE, DEFAULT_UNIREF_VERSION
 from mag_annotator.database_handler import set_database_paths, print_database_locations, populate_description_db, \
     export_config, import_config
 from mag_annotator import __version__ as version
@@ -48,9 +49,9 @@ if __name__ == '__main__':
                                     help="Date KEGG was download to include in database name")
     prepare_dbs_parser.add_argument('--uniref_loc', default=None, help="File path to uniref, if already downloaded "
                                                                        "(uniref90.fasta.gz)")
-    prepare_dbs_parser.add_argument('--uniref_version', default='90', help="UniRef version to download")
+    prepare_dbs_parser.add_argument('--uniref_version', default=DEFAULT_UNIREF_VERSION, help="UniRef version to download")
     prepare_dbs_parser.add_argument('--skip_uniref', default=False, action='store_true',
-                                    help="Do not download and process uniref90. Saves time and memory usage and does "
+                                    help=f"Do not download and process uniref{DEFAULT_UNIREF_VERSION}. Saves time and memory usage and does "
                                          "not impact DRAM distillation")
     prepare_dbs_parser.add_argument('--pfam_loc', default=None,
                                     help="File path to pfam-A full file, if already downloaded (Pfam-A.full.gz)")
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     prepare_dbs_parser.add_argument('--dbcan_fam_activities', default=None,
                                     help='CAZY family activities file, if already downloaded '
                                          '(CAZyDB.07302020.fam-activities.txt)')
-    prepare_dbs_parser.add_argument('--dbcan_version', default='9', type=str, help='version of dbCAN to use')
+    prepare_dbs_parser.add_argument('--dbcan_version', default=DEFAULT_DBCAN_RELEASE, type=str, help='version of dbCAN to use')
     prepare_dbs_parser.add_argument('--vogdb_loc', default=None,
                                     help='hmm file for vogdb, if already downloaded (vog.hmm.tar.gz)')
     prepare_dbs_parser.add_argument('--vog_annotations', default=None,

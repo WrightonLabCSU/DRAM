@@ -11,6 +11,9 @@ from skbio import write as write_sequence
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix
 
+DEFAULT_DBCAN_RELEASE = '10'
+DEFAULT_DBCAN_DATE = '07292021'
+DEFAULT_UNIREF_VERSION = '90'
 
 # TODO: check if dbcan or pfam is down, raise appropriate error
 # TODO: upgrade to pigz?
@@ -79,7 +82,7 @@ def download_and_process_kofam_ko_list(kofam_ko_list_gz=None, output_dir='.', ve
     return kofam_ko_list
 
 
-def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref_version='90', threads=10,
+def download_and_process_uniref(uniref_fasta_zipped=None, output_dir='.', uniref_version=DEFAULT_UNIREF_VERSION, threads=10,
                                 verbose=True):
     """"""
     if uniref_fasta_zipped is None:  # download database if not provided
@@ -120,23 +123,28 @@ def download_pfam_descriptions(output_dir='.', verbose=True):
     return pfam_hmm_dat
 
 
-def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='10', verbose=True):
-    if dbcan_hmm is None:  # download database if not provided
-        dbcan_hmm = path.join(output_dir, 'dbCAN-HMMdb-V%s.txt' % dbcan_release)
-        if int(dbcan_release) < 9:
-            download_file('http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,
-                          verbose=verbose)
-        else:
-            download_file('http://bcb.unl.edu/dbCAN2/download/dbCAN-HMMdb-V%s.txt' % dbcan_release, dbcan_hmm,
-                          verbose=verbose)
+def download_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, verbose=True):
+    dbcan_hmm = path.join(output_dir, f"dbCAN-HMMdb-V{dbcan_release}.txt" )
+    if int(dbcan_release) < int(DEFAULT_DBCAN_RELEASE):
+        link_path = f"http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V{dbcan_release}.txt"
+    else:
+        link_path = f"http://bcb.unl.edu/dbCAN2/download/dbCAN-HMMdb-V{dbcan_release}.txt"
+
+    print(f"Downloading dbCAN from: {link_path}")
+    download_file(link_path, dbcan_hmm, verbose=verbose)
+    return dbcan_hmm
+
+
+def process_dbcan(dbcan_hmm, verbose=True):
     run_process(['hmmpress', '-f', dbcan_hmm], verbose=verbose)
     return dbcan_hmm
 
 
-def download_dbcan_descriptions(output_dir='.', upload_date='07302020', verbose=True):
+def download_dbcan_descriptions(output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
     dbcan_fam_activities = path.join(output_dir, 'CAZyDB.%s.fam-activities.txt' % upload_date)
-    download_file('http://bcb.unl.edu/dbCAN2/download/Databases/CAZyDB.%s.fam-activities.txt' % upload_date,
-                  dbcan_fam_activities, verbose=verbose)
+    link_path = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{dbcan_release}/CAZyDB.{upload_date}.fam-activities.txt"
+    print(f"Downloading dbCAN family activities from : {link_path}")
+    download_file(link_path, dbcan_fam_activities, verbose=verbose)
     return dbcan_fam_activities
 
 
@@ -241,8 +249,8 @@ def check_file_exists(db_loc):
 
 
 def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None,
-                      kegg_download_date=None, uniref_loc=None, uniref_version='90', pfam_loc=None, pfam_hmm_dat=None,
-                      dbcan_loc=None, dbcan_version='9', dbcan_fam_activities=None, dbcan_date='07302020',
+                      kegg_download_date=None, uniref_loc=None, uniref_version=DEFAULT_UNIREF_VERSION, pfam_loc=None, pfam_hmm_dat=None,
+                      dbcan_loc=None, dbcan_version=DEFAULT_DBCAN_RELEASE, dbcan_fam_activities=None, dbcan_date=DEFAULT_DBCAN_DATE,
                       viral_loc=None, peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
                       genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
                       function_heatmap_form_loc=None, amg_database_loc=None, skip_uniref=False,
@@ -279,8 +287,22 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     temporary = path.join(output_dir, 'database_files')
     mkdir(temporary)
 
-    # get databases
+    # Download DBs
+    if dbcan_fam_activities is None:
+        dbcan_fam_activities = download_dbcan_descriptions(
+            output_dir=output_dir, dbcan_release=dbcan_version,
+            upload_date=dbcan_date, verbose=verbose)
+    if pfam_hmm_dat is None:
+        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
+    if dbcan_loc is None:
+        dbcan_loc = download_dbcan(temporary, dbcan_release=dbcan_version, verbose=verbose)
+
+    # Process databases
     output_dbs = dict()
+
+    output_dbs['dbcan_db_loc'] = process_dbcan(dbcan_loc, verbose=verbose)
+    print('%s: dbCAN database processed' % str(datetime.now() - start_time))
+
     if kegg_loc is not None:
         output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, gene_ko_link_loc, kegg_download_date, threads,
                                                     verbose)
@@ -292,9 +314,6 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary,
                                                           threads=threads, verbose=verbose)
     print('%s: PFAM database processed' % str(datetime.now() - start_time))
-    output_dbs['dbcan_db_loc'] = download_and_process_dbcan(dbcan_loc, temporary, dbcan_release=dbcan_version,
-                                                            verbose=verbose)
-    print('%s: dbCAN database processed' % str(datetime.now() - start_time))
     output_dbs['viral_db_loc'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads,
                                                                    verbose=verbose)
     print('%s: RefSeq viral database processed' % str(datetime.now() - start_time))
@@ -310,12 +329,8 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     print('%s: KOfam ko list processed' % str(datetime.now() - start_time))
 
     # get pfam, dbcan and vogdb descriptions
-    if pfam_hmm_dat is None:
-        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
     print('%s: PFAM hmm dat processed' % str(datetime.now() - start_time))
-    if dbcan_fam_activities is None:
-        dbcan_fam_activities = download_dbcan_descriptions(output_dir, dbcan_date, verbose=verbose)
     output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
     print('%s: dbCAN fam activities processed' % str(datetime.now() - start_time))
     if vog_annotations is None:
