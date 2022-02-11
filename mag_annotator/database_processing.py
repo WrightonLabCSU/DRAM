@@ -120,7 +120,7 @@ def download_pfam_descriptions(output_dir='.', verbose=True):
     return pfam_hmm_dat
 
 
-def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='9', verbose=True):
+def download_and_process_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release='10', verbose=True):
     if dbcan_hmm is None:  # download database if not provided
         dbcan_hmm = path.join(output_dir, 'dbCAN-HMMdb-V%s.txt' % dbcan_release)
         if int(dbcan_release) < 9:
