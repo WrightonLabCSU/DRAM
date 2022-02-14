@@ -113,7 +113,7 @@ def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, target_
     reverse_hits = pd.read_csv(reverse_output_loc, sep='\t', header=None, names=BOUTFMT6_COLUMNS)
     reverse_hits = reverse_hits.set_index('qId')
 
-    def check_hit(row: pd.Series):
+    def check_hit(row:pd.Series):
         rbh = False
         if row.tId in reverse_hits.index:
             rbh = row.name == reverse_hits.loc[row.tId].tId
@@ -215,9 +215,9 @@ def run_mmseqs_profile_search(query_db, pfam_profile, output_loc, output_prefix=
             else:
                 pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
                                              for ascession in pfam_frame.tId])
-        return pd.Series(pfam_dict, name='%s_hits' % output_prefix)
+        return pd.DataFrame(pfam_dict, index=[f"{output_prefix}s_hits"]).T
     else:
-        return pd.Series(name='%s_hits' % output_prefix)
+        return pd.DataFrame(columns=[f"{output_prefix}s_hits"])
 
 
 def get_sig_row(row):
@@ -269,7 +269,7 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     hits_sig = hits[hits.apply(get_sig_row, axis=1)]
     if len(hits_sig) == 0:
         # if nothing significant then return nothing, don't get descriptions
-        return pd.Series()
+        return pd.DataFrame()
     hits_df = hits_sig.groupby('query_id').apply(
         lambda x: '; '.join(x['target_id'].apply(lambda y:y[:-4]).unique())
     )
@@ -406,7 +406,7 @@ def assign_grades(annotations):
         else:
             rank = 'E'
         grades[gene] = rank
-    return pd.Series(grades, name='rank')
+    return pd.DataFrame(grades, index=['rank']).T
 
 
 def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=None):
@@ -876,7 +876,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
                                            )))
 
     # heme regulatory motif count
-    annotation_list.append(pd.Series(count_motifs(gene_faa, '(C..CH)'), name='heme_regulatory_motif_count'))
+    annotation_list.append(pd.DataFrame(count_motifs(gene_faa, '(C..CH)'), index=['heme_regulatory_motif_count']).T)
 
     # merge dataframes
     print('%s: Merging ORF annotations' % str(datetime.now() - start_time))
