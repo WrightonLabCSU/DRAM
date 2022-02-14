@@ -886,9 +886,6 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
     grades = assign_grades(annotations)
     annotations = pd.concat([grades, annotations], axis=1, sort=False)
     
-    columns_name_string = [name for name in annotations.columns if type(name) == str]
-    annotations = annotations[columns_name_string]
-    
     return annotations
 
 
