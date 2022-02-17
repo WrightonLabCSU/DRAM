@@ -111,8 +111,8 @@ def get_ids_from_row(row):
         id_list += [j for j in row['ko_id'].split(',')]
     # Get old ko numbers
     # TODO Get rid of this old stuff
-    if 'kegg_id' in frame:
-        id_list += [j.strip() for i in frame.kegg_id.dropna() for j in i.split(',')]
+    if 'kegg_id' in row and not pd.isna(row['kegg_id']):
+        id_list += [j for j in row['kegg_id'].split(',')]
     # get ec numbers
     if 'kegg_hit' in row and not pd.isna(row['kegg_hit']):
         id_list += [i[1:-1] for i in re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', row['kegg_hit'])]

@@ -33,5 +33,5 @@ def test_process_mmspro(tmpdir):
     process_mmspro(os.path.join('tests', 'data', 'Pfam-A_subset.full.gz'), processed_mmspro, 'fake', 1, False)
     assert os.path.isfile(os.path.join(processed_mmspro, 'fake.mmspro'))
     assert os.path.isfile(os.path.join(processed_mmspro, 'fake.mmspro_h'))
-    assert os.path.isfile(os.path.join(processed_mmspro, 'fake.mmspro.idx'))
+    # assert os.path.isfile(os.path.join(processed_mmspro, 'fake.mmspro.idx'))
     assert os.path.isfile(os.path.join(processed_mmspro, 'fake.mmspro_h.index'))
