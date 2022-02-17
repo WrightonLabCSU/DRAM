@@ -239,7 +239,8 @@ def get_module_step_coverage(kos, module_net):
 
 def make_module_coverage_df(annotation_df, module_nets):
     kos_to_genes = defaultdict(list)
-    for gene_id, ko_list in annotation_df['ko_id'].iteritems():
+    ko_id_name = 'kegg_id' if 'kegg_id' in annotation_df.columns else 'ko_id'
+    for gene_id, ko_list in annotation_df[ko_id_name].iteritems():
         if type(ko_list) is str:
             for ko in ko_list.split(','):
                 kos_to_genes[ko].append(gene_id)
@@ -308,9 +309,9 @@ def split_into_steps(definition, split_char=' '):
     curr_level = 0
     step_starts = [-1]
     for i, char in enumerate(definition):
-        if char is '(':
+        if char == '(':
             curr_level += 1
-        if char is ')':
+        if char == ')':
             curr_level -= 1
         if (curr_level == 0) and (char in split_char):
             step_starts.append(i)

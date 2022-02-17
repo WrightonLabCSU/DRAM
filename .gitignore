@@ -139,3 +139,6 @@ Temporary Items
 *.iml
 out
 gen
+
+# DRAM config
+mag_annotator/CONFIG

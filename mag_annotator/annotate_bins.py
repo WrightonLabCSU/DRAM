@@ -215,9 +215,9 @@ def run_mmseqs_profile_search(query_db, pfam_profile, output_loc, output_prefix=
             else:
                 pfam_dict[gene] = '; '.join(['%s [%s]' % (pfam_descriptions[ascession], ascession)
                                              for ascession in pfam_frame.tId])
-        return pd.DataFrame(pfam_dict, index=[f"{output_prefix}s_hits"]).T
+        return pd.DataFrame(pfam_dict, index=[f"{output_prefix}_hits"]).T
     else:
-        return pd.DataFrame(columns=[f"{output_prefix}s_hits"])
+        return pd.DataFrame(columns=[f"{output_prefix}_hits"])
 
 
 def get_sig_row(row):
