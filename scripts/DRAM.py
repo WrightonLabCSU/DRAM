@@ -53,21 +53,21 @@ if __name__ == '__main__':
                                       'recommended cutoffs. This will be ignored if annotating with KEGG Genes.')
     annotate_parser.add_argument('--custom_db_name', action='append', help="Names of custom databases, can be used"
                                                                            "multiple times.")
-    annotate_parser.add_argument('--custom_fasta_loc', action='append', default=(),
+    annotate_parser.add_argument('--custom_fasta_loc', action='append', default=[], # empty list is not bug, can't be changed
                                  help="Location of fastas to annotate against, can be used multiple times but"
                                       "must match nubmer of custom_db_name's")
-    annotate_parser.add_argument('--custom_hmm_name', action='append',  default=(),
+    annotate_parser.add_argument('--custom_hmm_name', action='append',  default=[], # empty list is not bug, can't be changed
                                  help="Names of custom hmm databases, can be used multiple times.")
-    annotate_parser.add_argument('--custom_hmm_loc', action='append', default=(),
+    annotate_parser.add_argument('--custom_hmm_loc', action='append', default=[], # empty list is not bug, can't be changed
                                  help="Location of hmms to annotate against, can be used multiple times but"
                                       "must match nubmer of custom_hmm_name's")
-    annotate_parser.add_argument('--custom_hmm_cutoffs_loc', action='append', default=(),
+    annotate_parser.add_argument('--custom_hmm_cutoffs_loc', action='append', default=[], # empty list is not bug, can't be changed
                                  help="Location of file with custom HMM cutoffs and descriptions, can be used "
                                       "multiple times.")
-    annotate_parser.add_argument('--gtdb_taxonomy', action='append', default=(),
+    annotate_parser.add_argument('--gtdb_taxonomy', action='append', default=[], # empty list is not bug, can't be changed
                                  help='Summary file from gtdbtk taxonomy assignment from bins, can be used multiple'
                                       'times')
-    annotate_parser.add_argument('--checkm_quality', action='append', default=(),
+    annotate_parser.add_argument('--checkm_quality', action='append', default=[], # empty list is not bug, can't be changed
                                  help='Summary of of checkM quality assessment from bins, can be used multiple times')
     annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
                                  help='Annotate these fastas against UniRef, drastically increases run time and memory '
@@ -94,17 +94,17 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--kofam_use_dbcan2_thresholds', action='store_true', default=False,
                                        help='Use dbcan2 suggested HMM cutoffs for KOfam annotation instead of KOfam '
                                             'recommended cutoffs. This will be ignored if annotating with KEGG Genes.')
-    annotate_genes_parser.add_argument('--custom_db_name', action='append', default=(),
+    annotate_genes_parser.add_argument('--custom_db_name', action='append', default=[], # empty list is not bug, can't be changed
                                        help="Names of custom databases, can be used multiple times.")
-    annotate_genes_parser.add_argument('--custom_fasta_loc', action='append', default=(),
+    annotate_genes_parser.add_argument('--custom_fasta_loc', action='append', default=[], # empty list is not bug, can't be changed
                                        help="Location of fastas to annotate against, can be used multiple times but"
                                             "must match nubmer of custom_db_name's")
-    annotate_genes_parser.add_argument('--custom_hmm_name', action='append', default=(),
+    annotate_genes_parser.add_argument('--custom_hmm_name', action='append', default=[], # empty list is not bug, can't be changed
                                        help="Names of custom hmm databases, can be used multiple times.")
-    annotate_genes_parser.add_argument('--custom_hmm_loc', action='append', default=(),
+    annotate_genes_parser.add_argument('--custom_hmm_loc', action='append', default=[], # empty list is not bug, can't be changed
                                        help="Location of hmms to annotate against, can be used multiple times but"
                                             "must match nubmer of custom_hmm_name's")
-    annotate_genes_parser.add_argument('--custom_hmm_cutoffs_loc', action='append', default=(),
+    annotate_genes_parser.add_argument('--custom_hmm_cutoffs_loc', action='append', default=[], # empty list is not bug, can't be changed
                                        help="Location of file with custom HMM cutoffs and descriptions, can be used "
                                             "multiple times.")
     annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,

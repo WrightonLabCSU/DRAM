@@ -71,6 +71,10 @@ def get_ids_from_annotation(frame):
     # get kegg orthology ids
     if 'ko_id' in frame:
         id_list += [j.strip() for i in frame.ko_id.dropna() for j in i.split(',')]
+    # Get old ko numbers
+    # TODO Get rid of this old stuff
+    if 'kegg_id' in frame:
+        id_list += [j.strip() for i in frame.kegg_id.dropna() for j in i.split(',')]
     # get kegg ec numbers
     if 'kegg_hit' in frame:
         for kegg_hit in frame.kegg_hit.dropna():
@@ -85,6 +89,10 @@ def get_ids_from_annotation(frame):
     if 'cazy_hits' in frame:
         id_list += [f"{j[1:3]}:{j[4:-1]}" for i in frame.cazy_hits.dropna()
                     for j in re.findall(r'\(EC [\d+\.]+[\d-]\)', i)]
+        # get cazy ec numbers from old format
+        # TODO Don't have this in DRAM 2
+        for cazy_hit in frame.cazy_hits.dropna():
+            id_list += [i[1:-1].split('_')[0] for i in re.findall(r'\[[A-Z]*\d*?\]', cazy_hit)]
     # get pfam ids
     if 'pfam_hits' in frame:
         id_list += [j[1:-1].split('.')[0] for i in frame.pfam_hits.dropna()
