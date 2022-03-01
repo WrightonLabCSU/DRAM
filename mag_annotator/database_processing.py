@@ -141,11 +141,19 @@ def process_dbcan(dbcan_hmm, verbose=True):
 
 
 def download_dbcan_descriptions(output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
-    dbcan_fam_activities = path.join(output_dir, 'CAZyDB.%s.fam-activities.txt' % upload_date)
+    dbcan_fam_activities = path.join(output_dir, f'CAZyDB.{upload_date}.fam-activities.txt')
     link_path = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{dbcan_release}/CAZyDB.{upload_date}.fam-activities.txt"
     print(f"Downloading dbCAN family activities from : {link_path}")
     download_file(link_path, dbcan_fam_activities, verbose=verbose)
     return dbcan_fam_activities
+
+
+def download_dbcan_subfam_ec(output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
+    dbcan_subfam_ec = path.join(output_dir, 'CAZyDB.{upload_date}.fam.subfam.ec.txt')
+    link_path = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{dbcan_release}/CAZyDB.{upload_date}.fam.subfam.ec.txt"
+    print(f"Downloading dbCAN sub-family encumber from : {link_path}")
+    download_file(link_path, dbcan_subfam_ec, verbose=verbose)
+    return dbcan_subfam_ec
 
 
 def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', viral_files=2, threads=10, verbose=True):
@@ -250,7 +258,7 @@ def check_file_exists(db_loc):
 
 def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None,
                       kegg_download_date=None, uniref_loc=None, uniref_version=DEFAULT_UNIREF_VERSION, pfam_loc=None, pfam_hmm_dat=None,
-                      dbcan_loc=None, dbcan_version=DEFAULT_DBCAN_RELEASE, dbcan_fam_activities=None, dbcan_date=DEFAULT_DBCAN_DATE,
+                      dbcan_loc=None, dbcan_version=DEFAULT_DBCAN_RELEASE, dbcan_subfam_ec=None, dbcan_date=DEFAULT_DBCAN_DATE,
                       viral_loc=None, peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
                       genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
                       function_heatmap_form_loc=None, amg_database_loc=None, skip_uniref=False,
@@ -273,6 +281,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     check_file_exists(pfam_hmm_dat)
     check_file_exists(dbcan_loc)
     check_file_exists(dbcan_fam_activities)
+    check_file_exists(dbcan_subfam_ec)
     check_file_exists(vogdb_loc)
     check_file_exists(viral_loc)
     check_file_exists(peptidase_loc)
@@ -290,6 +299,10 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     # Download DBs
     if dbcan_fam_activities is None:
         dbcan_fam_activities = download_dbcan_descriptions(
+            output_dir=output_dir, dbcan_release=dbcan_version,
+            upload_date=dbcan_date, verbose=verbose)
+    if dbcan_subfam_ec is None:
+        dbcan_subfam_ec = download_dbcan_subfam_ec(
             output_dir=output_dir, dbcan_release=dbcan_version,
             upload_date=dbcan_date, verbose=verbose)
     if pfam_hmm_dat is None:
@@ -332,6 +345,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
     print('%s: PFAM hmm dat processed' % str(datetime.now() - start_time))
     output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
+    output_dbs['dbcan_subfam_ec'] = dbcan_subfam_ec
     print('%s: dbCAN fam activities processed' % str(datetime.now() - start_time))
     if vog_annotations is None:
         vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)

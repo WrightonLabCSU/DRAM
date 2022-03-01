@@ -220,11 +220,11 @@ def run_mmseqs_profile_search(query_db, pfam_profile, output_loc, output_prefix=
         return pd.DataFrame(columns=[f"{output_prefix}_hits"])
 
 
-def get_sig_row(row):
+def get_sig_row(row, evalue:float=1e-15):
     """Check if hmm match is significant, based on dbCAN described parameters"""
     tstart, tend, tlen, evalue = row[['target_start', 'target_end', 'target_length', 'full_evalue']].values
     perc_cov = (tend - tstart)/tlen
-    if perc_cov >= .35 and evalue <= 1e-15:
+    if perc_cov >= .35 and evalue <= evalue:
         return True
     else:
         return False
@@ -265,12 +265,26 @@ def sig_scores(hits:pd.DataFrame, score_db:pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame()
 
 
+def find_best_dbcan_hit(group:pd.DataFrame):
+    group['perc_cov'] = group.apply(
+        lambda x: (x['target_end'] - x['target_start']) / x['target_length'],
+        axis=1)
+    group.sort_values('perc_cov', inplace=True).sort_values('full_evalue', inplace=True)
+    return group.iloc[0, 'target_id']
+
+
+# Solution for CAZY-
+# introduce new column for best hit from cazy database- this will be the best hit above the already established threshold (0.35 coverage, e-18 evalue) - then for the distillate pull info from the best hit only
+# introduce new column for corresponding EC number information from sub families (EC numbers are subfamily ECs)
+# Make sure that ids and descriptions are separate (descriptions these are family based)
 def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
-    hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+    hits_sig = hits[hits.apply(partial(get_sig_row, evalue=1e-18), axis=1)]
     if len(hits_sig) == 0:
         # if nothing significant then return nothing, don't get descriptions
         return pd.DataFrame()
-    hits_df = hits_sig.groupby('query_id').apply(
+    hit_groups = hits_sig.groupby('query_id')
+    best_hit = hit_groups.apply(find_best_dbcan_hit)
+    all_hits = hit_groups.apply(
         lambda x: '; '.join(x['target_id'].apply(lambda y:y[:-4]).unique())
     )
     hits_df = pd.DataFrame(hits_df)
@@ -771,6 +785,10 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
 
     annotation_list = list()
 
+    Solution for CAZY-
+    introduce new column for best hit from cazy database- this will be the best hit above the already established threshold (0.35 coverage, e-18 evalue) - then for the distillate pull info from the best hit only
+    introduce new column for corresponding EC number information from sub families (EC numbers are subfamily ECs)
+    Make sure that ids and descriptions are separate (descriptions these are family based)
     # Get kegg hits
     if db_handler.db_locs.get('kegg') is not None:
         #TODO Change the get_kegg_description name in function do_blast_style_search to formater
@@ -881,11 +899,11 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, start_time, custom_db_locs=(), 
     # merge dataframes
     print('%s: Merging ORF annotations' % str(datetime.now() - start_time))
     annotations = pd.concat(annotation_list, axis=1, sort=False)
-    
+
     # get scaffold data and assign grades
     grades = assign_grades(annotations)
     annotations = pd.concat([grades, annotations], axis=1, sort=False)
-    
+
     return annotations
 
 

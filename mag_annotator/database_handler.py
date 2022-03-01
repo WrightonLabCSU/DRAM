@@ -192,7 +192,7 @@ class DatabaseHandler:
         return description_list
 
     @staticmethod
-    def process_dbcan_descriptions(dbcan_fam_activities):
+    def process_dbcan_descriptions(dbcan_fam_activities, dbcan_subfam_ec:):
         f = open(dbcan_fam_activities)
         description_list = list()
         for line in f.readlines():
@@ -207,6 +207,20 @@ class DatabaseHandler:
                 description_list.append({'id': line[0], 'description': description.replace('\n', ' ')})
         return description_list
 
+    def process_dbcan_descriptions(dbcan_fam_activities, dbcan_subfam_ec:):
+        f = open(dbcan_fam_activities)
+        description_list = list()
+        for line in f.readlines():
+            if not line.startswith('#') and len(line.strip()) != 0:
+                line = line.strip().split()
+                if len(line) == 1:
+                    description = line[0]
+                elif line[0] == line[1]:
+                    description = ' '.join(line[1:])
+                else:
+                    description = ' '.join(line)
+                description_list.append({'id': line[0], 'description': description.replace('\n', ' ')})
+        return description_list
     @staticmethod
     def process_vogdb_descriptions(vog_annotations):
         annotations_table = pd.read_csv(vog_annotations, sep='\t', index_col=0)
@@ -238,7 +252,7 @@ class DatabaseHandler:
                                               'pfam_description', clear_table=True)
         if self.db_description_locs.get('dbcan_fam_activities') is not None:
             self.add_descriptions_to_database(self.process_dbcan_descriptions(
-                self.db_description_locs['dbcan_fam_activities']), 'dbcan_description', clear_table=True)
+                self.db_description_locs['dbcan_fam_activities'], self.db_description_locs['dbcan_subfam_ec']), 'dbcan_description', clear_table=True)
         if self.db_locs.get('viral') is not None:
             self.add_descriptions_to_database(self.make_header_dict_from_mmseqs_db(self.db_locs['viral']),
                                               'viral_description', clear_table=True)
