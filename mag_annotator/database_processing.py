@@ -23,6 +23,47 @@ def get_iso_date():
     return datetime.today().strftime('%Y%m%d')
 
 
+def download_pfam_descriptions(output_dir='.', verbose=True):
+    pfam_hmm_dat = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
+    download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz', pfam_hmm_dat,
+                  verbose=verbose)
+    return pfam_hmm_dat
+
+
+def download_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, verbose=True):
+    dbcan_hmm = path.join(output_dir, f"dbCAN-HMMdb-V{dbcan_release}.txt" )
+    if int(dbcan_release) < int(DEFAULT_DBCAN_RELEASE):
+        link_path = f"http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V{dbcan_release}.txt"
+    else:
+        link_path = f"http://bcb.unl.edu/dbCAN2/download/dbCAN-HMMdb-V{dbcan_release}.txt"
+
+    print(f"Downloading dbCAN from: {link_path}")
+    download_file(link_path, dbcan_hmm, verbose=verbose)
+    return dbcan_hmm
+
+
+def download_dbcan_descriptions(output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
+    dbcan_fam_activities = path.join(output_dir, f'CAZyDB.{upload_date}.fam-activities.txt')
+    link_path = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{dbcan_release}/CAZyDB.{upload_date}.fam-activities.txt"
+    print(f"Downloading dbCAN family activities from : {link_path}")
+    download_file(link_path, dbcan_fam_activities, verbose=verbose)
+    return dbcan_fam_activities
+
+
+def download_dbcan_subfam_ec(output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
+    dbcan_subfam_ec = path.join(output_dir, f"CAZyDB.{upload_date}.fam.subfam.ec.txt")
+    link_path = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{dbcan_release}/CAZyDB.{upload_date}.fam.subfam.ec.txt"
+    print(f"Downloading dbCAN sub-family encumber from : {link_path}")
+    download_file(link_path, dbcan_subfam_ec, verbose=verbose)
+    return dbcan_subfam_ec
+
+
+def download_kofam_hmms(output_dir='.', verbose=False):
+    kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
+    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
+    return kofam_profile_tar_gz
+
+
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
     """Takes kegg fasta file and gene ko link file, adds kos not already in headers to headers"""
     genes_ko_dict = defaultdict(list)
@@ -59,10 +100,7 @@ def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc=None, download_date=N
     return kegg_mmseqs_db
 
 
-def download_and_process_kofam_hmms(kofam_profile_tar_gz=None, output_dir='.', verbose=False):
-    if kofam_profile_tar_gz is None:
-        kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
-        download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
+def process_kofam_hmms(kofam_profile_tar_gz, output_dir='.', verbose=False):
     kofam_profiles = path.join(output_dir, 'kofam_profiles')
     mkdir(kofam_profiles)
     run_process(['tar', '-xzf', kofam_profile_tar_gz, '-C', kofam_profiles], verbose=verbose)
@@ -116,44 +154,9 @@ def download_and_process_pfam(pfam_full_zipped=None, output_dir='.', threads=10,
     return pfam_profile
 
 
-def download_pfam_descriptions(output_dir='.', verbose=True):
-    pfam_hmm_dat = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
-    download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz', pfam_hmm_dat,
-                  verbose=verbose)
-    return pfam_hmm_dat
-
-
-def download_dbcan(dbcan_hmm=None, output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, verbose=True):
-    dbcan_hmm = path.join(output_dir, f"dbCAN-HMMdb-V{dbcan_release}.txt" )
-    if int(dbcan_release) < int(DEFAULT_DBCAN_RELEASE):
-        link_path = f"http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V{dbcan_release}.txt"
-    else:
-        link_path = f"http://bcb.unl.edu/dbCAN2/download/dbCAN-HMMdb-V{dbcan_release}.txt"
-
-    print(f"Downloading dbCAN from: {link_path}")
-    download_file(link_path, dbcan_hmm, verbose=verbose)
-    return dbcan_hmm
-
-
 def process_dbcan(dbcan_hmm, verbose=True):
     run_process(['hmmpress', '-f', dbcan_hmm], verbose=verbose)
     return dbcan_hmm
-
-
-def download_dbcan_descriptions(output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
-    dbcan_fam_activities = path.join(output_dir, f'CAZyDB.{upload_date}.fam-activities.txt')
-    link_path = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{dbcan_release}/CAZyDB.{upload_date}.fam-activities.txt"
-    print(f"Downloading dbCAN family activities from : {link_path}")
-    download_file(link_path, dbcan_fam_activities, verbose=verbose)
-    return dbcan_fam_activities
-
-
-def download_dbcan_subfam_ec(output_dir='.', dbcan_release=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
-    dbcan_subfam_ec = path.join(output_dir, 'CAZyDB.{upload_date}.fam.subfam.ec.txt')
-    link_path = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{dbcan_release}/CAZyDB.{upload_date}.fam.subfam.ec.txt"
-    print(f"Downloading dbCAN sub-family encumber from : {link_path}")
-    download_file(link_path, dbcan_subfam_ec, verbose=verbose)
-    return dbcan_subfam_ec
 
 
 def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', viral_files=2, threads=10, verbose=True):
@@ -212,83 +215,97 @@ def download_vog_annotations(output_dir, vogdb_version='latest', verbose=True):
     return vog_annotations
 
 
-def download_and_process_genome_summary_form(output_dir, branch='master', verbose=True):
+def download_genome_summary_form(output_dir, branch='master', verbose=True):
     genome_summary_form = path.join(output_dir, 'genome_summary_form.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/genome_summary_form.tsv' % branch,
                   genome_summary_form, verbose=verbose)
     return genome_summary_form
 
 
-def download_and_process_module_step_form(output_dir, branch='master', verbose=True):
+def download_module_step_form(output_dir, branch='master', verbose=True):
     function_heatmap_form = path.join(output_dir, 'module_step_form.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/module_step_form.tsv' % branch,
                   function_heatmap_form, verbose=verbose)
     return function_heatmap_form
 
 
-def download_and_process_etc_module_database(output_dir, branch='master', verbose=True):
+def download_etc_module_database(output_dir, branch='master', verbose=True):
     etc_module_database = path.join(output_dir, 'etc_mdoule_database.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/etc_module_database.tsv' % branch,
                   etc_module_database, verbose=verbose)
     return etc_module_database
 
 
-def download_and_process_function_heatmap_form(output_dir, branch='master', verbose=True):
+def download_function_heatmap_form(output_dir, branch='master', verbose=True):
     function_heatmap_form = path.join(output_dir, 'function_heatmap_form.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/function_heatmap_form.tsv' % branch,
                   function_heatmap_form, verbose=verbose)
     return function_heatmap_form
 
 
-def download_and_process_amg_database(output_dir, branch='master', verbose=True):
+def download_amg_database(output_dir, branch='master', verbose=True):
     amg_database = path.join(output_dir, 'amg_database.%s.tsv' % get_iso_date())
     download_file('https://raw.githubusercontent.com/shafferm/DRAM/%s/data/amg_database.tsv' % branch,
                   amg_database, verbose=verbose)
     return amg_database
 
 
-def check_file_exists(db_loc):
-    if db_loc is None:
-        return True
-    elif path.isfile(db_loc):
-        return True
-    else:
-        raise ValueError("Database location does not exist: %s" % db_loc)
+def check_file_exists(*paths):
+    for i in paths:
+        if i is None:
+            continue
+        elif path.isfile(i):
+            continue
+        else:
+            raise ValueError(f"Database location does not exist: {i}")
 
 
-def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None,
-                      kegg_download_date=None, uniref_loc=None, uniref_version=DEFAULT_UNIREF_VERSION, pfam_loc=None, pfam_hmm_dat=None,
-                      dbcan_loc=None, dbcan_version=DEFAULT_DBCAN_RELEASE, dbcan_subfam_ec=None, dbcan_date=DEFAULT_DBCAN_DATE,
-                      viral_loc=None, peptidase_loc=None, vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
-                      genome_summary_form_loc=None, module_step_form_loc=None, etc_module_database_loc=None,
-                      function_heatmap_form_loc=None, amg_database_loc=None, skip_uniref=False,
-                      keep_database_files=False, branch='master', threads=10, verbose=True):
+
+
+def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None,
+                      kofam_ko_list_loc=None, kegg_download_date=None, uniref_loc=None,
+                      uniref_version=DEFAULT_UNIREF_VERSION, pfam_loc=None, pfam_hmm_dat=None,
+                      dbcan_loc=None, dbcan_version=DEFAULT_DBCAN_RELEASE, dbcan_subfam_ec=None,
+                      dbcan_date=DEFAULT_DBCAN_DATE, viral_loc=None, peptidase_loc=None,
+                      vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
+                      genome_summary_form_loc=None, module_step_form_loc=None,
+                      etc_module_database_loc=None, function_heatmap_form_loc=None,
+                      amg_database_loc=None, skip_uniref=False, keep_database_files=False,
+                      branch='master', threads=10, verbose=True):
+    # TODO make this a dictionary of functions
+    paths_and_functions = { #just paths as of now
+        "kegg_loc":{},
+        "gene_ko_link_loc": {},
+        "kofam_hmm_loc": {},
+        "kofam_ko_list_loc": {},
+        "uniref_loc": {},
+        "pfam_loc": {},
+        "pfam_hmm_dat": {},
+        "dbcan_loc": {},
+        "dbcan_fam_activities": {},
+        "dbcan_subfam_ec": {},
+        "vogdb_loc": {},
+        "viral_loc": {},
+        "peptidase_loc": {},
+        "genome_summary_form_loc": {},
+        "module_step_form_loc": {},
+        "function_heatmap_form_loc": {},
+        "amg_database_loc": {}
+    }
+    for i, j in locals().items():
+        if i in paths_and_functions:
+            paths_and_functions[i]['path'] = j
     start_time = datetime.now()
     print('%s: Database preparation started' % str(datetime.now()))
 
     # check inputs
     if skip_uniref and uniref_loc is not None:
-        raise ValueError('Cannot skip UniRef processing and provide a location of UniRef. Skipping UniRef will cause '
-                         'provided UniRef file to not be used.')
+        raise ValueError('Cannot skip UniRef processing and provide a location of UniRef.'
+                         ' Skipping UniRef will cause provided UniRef file to not be used.')
+
 
     # check that all given files exist
-    check_file_exists(kegg_loc)
-    check_file_exists(gene_ko_link_loc)
-    check_file_exists(kofam_hmm_loc)
-    check_file_exists(kofam_ko_list_loc)
-    check_file_exists(uniref_loc)
-    check_file_exists(pfam_loc)
-    check_file_exists(pfam_hmm_dat)
-    check_file_exists(dbcan_loc)
-    check_file_exists(dbcan_fam_activities)
-    check_file_exists(dbcan_subfam_ec)
-    check_file_exists(vogdb_loc)
-    check_file_exists(viral_loc)
-    check_file_exists(peptidase_loc)
-    check_file_exists(genome_summary_form_loc)
-    check_file_exists(module_step_form_loc)
-    check_file_exists(function_heatmap_form_loc)
-    check_file_exists(amg_database_loc)
+    check_file_exists(*[i['path'] for i in paths_and_functions.values()])
 
     # setup
     if not path.isdir(output_dir):
@@ -296,7 +313,12 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     temporary = path.join(output_dir, 'database_files')
     mkdir(temporary)
 
+    # output dbs dic
+    output_dbs = dict()
+
     # Download DBs
+    if vog_annotations is None:
+        vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
     if dbcan_fam_activities is None:
         dbcan_fam_activities = download_dbcan_descriptions(
             output_dir=output_dir, dbcan_release=dbcan_version,
@@ -309,9 +331,26 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
         pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
     if dbcan_loc is None:
         dbcan_loc = download_dbcan(temporary, dbcan_release=dbcan_version, verbose=verbose)
+    if kofam_hmm_loc is None:
+        kofam_hmm_loc = download_kofam_hmms(temporary, verbose=verbose)
+    if genome_summary_form_loc is None:
+        genome_summary_form_loc = download_genome_summary_form(temporary, branch, verbose)
+    if module_step_form_loc is None:
+        module_step_form_loc = download_module_step_form(temporary, branch, verbose)
+    if etc_module_database_loc is None:
+        etc_module_database_loc = download_etc_module_database(temporary, branch, verbose)
+    if function_heatmap_form_loc is None:
+        function_heatmap_form_loc = download_function_heatmap_form(temporary, branch, verbose)
+    if amg_database_loc is None:
+        amg_database_loc = download_amg_database(temporary, branch, verbose)
+
+    output_dbs['genome_summary_form_loc'] = genome_summary_form_loc
+    output_dbs['module_step_form_loc'] = module_step_form_loc
+    output_dbs['etc_module_database_loc'] = etc_module_database_loc
+    output_dbs['function_heatmap_form_loc'] = function_heatmap_form_loc
+    output_dbs['amg_database_loc'] = amg_database_loc
 
     # Process databases
-    output_dbs = dict()
 
     output_dbs['dbcan_db_loc'] = process_dbcan(dbcan_loc, verbose=verbose)
     print('%s: dbCAN database processed' % str(datetime.now() - start_time))
@@ -336,7 +375,7 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     output_dbs['vogdb_db_loc'] = download_and_process_vogdb(vogdb_loc, temporary, vogdb_release=vogdb_version,
                                                             verbose=verbose)
     print('%s: VOGdb database processed' % str(datetime.now() - start_time))
-    output_dbs['kofam_hmm_loc'] = download_and_process_kofam_hmms(kofam_hmm_loc, temporary, verbose=verbose)
+    output_dbs['kofam_hmm_loc'] = process_kofam_hmms(kofam_hmm_loc, temporary, verbose=verbose)
     print('%s: KOfam database processed' % str(datetime.now() - start_time))
     output_dbs['kofam_ko_list_loc'] = download_and_process_kofam_ko_list(kofam_ko_list_loc, temporary, verbose=verbose)
     print('%s: KOfam ko list processed' % str(datetime.now() - start_time))
@@ -347,32 +386,10 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
     output_dbs['dbcan_subfam_ec'] = dbcan_subfam_ec
     print('%s: dbCAN fam activities processed' % str(datetime.now() - start_time))
-    if vog_annotations is None:
-        vog_annotations = download_vog_annotations(output_dir, vogdb_version, verbose=verbose)
     output_dbs['vog_annotations'] = vog_annotations
     print('%s: VOGdb annotations processed' % str(datetime.now() - start_time))
 
     # add genome summary form and function heatmap form
-    if genome_summary_form_loc is None:
-        output_dbs['genome_summary_form_loc'] = download_and_process_genome_summary_form(temporary, branch, verbose)
-    else:
-        output_dbs['genome_summary_form_loc'] = genome_summary_form_loc
-    if module_step_form_loc is None:
-        output_dbs['module_step_form_loc'] = download_and_process_module_step_form(temporary, branch, verbose)
-    else:
-        output_dbs['module_step_form_loc'] = module_step_form_loc
-    if etc_module_database_loc is None:
-        output_dbs['etc_module_database_loc'] = download_and_process_etc_module_database(temporary, branch, verbose)
-    else:
-        output_dbs['etc_module_database_loc'] = etc_module_database_loc
-    if function_heatmap_form_loc is None:
-        output_dbs['function_heatmap_form_loc'] = download_and_process_function_heatmap_form(temporary, branch, verbose)
-    else:
-        output_dbs['function_heatmap_form_loc'] = function_heatmap_form_loc
-    if amg_database_loc is None:
-        output_dbs['amg_database_loc'] = download_and_process_amg_database(temporary, branch, verbose)
-    else:
-        output_dbs['amg_database_loc'] = amg_database_loc
     print('%s: DRAM databases and forms downloaded' % str(datetime.now() - start_time))
 
     # move all files from temporary to output that will be kept
