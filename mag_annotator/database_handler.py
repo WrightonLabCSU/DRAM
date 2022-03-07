@@ -1,5 +1,4 @@
 from os import path, remove
-from warnings import warn
 from pkg_resources import resource_filename
 import json
 import gzip
@@ -73,11 +72,13 @@ class DatabaseHandler:
 
     def get_descriptions(self, ids, db_name):
         description_class = TABLE_NAME_TO_CLASS_DICT[db_name]
-        descriptions = list()
-        for chunk in divide_chunks(list(ids), 499):
-            descriptions += self.session.query(description_class).filter(description_class.id.in_(chunk)).all()
+        descriptions = [
+            des 
+            for chunk in divide_chunks(list(ids), 499)
+            for des in self.session.query(description_class).filter(description_class.id.in_(chunk)).all() 
+        ]
         if len(descriptions) == 0:
-            warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
+            warnings.warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
         return {i.id: i.description for i in descriptions}
 
