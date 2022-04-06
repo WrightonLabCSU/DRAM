@@ -103,6 +103,7 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--dbcan_db_loc', default=None,
                                     help='hmm file for dbcan, already processed with hmmpress')
     set_db_locs_parser.add_argument('--dbcan_fam_activities', default=None, help='CAZY family activities file')
+    set_db_locs_parser.add_argument('--dbcan_subfam_ec', default=None, help='CAZY sub-family ECs file')
     set_db_locs_parser.add_argument('--vogdb_db_loc', default=None,
                                     help='hmm file for vogdb, already processed with hmmpress')
     set_db_locs_parser.add_argument('--vog_annotations', default=None,

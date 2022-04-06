@@ -265,7 +265,7 @@ def check_file_exists(*paths):
 def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None,
                       kofam_ko_list_loc=None, kegg_download_date=None, uniref_loc=None,
                       uniref_version=DEFAULT_UNIREF_VERSION, pfam_loc=None, pfam_hmm_dat=None,
-                      dbcan_loc=None, dbcan_version=DEFAULT_DBCAN_RELEASE, dbcan_subfam_ec=None,
+                      dbcan_loc=None, dbcan_fam_activities:str=None, dbcan_subfam_ec:str=None, dbcan_version=DEFAULT_DBCAN_RELEASE,
                       dbcan_date=DEFAULT_DBCAN_DATE, viral_loc=None, peptidase_loc=None,
                       vogdb_loc=None, vogdb_version='latest', vog_annotations=None,
                       genome_summary_form_loc=None, module_step_form_loc=None,
@@ -327,10 +327,10 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
         dbcan_subfam_ec = download_dbcan_subfam_ec(
             output_dir=output_dir, dbcan_release=dbcan_version,
             upload_date=dbcan_date, verbose=verbose)
-    if pfam_hmm_dat is None:
-        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
     if dbcan_loc is None:
         dbcan_loc = download_dbcan(temporary, dbcan_release=dbcan_version, verbose=verbose)
+    if pfam_hmm_dat is None:
+        pfam_hmm_dat = download_pfam_descriptions(output_dir, verbose=verbose)
     if kofam_hmm_loc is None:
         kofam_hmm_loc = download_kofam_hmms(temporary, verbose=verbose)
     if genome_summary_form_loc is None:

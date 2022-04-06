@@ -88,10 +88,10 @@ class DatabaseHandler:
 
     def set_database_paths(self, kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_db_loc=None,
                            pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None, dbcan_fam_activities=None,
-                           viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, vog_annotations=None,
-                           description_db_loc=None, genome_summary_form_loc=None, module_step_form_loc=None,
-                           etc_module_database_loc=None, function_heatmap_form_loc=None, amg_database_loc=None,
-                           write_config=True):
+                           dbcan_subfam_ec=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, 
+                           vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None, 
+                           module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None, 
+                           amg_database_loc=None, write_config=True):
         def check_exists_and_add_to_location_dict(loc, old_value):
             if loc is None:  # if location is none then return the old value
                 return old_value
@@ -118,6 +118,9 @@ class DatabaseHandler:
         self.db_description_locs['dbcan_fam_activities'] = \
             check_exists_and_add_to_location_dict(dbcan_fam_activities,
                                                   self.db_description_locs.get('dbcan_fam_activities'))
+        self.db_description_locs['dbcan_subfam_ec'] = \
+            check_exists_and_add_to_location_dict(dbcan_subfam_ec,
+                                                  self.db_description_locs.get('dbcan_subfam_ec'))
         self.db_description_locs['vog_annotations'] = \
             check_exists_and_add_to_location_dict(vog_annotations, self.db_description_locs.get('vog_annotations'))
 
@@ -220,7 +223,7 @@ class DatabaseHandler:
                    .groupby('id')
                    .apply(lambda x: ','.join(x['ec'].unique()))
                    )
-        return [{'id': i, 'ec': j} for i,j in zip(ec_data, ec_data.index)]
+        return [{'id': i, 'description': j} for i,j in zip(ec_data.index, ec_data)]
 
 
 
@@ -343,19 +346,20 @@ class DatabaseHandler:
 
 def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_db_loc=None,
                        pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None, dbcan_fam_activities=None,
-                       viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, vog_annotations=None,
-                       description_db_loc=None, genome_summary_form_loc=None, module_step_form_loc=None,
-                       etc_module_database_loc=None, function_heatmap_form_loc=None, amg_database_loc=None,
-                       clear_config=False, update_description_db=False):
+                       dbcan_subfam_ec=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, 
+                       vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None, 
+                       module_step_form_loc=None, etc_module_database_loc=None, 
+                       function_heatmap_form_loc=None, amg_database_loc=None, clear_config=False, 
+                       update_description_db=False):
     db_handler = DatabaseHandler()
     if clear_config:
         db_handler.clear_config()
     db_handler.set_database_paths(kegg_db_loc, kofam_hmm_loc, kofam_ko_list_loc, uniref_db_loc,
                                   pfam_db_loc, pfam_hmm_dat, dbcan_db_loc, dbcan_fam_activities,
-                                  viral_db_loc, peptidase_db_loc, vogdb_db_loc, vog_annotations,
-                                  description_db_loc, genome_summary_form_loc, module_step_form_loc,
-                                  etc_module_database_loc, function_heatmap_form_loc, amg_database_loc,
-                                  write_config=True)
+                                  dbcan_subfam_ec, viral_db_loc, peptidase_db_loc, vogdb_db_loc, 
+                                  vog_annotations, description_db_loc, genome_summary_form_loc, 
+                                  module_step_form_loc, etc_module_database_loc, function_heatmap_form_loc, 
+                                  amg_database_loc, write_config=True)
     if update_description_db:
         db_handler.populate_description_db()
 
