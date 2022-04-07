@@ -344,7 +344,9 @@ def get_amg_ids(amg_frame):
     ko_amgs = {j.strip() for i in amg_frame['KO'].dropna() for j in i.strip().split(';')}
     ec_amgs = {j.strip() for i in amg_frame['EC'].dropna() for j in i.strip().split(';')}
     pfam_amgs = {j.strip() for i in amg_frame['PFAM'].dropna() for j in i.strip().split(';')}
-    return ko_amgs | ec_amgs | pfam_amgs
+    # Put this back in once python 3.10 is more popular
+    #return ko_amgs | ec_amgs | pfam_amgs
+    return ko_amgs.union(ec_amgs, pfam_amgs)
 
 
 def get_virsorter2_affi_contigs_name(scaffold):

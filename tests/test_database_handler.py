@@ -41,7 +41,8 @@ def db_w_entries(tmpdir):
     db_handler.description_loc = test_db
     db_handler.start_db_session()
     db_handler.add_descriptions_to_database([{'id': 'K00001', 'description': 'The first KO'},
-                                             {'id': 'K00002', 'description': 'The second KO'}], 'kegg_description',
+                                             {'id': 'K00002', 'description': 'The second KO'}],
+                                            'kegg_description',
                                             clear_table=True)
     return db_handler
 
