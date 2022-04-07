@@ -275,13 +275,14 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     )
     hits_df = pd.DataFrame(hits_df)
     hits_df.columns = [f"{db_name}_id"]
+    def description_pull(x:str):
+         id_list = [re.findall('^[A-Z]*[0-9]*', str(x))[0] for x in  x.split('; ')], 
+         id_list = [y for x in  id_list for y in x if len(x) > 0]
+         description_list = db_handler.get_descriptions(id_list, 'dbcan_description').values()
+         description_str = '; '.join(description_list)
+         return description_str
     if db_handler is not None:
-        hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_id"].apply(
-            lambda x:'; '.join(
-                db_handler.get_descriptions(
-                   [y for x in  x.split('; ') 
-                    if len(y := re.findall('^[A-Z]*[0-9]*', str(x))[0]) > 0], 
-                    'dbcan_description').values()))
+        hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_id"].apply(description_pull)
     hits_df.rename_axis(None, inplace=True)
     return hits_df
 

@@ -12,6 +12,8 @@ import pandas as pd
 from skbio.io import read as read_sequence
 
 from mag_annotator.utils import make_mmseqs_db
+from mag_annotator.database_handler import DatabaseHandler
+from mag_annotator.database_setup import DbcanDescription, create_description_db
 from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hits, \
     get_reciprocal_best_hits, process_reciprocal_best_hits, get_kegg_description, get_uniref_description, \
     get_basic_description, get_peptidase_description, get_sig_row, get_gene_data, get_unannotated, assign_grades, \
@@ -22,10 +24,48 @@ from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hit
     kofam_hmmscan_formater
 
 
+
+@pytest.fixture()
+def db_handler():
+    return DatabaseHandler(path.join('tests', 'data', 'test_CONFIG'))
+
+
+@pytest.fixture()
+def db_handler_with_dbcan(tmpdir):
+    db_handler = DatabaseHandler(os.path.join('tests', 'data', 'test_CONFIG'))
+    test_db = os.path.join(tmpdir.mkdir('test_db'), 'test_db.sqlite')
+    create_description_db(test_db)
+    db_handler.description_loc = test_db
+    db_handler.start_db_session()
+    dbcan_entries = [{'id': 'GT4', 'description': 'The first description'},
+                     {'id': 'GT5', 'description': 'The second description'},
+                     {'id': 'GH1', 'description': 'A lone description'},
+                     ]
+    db_handler.add_descriptions_to_database(dbcan_entries, 'dbcan_description')
+    #assert len(db_handler.session.query(DbcanDescription).all()) == 3
+    return db_handler
+
+
 @pytest.fixture()
 def fasta_loc():
     return os.path.join('tests', 'data', 'NC_001422.fasta')
 
+
+def test_dbcan_hmmscan_formater(db_handler_with_dbcan):
+    # TODO can we test with db-handler?
+    output_expt = pd.DataFrame({
+        "bin_1.scaffold_1": ["GT4; GT5", 'The first description; The second description'],
+        "bin_1.scaffold_2": ["GH1", 'A lone description']}, 
+                               index=["cazy_id", "cazy_hits"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_cazy.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = dbcan_hmmscan_formater(hits=hits, db_name='cazy', 
+                                         db_handler=db_handler_with_dbcan)
+    #hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    # output_rcvd
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in dbcan_hmmscan_formater"
 
 def test_filter_fasta(fasta_loc, tmpdir):
     filtered_seq_5000 = filter_fasta(fasta_loc, min_len=5000)
@@ -551,18 +591,6 @@ def test_vogdb_hmmscan_formater():
     assert output_rcvd.equals(output_expt), "Error in vogdb_hmmscan_formater"
 
 
-def test_dbcan_hmmscan_formater():
-    # TODO can we test with db-handler?
-    output_expt = pd.DataFrame({"bin_1.scaffold_1": "GT4; GT5",
-                           "bin_1.scaffold_2": "GH1"}, index=["cazy_id"]).T
-    input_b6 = os.path.join('tests', 'data', 'unformatted_cazy.b6')
-    hits = parse_hmmsearch_domtblout(input_b6)
-    output_rcvd = dbcan_hmmscan_formater(hits=hits, db_name='cazy')
-    #hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
-    # output_rcvd
-    output_rcvd.sort_index(inplace=True)
-    output_expt.sort_index(inplace=True)
-    assert output_rcvd.equals(output_expt), "Error in dbcan_hmmscan_formater"
 
 
 test_gbk = """LOCUS       NC_001422.1   5386 bp   DNA   linear   ENV   %s
