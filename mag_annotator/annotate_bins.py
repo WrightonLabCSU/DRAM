@@ -2,6 +2,7 @@ import re
 import io
 import time
 import warnings
+import logging
 from glob import glob
 from functools import partial
 from datetime import datetime
@@ -12,6 +13,7 @@ from skbio import Sequence
 from skbio.metadata import IntervalMetadata
 from os import path, mkdir, stat
 from shutil import rmtree, copy2
+from mag_annotator.utils import setup_logger
 import pandas as pd
 
 
@@ -697,7 +699,7 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, formater
                           verbose=False):
     """A convenience function to do a blast style reciprocal best hits search"""
     # Get kegg hits
-    print('%s: Getting forward best hits from %s' % (str(datetime.now() - start_time), db_name))
+    print('Getting forward best hits from %s' % db_name)
     forward_hits = get_best_hits(query_db, target_db, working_dir, 'gene', db_name, bit_score_threshold,
                                  threads, verbose=verbose)
     if stat(forward_hits).st_size == 0:
@@ -1063,7 +1065,7 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
     fasta_names = [get_fasta_name(i) for i in fasta_locs]
     if len(fasta_names) != len(set(fasta_names)):
         raise ValueError('Genome file names must be unique. At least one name appears twice in this search.')
-    print('%s fastas found' % len(fasta_locs))
+    logging.info('%s fastas found' % len(fasta_locs))
     rename_bins = True
     annotate_bins(list(set(fasta_locs)), output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
                   rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, custom_hmm_name, custom_hmm_loc,
@@ -1103,6 +1105,7 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
     db_handler.filter_db_locs(low_mem_mode, use_uniref, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
 
     mkdir(output_dir)
+    setup_logger(os.path.join(output_dir, "annotate_bin.log"))
 
     all_annotations = annotate_fastas(fasta_locs, output_dir, db_handler, min_contig_size, prodigal_mode, trans_table,
                                       bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,

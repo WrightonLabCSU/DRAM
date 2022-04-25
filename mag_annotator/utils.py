@@ -4,6 +4,7 @@ from collections import Counter
 from os import path
 from urllib.request import urlopen
 import pandas as pd
+import logging
 
 
 def download_file(url, output_file=None, verbose=True):
@@ -14,6 +15,20 @@ def download_file(url, output_file=None, verbose=True):
         return urlopen(url).read().decode('utf-8')
     else:
         run_process(['wget', '-O', output_file, url], verbose=verbose)
+
+
+def setup_logger(log_file_path:str):
+    logging.basicConfig(filename=str(log_file_path), filemode='w',
+                        format='%(asctime)s %(message)s', level=logging.INFO)
+    # define a Handler which writes INFO messages or higher to the sys.stderr
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    # set a format which is simpler for console use
+    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    # tell the handler to use this format
+    console.setFormatter(formatter)
+    # add the handler to the root logger
+    logging.getLogger().addHandler(console)
 
 
 def run_process(command, shell=False, capture_stdout=True, check=True, verbose=False):
