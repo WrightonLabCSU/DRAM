@@ -17,18 +17,20 @@ def download_file(url, output_file=None, verbose=True):
         run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
-def setup_logger(log_file_path:str):
-    logging.basicConfig(filename=str(log_file_path), filemode='w',
-                        format='%(asctime)s %(message)s', level=logging.INFO)
-    # define a Handler which writes INFO messages or higher to the sys.stderr
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    # set a format which is simpler for console use
-    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
-    # tell the handler to use this format
-    console.setFormatter(formatter)
-    # add the handler to the root logger
-    logging.getLogger().addHandler(console)
+def setup_logger(log_file_path, logger):
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(message)s')
+    # create console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    # create formatter and add it to the handlers
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    fh = logging.FileHandler(log_file_path)
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(formatter)
+    # add the handlers to the logger
+    logger.addHandler(fh)
 
 
 def run_process(command, shell=False, capture_stdout=True, check=True, verbose=False):

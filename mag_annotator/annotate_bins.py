@@ -13,12 +13,16 @@ from skbio import Sequence
 from skbio.metadata import IntervalMetadata
 from os import path, mkdir, stat
 from shutil import rmtree, copy2
-from mag_annotator.utils import setup_logger
 import pandas as pd
 
 
-from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep, remove_suffix
+from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, \
+    multigrep, remove_suffix, setup_logger
 from mag_annotator.database_handler import DatabaseHandler
+
+
+
+
 
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
@@ -27,6 +31,7 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
 # TODO: add ability to handle [] in file names
 
+LOGGER = logging.getLogger('')
 MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb')
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -1059,14 +1064,8 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
                       custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, use_vogdb=False,
                       kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                       keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
-    fasta_locs = [j for i in input_fasta for j in glob(i)]
-    if len(fasta_locs) == 0:
-        raise ValueError('Given fasta locations return no paths: %s' % input_fasta)
-    fasta_names = [get_fasta_name(i) for i in fasta_locs]
-    if len(fasta_names) != len(set(fasta_names)):
-        raise ValueError('Genome file names must be unique. At least one name appears twice in this search.')
-    logging.info('%s fastas found' % len(fasta_locs))
     rename_bins = True
+    fasta_locs = [j for i in input_fasta for j in glob(i)]
     annotate_bins(list(set(fasta_locs)), output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
                   rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, custom_hmm_name, custom_hmm_loc,
                   custom_hmm_cutoffs_loc, use_uniref, use_vogdb, kofam_use_dbcan2_thresholds, skip_trnascan,
@@ -1081,8 +1080,25 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
                   custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, use_vogdb=False,
                   kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                   rename_bins=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+
+    mkdir(output_dir)
+    log_file_path = path.join(output_dir, "annotate_bin.log")
+    setup_logger(log_file_path, LOGGER)
+    LOGGER.info(f"The log file is created at {log_file_path}.")
+
+    if len(fasta_locs) == 0:
+        raise ValueError('Given fasta locations return no paths: %s' % input_fasta)
+    fasta_names = [get_fasta_name(i) for i in fasta_locs]
+    if len(fasta_names) != len(set(fasta_names)):
+        raise ValueError('Genome file names must be unique. At least one name appears twice in this search.')
+    LOGGER.info('%s fastas found' % len(fasta_locs))
     # set up
     start_time = datetime.now()
+    # logger.basicConfig(filename=str(log_file_path), filemode='w',
+    #                     format='%(asctime)s %(message)s', level=logging.INFO)
+    # create logger with 'spam_application'
+    # create file handler which logs even debug messages
+    breakpoint()
     print('%s: Annotation started' % str(datetime.now()))
 
     # check inputs
@@ -1104,8 +1120,6 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
     db_handler = DatabaseHandler()
     db_handler.filter_db_locs(low_mem_mode, use_uniref, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
 
-    mkdir(output_dir)
-    setup_logger(os.path.join(output_dir, "annotate_bin.log"))
 
     all_annotations = annotate_fastas(fasta_locs, output_dir, db_handler, min_contig_size, prodigal_mode, trans_table,
                                       bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,
