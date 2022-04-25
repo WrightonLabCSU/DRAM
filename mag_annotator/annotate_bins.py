@@ -1082,7 +1082,7 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
                   rename_bins=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
 
     mkdir(output_dir)
-    log_file_path = path.join(output_dir, "annotate_bin.log")
+    log_file_path = path.join(output_dir, "Annotation.log")
     setup_logger(log_file_path, LOGGER)
     LOGGER.info(f"The log file is created at {log_file_path}.")
 
