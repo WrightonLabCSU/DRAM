@@ -1,3 +1,6 @@
+"""
+Defines the classes that are used to acsess sql data with sqlalchemy. Each data set that gets its descriptions stored in sql needs its database stored there also.
+"""
 from sqlalchemy import Column, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 
