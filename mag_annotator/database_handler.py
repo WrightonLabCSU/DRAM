@@ -4,20 +4,21 @@ import json
 import gzip
 from shutil import copy2
 import warnings
-
+import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import pandas as pd
 
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_description_db
-from mag_annotator.utils import divide_chunks
+from mag_annotator.utils import divide_chunks, setup_logger
 
 SEARCH_DATABASES = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb')
 DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database', 'function_heatmap_form',
                'amg_database')
 DATABASE_DESCRIPTIONS = ('pfam_hmm_dat', 'dbcan_fam_activities', 'vog_annotations')
 
+LOGGER = logging.getLogger("database_handler.log")
 # TODO: store all sequence db locs within database handler class
 # TODO: store scoring information here e.g. bitscore_threshold, hmm cutoffs
 # TODO: set up custom databases here
@@ -284,34 +285,36 @@ class DatabaseHandler:
             self.write_config()
 
     def print_database_locations(self):
+        mkdir(database_log)
+        setup_logger(os.path.join(database_log, LOGGER))
         # search databases
-        print('Processed search databases')
-        print('KEGG db: %s' % self.db_locs.get('kegg'))
-        print('KOfam db: %s' % self.db_locs.get('kofam'))
-        print('KOfam KO list: %s' % self.db_locs.get('kofam_ko_list'))
-        print('UniRef db: %s' % self.db_locs.get('uniref'))
-        print('Pfam db: %s' % self.db_locs.get('pfam'))
-        print('dbCAN db: %s' % self.db_locs.get('dbcan'))
-        print('RefSeq Viral db: %s' % self.db_locs.get('viral'))
-        print('MEROPS peptidase db: %s' % self.db_locs.get('peptidase'))
-        print('VOGDB db: %s' % self.db_locs.get('vogdb'))
-        print()
+        logging.info('Processed search databases')
+        logging.info('KEGG db: %s' % self.db_locs.get('kegg'))
+        logging.info('KOfam db: %s' % self.db_locs.get('kofam'))
+        logging.info('KOfam KO list: %s' % self.db_locs.get('kofam_ko_list'))
+        logging.info('UniRef db: %s' % self.db_locs.get('uniref'))
+        logging.info('Pfam db: %s' % self.db_locs.get('pfam'))
+        logging.info('dbCAN db: %s' % self.db_locs.get('dbcan'))
+        logging.info('RefSeq Viral db: %s' % self.db_locs.get('viral'))
+        logging.info('MEROPS peptidase db: %s' % self.db_locs.get('peptidase'))
+        logging.info('VOGDB db: %s' % self.db_locs.get('vogdb'))
+        logging.info()
         # database descriptions used during description db population
-        print('Descriptions of search database entries')
-        print('Pfam hmm dat: %s' % self.db_description_locs.get('pfam_hmm_dat'))
-        print('dbCAN family activities: %s' % self.db_description_locs.get('dbcan_fam_activities'))
-        print('VOG annotations: %s' % self.db_description_locs.get('vog_annotations'))
-        print()
+        logging.info('Descriptions of search database entries')
+        logging.info('Pfam hmm dat: %s' % self.db_description_locs.get('pfam_hmm_dat'))
+        logging.info('dbCAN family activities: %s' % self.db_description_locs.get('dbcan_fam_activities'))
+        logging.info('VOG annotations: %s' % self.db_description_locs.get('vog_annotations'))
+        logging.info()
         # description database
-        print('Description db: %s' % self.description_loc)
-        print()
+        logging.info('Description db: %s' % self.description_loc)
+        logging.info()
         # DRAM sheets
-        print('DRAM distillation sheets')
-        print('Genome summary form: %s' % self.dram_sheet_locs.get('genome_summary_form'))
-        print('Module step form: %s' % self.dram_sheet_locs.get('module_step_form'))
-        print('ETC module database: %s' % self.dram_sheet_locs.get('etc_module_database'))
-        print('Function heatmap form: %s' % self.dram_sheet_locs.get('function_heatmap_form'))
-        print('AMG database: %s' % self.dram_sheet_locs.get('amg_database'))
+        logging.info('DRAM distillation sheets')
+        logging.info('Genome summary form: %s' % self.dram_sheet_locs.get('genome_summary_form'))
+        prilogging.infont('Module step form: %s' % self.dram_sheet_locs.get('module_step_form'))
+        logging.info('ETC module database: %s' % self.dram_sheet_locs.get('etc_module_database'))
+        logging.info('Function heatmap form: %s' % self.dram_sheet_locs.get('function_heatmap_form'))
+        logging.info('AMG database: %s' % self.dram_sheet_locs.get('amg_database'))
 
     def filter_db_locs(self, low_mem_mode=False, use_uniref=True, use_vogdb=True, master_list=None):
         if master_list is None:
