@@ -42,7 +42,7 @@ VIRAL_PEPTIDASES_MEROPS = {'A02H', 'A02G', 'A02F', 'A02E', 'A02D', 'A02C', 'A02B
                            'S50', 'S53', 'S54', 'S62', 'S65', 'S69', 'S73', 'S74', 'S75', 'S77', 'S78', 'S80', 'S81',
                            'T01B', 'T01A', 'T03', 'U32', 'U40'}
 
-LOGGER = logging.getLogger('')
+LOGGER = logging.getLogger('annotate_vgfs.log')
 
 def is_affi_tab_not_fasta(input_file: str) -> bool:
     """
@@ -444,7 +444,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
         virsorter_hits = None
 
     mkdir(output_dir)
-    setup_logger(log_file_path, LOGGER)
+    setup_logger(os.path.join(output_dir, LOGGER))
 
  # set up
     logging.info('Viral annotation started')
