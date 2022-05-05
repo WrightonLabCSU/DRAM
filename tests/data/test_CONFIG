@@ -1,1 +1,27 @@
-{"kegg": null, "kofam": null, "kofam_ko_list": null, "uniref": null, "pfam": "tests/data/Pfam-A_subset.full.gz", "pfam_hmm_dat": "tests/data/Pfam-A_subset.hmm.dat.gz", "dbcan": null, "dbcan_fam_activities": "tests/data/CAZyDB.07312019.fam-activities.subset.txt", "viral": null, "peptidase": null, "vogdb": null, "vog_annotations": "tests/data/vog_annotations_latest.subset.tsv.gz", "genome_summary_form": "data/genome_summary_form.tsv", "module_step_form": "data/module_step_form.tsv", "etc_module_database": "data/etc_module_database.tsv", "function_heatmap_form": "data/function_heatmap_form.tsv", "amg_database": "data/amg_database.tsv"}
+{
+  "search_databases": {
+    "kegg": null,
+    "kofam": null,
+    "kofam_ko_list": null,
+    "uniref": null,
+    "pfam": null,
+    "dbcan": null,
+    "viral": null,
+    "peptidase": null
+  },
+  "custom_dbs": null,
+  "database_descriptions": {
+    "pfam_hmm_dat": null,
+    "dbcan_fam_activities": null,
+    "vog_annotations": null
+  },
+  "dram_sheets": {
+    "genome_summary_form": null,
+    "module_step_form": null,
+    "etc_module_database": null,
+    "function_heatmap_form": null,
+    "amg_database": null
+  },
+  "description_db": "None",
+  "dram_version": "1.4.0"
+}

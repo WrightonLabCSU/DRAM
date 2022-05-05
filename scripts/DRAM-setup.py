@@ -4,8 +4,8 @@ import argparse
 
 from mag_annotator.database_processing import prepare_databases, update_dram_forms, \
     DEFAULT_DBCAN_DATE, DEFAULT_DBCAN_RELEASE, DEFAULT_UNIREF_VERSION
-from mag_annotator.database_handler import set_database_paths, print_database_locations, populate_description_db, \
-    export_config, import_config
+from mag_annotator.database_handler import DatabaseHandler,  set_database_paths,  populate_description_db, \
+    export_config, import_config, print_database_locations
 from mag_annotator import __version__ as version
 
 
@@ -108,6 +108,9 @@ if __name__ == '__main__':
                                     help='hmm file for vogdb, already processed with hmmpress')
     set_db_locs_parser.add_argument('--vog_annotations', default=None,
                                     help='vog annotations file') # add loc to vog_annotations to match the rest
+
+    set_db_locs_parser.add_argument('--camper_', default=None, help='KOfam ko list file')
+
     set_db_locs_parser.add_argument('--viral_db_loc', default=None,
                                     help='mmseqs2 database file from ref seq viral gene collection')
     set_db_locs_parser.add_argument('--peptidase_db_loc', default=None,

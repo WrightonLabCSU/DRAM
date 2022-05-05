@@ -5,12 +5,17 @@ from sqlalchemy.orm.exc import NoResultFound
 import json
 
 from mag_annotator.database_setup import KeggDescription, create_description_db
-from mag_annotator.database_handler import DatabaseHandler
+from mag_annotator.database_handler import DatabaseHandler, print_database_locations, import_config, export_config
+import pandas as pd
+import numpy as np
+
+TEST_CONF_PATH = path.join('tests', 'data', 'test_CONFIG')
+TEST_CONF_PATH_1_3 = path.join('tests', 'data', 'test_CONFIG_1.3-')
 
 
 @pytest.fixture()
 def db_handler():
-    return DatabaseHandler(path.join('tests', 'data', 'test_CONFIG'))
+    return DatabaseHandler(TEST_CONF_PATH)
 
 
 def test_db_hander_init():  # TODO: this
@@ -69,52 +74,52 @@ def test_get_database_names(db_w_entries):
 
 def test_filter_db_locs():
     db_handler = DatabaseHandler(path.join('tests', 'data', 'test_CONFIG'))
-    db_handler.db_locs = {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
+    db_handler.config['search_databases'] = {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
                           'kofam_ko_list': 'a/fake/location/kofam_ko_list.tsv.gz',
                           'vogdb': 'a/fake/location/vogdb.hmm', 'pfam': 'tests/data/Pfam-A_subset.full.gz',
                           'dbcan': None, 'peptidase': None, 'uniref': 'a/fake/location/uniref.fasta'}
     db_handler.filter_db_locs(low_mem_mode=True)
-    assert db_handler.db_locs == {'kofam': 'a/fake/location/kofam.hmm',
+    assert db_handler.config.get('search_databases') == {'kofam': 'a/fake/location/kofam.hmm',
                                   'kofam_ko_list': 'a/fake/location/kofam_ko_list.tsv.gz',
                                   'pfam': 'tests/data/Pfam-A_subset.full.gz',
                                   'dbcan': None, 'peptidase': None}
-    db_handler.db_locs = {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
+    db_handler.config['search_databases'] = {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
                           'kofam_ko_list': 'a/fake/location/kofam_ko_list.tsv.gz',
                           'vogdb': 'a/fake/location/vogdb.hmm', 'pfam': 'tests/data/Pfam-A_subset.full.gz',
                           'dbcan': None, 'peptidase': None}
     db_handler.filter_db_locs(use_vogdb=False)
-    assert db_handler.db_locs == {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
+    assert db_handler.config.get('search_databases') == {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
                                   'kofam_ko_list': 'a/fake/location/kofam_ko_list.tsv.gz',
                                   'pfam': 'tests/data/Pfam-A_subset.full.gz', 'dbcan': None, 'peptidase': None}
-    db_handler.db_locs = {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
+    db_handler.config['search_databases'] = {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
                           'kofam_ko_list': 'a/fake/location/kofam_ko_list.tsv.gz',
                           'vogdb': 'a/fake/location/vogdb.hmm', 'pfam': 'tests/data/Pfam-A_subset.full.gz',
                           'dbcan': None, 'peptidase': None, 'uniref': 'a/fake/location/uniref.fasta'}
     db_handler.filter_db_locs(use_uniref=False)
-    assert db_handler.db_locs == {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
+    assert db_handler.config.get('search_databases') == {'kegg': 'a/fake/location/kegg.fasta', 'kofam': 'a/fake/location/kofam.hmm',
                                   'kofam_ko_list': 'a/fake/location/kofam_ko_list.tsv.gz',
                                   'vogdb': 'a/fake/location/vogdb.hmm', 'pfam': 'tests/data/Pfam-A_subset.full.gz',
                                   'dbcan': None, 'peptidase': None}
     # old version
-    db_handler.db_locs = {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
+    db_handler.config['search_databases'] = {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
     db_handler.filter_db_locs(master_list=('uniref', 'kegg'))
-    assert db_handler.db_locs == {'uniref': 'a fake locations', 'kegg': '/a/fake/loc'}
+    assert db_handler.config.get('search_databases') == {'uniref': 'a fake locations', 'kegg': '/a/fake/loc'}
     # test
-    db_handler.db_locs = {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
+    db_handler.config['search_databases'] = {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
     with pytest.raises(ValueError):
         db_handler.filter_db_locs(low_mem_mode=True)
     # test
-    db_handler.db_locs = {'kofam': '1', 'kofam_ko_list': '2', 'kegg': '/a/fake/loc', 'viral': ''}
+    db_handler.config['search_databases'] = {'kofam': '1', 'kofam_ko_list': '2', 'kegg': '/a/fake/loc', 'viral': ''}
     db_handler.filter_db_locs(low_mem_mode=True)
-    assert db_handler.db_locs == {'kofam': '1', 'kofam_ko_list': '2', 'viral': ''}
+    assert db_handler.config.get('search_databases') == {'kofam': '1', 'kofam_ko_list': '2', 'viral': ''}
     # test
-    db_handler.db_locs = {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
+    db_handler.config['search_databases'] = {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
     db_handler.filter_db_locs(use_uniref=True)
-    assert db_handler.db_locs == {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
+    assert db_handler.config.get('search_databases') == {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
     # test
-    db_handler.db_locs = {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
+    db_handler.config['search_databases'] = {'uniref': 'a fake locations', 'kegg': '/a/fake/loc', 'viral': ''}
     db_handler.filter_db_locs(use_uniref=False)
-    assert db_handler.db_locs == {'kegg': '/a/fake/loc', 'viral': ''}
+    assert db_handler.config.get('search_databases') == {'kegg': '/a/fake/loc', 'viral': ''}
 
 
 def test_make_header_dict_from_mmseqs_db():
@@ -143,22 +148,36 @@ def test_process_pfam_descriptions():
 
 def test_process_dbcan_descriptions():
     description_list = DatabaseHandler.process_dbcan_descriptions(
-        path.join('tests', 'data', 'CAZyDB.07312019.fam-activities.subset.txt'))
-    assert description_list == [{'id': 'AA0', 'description': 'AA0'},
-                                {'id': 'AA10', 'description': 'AA10 (formerly CBM33) proteins are copper-dependent '
-                                                              'lytic polysaccharide monooxygenases (LPMOs); some '
-                                                              'proteins have been shown to act on chitin, others on '
-                                                              'cellulose; lytic cellulose monooxygenase '
-                                                              '(C1-hydroxylating) (EC 1.14.99.54); lytic cellulose '
-                                                              'monooxygenase (C4-dehydrogenating)(EC 1.14.99.56); '
-                                                              'lytic chitin monooxygenase (EC 1.14.99.53)'},
-                                {'id': 'AA11', 'description': 'AA11 proteins are copper-dependent lytic polysaccharide '
-                                                              'monooxygenases (LPMOs); cleavage of chitin chains with '
-                                                              'oxidation of C-1 has been demonstrated for a AA11 LPMO '
-                                                              'from Aspergillus oryzae;'},
-                                {'id': 'AA12', 'description': 'AA12 The pyrroloquinoline quinone-dependent oxidoreductase '
-                                                              'activity was demonstrated for the CC1G_09525 protein of '
-                                                              'Coprinopsis cinerea.'}]
+        path.join('tests', 'data', 'CAZyDB.07312019.fam-activities.subset.txt'),
+        path.join('tests', 'data', 'example.fam.subfam.ec.txt'),
+    )
+    print(description_list )
+    
+    expected = pd.DataFrame([{'id': 'AA0', 'description': 'AA0', 'ec': ''},
+                            {'id': 'AA10', 
+                             'description': 'AA10 (formerly CBM33) proteins are copper-dependent '
+                                                          'lytic polysaccharide monooxygenases (LPMOs); some '
+                                                          'proteins have been shown to act on chitin, others on '
+                                                          'cellulose; lytic cellulose monooxygenase '
+                                                          '(C1-hydroxylating) (EC 1.14.99.54); lytic cellulose '
+                                                          'monooxygenase (C4-dehydrogenating)(EC 1.14.99.56); '
+                                                          'lytic chitin monooxygenase (EC 1.14.99.53)',
+                             'ec': '3.2.1.78,1.14.99.53,1.14.99.54'
+                             },
+                            {'id': 'AA11', 'description': 'AA11 proteins are copper-dependent lytic polysaccharide '
+                                                          'monooxygenases (LPMOs); cleavage of chitin chains with '
+                                                          'oxidation of C-1 has been demonstrated for a AA11 LPMO '
+                                                          'from Aspergillus oryzae;',
+                             'ec': '1.14.99.55'
+                             },
+                            {'id': 'AA12', 
+                             'description': 'AA12 The pyrroloquinoline quinone-dependent oxidoreductase '
+                                            'activity was demonstrated for the CC1G_09525 protein of '
+                                            'Coprinopsis cinerea.',
+                             'ec': '1.14.99.56'}
+                             ])
+    
+    assert description_list.equals(expected)
 
 
 def test_process_vogdb_descriptions():
@@ -174,25 +193,87 @@ def test_process_vogdb_descriptions():
                                 {'id': 'VOG00005', 'description': 'sp|P17766|POLG_PPVNA Genome polyprotein; XhXrXs'}]
 
 
-def test_export_config(tmpdir, db_handler):
-    test_exported_config = path.join(tmpdir.mkdir('test_export'), 'test_CONFIG')
+def test_export_config(tmpdir):
+    test_exported_config = path.join(tmpdir.mkdir('test_import_config'), 'test_CONFIG')
+    export_config(test_exported_config)
+    assert isinstance(json.loads(open(test_exported_config).read()), dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['search_databases'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['database_descriptions'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['dram_sheets'], dict)
+
+def test_import_config(tmpdir):
+    stash_conf = path.join(tmpdir.mkdir('stash'), 'stash')
+    export_config(stash_conf)
+    import_config(TEST_CONF_PATH)
+    test_exported_config = path.join(tmpdir.mkdir('test_import_config'), 'test_CONFIG')
+    export_config(test_exported_config)
+    import_config(stash_conf)
+    assert isinstance(json.loads(open(test_exported_config).read()), dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['search_databases'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['database_descriptions'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['dram_sheets'], dict)
+
+def test_import_config_old(tmpdir):
+    stash_conf = path.join(tmpdir.mkdir('stash'), 'stash')
+    export_config(stash_conf)
+    import_config(TEST_CONF_PATH_1_3)
+    test_exported_config = path.join(tmpdir.mkdir('test_import_config_old'), 'test_CONFIG')
+    export_config(test_exported_config)
+    import_config(stash_conf)
+    assert isinstance(json.loads(open(test_exported_config).read()), dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['search_databases'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['database_descriptions'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['dram_sheets'], dict)
+
+def test_write_config(tmpdir, db_handler):
+    stash_conf = path.join(tmpdir.mkdir('stash'), 'stash')
+    export_config(stash_conf)
+    test_exported_config = path.join(tmpdir.mkdir('test_write_config'), 'test_CONFIG')
     db_handler.write_config(test_exported_config)
-    assert type(json.loads(open(test_exported_config).read())) is dict
+    import_config(stash_conf)
+    assert isinstance(json.loads(open(test_exported_config).read()), dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['search_databases'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['database_descriptions'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['dram_sheets'], dict)
 
 
-def test_print_database_locations(capsys, db_handler):
-    db_handler.print_database_locations()
+@pytest.fixture()
+def db_handler_1_3():
+    return DatabaseHandler(TEST_CONF_PATH_1_3)
+
+
+def test_construct_from_dram_pre_1_4_0(tmpdir, db_handler_1_3):
+    test_exported_config = path.join(tmpdir.mkdir('test_export'), 'test_CONFIG')
+    db_handler_1_3.write_config(test_exported_config)
+    assert isinstance(json.loads(open(test_exported_config).read()), dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['search_databases'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['database_descriptions'], dict)
+    assert isinstance(json.loads(open(test_exported_config).read())['dram_sheets'], dict)
+
+
+def test_print_database_locations(capsys):
+    print_database_locations()
     out, err = capsys.readouterr()
     assert 'Description db: ' in out
     assert len(err) == 0
 
+# {k for k in db_handler.config['search_databases']}
+#         self.config['database_descriptions'] = {
+#             k:check_exists_and_add_to_location_dict(locs[k], self.config.get('database_descriptions').get(k))
+#             for k in self.config['database_descriptions']}
+#         self.config['dram_sheets'] = {
+#             k:check_exists_and_add_to_location_dict(locs[k], self.config.get('dram_sheets').get(k))
+#             for k in self.config['dram_sheets']}
+# def test_basic():
+# db_handler = DatabaseHandler()
+# assert db_handler.config == {'search_databases': {'kegg': None, 'kofam': None, 'kofam_ko_list': None, 'uniref': None, 'pfam': None, 'dbcan': None, 'viral': None, 'peptidase': None}, 'custom_dbs': None, 'database_descriptions': {'pfam_hmm_dat': None, 'dbcan_fam_activities': None, 'vog_annotations': None}, 'dram_sheets': {'genome_summary_form': None, 'module_step_form': None, 'etc_ module_database': None, 'function_heatmap_form': None, 'amg_database': None}, 'description_db': 'None', 'dram_version' : None}
 
 def test_set_database_paths():
-    db_handler = DatabaseHandler()
     # first test that adding nothing doesn't change CONFIG
-    pretest_db_dict = db_handler.db_locs
+    db_handler = DatabaseHandler()
+    pretest_db_dict = db_handler.config.get('search_databases')
     db_handler.set_database_paths(write_config=False)
-    assert pretest_db_dict == db_handler.db_locs
+    assert pretest_db_dict == db_handler.config.get('search_databases')
     # test that adding something that doesn't exist throws error
     test_fake_database = path.join('tests', 'data', 'fake_database.mmsdb')
     with pytest.raises(ValueError):
@@ -200,12 +281,12 @@ def test_set_database_paths():
     # test that adding something real is really added
     kegg_loc = path.join('tests', 'data', 'fake_gff.gff')
     db_handler.set_database_paths(kegg_db_loc=kegg_loc, write_config=False)
-    assert db_handler.db_locs['kegg'] == path.realpath(kegg_loc)
+    assert db_handler.config.get('search_databases')['kegg'] == path.realpath(kegg_loc)
 
 
 def test_clear_config():
     db_handler = DatabaseHandler()
     db_handler.clear_config()
-    assert db_handler.db_locs == {}
-    assert db_handler.db_description_locs == {}
-    assert db_handler.description_loc is None
+    assert np.all([i is None for i in db_handler.config['search_databases'].values()])
+    assert np.all([i is None for i in db_handler.config['database_descriptions'].values()])
+    assert db_handler.config['description_db'] is None

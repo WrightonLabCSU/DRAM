@@ -1,7 +1,8 @@
 import pytest
 import os
 
-from mag_annotator.database_processing import generate_modified_kegg_fasta, process_kegg_db, process_mmspro
+from mag_annotator.database_processing import generate_modified_kegg_fasta, process_kegg_db, process_mmspro, \
+    process_camper, download_camper_tar_gz
 
 @pytest.fixture()
 def phix_proteins():
@@ -35,3 +36,12 @@ def test_process_mmspro(tmpdir):
     assert os.path.isfile(os.path.join(processed_mmspro, 'fake.mmspro_h'))
     # assert os.path.isfile(os.path.join(processed_mmspro, 'fake.mmspro.idx'))
     assert os.path.isfile(os.path.join(processed_mmspro, 'fake.mmspro_h.index'))
+
+
+def test_down_and_process_camper(tmpdir):
+    output_dir = tmpdir.mkdir('process_camper')
+    temporary = os.path.join(output_dir, 'temp')
+    os.mkdir(temporary)
+    loc= download_camper_tar_gz(temporary)
+    process_camper(loc, output_dir)
+

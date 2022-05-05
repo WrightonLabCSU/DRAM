@@ -72,31 +72,33 @@ class DbcanDescription(Base):
     id = Column(String(30), primary_key=True, nullable=False, index=True)
 
     description = Column(String(1000))
+    ecnum = Column(String(1000))
 
     @property
     def serialize(self):
         return {
             'dbcan_id': self.id,
             'dbcan_description': self.description,
+            'dbcan_subfam_ec': self.ecnum,
         }
 
 
-DBCAN_SUBFAM_EC_TABLE_NAME = 'dbcan_subfam_ec'
+# DBCAN_SUBFAM_EC_TABLE_NAME = 'dbcan_subfam_ec'
 
 
-class DbcanSubfamEC(Base):
-    __tablename__ = DBCAN_SUBFAM_EC_TABLE_NAME
-
-    id = Column(String(30), primary_key=True, nullable=False, index=True)
-
-    description = Column(String(1000))
-
-    @property
-    def serialize(self):
-        return {
-            'dbcan_id': self.id,
-            'dbcan_subfam_ec': self.description,
-        }
+# class DbcanSubfamEC(Base):
+#     __tablename__ = DBCAN_SUBFAM_EC_TABLE_NAME
+# 
+#     id = Column(String(30), primary_key=True, nullable=False, index=True)
+# 
+#     description = Column(String(1000))
+# 
+#     @property
+#     def serialize(self):
+#         return {
+#             'dbcan_id': self.id,
+#             'dbcan_subfam_ec': self.description,
+#         }
 
 
 VIRAL_DESCRIPTION_TABLE_NAME = 'viral_description'
@@ -162,7 +164,7 @@ TABLE_NAME_TO_CLASS_DICT = {KEGG_DESCRIPTION_TABLE_NAME: KeggDescription,
                             UNIREF_DESCRIPTION_TABLE_NAME: UniRefDescription,
                             PFAM_DESCRIPTION_TABLE_NAME: PfamDescription,
                             DBCAN_DESCRIPTION_TABLE_NAME: DbcanDescription,
-                            DBCAN_SUBFAM_EC_TABLE_NAME: DbcanSubfamEC,
+                            # DBCAN_SUBFAM_EC_TABLE_NAME: DbcanSubfamEC,
                             VIRAL_DESCRIPTION_TABLE_NAME: ViralDescription,
                             PEPTIDASE_DESCRIPTION_TABLE_NAME: PeptidaseDescription,
                             VOGDB_DESCRIPTION_TABLE_NAME: VOGDBDescription}
