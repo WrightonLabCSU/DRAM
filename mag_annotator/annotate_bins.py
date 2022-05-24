@@ -19,12 +19,6 @@ import pandas as pd
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, \
     multigrep, remove_suffix, setup_logger
 from mag_annotator.database_handler import DatabaseHandler
-
-
-
-
-
-
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
 # TODO: add silent mode

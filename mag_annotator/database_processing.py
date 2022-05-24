@@ -7,12 +7,14 @@ from shutil import move, rmtree
 from glob import glob
 import gzip
 import tarfile
-from collections import defaultdict, namedtuple
+from collections import defaultdict
+import logging
+
 from skbio import read as read_sequence
 from skbio import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix
+from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix, setup_logger
 
 
 DEFAULT_DBCAN_RELEASE = '10'
@@ -20,6 +22,7 @@ DEFAULT_DBCAN_DATE = '07292021'
 DEFAULT_UNIREF_VERSION = '90'
 DFLT_OUTPUT_DIR = '.'
 CAMPER_RELEASE = '1.0.0-beta.1'
+LOGGER = logging.getLogger("database_processing.log")
 
 # TODO: check if dbcan or pfam is down, raise appropriate error
 # TODO: upgrade to pigz?
@@ -471,7 +474,8 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
         mkdir(output_dir)
     temporary = path.join(output_dir, 'database_files')
     mkdir(temporary)
-
+    #setup logging
+    setup_logger(os.path.join(output_dir, LOGGER))
     # output dbs dic
     output_dbs = dict()
 
@@ -530,40 +534,42 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     # Process databases
 
     output_dbs['dbcan_db_loc'] = process_dbcan(dbcan_loc, verbose=verbose)
+    LOGGER.info('dbCAN database processed')
 
     if kegg_loc is not None:
         output_dbs['kegg_db_loc'] = process_kegg_db(temporary, kegg_loc, gene_ko_link_loc, kegg_download_date, threads,
                                                     verbose)
-        print('%s: KEGG database processed' % str(datetime.now() - start_time))
+        LOGGER.info('KEGG database processed')
     if not skip_uniref:
         output_dbs['uniref_db_loc'] = process_uniref(uniref_fasta_zipped=uniref_loc, output_dir=temporary, 
                                                      uniref_version=uniref_version,
                                                      threads=threads, verbose=verbose)
-        print('%s: UniRef database processed' % str(datetime.now() - start_time))
-    output_dbs['pfam_db_loc'] = process_pfam(pfam_loc, temporary,
+        LOGGER.info('UniRef database processed')
+    output_dbs['pfam_db_loc'] = download_and_process_pfam(pfam_loc, temporary,
                                                           threads=threads, verbose=verbose)
-    print('%s: PFAM database processed' % str(datetime.now() - start_time))
-    output_dbs['viral_db_loc'] = process_viral_refseq(viral_loc, temporary, threads=threads,
+    LOGGER.info('PFAM database processed')
+    output_dbs['viral_db_loc'] = download_and_process_viral_refseq(viral_loc, temporary, threads=threads,
                                                                    verbose=verbose)
-    print('%s: RefSeq viral database processed' % str(datetime.now() - start_time))
-    output_dbs['peptidase_db_loc'] = process_merops_peptidases(peptidase_loc, temporary, threads=threads,
+    LOGGER.info('RefSeq viral database processed')
+    output_dbs['peptidase_db_loc'] = download_and_process_merops_peptidases(peptidase_loc, temporary, threads=threads,
                                                                             verbose=verbose)
-    print('%s: MEROPS database processed' % str(datetime.now() - start_time))
-    output_dbs['vogdb_db_loc'] = process_vogdb(vogdb_loc, temporary, verbose=verbose)
-    print('%s: VOGdb database processed' % str(datetime.now() - start_time))
+    LOGGER.info('MEROPS database processed')
+    output_dbs['vogdb_db_loc'] = download_and_process_vogdb(vogdb_loc, temporary, vogdb_release=vogdb_version,
+                                                            verbose=verbose)
+    LOGGER.info('VOGdb database processed')
     output_dbs['kofam_hmm_loc'] = process_kofam_hmms(kofam_hmm_loc, temporary, verbose=verbose)
-    print('%s: KOfam database processed' % str(datetime.now() - start_time))
-    output_dbs['kofam_ko_list_loc'] = process_kofam_ko_list(kofam_ko_list_loc, temporary, verbose=verbose)
-    print('%s: KOfam ko list processed' % str(datetime.now() - start_time))
+    LOGGER.info('KOfam database processed')
+    output_dbs['kofam_ko_list_loc'] = download_and_process_kofam_ko_list(kofam_ko_list_loc, temporary, verbose=verbose)
+    LOGGER.info('KOfam ko list processed')
 
     # get pfam, dbcan and vogdb descriptions
     output_dbs['pfam_hmm_dat'] = pfam_hmm_dat
-    print('%s: PFAM hmm dat processed' % str(datetime.now() - start_time))
+    LOGGER.info('PFAM hmm dat processed')
     output_dbs['dbcan_fam_activities'] = dbcan_fam_activities
     output_dbs['dbcan_subfam_ec'] = dbcan_subfam_ec
-    print('%s: dbCAN fam activities processed' % str(datetime.now() - start_time))
+    LOGGER.info('dbCAN fam activities processed')
     output_dbs['vog_annotations'] = vog_annotations
-    print('%s: VOGdb annotations processed' % str(datetime.now() - start_time))
+    LOGGER.info('VOGdb annotations processed')
 
     camper_locs = process_camper(camper_tar_gz_loc, 
                        temporary, threads=threads, verbose=verbose)
@@ -574,25 +580,25 @@ def prepare_databases(output_dir, kegg_loc=None, gene_ko_link_loc=None, kofam_hm
     print('%s: CAMPER annotations processed' % str(datetime.now() - start_time))
 
     # add genome summary form and function heatmap form
-    print('%s: DRAM databases and forms downloaded' % str(datetime.now() - start_time))
+    LOGGER.info('DRAM databases and forms downloaded')
 
     # move all files from temporary to output that will be kept
     for db_name, output_db in output_dbs.items():
         for db_file in glob('%s*' % output_db):
             move(db_file, path.join(output_dir, path.basename(db_file)))
         output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
-    print('%s: Files moved to final destination' % str(datetime.now() - start_time))
+    LOGGER.info('Files moved to final destination')
 
     output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
 
     db_handler = DatabaseHandler()
     db_handler.populate_description_db(output_dbs['description_db_loc'], update_config=False)
     db_handler.set_database_paths(**output_dbs)
-    print('%s: DRAM description database populated' % str(datetime.now() - start_time))
+    LOGGER.info('DRAM description database populated')
 
     if not keep_database_files:
         rmtree(temporary)
-    print('%s: Database preparation completed' % str(datetime.now() - start_time))
+    LOGGER.info('Database preparation completed')
 
 
 def update_dram_forms(output_dir, branch='master'):

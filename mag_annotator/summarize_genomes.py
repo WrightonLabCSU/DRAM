@@ -469,18 +469,7 @@ def make_functional_heatmap(functional_df, mag_order=None):
                                 scale=alt.Scale(range=['#2ca25f', '#e5f5f9']))
         # define chart
         # TODO: Figure out how to angle title to take up less space
-        c = alt.Chart(frame, title=alt.TitleParams(group)).encode(
-            x=alt.X('function_name', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90), sort=function_order),
-            tooltip=[alt.Tooltip('genome', title='Genome'),
-                     alt.Tooltip('category', title='Category'),
-                     alt.Tooltip('subcategory', title='Subcategory'),
-                     alt.Tooltip('function_ids', title='Function IDs'),
-                     alt.Tooltip('function_name', title='Function'),
-                     alt.Tooltip('long_function_name', title='Description'),
-                     alt.Tooltip('gene_symbol', title='Gene Symbol')]
-        ).mark_rect().encode(y=y, color=rect_colors).properties(
-            width=chart_width,
-            height=chart_height)
+        c = alt.Chart(frame, title=alt.TitleParams(group)).encode( x=alt.X('function_name', title=None, axis=alt.Axis(labelLimit=0, labelAngle=90), sort=function_order), tooltip=[alt.Tooltip('genome', title='Genome'), alt.Tooltip('category', title='Category'), alt.Tooltip('subcategory', title='Subcategory'), alt.Tooltip('function_ids', title='Function IDs'), alt.Tooltip('function_name', title='Function'), alt.Tooltip('long_function_name', title='Description'), alt.Tooltip('gene_symbol', title='Gene Symbol')]).mark_rect().encode(y=y, color=rect_colors).properties( width=chart_width, height=chart_height)
         charts.append(c)
     # merge and return
     function_heatmap = alt.hconcat(*charts, spacing=5)
@@ -571,21 +560,21 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
 
     # get db_locs and read in dbs
     database_handler = DatabaseHandler()
-    if 'genome_summary_form' not in database_handler.dram_sheet_locs:
+    if 'genome_summary_form' not in database_handler.config["dram_sheets"]:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
-    if 'module_step_form' not in database_handler.dram_sheet_locs:
+    if 'module_step_form' not in database_handler.config["dram_sheets"]:
         raise ValueError('Module step form location must be set in order to summarize genomes')
-    if 'function_heatmap_form' not in database_handler.dram_sheet_locs:
+    if 'function_heatmap_form' not in database_handler.config["dram_sheets"]:
         raise ValueError('Functional heat map form location must be set in order to summarize genomes')
 
     # read in dbs
-    genome_summary_form = pd.read_csv(database_handler.dram_sheet_locs['genome_summary_form'], sep='\t')
+    genome_summary_form = pd.read_csv(database_handler.config["dram_sheets"]['genome_summary_form'], sep='\t')
     if custom_distillate is not None:
         genome_summary_form = pd.concat([genome_summary_form, pd.read_csv(custom_distillate, sep='\t')])
     genome_summary_form = genome_summary_form.drop('potential_amg', axis=1)
-    module_steps_form = pd.read_csv(database_handler.dram_sheet_locs['module_step_form'], sep='\t')
-    function_heatmap_form = pd.read_csv(database_handler.dram_sheet_locs['function_heatmap_form'], sep='\t')
-    etc_module_df = pd.read_csv(database_handler.dram_sheet_locs['etc_module_database'], sep='\t')
+    module_steps_form = pd.read_csv(database_handler.config["dram_sheets"]['module_step_form'], sep='\t')
+    function_heatmap_form = pd.read_csv(database_handler.config["dram_sheets"]['function_heatmap_form'], sep='\t')
+    etc_module_df = pd.read_csv(database_handler.config["dram_sheets"]['etc_module_database'], sep='\t')
     print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
 
     # make output folder
@@ -650,9 +639,9 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
                                                                            etc_module_df,
                                                                            function_heatmap_form,
                                                                            groupby_column=groupby_column)
+        breakpoint()
         liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
-        liquor_df.to_csv(path.join(output_dir, 'product.tsv'), sep='\t')
-        liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order, labels)
+        liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order, None)
         liquor.save(path.join(output_dir, 'product.html'))
     print('%s: Generated product heatmap and table' % (str(datetime.now() - start_time)))
     print("%s: Completed distillation" % str(datetime.now() - start_time))

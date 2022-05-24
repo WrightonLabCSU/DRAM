@@ -2,7 +2,7 @@ from datetime import datetime
 from os import path, mkdir
 import re
 import warnings
-
+import logging
 import pandas as pd
 import numpy as np
 from skbio.io import read as read_sequence
@@ -10,7 +10,7 @@ from skbio.io import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.annotate_bins import annotate_fastas
-from mag_annotator.utils import get_ids_from_annotation
+from mag_annotator.utils import get_ids_from_annotation, setup_logger
 
 VMAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'viral', 'vogdb')
 VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length', 'strandedness',
@@ -42,6 +42,7 @@ VIRAL_PEPTIDASES_MEROPS = {'A02H', 'A02G', 'A02F', 'A02E', 'A02D', 'A02C', 'A02B
                            'S50', 'S53', 'S54', 'S62', 'S65', 'S69', 'S73', 'S74', 'S75', 'S77', 'S78', 'S80', 'S81',
                            'T01B', 'T01A', 'T03', 'U32', 'U40'}
 
+LOGGER = logging.getLogger('annotate_vgfs.log')
 
 def is_affi_tab_not_fasta(input_file: str) -> bool:
     """
@@ -423,9 +424,6 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                   custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(),
                   custom_hmm_name=(), use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
                   keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
-    # set up
-    start_time = datetime.now()
-    print('%s: Viral annotation started' % str(datetime.now()))
 
     # check inputs
     prodigal_modes = ['train', 'meta', 'single']
@@ -446,6 +444,11 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
         virsorter_hits = None
 
     mkdir(output_dir)
+    setup_logger(os.path.join(output_dir, LOGGER))
+
+ # set up
+    logging.info('Viral annotation started')
+
     if split_contigs:
         # split sequences into separate fastas
         contig_dir = path.join(output_dir, 'vMAGs')
@@ -473,13 +476,13 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     annotations = annotate_fastas(contig_locs, output_dir, db_handler, min_contig_size, prodigal_mode, trans_table,
                                   bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,
                                   custom_hmm_name, custom_hmm_loc, custom_hmm_cutoffs_loc, kofam_use_dbcan2_thresholds,
-                                  skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads, verbose)
-    print('%s: Annotations complete, assigning auxiliary scores and flags' % str(datetime.now() - start_time))
+                                  skip_trnascan, rename_bins, keep_tmp_dir, threads, verbose)
+    logging.info('Annotations complete, assigning auxiliary scores and flags')
 
     annotations = add_dramv_scores_and_flags(annotations, db_handler, virsorter_hits, input_fasta)
 
     # write annotations
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
-    print("%s: Completed annotations" % str(datetime.now() - start_time))
+    logging.info("Completed annotations")
 

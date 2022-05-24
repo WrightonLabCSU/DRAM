@@ -3,15 +3,16 @@ from skbio import read as read_sequence
 from skbio import write as write_sequence
 from os import mkdir, path
 import warnings
+import logging
 
 from mag_annotator.summarize_vgfs import filter_to_amgs
-from mag_annotator.utils import get_ids_from_row
+from mag_annotator.utils import get_ids_from_row, setup_logger
 from mag_annotator.database_handler import DatabaseHandler
 
 # TODO: filter by taxonomic level, completeness, contamination
 # TODO: filter scaffolds file, gff file
 # TODO: add negate, aka pull not from given list
-
+LOGGER = logging.getLogger('pull_sequences.log')
 
 def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=None, identifiers=None, categories=None,
                                custom_distillate=None):
@@ -166,9 +167,12 @@ def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None,
 
     mkdir(output_dir)
 
+    #setup logging
+    setup_logger(os.path.join(output_dir, LOGGER))
+
     neighborhood_all_annotations = find_neighborhoods(annotations, genes_from_ids, distance_bp, distance_genes)
     neighborhood_all_annotations.to_csv(path.join(output_dir, 'neighborhood_annotations.tsv'), sep='\t')
-
+    logging.info("Neighborhood Annotations witten to tsv")
     # filter files if given
     if genes_loc is not None:
         output_fasta_generator = (i for i in read_sequence(genes_loc, format='fasta')
@@ -176,7 +180,7 @@ def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None,
         # TODO: potentially generate one fasta file per neighborhood
         write_sequence(output_fasta_generator, format='fasta',
                        into=path.join(output_dir, 'neighborhood_genes.%s' % genes_loc.split('.')[-1]))
-
+        logging.info("Gene Neighborhood fasta generated")
     if scaffolds_loc is not None:
         neighborhood_all_annotations['scaffold_mod'] = ['%s_%s' % (row['fasta'], row['scaffold'])
                                                         for i, row in neighborhood_all_annotations.iterrows()]
@@ -191,3 +195,4 @@ def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None,
                                                            neighborhood_frame['end_position'][-1]])
         write_sequence((i for i in neighborhood_scaffolds), format='fasta',
                        into=path.join(output_dir, 'neighborhood_scaffolds.fna'))
+        logging.info("Scaffolds Neighborhood fasta generated")

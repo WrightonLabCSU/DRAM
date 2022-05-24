@@ -2,17 +2,17 @@ from os import path, remove
 from pkg_resources import resource_filename
 import json
 import gzip
+import logging
 from shutil import copy2
 import warnings
-from mag_annotator import __version__ as current_dram_version
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import pandas as pd
 
+from mag_annotator import __version__ as current_dram_version
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_description_db
-from mag_annotator.utils import divide_chunks
+from mag_annotator.utils import divide_chunks, setup_logger
 
 SEARCH_DATABASES = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
                     'camper_fa_db', 'camper_hmm')
@@ -20,6 +20,7 @@ DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database',
                'camper_fa_db_cutoffs', 'camper_hmm_cutoffs', 'amg_database')
 DATABASE_DESCRIPTIONS = ('pfam_hmm_dat', 'dbcan_fam_activities', 'vog_annotations')
 
+LOGGER = logging.getLogger("database_handler.log")
 # TODO: store all sequence db locs within database handler class
 # TODO: store scoring information here e.g. bitscore_threshold, hmm cutoffs
 # TODO: set up custom databases here
@@ -46,6 +47,7 @@ class DatabaseHandler:
         if config_loc is None:
             config_loc = get_config_loc()
 
+        self.config = {}
         conf = json.loads(open(config_loc).read())
         if 'dram_version' not in conf:
             warnings.warn("The DRAM version in your config is empty."
@@ -57,13 +59,11 @@ class DatabaseHandler:
             conf_version = conf.get('dram_version')
             if conf_version is None:
                 db_handler = self.__construct_from_dram_pre_1_4_0(conf)
-            elif conf_version in {current_dram_version, "1.4.0"}: # Known suported versions
-                db_handler = self.__construct_default(conf)
-            else: 
+            elif conf_version not in {current_dram_version, "1.4.0"}: # Known suported versions
                 warnings.warn("The DRAM version in your config is not listed in the versions "
                               "that are known to work. This may not be a problem, but if this "
                               "import fails then you should contact suport.")
-                db_handler = self.__construct_default(conf)
+            db_handler = self.__construct_default(conf)
 
 
     def __construct_default(self, conf:dict):
@@ -100,6 +100,7 @@ class DatabaseHandler:
             key: value for key, value in config_old.items() if key in DATABASE_DESCRIPTIONS}
         self.config['dram_sheets']  = {
             key: value for key, value in config_old.items() if key in DRAM_SHEETS}
+        database_handler["dram_version"] = current_dram_version
 
         # set up description database connection
         self.config['description_db'] = config_old.get('description_db')
@@ -111,7 +112,6 @@ class DatabaseHandler:
             warnings.warn('Database does not exist at path %s' % self.config.get('description_db'))
         else:
             self.start_db_session()
-        return self
     
     def start_db_session(self):
         engine = create_engine('sqlite:///%s' % self.config.get('description_db'))
@@ -155,7 +155,7 @@ class DatabaseHandler:
                            dbcan_subfam_ec=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, 
                            vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None, 
                            camper_hmm_loc=None, camper_fa_db_loc=None, camper_hmm_cutoffs_loc=None,
-                           camper_fa_db_cutoffs_loc=None,
+                           camper_fa_db_cutoffs_loc=None, camper_distillate_loc=None,
                            module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None, 
                            amg_database_loc=None, write_config=True):
         def check_exists_and_add_to_location_dict(loc, old_value):
@@ -183,6 +183,7 @@ class DatabaseHandler:
             'dbcan_fam_activities': dbcan_fam_activities,
             'dbcan_subfam_ec': dbcan_subfam_ec,
             'vog_annotations': vog_annotations,
+            'camper_distillate': camper_distillate_loc,
             'genome_summary_form': genome_summary_form_loc,
             'module_step_form': module_step_form_loc,
             'etc_module_database': etc_module_database_loc,
@@ -316,7 +317,7 @@ class DatabaseHandler:
             self.config['description_db']= output_loc
             self.start_db_session()
         if path.exists(self.get('description_db')):
-            remove(self.get('description_db'))
+            remove(self.config.get('description_db'))
         create_description_db(self.get('description_db'))
 
         # fill database
@@ -387,7 +388,7 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
                        pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None, dbcan_fam_activities=None,
                        dbcan_subfam_ec=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, 
                        camper_hmm_loc=None, camper_fa_db_loc=None, camper_hmm_cutoffs_loc=None,
-                       camper_fa_db_cutoffs_loc=None,
+                       camper_fa_db_cutoffs_loc=None, camper_distillate_loc=None,
                        vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None, 
                        module_step_form_loc=None, etc_module_database_loc=None, 
                        function_heatmap_form_loc=None, amg_database_loc=None, clear_config=False, 
@@ -401,7 +402,7 @@ def set_database_paths(kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=N
                                   dbcan_subfam_ec, viral_db_loc, peptidase_db_loc, vogdb_db_loc, 
                                   vog_annotations, description_db_loc, genome_summary_form_loc, 
                                   camper_hmm_locg, camper_fa_db_loc, camper_hmm_cutoffs_loc,
-                                  camper_fa_db_cutoffs_loc,
+                                  camper_fa_db_cutoffs_loc, camper_distillate_loc,
                                   module_step_form_loc, etc_module_database_loc, function_heatmap_form_loc, 
                                   amg_database_loc, write_config=True)
     if update_description_db:
@@ -440,6 +441,7 @@ def print_database_locations(config_loc=None):
     print('Module step form: %s' % conf.config.get('dram_sheets').get('module_step_form'))
     print('ETC module database: %s' % conf.config.get('dram_sheets').get('etc_module_database'))
     print('Function heatmap form: %s' % conf.config.get('dram_sheets').get('function_heatmap_form'))
+    print('CAMPER Distillate form: %s' % conf.config.get('dram_sheets').get('camper_distillate'))
     print('AMG database: %s' % conf.config.get('dram_sheets').get('amg_database'))
 
 def print_config(config_loc=None):
@@ -465,4 +467,4 @@ def import_config(config_loc):
     db_handler = DatabaseHandler(config_loc)
     with open(system_config, "w") as outfile:
         json.dump(db_handler.config, outfile, indent=2)
-    print('Import, apears to be successfull.')
+    print('Import, appears to be successfull.')
