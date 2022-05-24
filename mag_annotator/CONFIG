@@ -1,27 +1,27 @@
 {
   "search_databases": {
-    "kegg": null,
-    "kofam": null,
-    "kofam_ko_list": null,
-    "uniref": null,
-    "pfam": null,
-    "dbcan": null,
-    "viral": null,
-    "peptidase": null
+    "kegg": "/home/projects-wrighton-2/DRAM/dbs_20220120/kegg.20220120.mmsdb",
+    "kofam": "/home/projects-wrighton-2/DRAM/dbs_20220120/kofam_profiles.hmm",
+    "kofam_ko_list": "/home/projects-wrighton-2/DRAM/dbs_20220120/kofam_ko_list.tsv",
+    "uniref": "/home/projects-wrighton-2/DRAM/dbs_20220120/uniref90.20220120.mmsdb",
+    "pfam": "/home/projects-wrighton-2/DRAM/dbs_20220120/pfam.mmspro",
+    "dbcan": "/home/projects-wrighton-2/DRAM/dbs_20220120/dbCAN-HMMdb-V9.txt",
+    "viral": "/home/projects-wrighton-2/DRAM/dbs_20220120/refseq_viral.20220121.mmsdb",
+    "peptidase": "/home/projects-wrighton-2/DRAM/dbs_20220120/peptidases.20220121.mmsdb"
   },
   "custom_dbs": null,
   "database_descriptions": {
-    "pfam_hmm_dat": null,
-    "dbcan_fam_activities": null,
-    "vog_annotations": null
+    "pfam_hmm_dat": "/home/projects-wrighton-2/DRAM/dbs_20220120/Pfam-A.hmm.dat.gz",
+    "dbcan_fam_activities": "/home/projects-wrighton-2/DRAM/dbs_20220120/CAZyDB.07302020.fam-activities.txt",
+    "vog_annotations": "/home/projects-wrighton-2/DRAM/dbs_20220120/vog_annotations_latest.tsv.gz"
   },
   "dram_sheets": {
-    "genome_summary_form": null,
-    "module_step_form": null,
-    "etc_module_database": null,
-    "function_heatmap_form": null,
-    "amg_database": null
+    "genome_summary_form": "/home/projects-wrighton-2/DRAM/dbs_20220120/genome_summary_form.20220121.tsv",
+    "module_step_form": "/home/projects-wrighton-2/DRAM/dbs_20220120/module_step_form.20220121.tsv",
+    "etc_module_database": "/home/projects-wrighton-2/DRAM/dbs_20220120/etc_mdoule_database.20220121.tsv",
+    "function_heatmap_form": "/home/projects-wrighton-2/DRAM/dbs_20220120/function_heatmap_form.20220121.tsv",
+    "amg_database": "/home/projects-wrighton-2/DRAM/dbs_20220120/amg_database.20220121.tsv"
   },
-  "description_db": "None",
-  "dram_version": "4.0.0"
+  "description_db": "/home/projects-wrighton-2/DRAM/dbs_20220120/description_db.sqlite",
+  "dram_version": "1.4.0"
 }
