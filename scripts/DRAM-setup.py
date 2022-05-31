@@ -5,7 +5,7 @@ import argparse
 from mag_annotator.database_processing import prepare_databases, update_dram_forms, \
     DEFAULT_DBCAN_DATE, DEFAULT_DBCAN_RELEASE, DEFAULT_UNIREF_VERSION
 from mag_annotator.database_handler import DatabaseHandler,  set_database_paths,  populate_description_db, \
-    export_config, import_config, print_database_locations
+    export_config, import_config, print_database_locations, print_database_settings
 from mag_annotator import __version__ as version
 
 
@@ -26,6 +26,8 @@ if __name__ == '__main__':
                                                      help='Update DRAM distillate and liquor forms',
                                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     print_db_locs_parser = subparsers.add_parser('print_config', help="Print database locations",
+                                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    print_db_settings_parser = subparsers.add_parser('print_settings', help="Print database settings",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     import_config_parser = subparsers.add_parser('import_config', help="Import CONFIG file",
                                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -68,7 +70,7 @@ if __name__ == '__main__':
                                     help='hmm file for vogdb, if already downloaded (vog.hmm.tar.gz)')
     prepare_dbs_parser.add_argument('--vog_annotations', default=None,
                                     help='vogdb annotations file, if already downloaded (vog.annotations.tsv.gz)')
-    prepare_dbs_parser.add_argument('--viral_loc', default=None,
+    prepare_dbs_parser.add_argument('--viral_refseq_loc', default=None,
                                     help="File path to merged viral protein faa, if already downloaded "
                                          "(viral.x.protein.faa.gz)")
     prepare_dbs_parser.add_argument('--peptidase_loc', default=None,
@@ -89,6 +91,8 @@ if __name__ == '__main__':
                                     help="Keep unporcessed database files")
     prepare_dbs_parser.add_argument('--threads', default=10, type=int,
                                     help="Number of threads to use building mmseqs2 databases")
+    prepare_dbs_parser.add_argument('--select_db', action='append',
+                                    help="The db or dbs the you want to update if you don't want to do a full upgrade")
     prepare_dbs_parser.add_argument('--verbose', default=False, action='store_true', help="Make it talk more")
     prepare_dbs_parser.set_defaults(func=prepare_databases)
 
@@ -109,9 +113,10 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--vog_annotations', default=None,
                                     help='vog annotations file') # add loc to vog_annotations to match the rest
 
-    set_db_locs_parser.add_argument('--camper_', default=None, help='KOfam ko list file')
+    set_db_locs_parser.add_argument('--camper_tar_gz_loc', default=None, help='')
+    set_db_locs_parser.add_argument('--fegenie_tar_gz_loc', default=None, help='')
 
-    set_db_locs_parser.add_argument('--viral_db_loc', default=None,
+    set_db_locs_parser.add_argument('--viral_refseq_db_loc', default=None,
                                     help='mmseqs2 database file from ref seq viral gene collection')
     set_db_locs_parser.add_argument('--peptidase_db_loc', default=None,
                                     help='mmseqs2 database file from MEROPS database')
@@ -145,6 +150,10 @@ if __name__ == '__main__':
                                                                    "default the locations from the built in CONFIG "
                                                                    "will be used")
     print_db_locs_parser.set_defaults(func=print_database_locations)
+    print_db_settings_parser.add_argument('--config_loc', help="Location of CONFIG to print locations from, by "
+                                                                   "default the locations from the built in CONFIG "
+                                                                   "will be used")
+    print_db_settings_parser.set_defaults(func=print_database_settings)
 
     # parser for printing out or saving CONFIG to file
     export_config_parser.add_argument('--output_file', help="File to save exported CONFIG file to, by default will"

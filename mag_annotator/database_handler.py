@@ -14,8 +14,8 @@ from mag_annotator import __version__ as current_dram_version
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_description_db
 from mag_annotator.utils import divide_chunks, setup_logger
 
-SEARCH_DATABASES = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
-                    'camper_fa_db', 'camper_hmm')
+SEARCH_DATABASES = {'kegg', 'kofam', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
+                    'camper', 'fegenie'}
 DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database', 'function_heatmap_form',
                'camper_fa_db_cutoffs', 'camper_hmm_cutoffs', 'amg_database')
 DATABASE_DESCRIPTIONS = ('pfam_hmm_dat', 'dbcan_fam_activities', 'vog_annotations')
@@ -47,8 +47,9 @@ class DatabaseHandler:
         if config_loc is None:
             config_loc = get_config_loc()
 
+        self.config_loc = config_loc
         self.config = {}
-        conf = json.loads(open(config_loc).read())
+        conf = json.loads(open(self.config_loc).read())
         if 'dram_version' not in conf:
             warnings.warn("The DRAM version in your config is empty."
                           " This may not be a problem, but if this"
@@ -100,7 +101,7 @@ class DatabaseHandler:
             key: value for key, value in config_old.items() if key in DATABASE_DESCRIPTIONS}
         self.config['dram_sheets']  = {
             key: value for key, value in config_old.items() if key in DRAM_SHEETS}
-        database_handler["dram_version"] = current_dram_version
+        self.config["dram_version"] = current_dram_version
 
         # set up description database connection
         self.config['description_db'] = config_old.get('description_db')
@@ -149,13 +150,29 @@ class DatabaseHandler:
     def get_database_names():
         return TABLE_NAME_TO_CLASS_DICT.keys()
 
+    def get_setings_str(self):
+        out_str = ""
+        settings = self.config.get('settings')
+        if settings is None:
+            raise Warning('there are no settings, the config is corrupted or too old.')
+            return 'there are no settings, the config is corrupted or too old.'
+        for i in ["search_databases", "database_descriptions", "dram_sheets"]:
+            out_str += "\n"
+            for k in self.config.get(i):
+                out_str += f"\n{settings[k]['name']}:"
+                for l, w in settings[k].items():
+                    if l =='name':
+                        continue
+                    out_str += f"\n    {l.title()}: {w}"
+        return out_str
+
 
     def set_database_paths(self, kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_db_loc=None,
                            pfam_db_loc=None, pfam_hmm_dat=None, dbcan_db_loc=None, dbcan_fam_activities=None,
                            dbcan_subfam_ec=None, viral_db_loc=None, peptidase_db_loc=None, vogdb_db_loc=None, 
                            vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None, 
                            camper_hmm_loc=None, camper_fa_db_loc=None, camper_hmm_cutoffs_loc=None,
-                           camper_fa_db_cutoffs_loc=None, camper_distillate_loc=None,
+                           camper_fa_db_cutoffs_loc=None, camper_distillate_loc=None, fegenie_hmm_loc=None,
                            module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None, 
                            amg_database_loc=None, write_config=True):
         def check_exists_and_add_to_location_dict(loc, old_value):
@@ -166,23 +183,6 @@ class DatabaseHandler:
             else:  # if the location doesn't exist then raise error
                 raise ValueError("Database location does not exist: %s" % loc)
         locs = {
-            'kegg': kegg_db_loc,
-            'kofam': kofam_hmm_loc,
-            'kofam_ko_list': kofam_ko_list_loc,
-            'uniref': uniref_db_loc,
-            'pfam': pfam_db_loc,
-            'dbcan': dbcan_db_loc,
-            'viral': viral_db_loc,
-            'peptidase': peptidase_db_loc,
-            'vogdb': vogdb_db_loc,
-            'camper_hmm': camper_hmm_loc,
-            'camper_fa_db': camper_fa_db_loc,
-            'camper_hmm_cutoffs': camper_hmm_cutoffs_loc,
-            'camper_fa_db_cutoffs': camper_fa_db_cutoffs_loc,
-            'pfam_hmm_dat': pfam_hmm_dat,
-            'dbcan_fam_activities': dbcan_fam_activities,
-            'dbcan_subfam_ec': dbcan_subfam_ec,
-            'vog_annotations': vog_annotations,
             'camper_distillate': camper_distillate_loc,
             'genome_summary_form': genome_summary_form_loc,
             'module_step_form': module_step_form_loc,
@@ -190,16 +190,53 @@ class DatabaseHandler:
             'function_heatmap_form': function_heatmap_form_loc,
             'amg_database': amg_database_loc,
         }
+        locs = {
+                "search_databases": {
+                  'kegg': kegg_db_loc,
+                  'kofam': kofam_hmm_loc,
+                  'kofam_ko_list': kofam_ko_list_loc,
+                  'uniref': uniref_db_loc,
+                  'pfam': pfam_db_loc,
+                  'dbcan': dbcan_db_loc,
+                  'viral': viral_db_loc,
+                  'peptidase': peptidase_db_loc,
+                  'vogdb': vogdb_db_loc,
+                  'camper_hmm': camper_hmm_loc,
+                  'camper_fa_db': camper_fa_db_loc,
+                  'camper_hmm_cutoffs': camper_hmm_cutoffs_loc,
+                  'camper_fa_db_cutoffs': camper_fa_db_cutoffs_loc,
+                  'fegenie_hmm': fegenie_hmm_loc
+                },
+                "database_descriptions": {
+                  'pfam_hmm_dat': pfam_hmm_dat,
+                  'dbcan_fam_activities': dbcan_fam_activities,
+                  'dbcan_subfam_ec': dbcan_subfam_ec,
+                  'vog_annotations': vog_annotations,
+                },
+                "dram_sheets": {
+                  "genome_summary_form": null,
+                  "module_step_form": null,
+                  "etc_module_database": null,
+                  "function_heatmap_form": null,
+                  "amg_database": null,
+                  'camper_distillate_loc': null
+                },
+            'description_db': description_db_loc
+        }
 
-        self.config['search_databases'] = {
-            k:check_exists_and_add_to_location_dict(locs[k], self.config.get('search_databases').get(k))
-            for k in self.config['search_databases']}
-        self.config['database_descriptions'] = {
-            k:check_exists_and_add_to_location_dict(locs[k], self.config.get('database_descriptions').get(k))
-            for k in self.config['database_descriptions']}
-        self.config['dram_sheets'] = {
-            k:check_exists_and_add_to_location_dict(locs[k], self.config.get('dram_sheets').get(k))
-            for k in self.config['dram_sheets']}
+        self.config = {i:{
+            k:check_exists_and_add_to_location_dict(locs[i][k], self.config.get(i).get(k)) 
+            for k in locs[i]} for i in locs}
+
+        # self.config['search_databases'] = {
+        #     k:check_exists_and_add_to_location_dict(locs[k], self.config.get('search_databases').get(k))
+        #     for k in self.config['search_databases']}
+        # self.config['database_descriptions'] = {
+        #     k:check_exists_and_add_to_location_dict(locs[k], self.config.get('database_descriptions').get(k))
+        #     for k in self.config['database_descriptions']}
+        # self.config['dram_sheets'] = {
+        #     k:check_exists_and_add_to_location_dict(locs[k], self.config.get('dram_sheets').get(k))
+        #     for k in self.config['dram_sheets']}
 
         self.config['description_db'] = check_exists_and_add_to_location_dict(description_db_loc, self.config.get('description_db'))
         self.start_db_session()
@@ -211,7 +248,7 @@ class DatabaseHandler:
         if config_loc is None:
             config_loc = self.config_loc
         with open(config_loc, 'w') as f:
-            f.write(json.dumps(self.config))
+            f.write(json.dumps(self.config, indent=2))
 
     @staticmethod
     def make_header_dict_from_mmseqs_db(mmseqs_db):
@@ -230,7 +267,8 @@ class DatabaseHandler:
             else:
                 mmseqs_ids_not_unique.add(header['id'])
         if len(mmseqs_ids_not_unique) > 0:
-            warnings.warn(f'There are {len(mmseqs_ids_not_unique)} non unique headers in {mmseqs_db}! You should definitly investigate this!')
+            warnings.warn(f'There are {len(mmseqs_ids_not_unique)} non unique headers '
+                          f'in {mmseqs_db}! You should definitly investigate this!')
         return mmseqs_headers_split
 
     @staticmethod
@@ -316,9 +354,9 @@ class DatabaseHandler:
         if output_loc is not None:  # if new description db location is set then save it there
             self.config['description_db']= output_loc
             self.start_db_session()
-        if path.exists(self.get('description_db')):
+        if path.exists(self.config.get('description_db')):
             remove(self.config.get('description_db'))
-        create_description_db(self.get('description_db'))
+        create_description_db(self.config.get('description_db'))
 
         # fill database
         if self.config.get('search_databases').get('kegg') is not None:
@@ -444,8 +482,9 @@ def print_database_locations(config_loc=None):
     print('CAMPER Distillate form: %s' % conf.config.get('dram_sheets').get('camper_distillate'))
     print('AMG database: %s' % conf.config.get('dram_sheets').get('amg_database'))
 
-def print_config(config_loc=None):
-    pass
+def print_database_settings(config_loc=None):
+    conf = DatabaseHandler(config_loc)
+    print(conf.get_setings_str())
 
 
 

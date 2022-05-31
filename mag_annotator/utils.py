@@ -2,23 +2,29 @@ import re
 import subprocess
 from collections import Counter
 from os import path
-from urllib.request import urlopen
+from urllib.request import urlopen, urlretrieve
+from urllib.error import HTTPError
 import pandas as pd
 import logging
 
 
-def download_file(url, output_file=None, verbose=True):
+def download_file(url, logger, output_file=None, verbose=True):
     # TODO: catching error 4 and give error message to retry or retry automatically
     if verbose:
         print('downloading %s' % url)
     if output_file is None:
         return urlopen(url).read().decode('utf-8')
     else:
-        run_process(['wget', '-O', output_file, url], verbose=verbose)
+        try:
+            urlretrieve(url, output_file)
+        except HTTPError as error:
+            logger.critical(f"Something went wrong with the download of the url: {url}")
+            raise error
+        # run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
-def setup_logger(log_file_path, logger):
-    logger.setLevel(logging.INFO)
+def setup_logger(logger, *log_file_paths, level=logging.INFO):
+    logger.setLevel(level)
     formatter = logging.Formatter('%(asctime)s - %(message)s')
     # create console handler
     ch = logging.StreamHandler()
@@ -26,42 +32,56 @@ def setup_logger(log_file_path, logger):
     # create formatter and add it to the handlers
     ch.setFormatter(formatter)
     logger.addHandler(ch)
-    fh = logging.FileHandler(log_file_path)
-    fh.setLevel(logging.INFO)
-    fh.setFormatter(formatter)
+    for log_file_path in log_file_paths:
+        fh = logging.FileHandler(log_file_path)
+        fh.setLevel(logging.INFO)
+        fh.setFormatter(formatter)
     # add the handlers to the logger
     logger.addHandler(fh)
 
 
-def run_process(command, shell=False, capture_stdout=True, check=True, verbose=False):
-    """Standardization of parameters for using subprocess.run, provides verbose mode and option to run via shell"""
-    stdout = subprocess.DEVNULL
-    stderr = subprocess.DEVNULL
-    if verbose:
-        stdout = None
-        stderr = None
+def run_process(command, logger, shell:bool=False, capture_stdout:bool=True, save_output:str=None, 
+                check:bool=False, stop_on_error:bool=True, verbose:bool=False) -> str:
+    """
+    Standardization of parameters for using subprocess.run, provides verbose mode and option to run via shell
+    """
+    # TODO just remove check
+    try:
+        results = subprocess.run(command, check=check, shell=shell,
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    except subprocess.CalledProcessError as error:
+        logger.critical(f'The subcommand {command} experienced an error')
+        if stop_on_error:
+            raise error
+    if results.returncode != 0:
+        logger.critical(f'The subcommand {command} experienced an error: {results.stderr}')
+        logging.debug(results.stdout)
+        if stop_on_error:
+           raise subprocess.SubprocessError(f"The subcommand {' '.join(command)} experienced an error, see the log for more info.")
+
+    if save_output is not None:
+        with open(save_output, 'w') as out:
+            out.write(results.stdout)
+
     if capture_stdout:
-        return subprocess.run(command, check=check, shell=shell, stdout=subprocess.PIPE,
-                              stderr=stderr).stdout.decode(errors='ignore')
-    else:
-        subprocess.run(command, check=check, shell=shell, stdout=stdout, stderr=stderr)
+        return results.stdout
 
 
-def make_mmseqs_db(fasta_loc, output_loc, create_index=True, threads=10, verbose=False):
+def make_mmseqs_db(fasta_loc, output_loc, logger, create_index=True, threads=10, verbose=False):
     """Takes a fasta file and makes a mmseqs2 database for use in blast searching and hmm searching with mmseqs2"""
-    run_process(['mmseqs', 'createdb', fasta_loc, output_loc], verbose=verbose)
+    run_process(['mmseqs', 'createdb', fasta_loc, output_loc], logger, verbose=verbose)
     if create_index:
         tmp_dir = path.join(path.dirname(output_loc), 'tmp')
-        run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], verbose=verbose)
+        run_process(['mmseqs', 'createindex', output_loc, tmp_dir, '--threads', str(threads)], logger, verbose=verbose)
 
 
-def multigrep(search_terms, search_against, split_char='\n', output='.'):
+def multigrep(search_terms, search_against, logger, split_char='\n', output='.'):
     # TODO: multiprocess this over the list of search terms
     """Search a list of exact substrings against a database, takes name of mmseqs db index with _h to search against"""
     hits_file = path.join(output, 'hits.txt')
     with open(hits_file, 'w') as f:
         f.write('%s\n' % '\n'.join(search_terms))
-    results = run_process(['grep', '-a', '-F', '-f', hits_file, search_against], capture_stdout=True, verbose=False)
+    results = run_process(['grep', '-a', '-F', '-f', hits_file, search_against], logger, capture_stdout=True, verbose=False)
     processed_results = [i.strip() for i in results.strip().split(split_char)
                          if len(i) > 0]
     # remove(hits_file)

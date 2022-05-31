@@ -26,7 +26,7 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
 # TODO: add ability to handle [] in file names
 
-LOGGER = logging.getLogger('')
+LOGGER = logging.getLogger('annotation_log')
 MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb')
 BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
                     'tEnd', 'eVal', 'bitScore']
@@ -1058,14 +1058,14 @@ def annotate_fastas(fasta_locs, output_dir, db_handler, min_contig_size=5000, pr
 def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodigal_mode='meta', trans_table='11',
                       bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
                       custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, 
-                      use_camper=False,  use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
+                      use_camper=False, use_fegenie=False,  use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
                       skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                       keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     rename_bins = True
     fasta_locs = [j for i in input_fasta for j in glob(i)]
     annotate_bins(list(set(fasta_locs)), output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
                   rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, custom_hmm_name, custom_hmm_loc,
-                  custom_hmm_cutoffs_loc, use_uniref, use_camper, use_vogdb, kofam_use_dbcan2_thresholds, skip_trnascan,
+                  custom_hmm_cutoffs_loc, use_uniref, use_camper, use_fegenie, use_vogdb, kofam_use_dbcan2_thresholds, skip_trnascan,
                   gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
@@ -1074,13 +1074,14 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
 # TODO: make fasta loc either a string or list to remove annotate_bins_cmd and annotate_called_genes_cmd?
 def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                  custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, use_vogdb=False,
-                  kofam_use_dbcan2_thresholds=False, skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
+                  custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, 
+                  use_camper=False, use_fegenie=False, use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
+                  skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                   rename_bins=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
 
     mkdir(output_dir)
     log_file_path = path.join(output_dir, "Annotation.log")
-    setup_logger(log_file_path, LOGGER)
+    setup_logger(LOGGER, log_file_path)
     LOGGER.info(f"The log file is created at {log_file_path}.")
 
     if len(fasta_locs) == 0:
@@ -1095,8 +1096,13 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
     #                     format='%(asctime)s %(message)s', level=logging.INFO)
     # create logger with 'spam_application'
     # create file handler which logs even debug messages
+    # get database locations
+    db_handler = DatabaseHandler()
+    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
+    db_conf = db_handler.get_setings_str()
+    LOGGER.info('Starting annotation, database configuration: \n {db_conf}')
+
     breakpoint()
-    print('%s: Annotation started' % str(datetime.now()))
 
     # check inputs
     prodigal_modes = ['train', 'meta', 'single']
@@ -1112,10 +1118,6 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
     if trans_table not in prodigal_trans_tables:
         # raise ValueError('Prodigal translation table must be 1-25 or auto')
         raise ValueError('Prodigal translation table must be 1-25')
-
-    # get database locations
-    db_handler = DatabaseHandler()
-    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
 
 
     all_annotations = annotate_fastas(fasta_locs, output_dir, db_handler, min_contig_size, prodigal_mode, trans_table,
@@ -1176,10 +1178,9 @@ def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60,
         raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
     print('%s fastas found' % len(fasta_locs))
     annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, 
-                          custom_db_name,
-                          custom_fasta_loc, custom_hmm_loc, custom_hmm_name, custom_hmm_cutoffs_loc, use_uniref, 
-                          use_vogdb, kofam_use_dbcan2_thresholds, rename_genes, keep_tmp_dir, low_mem_mode, 
-                          threads, verbose)
+                          custom_db_name, custom_fasta_loc, custom_hmm_loc, custom_hmm_name, 
+                          custom_hmm_cutoffs_loc, use_uniref, use_vogdb, kofam_use_dbcan2_thresholds, 
+                          rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
 def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,

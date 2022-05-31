@@ -74,6 +74,8 @@ if __name__ == '__main__':
                                       'requirements')
     annotate_parser.add_argument('--use_camper', action='store_true', default=False,
                                  help="Annotate these fastas against the CAMPER dataset to study polyphenol metabolism")
+    annotate_parser.add_argument('--use_fegenie', action='store_true', default=False,
+                                 help="Annotate these fastas against the FeGenie dataset to study iron metabolism")
     annotate_parser.add_argument('--use_vogdb', action='store_true', default=False,
                                  help='Annotate these fastas against VOGDB, drastically decreases run time')
     annotate_parser.add_argument('--low_mem_mode', action='store_true', default=False,
@@ -88,7 +90,7 @@ if __name__ == '__main__':
     # parser for annotating already called genes
     annotate_genes_parser.add_argument('-i', '--input_faa', help="fasta file, optionally with wildcards to point to "
                                                                  "individual MAGs", required=True)
-    annotate_genes_parser.add_argument('-o', '--output_dir', help="output directory")
+    annotate_genes_parser.add_argument('-o', '--output_dir', help="output directory", required=True)
     annotate_genes_parser.add_argument('--bit_score_threshold', type=int, default=60,
                                        help='minimum bitScore of search to retain hits')
     annotate_genes_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
