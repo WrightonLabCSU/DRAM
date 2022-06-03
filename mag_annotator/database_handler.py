@@ -349,7 +349,7 @@ class DatabaseHandler:
     # TODO: Make option to build on description database that already exists?
     def populate_description_db(self, output_loc=None, update_config=True):
 
-        if self.config.get('description_db')is None and output_loc is None:  # description db location must be set somewhere
+        if self.config.get('description_db') is None and output_loc is None:  # description db location must be set somewhere
             raise ValueError('Must provide output location if description db location is not set in configuration')
         if output_loc is not None:  # if new description db location is set then save it there
             self.config['description_db']= output_loc

@@ -6,13 +6,16 @@ from shutil import rmtree, copyfileobj, move
 from itertools import count
 from mag_annotator.utils import download_file, run_process, make_mmseqs_db
 
-CITATION = "Garber AI, Nealson KH, Okamoto A, McAllister SM, Chan CS, Barco RA and Merino N (2020) FeGenie: A Comprehensive Tool for the Identification of Iron Genes and Iron Gene Neighborhoods in Genome and Metagenome Assemblies. Front. Microbiol. 11:37. doi: 10.3389/fmicb.2020.00037"
+VERSION = '1.2'
 NAME = 'FeGenie'
-DOWNLOAD_OPTIONS ={'version': '1.2'}
-PROCESS_OPTIONS ={'version': '1.2'}
-DRAM_SETTINGS = {'fegenie_hmm': {'name': 'FeGenie', 'origin': "fegenie_tar_gz", 'citation': CITATION}}
 
-def download(temporary, logger, version=DOWNLOAD_OPTIONS['version'], verbose=True):
+CITATION = "Garber AI, Nealson KH, Okamoto A, McAllister SM, Chan CS, Barco RA and Merino N (2020) FeGenie: A Comprehensive Tool for the Identification of Iron Genes and Iron Gene Neighborhoods in Genome and Metagenome Assemblies. Front. Microbiol. 11:37. doi: 10.3389/fmicb.2020.00037"
+DOWNLOAD_OPTIONS ={'fegenie_tar_gz': {'version': VERSION}}
+PROCESS_OPTIONS ={'fegenie_tar_gz': {'version': VERSION}}
+DRAM_SETTINGS = {'fegenie_hmm': {'name': NAME, 'citation': CITATION,
+                                 'notes': "Only iron_oxidation and iron_reduction hmms are used."}}
+
+def download(temporary, logger, version=VERSION, verbose=True):
     """
     Retrieve genie release tar.gz
 
@@ -29,7 +32,7 @@ def download(temporary, logger, version=DOWNLOAD_OPTIONS['version'], verbose=Tru
     return database
 
 
-def process(input_file, output_dir, logger, threads=1,  version=PROCESS_OPTIONS['version'], verbose=False) -> dict:
+def process(input_file, output_dir, logger, threads=1,  version=VERSION, verbose=False) -> dict:
     temp_dir = path.dirname(input_file)
     # this is the path within the tar file
     tar_paths ={

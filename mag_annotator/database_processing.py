@@ -164,7 +164,7 @@ def download_pfam(output_dir='.', logger=LOGGER, verbose=True):
     return pfam_full_zipped
 
 
-def download_viral_refseq(output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FILES, verbose=True):
+def download_viral(output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FILES, verbose=True):
     """Can only download newest version"""
     # download all of the viral protein files, need to know the number of files
     # TODO: Make it so that you don't need to know number of viral files in refseq viral
@@ -211,7 +211,7 @@ def process_kofam_ko_list(kofam_ko_list_gz, output_dir='.', logger=LOGGER, threa
     kofam_ko_list = path.join(output_dir, 'kofam_ko_list.tsv')
     run_process(['gunzip', '-c', kofam_ko_list_gz], logger, save_output=kofam_ko_list, verbose=verbose)
     LOGGER.info('KOfam ko list processed')
-    return {'kofam_ko_list_loc': kofam_ko_list}
+    return {'kofam_ko_list': kofam_ko_list}
 
 
 def process_uniref(uniref_fasta_zipped, output_dir='.', logger=LOGGER, 
@@ -220,7 +220,7 @@ def process_uniref(uniref_fasta_zipped, output_dir='.', logger=LOGGER,
     uniref_mmseqs_db = path.join(output_dir, 'uniref%s.%s.mmsdb' % (version, get_iso_date()))
     make_mmseqs_db(uniref_fasta_zipped, uniref_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('UniRef database processed')
-    return {'uniref_db_loc': uniref_mmseqs_db}
+    return {'uniref_db': uniref_mmseqs_db}
 
 
 def process_mmspro(full_alignment, output_dir, logger=LOGGER, db_name=DEFAULT_MMMSPRO_DB_NAME, threads=10, verbose=True):
@@ -240,7 +240,7 @@ def process_mmspro(full_alignment, output_dir, logger=LOGGER, db_name=DEFAULT_MM
 def process_pfam(pfam_full_zipped, output_dir='.', logger=LOGGER, threads=10, verbose=True):
     pfam_profile = process_mmspro(pfam_full_zipped, output_dir, logger, 'pfam', threads, verbose)
     LOGGER.info('PFAM database processed')
-    return {'pfam_db_loc': pfam_profile}
+    return {'pfam_db': pfam_profile}
 
 
 def process_dbcan(input, output_dir, logger=LOGGER, verbose=True, threads=1):
@@ -248,21 +248,21 @@ def process_dbcan(input, output_dir, logger=LOGGER, verbose=True, threads=1):
     move(input, output)
     run_process(['hmmpress', '-f', output], logger, verbose=verbose)
     LOGGER.info('dbCAN database processed')
-    return {'dbcan_db_loc': output}
+    return {'dbcan_db': output}
 
 
-def process_viral_refseq(merged_viral_faas, output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FILES, threads=10, verbose=True):
+def process_viral(merged_viral_faas, output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FILES, threads=10, verbose=True):
     refseq_viral_mmseqs_db = path.join(output_dir, 'refseq_viral.%s.mmsdb' % get_iso_date())
     make_mmseqs_db(merged_viral_faas, refseq_viral_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('RefSeq viral database processed')
-    return {'viral_db_loc': refseq_viral_mmseqs_db}
+    return {'viral_db': refseq_viral_mmseqs_db}
 
 
 def process_peptidase(peptidase_faa, output_dir='.', logger=LOGGER, threads=10, verbose=True):
     peptidase_mmseqs_db = path.join(output_dir, 'peptidases.%s.mmsdb' % get_iso_date())
     make_mmseqs_db(peptidase_faa, peptidase_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('MEROPS database processed')
-    return {'peptidase_db_loc': peptidase_mmseqs_db}
+    return {'peptidase_db': peptidase_mmseqs_db}
 
 
 def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_VOGDB_VERSION, threads=1, verbose=True):
@@ -274,10 +274,10 @@ def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_
     merge_files(glob(path.join(hmm_dir, 'VOG*.hmm')), vog_hmms)
     run_process(['hmmpress', '-f', vog_hmms], logger, verbose=verbose) 
     LOGGER.info('VOGdb database processed')
-    return {'vogdb_db_loc': vog_hmms}
+    return {'vogdb_db': vog_hmms}
 
 
-def download_vogdb_annotations(output_dir, logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
+def download_vog_annotations(output_dir, logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_annotations = path.join(output_dir, 'vog_annotations_%s.tsv.gz' % version)
     download_file('http://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % vogdb_version, logger,
                   vog_annotations, verbose=verbose)
@@ -344,53 +344,33 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                       skip_uniref=False, keep_database_files=False,
                       branch='master', threads=10, verbose=True, select_db=None):
 
-    # setup temp, logging, and db_handler
-    if not path.isdir(output_dir):
-        mkdir(output_dir)
-    temporary = path.join(output_dir, 'database_files')
-    mkdir(temporary)
-    main_log = path.join(output_dir, 'database_processing.log')
-    db_handler = DatabaseHandler()
-    setup_logger(LOGGER, *[(main_log, loggpath) if loggpath is not None else main_log])
-
-    locs = { #just paths as of now
-        "kegg": None,
-        "gene_ko_link": None,
-        "gene_ko_link": None,
-        "camper_tar_gz": None,
-        "fegenie_tar_gz": None,
-        "kofam_hmm": None,
-        "kofam_ko_list": None,
-        "uniref": None,
-        "pfam": None,
-        "pfam_hmm_dat": None,
-        "dbcan": None,
-        "dbcan_fam_activities":  None,
-        "dbcan_subfam_ec": None,
-        "vogdb": None,
-        "vogdb_annotations": None,
-        "viral_refseq": None,
-        "peptidase": None,
-        "genome_summary_form": None,
-        "module_step_form": None,
-        "function_heatmap_form": None,
-        "amg_database": None,
-        "etc_module_database": None
-    }
     dram_settings = {
-        'kegg':                  {'name': 'KEGG db', 'citation': KEGG_CITATION},
+        'kegg':                  {'name': 'KEGG db', 
+                                  'description_db_updated': 'Unknown, or Never', 
+                                  'citation': KEGG_CITATION},
+        'gene_ko_link':          {'name': 'KEGG Gene KO link', 'citation': KEGG_CITATION},
         "kofam_hmm":             {'name': 'KOfam db', 'citation': KOFAM_CITATION},
         "kofam_ko_list":         {'name': 'KOfam KO list', 'citation': KOFAM_CITATION},
-        'uniref':                {'name': 'UniRef db', 'citation': UNIREF_CITATION},
+        'uniref':                {'name': 'UniRef db', 
+                                  'description_db_updated': 'Unknown, or Never', 
+                                  'citation': UNIREF_CITATION},
         'pfam':                  {'name': 'Pfam db', 'citation': PFAM_CITATION},
-        "pfam_hmm_dat":          {'name': 'Pfam hmm dat', 'citation': PFAM_CITATION},
+        "pfam_hmm_dat":          {'name': 'Pfam hmm dat', 
+                                  'description_db_updated': 'Unknown, or Never', 
+                                  'citation': PFAM_CITATION},
         "dbcan":                 {'name': 'dbCAN db', 'citation': DBCAN_CITATION},
         "dbcan_fam_activities":  {'name': 'dbCAN family activities', 'citation': DBCAN_CITATION}, 
         "dbcan_subfam_ec":       {'name': 'dbCAN subfamily EC numbers', 'citation': DBCAN_CITATION},
         "vogdb":                 {'name': 'VOGDB db', 'citation': VOGDB_CITATION},
-        "vogdb_annotations":     {'name': 'VOG annotations', 'citation': VOGDB_CITATION},
-        "viral_refseq":          {'name': 'RefSeq Viral db', 'citation': VIRAL_REFSEQ_CITATION},
-        "peptidase":             {'name': 'MEROPS peptidase db', 'citation': PEPTIDASE_CITATION}, 
+        "vog_annotations":       {'name': 'VOG annotations', 
+                                  'description_db_updated': 'Unknown, or Never', 
+                                  'citation': VOGDB_CITATION},
+        "viral":          {'name': 'RefSeq Viral db', 
+                                  'description_db_updated': 'Unknown, or Never', 
+                                  'citation': VIRAL_REFSEQ_CITATION},
+        "peptidase":             {'name': 'MEROPS peptidase db', 
+                                  'description_db_updated': 'Unknown, or Never', 
+                                  'citation': PEPTIDASE_CITATION}, 
         "genome_summary_form":   {'name': 'Genome summary form'},
         "module_step_form":      {'name': 'Module step form'},
         "function_heatmap_form": {'name': 'Function heatmap form'},
@@ -399,7 +379,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     }
     dram_settings.update(CAMPER_DRAM_SETTINGS)
     dram_settings.update(FEGENIE_DRAM_SETTINGS)
-    settings = {
+    database_settings= {
         'kegg':                  {},
         "gene_ko_link":          {},
         "kofam_hmm":             {},
@@ -411,10 +391,8 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "dbcan_fam_activities":  {'version': dbcan_version, 'upload_date': dbcan_date}, 
         "dbcan_subfam_ec":       {'version': dbcan_version, 'upload_date': dbcan_date},
         "vogdb":                 {'version': vogdb_version},
-        "vogdb_annotations":                 {'version': vogdb_version},
-        "viral_refseq":          {},
-        "camper_tar_gz":         CAMPER_DOWNLOAD_OPTIONS,
-        "fegenie_tar_gz":        FEGENIE_DOWNLOAD_OPTIONS, 
+        "vog_annotations":     {'version': vogdb_version},
+        "viral":          {},
         "peptidase":             {}, 
         "genome_summary_form":   {"branch": branch},
         "module_step_form":      {"branch": branch},
@@ -422,6 +400,8 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "amg_database":          {"branch": branch},
         "etc_module_database":   {"branch": branch},
     }
+    database_settings.update(CAMPER_DOWNLOAD_OPTIONS)
+    database_settings.update(FEGENIE_DOWNLOAD_OPTIONS)
     process_settings = {
         'kegg': {},
         "gene_ko_link": {},
@@ -434,10 +414,8 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "dbcan_fam_activities": {}, 
         "dbcan_subfam_ec": {},
         "vogdb": {},
-        "vogdb_annotations": {},
-        "viral_refseq": {'viral_files': number_of_viral_files},
-        "camper_tar_gz": CAMPER_PROCESS_OPTIONS,
-        "fegenie_tar_gz": FEGENIE_PROCESS_OPTIONS, 
+        "vog_annotations": {},
+        "viral": {'viral_files': number_of_viral_files},
         "peptidase": {}, 
         "genome_summary_form": {},
         "module_step_form": {},
@@ -445,30 +423,40 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "amg_database": {},
         "etc_module_database": {},
     }
+    process_settings.update(CAMPER_PROCESS_OPTIONS)
+    process_settings.update(FEGENIE_PROCESS_OPTIONS)
+
+    # setup temp, logging, and db_handler
+    if not path.isdir(output_dir):
+        mkdir(output_dir)
+    temporary = path.join(output_dir, 'database_files')
+    mkdir(temporary)
+    main_log = path.join(output_dir, 'database_processing.log')
+    db_handler = DatabaseHandler()
+    setup_logger(LOGGER, *[(main_log, loggpath) if loggpath is not None else main_log])
     LOGGER.info('Starting the process of downloading data')
 
     if skip_uniref:
         LOGGER.info('Skipping UniRef')
-        del locs['uniref']
+        del database_settings['uniref']
     
     
-    user_inputs = {i.removesuffix('_loc'):j for i, j in locals().items() if i.endswith('_loc') and j is not None}
+    locs = {i.removesuffix('_loc'):j for i, j in locals().items() if i.endswith('_loc') and j is not None}
     download_functions = {i.removeprefix('download_'):j for i,j in globals().items() if callable(j) and i.startswith('download_')}
     process_functions = {i.removeprefix('process_'):j for i,j in globals().items() if callable(j) and i.startswith('process_')}
     functions = {i:j for i,j in globals().items() if callable(j) and i.startswith('download_')}
 
     # Check any specified paths exist
-    missing_user_inputs = [i for i in user_inputs if not path.exists(i)]
+    missing_user_inputs = [i for i in locs if not path.exists(i)]
     if len(missing_user_inputs) > 1:
         raise ValueError(f"The fallowing user provided paths don't seem to exist: {missing_user_inputs}")
-    locs.update(user_inputs)
-    
-    un_obtainable = [i for i, j in locs.items() if j is None and i not in download_functions]
+
+    un_obtainable = [i for i in database_settings if i not in locs and i not in download_functions]
 
     for i in un_obtainable:
         LOGGER.info(f"The {i}_loc argument was not used to specify a downloaded {i} file, and dram can not"
-                     " download it its self. So it is asumed that the user wants to set up DRAM without it")
-        del locs[i]
+                     " download it its self. So it is assumed that the user wants to set up DRAM without it")
+        del database_settings[i]
 
 
     # check inputs
@@ -477,86 +465,81 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                          ' Skipping UniRef will cause provided UniRef file to not be used.')
     
     if select_db is not None:
-        miss_name = [i for i in select_db if i not in locs]
-        user_inputs = [i for i in select_db if i in user_inputs]
+        miss_name = [i for i in select_db if i not in database_settings]
+        user_inputs = [i for i in locs if i not in select_db]
         if len(miss_name) > 0:
-            raise ValueError("Only the databases in the db list can be pased to select_db, "
-                            f"you passed {miss_name} which are not in the list.")
+            LOGGER.error("Only the databases in the db list can be pased to select_db, "
+                            f"you passed {miss_name} which is/are not in the list.")
+            raise ValueError('Bad user input, see log')
         
         if len(user_inputs) > 0:
-            raise ValueError(f"The user provided location for {i}, but required it not be used by proving"
-                             f" the select_db add_argument for other databases. This would sugest that the"
+            LOGGER.error(f"The user provided location for {user_inputs}, but required it not be used by proving"
+                             f" the select_db argument for other databases. This would suggest that the"
                              " user may have made a mistake and so this error is rased.")
-        locs = {i:locs[i] for i in select_db}
+            raise ValueError('Bad user input, see log')
+
+        database_settings = {i:database_settings[i] for i in select_db}
 
 
     LOGGER.info('Database preparation started')
 
-
-    
     # Download DBs
-    for i in locs:
-        if locs[i] is None:
+    for i, j in database_settings.items():
+        if locs.get(i) is None:
             LOGGER.info(f"Downloading {i}")
-            if locs[i] is None and i in download_functions:
-                if i in process_functions:
-                    locs[i] = download_functions[i](
-                        temporary, LOGGER, **settings[i], verbose=verbose)
-                else:
-                    locs[i] = download_functions[i](
-                        output_dir, LOGGER, **settings[i], verbose=verbose)
-                settings[i]['Download time'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-                settings[i]['Origin'] = "Downloaded by DRAM"
+            if i in process_functions:
+                locs[i] = download_functions[i](
+                    temporary, LOGGER, **j, verbose=verbose)
+            else:
+                locs[i] = download_functions[i](
+                    output_dir, LOGGER, **j, verbose=verbose)
+            j['Download time'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            j['Origin'] = "Downloaded by DRAM"
         else:
-            settings[i] = {k: "Unknown" for k in settings[i]}
-            settings[i]['Download time'] = "Unknown"
-            settings[i]['Origin'] = "Provided by user"
-            settings[i]['Original path'] = locs[i]
+            j = {k: "Unknown" for k in j}
+            j['Download time'] = "Unknown"
+            j['Origin'] = "Provided by user"
+            j['Original path'] = locs[i]
             if i not in process_functions:
                 LOGGER.info(f"Copying {locs[i]} to output_dir")
                 locs[i] = move(locs[i], output_dir)
 
+    LOGGER.info("All raw data files were downloaded successfully")
+
     # Process databases
-    output_dbs = {}
     for i in locs: 
-        if locs[i] is not None:
-            if i in process_functions:
-                LOGGER.info(f"Processing {i}")
-                output_dbs.update(process_functions[i](locs[i], output_dir, LOGGER, 
-                                                       threads=threads, verbose=verbose, **process_settings[i]))
-                settings[i].update(process_settings[i])
-            else:
-                output_dbs[i] = locs[i]
-
-    for k in db_handler.config["dram_sheets"]:
-        if k in locs:
-            db_handler.config["dram_sheets"][k] = locs[k]
-
-    LOGGER.info("All raw data files where downloaded successfully")
-
-    for i in dram_settings:
-        if dram_settings[i].get('origin') is not None:
-            dram_settings[i].update(settings.get(dram_settings[i].get('origin')))
+        if i in process_functions:
+            LOGGER.info(f"Processing {i}")
+            processed_locs = process_functions[i](locs[i], output_dir, LOGGER, 
+                                                       threads=threads, verbose=verbose, **process_settings[i])
+        elif i in db_handler.config['dram_sheets']:
+            db_handler.config['dram_sheets'][i] = locs[i]
         else:
-            dram_settings[i].update(settings.get(i))
-
-
-
-    # move all files from temporary to output that will be kept
-    for db_name, output_db in output_dbs.items():
-        for db_file in glob('%s*' % output_db):
-            move(db_file, path.join(output_dir, path.basename(db_file)))
-        output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
-    LOGGER.info('Files moved to final destination')
+            processed_locs = {i:locs[i]}
+        for k, v in processed_locs.items():
+            for db_file in glob('%s*' % v):
+                move(db_file, path.join(output_dir, path.basename(db_file)))
+            v = path.join(output_dir, path.basename(v))
+            # update_dram_forms the settings per OUTPUT fill, including the process_settings
+            #  and database_settings, which are per input file.
+            db_handler.config['settings'][k] = {**dram_settings[k], **process_settings[i], 
+                                                **database_settings[i]}
+            db_handler.set_database_paths(**processed_locs)
+            db_handler.write_config()
+            LOGGER.info(f'Moved {i} to final destination, configuration updated')
+            
 
 
     output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
 
     LOGGER.info('Populating the description db, this may take some time')
     db_handler.populate_description_db(output_dbs['description_db_loc'], update_config=False)
-    db_handler.config['settings'] = dram_settings
-    db_handler.set_database_paths(**output_dbs)
-    db_handler.write_config()
+    for i, j in db_handler.config['settings'].items():
+        if j.get('description_db_updated') is not None:
+            if i not in locs:
+                LOGGER.warn('The select_db argument is in beta. It is not implmeted for'
+                            'description updating and so all descriptions are being updated.')
+            j['description_db_updated'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     LOGGER.info('DRAM description database populated')
 
     if not keep_database_files:
