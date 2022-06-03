@@ -135,7 +135,7 @@ def process_kegg_db(kegg_loc, output_dir, logger, gene_ko_link_loc=None, downloa
         kegg_mod_loc = kegg_loc
     # make mmseqsdb from modified kegg fasta
     kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
-    make_mmseqs_db(kegg_mod_loc, kegg_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
+    make_mmseqs_db(kegg_mod_loc, kegg_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('KEGG database processed')
     return {'kegg_db_loc': kegg_mmseqs_db}
 
@@ -218,7 +218,7 @@ def process_uniref(uniref_fasta_zipped, output_dir='.', logger=LOGGER,
                    version=DEFAULT_UNIREF_VERSION, threads=10,
                    verbose=True):
     uniref_mmseqs_db = path.join(output_dir, 'uniref%s.%s.mmsdb' % (version, get_iso_date()))
-    make_mmseqs_db(uniref_fasta_zipped, uniref_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
+    make_mmseqs_db(uniref_fasta_zipped, uniref_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('UniRef database processed')
     return {'uniref_db_loc': uniref_mmseqs_db}
 
@@ -277,7 +277,7 @@ def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_
     return {'vogdb_db_loc': vog_hmms}
 
 
-def download_vog(output_dir, logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
+def download_vogdb_annotations(output_dir, logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_annotations = path.join(output_dir, 'vog_annotations_%s.tsv.gz' % version)
     download_file('http://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % vogdb_version, logger,
                   vog_annotations, verbose=verbose)
@@ -499,15 +499,14 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         if locs[i] is None:
             LOGGER.info(f"Downloading {i}")
             if locs[i] is None and i in download_functions:
-                 #temp# if i in process_functions:
-                 #temp#     locs[i] = download_functions[i](
-                 #temp#         temporary, LOGGER, **settings[i], verbose=verbose)
-                 #temp# else:
-                 #temp#     locs[i] = download_functions[i](
-                 #temp#         output_dir, LOGGER, **settings[i], verbose=verbose)
-                 settings[i]['Download time'] = datetime.now().strftime(
-                     "%m/%d/%Y, %H:%M:%S")
-                 settings[i]['Origin'] = "Downloaded by DRAM"
+                if i in process_functions:
+                    locs[i] = download_functions[i](
+                        temporary, LOGGER, **settings[i], verbose=verbose)
+                else:
+                    locs[i] = download_functions[i](
+                        output_dir, LOGGER, **settings[i], verbose=verbose)
+                settings[i]['Download time'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+                settings[i]['Origin'] = "Downloaded by DRAM"
         else:
             settings[i] = {k: "Unknown" for k in settings[i]}
             settings[i]['Download time'] = "Unknown"
@@ -515,7 +514,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
             settings[i]['Original path'] = locs[i]
             if i not in process_functions:
                 LOGGER.info(f"Copying {locs[i]} to output_dir")
-                locs[i] = move(locs[i], output_dir, copy_function=True)
+                locs[i] = move(locs[i], output_dir)
 
     # Process databases
     output_dbs = {}
@@ -523,7 +522,8 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         if locs[i] is not None:
             if i in process_functions:
                 LOGGER.info(f"Processing {i}")
-                #temp# output_dbs.update(process_functions[i](locs[i], output_dir, LOGGER, threads=threads, verbose=verbose, **process_settings[i]))
+                output_dbs.update(process_functions[i](locs[i], output_dir, LOGGER, 
+                                                       threads=threads, verbose=verbose, **process_settings[i]))
                 settings[i].update(process_settings[i])
             else:
                 output_dbs[i] = locs[i]
@@ -543,19 +543,19 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
 
 
     # move all files from temporary to output that will be kept
-    #temp# for db_name, output_db in output_dbs.items():
-    #temp#     for db_file in glob('%s*' % output_db):
-    #temp#         move(db_file, path.join(output_dir, path.basename(db_file)))
-    #temp#     output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
+    for db_name, output_db in output_dbs.items():
+        for db_file in glob('%s*' % output_db):
+            move(db_file, path.join(output_dir, path.basename(db_file)))
+        output_dbs[db_name] = path.join(output_dir, path.basename(output_db))
     LOGGER.info('Files moved to final destination')
 
 
     output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
 
     LOGGER.info('Populating the description db, this may take some time')
-    #temp# db_handler.populate_description_db(output_dbs['description_db_loc'], update_config=False)
+    db_handler.populate_description_db(output_dbs['description_db_loc'], update_config=False)
     db_handler.config['settings'] = dram_settings
-    #temp# db_handler.set_database_paths(**output_dbs)
+    db_handler.set_database_paths(**output_dbs)
     db_handler.write_config()
     LOGGER.info('DRAM description database populated')
 
@@ -581,7 +581,7 @@ def update_dram_forms(output_dir, branch='master'):
 
 """
 import os
-os.system('DRAM-setup.py prepare_databases --output_dir download_test_setings')
+os.system('DRAM-setup.py prepare_databases --output_dir ../../../dram_data/dram1.4_test_06_01_22 --kegg_loc /home/Database/KEGG/kegg-all-orgs_20220129/kegg-all-orgs_unique_reheader_20220129.pep')
 os.system('DRAM-setup.py -h ')
     version             print DRAM version
     prepare_databases   Download and process databases for annotation

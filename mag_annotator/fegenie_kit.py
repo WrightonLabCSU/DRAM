@@ -63,7 +63,6 @@ def process(input_file, output_dir, logger, threads=1,  version=PROCESS_OPTIONS[
                 hmm_names.add(path.basename(f))
                 with open(f, 'rb') as fd:
                     copyfileobj(fd, wfd)
-    breakpoint()
 
     # move the cutoffs
     move(path.join(temp_dir, tar_paths["fegenie_cut_offs"]), final_paths["fegenie_cut_offs"])
