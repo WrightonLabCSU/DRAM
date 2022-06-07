@@ -44,7 +44,7 @@ def process(camper_tar_gz, output_dir, logger, version=VERSION,
     tar_paths ={
         "camper_fa_db"        : path.join(f"CAMPER-{version}", "CAMPER_blast.faa"),
         "camper_hmm"          : path.join(f"CAMPER-{version}", "CAMPER.hmm"),
-        "camper_fa_db_scores" : path.join(f"CAMPER-{version}", "CAMPER_blast_scores.tsv"),
+        "camper_fa_db_cutoffs" : path.join(f"CAMPER-{version}", "CAMPER_blast_scores.tsv"),
         "camper_distillate"       : path.join(f"CAMPER-{version}", "CAMPER_distillate.tsv"),
         "camper_hmm_cutoffs"  : path.join(f"CAMPER-{version}", "CAMPER_hmm_scores.tsv"),
     }
@@ -52,7 +52,7 @@ def process(camper_tar_gz, output_dir, logger, version=VERSION,
     final_paths ={
         "camper_fa_db"        : path.join(output_dir, "CAMPER_blast.faa"),
         "camper_hmm"          : path.join(output_dir, "CAMPER.hmm"),
-        "camper_fa_db_scores" : path.join(output_dir, "CAMPER_blast_scores.tsv"),
+        "camper_fa_db_cutoffs" : path.join(output_dir, "CAMPER_blast_scores.tsv"),
         "camper_distillate"       : path.join(output_dir, "CAMPER_distillate.tsv"),
         "camper_hmm_cutoffs"  : path.join(output_dir, "CAMPER_hmm_scores.tsv"),
     }
@@ -64,7 +64,7 @@ def process(camper_tar_gz, output_dir, logger, version=VERSION,
             tar.extract(v, temp_dir)
     
     # move tsv files, and hmm to location
-    for i in ["camper_fa_db_scores", "camper_distillate", "camper_hmm_cutoffs", "camper_hmm"]:
+    for i in ["camper_fa_db_cutoffs", "camper_distillate", "camper_hmm_cutoffs", "camper_hmm"]:
         move(path.join(temp_dir, tar_paths[i]), final_paths[i])
     
     # build dbs

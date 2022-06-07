@@ -1,195 +1,152 @@
 {
   "search_databases": {
     "kegg": null,
-    "kofam_hmm": null,
-    "kofam_ko_list": null,
-    "uniref": null,
-    "pfam": null,
-    "dbcan": null,
-    "viral_refseq": null,
-    "peptidase": null,
-    "camper_hmm_loc": null,
-    "camper_fa_db_loc": null,
-    "camper_hmm_cutoffs_loc": null,
-    "camper_fa_db_cutoffs_loc": null,
-    "fegenie_hmm": null
+    "kofam": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/kofam_profiles.hmm",
+    "kofam_ko_list": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/kofam_ko_list.tsv",
+    "uniref": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/uniref90.20220605.mmsdb",
+    "pfam": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/pfam.mmspro",
+    "dbcan": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/dbCAN-HMMdb-V10.txt",
+    "viral": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/refseq_viral.20220606.mmsdb",
+    "peptidase": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/peptidases.20220606.mmsdb",
+    "vogdb": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/vog_latest_hmms.txt",
+    "camper_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/CAMPER.hmm",
+    "camper_fa_db": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/CAMPER_blast.faa",
+    "camper_hmm_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/CAMPER_hmm_scores.tsv",
+    "camper_fa_db_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/CAMPER_blast_scores.tsv",
+    "fegenie_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/fegenie_iron_oxidation_reduction.hmm"
   },
-  "custom_dbs": null,
   "database_descriptions": {
-    "pfam_hmm_dat": null,
+    "pfam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/Pfam-A.hmm.dat.gz",
     "dbcan_fam_activities": null,
     "dbcan_subfam_ec": null,
-    "vogdb_annotations": null
+    "vog_annotations": null
   },
   "dram_sheets": {
-    "genome_summary_form": null,
-    "module_step_form": null,
-    "etc_module_database": null,
-    "function_heatmap_form": null,
-    "amg_database": null,
-    "camper_distillate_loc": null
+    "camper_distillate": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_test_06_01_22/CAMPER_distillate.tsv",
+    "genome_summary_form": "../../../dram_data/dram1.4_test_06_01_22/genome_summary_form.20220606.tsv",
+    "module_step_form": "../../../dram_data/dram1.4_test_06_01_22/module_step_form.20220606.tsv",
+    "etc_module_database": "../../../dram_data/dram1.4_test_06_01_22/etc_mdoule_database.20220606.tsv",
+    "function_heatmap_form": "../../../dram_data/dram1.4_test_06_01_22/function_heatmap_form.20220606.tsv",
+    "amg_database": "../../../dram_data/dram1.4_test_06_01_22/amg_database.20220606.tsv"
   },
-  "dram_version": "1.4.0",
   "description_db": null,
-  "settings": {
-    "kegg": {
-      "name": "KEGG db",
-      "citation": "Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M., and Tanabe, M.; KEGG: integrating viruses and cellular organisms. Nucleic Acids Res. 49, D545-D551 (2021)."
+  "dram_version": "1.4.0",
+  "setup_info": {
+    "camper_fa_db": {
+      "origin": "camper_tar_gz",
+      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
+      "name": "CAMPER FASTA db",
+      "version": "1.0.0-beta.1",
+      "Download time": "06/03/2022, 14:04:13",
+      "Origin": "Downloaded by DRAM"
+    },
+    "camper_hmm": {
+      "origin": "camper_tar_gz",
+      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
+      "name": "CAMPER HMM db",
+      "version": "1.0.0-beta.1",
+      "Download time": "06/03/2022, 14:04:13",
+      "Origin": "Downloaded by DRAM"
+    },
+    "camper_fa_db_cutoffs": {
+      "origin": "camper_tar_gz",
+      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
+      "name": "CAMPER FASTA cutoffs",
+      "version": "1.0.0-beta.1",
+      "Download time": "06/03/2022, 14:04:13",
+      "Origin": "Downloaded by DRAM"
+    },
+    "camper_distillate": {
+      "origin": "camper_tar_gz",
+      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
+      "name": "CAMPER Distillate form",
+      "version": "1.0.0-beta.1",
+      "Download time": "06/03/2022, 14:04:13",
+      "Origin": "Downloaded by DRAM"
+    },
+    "camper_hmm_cutoffs": {
+      "origin": "camper_tar_gz",
+      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
+      "name": "CAMPER HMM cutoffs",
+      "version": "1.0.0-beta.1",
+      "Download time": "06/03/2022, 14:04:13",
+      "Origin": "Downloaded by DRAM"
+    },
+    "fegenie_hmm": {
+      "name": "FeGenie HMM",
+      "citation": "Garber AI, Nealson KH, Okamoto A, McAllister SM, Chan CS, Barco RA and Merino N (2020) FeGenie: A Comprehensive Tool for the Identification of Iron Genes and Iron Gene Neighborhoods in Genome and Metagenome Assemblies. Front. Microbiol. 11:37. doi: 10.3389/fmicb.2020.00037",
+      "notes": "Only iron_oxidation and iron_reduction hmms are used.",
+      "version": "1.2",
+      "Download time": "06/03/2022, 14:03:33",
+      "Origin": "Downloaded by DRAM"
+    },
+    "fegenie_cutoffs": {
+      "name": "FeGenie cutoffs",
+      "citation": "Garber AI, Nealson KH, Okamoto A, McAllister SM, Chan CS, Barco RA and Merino N (2020) FeGenie: A Comprehensive Tool for the Identification of Iron Genes and Iron Gene Neighborhoods in Genome and Metagenome Assemblies. Front. Microbiol. 11:37. doi: 10.3389/fmicb.2020.00037",
+      "version": "1.2",
+      "Download time": "06/03/2022, 14:03:33",
+      "Origin": "Downloaded by DRAM"
     },
     "kofam_hmm": {
       "name": "KOfam db",
       "citation": "",
-      "Download time": "05/31/2022, 16:54:08",
+      "Download time": "06/03/2022, 18:42:23",
       "Origin": "Downloaded by DRAM"
     },
     "kofam_ko_list": {
       "name": "KOfam KO list",
       "citation": "",
-      "Download time": "05/31/2022, 16:54:08",
+      "Download time": "06/03/2022, 18:42:30",
       "Origin": "Downloaded by DRAM"
     },
     "uniref": {
       "name": "UniRef db",
+      "description_db_updated": "Unknown, or Never",
       "citation": "",
       "version": "90",
-      "Download time": "05/31/2022, 16:54:08",
+      "Download time": "06/05/2022, 18:48:40",
       "Origin": "Downloaded by DRAM"
     },
     "pfam": {
       "name": "Pfam db",
       "citation": "",
-      "Download time": "05/31/2022, 16:54:08",
+      "Download time": "06/06/2022, 08:16:59",
       "Origin": "Downloaded by DRAM"
     },
-    "pfam_hmm_dat": {
+    "pfam_hmm": {
       "name": "Pfam hmm dat",
+      "description_db_updated": "Unknown, or Never",
       "citation": "",
-      "Download time": "05/31/2022, 16:54:08",
+      "Download time": "06/06/2022, 10:51:00",
       "Origin": "Downloaded by DRAM"
     },
     "dbcan": {
       "name": "dbCAN db",
       "citation": "",
       "version": "10",
-      "Download time": "05/31/2022, 16:54:08",
+      "Download time": "06/06/2022, 10:54:17",
       "Origin": "Downloaded by DRAM"
     },
-    "dbcan_fam_activities": {
-      "name": "dbCAN family activities",
+    "viral": {
+      "name": "RefSeq Viral db",
+      "description_db_updated": "Unknown, or Never",
       "citation": "",
-      "version": "10",
-      "upload_date": "07292021",
-      "Download time": "05/31/2022, 16:54:08",
+      "viral_files": 2,
+      "Download time": "06/06/2022, 10:59:32",
       "Origin": "Downloaded by DRAM"
     },
-    "dbcan_subfam_ec": {
-      "name": "dbCAN subfamily EC numbers",
+    "peptidase": {
+      "name": "MEROPS peptidase db",
+      "description_db_updated": "Unknown, or Never",
       "citation": "",
-      "version": "10",
-      "upload_date": "07292021",
-      "Download time": "05/31/2022, 16:54:08",
+      "Download time": "06/06/2022, 11:21:45",
       "Origin": "Downloaded by DRAM"
     },
     "vogdb": {
       "name": "VOGDB db",
       "citation": "",
-      "version": "latest",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "vogdb_annotations": {
-      "name": "VOG annotations",
-      "citation": "",
-      "version": "latest"
-    },
-    "viral_refseq": {
-      "name": "RefSeq Viral db",
-      "citation": "",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "peptidase": {
-      "name": "MEROPS peptidase db",
-      "citation": "",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "genome_summary_form": {
-      "name": "Genome summary form",
       "branch": "master",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "module_step_form": {
-      "name": "Module step form",
-      "branch": "master",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "function_heatmap_form": {
-      "name": "Function heatmap form",
-      "branch": "master",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "amg_database": {
-      "name": "AMG database",
-      "branch": "master",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "etc_module_database": {
-      "name": "ETC module database",
-      "branch": "master",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "camper_hmm_loc": {
-      "origin": "camper_tar_gz",
-      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
-      "name": "CAMPER HMM db",
-      "version": "1.0.0-beta.1",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "camper_fa_db_loc": {
-      "origin": "camper_tar_gz",
-      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
-      "name": "CAMPER FASTA db",
-      "version": "1.0.0-beta.1",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "camper_hmm_cutoffs_loc": {
-      "origin": "camper_tar_gz",
-      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
-      "name": "CAMPER HMM cutoffs",
-      "version": "1.0.0-beta.1",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "camper_distillate_loc": {
-      "origin": "camper_tar_gz",
-      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
-      "name": "CAMPER Distillate form",
-      "version": "1.0.0-beta.1",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "camper_fa_db_cutoffs_loc": {
-      "origin": "camper_tar_gz",
-      "citation": "CAMPER has no citeation and is in beta so you should not be using it.",
-      "name": "CAMPER FASTA cutoffs",
-      "version": "1.0.0-beta.1",
-      "Download time": "05/31/2022, 16:54:08",
-      "Origin": "Downloaded by DRAM"
-    },
-    "fegenie_hmm": {
-      "name": "FeGenie",
-      "origin": "fegenie_tar_gz",
-      "citation": "Garber AI, Nealson KH, Okamoto A, McAllister SM, Chan CS, Barco RA and Merino N (2020) FeGenie: A Comprehensive Tool for the Identification of Iron Genes and Iron Gene Neighborhoods in Genome and Metagenome Assemblies. Front. Microbiol. 11:37. doi: 10.3389/fmicb.2020.00037",
-      "version": "1.2",
-      "Download time": "05/31/2022, 16:54:08",
+      "Download time": "06/06/2022, 11:30:14",
       "Origin": "Downloaded by DRAM"
     }
   }

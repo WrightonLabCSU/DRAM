@@ -114,6 +114,10 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,
                                        help='Annotate these fastas against UniRef, drastically increases run time and '
                                             'memory requirements')
+    annotate_genes_parser.add_argument('--use_camper', action='store_true', default=False,
+                                 help="Annotate these fastas against the CAMPER dataset to study polyphenol metabolism")
+    annotate_genes_parser.add_argument('--use_fegenie', action='store_true', default=False,
+                                 help="Annotate these fastas against the FeGenie dataset to study iron metabolism")
     annotate_genes_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                        help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
                                             'provided. Drastically decreases memory usage')

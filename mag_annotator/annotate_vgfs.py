@@ -422,7 +422,7 @@ def add_dramv_scores_and_flags(annotations, db_handler, virsorter_hits=None, inp
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500, split_contigs=False,
                   prodigal_mode='meta', trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350,
                   custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(),
-                  custom_hmm_name=(), use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
+                  custom_hmm_name=(), use_uniref=False, use_camper=False, use_fegenie=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
                   keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
 
     # check inputs
@@ -436,7 +436,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # get database locations
     db_handler = DatabaseHandler()
-    db_handler.filter_db_locs(low_mem_mode, use_uniref, True, VMAG_DBS_TO_ANNOTATE)
+    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, True, VMAG_DBS_TO_ANNOTATE)
 
     if virsorter_affi_contigs is not None:
         virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)

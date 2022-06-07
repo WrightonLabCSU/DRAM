@@ -57,7 +57,7 @@ if __name__ == '__main__':
                                          "not impact DRAM distillation")
     prepare_dbs_parser.add_argument('--pfam_loc', default=None,
                                     help="File path to pfam-A full file, if already downloaded (Pfam-A.full.gz)")
-    prepare_dbs_parser.add_argument('--pfam_hmm_dat', default=None,
+    prepare_dbs_parser.add_argument('--pfam_hmm_loc', default=None,
                                     help="pfam hmm .dat file to get PF descriptions, if already downloaded "
                                          "(Pfam-A.hmm.dat.gz)")
     prepare_dbs_parser.add_argument('--dbcan_loc', default=None, help="File path to dbCAN, if already downloaded "
@@ -70,7 +70,7 @@ if __name__ == '__main__':
                                     help='hmm file for vogdb, if already downloaded (vog.hmm.tar.gz)')
     prepare_dbs_parser.add_argument('--vog_annotations', default=None,
                                     help='vogdb annotations file, if already downloaded (vog.annotations.tsv.gz)')
-    prepare_dbs_parser.add_argument('--viral_refseq_loc', default=None,
+    prepare_dbs_parser.add_argument('--viral_loc', default=None,
                                     help="File path to merged viral protein faa, if already downloaded "
                                          "(viral.x.protein.faa.gz)")
     prepare_dbs_parser.add_argument('--peptidase_loc', default=None,
@@ -97,18 +97,18 @@ if __name__ == '__main__':
     prepare_dbs_parser.set_defaults(func=prepare_databases)
 
     # parser for setting database locations when you already have processed database files
-    set_db_locs_parser.add_argument('--kegg_db_loc', default=None, help='mmseqs2 database file from kegg .pep file')
+    set_db_locs_parser.add_argument('--kegg_loc', default=None, help='mmseqs2 database file from kegg .pep file')
     set_db_locs_parser.add_argument('--kofam_hmm_loc', default=None, help='hmm file for KOfam, already processed with'
                                                                           'hmmpress')
     set_db_locs_parser.add_argument('--kofam_ko_list_loc', default=None, help='KOfam ko list file')
-    set_db_locs_parser.add_argument('--uniref_db_loc', default=None, help='mmseqs2 database file from uniref .faa')
-    set_db_locs_parser.add_argument('--pfam_db_loc', default=None, help='mmseqs2 database file from pfam .hmm')
-    set_db_locs_parser.add_argument('--pfam_hmm_dat', default=None, help='pfam hmm .dat file to get PF descriptions')
-    set_db_locs_parser.add_argument('--dbcan_db_loc', default=None,
+    set_db_locs_parser.add_argument('--uniref_loc', default=None, help='mmseqs2 database file from uniref .faa')
+    set_db_locs_parser.add_argument('--pfam_loc', default=None, help='mmseqs2 database file from pfam .hmm')
+    set_db_locs_parser.add_argument('--pfam_hmm_loc', default=None, help='pfam hmm .dat file to get PF descriptions')
+    set_db_locs_parser.add_argument('--dbcan_loc', default=None,
                                     help='hmm file for dbcan, already processed with hmmpress')
     set_db_locs_parser.add_argument('--dbcan_fam_activities', default=None, help='CAZY family activities file')
     set_db_locs_parser.add_argument('--dbcan_subfam_ec', default=None, help='CAZY sub-family ECs file')
-    set_db_locs_parser.add_argument('--vogdb_db_loc', default=None,
+    set_db_locs_parser.add_argument('--vogdb_loc', default=None,
                                     help='hmm file for vogdb, already processed with hmmpress')
     set_db_locs_parser.add_argument('--vog_annotations', default=None,
                                     help='vog annotations file') # add loc to vog_annotations to match the rest
@@ -116,9 +116,9 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--camper_tar_gz_loc', default=None, help='')
     set_db_locs_parser.add_argument('--fegenie_tar_gz_loc', default=None, help='')
 
-    set_db_locs_parser.add_argument('--viral_refseq_db_loc', default=None,
+    set_db_locs_parser.add_argument('--viral_refseq_loc', default=None,
                                     help='mmseqs2 database file from ref seq viral gene collection')
-    set_db_locs_parser.add_argument('--peptidase_db_loc', default=None,
+    set_db_locs_parser.add_argument('--peptidase_loc', default=None,
                                     help='mmseqs2 database file from MEROPS database')
     set_db_locs_parser.add_argument('--description_db_loc', default=None,
                                     help="Location to write description sqlite db")

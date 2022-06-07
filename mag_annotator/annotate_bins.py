@@ -1170,9 +1170,9 @@ def annotate_bins(fasta_locs, output_dir='.', min_contig_size=2500, prodigal_mod
 def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60, 
                               rbh_bit_score_threshold=350,
                               custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
-                              custom_hmm_cutoffs_loc=(), use_uniref=False, use_camper=False,  use_vogdb=False,
-                              kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True,
-                              low_mem_mode=False, threads=10, verbose=True):
+                              custom_hmm_cutoffs_loc=(), use_uniref=False, use_camper=False, use_fegenie=False, 
+                              use_vogdb=False, kofam_use_dbcan2_thresholds=False, rename_genes=True, 
+                              keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
@@ -1185,9 +1185,9 @@ def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60,
 
 def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
                           custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
-                          custom_hmm_cutoffs_loc=(), use_uniref=False, use_camper=False,  use_vogdb=False,
-                          kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True, low_mem_mode=False,
-                          threads=10, verbose=True):
+                          custom_hmm_cutoffs_loc=(), use_uniref=False, use_camper=False, use_fegenie=False,  
+                          use_vogdb=False, kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True, 
+                          low_mem_mode=False, threads=10, verbose=True):
     # set up
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations return no paths: %s' % input_fasta)
@@ -1202,7 +1202,7 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
 
     # get database locations
     db_handler = DatabaseHandler()
-    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
+    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
 
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')

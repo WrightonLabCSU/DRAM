@@ -56,13 +56,13 @@ def get_iso_date():
     return datetime.today().strftime('%Y%m%d')
 
 
-def download_pfam_hmm_dat(output_dir='.', logger=LOGGER, verbose=True):
-    pfam_hmm_dat = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
+def download_pfam_hmm(output_dir='.', logger=LOGGER, verbose=True):
+    pfam_hmm = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
     link_path = 'ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz'
     logger.debug(f"Downloading Pfam from: {link_path}")
-    download_file(link_path, logger, pfam_hmm_dat,
+    download_file(link_path, logger, pfam_hmm,
                   verbose=verbose)
-    return pfam_hmm_dat
+    return pfam_hmm
 
 
 def download_dbcan(output_dir='.', logger=LOGGER, dbcan_hmm=None, version=DEFAULT_DBCAN_RELEASE, verbose=True):
@@ -123,7 +123,8 @@ def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
         yield seq
 
 
-def process_kegg_db(kegg_loc, output_dir, logger, gene_ko_link_loc=None, download_date=None, threads=10, verbose=True):
+def process_kegg_db(kegg_loc, output_dir, logger, gene_ko_link_loc=None, download_date=None, 
+                    threads=10, verbose=True):
     if download_date is None:
         download_date = get_iso_date()
     if gene_ko_link_loc is not None:
@@ -137,7 +138,7 @@ def process_kegg_db(kegg_loc, output_dir, logger, gene_ko_link_loc=None, downloa
     kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
     make_mmseqs_db(kegg_mod_loc, kegg_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('KEGG database processed')
-    return {'kegg_db_loc': kegg_mmseqs_db}
+    return {'kegg_db': kegg_mmseqs_db}
 
 
 def process_kofam_hmm(kofam_profile_tar_gz, output_dir=DFLT_OUTPUT_DIR, logger=LOGGER, threads=1, verbose=False):
@@ -148,7 +149,7 @@ def process_kofam_hmm(kofam_profile_tar_gz, output_dir=DFLT_OUTPUT_DIR, logger=L
     merge_files(glob(path.join(kofam_profiles, 'profiles', '*.hmm')), merged_kofam_profiles)
     run_process(['hmmpress', '-f', merged_kofam_profiles], logger, verbose=verbose)
     LOGGER.info('KOfam database processed')
-    return {'kofam_hmm_loc': merged_kofam_profiles}
+    return {'kofam_hmm': merged_kofam_profiles}
 
 
 def download_kofam_ko_list(output_dir='.', logger=LOGGER, verbose=False):
@@ -220,7 +221,7 @@ def process_uniref(uniref_fasta_zipped, output_dir='.', logger=LOGGER,
     uniref_mmseqs_db = path.join(output_dir, 'uniref%s.%s.mmsdb' % (version, get_iso_date()))
     make_mmseqs_db(uniref_fasta_zipped, uniref_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('UniRef database processed')
-    return {'uniref_db': uniref_mmseqs_db}
+    return {'uniref': uniref_mmseqs_db}
 
 
 def process_mmspro(full_alignment, output_dir, logger=LOGGER, db_name=DEFAULT_MMMSPRO_DB_NAME, threads=10, verbose=True):
@@ -240,7 +241,7 @@ def process_mmspro(full_alignment, output_dir, logger=LOGGER, db_name=DEFAULT_MM
 def process_pfam(pfam_full_zipped, output_dir='.', logger=LOGGER, threads=10, verbose=True):
     pfam_profile = process_mmspro(pfam_full_zipped, output_dir, logger, 'pfam', threads, verbose)
     LOGGER.info('PFAM database processed')
-    return {'pfam_db': pfam_profile}
+    return {'pfam': pfam_profile}
 
 
 def process_dbcan(input, output_dir, logger=LOGGER, verbose=True, threads=1):
@@ -248,21 +249,21 @@ def process_dbcan(input, output_dir, logger=LOGGER, verbose=True, threads=1):
     move(input, output)
     run_process(['hmmpress', '-f', output], logger, verbose=verbose)
     LOGGER.info('dbCAN database processed')
-    return {'dbcan_db': output}
+    return {'dbcan': output}
 
 
 def process_viral(merged_viral_faas, output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FILES, threads=10, verbose=True):
     refseq_viral_mmseqs_db = path.join(output_dir, 'refseq_viral.%s.mmsdb' % get_iso_date())
     make_mmseqs_db(merged_viral_faas, refseq_viral_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('RefSeq viral database processed')
-    return {'viral_db': refseq_viral_mmseqs_db}
+    return {'viral': refseq_viral_mmseqs_db}
 
 
 def process_peptidase(peptidase_faa, output_dir='.', logger=LOGGER, threads=10, verbose=True):
     peptidase_mmseqs_db = path.join(output_dir, 'peptidases.%s.mmsdb' % get_iso_date())
     make_mmseqs_db(peptidase_faa, peptidase_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('MEROPS database processed')
-    return {'peptidase_db': peptidase_mmseqs_db}
+    return {'peptidase': peptidase_mmseqs_db}
 
 
 def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_VOGDB_VERSION, threads=1, verbose=True):
@@ -274,12 +275,12 @@ def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_
     merge_files(glob(path.join(hmm_dir, 'VOG*.hmm')), vog_hmms)
     run_process(['hmmpress', '-f', vog_hmms], logger, verbose=verbose) 
     LOGGER.info('VOGdb database processed')
-    return {'vogdb_db': vog_hmms}
+    return {'vogdb': vog_hmms}
 
 
 def download_vog_annotations(output_dir, logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_annotations = path.join(output_dir, 'vog_annotations_%s.tsv.gz' % version)
-    download_file('http://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % vogdb_version, logger,
+    download_file('http://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % version, logger,
                   vog_annotations, verbose=verbose)
     return vog_annotations
 
@@ -331,9 +332,9 @@ def check_file_exists(*paths):
 
 def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc=None, kofam_hmm_loc=None,
                       kofam_ko_list_loc=None, kegg_download_date=None, uniref_loc=None,
-                      uniref_version=DEFAULT_UNIREF_VERSION, pfam_loc=None, pfam_hmm_dat=None,
+                      uniref_version=DEFAULT_UNIREF_VERSION, pfam_loc=None, pfam_hmm_loc=None,
                       dbcan_loc=None, dbcan_fam_activities:str=None, dbcan_subfam_ec:str=None, dbcan_version=DEFAULT_DBCAN_RELEASE,
-                      dbcan_date=DEFAULT_DBCAN_DATE, viral_refseq_loc=None, peptidase_loc=None,
+                      dbcan_date=DEFAULT_DBCAN_DATE, viral_loc=None, peptidase_loc=None,
                       vogdb_loc=None, vogdb_version=DEFAULT_VOGDB_VERSION, vog_annotations=None,
                       genome_summary_form_loc=None, module_step_form_loc=None,
                       etc_module_database_loc=None, function_heatmap_form_loc=None,
@@ -343,6 +344,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                       fegenie_tar_gz_loc=None,
                       skip_uniref=False, keep_database_files=False,
                       branch='master', threads=10, verbose=True, select_db=None):
+
 
     dram_settings = {
         'kegg':                  {'name': 'KEGG db', 
@@ -355,7 +357,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                                   'description_db_updated': 'Unknown, or Never', 
                                   'citation': UNIREF_CITATION},
         'pfam':                  {'name': 'Pfam db', 'citation': PFAM_CITATION},
-        "pfam_hmm_dat":          {'name': 'Pfam hmm dat', 
+        "pfam_hmm":          {'name': 'Pfam hmm dat', 
                                   'description_db_updated': 'Unknown, or Never', 
                                   'citation': PFAM_CITATION},
         "dbcan":                 {'name': 'dbCAN db', 'citation': DBCAN_CITATION},
@@ -386,13 +388,13 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "kofam_ko_list":         {},
         'uniref':                {'version': uniref_version},
         'pfam':                  {},
-        "pfam_hmm_dat":          {},
+        "pfam_hmm":          {},
         "dbcan":                 {'version': dbcan_version},
         "dbcan_fam_activities":  {'version': dbcan_version, 'upload_date': dbcan_date}, 
         "dbcan_subfam_ec":       {'version': dbcan_version, 'upload_date': dbcan_date},
         "vogdb":                 {'version': vogdb_version},
-        "vog_annotations":     {'version': vogdb_version},
-        "viral":          {},
+        "vog_annotations":       {'version': vogdb_version},
+        "viral":                 {},
         "peptidase":             {}, 
         "genome_summary_form":   {"branch": branch},
         "module_step_form":      {"branch": branch},
@@ -409,7 +411,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "kofam_ko_list": {},
         'uniref': {"version": uniref_version},
         'pfam': {},
-        "pfam_hmm_dat": {},
+        "pfam_hmm": {},
         "dbcan": {},
         "dbcan_fam_activities": {}, 
         "dbcan_subfam_ec": {},
@@ -502,12 +504,13 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
             j['Original path'] = locs[i]
             if i not in process_functions:
                 LOGGER.info(f"Copying {locs[i]} to output_dir")
-                locs[i] = move(locs[i], output_dir)
+                locs[i] = copyfile(locs[i], output_dir)
 
     LOGGER.info("All raw data files were downloaded successfully")
 
     # Process databases
     for i in locs: 
+        processed_locs = {} 
         if i in process_functions:
             LOGGER.info(f"Processing {i}")
             processed_locs = process_functions[i](locs[i], output_dir, LOGGER, 
@@ -522,24 +525,22 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
             v = path.join(output_dir, path.basename(v))
             # update_dram_forms the settings per OUTPUT fill, including the process_settings
             #  and database_settings, which are per input file.
-            db_handler.config['settings'][k] = {**dram_settings[k], **process_settings[i], 
+            if db_handler.config.get('setup_info') is None:
+                db_handler.config['setup_info'] = {}
+            db_handler.config['setup_info'][k] = {**dram_settings[k], **process_settings[i], 
                                                 **database_settings[i]}
-            db_handler.set_database_paths(**processed_locs)
+            db_handler.set_database_paths(**{f"{k}_loc":v})
             db_handler.write_config()
             LOGGER.info(f'Moved {i} to final destination, configuration updated')
             
 
 
-    output_dbs['description_db_loc'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
-
+    description_db_loc = path.realpath(path.join(output_dir, 'description_db.sqlite'))
     LOGGER.info('Populating the description db, this may take some time')
-    db_handler.populate_description_db(output_dbs['description_db_loc'], update_config=False)
-    for i, j in db_handler.config['settings'].items():
-        if j.get('description_db_updated') is not None:
-            if i not in locs:
-                LOGGER.warn('The select_db argument is in beta. It is not implmeted for'
-                            'description updating and so all descriptions are being updated.')
-            j['description_db_updated'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    if select_db is not None:
+        LOGGER.warn('The select_db argument is in beta. It is not implanted for'
+                    ' description updating and so all descriptions are being updated.')
+    db_handler.populate_description_db(description_db_loc, update_config=False)
     LOGGER.info('DRAM description database populated')
 
     if not keep_database_files:
@@ -596,7 +597,7 @@ os.system('DRAM-setup.py prepare_databases --output_dir download_test --select_d
           ' --uniref_version'            #  UniRef version to download (default: 90)
           ' --skip_uniref'               # Do not download and process uniref90. Saves time and memory usage and does not impact DRAM distillation
           ' --pfam_loc'                  # File path to pfam-A full file, if already downloaded (Pfam-A.full.gz) (default: None)
-          ' --pfam_hmm_dat'              # pfam hmm .dat file to get PF descriptions, if already downloaded (Pfam-A.hmm.dat.gz) (default: None)
+          ' --pfam_hmm'              # pfam hmm .dat file to get PF descriptions, if already downloaded (Pfam-A.hmm.dat.gz) (default: None)
           ' --dbcan_loc'                 # File path to dbCAN, if already downloaded (dbCAN-HMMdb-V9.txt) (default: None)
           ' --dbcan_fam_activities'      # CAZY family activities file, if already downloaded (CAZyDB.07302020.fam-activities.txt) (default: None)
           ' --dbcan_version'             # version of dbCAN to use (default: 10)
