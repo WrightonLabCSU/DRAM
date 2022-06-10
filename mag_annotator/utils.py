@@ -1,11 +1,20 @@
 import re
 import subprocess
 from collections import Counter
-from os import path
+from os import path, stat
 from urllib.request import urlopen, urlretrieve
 from urllib.error import HTTPError
 import pandas as pd
 import logging
+from typing import Callable
+
+HMMSCAN_ALL_COLUMNS = ['query_id', 'query_ascession', 'query_length', 'target_id', 'target_ascession', 'target_length',
+                       'full_evalue', 'full_score', 'full_bias', 'domain_number', 'domain_count', 'domain_cevalue',
+                       'domain_ievalue', 'domain_score', 'domain_bias', 'target_start', 'target_end', 'alignment_start',
+                       'alignment_end', 'query_start', 'query_end', 'accuracy', 'description']
+HMMSCAN_COLUMN_TYPES = [str, str, int, str, str, int, float, float, float, int, int, float, float, float, float, int,
+                        int, int, int, int, int, float, str]
+
 
 
 def download_file(url, logger, output_file=None, verbose=True):
@@ -65,6 +74,31 @@ def run_process(command, logger, shell:bool=False, capture_stdout:bool=True, sav
 
     if capture_stdout:
         return results.stdout
+
+
+# TODO: refactor following to methods to a shared run hmm step and individual get description steps
+def parse_hmmsearch_domtblout(file):
+    df_lines = list()
+    for line in open(file):
+        if not line.startswith('#'):
+            line = line.split()
+            line = line[:22] + [' '.join(line[22:])]
+            df_lines.append(line)
+    hmmsearch_frame = pd.DataFrame(df_lines, columns=HMMSCAN_ALL_COLUMNS)
+    for i, column in enumerate(hmmsearch_frame.columns):
+        hmmsearch_frame[column] = hmmsearch_frame[column].astype(HMMSCAN_COLUMN_TYPES[i])
+    return hmmsearch_frame
+
+
+def run_hmmscan(genes_faa:str, db_loc:str, db_name:str, output_loc:str, formater:Callable,
+                logger:logging.Logger, threads:int=2, db_handler=None, verbose:bool=False):
+    output = path.join(output_loc, f'{db_name}_results.unprocessed.b6')
+    run_process(['hmmsearch', '--domtblout', output, '--cpu', str(threads), db_loc, genes_faa], logger, verbose=verbose)
+    # Parse hmmsearch output
+    if not (path.isfile(output) and stat(output).st_size > 0):
+        return pd.DataFrame()
+    hits = parse_hmmsearch_domtblout(output)
+    return formater(hits)
 
 
 def make_mmseqs_db(fasta_loc, output_loc, logger, create_index=True, threads=10, verbose=False):

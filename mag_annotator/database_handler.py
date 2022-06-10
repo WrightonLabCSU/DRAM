@@ -14,7 +14,7 @@ from mag_annotator import __version__ as current_dram_version
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_description_db
 from mag_annotator.utils import divide_chunks, setup_logger
 
-SEARCH_DATABASES = {'kegg', 'kofam', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
+SEARCH_DATABASES = {'kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
                     'camper', 'fegenie'}
 DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database', 'function_heatmap_form',
                'camper_fa_db_cutoffs', 'camper_hmm_cutoffs', 'amg_database')
@@ -141,35 +141,38 @@ class DatabaseHandler:
             for chunk in divide_chunks(list(ids), 499)
             for des in self.session.query(description_class).filter(description_class.id.in_(chunk)).all() 
         ]
+        self.session.query(TABLE_NAME_TO_CLASS_DICT['pfam_description']).all() 
         if len(descriptions) == 0:
             warnings.warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
+        breakpoint()
         return {i.id: i.description for i in descriptions}
 
     @staticmethod
     def get_database_names():
         return TABLE_NAME_TO_CLASS_DICT.keys()
 
-    def get_setings_str(self):
+    def get_settings_str(self):
         out_str = ""
-        settings = self.config.get('settings')
+        settings = self.config.get('setup_info')
         if settings is None:
             raise Warning('there are no settings, the config is corrupted or too old.')
             return 'there are no settings, the config is corrupted or too old.'
         for i in ["search_databases", "database_descriptions", "dram_sheets"]:
             out_str += "\n"
             for k in self.config.get(i):
-                out_str += f"\n{settings[k]['name']}:"
-                for l, w in settings[k].items():
-                    if l =='name':
-                        continue
-                    out_str += f"\n    {l.title()}: {w}"
+                if settings.get(k) is not None:
+                    out_str += f"\n{settings[k]['name']}:"
+                    for l, w in settings[k].items():
+                        if l =='name':
+                            continue
+                        out_str += f"\n    {l.title()}: {w}"
         return out_str
 
 
     def set_database_paths(self, kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_loc=None,
-                           pfam_loc=None, pfam_hmm_loc=None, dbcan_loc=None, dbcan_fam_activities=None,
-                           dbcan_subfam_ec=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None, 
+                           pfam_loc=None, pfam_hmm_loc=None, dbcan_loc=None, dbcan_fam_activities_loc=None,
+                           dbcan_subfam_ec_loc=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None, 
                            vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None, 
                            camper_hmm_loc=None, camper_fa_db_loc=None, camper_hmm_cutoffs_loc=None,
                            camper_fa_db_cutoffs_loc=None, camper_distillate_loc=None, fegenie_hmm_loc=None,
@@ -185,8 +188,8 @@ class DatabaseHandler:
                 raise ValueError("Database location does not exist: %s" % loc)
         locs = {
                 "search_databases": {
-                  'kegg': kegg_db_loc,
-                  'kofam': kofam_hmm_loc,
+                  'kegg_db': kegg_db_loc,
+                  'kofam_hmm': kofam_hmm_loc,
                   'kofam_ko_list': kofam_ko_list_loc,
                   'uniref': uniref_loc,
                   'pfam': pfam_loc,
@@ -202,9 +205,9 @@ class DatabaseHandler:
                 },
                 "database_descriptions": {
                   'pfam_hmm': pfam_hmm_loc,
-                  'dbcan_fam_activities': dbcan_fam_activities,
-                  'dbcan_subfam_ec': dbcan_subfam_ec,
-                  'vog_annotations': vog_annotations,
+                  'dbcan_fam_activities': dbcan_fam_activities_loc,
+                  'dbcan_subfam_ec': dbcan_subfam_ec_loc,
+                  'vog_annotations': vog_annotations_loc,
                 },
                 "dram_sheets": {
                   'camper_distillate': camper_distillate_loc,
@@ -285,7 +288,6 @@ class DatabaseHandler:
                 description_list.append({'id': ascession, 'description': description})
         return description_list
 
-    
     @staticmethod
     def process_dbcan_descriptions(dbcan_fam_activities, dbcan_subfam_ec):
         def line_reader(line):
@@ -407,7 +409,7 @@ class DatabaseHandler:
             dbs_to_use = master_list
         # filter out dbs for low mem mode
         if low_mem_mode:
-            if ('kofam' not in self.config.get('search_databases')) or ('kofam_ko_list' not in self.config.get('search_databases')):
+            if ('kofam_hmm' not in self.config.get('search_databases')) or ('kofam_ko_list' not in self.config.get('search_databases')):
                 raise ValueError('To run in low memory mode KOfam must be configured for use in DRAM')
             dbs_to_use = [i for i in dbs_to_use if i not in ('uniref', 'kegg', 'vogdb')]
         # check on uniref status
@@ -445,7 +447,7 @@ def print_database_locations(config_loc=None):
     # search databases
     print('Processed search databases')
     print('KEGG db: %s' % conf.config.get('search_databases').get('kegg'))
-    print('KOfam db: %s' % conf.config.get('search_databases').get('kofam'))
+    print('KOfam db: %s' % conf.config.get('search_databases').get('kofam_hmm'))
     print('KOfam KO list: %s' % conf.config.get('search_databases').get('kofam_ko_list'))
     print('UniRef db: %s' % conf.config.get('search_databases').get('uniref'))
     print('Pfam db: %s' % conf.config.get('search_databases').get('pfam'))
@@ -478,7 +480,7 @@ def print_database_locations(config_loc=None):
 
 def print_database_settings(config_loc=None):
     conf = DatabaseHandler(config_loc)
-    print(conf.get_setings_str())
+    print(conf.get_settings_str())
 
 
 

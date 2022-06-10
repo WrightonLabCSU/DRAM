@@ -2,10 +2,12 @@ from os import path
 import tarfile
 from shutil import move, rmtree
 from mag_annotator.utils import download_file, run_process, make_mmseqs_db
+from functools import partial
+import logging
+import pandas as pd
 
 VERSION = '1.0.0-beta.1'
-
-
+NAME = 'camper'
 CITATION = "CAMPER has no citeation and is in beta so you should not be using it."
 DRAM_SETTINGS = { 
     'camper_hmm':           {'origin': "camper_tar_gz", 'citation': CITATION, 'name': 'CAMPER HMM db'}, 
@@ -72,3 +74,105 @@ def process(camper_tar_gz, output_dir, logger, version=VERSION,
     run_process(['hmmpress', '-f', final_paths["camper_hmm"]], logger, verbose=verbose)  # all are pressed just in case
     return final_paths
 
+
+def blast_search_formater(hits_path, db_name, info_db, logger):
+    if stat(hits_path).st_size == 0:
+        return pd.DataFrame()
+    hits = pd.read_csv(hits_path, sep='\t', header=None, 
+                       names=BOUTFMT6_COLUMNS, index_col='qId')
+    hits = hits.merge(info_db, how='left',left_on="tId", right_index=True)
+    rank_col = f"{db_name}_rank"
+    hits[rank_col] = hits.apply(rank_per_row, axis=1)
+    hits.dropna(subset=[rank_col], inplace=True)
+    logger.info('Getting descriptions of hits from %s' % db_name)
+    hits = hits[['tId', rank_col, 'bitScore', 'ID_for_distillate', 'definition']]
+    hits.rename(columns={
+            'tId': f"{db_name}_hits",
+            'ID_for_distillate': f"{db_name}_id", 
+            'bitScore': f"{db_name}_bitScore",  
+            'definition': f"{db_name}_definition"
+        },
+        inplace=True)
+    hits[f"{db_name}_search_type"] = 'blast'
+    return hits
+
+
+#TODO decide if we need use_hmmer_thresholds:bool=False
+def hmmscan_formater(hits:pd.DataFrame,  db_name:str, 
+                             hmm_info_path:str, top_hit:bool=True):
+    if hmm_info_path is None:
+        hmm_info = None
+        hits = hits[hits.apply(get_sig_row, axis=1)]
+    else:
+        hmm_info = pd.read_csv(hmm_info_path, sep='\t', index_col=0)
+        hits = hits.merge(hmm_info, how='left',left_on="target_id", right_index=True)
+        hits['bitScore'] = hits.apply(bitScore_per_row, axis=1)
+        hits['score_rank'] = hits.apply(rank_per_row, axis=1)
+        hits.dropna(subset=['score_rank'], inplace=True)
+    if len(hits) == 0:
+        # if nothing significant then return nothing, don't get descriptions
+        return pd.DataFrame()
+    if top_hit:
+        # Get the best hits
+        # TODO check we want top hit
+        hits = hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    hits.set_index('query_id', inplace=True, drop=True)
+    hits.rename_axis(None, inplace=True)
+    if 'definition' in hits.columns:
+        hits = hits[['target_id', 'score_rank', 'bitScore', 'definition']]
+        hits.columns = [f"{db_name}_id", f"{db_name}_rank", 
+                        f"{db_name}_bitScore", f"{db_name}_hits"]
+    else:
+        hits = hits[['target_id', 'score_rank', 'bitScore']]
+        hits.columns = [f"{db_name}_id", f"{db_name}_rank", 
+                        f"{db_name}_bitScore"]
+    # Rename
+    hits[f"{db_name}_search_type"] = 'hmm'
+    return hits
+
+
+def blast_search(query_db, target_db, working_dir, info_db_path, 
+                 db_name, logger, threads=10, verbose=False):
+    """A convenience function to do a blast style forward best hits search"""
+    # Get kegg hits
+    info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
+    bit_score_threshold = get_minimum_bitscore(info_db)
+    hits_path = get_best_hits(query_db, target_db, working_dir, 'gene', db_name, 
+                         bit_score_threshold, threads, verbose=verbose)
+    return blast_search_formater(hits_path, db_name, info_db, logger)
+
+
+# in the future the database will get the same input as was given in the data
+def search(query_db:str, genes_faa:str, temp_dir:str, logger:logging.Logger, 
+           camper_fa_db:str, camper_hmm:str, camper_fa_db_cutoffs:str, 
+           camper_hmm_cutoffs:str):
+        logger.info(f'Getting hits from {NAME}')
+        fasta = blast_search(query_db=query_db, 
+                             target_db=camper_fa_db, 
+                             working_dir=tmp_dir, 
+                             info_db_path=camper_fa_db_cutoffs,
+                             db_name=NAME, 
+                             logger=logger,
+                             threads=threads,
+                             verbose=verbose,)
+        hmm = run_hmmscan(genes_faa=gene_faa,
+                          db_loc=camper_hmm,
+                          db_name=NAME,
+                          threads=threads,
+                          output_loc=tmp_dir,
+                          formater=partial(
+                              hmmscan_formater,
+                              db_name=NAME,
+                              hmm_info_path=camper_hmm_cutoffs,
+                              top_hit=True
+                          ))
+        full = pd.concat([fasta, hmm])
+        return (full
+               .groupby(full.index)
+               .apply(
+                   lambda x: (x
+                              .sort_values(f'{NAME}_search_type', ascending=True) # make sure hmm is first
+                              .sort_values(f'{NAME}_bitScore', ascending=False)
+                              .iloc[0])
+                  )
+               )

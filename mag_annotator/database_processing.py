@@ -27,16 +27,16 @@ DFLT_OUTPUT_DIR = '.'
 LOGGER = logging.getLogger("database_processing.log")
 DEFAULT_MMMSPRO_DB_NAME = 'db'
 
-from camper_kit import download as download_camper_tar_gz
-from camper_kit import process as process_camper_tar_gz
-from camper_kit import DOWNLOAD_OPTIONS as CAMPER_DOWNLOAD_OPTIONS
-from camper_kit import PROCESS_OPTIONS as CAMPER_PROCESS_OPTIONS
-from camper_kit import DRAM_SETTINGS as CAMPER_DRAM_SETTINGS
-from fegenie_kit import download as download_fegenie_tar_gz
-from fegenie_kit import process as process_fegenie_tar_gz
-from fegenie_kit import DOWNLOAD_OPTIONS as FEGENIE_DOWNLOAD_OPTIONS
-from fegenie_kit import PROCESS_OPTIONS as FEGENIE_PROCESS_OPTIONS
-from fegenie_kit import DRAM_SETTINGS as FEGENIE_DRAM_SETTINGS
+from mag_annotator.camper_kit import download as download_camper_tar_gz
+from mag_annotator.camper_kit import process as process_camper_tar_gz
+from mag_annotator.camper_kit import DOWNLOAD_OPTIONS as CAMPER_DOWNLOAD_OPTIONS
+from mag_annotator.camper_kit import PROCESS_OPTIONS as CAMPER_PROCESS_OPTIONS
+from mag_annotator.camper_kit import DRAM_SETTINGS as CAMPER_DRAM_SETTINGS
+from mag_annotator.fegenie_kit import download as download_fegenie_tar_gz
+from mag_annotator.fegenie_kit import process as process_fegenie_tar_gz
+from mag_annotator.fegenie_kit import DOWNLOAD_OPTIONS as FEGENIE_DOWNLOAD_OPTIONS
+from mag_annotator.fegenie_kit import PROCESS_OPTIONS as FEGENIE_PROCESS_OPTIONS
+from mag_annotator.fegenie_kit import DRAM_SETTINGS as FEGENIE_DRAM_SETTINGS
 
 KEGG_CITATION = "Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M., and Tanabe, M.; KEGG: integrating viruses and cellular organisms. Nucleic Acids Res. 49, D545-D551 (2021)."
 GENE_KO_LINK_CITATION = ""
