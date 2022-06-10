@@ -145,29 +145,32 @@ class DatabaseHandler:
             for chunk in divide_chunks(list(ids), 499)
             for des in self.session.query(description_class).filter(description_class.id.in_(chunk)).all() 
         ]
+        self.session.query(TABLE_NAME_TO_CLASS_DICT['pfam_description']).all() 
         if len(descriptions) == 0:
             warnings.warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
+        breakpoint()
         return {i.id: i.description for i in descriptions}
 
     @staticmethod
     def get_database_names():
         return TABLE_NAME_TO_CLASS_DICT.keys()
 
-    def get_setings_str(self):
+    def get_settings_str(self):
         out_str = ""
-        settings = self.config.get('settings')
+        settings = self.config.get('setup_info')
         if settings is None:
             raise Warning('there are no settings, the config is corrupted or too old.')
             return 'there are no settings, the config is corrupted or too old.'
         for i in ["search_databases", "database_descriptions", "dram_sheets"]:
             out_str += "\n"
             for k in self.config.get(i):
-                out_str += f"\n{settings[k]['name']}:"
-                for l, w in settings[k].items():
-                    if l =='name':
-                        continue
-                    out_str += f"\n    {l.title()}: {w}"
+                if settings.get(k) is not None:
+                    out_str += f"\n{settings[k]['name']}:"
+                    for l, w in settings[k].items():
+                        if l =='name':
+                            continue
+                        out_str += f"\n    {l.title()}: {w}"
         return out_str
 
 
@@ -288,7 +291,6 @@ class DatabaseHandler:
                 description_list.append({'id': ascession, 'description': description})
         return description_list
 
-    
     @staticmethod
     def process_dbcan_descriptions(dbcan_fam_activities, dbcan_subfam_ec):
         def line_reader(line):
@@ -354,38 +356,38 @@ class DatabaseHandler:
             remove(self.config.get('description_db'))
         create_description_db(self.config.get('description_db'))
         # fill database
-        #temp# if self.config.get('search_databases').get('kegg') is not None:
-        #temp#     self.add_descriptions_to_database(
-        #temp#         self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['kegg']), 
-        #temp#         'kegg_description',
-        #temp#         clear_table=True)
-        #temp#     self.config['setup_info']['kegg']['description_db_updated'] = \
-        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        #temp#     self.logger.info('KEGG Description updated')
-        #temp# if self.config.get('search_databases').get('uniref') is not None:
-        #temp#     self.add_descriptions_to_database(
-        #temp#         self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['uniref']), 
-        #temp#         'uniref_description', clear_table=True)
-        #temp#     self.config['setup_info']['uniref']['description_db_updated'] = \
-        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        #temp#     self.logger.info('UniRef Description updated')
-        #temp# if self.config.get('database_descriptions').get('pfam_hmm') is not None:
-        #temp#     self.add_descriptions_to_database( self.process_pfam_descriptions(self.config.get('database_descriptions')['pfam_hmm']), 'pfam_description', clear_table=True)
-        #temp#     self.config['setup_info']['pfam_hmm']['description_db_updated'] = \
-        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        #temp#     self.logger.info('Pfam Description updated')
-        #temp# if self.config.get('database_descriptions').get('dbcan_fam_activities') is not None:
-        #temp#     self.add_descriptions_to_database(self.process_dbcan_descriptions( self.config.get('database_descriptions')['dbcan_fam_activities'], self.config.get('database_descriptions')['dbcan_subfam_ec']), 'dbcan_description', clear_table=True)
-        #temp#     self.config['setup_info']['dbcan_fam_activities']['description_db_updated'] = \
-        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        #temp#     self.logger.info('DBCAN Description updated')
-        #temp# if self.config.get('search_databases').get('viral') is not None:
-        #temp#     self.add_descriptions_to_database(
-        #temp#         self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['viral']),
-        #temp#         'viral_description', clear_table=True)
-        #temp#     self.config['setup_info']['viral']['description_db_updated'] = \
-        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        #temp#     self.logger.info('Viral Description updated')
+        if self.config.get('search_databases').get('kegg') is not None:
+            self.add_descriptions_to_database(
+                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['kegg']), 
+                'kegg_description',
+                clear_table=True)
+            self.config['setup_info']['kegg']['description_db_updated'] = \
+                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.logger.info('KEGG Description updated')
+        if self.config.get('search_databases').get('uniref') is not None:
+            self.add_descriptions_to_database(
+                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['uniref']), 
+                'uniref_description', clear_table=True)
+            self.config['setup_info']['uniref']['description_db_updated'] = \
+                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.logger.info('UniRef Description updated')
+        if self.config.get('database_descriptions').get('pfam_hmm') is not None:
+            self.add_descriptions_to_database( self.process_pfam_descriptions(self.config.get('database_descriptions')['pfam_hmm']), 'pfam_description', clear_table=True)
+            self.config['setup_info']['pfam_hmm']['description_db_updated'] = \
+                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.logger.info('Pfam Description updated')
+        if self.config.get('database_descriptions').get('dbcan_fam_activities') is not None:
+            self.add_descriptions_to_database(self.process_dbcan_descriptions( self.config.get('database_descriptions')['dbcan_fam_activities'], self.config.get('database_descriptions')['dbcan_subfam_ec']), 'dbcan_description', clear_table=True)
+            self.config['setup_info']['dbcan_fam_activities']['description_db_updated'] = \
+                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.logger.info('DBCAN Description updated')
+        if self.config.get('search_databases').get('viral') is not None:
+            self.add_descriptions_to_database(
+                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['viral']),
+                'viral_description', clear_table=True)
+            self.config['setup_info']['viral']['description_db_updated'] = \
+                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.logger.info('Viral Description updated')
         if self.config.get('search_databases').get('peptidase') is not None:
             self.add_descriptions_to_database(
                 self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['peptidase']),
@@ -482,7 +484,7 @@ def print_database_locations(config_loc=None):
 
 def print_database_settings(config_loc=None):
     conf = DatabaseHandler(config_loc)
-    print(conf.get_setings_str())
+    print(conf.get_settings_str())
 
 
 
