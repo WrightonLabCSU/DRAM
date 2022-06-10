@@ -3,7 +3,7 @@ Contains most of the backend for the DRAM_setup.py script, used to setup databas
 """
 from os import path, mkdir
 from datetime import datetime
-from shutil import move, rmtree
+from shutil import move, rmtree, copyfile
 from glob import glob
 import gzip
 from collections import defaultdict
@@ -27,16 +27,16 @@ DFLT_OUTPUT_DIR = '.'
 LOGGER = logging.getLogger("database_processing.log")
 DEFAULT_MMMSPRO_DB_NAME = 'db'
 
-from camper_kit import download as download_camper_tar_gz
-from camper_kit import process as process_camper_tar_gz
-from camper_kit import DOWNLOAD_OPTIONS as CAMPER_DOWNLOAD_OPTIONS
-from camper_kit import PROCESS_OPTIONS as CAMPER_PROCESS_OPTIONS
-from camper_kit import DRAM_SETTINGS as CAMPER_DRAM_SETTINGS
-from fegenie_kit import download as download_fegenie_tar_gz
-from fegenie_kit import process as process_fegenie_tar_gz
-from fegenie_kit import DOWNLOAD_OPTIONS as FEGENIE_DOWNLOAD_OPTIONS
-from fegenie_kit import PROCESS_OPTIONS as FEGENIE_PROCESS_OPTIONS
-from fegenie_kit import DRAM_SETTINGS as FEGENIE_DRAM_SETTINGS
+from mag_annotator.camper_kit import download as download_camper_tar_gz
+from mag_annotator.camper_kit import process as process_camper_tar_gz
+from mag_annotator.camper_kit import DOWNLOAD_OPTIONS as CAMPER_DOWNLOAD_OPTIONS
+from mag_annotator.camper_kit import PROCESS_OPTIONS as CAMPER_PROCESS_OPTIONS
+from mag_annotator.camper_kit import DRAM_SETTINGS as CAMPER_DRAM_SETTINGS
+from mag_annotator.fegenie_kit import download as download_fegenie_tar_gz
+from mag_annotator.fegenie_kit import process as process_fegenie_tar_gz
+from mag_annotator.fegenie_kit import DOWNLOAD_OPTIONS as FEGENIE_DOWNLOAD_OPTIONS
+from mag_annotator.fegenie_kit import PROCESS_OPTIONS as FEGENIE_PROCESS_OPTIONS
+from mag_annotator.fegenie_kit import DRAM_SETTINGS as FEGENIE_DRAM_SETTINGS
 
 KEGG_CITATION = "Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M., and Tanabe, M.; KEGG: integrating viruses and cellular organisms. Nucleic Acids Res. 49, D545-D551 (2021)."
 GENE_KO_LINK_CITATION = ""
@@ -428,14 +428,17 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     process_settings.update(CAMPER_PROCESS_OPTIONS)
     process_settings.update(FEGENIE_PROCESS_OPTIONS)
 
+
     # setup temp, logging, and db_handler
     if not path.isdir(output_dir):
         mkdir(output_dir)
     temporary = path.join(output_dir, 'database_files')
     mkdir(temporary)
     main_log = path.join(output_dir, 'database_processing.log')
-    db_handler = DatabaseHandler()
     setup_logger(LOGGER, *[(main_log, loggpath) if loggpath is not None else main_log])
+    db_handler = DatabaseHandler(logger=LOGGER)
+    db_handler.config['log_path'] = main_log
+    db_handler.write_config()
     LOGGER.info('Starting the process of downloading data')
 
     if skip_uniref:
@@ -504,7 +507,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
             j['Original path'] = locs[i]
             if i not in process_functions:
                 LOGGER.info(f"Copying {locs[i]} to output_dir")
-                locs[i] = copyfile(locs[i], output_dir)
+                locs[i] = copyfile(locs[i], path.join(output_dir, path.basename(locs[i])))
 
     LOGGER.info("All raw data files were downloaded successfully")
 
@@ -515,32 +518,34 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
             LOGGER.info(f"Processing {i}")
             processed_locs = process_functions[i](locs[i], output_dir, LOGGER, 
                                                        threads=threads, verbose=verbose, **process_settings[i])
-        elif i in db_handler.config['dram_sheets']:
-            db_handler.config['dram_sheets'][i] = locs[i]
         else:
             processed_locs = {i:locs[i]}
         for k, v in processed_locs.items():
-            for db_file in glob('%s*' % v):
-                move(db_file, path.join(output_dir, path.basename(db_file)))
-            v = path.join(output_dir, path.basename(v))
+            final_dest = path.join(output_dir, path.basename(v))
+            if v != final_dest:
+                for db_file in glob('%s*' % v):
+                    move(db_file, path.join(output_dir, path.basename(db_file)))
+                v = path.join(output_dir, path.basename(v))
             # update_dram_forms the settings per OUTPUT fill, including the process_settings
             #  and database_settings, which are per input file.
             if db_handler.config.get('setup_info') is None:
                 db_handler.config['setup_info'] = {}
             db_handler.config['setup_info'][k] = {**dram_settings[k], **process_settings[i], 
-                                                **database_settings[i]}
+                                                  **database_settings[i]}
             db_handler.set_database_paths(**{f"{k}_loc":v})
             db_handler.write_config()
             LOGGER.info(f'Moved {i} to final destination, configuration updated')
             
 
 
-    description_db_loc = path.realpath(path.join(output_dir, 'description_db.sqlite'))
     LOGGER.info('Populating the description db, this may take some time')
+    db_handler.config['description_db'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
     if select_db is not None:
         LOGGER.warn('The select_db argument is in beta. It is not implanted for'
                     ' description updating and so all descriptions are being updated.')
-    db_handler.populate_description_db(description_db_loc, update_config=False)
+    db_handler.populate_description_db(db_handler.config['description_db'], update_config=False)
+    # todo make db handler such that the destruction on success write_config
+    db_handler.write_config()
     LOGGER.info('DRAM description database populated')
 
     if not keep_database_files:

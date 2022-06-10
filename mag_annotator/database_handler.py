@@ -7,6 +7,7 @@ from shutil import copy2
 import warnings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from datetime import datetime
 
 import pandas as pd
 
@@ -14,13 +15,12 @@ from mag_annotator import __version__ as current_dram_version
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_description_db
 from mag_annotator.utils import divide_chunks, setup_logger
 
-SEARCH_DATABASES = {'kegg', 'kofam', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
+SEARCH_DATABASES = {'kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
                     'camper', 'fegenie'}
 DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database', 'function_heatmap_form',
                'camper_fa_db_cutoffs', 'camper_hmm_cutoffs', 'amg_database')
 DATABASE_DESCRIPTIONS = ('pfam_hmm', 'dbcan_fam_activities', 'vog_annotations')
 
-LOGGER = logging.getLogger("database_handler.log")
 # TODO: store all sequence db locs within database handler class
 # TODO: store scoring information here e.g. bitscore_threshold, hmm cutoffs
 # TODO: set up custom databases here
@@ -41,11 +41,15 @@ def clear_dict(val):
 
 class DatabaseHandler:
 
-    def __init__(self, config_loc=None):
+    def __init__(self, config_loc=None, logger=None):
         # read in new configuration 
         # TODO: validate config file after reading it in
         if config_loc is None:
             config_loc = get_config_loc()
+
+        if logger is None:
+            logger = logging.getLogger("database_handler.log")
+        self.logger = logger
 
         self.config_loc = config_loc
         self.config = {}
@@ -168,14 +172,13 @@ class DatabaseHandler:
 
 
     def set_database_paths(self, kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_loc=None,
-                           pfam_loc=None, pfam_hmm_loc=None, dbcan_loc=None, dbcan_fam_activities=None,
-                           dbcan_subfam_ec=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None, 
-                           vog_annotations=None, description_db_loc=None, genome_summary_form_loc=None, 
+                           pfam_loc=None, pfam_hmm_loc=None, dbcan_loc=None, dbcan_fam_activities_loc=None,
+                           dbcan_subfam_ec_loc=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None, 
+                           vog_annotations_loc=None, description_db_loc=None, genome_summary_form_loc=None, 
                            camper_hmm_loc=None, camper_fa_db_loc=None, camper_hmm_cutoffs_loc=None,
                            camper_fa_db_cutoffs_loc=None, camper_distillate_loc=None, fegenie_hmm_loc=None,
-                           fegenie_cutoffs_loc=None,
-                           module_step_form_loc=None, etc_module_database_loc=None, function_heatmap_form_loc=None, 
-                           amg_database_loc=None, write_config=True):
+                           fegenie_cutoffs_loc=None, module_step_form_loc=None, etc_module_database_loc=None, 
+                           function_heatmap_form_loc=None, amg_database_loc=None, write_config=True):
         def check_exists_and_add_to_location_dict(loc, old_value):
             if loc is None:  # if location is none then return the old value
                 return old_value
@@ -186,7 +189,7 @@ class DatabaseHandler:
         locs = {
                 "search_databases": {
                   'kegg': kegg_db_loc,
-                  'kofam': kofam_hmm_loc,
+                  'kofam_hmm': kofam_hmm_loc,
                   'kofam_ko_list': kofam_ko_list_loc,
                   'uniref': uniref_loc,
                   'pfam': pfam_loc,
@@ -202,9 +205,9 @@ class DatabaseHandler:
                 },
                 "database_descriptions": {
                   'pfam_hmm': pfam_hmm_loc,
-                  'dbcan_fam_activities': dbcan_fam_activities,
-                  'dbcan_subfam_ec': dbcan_subfam_ec,
-                  'vog_annotations': vog_annotations,
+                  'dbcan_fam_activities': dbcan_fam_activities_loc,
+                  'dbcan_subfam_ec': dbcan_subfam_ec_loc,
+                  'vog_annotations': vog_annotations_loc,
                 },
                 "dram_sheets": {
                   'camper_distillate': camper_distillate_loc,
@@ -313,7 +316,7 @@ class DatabaseHandler:
                            )
         ec_data = pd.DataFrame(ec_data, columns=['ec']).reset_index()
         data = pd.merge(description_data, ec_data, how='outer', on='id').fillna('')
-        return data
+        return [i.to_dict() for _, i in data.iterrows()]
 
     # @staticmethod
     # def process_dbcan_subfam_ecnums(dbcan_subfam_ec):
@@ -340,6 +343,7 @@ class DatabaseHandler:
 
     # TODO: Make option to build on description database that already exists?
     def populate_description_db(self, output_loc=None, update_config=True):
+        setup_logger(self.logger, self.config['log_path'])
 
         if self.config.get('description_db') is None and output_loc is None:  # description db location must be set somewhere
             raise ValueError('Must provide output location if description db location is not set in configuration')
@@ -349,53 +353,53 @@ class DatabaseHandler:
         if path.exists(self.config.get('description_db')):
             remove(self.config.get('description_db'))
         create_description_db(self.config.get('description_db'))
-
         # fill database
-        if self.config.get('search_databases').get('kegg') is not None:
-            self.config['setup_info']['kegg']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.add_descriptions_to_database(
-                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['kegg']), 
-                'kegg_description',
-                clear_table=True)
-        if self.config.get('search_databases').get('uniref') is not None:
-            self.add_descriptions_to_database(
-                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['uniref']), 
-                'uniref_description', clear_table=True)
-            self.config['setup_info']['uniref']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        if self.config.get('database_descriptions').get('pfam_hmm') is not None:
-            self.add_descriptions_to_database(
-                self.process_pfam_descriptions(self.config.get('database_descriptions')['pfam_hmm']),
-                'pfam_description', clear_table=True)
-            self.config['setup_info']['pfam_hmm']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        if self.config.get('database_descriptions').get('dbcan_fam_activities') is not None:
-            self.add_descriptions_to_database(
-                self.process_dbcan_descriptions(
-                    self.config.get('database_descriptions')['dbcan_fam_activities'],
-                    self.config.get('database_descriptions')['dbcan_subfam_ec']),
-                'dbcan_description', clear_table=True)
-            self.config['setup_info']['dbcan_fam_activities']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        if self.config.get('search_databases').get('viral') is not None:
-            self.add_descriptions_to_database(
-                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['viral']),
-                'viral_description', clear_table=True)
-            self.config['setup_info']['viral']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        #temp# if self.config.get('search_databases').get('kegg') is not None:
+        #temp#     self.add_descriptions_to_database(
+        #temp#         self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['kegg']), 
+        #temp#         'kegg_description',
+        #temp#         clear_table=True)
+        #temp#     self.config['setup_info']['kegg']['description_db_updated'] = \
+        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        #temp#     self.logger.info('KEGG Description updated')
+        #temp# if self.config.get('search_databases').get('uniref') is not None:
+        #temp#     self.add_descriptions_to_database(
+        #temp#         self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['uniref']), 
+        #temp#         'uniref_description', clear_table=True)
+        #temp#     self.config['setup_info']['uniref']['description_db_updated'] = \
+        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        #temp#     self.logger.info('UniRef Description updated')
+        #temp# if self.config.get('database_descriptions').get('pfam_hmm') is not None:
+        #temp#     self.add_descriptions_to_database( self.process_pfam_descriptions(self.config.get('database_descriptions')['pfam_hmm']), 'pfam_description', clear_table=True)
+        #temp#     self.config['setup_info']['pfam_hmm']['description_db_updated'] = \
+        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        #temp#     self.logger.info('Pfam Description updated')
+        #temp# if self.config.get('database_descriptions').get('dbcan_fam_activities') is not None:
+        #temp#     self.add_descriptions_to_database(self.process_dbcan_descriptions( self.config.get('database_descriptions')['dbcan_fam_activities'], self.config.get('database_descriptions')['dbcan_subfam_ec']), 'dbcan_description', clear_table=True)
+        #temp#     self.config['setup_info']['dbcan_fam_activities']['description_db_updated'] = \
+        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        #temp#     self.logger.info('DBCAN Description updated')
+        #temp# if self.config.get('search_databases').get('viral') is not None:
+        #temp#     self.add_descriptions_to_database(
+        #temp#         self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['viral']),
+        #temp#         'viral_description', clear_table=True)
+        #temp#     self.config['setup_info']['viral']['description_db_updated'] = \
+        #temp#         datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        #temp#     self.logger.info('Viral Description updated')
         if self.config.get('search_databases').get('peptidase') is not None:
             self.add_descriptions_to_database(
                 self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['peptidase']),
                 'peptidase_description', clear_table=True)
             self.config['setup_info']['peptidase']['description_db_updated'] = \
                 datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.logger.info('Peptidase descriptions updated')
         if self.config.get('database_descriptions').get('vog_annotations') is not None:
             self.add_descriptions_to_database(
                 self.process_vogdb_descriptions(self.config.get('database_descriptions')['vog_annotations']), 
                 'vogdb_description', clear_table=True)
             self.config['setup_info']['vog_annotations']['description_db_updated'] = \
                 datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.logger.info('VOGDB descriptions updated')
 
         if update_config:  # if new description db is set then save it
             self.write_config()
@@ -407,7 +411,7 @@ class DatabaseHandler:
             dbs_to_use = master_list
         # filter out dbs for low mem mode
         if low_mem_mode:
-            if ('kofam' not in self.config.get('search_databases')) or ('kofam_ko_list' not in self.config.get('search_databases')):
+            if ('kofam_hmm' not in self.config.get('search_databases')) or ('kofam_ko_list' not in self.config.get('search_databases')):
                 raise ValueError('To run in low memory mode KOfam must be configured for use in DRAM')
             dbs_to_use = [i for i in dbs_to_use if i not in ('uniref', 'kegg', 'vogdb')]
         # check on uniref status
@@ -445,7 +449,7 @@ def print_database_locations(config_loc=None):
     # search databases
     print('Processed search databases')
     print('KEGG db: %s' % conf.config.get('search_databases').get('kegg'))
-    print('KOfam db: %s' % conf.config.get('search_databases').get('kofam'))
+    print('KOfam db: %s' % conf.config.get('search_databases').get('kofam_hmm'))
     print('KOfam KO list: %s' % conf.config.get('search_databases').get('kofam_ko_list'))
     print('UniRef db: %s' % conf.config.get('search_databases').get('uniref'))
     print('Pfam db: %s' % conf.config.get('search_databases').get('pfam'))
@@ -501,3 +505,27 @@ def import_config(config_loc):
     with open(system_config, "w") as outfile:
         json.dump(db_handler.config, outfile, indent=2)
     print('Import, appears to be successfull.')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

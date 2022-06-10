@@ -1203,6 +1203,7 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     # get database locations
     db_handler = DatabaseHandler()
     db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
+    del db_handler.config['']
 
     mkdir(output_dir)
     tmp_dir = path.join(output_dir, 'working_dir')

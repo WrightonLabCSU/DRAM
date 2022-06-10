@@ -8,14 +8,14 @@ VERSION = '1.0.0-beta.1'
 
 CITATION = "CAMPER has no citeation and is in beta so you should not be using it."
 DRAM_SETTINGS = { 
-    'camper_hmm':           {'origin': "camper_tar_gz", 'citation': CITATION, 'name': 'CAMPER HMM db'}, 
-    'camper_fa_db':         {'origin': "camper_tar_gz", 'citation': CITATION, 'name': 'CAMPER FASTA db'},
-    'camper_hmm_cutoffs':   {'origin': "camper_tar_gz", 'citation': CITATION, 'name': 'CAMPER HMM cutoffs'},
-    'camper_distillate':    {'origin': "camper_tar_gz", 'citation': CITATION, 'name': 'CAMPER Distillate form'},
-    'camper_fa_db_cutoffs': {'origin': "camper_tar_gz", 'citation': CITATION, 'name': 'CAMPER FASTA cutoffs'}}
+    'camper_hmm':           {'citation': CITATION, 'name': 'CAMPER HMM db'}, 
+    'camper_fa_db':         {'citation': CITATION, 'name': 'CAMPER FASTA db'},
+    'camper_hmm_cutoffs':   {'citation': CITATION, 'name': 'CAMPER HMM cutoffs'},
+    'camper_distillate':    {'citation': CITATION, 'name': 'CAMPER Distillate form'},
+    'camper_fa_db_cutoffs': {'citation': CITATION, 'name': 'CAMPER FASTA cutoffs'}}
 # the format is input file: options
-DOWNLOAD_OPTIONS ={'camper_tar_gz': {'version': VERSION}}
-PROCESS_OPTIONS ={'camper_tar_gz': {'version': VERSION}}
+DOWNLOAD_OPTIONS = {'camper_tar_gz': {'version': VERSION}}
+PROCESS_OPTIONS = {'camper_tar_gz': {'version': VERSION}}
 #NAME = 'CAMPER'
 
 def download(temporary, logger, version=VERSION, verbose=True):

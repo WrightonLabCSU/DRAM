@@ -72,14 +72,14 @@ class DbcanDescription(Base):
     id = Column(String(30), primary_key=True, nullable=False, index=True)
 
     description = Column(String(1000))
-    ecnum = Column(String(1000))
+    ec = Column(String(1000))
 
     @property
     def serialize(self):
         return {
             'dbcan_id': self.id,
             'dbcan_description': self.description,
-            'dbcan_subfam_ec': self.ecnum,
+            'dbcan_subfam_ec': self.ec,
         }
 
 
