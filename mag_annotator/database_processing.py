@@ -37,6 +37,11 @@ from mag_annotator.fegenie_kit import process as process_fegenie_tar_gz
 from mag_annotator.fegenie_kit import DOWNLOAD_OPTIONS as FEGENIE_DOWNLOAD_OPTIONS
 from mag_annotator.fegenie_kit import PROCESS_OPTIONS as FEGENIE_PROCESS_OPTIONS
 from mag_annotator.fegenie_kit import DRAM_SETTINGS as FEGENIE_DRAM_SETTINGS
+from mag_annotator.sulphur_kit import download as download_sulphur_tar_gz
+from mag_annotator.sulphur_kit import process as process_sulphur_tar_gz
+from mag_annotator.sulphur_kit import DOWNLOAD_OPTIONS as SULPHUR_DOWNLOAD_OPTIONS
+from mag_annotator.sulphur_kit import PROCESS_OPTIONS as SULPHUR_PROCESS_OPTIONS
+from mag_annotator.sulphur_kit import DRAM_SETTINGS as SULPHUR_DRAM_SETTINGS
 
 KEGG_CITATION = "Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M., and Tanabe, M.; KEGG: integrating viruses and cellular organisms. Nucleic Acids Res. 49, D545-D551 (2021)."
 GENE_KO_LINK_CITATION = ""
@@ -123,7 +128,7 @@ def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
         yield seq
 
 
-def process_kegg_db(kegg_loc, output_dir, logger, gene_ko_link_loc=None, download_date=None, 
+def process_kegg(kegg_loc, output_dir, logger, gene_ko_link_loc=None, download_date=None, 
                     threads=10, verbose=True):
     if download_date is None:
         download_date = get_iso_date()
@@ -138,7 +143,7 @@ def process_kegg_db(kegg_loc, output_dir, logger, gene_ko_link_loc=None, downloa
     kegg_mmseqs_db = path.join(output_dir, 'kegg.%s.mmsdb' % download_date)
     make_mmseqs_db(kegg_mod_loc, kegg_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
     LOGGER.info('KEGG database processed')
-    return {'kegg_db': kegg_mmseqs_db}
+    return {'kegg': kegg_mmseqs_db}
 
 
 def process_kofam_hmm(kofam_profile_tar_gz, output_dir=DFLT_OUTPUT_DIR, logger=LOGGER, threads=1, verbose=False):
@@ -342,6 +347,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                       camper_tar_gz_loc=None,
                       number_of_viral_files=NUMBER_OF_VIRAL_FILES,
                       fegenie_tar_gz_loc=None,
+                      sulphur_tar_gz_loc=None,
                       skip_uniref=False, keep_database_files=False,
                       branch='master', threads=10, verbose=True, select_db=None):
 
@@ -381,6 +387,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     }
     dram_settings.update(CAMPER_DRAM_SETTINGS)
     dram_settings.update(FEGENIE_DRAM_SETTINGS)
+    dram_settings.update(SULPHUR_DRAM_SETTINGS)
     database_settings= {
         'kegg':                  {},
         "gene_ko_link":          {},
@@ -404,6 +411,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     }
     database_settings.update(CAMPER_DOWNLOAD_OPTIONS)
     database_settings.update(FEGENIE_DOWNLOAD_OPTIONS)
+    database_settings.update(SULPHUR_DOWNLOAD_OPTIONS)
     process_settings = {
         'kegg': {},
         "gene_ko_link": {},
@@ -427,7 +435,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     }
     process_settings.update(CAMPER_PROCESS_OPTIONS)
     process_settings.update(FEGENIE_PROCESS_OPTIONS)
-
+    process_settings.update(SULPHUR_PROCESS_OPTIONS)
 
     # setup temp, logging, and db_handler
     if not path.isdir(output_dir):
@@ -534,7 +542,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                                                   **database_settings[i]}
             db_handler.set_database_paths(**{f"{k}_loc":v})
             db_handler.write_config()
-            LOGGER.info(f'Moved {i} to final destination, configuration updated')
+            LOGGER.info(f'Moved {k} to final destination, configuration updated')
             
 
 
@@ -569,8 +577,10 @@ def update_dram_forms(output_dir, branch='master'):
 
 
 """
+
+os.system("DRAM.py annotate -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/15_soil_genomes/all_data/Cytophaga_hutchinsonii_ATCC_33406.fasta  -o test_15soil --use_camper --use_fegenie")
 import os
-os.system('DRAM-setup.py prepare_databases --output_dir ../../../dram_data/dram1.4_test_06_01_22 --kegg_loc /home/Database/KEGG/kegg-all-orgs_20220129/kegg-all-orgs_unique_reheader_20220129.pep')
+os.system('DRAM-setup.py prepare_databases --output_dir /home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/ --kegg_loc /home/Database/KEGG/kegg-all-orgs_20220603/kegg-all-orgs_unique_reheader_20220603.pep --select_db kegg --threads 40')
 os.system('DRAM-setup.py -h ')
     version             print DRAM version
     prepare_databases   Download and process databases for annotation

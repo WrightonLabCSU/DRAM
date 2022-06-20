@@ -76,6 +76,8 @@ if __name__ == '__main__':
                                  help="Annotate these fastas against the CAMPER dataset to study polyphenol metabolism")
     annotate_parser.add_argument('--use_fegenie', action='store_true', default=False,
                                  help="Annotate these fastas against the FeGenie dataset to study iron metabolism")
+    annotate_parser.add_argument('--use_sulphur', action='store_true', default=False,
+                                 help="Annotate these fastas against the Sulphur dataset to study sulphur metabolism")
     annotate_parser.add_argument('--use_vogdb', action='store_true', default=False,
                                  help='Annotate these fastas against VOGDB, drastically decreases run time')
     annotate_parser.add_argument('--low_mem_mode', action='store_true', default=False,
@@ -91,6 +93,8 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('-i', '--input_faa', help="fasta file, optionally with wildcards to point to "
                                                                  "individual MAGs", required=True)
     annotate_genes_parser.add_argument('-o', '--output_dir', help="output directory", required=True)
+    annotate_genes_parser.add_argument('--log_file_path', 
+                                       help="A name and loctation for the log file")
     annotate_genes_parser.add_argument('--bit_score_threshold', type=int, default=60,
                                        help='minimum bitScore of search to retain hits')
     annotate_genes_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
@@ -118,6 +122,8 @@ if __name__ == '__main__':
                                  help="Annotate these fastas against the CAMPER dataset to study polyphenol metabolism")
     annotate_genes_parser.add_argument('--use_fegenie', action='store_true', default=False,
                                  help="Annotate these fastas against the FeGenie dataset to study iron metabolism")
+    annotate_genes_parser.add_argument('--use_sulphur', action='store_true', default=False,
+                                 help="Annotate these fastas against the Sulphur dataset to study sulphur metabolism")
     annotate_genes_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                        help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
                                             'provided. Drastically decreases memory usage')
@@ -129,6 +135,8 @@ if __name__ == '__main__':
     # parser for summarizing genomes
     distill_parser.add_argument("-i", "--input_file", help="Annotations path")
     distill_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
+    distill_parser.add_argument('--log_file_path', 
+                                       help="A name and loctation for the log file")
     distill_parser.add_argument("--rrna_path", help="rRNA output from annotation")
     distill_parser.add_argument("--trna_path", help="tRNA output from annotation")
     distill_parser.add_argument("--groupby_column", help="Column from annotations to group as organism units",

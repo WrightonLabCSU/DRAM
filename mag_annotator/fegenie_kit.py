@@ -1,10 +1,15 @@
 from os import path, mkdir
 from glob import glob
 import tarfile
+import logging
+import pandas as pd
 from numpy import any
+from functools import partial
 from shutil import rmtree, copyfileobj, move
 from itertools import count
-from mag_annotator.utils import download_file, run_process, make_mmseqs_db
+from mag_annotator.utils import download_file, run_process, make_mmseqs_db, \
+    run_hmmscan, get_sig_row
+
 
 VERSION = '1.2'
 NAME = 'FeGenie'
@@ -75,4 +80,51 @@ def process(input_file, output_dir, logger, threads=1,  version=VERSION, verbose
     # build dbs
     run_process(['hmmpress', '-f', final_paths["fegenie_hmm"]], logger, verbose=verbose)  # all are pressed just in case
     return final_paths
+
+# TODO check this
+def sig_scores(hits:pd.DataFrame, score_db:pd.DataFrame) -> pd.DataFrame:
+    """
+    This is a custom sig_scores function for FeGenie, it usese soft_bitscore_cutoff
+    as a bit score cutoffs, given the name I am not shure that is corect.
+    
+    Also, I use full score, is that corect?
+    """
+    data = pd.merge(hits, score_db, how='left', left_on='target_id', right_index=True)
+    return data[data['full_score'] > data['soft_bitscore_cutoff']]
+
+def hmmscan_formater(hits:pd.DataFrame,  db_name:str, hmm_info_path:str=None, top_hit:bool=True):
+    if hmm_info_path is None:
+        hmm_info = None
+        hits_sig = hits[hits.apply(get_sig_row, axis=1)]
+    else:
+        hmm_info = pd.read_csv(hmm_info_path, sep='\t', index_col=0)
+        hits_sig = sig_scores(hits, hmm_info)
+    if len(hits_sig) == 0:
+        # if nothing significant then return nothing, don't get descriptions
+        return pd.DataFrame()
+    if top_hit:
+        # Get the best hits
+        hits_sig = hits_sig.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    hits_df = hits_sig[['target_id', 'query_id', 'description']]
+    hits_df.set_index('query_id', inplace=True, drop=True)
+    hits_df.rename_axis(None, inplace=True)
+    hits_df.columns = [f"{db_name}_id", f"{db_name}_description"]
+    return hits_df
+
+
+def search(genes_faa:str, tmp_dir:str, fegenie_hmm:str, fegenie_cutoffs:str, 
+           logger:logging.Logger, threads:int, db_name:str=NAME, top_hit:bool=True, 
+           verbose:bool=True):
+    return run_hmmscan(genes_faa=genes_faa,
+                       db_loc=fegenie_hmm,
+                       db_name=db_name,
+                       threads=threads,
+                       output_loc=tmp_dir,
+                       formater=partial(
+                           hmmscan_formater,
+                           db_name=db_name,
+                           hmm_info_path=fegenie_cutoffs,
+                           top_hit=True
+                       ),
+                       logger=logger)
 

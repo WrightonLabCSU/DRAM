@@ -1,19 +1,20 @@
 {
   "search_databases": {
-    "kegg": null,
-    "kofam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/kofam_profiles.tar.gz",
-    "kofam_ko_list": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/kofam_ko_list.tsv.gz",
+    "kegg": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/kegg.20220617.mmsdb",
+    "kofam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/kofam_profiles.hmm",
+    "kofam_ko_list": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/kofam_ko_list.tsv",
     "uniref": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/uniref90.20220609.mmsdb",
-    "pfam": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/Pfam-A.full.gz",
+    "pfam": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/pfam.mmspro",
     "dbcan": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/dbCAN-HMMdb-V10.txt",
     "viral": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/refseq_viral.20220610.mmsdb",
     "peptidase": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/peptidases.20220609.mmsdb",
-    "vogdb": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/vog.hmm.tar.gz",
+    "vogdb": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/vog_latest_hmms.txt",
     "camper_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER.hmm",
     "camper_fa_db": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER_blast.faa",
     "camper_hmm_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER_hmm_scores.tsv",
     "camper_fa_db_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER_blast_scores.tsv",
-    "fegenie_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_oxidation_reduction.hmm"
+    "fegenie_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_oxidation_reduction.hmm",
+    "fegenie_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_cut_offs.txt"
   },
   "database_descriptions": {
     "pfam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/Pfam-A.hmm.dat.gz",
@@ -74,7 +75,7 @@
     },
     "viral": {
       "name": "RefSeq Viral db",
-      "description_db_updated": "Unknown, or Never",
+      "description_db_updated": "06/16/2022, 11:59:59",
       "citation": "",
       "viral_files": 2,
       "Download time": "06/10/2022, 11:29:46",
@@ -82,7 +83,7 @@
     },
     "peptidase": {
       "name": "MEROPS peptidase db",
-      "description_db_updated": "06/10/2022, 11:41:28",
+      "description_db_updated": "06/16/2022, 12:00:49",
       "citation": "",
       "Download time": "06/09/2022, 09:20:50",
       "Origin": "Downloaded by DRAM"
@@ -127,19 +128,19 @@
       "citation": "Garber AI, Nealson KH, Okamoto A, McAllister SM, Chan CS, Barco RA and Merino N (2020) FeGenie: A Comprehensive Tool for the Identification of Iron Genes and Iron Gene Neighborhoods in Genome and Metagenome Assemblies. Front. Microbiol. 11:37. doi: 10.3389/fmicb.2020.00037",
       "notes": "Only iron_oxidation and iron_reduction hmms are used.",
       "version": "1.2",
-      "Download time": "06/09/2022, 09:00:59",
+      "Download time": "06/16/2022, 11:59:47",
       "Origin": "Downloaded by DRAM"
     },
     "fegenie_cutoffs": {
       "name": "FeGenie cutoffs",
       "citation": "Garber AI, Nealson KH, Okamoto A, McAllister SM, Chan CS, Barco RA and Merino N (2020) FeGenie: A Comprehensive Tool for the Identification of Iron Genes and Iron Gene Neighborhoods in Genome and Metagenome Assemblies. Front. Microbiol. 11:37. doi: 10.3389/fmicb.2020.00037",
       "version": "1.2",
-      "Download time": "06/09/2022, 09:00:59",
+      "Download time": "06/16/2022, 11:59:47",
       "Origin": "Downloaded by DRAM"
     },
     "pfam_hmm": {
       "name": "Pfam hmm dat",
-      "description_db_updated": "Unknown, or Never",
+      "description_db_updated": "06/16/2022, 11:59:50",
       "citation": "",
       "Download time": "06/09/2022, 09:01:01",
       "Origin": "Downloaded by DRAM"
@@ -150,7 +151,8 @@
       "version": "10",
       "upload_date": "07292021",
       "Download time": "06/09/2022, 09:01:01",
-      "Origin": "Downloaded by DRAM"
+      "Origin": "Downloaded by DRAM",
+      "description_db_updated": "06/16/2022, 11:59:50"
     },
     "dbcan_subfam_ec": {
       "name": "dbCAN subfamily EC numbers",
@@ -162,7 +164,7 @@
     },
     "vog_annotations": {
       "name": "VOG annotations",
-      "description_db_updated": "06/10/2022, 11:41:29",
+      "description_db_updated": "06/16/2022, 12:00:51",
       "citation": "",
       "version": "latest",
       "Download time": "06/09/2022, 09:01:02",
@@ -197,7 +199,12 @@
       "branch": "master",
       "Download time": "06/10/2022, 11:40:55",
       "Origin": "Downloaded by DRAM"
+    },
+    "kegg": {
+      "name": "KEGG db",
+      "description_db_updated": "Unknown, or Never",
+      "citation": "Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M., and Tanabe, M.; KEGG: integrating viruses and cellular organisms. Nucleic Acids Res. 49, D545-D551 (2021)."
     }
   },
-  "log_path": "../../dram_data/dram1.4_final_06_07_22/database_processing.log"
+  "log_path": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/database_processing.log"
 }

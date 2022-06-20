@@ -1,7 +1,8 @@
-from os import path
+from os import path, stat
 import tarfile
 from shutil import move, rmtree
-from mag_annotator.utils import download_file, run_process, make_mmseqs_db
+from mag_annotator.utils import download_file, run_process, make_mmseqs_db, \
+    run_hmmscan, get_best_hits, BOUTFMT6_COLUMNS
 from functools import partial
 import logging
 import pandas as pd
@@ -75,6 +76,21 @@ def process(camper_tar_gz, output_dir, logger, version=VERSION,
     return final_paths
 
 
+def rank_per_row(row):
+    r_a = row['A_rank']
+    r_b = row['B_rank']
+    score = row['bitScore']
+    if score is None:
+        return None
+    if float(score) >= float(r_a):
+         return 'A'
+    if pd.isnull(r_b):
+        return None
+    if float(score) >= float(r_b):
+         return 'B'
+    return None
+
+
 def blast_search_formater(hits_path, db_name, info_db, logger):
     if stat(hits_path).st_size == 0:
         return pd.DataFrame()
@@ -96,6 +112,16 @@ def blast_search_formater(hits_path, db_name, info_db, logger):
     hits[f"{db_name}_search_type"] = 'blast'
     return hits
 
+
+def bitScore_per_row(row):
+    if row['score_type'] == 'domain':
+        return row.domain_score
+    elif row['score_type'] == 'full':
+        return row.full_score
+    elif row['score_type'] == '-':
+        return None
+    else:
+        raise ValueError("The score_type must be 'domain', 'full', or 'j")
 
 #TODO decide if we need use_hmmer_thresholds:bool=False
 def hmmscan_formater(hits:pd.DataFrame,  db_name:str, 
@@ -131,22 +157,26 @@ def hmmscan_formater(hits:pd.DataFrame,  db_name:str,
     return hits
 
 
+def get_minimum_bitscore(info_db):
+    bit_score_threshold = min(info_db[['A_rank', 'B_rank']].min().values)
+    return bit_score_threshold
+
+
 def blast_search(query_db, target_db, working_dir, info_db_path, 
                  db_name, logger, threads=10, verbose=False):
     """A convenience function to do a blast style forward best hits search"""
     # Get kegg hits
     info_db = pd.read_csv(info_db_path, sep='\t', index_col=0)
     bit_score_threshold = get_minimum_bitscore(info_db)
-    hits_path = get_best_hits(query_db, target_db, working_dir, 'gene', db_name, 
+    hits_path = get_best_hits(query_db, target_db, logger, working_dir, 'gene', db_name, 
                          bit_score_threshold, threads, verbose=verbose)
     return blast_search_formater(hits_path, db_name, info_db, logger)
 
 
 # in the future the database will get the same input as was given in the data
-def search(query_db:str, genes_faa:str, temp_dir:str, logger:logging.Logger, 
-           camper_fa_db:str, camper_hmm:str, camper_fa_db_cutoffs:str, 
-           camper_hmm_cutoffs:str):
-        logger.info(f'Getting hits from {NAME}')
+def search(query_db:str, genes_faa:str, tmp_dir:str, logger:logging.Logger, 
+           threads:str, verbose:str, camper_fa_db:str, camper_hmm:str, 
+           camper_fa_db_cutoffs:str, camper_hmm_cutoffs:str):
         fasta = blast_search(query_db=query_db, 
                              target_db=camper_fa_db, 
                              working_dir=tmp_dir, 
@@ -154,12 +184,13 @@ def search(query_db:str, genes_faa:str, temp_dir:str, logger:logging.Logger,
                              db_name=NAME, 
                              logger=logger,
                              threads=threads,
-                             verbose=verbose,)
-        hmm = run_hmmscan(genes_faa=gene_faa,
+                             verbose=verbose)
+        hmm = run_hmmscan(genes_faa=genes_faa,
                           db_loc=camper_hmm,
                           db_name=NAME,
                           threads=threads,
                           output_loc=tmp_dir,
+                          logger=logger,
                           formater=partial(
                               hmmscan_formater,
                               db_name=NAME,
@@ -167,6 +198,8 @@ def search(query_db:str, genes_faa:str, temp_dir:str, logger:logging.Logger,
                               top_hit=True
                           ))
         full = pd.concat([fasta, hmm])
+        if len(full) < 1:
+            return pd.DataFrame()
         return (full
                .groupby(full.index)
                .apply(

@@ -16,7 +16,7 @@ from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_descri
 from mag_annotator.utils import divide_chunks, setup_logger
 
 SEARCH_DATABASES = {'kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
-                    'camper', 'fegenie'}
+                    'camper', 'fegenie', 'sulphur', }
 DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database', 'function_heatmap_form',
                'camper_fa_db_cutoffs', 'camper_hmm_cutoffs', 'amg_database')
 DATABASE_DESCRIPTIONS = ('pfam_hmm', 'dbcan_fam_activities', 'vog_annotations')
@@ -135,10 +135,10 @@ class DatabaseHandler:
         self.session.expunge_all()
 
     # functions for getting descriptions from tables
-    def get_description(self, annotation_id, db_name):
+    def get_description(self, annotation_id, db_name, return_ob=False):
         return self.session.query(TABLE_NAME_TO_CLASS_DICT[db_name]).filter_by(id=annotation_id).one().description
 
-    def get_descriptions(self, ids, db_name):
+    def get_descriptions(self, ids, db_name, description_name='description'):
         description_class = TABLE_NAME_TO_CLASS_DICT[db_name]
         descriptions = [
             des 
@@ -149,8 +149,7 @@ class DatabaseHandler:
         if len(descriptions) == 0:
             warnings.warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
-        breakpoint()
-        return {i.id: i.description for i in descriptions}
+        return {i.id: i.__dict__[description_name] for i in descriptions}
 
     @staticmethod
     def get_database_names():
@@ -174,13 +173,14 @@ class DatabaseHandler:
         return out_str
 
 
-    def set_database_paths(self, kegg_db_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_loc=None,
+    def set_database_paths(self, kegg_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_loc=None,
                            pfam_loc=None, pfam_hmm_loc=None, dbcan_loc=None, dbcan_fam_activities_loc=None,
                            dbcan_subfam_ec_loc=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None, 
                            vog_annotations_loc=None, description_db_loc=None, genome_summary_form_loc=None, 
                            camper_hmm_loc=None, camper_fa_db_loc=None, camper_hmm_cutoffs_loc=None,
                            camper_fa_db_cutoffs_loc=None, camper_distillate_loc=None, fegenie_hmm_loc=None,
-                           fegenie_cutoffs_loc=None, module_step_form_loc=None, etc_module_database_loc=None, 
+                           fegenie_cutoffs_loc=None, sulphur_hmm_loc=None, sulphur_cutoffs_loc=None, 
+                           module_step_form_loc=None, etc_module_database_loc=None, 
                            function_heatmap_form_loc=None, amg_database_loc=None, write_config=True):
         def check_exists_and_add_to_location_dict(loc, old_value):
             if loc is None:  # if location is none then return the old value
@@ -191,7 +191,7 @@ class DatabaseHandler:
                 raise ValueError("Database location does not exist: %s" % loc)
         locs = {
                 "search_databases": {
-                  'kegg': kegg_db_loc,
+                  'kegg': kegg_loc,
                   'kofam_hmm': kofam_hmm_loc,
                   'kofam_ko_list': kofam_ko_list_loc,
                   'uniref': uniref_loc,
@@ -204,7 +204,10 @@ class DatabaseHandler:
                   'camper_fa_db': camper_fa_db_loc,
                   'camper_hmm_cutoffs': camper_hmm_cutoffs_loc,
                   'camper_fa_db_cutoffs': camper_fa_db_cutoffs_loc,
-                  'fegenie_hmm': fegenie_hmm_loc
+                  'fegenie_hmm': fegenie_hmm_loc,
+                  'fegenie_cutoffs': fegenie_cutoffs_loc,
+                  'sulphur_hmm': sulphur_hmm_loc,
+                  'sulphur_cutoffs': sulphur_cutoffs_loc
                 },
                 "database_descriptions": {
                   'pfam_hmm': pfam_hmm_loc,
@@ -320,20 +323,6 @@ class DatabaseHandler:
         data = pd.merge(description_data, ec_data, how='outer', on='id').fillna('')
         return [i.to_dict() for _, i in data.iterrows()]
 
-    # @staticmethod
-    # def process_dbcan_subfam_ecnums(dbcan_subfam_ec):
-    #     ec_data = (pd.read_csv(dbcan_subfam_ec, sep='\t',names=['id', 'id2','ec'])[['id', 'ec']]
-    #                .drop_duplicates())
-    #     ec_data = (pd.concat([ec_data['id'],
-    #                          ec_data['ec'].str.split('|', expand=True)]
-    #                         ,axis=1)
-    #                .melt(id_vars='id',value_name='ec')
-    #                .dropna(subset=['ec'])[['id', 'ec']]
-    #                .groupby('id')
-    #                .apply(lambda x: ','.join(x['ec'].unique()))
-    #                )
-    #     return [{'id': i, 'description': j} for i,j in zip(ec_data.index, ec_data)]
-
 
     @staticmethod
     def process_vogdb_descriptions(vog_annotations):
@@ -406,7 +395,8 @@ class DatabaseHandler:
         if update_config:  # if new description db is set then save it
             self.write_config()
 
-    def filter_db_locs(self, low_mem_mode=False, use_uniref=True, use_camper=True, use_fegenie=True, use_vogdb=True, master_list=None):
+    def filter_db_locs(self, low_mem_mode=False, use_uniref=True, use_camper=True, use_fegenie=True, 
+                       use_sulphur=True, use_vogdb=True, master_list=None):
         if master_list is None:
             dbs_to_use = self.config['search_databases'].keys()
         else:
@@ -426,6 +416,8 @@ class DatabaseHandler:
             dbs_to_use = [i for i in dbs_to_use if 'camper' not in i]
         if not use_fegenie:
             dbs_to_use = [i for i in dbs_to_use if 'fegenie' not in i]
+        if not use_sulphur:
+            dbs_to_use = [i for i in dbs_to_use if 'sulphur' not in i]
         # check on vogdb status
         if use_vogdb:
             if 'vogdb' not in self.config.get('search_databases'):

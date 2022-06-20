@@ -1,3 +1,9 @@
+"""
+Main control point for the annotation process
+
+os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/EMERGE_DRAM/97_clusters/20100900_E1D_13_annotated/genes.faa -o test_camper --use_camper --use_fegenie")
+os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa -o test_small --use_camper --use_fegenie")
+"""
 import re
 import io
 import time
@@ -14,12 +20,15 @@ from shutil import rmtree, copy2
 import pandas as pd
 
 # TODO Exceptions are not fully handled
+# TODO Distillate sheets is part of the config, drop it
 
 
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, \
-    multigrep, remove_suffix, setup_logger, run_hmmscan 
+    multigrep, remove_suffix, setup_logger, run_hmmscan, sig_scores, get_sig_row, \
+    generic_hmmscan_formater, get_reciprocal_best_hits, get_best_hits, BOUTFMT6_COLUMNS
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.camper_kit import search as camper_search
+from mag_annotator.camper_kit import search as camper_search, DRAM_SETTINGS as CAMPER_SETTINGS
+from mag_annotator.fegenie_kit import search as fegenie_search, DRAM_SETTINGS as FEGENIE_SETTINGS
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
 # TODO: add silent mode
@@ -27,12 +36,12 @@ from mag_annotator.camper_kit import search as camper_search
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
 # TODO: add ability to handle [] in file names
 
-MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb')
-BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOpenCnt', 'qStart', 'qEnd', 'tStart',
-                    'tEnd', 'eVal', 'bitScore']
+MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb') 
+MAG_DBS_TO_ANNOTATE += tuple(CAMPER_SETTINGS.keys())
+MAG_DBS_TO_ANNOTATE += tuple(FEGENIE_SETTINGS.keys())
 """
 import os
-os.system("DRAM.py annotate_genes ")
+os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa -o test_small")
 
 """
 
@@ -54,56 +63,6 @@ def run_prodigal(fasta_loc, output_dir, logger, mode='meta', trans_table='11', v
     run_process(['prodigal', '-i', fasta_loc, '-p', mode, '-g', trans_table, '-f', 'gff', '-o', output_gff, '-a',
                  output_faa, '-d', output_fna], logger, verbose=verbose)
     return output_gff, output_fna, output_faa
-
-
-def get_best_hits(query_db, target_db, logger, output_dir='.', query_prefix='query', target_prefix='target',
-                  bit_score_threshold=60, threads=10, verbose=False):
-    """Uses mmseqs2 to do a blast style search of a query db against a target db, filters to only include best hits
-    Returns a file location of a blast out format 6 file with search results
-    """
-    # make query to target db
-    tmp_dir = path.join(output_dir, 'tmp')
-    query_target_db = path.join(output_dir, '%s_%s.mmsdb' % (query_prefix, target_prefix))
-    run_process(['mmseqs', 'search', query_db, target_db, query_target_db, tmp_dir, '--threads', str(threads)],
-                 logger, verbose=verbose)
-    # filter query to target db to only best hit
-    query_target_db_top = path.join(output_dir, '%s_%s.tophit.mmsdb' % (query_prefix, target_prefix))
-    run_process(['mmseqs', 'filterdb', query_target_db, query_target_db_top, '--extract-lines', '1'], logger,
-                verbose=verbose)
-    # filter query to target db to only hits with min threshold
-    query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%s.mmsdb'
-                                         % (query_prefix, target_prefix, bit_score_threshold))
-    run_process(['mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge', '--comparison-value',
-                 str(bit_score_threshold), '--threads', str(threads), query_target_db_top, query_target_db_top_filt],
-                logger, verbose=verbose)
-    # convert results to blast outformat 6
-    forward_output_loc = path.join(output_dir, '%s_%s_hits.b6' % (query_prefix, target_prefix))
-    run_process(['mmseqs', 'convertalis', query_db, target_db, query_target_db_top_filt, forward_output_loc,
-                 '--threads', str(threads)], logger, verbose=verbose)
-    return forward_output_loc
-
-
-def get_reciprocal_best_hits(query_db, target_db, logger, output_dir='.', query_prefix='query', target_prefix='target',
-                             bit_score_threshold=60, rbh_bit_score_threshold=350, threads=10, verbose=False):
-    """Take results from best hits and use for a reciprocal best hits search"""
-    # TODO: Make it take query_target_db as a parameter
-    # create subset for second search
-    query_target_db_top_filt = path.join(output_dir, '%s_%s.tophit.minbitscore%s.mmsdb'
-                                         % (query_prefix, target_prefix, bit_score_threshold))  # I DON'T LIKE THIS
-    query_target_db_filt_top_swapped = path.join(output_dir, '%s_%s.minbitscore%s.tophit.swapped.mmsdb'
-                                                 % (query_prefix, target_prefix, bit_score_threshold))
-    # swap queries and targets in results database
-    run_process(['mmseqs', 'swapdb', query_target_db_top_filt, query_target_db_filt_top_swapped, '--threads',
-                 str(threads)], logger, verbose=verbose)
-    target_db_filt = path.join(output_dir, '%s.filt.mmsdb' % target_prefix)
-    # create a subdatabase of the target database with the best hits as well as the index of the target database
-    run_process(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, target_db, target_db_filt],
-                logger, verbose=verbose)
-    run_process(['mmseqs', 'createsubdb', query_target_db_filt_top_swapped, '%s_h' % target_db,
-                 '%s_h' % target_db_filt], logger, verbose=verbose)
-
-    return get_best_hits(target_db_filt, query_db, logger, output_dir, target_prefix, query_prefix, rbh_bit_score_threshold,
-                         threads, verbose)
 
 
 def process_reciprocal_best_hits(forward_output_loc, reverse_output_loc, target_prefix='target'):
@@ -222,37 +181,6 @@ def run_mmseqs_profile_search(query_db, pfam_profile, output_loc, logger, output
         return pd.DataFrame(columns=[f"{output_prefix}_hits"])
 
 
-def get_sig_row(row, evalue_lim:float=1e-15):
-    """Check if hmm match is significant, based on dbCAN described parameters"""
-    tstart, tend, tlen, evalue = row[['target_start', 'target_end', 'target_length', 'full_evalue']].values
-    perc_cov = (tend - tstart)/tlen
-    if perc_cov >= .35 and evalue <= evalue_lim:
-        return True
-    else:
-        return False
-
-
-# continue exit()
-def sig_scores(hits:pd.DataFrame, score_db:pd.DataFrame) -> pd.DataFrame:
-    is_sig = list()
-    for i, frame in hits.groupby('target_id'):
-        row = score_db.loc[i]
-        if row['score_type'] == 'domain':
-            score = frame.domain_score
-        elif row['score_type'] == 'full':
-            score = frame.full_score
-        elif row['score_type'] == '-':
-            continue
-        else:
-            raise ValueError(row['score_type'])
-        frame = frame.loc[score.astype(float) > float(row.threshold)]
-        is_sig.append(frame)
-    if len(is_sig) > 0:
-        return pd.concat(is_sig)
-    else:
-        return pd.DataFrame()
-
-
 def find_best_dbcan_hit(genome:str, group:pd.DataFrame):
     group['perc_cov'] = group.apply(
         lambda x: (x['target_end'] - x['target_start']) / x['target_length'],
@@ -286,7 +214,7 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     )
     hits_df = pd.DataFrame(all_hits)
     hits_df.columns = [f"{db_name}_ids"]
-    hits_df['best_hit'] = [find_best_dbcan_hit(*i) for i in hit_groups]
+    hits_df[f'{db_name}_best_hit'] = [find_best_dbcan_hit(*i) for i in hit_groups]
     if db_handler is not None:
         hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_ids"].apply(
             lambda x:'; '.join(
@@ -298,34 +226,11 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
             lambda x:'; '.join(
                 db_handler.get_descriptions(
                     x.split('; '), 
-                    'dbcan_subfam_ec').values()))
+                    'dbcan_description', 
+                    description_name='ec'
+                ).values()))
     hits_df.rename_axis(None, inplace=True)
     hits_df.columns
-    breakpoint()
-    return hits_df
-
-
-#TODO decide if we need use_hmmer_thresholds:bool=False
-def generic_hmmscan_formater(hits:pd.DataFrame,  db_name:str, hmm_info_path:str=None, top_hit:bool=True):
-    if hmm_info_path is None:
-        hmm_info = None
-        hits_sig = hits[hits.apply(get_sig_row, axis=1)]
-    else:
-        hmm_info = pd.read_csv(hmm_info_path, sep='\t', index_col=0)
-        hits_sig = sig_scores(hits, hmm_info)
-    if len(hits_sig) == 0:
-        # if nothing significant then return nothing, don't get descriptions
-        return pd.DataFrame()
-    if top_hit:
-        # Get the best hits
-        hits_sig = hits_sig.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
-    hits_df = hits_sig[['target_id', 'query_id']]
-    hits_df.set_index('query_id', inplace=True, drop=True)
-    hits_df.rename_axis(None, inplace=True)
-    hits_df.columns = [f"{db_name}_id"]
-    if hmm_info is not None:
-        hits_df = hits_df.merge(hmm_info[['definition']], how='left', left_on=f"{db_name}_id", right_index=True)
-        hits_df.rename(columns={'definition': f"{db_name}_hits"}, inplace=True)
     return hits_df
 
 
@@ -783,6 +688,51 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
 
     annotation_list = list()
 
+    if db_handler.config['search_databases'].get('fegenie_hmm') is not None and \
+            db_handler.config['search_databases'].get('fegenie_cutoffs') is not None:
+        logger.info('Getting hits from FeGenie')
+        annotation_list.append(
+            fegenie_search(
+                          genes_faa=gene_faa, 
+                          tmp_dir=tmp_dir, 
+                          fegenie_hmm=db_handler.config['search_databases']['fegenie_hmm'], 
+                          fegenie_cutoffs=db_handler.config['search_databases']['fegenie_cutoffs'],
+                          logger=logger, 
+                          threads=threads,
+                          verbose=verbose,
+            ))
+        
+
+    if db_handler.config['search_databases'].get('sulphur_hmm') is not None and \
+            db_handler.config['search_databases'].get('sulphur_cutoffs') is not None:
+        logger.info('Getting hits from FeGenie')
+        annotation_list.append(
+            sulphur_search(
+                          genes_faa=gene_faa, 
+                          tmp_dir=tmp_dir, 
+                          sulphur_hmm=db_handler.config['search_databases']['sulphur_hmm'], 
+                          sulphur_cutoffs=db_handler.config['search_databases']['sulphur_cutoffs'],
+                          logger=logger, 
+                          threads=threads,
+                          verbose=verbose,
+            ))
+        
+
+    if db_handler.config['search_databases'].get('camper_hmm') is not None and \
+            db_handler.config['search_databases'].get('camper_fa_db') is not None:
+        logger.info('Getting hits from CAMPER')
+        annotation_list.append(
+            camper_search(query_db=query_db, 
+                          genes_faa=gene_faa, 
+                          tmp_dir=tmp_dir, 
+                          logger=logger, 
+                          threads=threads,
+                          verbose=verbose,
+                          camper_fa_db=db_handler.config['search_databases']['camper_fa_db'], 
+                          camper_hmm=db_handler.config['search_databases']['camper_hmm'], 
+                          camper_fa_db_cutoffs=db_handler.config['search_databases']['camper_fa_db_cutoffs'], 
+                          camper_hmm_cutoffs=db_handler.config['search_databases']['camper_hmm_cutoffs']))
+
     if db_handler.config['search_databases'].get('kegg') is not None:
         #TODO Change the get_kegg_description name in function do_blast_style_search to formater
         #TODO think about how this can be consitent with blast and mmseqs
@@ -866,20 +816,6 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
                                                db_handler=db_handler
                                            ),
                                            logger=logger))
-    # use hmmer to detect vogdbs
-    if db_handler.config['search_databases'].get('camper_hmm') is not None and \
-            db_handler.config['search_databases'].get('camper_fa_db') is not None:
-        logger.info('Getting hits from CAMPER')
-        annotation_list.append(
-            camper_search(query_db=query_db, 
-                          genes_faa=gene_faa, 
-                          temp_dir=temp_dir, 
-                          logger=logger, 
-                          camper_fa_db=db_handler.config['search_databases']['camper_fa_db'], 
-                          camper_hmm=db_handler.config['search_databases']['camper_hmm'], 
-                          camper_fa_db_cutoffs=db_handler.config['search_databases']['camper_fa_db_cutoffs'], 
-                          camper_hmm_cutoffs=db_handler.config['search_databases']['camper_hmm_cutoffs']))
-
     for db_name, db_loc in custom_db_locs.items():
         logger.info('Getting hits from %s' % db_name)
         get_custom_description = partial(get_basic_description, db_name=db_name)
@@ -933,11 +869,10 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_handler, logger, min_co
     if stat(filtered_fasta).st_size == 0:
         logger.warning('No sequences were longer than min_contig_size')
         return None
-
     # predict ORFs with prodigal
     # TODO: handle when prodigal returns no genes
-    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir, logger, mode=prodigal_mode, trans_table=trans_table,
-                                                verbose=verbose)
+    gene_gff, gene_fna, gene_faa = run_prodigal(filtered_fasta, tmp_dir, logger, mode=prodigal_mode, 
+                                                trans_table=trans_table, verbose=verbose)
 
     # annotate ORFs
     annotations = annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs, custom_hmm_locs,
@@ -978,7 +913,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_handler, logger, min_co
         if trna_table is not None:
             trna_loc = path.join(output_dir, 'trnas.tsv')
             trna_table.to_csv(trna_loc, sep='\t', index=False)
-            add_intervals_to_gff(trna_loc, renamed_gffs, len_dict, make_trnas_interval, 'Name')
+            add_intervals_to_gff(trna_loc, renamed_gffs, len_dict, make_trnas_interval, 'Name', logger)
         else:
             trna_loc = None
     else:
@@ -988,7 +923,7 @@ def annotate_fasta(fasta_loc, fasta_name, output_dir, db_handler, logger, min_co
     if rrna_table is not None:
         rrna_loc = path.join(output_dir, 'rrnas.tsv')
         rrna_table.to_csv(rrna_loc, sep='\t', index=False)
-        add_intervals_to_gff(rrna_loc, renamed_gffs, len_dict, make_rrnas_interval, 'scaffold')
+        add_intervals_to_gff(rrna_loc, renamed_gffs, len_dict, make_rrnas_interval, 'scaffold', logger)
     else:
         rrna_loc = None
 
@@ -1007,10 +942,11 @@ def get_fasta_name(fasta_loc):
     return path.splitext(path.basename(remove_suffix(fasta_loc, '.gz')))[0]
 
 
-def annotate_fastas(fasta_locs, output_dir, db_handler, logger, min_contig_size=5000, prodigal_mode='meta', trans_table='11',
-                    bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                    custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), kofam_use_dbcan2_thresholds=False,
-                    skip_trnascan=False, rename_bins=True, keep_tmp_dir=True, threads=10, verbose=True):
+def annotate_fastas(fasta_locs, output_dir, db_handler, logger, min_contig_size=5000, prodigal_mode='meta', 
+                    trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), 
+                    custom_fasta_loc=(), custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), 
+                    kofam_use_dbcan2_thresholds=False, skip_trnascan=False, rename_bins=True, keep_tmp_dir=True,
+                    threads=10, verbose=True):
     # check for no conflicting options/configurations
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
@@ -1183,10 +1119,6 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     db_handler = DatabaseHandler()
     db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
     
-    #TODO REMOVE
-    del db_handler.config['search_databases']['kofam_hmm']
-    del db_handler.config['search_databases']['peptidase']
-    del db_handler.config['search_databases']['pfam']
 
     if len(fasta_locs) == 0:
         raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
