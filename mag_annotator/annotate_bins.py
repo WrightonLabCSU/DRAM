@@ -29,6 +29,7 @@ from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, \
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.camper_kit import search as camper_search, DRAM_SETTINGS as CAMPER_SETTINGS
 from mag_annotator.fegenie_kit import search as fegenie_search, DRAM_SETTINGS as FEGENIE_SETTINGS
+from mag_annotator.sulphur_kit import search as sulphur_search, DRAM_SETTINGS as SULPHUR_SETTINGS 
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
 # TODO: add silent mode
@@ -39,10 +40,17 @@ from mag_annotator.fegenie_kit import search as fegenie_search, DRAM_SETTINGS as
 MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb') 
 MAG_DBS_TO_ANNOTATE += tuple(CAMPER_SETTINGS.keys())
 MAG_DBS_TO_ANNOTATE += tuple(FEGENIE_SETTINGS.keys())
+MAG_DBS_TO_ANNOTATE += tuple(SULPHUR_SETTINGS.keys())
 
 """
-import os
+
 os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa -o test_small")
+os.system("DRAM.py annotate_bins -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa --use_fegenie --use_camper --use_sulphur -o test_small")
+
+import os
+os.system("rm -r test_small")
+os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/input_datasets/camper_test_data/genes.faa --use_fegenie --use_camper --use_sulphur -o test_small")
+os.system("DRAM.py annotate_bins -i /home/projects-wrighton-2/DRAM/input_datasets/SoilGenomess/Cytophaga_hutchinsonii_ATCC_33406.fasta --use_fegenie --use_camper --use_sulphur -o soil_part")
 """
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -702,6 +710,20 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
                           threads=threads,
                           verbose=verbose,
             ))
+
+    if db_handler.config['search_databases'].get('sulphur_hmm') is not None and \
+            db_handler.config['search_databases'].get('sulphur_cutoffs') is not None:
+        logger.info('Getting hits from FeGenie')
+        annotation_list.append(
+            sulphur_search(
+                          genes_faa=gene_faa, 
+                          tmp_dir=tmp_dir, 
+                          sulphur_hmm=db_handler.config['search_databases']['sulphur_hmm'], 
+                          sulphur_cutoffs=db_handler.config['search_databases']['sulphur_cutoffs'],
+                          logger=logger, 
+                          threads=threads,
+                          verbose=verbose,
+            ))
         
 
     if db_handler.config['search_databases'].get('sulphur_hmm') is not None and \
@@ -985,14 +1007,14 @@ def annotate_fastas(fasta_locs, output_dir, db_handler, logger, min_contig_size=
 def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodigal_mode='meta', trans_table='11',
                       bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
                       custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, 
-                      use_camper=False, use_fegenie=False,  use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
+                      use_camper=False, use_fegenie=False, use_sulphur=False,  use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
                       skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                       keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     rename_bins = True
     fasta_locs = [j for i in input_fasta for j in glob(i)]
     annotate_bins(list(set(fasta_locs)), output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
                   rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, custom_hmm_name, custom_hmm_loc,
-                  custom_hmm_cutoffs_loc, use_uniref, use_camper, use_fegenie, use_vogdb, kofam_use_dbcan2_thresholds, skip_trnascan,
+                  custom_hmm_cutoffs_loc, use_uniref, use_camper, use_fegenie, use_sulphur, use_vogdb, kofam_use_dbcan2_thresholds, skip_trnascan,
                   gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
@@ -1002,7 +1024,7 @@ def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodiga
 def annotate_bins(fasta_locs:list, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
                   custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, 
-                  use_camper=False, use_fegenie=False, use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
+                  use_camper=False, use_fegenie=False, use_sulphur=False, use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
                   skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                   rename_bins=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True, 
                   log_file_path:str=None):
@@ -1021,8 +1043,8 @@ def annotate_bins(fasta_locs:list, output_dir='.', min_contig_size=2500, prodiga
         raise ValueError('Genome file names must be unique. At least one name appears twice in this search.')
     logger.info('%s FASTAs found' % len(fasta_locs))
     # set up
-    db_handler = DatabaseHandler()
-    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, 
+    db_handler = DatabaseHandler(logger)
+    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, use_sulphur,
                               use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
     db_conf = db_handler.get_settings_str()
     logger.info(f"Starting the Annotation of Bins with database configuration: \n {db_conf}")
@@ -1094,18 +1116,21 @@ def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60,
                               rbh_bit_score_threshold=350,
                               custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
                               custom_hmm_cutoffs_loc=(), use_uniref=False, use_camper=False, use_fegenie=False, 
+                              use_sulphur=False, log_file_path:str=None,
                               use_vogdb=False, kofam_use_dbcan2_thresholds=False, rename_genes=True, 
                               keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
     annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, 
                           custom_db_name, custom_fasta_loc, custom_hmm_loc, custom_hmm_name, 
-                          custom_hmm_cutoffs_loc, use_uniref, use_camper, use_fegenie, use_vogdb, kofam_use_dbcan2_thresholds, 
+                          custom_hmm_cutoffs_loc, use_uniref, use_camper, use_fegenie, 
+                          use_sulphur, use_vogdb, kofam_use_dbcan2_thresholds, 
                           rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
 def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
                           custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
                           custom_hmm_cutoffs_loc=(), use_uniref=False, use_camper=False, use_fegenie=False,  
+                          use_sulphur=False,
                           use_vogdb=False, kofam_use_dbcan2_thresholds=False, rename_genes=True, keep_tmp_dir=True, 
                           low_mem_mode=False, threads=10, verbose=True, log_file_path:str=None):
     mkdir(output_dir)
@@ -1117,8 +1142,8 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     setup_logger(logger, log_file_path)
     logger.info(f"The log file is created at {log_file_path}")
     # get database locations
-    db_handler = DatabaseHandler()
-    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
+    db_handler = DatabaseHandler(logger)
+    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, use_sulphur, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
     
 
     if len(fasta_locs) == 0:

@@ -42,7 +42,7 @@ def clear_dict(val):
 
 class DatabaseHandler:
 
-    def __init__(self, config_loc=None, logger=None):
+    def __init__(self, logger, config_loc=None):
         # read in new configuration 
         # TODO: validate config file after reading it in
         if config_loc is None:
@@ -68,10 +68,16 @@ class DatabaseHandler:
                               "import fails then you should contact suport.")
             db_handler = self.__construct_default(conf)
 
-        if logger is None:
-            logger = logging.getLogger("database_handler.log")
-        setup_logger(logger, self.config.get("log_path"))
-        self.logger = logger
+        # if logger is None:
+        #     logger = logging.getLogger("database_handler.log")
+        # setup_logger(logger, self.get_log_path())
+        # self.logger = logger
+
+        # def get_log_path(self):
+        #     path = self.config.get('log_path')
+        #     if path is None:
+        #         path = path.join(self.config_loc, 'database_processing.log')
+        #     return path
 
 
     def __construct_default(self, conf:dict):
