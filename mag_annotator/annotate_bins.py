@@ -39,10 +39,10 @@ from mag_annotator.fegenie_kit import search as fegenie_search, DRAM_SETTINGS as
 MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb') 
 MAG_DBS_TO_ANNOTATE += tuple(CAMPER_SETTINGS.keys())
 MAG_DBS_TO_ANNOTATE += tuple(FEGENIE_SETTINGS.keys())
+
 """
 import os
 os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa -o test_small")
-
 """
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -214,14 +214,14 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
     )
     hits_df = pd.DataFrame(all_hits)
     hits_df.columns = [f"{db_name}_ids"]
-    hits_df[f'{db_name}_best_hit'] = [find_best_dbcan_hit(*i) for i in hit_groups]
+    def description_pull(x:str):
+         id_list = [re.findall('^[A-Z]*[0-9]*', str(x))[0] for x in  x.split('; ')], 
+         id_list = [y for x in  id_list for y in x if len(x) > 0]
+         description_list = db_handler.get_descriptions(id_list, 'dbcan_description').values()
+         description_str = '; '.join(description_list)
+         return description_str
     if db_handler is not None:
-        hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_ids"].apply(
-            lambda x:'; '.join(
-                db_handler.get_descriptions(
-                   [y for x in  x.split('; ') 
-                    if len(y := re.findall('^[A-Z]*[0-9]*', str(x))[0]) > 0], 
-                    'dbcan_description').values()))
+        hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_id"].apply(description_pull)
         hits_df[f"{db_name}_subfam_ec"] = hits_df[f"{db_name}_ids"].apply(
             lambda x:'; '.join(
                 db_handler.get_descriptions(
@@ -229,6 +229,7 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
                     'dbcan_description', 
                     description_name='ec'
                 ).values()))
+    hits_df[f'{db_name}_best_hit'] = [find_best_dbcan_hit(*i) for i in hit_groups]
     hits_df.rename_axis(None, inplace=True)
     hits_df.columns
     return hits_df

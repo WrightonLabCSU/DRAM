@@ -1,8 +1,8 @@
 import pytest
 import os
 
-from mag_annotator.database_processing import generate_modified_kegg_fasta, process_kegg_db, process_mmspro, \
-    process_camper, download_camper_tar_gz
+from mag_annotator.database_processing import generate_modified_kegg_fasta, process_kegg, process_mmspro, \
+     download_camper_tar_gz
 
 @pytest.fixture()
 def phix_proteins():

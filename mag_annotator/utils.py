@@ -46,8 +46,8 @@ def setup_logger(logger, *log_file_paths, level=logging.INFO):
         fh = logging.FileHandler(log_file_path)
         fh.setLevel(logging.INFO)
         fh.setFormatter(formatter)
-    # add the handlers to the logger
-    logger.addHandler(fh)
+        # add the handlers to the logger
+        logger.addHandler(fh)
 
 
 def run_process(command, logger, shell:bool=False, capture_stdout:bool=True, save_output:str=None, 

@@ -8,6 +8,7 @@ import warnings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+from functools import partial
 
 import pandas as pd
 
@@ -47,13 +48,10 @@ class DatabaseHandler:
         if config_loc is None:
             config_loc = get_config_loc()
 
-        if logger is None:
-            logger = logging.getLogger("database_handler.log")
-        self.logger = logger
-
         self.config_loc = config_loc
-        self.config = {}
         conf = json.loads(open(self.config_loc).read())
+        if len(conf) == 0:
+            self.clear_config()
         if 'dram_version' not in conf:
             warnings.warn("The DRAM version in your config is empty."
                           " This may not be a problem, but if this"
@@ -69,6 +67,11 @@ class DatabaseHandler:
                               "that are known to work. This may not be a problem, but if this "
                               "import fails then you should contact suport.")
             db_handler = self.__construct_default(conf)
+
+        if logger is None:
+            logger = logging.getLogger("database_handler.log")
+        setup_logger(logger, self.config.get("log_path"))
+        self.logger = logger
 
 
     def __construct_default(self, conf:dict):
@@ -229,16 +232,6 @@ class DatabaseHandler:
             k:check_exists_and_add_to_location_dict(locs[i][k], self.config.get(i).get(k)) 
             for k in locs[i]} for i in locs})
 
-        # self.config['search_databases'] = {
-        #     k:check_exists_and_add_to_location_dict(locs[k], self.config.get('search_databases').get(k))
-        #     for k in self.config['search_databases']}
-        # self.config['database_descriptions'] = {
-        #     k:check_exists_and_add_to_location_dict(locs[k], self.config.get('database_descriptions').get(k))
-        #     for k in self.config['database_descriptions']}
-        # self.config['dram_sheets'] = {
-        #     k:check_exists_and_add_to_location_dict(locs[k], self.config.get('dram_sheets').get(k))
-        #     for k in self.config['dram_sheets']}
-
         self.config['description_db'] = check_exists_and_add_to_location_dict(description_db_loc, self.config.get('description_db'))
         self.start_db_session()
 
@@ -333,10 +326,9 @@ class DatabaseHandler:
         return annotations_list
 
     # TODO: Make option to build on description database that already exists?
-    def populate_description_db(self, output_loc=None, update_config=True):
-        setup_logger(self.logger, self.config['log_path'])
-
+    def populate_description_db(self, output_loc=None, select_db=None, update_config=True):
         if self.config.get('description_db') is None and output_loc is None:  # description db location must be set somewhere
+            self.logger.critical('Must provide output location if description db location is not set in configuration')
             raise ValueError('Must provide output location if description db location is not set in configuration')
         if output_loc is not None:  # if new description db location is set then save it there
             self.config['description_db']= output_loc
@@ -344,54 +336,47 @@ class DatabaseHandler:
         if path.exists(self.config.get('description_db')):
             remove(self.config.get('description_db'))
         create_description_db(self.config.get('description_db'))
+        def check_db(db_name, db_function=None):
+            if self.config.get('search_databases').get(db_name) is None:
+                return
+            if not path.exists(self.config['search_databases'][db_name]):
+                logger.warn(f"There is a path for the {db_name} db in the config, but there"
+                            " is no file at that path. The path is:"
+                            f"{self.config['search_databases'][db_name]}")
+                return
+            if db_function is None:
+                self.add_descriptions_to_database(
+                    self.make_header_dict_from_mmseqs_db(self.config['search_databases'][db_name]), 
+                    f'{db_name}_description',
+                    clear_table=True)
+            else:
+                self.add_descriptions_to_database(
+                    db_function(), 
+                    f'{db_name}_description',
+                    clear_table=True)
+            self.config['setup_info'][db_name]['description_db_updated'] = \
+                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.logger.info(f'Description updated for the {db_name} database')
         # fill database
-        if self.config.get('search_databases').get('kegg') is not None:
-            self.add_descriptions_to_database(
-                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['kegg']), 
-                'kegg_description',
-                clear_table=True)
-            self.config['setup_info']['kegg']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.logger.info('KEGG Description updated')
-        if self.config.get('search_databases').get('uniref') is not None:
-            self.add_descriptions_to_database(
-                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['uniref']), 
-                'uniref_description', clear_table=True)
-            self.config['setup_info']['uniref']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.logger.info('UniRef Description updated')
-        if self.config.get('database_descriptions').get('pfam_hmm') is not None:
-            self.add_descriptions_to_database( self.process_pfam_descriptions(self.config.get('database_descriptions')['pfam_hmm']), 'pfam_description', clear_table=True)
-            self.config['setup_info']['pfam_hmm']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.logger.info('Pfam Description updated')
-        if self.config.get('database_descriptions').get('dbcan_fam_activities') is not None:
-            self.add_descriptions_to_database(self.process_dbcan_descriptions( self.config.get('database_descriptions')['dbcan_fam_activities'], self.config.get('database_descriptions')['dbcan_subfam_ec']), 'dbcan_description', clear_table=True)
-            self.config['setup_info']['dbcan_fam_activities']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.logger.info('DBCAN Description updated')
-        if self.config.get('search_databases').get('viral') is not None:
-            self.add_descriptions_to_database(
-                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['viral']),
-                'viral_description', clear_table=True)
-            self.config['setup_info']['viral']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.logger.info('Viral Description updated')
-        if self.config.get('search_databases').get('peptidase') is not None:
-            self.add_descriptions_to_database(
-                self.make_header_dict_from_mmseqs_db(self.config.get('search_databases')['peptidase']),
-                'peptidase_description', clear_table=True)
-            self.config['setup_info']['peptidase']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.logger.info('Peptidase descriptions updated')
-        if self.config.get('database_descriptions').get('vog_annotations') is not None:
-            self.add_descriptions_to_database(
-                self.process_vogdb_descriptions(self.config.get('database_descriptions')['vog_annotations']), 
-                'vogdb_description', clear_table=True)
-            self.config['setup_info']['vog_annotations']['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.logger.info('VOGDB descriptions updated')
+        if select_db is None:
+            database_to_update = ['kegg', 'uniref', 'pfam_hmm', 'dbcan_fam_activities', 'viral',
+                                  'peptidase', 'vog_annotations']
+        else:
+            database_to_update = select_db
 
+        process_functions={
+            'pfam_hmm': partial(self.process_pfam_descriptions,
+                                self.config.get('database_descriptions')['pfam_hmm']),
+            'dbcan_fam_activities': partial(self.process_dbcan_descriptions,
+                                            self.config.get('database_descriptions')['dbcan_fam_activities'], 
+                                            self.config.get('database_descriptions')['dbcan_subfam_ec']),
+            'vogdb_description': partial(self.process_vogdb_descriptions,
+                                         self.config.get('database_descriptions')['vog_annotations']) 
+        }
+
+        for i in database_to_update:
+            check_db(i, process_functions.get(i))
+            
         if update_config:  # if new description db is set then save it
             self.write_config()
 
@@ -427,7 +412,17 @@ class DatabaseHandler:
         self.config['search_databases'] = {key: value for key, value in self.config.get('search_databases').items() if key in dbs_to_use}
 
     def clear_config(self):
-        self.config = clear_dict(self.config)
+        self.config = {
+                        "search_databases": {},
+                        "database_descriptions": {},
+                        "dram_sheets": {},
+                        "dram_version": current_dram_version,
+                        "description_db": None,
+                        "setup_info": {},
+                        "log_path": None
+                      }
+        self.write_config()
+
 
 def set_database_paths(clear_config=False, update_description_db=False, **kargs):
     #TODO Add tests
@@ -480,9 +475,9 @@ def print_database_settings(config_loc=None):
 
 
 
-def populate_description_db(output_loc=None, config_loc=None):
+def populate_description_db(output_loc=None, select_db=None,  config_loc=None):
     db_handler = DatabaseHandler(config_loc)
-    db_handler.populate_description_db(output_loc)
+    db_handler.populate_description_db(output_loc, select_db)
 
 
 def export_config(output_file=None):

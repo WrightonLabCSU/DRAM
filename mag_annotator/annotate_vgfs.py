@@ -10,7 +10,8 @@ from skbio.io import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.annotate_bins import annotate_fastas
-from mag_annotator.utils import get_ids_from_annotation, setup_logger
+from mag_annotator.utils import setup_logger
+from mag_annotator.summarize_genomes import get_ids_from_annotation
 
 VMAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'viral', 'vogdb')
 VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length', 'strandedness',

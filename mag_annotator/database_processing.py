@@ -349,7 +349,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                       fegenie_tar_gz_loc=None,
                       sulphur_tar_gz_loc=None,
                       skip_uniref=False, keep_database_files=False,
-                      branch='master', threads=10, verbose=True, select_db=None):
+                      branch='master', threads=10, verbose=True, select_db=None, clear_config=False):
 
 
     dram_settings = {
@@ -445,6 +445,9 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     main_log = path.join(output_dir, 'database_processing.log')
     setup_logger(LOGGER, *[(main_log, loggpath) if loggpath is not None else main_log])
     db_handler = DatabaseHandler(logger=LOGGER)
+    if clear_config or select_db is None:
+        db_handler.clear_config()
+
     db_handler.config['log_path'] = main_log
     db_handler.write_config()
     LOGGER.info('Starting the process of downloading data')
@@ -548,10 +551,8 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
 
     LOGGER.info('Populating the description db, this may take some time')
     db_handler.config['description_db'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))
-    if select_db is not None:
-        LOGGER.warn('The select_db argument is in beta. It is not implanted for'
-                    ' description updating and so all descriptions are being updated.')
-    db_handler.populate_description_db(db_handler.config['description_db'], update_config=False)
+    db_handler.write_config()
+    db_handler.populate_description_db(db_handler.config['description_db'], select_db, update_config=False)
     # todo make db handler such that the destruction on success write_config
     db_handler.write_config()
     LOGGER.info('DRAM description database populated')
@@ -564,7 +565,6 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
 def update_dram_forms(output_dir, branch='master'):
     if not path.isdir(output_dir):
         mkdir(output_dir)
-
     form_locs = dict()
     form_locs['genome_summary_form_loc'] = download_genome_summary_form(output_dir, branch)
     form_locs['module_step_form_loc'] = download_module_step_form(output_dir, branch)
@@ -580,7 +580,7 @@ def update_dram_forms(output_dir, branch='master'):
 
 os.system("DRAM.py annotate -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/15_soil_genomes/all_data/Cytophaga_hutchinsonii_ATCC_33406.fasta  -o test_15soil --use_camper --use_fegenie")
 import os
-os.system('DRAM-setup.py prepare_databases --output_dir /home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/ --kegg_loc /home/Database/KEGG/kegg-all-orgs_20220603/kegg-all-orgs_unique_reheader_20220603.pep --select_db kegg --threads 40')
+os.system('DRAM-setup.py prepare_databases --output_dir /home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_21_22/ --kegg_loc /home/Database/KEGG/kegg-all-orgs_20220603/kegg-all-orgs_unique_reheader_20220603.pep --threads 40')
 os.system('DRAM-setup.py -h ')
     version             print DRAM version
     prepare_databases   Download and process databases for annotation
