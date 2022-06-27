@@ -68,16 +68,19 @@ class DatabaseHandler:
                               "import fails then you should contact suport.")
             db_handler = self.__construct_default(conf)
 
-        # if logger is None:
-        #     logger = logging.getLogger("database_handler.log")
-        # setup_logger(logger, self.get_log_path())
-        # self.logger = logger
+        if logger is None:
+            logger = logging.getLogger("database_handler.log")
+            log_path = self.get_log_path()
+            setup_logger(logger, log_path)
+            logger.info(f"Logging info at {log_path}")
 
-        # def get_log_path(self):
-        #     path = self.config.get('log_path')
-        #     if path is None:
-        #         path = path.join(self.config_loc, 'database_processing.log')
-        #     return path
+        self.logger = logger
+
+    def get_log_path(self):
+        path = self.config.get('log_path')
+        if path is None:
+            path = path.join(self.config_loc, 'database_processing.log')
+        return path
 
 
     def __construct_default(self, conf:dict):
@@ -433,8 +436,8 @@ class DatabaseHandler:
 def set_database_paths(clear_config=False, update_description_db=False, **kargs):
     #TODO Add tests
     db_handler = DatabaseHandler()
-    if clear_config:
-        db_handler.clear_config()
+    # if clear_config:
+    #     db_handler.clear_config()
     db_handler.set_database_paths(**kargs, write_config=True)
     if update_description_db:
         db_handler.populate_description_db()
