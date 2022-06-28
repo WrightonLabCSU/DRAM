@@ -345,7 +345,7 @@ class DatabaseHandler:
         if path.exists(self.config.get('description_db')):
             remove(self.config.get('description_db'))
         create_description_db(self.config.get('description_db'))
-        def check_db(db_name, db_function=None):
+        def check_db(db_name, db_function):
             if self.config.get('search_databases').get(db_name) is None:
                 return
             if not path.exists(self.config['search_databases'][db_name]):
@@ -353,35 +353,30 @@ class DatabaseHandler:
                             " is no file at that path. The path is:"
                             f"{self.config['search_databases'][db_name]}")
                 return
-            if db_function is None:
-                self.add_descriptions_to_database(
-                    self.make_header_dict_from_mmseqs_db(self.config['search_databases'][db_name]), 
-                    f'{db_name}_description',
-                    clear_table=True)
-            else:
-                self.add_descriptions_to_database(
-                    db_function(), 
-                    f'{db_name}_description',
-                    clear_table=True)
+            self.add_descriptions_to_database(
+                db_function(),
+                f'{db_name}_description',
+                clear_table=True)
             self.config['setup_info'][db_name]['description_db_updated'] = \
                 datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.logger.info(f'Description updated for the {db_name} database')
         # fill database
-        if select_db is None:
-            database_to_update = ['kegg', 'uniref', 'pfam_hmm', 'dbcan_fam_activities', 'viral',
-                                  'peptidase', 'vog_annotations']
-        else:
-            database_to_update = select_db
-
-        process_functions={
+        database_to_update = ['kegg', 'uniref', 'pfam_hmm', 'dbcan', 'viral',
+                              'peptidase', 'vog_annotations']
+        if select_db is not None:
+            database_to_update = [i for i in database_to_update if i in select_db]
+        process_functions = {i:partial(self.make_header_dict_from_mmseqs_db, 
+                                       self.config['search_databases'][i]) 
+                             for i in database_to_update}
+        process_functions.update({
             'pfam_hmm': partial(self.process_pfam_descriptions,
                                 self.config.get('database_descriptions')['pfam_hmm']),
-            'dbcan_fam_activities': partial(self.process_dbcan_descriptions,
+            'dbcan': partial(self.process_dbcan_descriptions,
                                             self.config.get('database_descriptions')['dbcan_fam_activities'], 
                                             self.config.get('database_descriptions')['dbcan_subfam_ec']),
             'vogdb_description': partial(self.process_vogdb_descriptions,
                                          self.config.get('database_descriptions')['vog_annotations']) 
-        }
+        })
 
         for i in database_to_update:
             check_db(i, process_functions.get(i))

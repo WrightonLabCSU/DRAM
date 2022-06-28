@@ -458,8 +458,8 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     
     
     locs = {i.removesuffix('_loc'):j for i, j in locals().items() if i.endswith('_loc') and j is not None}
-    download_functions = {i.removeprefix('download_'):j for i,j in globals().items() if callable(j) and i.startswith('download_')}
-    process_functions = {i.removeprefix('process_'):j for i,j in globals().items() if callable(j) and i.startswith('process_')}
+    download_functions = {i[9:]:j for i,j in globals().items() if callable(j) and i.startswith('download_')}
+    process_functions = {i[8:]:j for i,j in globals().items() if callable(j) and i.startswith('process_')}
     functions = {i:j for i,j in globals().items() if callable(j) and i.startswith('download_')}
 
     # Check any specified paths exist
@@ -580,7 +580,8 @@ def update_dram_forms(output_dir, branch='master'):
 
 os.system("DRAM.py annotate -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/15_soil_genomes/all_data/Cytophaga_hutchinsonii_ATCC_33406.fasta  -o test_15soil --use_camper --use_fegenie")
 import os
-os.system('DRAM-setup.py prepare_databases --output_dir /home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_21_22/ --kegg_loc /home/Database/KEGG/kegg-all-orgs_20220603/kegg-all-orgs_unique_reheader_20220603.pep --threads 40')
+os.system('DRAM-setup.py prepare_databases --output_dir /home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_21_22/ --kegg_loc /home/Database/KEGG/kegg-all-orgs_20220603/kegg-all-orgs_unique_reheader_20220603.pep --threads 62')
+os.system('DRAM-setup.py prepare_databases --output_dir /home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_27_22/ --select_db dbcan --threads 62')
 os.system('DRAM-setup.py -h ')
     version             print DRAM version
     prepare_databases   Download and process databases for annotation
