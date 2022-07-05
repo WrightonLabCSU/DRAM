@@ -362,7 +362,7 @@ class DatabaseHandler:
                 f'{db_name}_description',
                 clear_table=False)
             self.config['setup_info'][db_name]['description_db_updated'] = \
-                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+                d/atetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.logger.info(f'Description updated for the {db_name} database')
         # fill database
         mmseqs_database= ['kegg', 'uniref',  'viral', 'peptidase']
