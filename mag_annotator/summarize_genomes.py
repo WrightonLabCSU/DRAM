@@ -33,7 +33,17 @@ ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'genome', 'path_l
                         'path_length_coverage', 'percent_coverage', 'genes', 'missing_genes', 
                         'complex_module_name']
 TAXONOMY_LEVELS = ['d', 'p', 'c', 'o', 'f', 'g', 's']
+COL_HEADER, COL_SUBHEADER, COL_MODULE, COL_GENE_ID, COL_GENE_DESCRIPTION = 'header', 'subheader', 'module', 'gene_id', 'gene_description'
+CONSTANT_DISTILLATE_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_HEADER, COL_SUBHEADER]
+DISTILATE_SORT_ORDER_COLUMNS = [COL_HEADER, COL_SUBHEADER, COL_MODULE, COL_GENE_ID]
+EXCEL_MAX_CELL_SIZE = 32767
 
+"""
+import os 
+os.system("DRAM.py distill -i /home/projects-wilkins/fire/Chronosequence_2020_metaG/CSU_assemblies/gene_database/chronoseq_95per_genes_DRAM/annotations.tsv  -o  /home/projects-wilkins/fire/Chronosequence_2020_metaG/CSU_assemblies/gene_database/chronoseq_95per_genes_DRAM/DRAM_1_4_distill_gene_names_long_fix --distillate_gene_names")
+os.system("ls  /home/projects-wilkins/fire/Chronosequence_2020_metaG/CSU_assemblies/gene_database/chronoseq_95per_genes_DRAM/")
+
+"""
 
 #TODO unify this with get_ids_from_annotation
 def get_ids_from_row(row):
@@ -61,7 +71,7 @@ def get_ids_from_row(row):
         id_list += [j for j in row['peptidase_family'].split(';')]
     # get cazy ids
     if 'cazy_id' in row and not pd.isna(row['cazy_id']):
-        id_list += [j.split('_')[0] for i in row[cazy_id] for j in i.split('; ')]
+        id_list += [i.split('_')[0] for i in row['cazy_id'].split('; ')]
     if 'cazy_hits' in row and not pd.isna(row['cazy_hits']):
         id_list += [f"{i[1:3]}:{i[4:-1]}" for i in 
                     re.findall(r'\(EC [\d+\.]+[\d-]\)', row['cazy_hits'])]
@@ -190,12 +200,38 @@ def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna
     return summarized_genomes
 
 
+def split_column_str(names):
+    if len(names) < EXCEL_MAX_CELL_SIZE:
+        return [names]
+    out = ['']
+    name_list = names.split(',')
+    j = 0
+    for i in name_list:
+        if len(out[j]) + len(i) + 1 < EXCEL_MAX_CELL_SIZE:
+            out[j] = ','.join([out[j], i])
+        else:
+            j += 1
+            out += ['']
+    return out
+
+
+def split_names_to_long(col:pd.Series):
+    dex = col.index
+    splits = [split_column_str(i) for i in col.values]
+    ncols =  max([len(i) for i in splits])
+    col_names = [col.name if i == 0 else f"{col.name}[{i + 1}]" for i in range(ncols)]
+    return pd.DataFrame(splits, columns=col_names, index=dex).fillna('')
+
+
 def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
     # turn all this into an xlsx
     with pd.ExcelWriter(output_file) as writer:
         for sheet, frame in summarized_genomes.groupby('sheet', sort=False):
-            frame = frame.sort_values(['header', 'subheader', 'module', 'gene_id'])
+            frame = frame.sort_values(DISTILATE_SORT_ORDER_COLUMNS)
             frame = frame.drop(['sheet'], axis=1)
+            gene_columns = list(set(frame.columns) - set(CONSTANT_DISTILLATE_COLUMNS))
+            split_genes = pd.concat([split_names_to_long(frame[i]) for i in gene_columns], axis=1)
+            frame = pd.concat([frame[CONSTANT_DISTILLATE_COLUMNS],  split_genes], axis=1)
             frame.to_excel(writer, sheet_name=sheet, index=False)
 
 
@@ -630,7 +666,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
         rrna_frame = pd.read_csv(rrna_path, sep='\t')
 
     # get db_locs and read in dbs
-    database_handler = DatabaseHandler()
+    database_handler = DatabaseHandler(logger)
     if 'genome_summary_form' not in database_handler.config["dram_sheets"]:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     if 'module_step_form' not in database_handler.config["dram_sheets"]:

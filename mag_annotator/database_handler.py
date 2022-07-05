@@ -7,6 +7,7 @@ from shutil import copy2
 import warnings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from datetime import datetime
 from functools import partial
 
@@ -157,7 +158,8 @@ class DatabaseHandler:
             for chunk in divide_chunks(list(ids), 499)
             for des in self.session.query(description_class).filter(description_class.id.in_(chunk)).all() 
         ]
-        self.session.query(TABLE_NAME_TO_CLASS_DICT['pfam_description']).all() 
+        # [des for des in self.session.query(description_class).filter(description_class.id.in_(list(ids))).all() ]
+        # [i.id for i in self.session.query(TABLE_NAME_TO_CLASS_DICT['dbcan_description']).all()]
         if len(descriptions) == 0:
             warnings.warn("No descriptions were found for your id's. Does this %s look like an id from %s" % (list(ids)[0],
                                                                                                      db_name))
@@ -342,44 +344,47 @@ class DatabaseHandler:
         if output_loc is not None:  # if new description db location is set then save it there
             self.config['description_db']= output_loc
             self.start_db_session()
-        if path.exists(self.config.get('description_db')):
-            remove(self.config.get('description_db'))
+        # I don't think this is needed
+        # if path.exists(self.config.get('description_db')):
+        #     remove(self.config.get('description_db'))
         create_description_db(self.config.get('description_db'))
         def check_db(db_name, db_function):
-            if self.config.get('search_databases').get(db_name) is None:
-                return
-            if not path.exists(self.config['search_databases'][db_name]):
-                logger.warn(f"There is a path for the {db_name} db in the config, but there"
-                            " is no file at that path. The path is:"
-                            f"{self.config['search_databases'][db_name]}")
-                return
+            # Todo add these sorts of checks to a separate function
+            # if self.config.get('search_databases').get(db_name) is None:
+            #     return
+            # if not path.exists(self.config['search_databases'][db_name]):
+            #     logger.warn(f"There is a path for the {db_name} db in the config, but there"
+            #                 " is no file at that path. The path is:"
+            #                 f"{self.config['search_databases'][db_name]}")
+            #     return
             self.add_descriptions_to_database(
                 db_function(),
                 f'{db_name}_description',
-                clear_table=True)
+                clear_table=False)
             self.config['setup_info'][db_name]['description_db_updated'] = \
                 datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.logger.info(f'Description updated for the {db_name} database')
         # fill database
-        database_to_update = ['kegg', 'uniref', 'pfam_hmm', 'dbcan', 'viral',
-                              'peptidase', 'vog_annotations']
-        if select_db is not None:
-            database_to_update = [i for i in database_to_update if i in select_db]
+        mmseqs_database= ['kegg', 'uniref',  'viral', 'peptidase']
         process_functions = {i:partial(self.make_header_dict_from_mmseqs_db, 
                                        self.config['search_databases'][i]) 
-                             for i in database_to_update}
+                             for i in mmseqs_database}
+        # Use table names
         process_functions.update({
-            'pfam_hmm': partial(self.process_pfam_descriptions,
+            'pfam': partial(self.process_pfam_descriptions,
                                 self.config.get('database_descriptions')['pfam_hmm']),
             'dbcan': partial(self.process_dbcan_descriptions,
                                             self.config.get('database_descriptions')['dbcan_fam_activities'], 
                                             self.config.get('database_descriptions')['dbcan_subfam_ec']),
-            'vogdb_description': partial(self.process_vogdb_descriptions,
+            'vogdb': partial(self.process_vogdb_descriptions,
                                          self.config.get('database_descriptions')['vog_annotations']) 
         })
+        process_functions = {'dbcan': process_functions['dbcan']}
+        if select_db is not None:
+            process_functions = {i:k for i, k in process_functions.items() if i in select_db}
 
-        for i in database_to_update:
-            check_db(i, process_functions.get(i))
+        for i, k in process_functions.items():
+            check_db(i, k)
             
         if update_config:  # if new description db is set then save it
             self.write_config()

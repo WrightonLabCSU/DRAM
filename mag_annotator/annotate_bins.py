@@ -48,10 +48,12 @@ os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_
 os.system("DRAM.py annotate_bins -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa --use_fegenie --use_camper --use_sulphur -o test_small")
 
 import os
+
+os.system("DRAM-setup.py update_description_db")
 os.system("rm -r test_small ")
 os.system("DRAM.")
 os.system("DRAM.py annotate_genes --threads 64 -i /home/projects-wrighton-2/DRAM/input_datasets/camper_test_data/genes.faa --use_fegenie --use_camper --use_sulphur -o test_small")
-os.system("DRAM.py annotate_bins -i /home/projects-wrighton-2/DRAM/input_datasets/SoilGenomess/Cytophaga_hutchinsonii_ATCC_33406.fasta --use_fegenie --use_camper --use_sulphur -o soil_part")
+os.system("DRAM.py annotate -i /home/projects-wrighton-2/DRAM/input_datasets/SoilGenomess/Cytophaga_hutchinsonii_ATCC_33406.fasta --use_fegenie --use_camper --use_sulphur -o soil_part")
 """
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
@@ -230,7 +232,7 @@ def dbcan_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
          description_str = '; '.join(description_list)
          return description_str
     if db_handler is not None:
-        hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_id"].apply(description_pull)
+        hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_ids"].apply(description_pull)
         hits_df[f"{db_name}_subfam_ec"] = hits_df[f"{db_name}_ids"].apply(
             lambda x:'; '.join(
                 db_handler.get_descriptions(
