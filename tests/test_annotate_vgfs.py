@@ -7,6 +7,10 @@ import numpy as np
 from mag_annotator.annotate_vgfs import calculate_auxiliary_scores, get_virsorter_hits, get_overlap, get_gene_order, \
     is_transposon, get_metabolic_flags, get_amg_ids, get_virsorter_affi_contigs_name
 
+"""
+import os
+os.system("pytest tests/test_annotate_vgfs.py")
+"""
 
 @pytest.fixture()
 def get_data_dir():

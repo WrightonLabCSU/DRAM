@@ -95,7 +95,7 @@ if __name__ == '__main__':
                                     help="The db or dbs the you want to update if you don't want to do a full upgrade")
     prepare_dbs_parser.add_argument('--clear_config', default=False, action='store_true', help="By default"
                                     " when you set up a new db the old db is cleared, but not if you use select_db."
-                                    " If you use select db you can add this argument, forcing the old config to be cleared. (beta)")
+                                    " If you use select db you can add this argument, forcing the old config to be cleared.(beta)")
     prepare_dbs_parser.add_argument('--verbose', default=False, action='store_true', help="Make it talk more")
     prepare_dbs_parser.set_defaults(func=prepare_databases)
 
@@ -146,6 +146,8 @@ if __name__ == '__main__':
     update_description_db_parser.add_argument('--config_loc', help="Location of CONFIG file to use for finding "
                                                                    "databases, by default the location in the built in "
                                                                    "CONFIG will be used")
+    update_description_db_parser.add_argument('--select_db', action='append',
+                                    help="The db or dbs the you want to update if you don't want to do a full upgrade")
     update_description_db_parser.set_defaults(func=populate_description_db)
 
     # parser for updating DRAM databases only

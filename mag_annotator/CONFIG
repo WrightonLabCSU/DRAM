@@ -15,8 +15,8 @@
     "camper_fa_db_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER_blast_scores.tsv",
     "fegenie_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_oxidation_reduction.hmm",
     "fegenie_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_cut_offs.txt",
-    "sulphur_hmm": null,
-    "sulphur_cutoffs": null
+    "sulphur_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_oxidation_reduction.hmm",
+    "sulphur_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_cut_offs.txt"
   },
   "database_descriptions": {
     "pfam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/Pfam-A.hmm.dat.gz",
@@ -60,7 +60,7 @@
       "citation": "",
       "Download time": "06/08/2022, 18:46:31",
       "Origin": "Downloaded by DRAM",
-      "description_db_updated": "06/27/2022, 23:03:51"
+      "description_db_updated": "07/07/2022, 17:30:04"
     },
     "dbcan": {
       "name": "dbCAN db",
@@ -155,24 +155,23 @@
       "citation": "",
       "version": "10",
       "upload_date": "07292021",
-      "Download time": "06/09/2022, 09:01:01",
-      "Origin": "Downloaded by DRAM",
-      "description_db_updated": "06/16/2022, 11:59:50"
+      "Download time": "07/07/2022, 17:15:20",
+      "Origin": "Downloaded by DRAM"
     },
     "dbcan_subfam_ec": {
       "name": "dbCAN subfamily EC numbers",
       "citation": "",
       "version": "10",
       "upload_date": "07292021",
-      "Download time": "06/09/2022, 09:01:02",
+      "Download time": "07/07/2022, 17:15:20",
       "Origin": "Downloaded by DRAM"
     },
     "vog_annotations": {
       "name": "VOG annotations",
-      "description_db_updated": "06/16/2022, 12:00:51",
+      "description_db_updated": "Unknown, or Never",
       "citation": "",
       "version": "latest",
-      "Download time": "06/09/2022, 09:01:02",
+      "Download time": "07/07/2022, 17:20:18",
       "Origin": "Downloaded by DRAM"
     },
     "genome_summary_form": {
@@ -209,7 +208,22 @@
       "name": "KEGG db",
       "description_db_updated": "06/28/2022, 18:06:34",
       "citation": "Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M., and Tanabe, M.; KEGG: integrating viruses and cellular organisms. Nucleic Acids Res. 49, D545-D551 (2021)."
+    },
+    "sulphur_hmm": {
+      "name": "Sulphur placeholder",
+      "citation": "None",
+      "notes": "This is just fegenie_hmm pretending to be sulphur.",
+      "version": "1.2",
+      "Download time": "07/07/2022, 17:15:25",
+      "Origin": "Downloaded by DRAM"
+    },
+    "sulphur_cutoffs": {
+      "name": "Sulphur cutoffs",
+      "citation": "None",
+      "version": "1.2",
+      "Download time": "07/07/2022, 17:15:25",
+      "Origin": "Downloaded by DRAM"
     }
   },
-  "log_path": "/home/projects-wrighton-2/DRAM/development_flynn/snapshot/DRAM1_4/database_processing.log"
+  "log_path": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/database_processing.log"
 }

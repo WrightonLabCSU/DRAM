@@ -30,6 +30,7 @@ from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.camper_kit import search as camper_search, DRAM_SETTINGS as CAMPER_SETTINGS
 from mag_annotator.fegenie_kit import search as fegenie_search, DRAM_SETTINGS as FEGENIE_SETTINGS
 from mag_annotator.sulphur_kit import search as sulphur_search, DRAM_SETTINGS as SULPHUR_SETTINGS 
+# DRAM.py annotate -i *.fa" -o output_DRAM_drepped_pw_1.4.0 --min_contig_size 2500 --threads 25 --use_uniref --use_camper --use_fegenie --use_sulphur --use_vogdb &> log_erpe_pw_dram_drepped_ge3samples_1.4.0.txt
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
 # TODO: add silent mode
@@ -50,8 +51,10 @@ os.system("DRAM.py annotate_bins -i /home/projects-wrighton-2/DRAM/development_f
 import os
 
 os.system("DRAM-setup.py update_description_db")
+os.system("DRAM-setup.py import_config --config_loc ../../snapshot/DRAM1_4/mag_annotator/CONFIG")
 os.system("rm -r test_small ")
-os.system("DRAM.")
+os.system("rm -r ")
+os.system("DRAM.py annotate -i '../release_validation/data_sets/split_data_pour_water/*.fa' -o output_DRAM_drepped_pw_1.4.0 --min_contig_size 2500 --threads 65 --use_uniref --use_camper --use_fegenie --use_sulphur --use_vogdb")
 os.system("DRAM.py annotate_genes --threads 64 -i /home/projects-wrighton-2/DRAM/input_datasets/camper_test_data/genes.faa --use_fegenie --use_camper --use_sulphur -o test_small")
 os.system("DRAM.py annotate -i /home/projects-wrighton-2/DRAM/input_datasets/SoilGenomess/Cytophaga_hutchinsonii_ATCC_33406.fasta --use_fegenie --use_camper --use_sulphur -o soil_part")
 """
@@ -141,6 +144,7 @@ def get_basic_description(hits, header_dict, db_name='viral'):
     """Get viral gene full descriptions based on headers (text before first space)"""
     hit_list = list()
     description = list()
+    [hit for hit in hits['%s_hit' % db_name]]
     for hit in hits['%s_hit' % db_name]:
         header = header_dict[hit]
         hit_list.append(hit)
@@ -384,8 +388,8 @@ def generate_annotated_fasta(input_fasta, annotations, verbosity='short', name=N
 
 def create_annotated_fasta(input_fasta, annotations, output_fasta, verbosity='short', name=None):
     """For use with genes files, added annotations"""
-    write_sequence(generate_annotated_fasta(input_fasta, annotations, verbosity, name),
-                   format='fasta', into=output_fasta)
+    
+    write_sequence( generate_annotated_fasta(input_fasta, annotations, verbosity, name), format='fasta', into=output_fasta)
 
 
 def generate_renamed_fasta(input_fasta, prefix):
@@ -604,7 +608,7 @@ def do_blast_style_search(query_db, target_db, working_dir, db_handler, formater
     if '%s_description' % db_name in db_handler.get_database_names():
         header_dict = db_handler.get_descriptions(hits['%s_hit' % db_name], '%s_description' % db_name)
     else:
-        header_dict = multigrep(hits['%s_hit' % db_name], '%s_h' % target_db, '\x00', working_dir)
+        header_dict = multigrep(hits[f'{db_name}_hit'], f'{target_db}_h', logger, '\x00', working_dir)
     hits = formater(hits, header_dict)
     return hits
 
@@ -623,7 +627,7 @@ def strip_endings(text, suffixes: list):
     return text
 
 
-def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, verbose=False):
+def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, logger, threads=1, verbose=False):
     # if none is passed from argparse then set to tuple of len 0
     mkdir(output_dir)
 
@@ -637,7 +641,7 @@ def process_custom_dbs(custom_fasta_loc, custom_db_name, output_dir, threads=1, 
     custom_db_locs = dict()
     for db_name, db_loc in custom_dbs.items():
         custom_db_loc = path.join(output_dir, '%s.custom.mmsdb' % db_name)
-        make_mmseqs_db(db_loc, custom_db_loc, threads=threads, verbose=verbose)
+        make_mmseqs_db(db_loc, custom_db_loc, logger, threads=threads, verbose=verbose)
         custom_db_locs[db_name] = custom_db_loc
     return custom_db_locs
 
@@ -716,7 +720,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
 
     if db_handler.config['search_databases'].get('sulphur_hmm') is not None and \
             db_handler.config['search_databases'].get('sulphur_cutoffs') is not None:
-        logger.info('Getting hits from FeGenie')
+        logger.info('Getting hits from Sulphur')
         annotation_list.append(
             sulphur_search(
                           genes_faa=gene_faa, 
@@ -729,20 +733,6 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
             ))
         
 
-    if db_handler.config['search_databases'].get('sulphur_hmm') is not None and \
-            db_handler.config['search_databases'].get('sulphur_cutoffs') is not None:
-        logger.info('Getting hits from FeGenie')
-        annotation_list.append(
-            sulphur_search(
-                          genes_faa=gene_faa, 
-                          tmp_dir=tmp_dir, 
-                          sulphur_hmm=db_handler.config['search_databases']['sulphur_hmm'], 
-                          sulphur_cutoffs=db_handler.config['search_databases']['sulphur_cutoffs'],
-                          logger=logger, 
-                          threads=threads,
-                          verbose=verbose,
-            ))
-        
 
     if db_handler.config['search_databases'].get('camper_hmm') is not None and \
             db_handler.config['search_databases'].get('camper_fa_db') is not None:
@@ -978,8 +968,8 @@ def annotate_fastas(fasta_locs, output_dir, db_handler, logger, min_contig_size=
     mkdir(tmp_dir)
 
     # setup custom databases to be searched
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'), threads,
-                                        verbose)
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'),
+                                        logger, threads, verbose)
     custom_hmm_locs = process_custom_hmms(custom_hmm_loc, custom_hmm_name, logger)
     custom_hmm_cutoffs_locs= process_custom_hmm_cutoffs(custom_hmm_cutoffs_loc, custom_hmm_name)
     logger.info('Retrieved database locations and descriptions')
@@ -1007,31 +997,71 @@ def annotate_fastas(fasta_locs, output_dir, db_handler, logger, min_contig_size=
     return all_annotations
 
 
-def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodigal_mode='meta', trans_table='11',
-                      bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
-                      custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, 
-                      use_camper=False, use_fegenie=False, use_sulphur=False,  use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
-                      skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
-                      keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
-    rename_bins = True
-    fasta_locs = [j for i in input_fasta for j in glob(i)]
-    annotate_bins(list(set(fasta_locs)), output_dir, min_contig_size, prodigal_mode, trans_table, bit_score_threshold,
-                  rbh_bit_score_threshold, custom_db_name, custom_fasta_loc, custom_hmm_name, custom_hmm_loc,
-                  custom_hmm_cutoffs_loc, use_uniref, use_camper, use_fegenie, use_sulphur, use_vogdb, kofam_use_dbcan2_thresholds, skip_trnascan,
-                  gtdb_taxonomy, checkm_quality, rename_bins, keep_tmp_dir, low_mem_mode, threads, verbose)
+def make_fasta_namses_df(fasta_loc):
+    fasta_name = get_fasta_name(fasta_loc)
+    names = [{'fasta': fasta_name, 'seq': seq.metadata['id']} for seq in read_sequence(fasta_loc, format='fasta')]
+    return pd.DataFrame(names)
+
+
+def annotate_fastas_as_one(fasta_locs, output_dir, db_handler, logger, min_contig_size=5000, prodigal_mode='meta', 
+                    trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), 
+                    custom_fasta_loc=(), custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), 
+                    kofam_use_dbcan2_thresholds=False, skip_trnascan=False, rename_bins=True, keep_tmp_dir=True,
+                    threads=10, verbose=True):
+    # check for no conflicting options/configurations
+    tmp_dir = path.join(output_dir, 'working_dir')
+    mkdir(tmp_dir)
+
+    # setup custom databases to be searched
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'),
+                                        logger, threads, verbose)
+    custom_hmm_locs = process_custom_hmms(custom_hmm_loc, custom_hmm_name, logger)
+    custom_hmm_cutoffs_locs= process_custom_hmm_cutoffs(custom_hmm_cutoffs_loc, custom_hmm_name)
+    logger.info('Retrieved database locations and descriptions')
+
+    # iterate over list of fastas and annotate each individually
+    annotations_list = list()
+    names = pd.concat([])
+    for fasta_loc in fasta_locs:
+        # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
+        fasta_name = get_fasta_name(fasta_loc)
+        logger.info('Annotating %s' % fasta_name)
+        fasta_dir = path.join(tmp_dir, fasta_name)
+        mkdir(fasta_dir)
+        annotations_list.append(
+            annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_handler, logger, min_contig_size, prodigal_mode, 
+                           trans_table, custom_db_locs, custom_hmm_locs, custom_hmm_cutoffs_locs, 
+                           bit_score_threshold, rbh_bit_score_threshold, kofam_use_dbcan2_thresholds, 
+                           skip_trnascan, threads, rename_bins, keep_tmp_dir, verbose))
+    logger.info('Annotations complete, processing annotations')
+    all_annotations = merge_annotations(annotations_list, output_dir)
+
+    # clean up
+    if not keep_tmp_dir:
+        rmtree(tmp_dir)
+    return all_annotations
+
+
+# def annotate_bins_cmd(input_fasta, output_dir='.', min_contig_size=5000, prodigal_mode='meta', trans_table='11',
+#                       bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
+#                       custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, 
+#                       use_camper=False, use_fegenie=False, use_sulphur=False,  use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
+#                       skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
+#                       keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
 
 
 # TODO: Add force flag to remove output dir if it already exists
 # TODO: Add continute flag to continue if output directory already exists
 # TODO: make fasta loc either a string or list to remove annotate_bins_cmd and annotate_called_genes_cmd?
-def annotate_bins(fasta_locs:list, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
+def annotate_bins(input_fasta:list, output_dir='.', min_contig_size=2500, prodigal_mode='meta', trans_table='11',
                   bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(), custom_fasta_loc=(),
                   custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(), use_uniref=False, 
                   use_camper=False, use_fegenie=False, use_sulphur=False, use_vogdb=False, kofam_use_dbcan2_thresholds=False, 
                   skip_trnascan=False, gtdb_taxonomy=(), checkm_quality=(),
                   rename_bins=True, keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True, 
-                  log_file_path:str=None):
-
+                  log_file_path:str=None, join_fastas:bool=False):
+    rename_bins = True
+    fasta_locs = [j for i in input_fasta for j in glob(i)]
     mkdir(output_dir)
     if log_file_path is None:
         log_file_path = path.join(output_dir, "Annotation.log")
@@ -1166,8 +1196,8 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     mkdir(tmp_dir)
 
     # setup custom databases to be searched
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'), threads,
-                                        verbose)
+    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'),
+                                        logger, threads, verbose)
     custom_hmm_locs = process_custom_hmms(custom_hmm_loc, custom_hmm_name, logger)
     custom_hmm_cutoffs_locs= process_custom_hmm_cutoffs(custom_hmm_cutoffs_loc, custom_hmm_name)
     logger.info('Retrieved database locations and descriptions')
@@ -1187,6 +1217,14 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
                                     kofam_use_dbcan2_thresholds, threads, verbose)
 
         annotated_faa = path.join(fasta_dir, 'genes.faa')
+        breakpoint()
+fasta_name = 'erpe_2018_pw_24hr_WHONDRS-PP48-000093_B_bin.14'
+input_fasta = 'output_DRAM_drepped_pw_1.4.0/working_dir/erpe_2018_pw_24hr_WHONDRS-PP48-000093_B_bin.14/tmp/genes.fna'
+output_fasta = 'output_DRAM_drepped_pw_1.4.0/working_dir/erpe_2018_pw_24hr_WHONDRS-PP48-000093_B_bin.14/genes.annotated.fna'
+annotations = pd.read_pickle('temp_data.pkl')
+annotations.to_pickle('temp_data.pkl')
+continue
+
         create_annotated_fasta(fasta_loc, annotations, annotated_faa, name=fasta_name)
         faa_locs.append(annotated_faa)
 

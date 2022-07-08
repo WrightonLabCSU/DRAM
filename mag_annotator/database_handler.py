@@ -71,9 +71,10 @@ class DatabaseHandler:
 
         if logger is None:
             logger = logging.getLogger("database_handler.log")
-            log_path = self.get_log_path()
-            setup_logger(logger, log_path)
-            logger.info(f"Logging info at {log_path}")
+            # log_path = self.get_log_path()
+            # setup_logger(logger, log_path)
+            setup_logger(logger)
+            logger.info(f"Logging to console")
 
         self.logger = logger
 
@@ -362,7 +363,7 @@ class DatabaseHandler:
                 f'{db_name}_description',
                 clear_table=False)
             self.config['setup_info'][db_name]['description_db_updated'] = \
-                d/atetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+                datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.logger.info(f'Description updated for the {db_name} database')
         # fill database
         mmseqs_database= ['kegg', 'uniref',  'viral', 'peptidase']
@@ -379,7 +380,6 @@ class DatabaseHandler:
             'vogdb': partial(self.process_vogdb_descriptions,
                                          self.config.get('database_descriptions')['vog_annotations']) 
         })
-        process_functions = {'dbcan': process_functions['dbcan']}
         if select_db is not None:
             process_functions = {i:k for i, k in process_functions.items() if i in select_db}
 
@@ -435,7 +435,7 @@ class DatabaseHandler:
 
 def set_database_paths(clear_config=False, update_description_db=False, **kargs):
     #TODO Add tests
-    db_handler = DatabaseHandler()
+    db_handler = DatabaseHandler(None)
     # if clear_config:
     #     db_handler.clear_config()
     db_handler.set_database_paths(**kargs, write_config=True)
@@ -443,7 +443,7 @@ def set_database_paths(clear_config=False, update_description_db=False, **kargs)
         db_handler.populate_description_db()
 
 def print_database_locations(config_loc=None):
-    conf = DatabaseHandler(config_loc)
+    conf = DatabaseHandler(None, config_loc)
     # search databases
     print('Processed search databases')
     print('KEGG db: %s' % conf.config.get('search_databases').get('kegg'))
@@ -479,13 +479,13 @@ def print_database_locations(config_loc=None):
     print('AMG database: %s' % conf.config.get('dram_sheets').get('amg_database'))
 
 def print_database_settings(config_loc=None):
-    conf = DatabaseHandler(config_loc)
+    conf = DatabaseHandler(None, config_loc)
     print(conf.get_settings_str())
 
 
 
 def populate_description_db(output_loc=None, select_db=None,  config_loc=None):
-    db_handler = DatabaseHandler(config_loc)
+    db_handler = DatabaseHandler(None, config_loc)
     db_handler.populate_description_db(output_loc, select_db)
 
 
@@ -499,7 +499,7 @@ def export_config(output_file=None):
 
 def import_config(config_loc):
     system_config = get_config_loc()
-    db_handler = DatabaseHandler(config_loc)
+    db_handler = DatabaseHandler(None, config_loc)
     with open(system_config, "w") as outfile:
         json.dump(db_handler.config, outfile, indent=2)
     print('Import, appears to be successfull.')

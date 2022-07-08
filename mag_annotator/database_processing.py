@@ -485,7 +485,8 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         user_inputs = [i for i in locs if i not in select_db]
         if len(miss_name) > 0:
             LOGGER.error("Only the databases in the db list can be pased to select_db, "
-                            f"you passed {miss_name} which is/are not in the list.")
+                            f"you passed {miss_name} which is/are not in the list,"
+                            f" select from {list(database_settings.keys())}.")
             raise ValueError('Bad user input, see log')
         
         if len(user_inputs) > 0:
