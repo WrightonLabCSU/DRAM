@@ -49,7 +49,7 @@ os.system("DRAM.py strainer --j ./strainer.tsv -f genes.faa")
 os.system("rm -r test_small viral_tests")
 os.system("DRAM-v.py annotate -i ../../scratch_space_flynn/jul_21_22_issue162_dramv/final-viral-combined-for-dramv.fa -v ../../scratch_space_flynn/jul_21_22_issue162_dramv/viral-affi-contigs-for-dramv.tab -o viral_tests")
 
-os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa -o test_small")
+os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa -o test_small --use_camper --use_fegenie --use_sulphur --use_vogdb")
 os.system("DRAM.py annotate_bins -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa --use_fegenie --use_camper --use_sulphur -o test_small")
 
 os.system("/home/projects-wrighton-2/GROWdb/Yojoa_Hall/All_Med_High_bins/DRAM_merged")
@@ -709,6 +709,142 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
 
     annotation_list = list()
 
+    if db_handler.config['search_databases'].get('sulphur_hmm') is not None and \
+            db_handler.config['search_databases'].get('sulphur_cutoffs') is not None:
+        logger.info('Getting hits from Sulphur')
+        annotation_list.append(
+            sulphur_search(
+                          genes_faa=gene_faa, 
+                          tmp_dir=tmp_dir, 
+                          sulphur_hmm=db_handler.config['search_databases']['sulphur_hmm'], 
+                          sulphur_cutoffs=db_handler.config['search_databases']['sulphur_cutoffs'],
+                          logger=logger, 
+                          threads=threads,
+                          verbose=verbose,
+            ))
+        
+
+
+    if db_handler.config['search_databases'].get('camper_hmm') is not None and \
+            db_handler.config['search_databases'].get('camper_fa_db') is not None:
+        logger.info('Getting hits from CAMPER')
+        annotation_list.append(
+            camper_search(query_db=query_db, 
+                          genes_faa=gene_faa, 
+                          tmp_dir=tmp_dir, 
+                          logger=logger, 
+                          threads=threads,
+                          verbose=verbose,
+                          camper_fa_db=db_handler.config['search_databases']['camper_fa_db'], 
+                          camper_hmm=db_handler.config['search_databases']['camper_hmm'], 
+                          camper_fa_db_cutoffs=db_handler.config['search_databases']['camper_fa_db_cutoffs'], 
+                          camper_hmm_cutoffs=db_handler.config['search_databases']['camper_hmm_cutoffs']))
+
+    if db_handler.config['search_databases'].get('kegg') is not None:
+        #TODO Change the get_kegg_description name in function do_blast_style_search to formater
+        #TODO think about how this can be consitent with blast and mmseqs
+        annotation_list.append(do_blast_style_search(query_db, db_handler.config['search_databases']['kegg'], tmp_dir,
+                                                     db_handler, get_kegg_description, logger,
+                                                     'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
+                                                     verbose))
+    elif db_handler.config['search_databases'].get('kofam_hmm') is not None and db_handler.config['search_databases'].get('kofam_ko_list') is not None:
+        logger.info('Getting hits from kofam')
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
+                                           db_loc=db_handler.config['search_databases']['kofam_hmm'],
+                                           db_name='kofam_hmm',
+                                           output_loc=tmp_dir, #check_impliments
+                                           threads=threads, #check_impliments
+                                           verbose=verbose,
+                                           formater=partial(
+                                               kofam_hmmscan_formater,
+                                               hmm_info_path=db_handler.config['search_databases']['kofam_ko_list'],
+                                               top_hit=True,
+                                               use_dbcan2_thresholds=kofam_use_dbcan2_thresholds
+                                           ),
+                                           logger=logger))
+    else:
+        logger.warning('No KEGG source provided so distillation will be of limited use.')
+
+    # Get uniref hits
+    if db_handler.config['search_databases'].get('uniref') is not None:
+        annotation_list.append(do_blast_style_search(query_db, db_handler.config['search_databases']['uniref'], tmp_dir,
+                                                     db_handler, get_uniref_description,
+                                                     logger, 'uniref', bit_score_threshold,
+                                                     rbh_bit_score_threshold, threads, verbose))
+
+    # Get viral hits
+    if db_handler.config['search_databases'].get('viral') is not None:
+        get_viral_description = partial(get_basic_description, db_name='viral')
+        annotation_list.append(do_blast_style_search(query_db, db_handler.config['search_databases']['viral'], tmp_dir,
+                                                     db_handler, get_viral_description,
+                                                     logger, 'viral', bit_score_threshold,
+                                                     rbh_bit_score_threshold, threads, verbose))
+
+    # Get peptidase hits
+    if db_handler.config['search_databases'].get('peptidase') is not None:
+        annotation_list.append(do_blast_style_search(query_db, db_handler.config['search_databases']['peptidase'], tmp_dir,
+                                                     db_handler, get_peptidase_description,
+                                                     logger, 'peptidase', bit_score_threshold,
+                                                     rbh_bit_score_threshold, threads, verbose))
+
+    # Get pfam hits
+    if db_handler.config['search_databases'].get('pfam') is not None:
+        logger.info('Getting hits from pfam')
+        annotation_list.append(run_mmseqs_profile_search(query_db, db_handler.config['search_databases']['pfam'], tmp_dir,
+                                                         logger, output_prefix='pfam', db_handler=db_handler, threads=threads,
+                                                         verbose=verbose))
+
+    # use hmmer to detect cazy ids using dbCAN
+    if db_handler.config['search_databases'].get('dbcan') is not None:
+        logger.info('Getting hits from dbCAN')
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
+                                           db_loc=db_handler.config['search_databases']['dbcan'],
+                                           db_name='cazy',
+                                           output_loc=tmp_dir,
+                                           threads=threads,
+                                           formater=partial(
+                                               dbcan_hmmscan_formater,
+                                               db_name='cazy',
+                                               db_handler=db_handler
+                                           ),
+                                           logger=logger))
+
+    # use hmmer to detect vogdbs
+    if db_handler.config['search_databases'].get('vogdb') is not None:
+        logger.info('Getting hits from VOGDB')
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
+                                           db_loc=db_handler.config['search_databases']['vogdb'],
+                                           db_name='vogdb',
+                                           threads=threads,
+                                           output_loc=tmp_dir,
+                                           formater=partial(
+                                               vogdb_hmmscan_formater,
+                                               db_name='vogdb',
+                                               db_handler=db_handler
+                                           ),
+                                           logger=logger))
+    for db_name, db_loc in custom_db_locs.items():
+        logger.info('Getting hits from %s' % db_name)
+        get_custom_description = partial(get_basic_description, db_name=db_name)
+        annotation_list.append(do_blast_style_search(query_db, db_loc, tmp_dir, db_handler,
+                                                     get_custom_description, logger, db_name,
+                                                     bit_score_threshold, rbh_bit_score_threshold, threads,
+                                                     verbose))
+
+    # get hits to hmm style custom databases
+    for hmm_name, hmm_loc in custom_hmm_locs.items():
+        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
+                                           db_loc=hmm_loc,
+                                           db_name=hmm_name,
+                                           threads=threads,
+                                           output_loc=tmp_dir,
+                                           formater=partial(
+                                               generic_hmmscan_formater,
+                                               db_name=hmm_name,
+                                               hmm_info_path=custom_hmm_cutoffs_locs.get(hmm_name),
+                                               top_hit=True
+                                           ),
+                                           logger=logger))
     if db_handler.config['search_databases'].get('fegenie_hmm') is not None and \
             db_handler.config['search_databases'].get('fegenie_cutoffs') is not None:
         logger.info('Getting hits from FeGenie')

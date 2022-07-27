@@ -124,6 +124,8 @@ if __name__ == '__main__':
                                  help="Annotate these fastas against the FeGenie dataset to study iron metabolism")
     annotate_genes_parser.add_argument('--use_sulphur', action='store_true', default=False,
                                  help="Annotate these fastas against the Sulphur dataset to study sulphur metabolism")
+    annotate_genes_parser.add_argument('--use_vogdb', action='store_true', default=False,
+                                 help='Annotate these fastas against VOGDB, drastically decreases run time')
     annotate_genes_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                        help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
                                             'provided. Drastically decreases memory usage')
