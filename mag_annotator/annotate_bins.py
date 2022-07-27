@@ -44,7 +44,7 @@ MAG_DBS_TO_ANNOTATE += tuple(SULPHUR_SETTINGS.keys())
 """
 import os
 
-os.system("DRAM.py strainer --j ./strainer.tsv -f genes.faa")
+os.system("DRAM.py strainer -i ./strainer.tsv -f genes.faa")
  
 os.system("rm -r test_small viral_tests")
 os.system("DRAM-v.py annotate -i ../../scratch_space_flynn/jul_21_22_issue162_dramv/final-viral-combined-for-dramv.fa -v ../../scratch_space_flynn/jul_21_22_issue162_dramv/viral-affi-contigs-for-dramv.tab -o viral_tests")
@@ -709,15 +709,13 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
 
     annotation_list = list()
 
-    if db_handler.config['search_databases'].get('sulphur_hmm') is not None and \
-            db_handler.config['search_databases'].get('sulphur_cutoffs') is not None:
+    if db_handler.config['search_databases'].get('sulphur_hmm') is not None:
         logger.info('Getting hits from Sulphur')
         annotation_list.append(
             sulphur_search(
                           genes_faa=gene_faa, 
                           tmp_dir=tmp_dir, 
                           sulphur_hmm=db_handler.config['search_databases']['sulphur_hmm'], 
-                          sulphur_cutoffs=db_handler.config['search_databases']['sulphur_cutoffs'],
                           logger=logger, 
                           threads=threads,
                           verbose=verbose,

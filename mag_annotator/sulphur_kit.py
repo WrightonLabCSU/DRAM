@@ -68,7 +68,7 @@ def hmmscan_formater(hits:pd.DataFrame, logger:logging.Logger, db_name:str, top_
 def search(genes_faa:str, tmp_dir:str, sulphur_hmm:str,  
            logger:logging.Logger, threads:int, db_name:str=NAME, top_hit:bool=True, 
            verbose:bool=True):
-  return run_hmmscan(genes_faa=gene_faa,
+  return run_hmmscan(genes_faa=genes_faa,
                      db_loc=sulphur_hmm,
                      db_name=NAME,
                      threads=threads,
