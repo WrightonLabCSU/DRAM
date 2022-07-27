@@ -8,7 +8,8 @@ from datetime import datetime
 import warnings
 
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.summarize_genomes import get_ids_from_row, get_ids_from_annotation, get_ordered_uniques
+from mag_annotator.summarize_genomes import get_ids_from_annotations_by_row, \
+    get_ids_from_annotations_all, get_ordered_uniques
 
 VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes',
                     'Xh': 'Viral genes with host benefits', 'Xp': 'Viral genes with viral benefits',
@@ -32,7 +33,7 @@ def add_custom_ms(annotations, distillate_form):
         if 'M' in row['amg_flags']:
             new_amg_flags.append(row['amg_flags'])
         else:
-            gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())
+            gene_annotations = set(get_ids_from_annotations_all(pd.DataFrame(row).transpose()).keys())
             if len(metabolic_genes & gene_annotations) > 0:
                 new_amg_flags.append(row['amg_flags'] + 'M')
             else:
@@ -104,8 +105,9 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
 
 def make_viral_distillate(potential_amgs, genome_summary_frame):
     rows = list()
+    potential_amgs['ids'] = get_ids_from_annotations_by_row(potential_amgs)
     for gene, row in potential_amgs.iterrows():
-        gene_ids = get_ids_from_row(row) & set(genome_summary_frame.index)
+        gene_ids = row.ids & set(genome_summary_frame.index)
         if len(gene_ids) > 0:
             for gene_id in gene_ids:
                 gene_summary = genome_summary_frame.loc[gene_id]
@@ -150,8 +152,7 @@ def make_viral_functional_df(annotations, genome_summary_frame, groupby_column='
     # build dict of ids per genome
     vgf_to_id_dict = defaultdict(defaultdict_list)
     for vgf, frame in annotations.groupby(groupby_column, sort=False):
-        for gene, row in frame.iterrows():
-            id_list = get_ids_from_row(row)
+        for gene, id_list in get_ids_from_annotations_by_row(frame).iteritems():
             for id_ in id_list:
                 vgf_to_id_dict[vgf][id_].append(gene)
     # build long from data frame

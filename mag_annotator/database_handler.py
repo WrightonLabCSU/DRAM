@@ -52,7 +52,8 @@ class DatabaseHandler:
         self.config_loc = config_loc
         conf = json.loads(open(self.config_loc).read())
         if len(conf) == 0:
-            self.clear_config()
+            logger.warn('There is no config information in the provided file')
+            self.clear_config(write_config=False)
         if 'dram_version' not in conf:
             warnings.warn("The DRAM version in your config is empty."
                           " This may not be a problem, but if this"
@@ -338,7 +339,7 @@ class DatabaseHandler:
         return annotations_list
 
     # TODO: Make option to build on description database that already exists?
-    def populate_description_db(self, output_loc=None, select_db=None, update_config=True):
+    def populate_description_db(self, output_loc=None, select_db=None, update_config=True,  erase_old_db=False):
         if self.config.get('description_db') is None and output_loc is None:  # description db location must be set somewhere
             self.logger.critical('Must provide output location if description db location is not set in configuration')
             raise ValueError('Must provide output location if description db location is not set in configuration')
@@ -346,11 +347,11 @@ class DatabaseHandler:
             self.config['description_db']= output_loc
             self.start_db_session()
         # I don't think this is needed
-        # if path.exists(self.config.get('description_db')):
-        #     remove(self.config.get('description_db'))
+        if path.exists(self.config.get('description_db')) and erase_old_db:
+            remove(self.config.get('description_db'))
         create_description_db(self.config.get('description_db'))
         def check_db(db_name, db_function):
-            # Todo add these sorts of checks to a separate function
+            # TODO add these sorts of checks to a separate function
             # if self.config.get('search_databases').get(db_name) is None:
             #     return
             # if not path.exists(self.config['search_databases'][db_name]):
@@ -361,7 +362,7 @@ class DatabaseHandler:
             self.add_descriptions_to_database(
                 db_function(),
                 f'{db_name}_description',
-                clear_table=False)
+                clear_table=True)
             self.config['setup_info'][db_name]['description_db_updated'] = \
                 datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.logger.info(f'Description updated for the {db_name} database')
@@ -420,7 +421,7 @@ class DatabaseHandler:
             dbs_to_use = [i for i in dbs_to_use if i != 'vogdb']
         self.config['search_databases'] = {key: value for key, value in self.config.get('search_databases').items() if key in dbs_to_use}
 
-    def clear_config(self):
+    def clear_config(self, write_config=False):
         self.config = {
                         "search_databases": {},
                         "database_descriptions": {},
@@ -430,14 +431,15 @@ class DatabaseHandler:
                         "setup_info": {},
                         "log_path": None
                       }
-        self.write_config()
+        if write_config:
+            self.write_config()
 
 
 def set_database_paths(clear_config=False, update_description_db=False, **kargs):
     #TODO Add tests
     db_handler = DatabaseHandler(None)
-    # if clear_config:
-    #     db_handler.clear_config()
+    if clear_config:
+        db_handler.clear_config(write_config=True)
     db_handler.set_database_paths(**kargs, write_config=True)
     if update_description_db:
         db_handler.populate_description_db()

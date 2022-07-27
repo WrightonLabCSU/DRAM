@@ -1,8 +1,5 @@
 """
 Main control point for the annotation process
-
-os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/EMERGE_DRAM/97_clusters/20100900_E1D_13_annotated/genes.faa -o test_camper --use_camper --use_fegenie")
-os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa -o test_small --use_camper --use_fegenie")
 """
 import re
 import io
@@ -30,6 +27,7 @@ from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.camper_kit import search as camper_search, DRAM_SETTINGS as CAMPER_SETTINGS
 from mag_annotator.fegenie_kit import search as fegenie_search, DRAM_SETTINGS as FEGENIE_SETTINGS
 from mag_annotator.sulphur_kit import search as sulphur_search, DRAM_SETTINGS as SULPHUR_SETTINGS 
+from mag_annotator.fasta_dup_name_test import fastas_dup_check
 # DRAM.py annotate -i *.fa" -o output_DRAM_drepped_pw_1.4.0 --min_contig_size 2500 --threads 25 --use_uniref --use_camper --use_fegenie --use_sulphur --use_vogdb &> log_erpe_pw_dram_drepped_ge3samples_1.4.0.txt
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add real logging
@@ -44,11 +42,18 @@ MAG_DBS_TO_ANNOTATE += tuple(FEGENIE_SETTINGS.keys())
 MAG_DBS_TO_ANNOTATE += tuple(SULPHUR_SETTINGS.keys())
 
 """
+import os
+
+os.system("DRAM.py strainer --j ./strainer.tsv -f genes.faa")
+ 
+os.system("rm -r test_small viral_tests")
+os.system("DRAM-v.py annotate -i ../../scratch_space_flynn/jul_21_22_issue162_dramv/final-viral-combined-for-dramv.fa -v ../../scratch_space_flynn/jul_21_22_issue162_dramv/viral-affi-contigs-for-dramv.tab -o viral_tests")
 
 os.system("DRAM.py annotate_genes -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa -o test_small")
 os.system("DRAM.py annotate_bins -i /home/projects-wrighton-2/DRAM/development_flynn/release_validation/data_sets/mini_data/small.faa --use_fegenie --use_camper --use_sulphur -o test_small")
 
-import os
+os.system("/home/projects-wrighton-2/GROWdb/Yojoa_Hall/All_Med_High_bins/DRAM_merged")
+os.system("DRAM.py merge_annotations -i /home/projects-wrighton-2/GROWdb/Yojoa_Hall/All_Med_High_bins/DRAM_per_bin/ -o /home/projects-wrighton-2/GROWdb/Yojoa_Hall/All_Med_High_bins/DRAM_merged")
 
 os.system("DRAM-setup.py update_description_db")
 os.system("DRAM-setup.py import_config --config_loc ../../snapshot/DRAM1_4/mag_annotator/CONFIG")
@@ -718,143 +723,6 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
                           verbose=verbose,
             ))
 
-    if db_handler.config['search_databases'].get('sulphur_hmm') is not None and \
-            db_handler.config['search_databases'].get('sulphur_cutoffs') is not None:
-        logger.info('Getting hits from Sulphur')
-        annotation_list.append(
-            sulphur_search(
-                          genes_faa=gene_faa, 
-                          tmp_dir=tmp_dir, 
-                          sulphur_hmm=db_handler.config['search_databases']['sulphur_hmm'], 
-                          sulphur_cutoffs=db_handler.config['search_databases']['sulphur_cutoffs'],
-                          logger=logger, 
-                          threads=threads,
-                          verbose=verbose,
-            ))
-        
-
-
-    if db_handler.config['search_databases'].get('camper_hmm') is not None and \
-            db_handler.config['search_databases'].get('camper_fa_db') is not None:
-        logger.info('Getting hits from CAMPER')
-        annotation_list.append(
-            camper_search(query_db=query_db, 
-                          genes_faa=gene_faa, 
-                          tmp_dir=tmp_dir, 
-                          logger=logger, 
-                          threads=threads,
-                          verbose=verbose,
-                          camper_fa_db=db_handler.config['search_databases']['camper_fa_db'], 
-                          camper_hmm=db_handler.config['search_databases']['camper_hmm'], 
-                          camper_fa_db_cutoffs=db_handler.config['search_databases']['camper_fa_db_cutoffs'], 
-                          camper_hmm_cutoffs=db_handler.config['search_databases']['camper_hmm_cutoffs']))
-
-    if db_handler.config['search_databases'].get('kegg') is not None:
-        #TODO Change the get_kegg_description name in function do_blast_style_search to formater
-        #TODO think about how this can be consitent with blast and mmseqs
-        annotation_list.append(do_blast_style_search(query_db, db_handler.config['search_databases']['kegg'], tmp_dir,
-                                                     db_handler, get_kegg_description, logger,
-                                                     'kegg', bit_score_threshold, rbh_bit_score_threshold, threads,
-                                                     verbose))
-    elif db_handler.config['search_databases'].get('kofam_hmm') is not None and db_handler.config['search_databases'].get('kofam_ko_list') is not None:
-        logger.info('Getting hits from kofam')
-        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
-                                           db_loc=db_handler.config['search_databases']['kofam_hmm'],
-                                           db_name='kofam_hmm',
-                                           output_loc=tmp_dir, #check_impliments
-                                           threads=threads, #check_impliments
-                                           verbose=verbose,
-                                           formater=partial(
-                                               kofam_hmmscan_formater,
-                                               hmm_info_path=db_handler.config['search_databases']['kofam_ko_list'],
-                                               top_hit=True,
-                                               use_dbcan2_thresholds=kofam_use_dbcan2_thresholds
-                                           ),
-                                           logger=logger))
-    else:
-        logger.warning('No KEGG source provided so distillation will be of limited use.')
-
-    # Get uniref hits
-    if db_handler.config['search_databases'].get('uniref') is not None:
-        annotation_list.append(do_blast_style_search(query_db, db_handler.config['search_databases']['uniref'], tmp_dir,
-                                                     db_handler, get_uniref_description,
-                                                     logger, 'uniref', bit_score_threshold,
-                                                     rbh_bit_score_threshold, threads, verbose))
-
-    # Get viral hits
-    if db_handler.config['search_databases'].get('viral') is not None:
-        get_viral_description = partial(get_basic_description, db_name='viral')
-        annotation_list.append(do_blast_style_search(query_db, db_handler.config['search_databases']['viral'], tmp_dir,
-                                                     db_handler, get_viral_description,
-                                                     logger, 'viral', bit_score_threshold,
-                                                     rbh_bit_score_threshold, threads, verbose))
-
-    # Get peptidase hits
-    if db_handler.config['search_databases'].get('peptidase') is not None:
-        annotation_list.append(do_blast_style_search(query_db, db_handler.config['search_databases']['peptidase'], tmp_dir,
-                                                     db_handler, get_peptidase_description,
-                                                     logger, 'peptidase', bit_score_threshold,
-                                                     rbh_bit_score_threshold, threads, verbose))
-
-    # Get pfam hits
-    if db_handler.config['search_databases'].get('pfam') is not None:
-        logger.info('Getting hits from pfam')
-        annotation_list.append(run_mmseqs_profile_search(query_db, db_handler.config['search_databases']['pfam'], tmp_dir,
-                                                         logger, output_prefix='pfam', db_handler=db_handler, threads=threads,
-                                                         verbose=verbose))
-
-    # use hmmer to detect cazy ids using dbCAN
-    if db_handler.config['search_databases'].get('dbcan') is not None:
-        logger.info('Getting hits from dbCAN')
-        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
-                                           db_loc=db_handler.config['search_databases']['dbcan'],
-                                           db_name='cazy',
-                                           output_loc=tmp_dir,
-                                           threads=threads,
-                                           formater=partial(
-                                               dbcan_hmmscan_formater,
-                                               db_name='cazy',
-                                               db_handler=db_handler
-                                           ),
-                                           logger=logger))
-
-    # use hmmer to detect vogdbs
-    if db_handler.config['search_databases'].get('vogdb') is not None:
-        logger.info('Getting hits from VOGDB')
-        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
-                                           db_loc=db_handler.config['search_databases']['vogdb'],
-                                           db_name='vogdb',
-                                           threads=threads,
-                                           output_loc=tmp_dir,
-                                           formater=partial(
-                                               vogdb_hmmscan_formater,
-                                               db_name='vogdb',
-                                               db_handler=db_handler
-                                           ),
-                                           logger=logger))
-    for db_name, db_loc in custom_db_locs.items():
-        logger.info('Getting hits from %s' % db_name)
-        get_custom_description = partial(get_basic_description, db_name=db_name)
-        annotation_list.append(do_blast_style_search(query_db, db_loc, tmp_dir, db_handler,
-                                                     get_custom_description, logger, db_name,
-                                                     bit_score_threshold, rbh_bit_score_threshold, threads,
-                                                     verbose))
-
-    # get hits to hmm style custom databases
-    for hmm_name, hmm_loc in custom_hmm_locs.items():
-        annotation_list.append(run_hmmscan(genes_faa=gene_faa,
-                                           db_loc=hmm_loc,
-                                           db_name=hmm_name,
-                                           threads=threads,
-                                           output_loc=tmp_dir,
-                                           formater=partial(
-                                               generic_hmmscan_formater,
-                                               db_name=hmm_name,
-                                               hmm_info_path=custom_hmm_cutoffs_locs.get(hmm_name),
-                                               top_hit=True
-                                           ),
-                                           logger=logger))
-    # heme regulatory motif count
     annotation_list.append(pd.DataFrame(count_motifs(gene_faa, '(C..CH)'), index=['heme_regulatory_motif_count']).T)
 
     # merge dataframes
@@ -1159,6 +1027,21 @@ def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60,
                           use_sulphur, use_vogdb, kofam_use_dbcan2_thresholds, 
                           rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose)
 
+def perform_fasta_checks(fasta_locs, logger):
+    """Perform all checks related to integrity of fastas"""
+    if len(fasta_locs) == 0:
+        raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
+    logger.info('%s fastas found' % len(fasta_locs))
+    logger.info("Checking for duplicate names")
+    names = [get_fasta_name(i) for i in fasta_locs]
+    try:
+        if len(names) != len(set(names)):
+            raise ValueError('Genome file names must be unique. At least one name appears twice in this search.')
+        fastas_dup_check(fasta_locs, '>')
+    except ValueError as error:
+        logging.critical(error)
+        raise error
+    logger.info("No duplicate names found")
 
 def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rbh_bit_score_threshold=350,
                           custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
@@ -1176,20 +1059,19 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
     logger.info(f"The log file is created at {log_file_path}")
     # get database locations
     db_handler = DatabaseHandler(logger)
-    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, use_sulphur, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
+    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie,
+                              use_sulphur, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE)
     
+    # Check fastas
+    perform_fasta_checks(fasta_locs, logger)
 
-    if len(fasta_locs) == 0:
-        raise ValueError('Given fasta locations returns no paths: %s' % input_faa)
-    logger.info('%s fastas found' % len(fasta_locs))
+    logger.info(f"Starting the Annotation of Genes with database configuration: \n {db_handler.get_settings_str()}")
 
-    db_conf = db_handler.get_settings_str()
-    logger.info(f"Starting the Annotation of Genes with database configuration: \n {db_conf}")
-    # logger.info('Annotation started')
-
+    logger.info("Checking for duplicate names")
     fasta_names = [get_fasta_name(i) for i in fasta_locs]
     if len(fasta_names) != len(set(fasta_names)):
         raise ValueError('Genome file names must be unique. At least one name appears twice in this search.')
+    logger.info("No duplicate names found")
 
 
     tmp_dir = path.join(output_dir, 'working_dir')
@@ -1217,13 +1099,6 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
                                     kofam_use_dbcan2_thresholds, threads, verbose)
 
         annotated_faa = path.join(fasta_dir, 'genes.faa')
-        breakpoint()
-fasta_name = 'erpe_2018_pw_24hr_WHONDRS-PP48-000093_B_bin.14'
-input_fasta = 'output_DRAM_drepped_pw_1.4.0/working_dir/erpe_2018_pw_24hr_WHONDRS-PP48-000093_B_bin.14/tmp/genes.fna'
-output_fasta = 'output_DRAM_drepped_pw_1.4.0/working_dir/erpe_2018_pw_24hr_WHONDRS-PP48-000093_B_bin.14/genes.annotated.fna'
-annotations = pd.read_pickle('temp_data.pkl')
-annotations.to_pickle('temp_data.pkl')
-continue
 
         create_annotated_fasta(fasta_loc, annotations, annotated_faa, name=fasta_name)
         faa_locs.append(annotated_faa)
@@ -1250,6 +1125,7 @@ continue
 
 
 def merge_annotations(annotations_list, output_dir, write_annotations=False):
+
     # merge annotation dicts
     all_annotations = pd.concat([i.get_annotations() for i in annotations_list if i is not None], sort=False)
     all_annotations = all_annotations.sort_values(['fasta', 'scaffold', 'gene_position'])
@@ -1284,9 +1160,22 @@ def merge_annotations(annotations_list, output_dir, write_annotations=False):
 
 
 def merge_annotations_cmd(input_dirs, output_dir):
-    # make Annotation objects per directory
+
+    mkdir(output_dir)
+    
+    # Get a logger
     annotations_list = list()
+    log_file_path = path.join(output_dir, "Annotation.log")
+    logger = logging.getLogger('annotation_log')
+    setup_logger(logger, log_file_path)
+    logger.info(f"The log file is created at {log_file_path}")
+
+    # make Annotation objects per directory
     for i, annotation_dir in enumerate(glob(input_dirs)):
+        if not path.exists(path.join(annotation_dir, "annotations.tsv")):
+            logger.warning("Skipping the fallowing directory because"
+                           f" no 'annotations.tsv' file was found: {annotation_dir}" )
+            continue
         name = 'annotation_%s' % i
         scaffolds = path.join(annotation_dir, 'scaffolds.fna')
         genes_faa = path.join(annotation_dir, 'genes.faa')
@@ -1305,5 +1194,4 @@ def merge_annotations_cmd(input_dirs, output_dir):
         annotations_list.append(Annotation(name=name, scaffolds=scaffolds, genes_faa=genes_faa, genes_fna=genes_fna,
                                            gff=gff, gbk=gbk, annotations=annotations, trnas=trnas, rrnas=rrnas))
     # run merge_annotations
-    mkdir(output_dir)
     merge_annotations(annotations_list, output_dir, write_annotations=True)

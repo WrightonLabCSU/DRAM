@@ -204,7 +204,6 @@ def download_peptidase(output_dir='.', logger=LOGGER, verbose=True):
     download_file(merops_url, logger, peptidase_faa, verbose=verbose)
     return peptidase_faa
 
-
 def download_vogdb(output_dir='.', logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_hmm_targz = path.join(output_dir, 'vog.hmm.tar.gz')
     vogdb_url = f'http://fileshare.csb.univie.ac.at/vog/{version}/vog.hmm.tar.gz'

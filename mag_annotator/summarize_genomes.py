@@ -45,65 +45,100 @@ os.system("ls  /home/projects-wilkins/fire/Chronosequence_2020_metaG/CSU_assembl
 
 """
 
-#TODO unify this with get_ids_from_annotation
-def get_ids_from_row(row):
-    """
-    annotations = pd.read_csv("./test_15soil/annotations.tsv", sep='\t', index_col=0)
-    new = get_ids_from_annotation(annotations)
-    """
-    id_list = list()
-    # get kegg gene ids
-    if 'kegg_genes_id' in row and not pd.isna(row['kegg_genes_id']):
-        id_list += row['kegg_genes_id']
-    # get kegg orthology ids
-    if 'ko_id' in row and not pd.isna(row['ko_id']):
-        id_list += [j for j in row['ko_id'].split(',')]
-    # Get old ko numbers
-    # TODO Get rid of this old stuff
-    if 'kegg_id' in row and not pd.isna(row['kegg_id']):
-        id_list += [j for j in row['kegg_id'].split(',')]
-    # get ec numbers
-    if 'kegg_hit' in row and not pd.isna(row['kegg_hit']):
-        id_list += [i[1:-1] for i in 
-                    re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', row['kegg_hit'])]
-    # get merops ids
-    if 'peptidase_family' in row and not pd.isna(row['peptidase_family']):
-        id_list += [j for j in row['peptidase_family'].split(';')]
-    # get cazy ids
-    if 'cazy_id' in row and not pd.isna(row['cazy_id']):
-        id_list += [i.split('_')[0] for i in row['cazy_id'].split('; ')]
-    if 'cazy_hits' in row and not pd.isna(row['cazy_hits']):
-        id_list += [f"{i[1:3]}:{i[4:-1]}" for i in 
-                    re.findall(r'\(EC [\d+\.]+[\d-]\)', row['cazy_hits'])]
-        # old format
-        id_list += [i[1:-1].split('_')[0] for i in 
-                    re.findall(r'\[[A-Z]*\d*?\]', row['cazy_hits'])]
-    if 'cazy_subfam_ec' in row and not pd.isna(row['cazy_subfam_ec']):
-        id_list += [f"EC:{i}" for i in 
-                    re.findall(r'[\d+\.]+[\d-]', row['cazy_subfam_ec'])]
-    # get pfam ids
-    if 'pfam_hits' in row and not pd.isna(row['pfam_hits']):
-        id_list += [j[1:-1].split('.')[0]
-                    for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', row['pfam_hits'])]
-    # custom campers id
-    if f"{CAMPER_NAME}_id" in row:
-        id_list += [row[f"{CAMPER_NAME}_id"]]
-    if f"{FEGENIE_NAME}_id" in row:
-        id_list += [row[f"{FEGENIE_NAME}_id"]]
-    if f"{SULPHUR_NAME}_id" in row:
-        id_list += [row[f"{SULPHUR_NAME}_id"]]
-    id_list = list(set(id_list) - {np.nan})
-    return id_list
+ID_FUNCTION_DICT = { 
+    'camper_id': lambda x: [x],
+    'fegenie_id': lambda x: [x],
+    'sulfur_id': lambda x: [x],
+    'kegg_genes_id': lambda x: [x],
+    'ko_id': lambda x: [j for j in x.split(',')],
+    'kegg_id': lambda x: [j for j in x.split(',')],
+    'kegg_hit': lambda x: [i[1:-1] for i in 
+                           re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
+    'peptidase_family': lambda x: [j for j in x.split(';')],
+    'cazy_id': lambda x: [i.split('_')[0] for i in x.split('; ')],
+    'cazy_hits': lambda x: [f"{i[1:3]}:{i[4:-1]}" for i in 
+                            re.findall(r'\(EC [\d+\.]+[\d-]\)', x)
+                            ] + [
+                            i[1:-1].split('_')[0] 
+                            for i in re.findall(r'\[[A-Z]*\d*?\]', x)],
+    'cazy_subfam_ec': lambda x: [f"EC:{i}" for i in 
+                                 re.findall(r'[\d+\.]+[\d-]', x)],
+    'pfam_hits': lambda x: [j[1:-1].split('.')[0]
+                            for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', x)]
+}
+
+def get_ids_from_annotations_by_row(data):
+    functions = {i:j for i,j in ID_FUNCTION_DICT.items() if i in data.columns}
+    out = data.apply(lambda x: {i for k, v in functions.items() if not pd.isna(x[k])
+                          for i in v(str(x[k])) if not pd.isna(i)}, axis=1)
+    return out
 
 
-def get_ids_from_annotation(frame):
-    return Counter(chain(*frame.apply(get_ids_from_row, axis=1).values))
+def get_ids_from_annotations_all(data):
+    data =  get_ids_from_annotations_by_row(data)
+    data.apply(list)
+    out = Counter(chain(*data.values))
+    return out
+
+# #TODO unify this with get_ids_from_annotation
+# def get_ids_from_row(row):
+#     """
+#     annotations = pd.read_csv("./test_15soil/annotations.tsv", sep='\t', index_col=0)
+#     new = get_ids_from_annotation(annotations)
+#     """
+#     id_list = list()
+#     # get kegg gene ids
+#     if 'kegg_genes_id' in row and not pd.isna(row['kegg_genes_id']):
+#         id_list += row['kegg_genes_id']
+#     # get kegg orthology ids
+#     if 'ko_id' in row and not pd.isna(row['ko_id']):
+#         id_list += [j for j in row['ko_id'].split(',')]
+#     # Get old ko numbers
+#     # TODO Get rid of this old stuff
+#     if 'kegg_id' in row and not pd.isna(row['kegg_id']):
+#         id_list += [j for j in row['kegg_id'].split(',')]
+#     # get ec numbers
+#     if 'kegg_hit' in row and not pd.isna(row['kegg_hit']):
+#         id_list += [i[1:-1] for i in 
+#                     re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', row['kegg_hit'])]
+#     # get merops ids
+#     if 'peptidase_family' in row and not pd.isna(row['peptidase_family']):
+#         id_list += [j for j in row['peptidase_family'].split(';')]
+#     # get cazy ids
+#     if 'cazy_id' in row and not pd.isna(row['cazy_id']):
+#         id_list += [i.split('_')[0] for i in row['cazy_id'].split('; ')]
+#     if 'cazy_hits' in row and not pd.isna(row['cazy_hits']):
+#         id_list += [f"{i[1:3]}:{i[4:-1]}" for i in 
+#                     re.findall(r'\(EC [\d+\.]+[\d-]\)', row['cazy_hits'])]
+#         # old format
+#         id_list += [i[1:-1].split('_')[0] for i in 
+#                     re.findall(r'\[[A-Z]*\d*?\]', row['cazy_hits'])]
+#     if 'cazy_subfam_ec' in row and not pd.isna(row['cazy_subfam_ec']):
+#         id_list += [f"EC:{i}" for i in 
+#                     re.findall(r'[\d+\.]+[\d-]', row['cazy_subfam_ec'])]
+#     # get pfam ids
+#     if 'pfam_hits' in row and not pd.isna(row['pfam_hits']):
+#         id_list += [j[1:-1].split('.')[0]
+#                     for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', row['pfam_hits'])]
+#     # custom campers id
+#     if f"{CAMPER_NAME}_id" in row:
+#         id_list += [row[f"{CAMPER_NAME}_id"]]
+#     if f"{FEGENIE_NAME}_id" in row:
+#         id_list += [row[f"{FEGENIE_NAME}_id"]]
+#     if f"{SULPHUR_NAME}_id" in row:
+#         id_list += [row[f"{SULPHUR_NAME}_id"]]
+#     id_list = list(set(id_list) - {np.nan})
+#     return id_list
+# 
+# 
+# def get_ids_from_annotation(frame):
+#     return Counter(chain(*frame.apply(get_ids_from_row, axis=1).values))
 
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):
     genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        id_dict = get_ids_from_annotation(frame)
+        id_dict = get_ids_from_annotations_all(frame)
         counts = list()
         for i in genome_summary_id_sets:
             identifier_count = 0
@@ -120,8 +155,7 @@ def fill_genome_summary_frame_gene_names(annotations, genome_summary_frame, grou
     for genome, frame in annotations.groupby(groupby_column, sort=False):
         # make dict of identifiers to gene names
         id_gene_dict = defaultdict(list)
-        for gene, row in frame.iterrows():
-            ids = get_ids_from_row(row)
+        for gene, ids in get_ids_from_annotations_by_row(frame).iteritems():
             for id_ in ids:
                 id_gene_dict[id_].append(gene)
         # fill in genome summary_frame
@@ -230,7 +264,7 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
             frame = frame.sort_values(DISTILATE_SORT_ORDER_COLUMNS)
             frame = frame.drop(['sheet'], axis=1)
             gene_columns = list(set(frame.columns) - set(CONSTANT_DISTILLATE_COLUMNS))
-            split_genes = pd.concat([split_names_to_long(frame[i]) for i in gene_columns], axis=1)
+            split_genes = pd.concat([split_names_to_long(frame[i].astype(str)) for i in gene_columns], axis=1)
             frame = pd.concat([frame[CONSTANT_DISTILLATE_COLUMNS],  split_genes], axis=1)
             frame.to_excel(writer, sheet_name=sheet, index=False)
 
@@ -479,7 +513,7 @@ def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
         # go through each genome and check pathway coverage
         for group, frame in annotations.groupby(groupby_column):
             # get annotation genes
-            grouped_ids = set(get_ids_from_annotation(frame).keys())
+            grouped_ids = set(get_ids_from_annotations_all(frame).keys())
             path_len, path_coverage_count, path_coverage_percent, genes, missing_genes = \
                 get_module_coverage(module_net, grouped_ids)
             complex_module_name = 'Complex %s: %s' % (module_row['complex'].replace('Complex ', ''),
@@ -523,7 +557,7 @@ def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta
     # build dict of ids per genome
     genome_to_id_dict = dict()
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        id_list = get_ids_from_annotation(frame).keys()
+        id_list = get_ids_from_annotations_all(frame).keys()
         genome_to_id_dict[genome] = set(id_list)
     # build long from data frame
     rows = list()

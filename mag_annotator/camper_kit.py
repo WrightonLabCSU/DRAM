@@ -209,3 +209,4 @@ def search(query_db:str, genes_faa:str, tmp_dir:str, logger:logging.Logger,
                               .iloc[0])
                   )
                )
+

@@ -1,6 +1,7 @@
 import pytest
 
 import os
+import logging
 import pandas as pd
 import networkx as nx
 import altair as alt
@@ -10,7 +11,7 @@ from mag_annotator.summarize_genomes import fill_genome_summary_frame, summarize
     make_module_coverage_heatmap, pairwise, first_open_paren_is_all, split_into_steps, is_ko, make_module_network, \
     get_module_coverage, make_etc_coverage_df, make_etc_coverage_heatmap, make_functional_df, make_functional_heatmap, \
     fill_liquor_dfs, make_liquor_heatmap, make_liquor_df, make_genome_summary, write_summarized_genomes_to_xlsx,\
-    get_phylum_and_most_specific, get_ids_from_row
+    get_phylum_and_most_specific, get_ids_from_annotations_all, get_ids_from_annotations_by_row
 from mag_annotator.utils import get_ordered_uniques
 
 
@@ -21,14 +22,16 @@ def test_get_ordered_uniques():
 
 
 def test_get_ids_from_row():
-    id_set1 = get_ids_from_row(pd.Series({'ko_id': 'K00001,K00003'}))
-    assert id_set1 == {'K00001', 'K00003'}
-    id_set2 = get_ids_from_row(pd.Series({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}))
-    assert id_set2 == {'EC:0.0.0.0', 'EC:1.1.1.1'}
-    id_set3 = get_ids_from_row(pd.Series({'peptidase_family': 'ABC1;BCD2'}))
-    assert id_set3 == {'ABC1', 'BCD2'}
-    id_set4 = get_ids_from_row(pd.Series({'cazy_hits': 'GH4 some things [GH4]; GT6 other things [GT6]'}))
-    assert id_set4 == {'GH4', 'GT6'}
+     in_data = pd.concat([pd.DataFrame({'ko_id': 'K00001,K00003'}, index=['id_set1']),
+                         pd.DataFrame({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}, index=['id_set2']),
+                         pd.DataFrame({'peptidase_family': 'ABC1;BCD2'}, index=['id_set3']),
+                         pd.DataFrame({'cazy_hits': 'GH4 some things [GH4]; GT6 other things [GT6]'}, index=['id_set4'])
+                         ])
+     out_data = get_ids_from_annotations_by_row(in_data)
+     assert out_data['id_set1'] == {'K00001', 'K00003'}
+     assert out_data['id_set2'] == {'EC:0.0.0.0', 'EC:1.1.1.1'}
+     assert out_data['id_set3'] == {'ABC1', 'BCD2'}
+     assert out_data['id_set4'] == {'GH4', 'GT6'}
 
 
 @pytest.fixture()

@@ -152,7 +152,10 @@ if __name__ == '__main__':
 
     # parser for getting genes
     input_group = strainer_parser.add_argument_group('Input and output files')
-    input_group.add_argument('-i', '--input_annotations', required=True, help='annotations file to pull genes from')
+    input_group.add_argument('-i', '--input_tsv', required=True, help="annotations file"
+                             " to pull genes from")
+    input_group.add_argument('--adjective_sheet', required=False, help='Output tsv file for strainer.'
+                             ' Use with the genes faa')
     input_group.add_argument('-f', '--input_fasta', required=True, help='fasta file to filter')
     input_group.add_argument('-o', '--output_fasta', default='pull_genes.fasta',
                              help='location to write filtered fasta')

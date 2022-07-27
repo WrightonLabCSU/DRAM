@@ -310,16 +310,16 @@ def test_set_database_paths(logger):
     # test that adding something that doesn't exist throws error
     test_fake_database = path.join('tests', 'data', 'fake_database.mmsdb')
     with pytest.raises(ValueError):
-        db_handler.set_database_paths(kegg_db_loc=test_fake_database, write_config=False)
+        db_handler.set_database_paths(kegg_loc=test_fake_database, write_config=False)
     # test that adding something real is really added
     kegg_loc = path.join('tests', 'data', 'fake_gff.gff')
-    db_handler.set_database_paths(kegg_db_loc=kegg_loc, write_config=False)
+    db_handler.set_database_paths(kegg_loc=kegg_loc, write_config=False)
     assert db_handler.config.get('search_databases')['kegg'] == path.realpath(kegg_loc)
 
 
 def test_clear_config(logger):
     db_handler = DatabaseHandler(logger)
-    db_handler.clear_config()
+    db_handler.clear_config(write_config=False)
     assert np.all([i is None for i in db_handler.config['search_databases'].values()])
     assert np.all([i is None for i in db_handler.config['database_descriptions'].values()])
     assert db_handler.config['description_db'] is None
