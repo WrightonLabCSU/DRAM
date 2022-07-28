@@ -27,22 +27,6 @@ DFLT_OUTPUT_DIR = '.'
 LOGGER = logging.getLogger("database_processing.log")
 DEFAULT_MMMSPRO_DB_NAME = 'db'
 
-from mag_annotator.camper_kit import download as download_camper_tar_gz
-from mag_annotator.camper_kit import process as process_camper_tar_gz
-from mag_annotator.camper_kit import DOWNLOAD_OPTIONS as CAMPER_DOWNLOAD_OPTIONS
-from mag_annotator.camper_kit import PROCESS_OPTIONS as CAMPER_PROCESS_OPTIONS
-from mag_annotator.camper_kit import DRAM_SETTINGS as CAMPER_DRAM_SETTINGS
-from mag_annotator.fegenie_kit import download as download_fegenie_tar_gz
-from mag_annotator.fegenie_kit import process as process_fegenie_tar_gz
-from mag_annotator.fegenie_kit import DOWNLOAD_OPTIONS as FEGENIE_DOWNLOAD_OPTIONS
-from mag_annotator.fegenie_kit import PROCESS_OPTIONS as FEGENIE_PROCESS_OPTIONS
-from mag_annotator.fegenie_kit import DRAM_SETTINGS as FEGENIE_DRAM_SETTINGS
-from mag_annotator.sulphur_kit import download as download_sulphur_tar_gz
-from mag_annotator.sulphur_kit import process as process_sulphur_tar_gz
-from mag_annotator.sulphur_kit import DOWNLOAD_OPTIONS as SULPHUR_DOWNLOAD_OPTIONS
-from mag_annotator.sulphur_kit import PROCESS_OPTIONS as SULPHUR_PROCESS_OPTIONS
-from mag_annotator.sulphur_kit import DRAM_SETTINGS as SULPHUR_DRAM_SETTINGS
-
 KEGG_CITATION = "Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M., and Tanabe, M.; KEGG: integrating viruses and cellular organisms. Nucleic Acids Res. 49, D545-D551 (2021)."
 GENE_KO_LINK_CITATION = ""
 KOFAM_CITATION = ""
@@ -343,10 +327,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                       genome_summary_form_loc=None, module_step_form_loc=None,
                       etc_module_database_loc=None, function_heatmap_form_loc=None,
                       amg_database_loc=None,
-                      camper_tar_gz_loc=None,
                       number_of_viral_files=NUMBER_OF_VIRAL_FILES,
-                      fegenie_tar_gz_loc=None,
-                      sulphur_tar_gz_loc=None,
                       skip_uniref=False, keep_database_files=False,
                       branch='master', threads=10, verbose=True, select_db=None, clear_config=False):
 
@@ -384,9 +365,6 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "amg_database":          {'name': 'AMG database'},
         "etc_module_database":   {'name': 'ETC module database'},
     }
-    dram_settings.update(CAMPER_DRAM_SETTINGS)
-    dram_settings.update(FEGENIE_DRAM_SETTINGS)
-    dram_settings.update(SULPHUR_DRAM_SETTINGS)
     database_settings= {
         'kegg':                  {},
         "gene_ko_link":          {},
@@ -408,9 +386,6 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "amg_database":          {"branch": branch},
         "etc_module_database":   {"branch": branch},
     }
-    database_settings.update(CAMPER_DOWNLOAD_OPTIONS)
-    database_settings.update(FEGENIE_DOWNLOAD_OPTIONS)
-    database_settings.update(SULPHUR_DOWNLOAD_OPTIONS)
     process_settings = {
         'kegg': {},
         "gene_ko_link": {},
@@ -432,9 +407,6 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         "amg_database": {},
         "etc_module_database": {},
     }
-    process_settings.update(CAMPER_PROCESS_OPTIONS)
-    process_settings.update(FEGENIE_PROCESS_OPTIONS)
-    process_settings.update(SULPHUR_PROCESS_OPTIONS)
 
     # setup temp, logging, and db_handler
     if not path.isdir(output_dir):

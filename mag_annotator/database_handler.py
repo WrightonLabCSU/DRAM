@@ -17,10 +17,10 @@ from mag_annotator import __version__ as current_dram_version
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_description_db
 from mag_annotator.utils import divide_chunks, setup_logger
 
-SEARCH_DATABASES = {'kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 'viral', 'peptidase', 'vogdb'
-                    'camper', 'fegenie', 'sulphur', }
+SEARCH_DATABASES = {'kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 
+                    'viral', 'peptidase', 'vogdb' }
 DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database', 'function_heatmap_form',
-               'camper_fa_db_cutoffs', 'camper_hmm_cutoffs', 'amg_database')
+                'amg_database')
 DATABASE_DESCRIPTIONS = ('pfam_hmm', 'dbcan_fam_activities', 'vog_annotations')
 
 # TODO: store all sequence db locs within database handler class
@@ -193,9 +193,6 @@ class DatabaseHandler:
                            pfam_loc=None, pfam_hmm_loc=None, dbcan_loc=None, dbcan_fam_activities_loc=None,
                            dbcan_subfam_ec_loc=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None, 
                            vog_annotations_loc=None, description_db_loc=None, genome_summary_form_loc=None, 
-                           camper_hmm_loc=None, camper_fa_db_loc=None, camper_hmm_cutoffs_loc=None,
-                           camper_fa_db_cutoffs_loc=None, camper_distillate_loc=None, fegenie_hmm_loc=None,
-                           fegenie_cutoffs_loc=None, sulphur_hmm_loc=None, sulphur_cutoffs_loc=None, 
                            module_step_form_loc=None, etc_module_database_loc=None, 
                            function_heatmap_form_loc=None, amg_database_loc=None, write_config=True):
         def check_exists_and_add_to_location_dict(loc, old_value):
@@ -220,8 +217,6 @@ class DatabaseHandler:
                   'camper_fa_db': camper_fa_db_loc,
                   'camper_hmm_cutoffs': camper_hmm_cutoffs_loc,
                   'camper_fa_db_cutoffs': camper_fa_db_cutoffs_loc,
-                  'fegenie_hmm': fegenie_hmm_loc,
-                  'fegenie_cutoffs': fegenie_cutoffs_loc,
                   'sulphur_hmm': sulphur_hmm_loc,
                   'sulphur_cutoffs': sulphur_cutoffs_loc
                 },
@@ -390,8 +385,8 @@ class DatabaseHandler:
         if update_config:  # if new description db is set then save it
             self.write_config()
 
-    def filter_db_locs(self, low_mem_mode=False, use_uniref=True, use_camper=True, use_fegenie=True, 
-                       use_sulphur=True, use_vogdb=True, master_list=None):
+    def filter_db_locs(self, low_mem_mode=False, use_uniref=True, 
+                       use_vogdb=True, master_list=None):
         if master_list is None:
             dbs_to_use = self.config['search_databases'].keys()
         else:
@@ -407,12 +402,6 @@ class DatabaseHandler:
                 warnings.warn('Sequences will not be annoated against uniref as it is not configured for use in DRAM')
         else:
             dbs_to_use = [i for i in dbs_to_use if i != 'uniref']
-        if not use_camper:
-            dbs_to_use = [i for i in dbs_to_use if 'camper' not in i]
-        if not use_fegenie:
-            dbs_to_use = [i for i in dbs_to_use if 'fegenie' not in i]
-        if not use_sulphur:
-            dbs_to_use = [i for i in dbs_to_use if 'sulphur' not in i]
         # check on vogdb status
         if use_vogdb:
             if 'vogdb' not in self.config.get('search_databases'):

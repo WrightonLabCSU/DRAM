@@ -24,22 +24,14 @@ from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, \
     multigrep, remove_suffix, setup_logger, run_hmmscan, sig_scores, get_sig_row, \
     generic_hmmscan_formater, get_reciprocal_best_hits, get_best_hits, BOUTFMT6_COLUMNS
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.camper_kit import search as camper_search, DRAM_SETTINGS as CAMPER_SETTINGS
-from mag_annotator.fegenie_kit import search as fegenie_search, DRAM_SETTINGS as FEGENIE_SETTINGS
-from mag_annotator.sulphur_kit import search as sulphur_search, DRAM_SETTINGS as SULPHUR_SETTINGS 
 from mag_annotator.fasta_dup_name_test import fastas_dup_check
-# DRAM.py annotate -i *.fa" -o output_DRAM_drepped_pw_1.4.0 --min_contig_size 2500 --threads 25 --use_uniref --use_camper --use_fegenie --use_sulphur --use_vogdb &> log_erpe_pw_dram_drepped_ge3samples_1.4.0.txt
 # TODO: add ability to take into account multiple best hits as in old_code.py
-# TODO: add real logging
 # TODO: add silent mode
 # TODO: add abx resistance genes
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
 # TODO: add ability to handle [] in file names
 
 MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb') 
-MAG_DBS_TO_ANNOTATE += tuple(CAMPER_SETTINGS.keys())
-MAG_DBS_TO_ANNOTATE += tuple(FEGENIE_SETTINGS.keys())
-MAG_DBS_TO_ANNOTATE += tuple(SULPHUR_SETTINGS.keys())
 
 """
 import os
@@ -709,35 +701,6 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
 
     annotation_list = list()
 
-    if db_handler.config['search_databases'].get('sulphur_hmm') is not None:
-        logger.info('Getting hits from Sulphur')
-        annotation_list.append(
-            sulphur_search(
-                          genes_faa=gene_faa, 
-                          tmp_dir=tmp_dir, 
-                          sulphur_hmm=db_handler.config['search_databases']['sulphur_hmm'], 
-                          logger=logger, 
-                          threads=threads,
-                          verbose=verbose,
-            ))
-        
-
-
-    if db_handler.config['search_databases'].get('camper_hmm') is not None and \
-            db_handler.config['search_databases'].get('camper_fa_db') is not None:
-        logger.info('Getting hits from CAMPER')
-        annotation_list.append(
-            camper_search(query_db=query_db, 
-                          genes_faa=gene_faa, 
-                          tmp_dir=tmp_dir, 
-                          logger=logger, 
-                          threads=threads,
-                          verbose=verbose,
-                          camper_fa_db=db_handler.config['search_databases']['camper_fa_db'], 
-                          camper_hmm=db_handler.config['search_databases']['camper_hmm'], 
-                          camper_fa_db_cutoffs=db_handler.config['search_databases']['camper_fa_db_cutoffs'], 
-                          camper_hmm_cutoffs=db_handler.config['search_databases']['camper_hmm_cutoffs']))
-
     if db_handler.config['search_databases'].get('kegg') is not None:
         #TODO Change the get_kegg_description name in function do_blast_style_search to formater
         #TODO think about how this can be consitent with blast and mmseqs
@@ -843,19 +806,6 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
                                                top_hit=True
                                            ),
                                            logger=logger))
-    if db_handler.config['search_databases'].get('fegenie_hmm') is not None and \
-            db_handler.config['search_databases'].get('fegenie_cutoffs') is not None:
-        logger.info('Getting hits from FeGenie')
-        annotation_list.append(
-            fegenie_search(
-                          genes_faa=gene_faa, 
-                          tmp_dir=tmp_dir, 
-                          fegenie_hmm=db_handler.config['search_databases']['fegenie_hmm'], 
-                          fegenie_cutoffs=db_handler.config['search_databases']['fegenie_cutoffs'],
-                          logger=logger, 
-                          threads=threads,
-                          verbose=verbose,
-            ))
 
     annotation_list.append(pd.DataFrame(count_motifs(gene_faa, '(C..CH)'), index=['heme_regulatory_motif_count']).T)
 

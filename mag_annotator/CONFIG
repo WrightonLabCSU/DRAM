@@ -1,39 +1,39 @@
 {
   "search_databases": {
     "kegg": "/home/projects-wrighton-2/DRAM/development_flynn/snapshot/DRAM1_4/kegg.20220628.mmsdb",
-    "kofam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/kofam_profiles.hmm",
-    "kofam_ko_list": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/kofam_ko_list.tsv",
-    "uniref": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/uniref90.20220609.mmsdb",
-    "pfam": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/pfam.mmspro",
-    "dbcan": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/dbCAN-HMMdb-V10.txt",
-    "viral": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/refseq_viral.20220610.mmsdb",
-    "peptidase": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/peptidases.20220609.mmsdb",
-    "vogdb": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/vog_latest_hmms.txt",
-    "camper_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER.hmm",
-    "camper_fa_db": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER_blast.faa",
-    "camper_hmm_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER_hmm_scores.tsv",
-    "camper_fa_db_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER_blast_scores.tsv",
-    "fegenie_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_oxidation_reduction.hmm",
-    "fegenie_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_cut_offs.txt",
-    "sulphur_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_oxidation_reduction.hmm",
-    "sulphur_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/fegenie_iron_cut_offs.txt"
+    "kofam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/kofam_profiles.hmm",
+    "kofam_ko_list": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/kofam_ko_list.tsv",
+    "uniref": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/m1.4_final_06_07_22uniref90.20220609.mmsdb",
+    "pfam": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/pfam.mmspro",
+    "dbcan": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/dbCAN-HMMdb-V10.txt",
+    "viral": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/refseq_viral.20220610.mmsdb",
+    "peptidase": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/peptidases.20220609.mmsdb",
+    "vogdb": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/vog_latest_hmms.txt",
+    "camper_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/CAMPER.hmm",
+    "camper_fa_db": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/CAMPER_blast.faa",
+    "camper_hmm_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/CAMPER_hmm_scores.tsv",
+    "camper_fa_db_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/CAMPER_blast_scores.tsv",
+    "fegenie_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/fegenie_iron_oxidation_reduction.hmm",
+    "fegenie_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/fegenie_iron_cut_offs.txt",
+    "sulphur_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/fegenie_iron_oxidation_reduction.hmm",
+    "sulphur_cutoffs": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/fegenie_iron_cut_offs.txt"
   },
   "database_descriptions": {
-    "pfam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/Pfam-A.hmm.dat.gz",
-    "dbcan_fam_activities": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAZyDB.07292021.fam-activities.txt",
-    "dbcan_subfam_ec": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAZyDB.07292021.fam.subfam.ec.txt",
-    "vog_annotations": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/vog_annotations_latest.tsv.gz"
+    "pfam_hmm": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/Pfam-A.hmm.dat.gz",
+    "dbcan_fam_activities": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/CAZyDB.07292021.fam-activities.txt",
+    "dbcan_subfam_ec": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/CAZyDB.07292021.fam.subfam.ec.txt",
+    "vog_annotations": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/vog_annotations_latest.tsv.gz"
   },
   "dram_sheets": {
-    "camper_distillate": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/CAMPER_distillate.tsv",
-    "genome_summary_form": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/genome_summary_form.20220609.tsv",
-    "module_step_form": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/module_step_form.20220610.tsv",
-    "etc_module_database": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/etc_mdoule_database.20220609.tsv",
-    "function_heatmap_form": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/function_heatmap_form.20220609.tsv",
-    "amg_database": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/amg_database.20220609.tsv"
+    "camper_distillate": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/CAMPER_distillate.tsv",
+    "genome_summary_form": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/genome_summary_form.20220609.tsv",
+    "module_step_form": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/module_step_form.20220610.tsv",
+    "etc_module_database": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/etc_mdoule_database.20220609.tsv",
+    "function_heatmap_form": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/function_heatmap_form.20220609.tsv",
+    "amg_database": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/amg_database.20220609.tsv"
   },
   "dram_version": "1.4.0",
-  "description_db": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/description_db.sqlite",
+  "description_db": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/description_db.sqlite",
   "setup_info": {
     "kofam_hmm": {
       "name": "KOfam db",
@@ -225,5 +225,5 @@
       "Origin": "Downloaded by DRAM"
     }
   },
-  "log_path": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_final_06_07_22/database_processing.log"
+  "log_path": "/home/projects-wrighton-2/DRAM/dram_data/dram1.4_testing/database_processing.log"
 }
