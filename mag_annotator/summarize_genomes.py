@@ -67,15 +67,18 @@ ID_FUNCTION_DICT = {
                             for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', x)]
 }
 
-def get_ids_from_annotations_by_row(data):
+def get_ids_from_annotations_by_row(data, logger):
     functions = {i:j for i,j in ID_FUNCTION_DICT.items() if i in data.columns}
+    logger.info("Note: the fallowing id fields "
+          f"were not in the annotations file and are not being used: {missing},"
+          f" but these are {list(functions.keys())}")
     out = data.apply(lambda x: {i for k, v in functions.items() if not pd.isna(x[k])
                           for i in v(str(x[k])) if not pd.isna(i)}, axis=1)
     return out
 
 
-def get_ids_from_annotations_all(data):
-    data =  get_ids_from_annotations_by_row(data)
+def get_ids_from_annotations_all(data, logger):
+    data =  get_ids_from_annotations_by_row(data, logger)
     data.apply(list)
     out = Counter(chain(*data.values))
     return out
@@ -135,10 +138,10 @@ def get_ids_from_annotations_all(data):
 #     return Counter(chain(*frame.apply(get_ids_from_row, axis=1).values))
 
 
-def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column):
+def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column, logger):
     genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        id_dict = get_ids_from_annotations_all(frame)
+        id_dict = get_ids_from_annotations_all(frame, logger)
         counts = list()
         for i in genome_summary_id_sets:
             identifier_count = 0
@@ -150,12 +153,12 @@ def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column)
     return genome_summary_frame
 
 
-def fill_genome_summary_frame_gene_names(annotations, genome_summary_frame, groupby_column):
+def fill_genome_summary_frame_gene_names(annotations, genome_summary_frame, groupby_column, logger):
     genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
     for genome, frame in annotations.groupby(groupby_column, sort=False):
         # make dict of identifiers to gene names
         id_gene_dict = defaultdict(list)
-        for gene, ids in get_ids_from_annotations_by_row(frame).iteritems():
+        for gene, ids in get_ids_from_annotations_by_row(frame, logger).iteritems():
             for id_ in ids:
                 id_gene_dict[id_].append(gene)
         # fill in genome summary_frame
@@ -513,7 +516,7 @@ def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
         # go through each genome and check pathway coverage
         for group, frame in annotations.groupby(groupby_column):
             # get annotation genes
-            grouped_ids = set(get_ids_from_annotations_all(frame).keys())
+            grouped_ids = set(get_ids_from_annotations_all(frame, logger).keys())
             path_len, path_coverage_count, path_coverage_percent, genes, missing_genes = \
                 get_module_coverage(module_net, grouped_ids)
             complex_module_name = 'Complex %s: %s' % (module_row['complex'].replace('Complex ', ''),
@@ -550,14 +553,14 @@ def make_etc_coverage_heatmap(etc_coverage, mag_order=None, module_order=None):
     return alt.hconcat(*charts, spacing=5, title=concat_title)
 
 
-def make_functional_df(annotations, function_heatmap_form, groupby_column='fasta'):
+def make_functional_df(annotations, function_heatmap_form, logger, groupby_column='fasta'):
     # clean up function heatmap form
     function_heatmap_form = function_heatmap_form.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
     function_heatmap_form = function_heatmap_form.fillna('')
     # build dict of ids per genome
     genome_to_id_dict = dict()
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        id_list = get_ids_from_annotations_all(frame).keys()
+        id_list = get_ids_from_annotations_all(frame, logger).keys()
         genome_to_id_dict[genome] = set(id_list)
     # build long from data frame
     rows = list()
@@ -611,14 +614,14 @@ def make_functional_heatmap(functional_df, mag_order=None):
 
 
 # TODO: refactor this to handle splitting large numbers of genomes into multiple heatmaps here
-def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_form, groupby_column='fasta'):
+def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_form, logger, groupby_column='fasta'):
     module_coverage_frame = make_module_coverage_frame(annotations, module_nets, groupby_column)
 
     # make ETC frame
     etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations, groupby_column)
 
     # make functional frame
-    function_df = make_functional_df(annotations, function_heatmap_form, groupby_column)
+    function_df = make_functional_df(annotations, function_heatmap_form, logger, groupby_column)
 
     return module_coverage_frame, etc_coverage_df, function_df
 
@@ -750,7 +753,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     # make genome metabolism summary
     genome_summary = path.join(output_dir, 'metabolism_summary.xlsx')
     if distillate_gene_names:
-        summarized_genomes = fill_genome_summary_frame_gene_names(annotations, genome_summary_form, groupby_column)
+        summarized_genomes = fill_genome_summary_frame_gene_names(annotations, genome_summary_form, groupby_column, logger)
     else:
         summarized_genomes = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame,
                                                  groupby_column)
@@ -786,7 +789,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
             genomes = genome_order[start:end]
             annotations_subset = annotations.loc[[genome in genomes for genome in annotations[groupby_column]]]
             dfs = fill_liquor_dfs(annotations_subset, module_nets, etc_module_df, function_heatmap_form,
-                                  groupby_column='fasta')
+                                  logger, groupby_column='fasta')
             module_coverage_df_subset, etc_coverage_df_subset, function_df_subset = dfs
             module_coverage_dfs.append(module_coverage_df_subset)
             etc_coverage_dfs.append(etc_coverage_df_subset)
@@ -800,6 +803,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
         module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_nets,
                                                                            etc_module_df,
                                                                            function_heatmap_form,
+                                                                           logger,
                                                                            groupby_column=groupby_column)
         liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
         liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order, None)

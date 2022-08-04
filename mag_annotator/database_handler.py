@@ -213,12 +213,6 @@ class DatabaseHandler:
                   'viral': viral_loc,
                   'peptidase': peptidase_loc,
                   'vogdb': vogdb_loc,
-                  'camper_hmm': camper_hmm_loc,
-                  'camper_fa_db': camper_fa_db_loc,
-                  'camper_hmm_cutoffs': camper_hmm_cutoffs_loc,
-                  'camper_fa_db_cutoffs': camper_fa_db_cutoffs_loc,
-                  'sulphur_hmm': sulphur_hmm_loc,
-                  'sulphur_cutoffs': sulphur_cutoffs_loc
                 },
                 "database_descriptions": {
                   'pfam_hmm': pfam_hmm_loc,
@@ -227,7 +221,6 @@ class DatabaseHandler:
                   'vog_annotations': vog_annotations_loc,
                 },
                 "dram_sheets": {
-                  'camper_distillate': camper_distillate_loc,
                   'genome_summary_form': genome_summary_form_loc,
                   'module_step_form': module_step_form_loc,
                   'etc_module_database': etc_module_database_loc,
@@ -446,10 +439,6 @@ def print_database_locations(config_loc=None):
     print('RefSeq Viral db: %s' % conf.config.get('search_databases').get('viral'))
     print('MEROPS peptidase db: %s' % conf.config.get('search_databases').get('peptidase'))
     print('VOGDB db: %s' % conf.config.get('search_databases').get('vogdb'))
-    print('CAMPER HMM db: %s' % conf.config.get('search_databases').get('camper_hmm'))
-    print('CAMPER FASTA db: %s' % conf.config.get('search_databases').get('camper_fa_db'))
-    print('CAMPER HMM cutoffs: %s' % conf.config.get('search_databases').get('camper_hmm_cutoffs'))
-    print('CAMPER FASTA cutoffs: %s' % conf.config.get('search_databases').get('camper_fa_db_cutoffs'))
     print()
     # database descriptions used during description db population
     print('Descriptions of search database entries')
@@ -466,7 +455,6 @@ def print_database_locations(config_loc=None):
     print('Module step form: %s' % conf.config.get('dram_sheets').get('module_step_form'))
     print('ETC module database: %s' % conf.config.get('dram_sheets').get('etc_module_database'))
     print('Function heatmap form: %s' % conf.config.get('dram_sheets').get('function_heatmap_form'))
-    print('CAMPER Distillate form: %s' % conf.config.get('dram_sheets').get('camper_distillate'))
     print('AMG database: %s' % conf.config.get('dram_sheets').get('amg_database'))
 
 def print_database_settings(config_loc=None):

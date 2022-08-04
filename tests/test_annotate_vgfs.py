@@ -38,6 +38,13 @@ def test_get_overlap():
     assert r_overlap == .5
 
 
+@pytest.fixture()
+def logger(tmpdir):
+    logger = logging.getLogger('test_log')
+    setup_logger(logger)
+    return logger
+
+
 def test_is_transposon():
     assert not is_transposon(np.NaN)
     assert not is_transposon('ABCxyz')
@@ -180,7 +187,7 @@ def test_get_auxilary_score(gene_order1):
                        'dram_gene5': 5}
 
 
-def test_get_metabolic_flags():
+def test_get_metabolic_flags(logger):
     annotations = pd.DataFrame([['scaffold_1', 101, 110, 'Xr', False, 'K00001'],
                                 ['scaffold_1', 234, 423, None, False, 'K00002'],
                                 ['scaffold_2', 52, 105, 'Xs', True, 'K00001'],
@@ -200,7 +207,7 @@ def test_get_metabolic_flags():
                    'scaffold_2': 150,
                    'scaffold_3': 600,
                    'scaffold_4': 1000}
-    flags1 = get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, length_dict, 100)
+    flags1 = get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, length_dict, logger, 100)
     assert flags1 == {'scaffold_1_1': 'VMKE',
                       'scaffold_1_2': 'F',
                       'scaffold_2_1': 'VMKETF',
