@@ -5,7 +5,7 @@ dependencies:
   - python>=3.6
   - pandas
   - pytest
-  - scikit-bio
+  - scikit-bio!=1.9.0
   - prodigal
   - mmseqs2!=10.6d92c
   - hmmer!=3.3.1
