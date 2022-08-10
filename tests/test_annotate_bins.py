@@ -23,6 +23,7 @@ from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hit
     kofam_hmmscan_formater
 
 
+
 @pytest.fixture()
 def fasta_loc():
     return os.path.join('tests', 'data', 'NC_001422.fasta')
@@ -33,7 +34,6 @@ def logger(tmpdir):
     logger = logging.getLogger('test_log')
     setup_logger(logger)
     return logger
-
 
 def test_filter_fasta(fasta_loc, tmpdir):
     filtered_seq_5000 = filter_fasta(fasta_loc, min_len=5000)
@@ -528,6 +528,7 @@ def test_vogdb_hmmscan_formater():
     assert output_rcvd.equals(output_expt), "Error in vogdb_hmmscan_formater"
 
 
+<<<<<<< HEAD
 def test_dbcan_hmmscan_formater():
     # TODO can we test with db-handler?
     output_expt = pd.DataFrame({"bin_1.scaffold_1": ["GT4; GT5", "GT5.hmm"],
@@ -540,6 +541,8 @@ def test_dbcan_hmmscan_formater():
     output_rcvd.sort_index(inplace=True)
     output_expt.sort_index(inplace=True)
     assert output_rcvd.equals(output_expt), "Error in dbcan_hmmscan_formater"
+=======
+>>>>>>> scikit_fix
 
 
 test_gbk = """LOCUS       NC_001422.1   5386 bp   DNA   linear   ENV   %s

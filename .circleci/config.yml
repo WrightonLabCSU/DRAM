@@ -34,7 +34,7 @@ jobs:
             conda update -y conda
             conda create -n DRAM python=3.9
             source activate DRAM
-            conda install  pandas pytest pandas pytest scikit-bio prodigal mmseqs2!=10.6d92c hmmer!=3.3.1 trnascan-se >=2 sqlalchemy barrnap altair >=4 openpyxl networkx ruby parallel dram
+            conda install  pandas pytest pandas pytest scikit-bio scipy!=1.9.0 prodigal mmseqs2!=10.6d92c hmmer!=3.3.1 trnascan-se >=2 sqlalchemy barrnap altair >=4 openpyxl networkx ruby parallel dram
             pytest tests/test_annotate_bins.py
             pytest tests/test_annotate_vgfs.py
             pytest tests/test_database_handler.py

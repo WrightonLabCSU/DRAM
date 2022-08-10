@@ -62,7 +62,7 @@ def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=N
         # get genes from distillate categories
         if categories is not None:
             database_handler = DatabaseHandler()
-            genome_summary_form = pd.read_csv(database_handler.db_locs['genome_summary_form'], sep='\t')
+            genome_summary_form = pd.read_csv(database_handler.dram_sheet_locs['genome_summary_form'], sep='\t')
             if custom_distillate is not None:
                 genome_summary_form = pd.concat([genome_summary_form, pd.read_csv(custom_distillate, sep='\t')])
             for level in ['module', 'sheet', 'header', 'subheader']:
