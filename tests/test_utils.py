@@ -10,7 +10,6 @@ from mag_annotator.utils import run_process, make_mmseqs_db, \
     setup_logger, parse_hmmsearch_domtblout, generic_hmmscan_formater
 from mag_annotator.pull_sequences import get_genes_from_identifiers
 
-
 @pytest.fixture()
 def logger(tmpdir):
     logger = logging.getLogger('test_log')

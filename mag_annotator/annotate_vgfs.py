@@ -291,7 +291,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
         for gene, row in scaffold_annotations.iterrows():
             # set up
             flags = ''
-            gene_annotations = set(get_ids_from_annotations_all(pd.DataFrame(row).transpose(), logger).keys())  # TODO: Fix
+            gene_annotations = set(get_ids_from_annotations_all(pd.DataFrame(row).transpose()).keys())  # TODO: Fix
             # is viral
             if 'vogdb_categories' in row.index and not pd.isna(row['vogdb_categories']):
                 if len({'Xr', 'Xs'} & set(row['vogdb_categories'].split(';'))) > 0:
@@ -425,7 +425,7 @@ def add_dramv_scores_and_flags(annotations, db_handler, logger, virsorter_hits=N
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500, split_contigs=False,
                   prodigal_mode='meta', trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350,
                   custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(),
-                  custom_hmm_name=(), use_uniref=False, use_camper=False, use_fegenie=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
+                  custom_hmm_name=(), use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
                   keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     mkdir(output_dir)
     log_file_path = path.join(output_dir, "Annotation.log")
@@ -443,7 +443,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # get database locations
     db_handler = DatabaseHandler(logger)
-    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_camper, use_fegenie, True, VMAG_DBS_TO_ANNOTATE)
+    db_handler.filter_db_locs(low_mem_mode, use_uniref, True, VMAG_DBS_TO_ANNOTATE)
 
     if virsorter_affi_contigs is not None:
         virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)

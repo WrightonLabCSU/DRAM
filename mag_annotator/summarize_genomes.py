@@ -14,9 +14,6 @@ from datetime import datetime
 
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.utils import get_ordered_uniques, setup_logger
-from mag_annotator.camper_kit import NAME as CAMPER_NAME
-from mag_annotator.fegenie_kit import NAME as FEGENIE_NAME
-from mag_annotator.sulphur_kit import NAME as SULPHUR_NAME
 
 # TODO: add RBH information to output
 # TODO: add flag to output table and not xlsx
@@ -38,17 +35,7 @@ CONSTANT_DISTILLATE_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, CO
 DISTILATE_SORT_ORDER_COLUMNS = [COL_HEADER, COL_SUBHEADER, COL_MODULE, COL_GENE_ID]
 EXCEL_MAX_CELL_SIZE = 32767
 
-"""
-import os 
-os.system("DRAM.py distill -i /home/projects-wilkins/fire/Chronosequence_2020_metaG/CSU_assemblies/gene_database/chronoseq_95per_genes_DRAM/annotations.tsv  -o  /home/projects-wilkins/fire/Chronosequence_2020_metaG/CSU_assemblies/gene_database/chronoseq_95per_genes_DRAM/DRAM_1_4_distill_gene_names_long_fix --distillate_gene_names")
-os.system("ls  /home/projects-wilkins/fire/Chronosequence_2020_metaG/CSU_assemblies/gene_database/chronoseq_95per_genes_DRAM/")
-
-"""
-
 ID_FUNCTION_DICT = { 
-    'camper_id': lambda x: [x],
-    'fegenie_id': lambda x: [x],
-    'sulfur_id': lambda x: [x],
     'kegg_genes_id': lambda x: [x],
     'ko_id': lambda x: [j for j in x.split(',')],
     'kegg_id': lambda x: [j for j in x.split(',')],
@@ -67,81 +54,32 @@ ID_FUNCTION_DICT = {
                             for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', x)]
 }
 
-def get_ids_from_annotations_by_row(data, logger):
+
+def check_columns(data, logger):
     functions = {i:j for i,j in ID_FUNCTION_DICT.items() if i in data.columns}
+    missing = [i for i in ID_FUNCTION_DICT if i not in data.columns]
     logger.info("Note: the fallowing id fields "
           f"were not in the annotations file and are not being used: {missing},"
           f" but these are {list(functions.keys())}")
+
+def get_ids_from_annotations_by_row(data):
+    functions = {i:j for i,j in ID_FUNCTION_DICT.items() if i in data.columns}
     out = data.apply(lambda x: {i for k, v in functions.items() if not pd.isna(x[k])
                           for i in v(str(x[k])) if not pd.isna(i)}, axis=1)
     return out
 
 
-def get_ids_from_annotations_all(data, logger):
-    data =  get_ids_from_annotations_by_row(data, logger)
+def get_ids_from_annotations_all(data):
+    data =  get_ids_from_annotations_by_row(data)
     data.apply(list)
     out = Counter(chain(*data.values))
     return out
-
-# #TODO unify this with get_ids_from_annotation
-# def get_ids_from_row(row):
-#     """
-#     annotations = pd.read_csv("./test_15soil/annotations.tsv", sep='\t', index_col=0)
-#     new = get_ids_from_annotation(annotations)
-#     """
-#     id_list = list()
-#     # get kegg gene ids
-#     if 'kegg_genes_id' in row and not pd.isna(row['kegg_genes_id']):
-#         id_list += row['kegg_genes_id']
-#     # get kegg orthology ids
-#     if 'ko_id' in row and not pd.isna(row['ko_id']):
-#         id_list += [j for j in row['ko_id'].split(',')]
-#     # Get old ko numbers
-#     # TODO Get rid of this old stuff
-#     if 'kegg_id' in row and not pd.isna(row['kegg_id']):
-#         id_list += [j for j in row['kegg_id'].split(',')]
-#     # get ec numbers
-#     if 'kegg_hit' in row and not pd.isna(row['kegg_hit']):
-#         id_list += [i[1:-1] for i in 
-#                     re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', row['kegg_hit'])]
-#     # get merops ids
-#     if 'peptidase_family' in row and not pd.isna(row['peptidase_family']):
-#         id_list += [j for j in row['peptidase_family'].split(';')]
-#     # get cazy ids
-#     if 'cazy_id' in row and not pd.isna(row['cazy_id']):
-#         id_list += [i.split('_')[0] for i in row['cazy_id'].split('; ')]
-#     if 'cazy_hits' in row and not pd.isna(row['cazy_hits']):
-#         id_list += [f"{i[1:3]}:{i[4:-1]}" for i in 
-#                     re.findall(r'\(EC [\d+\.]+[\d-]\)', row['cazy_hits'])]
-#         # old format
-#         id_list += [i[1:-1].split('_')[0] for i in 
-#                     re.findall(r'\[[A-Z]*\d*?\]', row['cazy_hits'])]
-#     if 'cazy_subfam_ec' in row and not pd.isna(row['cazy_subfam_ec']):
-#         id_list += [f"EC:{i}" for i in 
-#                     re.findall(r'[\d+\.]+[\d-]', row['cazy_subfam_ec'])]
-#     # get pfam ids
-#     if 'pfam_hits' in row and not pd.isna(row['pfam_hits']):
-#         id_list += [j[1:-1].split('.')[0]
-#                     for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', row['pfam_hits'])]
-#     # custom campers id
-#     if f"{CAMPER_NAME}_id" in row:
-#         id_list += [row[f"{CAMPER_NAME}_id"]]
-#     if f"{FEGENIE_NAME}_id" in row:
-#         id_list += [row[f"{FEGENIE_NAME}_id"]]
-#     if f"{SULPHUR_NAME}_id" in row:
-#         id_list += [row[f"{SULPHUR_NAME}_id"]]
-#     id_list = list(set(id_list) - {np.nan})
-#     return id_list
-# 
-# 
-# def get_ids_from_annotation(frame):
-#     return Counter(chain(*frame.apply(get_ids_from_row, axis=1).values))
 
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column, logger):
     genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        id_dict = get_ids_from_annotations_all(frame, logger)
+        id_dict = get_ids_from_annotations_all(frame)
         counts = list()
         for i in genome_summary_id_sets:
             identifier_count = 0
@@ -158,7 +96,7 @@ def fill_genome_summary_frame_gene_names(annotations, genome_summary_frame, grou
     for genome, frame in annotations.groupby(groupby_column, sort=False):
         # make dict of identifiers to gene names
         id_gene_dict = defaultdict(list)
-        for gene, ids in get_ids_from_annotations_by_row(frame, logger).iteritems():
+        for gene, ids in get_ids_from_annotations_by_row(frame).iteritems():
             for id_ in ids:
                 id_gene_dict[id_].append(gene)
         # fill in genome summary_frame
@@ -219,10 +157,10 @@ def summarize_trnas(trnas_df, groupby_column='fasta'):
     return trna_frame
 
 
-def make_genome_summary(annotations, genome_summary_frame, trna_frame=None, rrna_frame=None, groupby_column='fasta'):
+def make_genome_summary(annotations, genome_summary_frame, logger, trna_frame=None, rrna_frame=None, groupby_column='fasta'):
     summary_frames = list()
     # get ko summaries
-    summary_frames.append(fill_genome_summary_frame(annotations, genome_summary_frame.copy(), groupby_column))
+    summary_frames.append(fill_genome_summary_frame(annotations, genome_summary_frame.copy(), groupby_column, logger))
 
     # add rRNAs
     if rrna_frame is not None:
@@ -502,7 +440,7 @@ def get_module_coverage(module_net: nx.DiGraph, genes_present: set):
     return max_path_len, len(max_coverage_genes), max_coverage, max_coverage_genes, max_coverage_missing_genes
 
 
-def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
+def make_etc_coverage_df(etc_module_df, annotations, logger, groupby_column='fasta'):
     etc_coverage_df_rows = list()
     for _, module_row in etc_module_df.iterrows():
         definition = module_row['definition']
@@ -516,7 +454,7 @@ def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
         # go through each genome and check pathway coverage
         for group, frame in annotations.groupby(groupby_column):
             # get annotation genes
-            grouped_ids = set(get_ids_from_annotations_all(frame, logger).keys())
+            grouped_ids = set(get_ids_from_annotations_all(frame).keys())
             path_len, path_coverage_count, path_coverage_percent, genes, missing_genes = \
                 get_module_coverage(module_net, grouped_ids)
             complex_module_name = 'Complex %s: %s' % (module_row['complex'].replace('Complex ', ''),
@@ -560,7 +498,7 @@ def make_functional_df(annotations, function_heatmap_form, logger, groupby_colum
     # build dict of ids per genome
     genome_to_id_dict = dict()
     for genome, frame in annotations.groupby(groupby_column, sort=False):
-        id_list = get_ids_from_annotations_all(frame, logger).keys()
+        id_list = get_ids_from_annotations_all(frame).keys()
         genome_to_id_dict[genome] = set(id_list)
     # build long from data frame
     rows = list()
@@ -618,7 +556,7 @@ def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_fo
     module_coverage_frame = make_module_coverage_frame(annotations, module_nets, groupby_column)
 
     # make ETC frame
-    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations, groupby_column)
+    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations, logger, groupby_column)
 
     # make functional frame
     function_df = make_functional_df(annotations, function_heatmap_form, logger, groupby_column)
@@ -693,6 +631,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     if 'bin_taxnomy' in annotations:
         annotations = annotations.sort_values('bin_taxonomy')
 
+    check_columns(annotations, logger)
     if trna_path is None:
         trna_frame = None
     else:
@@ -715,27 +654,6 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     genome_summary_form = pd.read_csv(database_handler.config["dram_sheets"]['genome_summary_form'], sep='\t')
     if custom_distillate is not None:
         genome_summary_form = pd.concat([genome_summary_form, pd.read_csv(custom_distillate, sep='\t')])
-    if f"{CAMPER_NAME}_id" in annotations:
-        if 'camper_distillate' not in database_handler.config["dram_sheets"]:
-            raise ValueError(f"Genome summary form location for {CAMPER_NAME} "
-                             "must be set in order to summarize genomes with this database.")
-        genome_summary_form = pd.concat([ 
-            genome_summary_form, 
-            pd.read_csv(database_handler.config["dram_sheets"]['camper_distillate'], sep='\t')])
-    if f"{FEGENIE_NAME}_id" in annotations:
-        if 'fegenie_distillate' not in database_handler.config["dram_sheets"]:
-            logger.warn(f"Genome summary form location for {FEGENIE_NAME} "
-                         "must be set in order to summarize genomes with this database.")
-        else:
-            genome_summary_form = pd.concat([
-                genome_summary_form, pd.read_csv(database_handler.config["dram_sheets"], sep='\t')])
-    if f"{SULPHUR_NAME}_id" in annotations:
-        if 'sulphur_distillate' not in database_handler.config["dram_sheets"]:
-            logger.warn(f"Genome summary form location for {SULPHUR_NAME} "
-                         "must be set in order to summarize genomes with this database.")
-        else:
-            genome_summary_form = pd.concat([
-                genome_summary_form, pd.read_csv(database_handler.config["dram_sheets"], sep='\t')])
     genome_summary_form = genome_summary_form.drop('potential_amg', axis=1)
     module_steps_form = pd.read_csv(
         database_handler.config["dram_sheets"]['module_step_form'], sep='\t')
@@ -755,7 +673,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     if distillate_gene_names:
         summarized_genomes = fill_genome_summary_frame_gene_names(annotations, genome_summary_form, groupby_column, logger)
     else:
-        summarized_genomes = make_genome_summary(annotations, genome_summary_form, trna_frame, rrna_frame,
+        summarized_genomes = make_genome_summary(annotations, genome_summary_form, logger, trna_frame, rrna_frame,
                                                  groupby_column)
     write_summarized_genomes_to_xlsx(summarized_genomes, genome_summary)
     logger.info('Generated genome metabolism summary')

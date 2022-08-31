@@ -13,10 +13,6 @@ import numpy as np
 
 TEST_CONF_PATH = path.join('tests', 'data', 'test_CONFIG')
 TEST_CONF_PATH_1_3 = path.join('tests', 'data', 'test_CONFIG_1.3-')
-"""
-import os
-os.system("pytest tests/test_database_handler.py")
-"""
 
 
 @pytest.fixture()
@@ -311,6 +307,7 @@ def test_set_database_paths(logger):
     test_fake_database = path.join('tests', 'data', 'fake_database.mmsdb')
     with pytest.raises(ValueError):
         db_handler.set_database_paths(kegg_loc=test_fake_database, write_config=False)
+    
     # test that adding something real is really added
     kegg_loc = path.join('tests', 'data', 'fake_gff.gff')
     db_handler.set_database_paths(kegg_loc=kegg_loc, write_config=False)

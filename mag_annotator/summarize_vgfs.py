@@ -9,7 +9,7 @@ import warnings
 
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.summarize_genomes import get_ids_from_annotations_by_row, \
-    get_ids_from_annotations_all, get_ordered_uniques
+    get_ids_from_annotations_all, get_ordered_uniques, check_columns
 
 VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes',
                     'Xh': 'Viral genes with host benefits', 'Xp': 'Viral genes with viral benefits',
@@ -225,6 +225,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
 
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0).fillna('')
+    check_columns(annotations, logger)
     database_handler = DatabaseHandler()
     if database_handler.dram_sheet_locs.get('genome_summary_form') is None:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')

@@ -3,9 +3,11 @@ import pytest
 import os
 import pandas as pd
 import numpy as np
+import logging
 
 from mag_annotator.annotate_vgfs import calculate_auxiliary_scores, get_virsorter_hits, get_overlap, get_gene_order, \
     is_transposon, get_metabolic_flags, get_amg_ids, get_virsorter_affi_contigs_name
+from mag_annotator.utils import setup_logger
 
 """
 import os

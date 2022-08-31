@@ -35,6 +35,9 @@ if __name__ == '__main__':
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_parser.add_argument('--min_contig_size', type=int, default=2500,
                                  help='minimum contig size to be used for gene prediction')
+    annotate_parser.add_argument('--config_loc', default=None,
+                                       help='location of an alternive config file that will over write the original at run time,'
+                                       ' but not be saved or modified')
     prodigal_mode_choices = ['train', 'meta', 'single']
     annotate_parser.add_argument('--prodigal_mode', type=str, default='meta', choices=prodigal_mode_choices,
                                  help='Mode of prodigal to use for gene calling. NOTE: normal or single mode require '
@@ -129,6 +132,9 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                        help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
                                             'provided. Drastically decreases memory usage')
+    annotate_genes_parser.add_argument('--config_loc', default=None,
+                                       help='location of an alternive config file that will over write the original at run time,'
+                                       ' but not be saved or modified')
     annotate_genes_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_genes_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_genes_parser.add_argument('--verbose', action='store_true', default=False)

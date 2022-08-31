@@ -378,8 +378,7 @@ class DatabaseHandler:
         if update_config:  # if new description db is set then save it
             self.write_config()
 
-    def filter_db_locs(self, low_mem_mode=False, use_uniref=True, 
-                       use_vogdb=True, master_list=None):
+    def filter_db_locs(self, low_mem_mode=False, use_uniref=True, use_vogdb=True, master_list=None):
         if master_list is None:
             dbs_to_use = self.config['search_databases'].keys()
         else:
@@ -426,6 +425,7 @@ def set_database_paths(clear_config=False, update_description_db=False, **kargs)
     if update_description_db:
         db_handler.populate_description_db()
 
+
 def print_database_locations(config_loc=None):
     conf = DatabaseHandler(None, config_loc)
     # search databases
@@ -439,7 +439,6 @@ def print_database_locations(config_loc=None):
     print('RefSeq Viral db: %s' % conf.config.get('search_databases').get('viral'))
     print('MEROPS peptidase db: %s' % conf.config.get('search_databases').get('peptidase'))
     print('VOGDB db: %s' % conf.config.get('search_databases').get('vogdb'))
-    print()
     # database descriptions used during description db population
     print('Descriptions of search database entries')
     print('Pfam hmm dat: %s' % conf.config.get('database_descriptions').get('pfam_hmm'))
@@ -456,6 +455,7 @@ def print_database_locations(config_loc=None):
     print('ETC module database: %s' % conf.config.get('dram_sheets').get('etc_module_database'))
     print('Function heatmap form: %s' % conf.config.get('dram_sheets').get('function_heatmap_form'))
     print('AMG database: %s' % conf.config.get('dram_sheets').get('amg_database'))
+
 
 def print_database_settings(config_loc=None):
     conf = DatabaseHandler(None, config_loc)
