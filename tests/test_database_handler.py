@@ -277,7 +277,7 @@ def test_write_config(tmpdir, db_handler):
 
 
 @pytest.fixture()
-def db_handler_1_3():
+def db_handler_1_3(logger):
     return DatabaseHandler(logger, TEST_CONF_PATH_1_3)
 
 
@@ -295,6 +295,8 @@ def test_print_database_locations(capsys):
     out, err = capsys.readouterr()
     assert 'Description db: ' in out
     assert err.endswith("Logging to console\n")
+
+def test_enviroment_variable(logger):
 
 
 def test_set_database_paths(logger):
