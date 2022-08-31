@@ -1,3 +1,4 @@
+import os
 from os import path, remove
 from pkg_resources import resource_filename
 import json
@@ -31,7 +32,11 @@ DATABASE_DESCRIPTIONS = ('pfam_hmm', 'dbcan_fam_activities', 'vog_annotations')
 
 
 def get_config_loc():
-    return path.abspath(resource_filename('mag_annotator', 'CONFIG'))
+    loc = os.getenv('DRAM_CONFIG_LOCATION')
+    if loc:
+        return loc
+    else:
+        return path.abspath(resource_filename('mag_annotator', 'CONFIG'))
 
 
 def clear_dict(val):
