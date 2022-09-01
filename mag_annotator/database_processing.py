@@ -62,7 +62,7 @@ def process_kegg_db(output_dir, kegg_loc, gene_ko_link_loc=None, download_date=N
 def download_and_process_kofam_hmms(kofam_profile_tar_gz=None, output_dir='.', verbose=False):
     if kofam_profile_tar_gz is None:
         kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
-        download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
+        download_file('https://www.genome.jp/ftp/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
     kofam_profiles = path.join(output_dir, 'kofam_profiles')
     mkdir(kofam_profiles)
     run_process(['tar', '-xzf', kofam_profile_tar_gz, '-C', kofam_profiles], verbose=verbose)
@@ -75,7 +75,7 @@ def download_and_process_kofam_hmms(kofam_profile_tar_gz=None, output_dir='.', v
 def download_and_process_kofam_ko_list(kofam_ko_list_gz=None, output_dir='.', verbose=False):
     if kofam_ko_list_gz is None:
         kofam_ko_list_gz = path.join(output_dir, 'kofam_ko_list.tsv.gz')
-        download_file('ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', kofam_ko_list_gz, verbose=verbose)
+        download_file('https://www.genome.jp/ftp/db/kofam/ko_list.gz', kofam_ko_list_gz, verbose=verbose)
     # TODO: fix this so that it is gunzipped to the path
     kofam_ko_list = path.join(output_dir, 'kofam_ko_list.tsv')
     run_process(['gunzip', kofam_ko_list_gz], verbose=verbose)
@@ -110,7 +110,7 @@ def process_mmspro(full_alignment, output_dir, db_name='db', threads=10, verbose
 def download_and_process_pfam(pfam_full_zipped=None, output_dir='.', threads=10, verbose=True):
     if pfam_full_zipped is None:  # download database if not provided
         pfam_full_zipped = path.join(output_dir, 'Pfam-A.full.gz')
-        download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz', pfam_full_zipped,
+        download_file('http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz', pfam_full_zipped,
                       verbose=verbose)
     pfam_profile = process_mmspro(pfam_full_zipped, output_dir, 'pfam', threads, verbose)
     return pfam_profile
@@ -118,7 +118,7 @@ def download_and_process_pfam(pfam_full_zipped=None, output_dir='.', threads=10,
 
 def download_pfam_descriptions(output_dir='.', verbose=True):
     pfam_hmm_dat = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
-    download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz', pfam_hmm_dat,
+    download_file('http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz', pfam_hmm_dat,
                   verbose=verbose)
     return pfam_hmm_dat
 
@@ -158,7 +158,7 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
         viral_faa_glob = path.join(output_dir, faa_base_name % '*')
         for number in range(viral_files):
             number += 1
-            refseq_url = 'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
+            refseq_url = 'https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
             refseq_faa = path.join(output_dir, faa_base_name % number)
             download_file(refseq_url, refseq_faa, verbose=verbose)
 
@@ -175,7 +175,7 @@ def download_and_process_viral_refseq(merged_viral_faas=None, output_dir='.', vi
 def download_and_process_merops_peptidases(peptidase_faa=None, output_dir='.', threads=10, verbose=True):
     if peptidase_faa is None:  # download database if not provided
         peptidase_faa = path.join(output_dir, 'merops_peptidases_nr.faa')
-        merops_url = 'ftp://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
+        merops_url = 'https://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
         download_file(merops_url, peptidase_faa, verbose=verbose)
     peptidase_mmseqs_db = path.join(output_dir, 'peptidases.%s.mmsdb' % get_iso_date())
     make_mmseqs_db(peptidase_faa, peptidase_mmseqs_db, create_index=True, threads=threads, verbose=verbose)
