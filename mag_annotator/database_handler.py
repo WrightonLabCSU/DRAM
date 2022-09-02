@@ -1,5 +1,4 @@
-import os
-from os import path, remove
+from os import path, remove, getenv
 from pkg_resources import resource_filename
 import json
 import gzip
@@ -32,7 +31,7 @@ DATABASE_DESCRIPTIONS = ('pfam_hmm', 'dbcan_fam_activities', 'vog_annotations')
 
 
 def get_config_loc():
-    loc = os.getenv('DRAM_CONFIG_LOCATION')
+    loc = getenv('DRAM_CONFIG_LOCATION')
     if loc:
         return loc
     else:
