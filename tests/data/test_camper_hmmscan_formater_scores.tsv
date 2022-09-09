@@ -1,0 +1,5 @@
+hmm_name	A_rank	B_rank	score_type	definition
+D00002	800		-	DZR;daidzein reductase
+D00009	225	200	full	FLR; Flavone/flavonol reductase 
+D00001	780	550	full	FCR; Flavanone/flavanonol-cleaving reductase
+D00004	1000		domain	TDR;tetrahydrodaidzein reductase

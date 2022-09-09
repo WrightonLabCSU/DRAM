@@ -3,14 +3,22 @@ import pytest
 import os
 import json
 import pandas as pd
+import logging
 
-from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, multigrep, remove_prefix, remove_suffix, \
-    get_ids_from_row
+from mag_annotator.utils import run_process, make_mmseqs_db, \
+    merge_files, multigrep, remove_prefix, remove_suffix, \
+    setup_logger, parse_hmmsearch_domtblout, generic_hmmscan_formater
 from mag_annotator.pull_sequences import get_genes_from_identifiers
 
+@pytest.fixture()
+def logger(tmpdir):
+    logger = logging.getLogger('test_log')
+    setup_logger(logger)
+    return logger
 
-def test_run_process():
-    run_process(['echo', 'Hello', 'World'], verbose=True)
+
+def test_run_process(logger):
+    run_process(['echo', 'Hello', 'World'], logger, verbose=True)
     assert True
 
 
@@ -77,9 +85,41 @@ def multigrep_inputs(tmpdir):
     return hits, str(data_file)
 
 
-def test_multigrep(multigrep_inputs):
+def test_generic_hmmscan_formater():
+    output_expt = pd.DataFrame({
+        "bin_1.scaffold_1": ["K00001"],
+        "bin_1.scaffold_2": ["K00002"]
+    }, index=["test_id"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = generic_hmmscan_formater(
+        hits,
+        db_name='test',
+        top_hit=True)
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in generic_hmmscan_formater"
+
+
+def test_generic_hmmscan_formater_custom_cuts():
+    output_expt = pd.DataFrame({
+        "bin_1.scaffold_2": ["K00002", "KO2; description 2"]
+    }, index=["test_id", "test_hits"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = generic_hmmscan_formater(
+        hits,
+        hmm_info_path=os.path.join('tests', 'data', 'hmm_thresholds.txt'),
+        db_name='test',
+        top_hit=True)
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in generic_hmmscan_formater, with custom cuts"
+
+
+def test_multigrep(multigrep_inputs, logger):
     keys, values = multigrep_inputs
-    dict_ = multigrep(keys, values)
+    dict_ = multigrep(keys, values, logger)
     assert len(dict_) == len(keys)
     assert dict_['gene1'] == 'gene1 something about gene1'
     assert dict_['gene3'] == 'gene3 data including gene3'
@@ -94,17 +134,6 @@ def test_remove_prefix():
 def test_remove_suffix():
     assert remove_suffix('suffix', 'fix') == 'suf'
     assert remove_suffix('postfix', 'suf') == 'postfix'
-
-
-def test_get_ids_from_row():
-    id_set1 = get_ids_from_row(pd.Series({'ko_id': 'K00001,K00003'}))
-    assert id_set1 == {'K00001', 'K00003'}
-    id_set2 = get_ids_from_row(pd.Series({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}))
-    assert id_set2 == {'EC:0.0.0.0', 'EC:1.1.1.1'}
-    id_set3 = get_ids_from_row(pd.Series({'peptidase_family': 'ABC1;BCD2'}))
-    assert id_set3 == {'ABC1', 'BCD2'}
-    id_set4 = get_ids_from_row(pd.Series({'cazy_hits': 'GH4 some things [GH4]; GT6 other things [GT6]'}))
-    assert id_set4 == {'GH4', 'GT6'}
 
 
 @pytest.fixture()

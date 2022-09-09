@@ -2,15 +2,16 @@ from datetime import datetime
 from os import path, mkdir
 import re
 import warnings
-
+import logging
 import pandas as pd
 import numpy as np
 from skbio.io import read as read_sequence
 from skbio.io import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.annotate_bins import annotate_fastas
-from mag_annotator.utils import get_ids_from_annotation
+from mag_annotator.annotate_bins import annotate_fastas, get_fasta_name, perform_fasta_checks
+from mag_annotator.utils import setup_logger
+from mag_annotator.summarize_genomes import get_ids_from_annotations_all
 
 VMAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'viral', 'vogdb')
 VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length', 'strandedness',
@@ -83,6 +84,7 @@ def remove_bad_chars_virsorter_affi_contigs(virsorter_in: str) -> str:
     or VIRSorter2 affi headers.
 
     :param virsorter_in:
+
         Path to a affi tab file provide for DRAM by VIRSorter or VIRSorter2.
     :returns:
         String of file contents with headers cleaned.
@@ -279,7 +281,7 @@ def calculate_auxiliary_scores(gene_order):
 
 
 def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaffold_length_dict,
-                        length_from_end=5000):
+                        logger, length_from_end=5000):
     flag_dict = dict()
     metabolic_genes = set(metabolic_genes)
     for scaffold, scaffold_annotations in annotations.groupby('scaffold'):
@@ -289,7 +291,7 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
         for gene, row in scaffold_annotations.iterrows():
             # set up
             flags = ''
-            gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())  # TODO: Fix
+            gene_annotations = set(get_ids_from_annotations_all(pd.DataFrame(row).transpose()).keys())  # TODO: Fix
             # is viral
             if 'vogdb_categories' in row.index and not pd.isna(row['vogdb_categories']):
                 if len({'Xr', 'Xs'} & set(row['vogdb_categories'].split(';'))) > 0:
@@ -378,10 +380,10 @@ def get_virsorter_affi_contigs_name(scaffold):
     return get_virsorter_original_affi_contigs_name(scaffold)
 
 
-def add_dramv_scores_and_flags(annotations, db_handler, virsorter_hits=None, input_fasta=None):
+def add_dramv_scores_and_flags(annotations, db_handler, logger, virsorter_hits=None, input_fasta=None):
     # setting up scoring viral genes
-    amg_database_frame = pd.read_csv(db_handler.dram_sheet_locs['amg_database'], sep='\t')
-    genome_summary_form = pd.read_csv(db_handler.dram_sheet_locs['genome_summary_form'], sep='\t', index_col=0)
+    amg_database_frame = pd.read_csv(db_handler.config['dram_sheets']['amg_database'], sep='\t')
+    genome_summary_form = pd.read_csv(db_handler.config['dram_sheets']['genome_summary_form'], sep='\t', index_col=0)
     genome_summary_form = genome_summary_form.loc[genome_summary_form.potential_amg]
 
     # add auxiliary score
@@ -409,7 +411,8 @@ def add_dramv_scores_and_flags(annotations, db_handler, virsorter_hits=None, inp
     amgs = get_amg_ids(amg_database_frame)
     verified_amgs = get_amg_ids(amg_database_frame.loc[amg_database_frame.verified])
     annotations['amg_flags'] = pd.Series(get_metabolic_flags(annotations, metabolic_genes, amgs,
-                                                             verified_amgs, scaffold_length_dict))
+                                                             verified_amgs, scaffold_length_dict,
+                                                             logger))
 
     # downgrade B flag auxiliary scores
     if virsorter_hits is not None:
@@ -419,15 +422,15 @@ def add_dramv_scores_and_flags(annotations, db_handler, virsorter_hits=None, inp
 
     return annotations
 
-
 def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_contig_size=2500, split_contigs=False,
                   prodigal_mode='meta', trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350,
                   custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(),
                   custom_hmm_name=(), use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
                   keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
-    # set up
-    start_time = datetime.now()
-    print('%s: Viral annotation started' % str(datetime.now()))
+    mkdir(output_dir)
+    log_file_path = path.join(output_dir, "Annotation.log")
+    logger = logging.getLogger('annotation_log')
+    setup_logger(logger, log_file_path)
 
     # check inputs
     prodigal_modes = ['train', 'meta', 'single']
@@ -439,7 +442,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                       'training to work well.')
 
     # get database locations
-    db_handler = DatabaseHandler()
+    db_handler = DatabaseHandler(logger)
     db_handler.filter_db_locs(low_mem_mode, use_uniref, True, VMAG_DBS_TO_ANNOTATE)
 
     if virsorter_affi_contigs is not None:
@@ -447,7 +450,11 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     else:
         virsorter_hits = None
 
-    mkdir(output_dir)
+    # Check fastas
+    perform_fasta_checks([input_fasta], logger)
+
+    logger.info(f"Starting the Viral Annotation of Genes with database configuration: \n {db_handler.get_settings_str()}")
+
     if split_contigs:
         # split sequences into separate fastas
         contig_dir = path.join(output_dir, 'vMAGs')
@@ -472,16 +479,16 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # annotate vMAGs
     rename_bins = False
-    annotations = annotate_fastas(contig_locs, output_dir, db_handler, min_contig_size, prodigal_mode, trans_table,
+    annotations = annotate_fastas(contig_locs, output_dir, db_handler, logger, min_contig_size, prodigal_mode, trans_table,
                                   bit_score_threshold, rbh_bit_score_threshold, custom_db_name, custom_fasta_loc,
                                   custom_hmm_name, custom_hmm_loc, custom_hmm_cutoffs_loc, kofam_use_dbcan2_thresholds,
-                                  skip_trnascan, rename_bins, keep_tmp_dir, start_time, threads, verbose)
-    print('%s: Annotations complete, assigning auxiliary scores and flags' % str(datetime.now() - start_time))
+                                  skip_trnascan, rename_bins, keep_tmp_dir, threads, verbose)
+    logging.info('Annotations complete, assigning auxiliary scores and flags')
 
-    annotations = add_dramv_scores_and_flags(annotations, db_handler, virsorter_hits, input_fasta)
+    annotations = add_dramv_scores_and_flags(annotations, db_handler, logger, virsorter_hits, input_fasta)
 
     # write annotations
     annotations.to_csv(path.join(output_dir, 'annotations.tsv'), sep='\t')
 
-    print("%s: Completed annotations" % str(datetime.now() - start_time))
+    logging.info("Completed annotations")
 

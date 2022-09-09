@@ -1,6 +1,7 @@
 import pytest
 
 import os
+import logging
 import pandas as pd
 import networkx as nx
 import altair as alt
@@ -10,14 +11,21 @@ from mag_annotator.summarize_genomes import fill_genome_summary_frame, summarize
     make_module_coverage_heatmap, pairwise, first_open_paren_is_all, split_into_steps, is_ko, make_module_network, \
     get_module_coverage, make_etc_coverage_df, make_etc_coverage_heatmap, make_functional_df, make_functional_heatmap, \
     fill_liquor_dfs, make_liquor_heatmap, make_liquor_df, make_genome_summary, write_summarized_genomes_to_xlsx,\
-    get_phylum_and_most_specific
-from mag_annotator.utils import get_ordered_uniques
+    get_phylum_and_most_specific, get_ids_from_annotations_all, get_ids_from_annotations_by_row
+from mag_annotator.utils import get_ordered_uniques, setup_logger
 
 
 def test_get_ordered_uniques():
     assert get_ordered_uniques([1, 2, 3]) == [1, 2, 3]
     assert get_ordered_uniques([1, 1, 2, 3]) == [1, 2, 3]
     assert get_ordered_uniques([1, 2, 1, 3]) == [1, 2, 3]
+
+
+@pytest.fixture()
+def logger(tmpdir):
+    logger = logging.getLogger('test_log')
+    setup_logger(logger)
+    return logger
 
 
 @pytest.fixture()
@@ -42,8 +50,21 @@ def summarized_genomes():
                         columns=['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader', 'genome'])
 
 
-def test_fill_genome_summary_frame(annotations, genome_summary_frame, summarized_genomes):
-    test_frame = fill_genome_summary_frame(annotations, genome_summary_frame, 'fasta')
+def test_get_ids_from_row(logger):
+     in_data = pd.concat([pd.DataFrame({'ko_id': 'K00001,K00003'}, index=['id_set1']),
+                         pd.DataFrame({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}, index=['id_set2']),
+                         pd.DataFrame({'peptidase_family': 'ABC1;BCD2'}, index=['id_set3']),
+                         pd.DataFrame({'cazy_hits': 'GH4 some things [GH4]; GT6 other things [GT6]'}, index=['id_set4'])
+                         ])
+     out_data = get_ids_from_annotations_by_row(in_data)
+     assert out_data['id_set1'] == {'K00001', 'K00003'}
+     assert out_data['id_set2'] == {'EC:0.0.0.0', 'EC:1.1.1.1'}
+     assert out_data['id_set3'] == {'ABC1', 'BCD2'}
+     assert out_data['id_set4'] == {'GH4', 'GT6'}
+
+
+def test_fill_genome_summary_frame(annotations, genome_summary_frame, summarized_genomes, logger):
+    test_frame = fill_genome_summary_frame(annotations, genome_summary_frame, 'fasta', logger)
     pd.testing.assert_frame_equal(test_frame, summarized_genomes)
 
 
@@ -77,8 +98,8 @@ def test_summarize_trnas(fake_processed_trnas):
     pd.testing.assert_frame_equal(test_summarized_trnas, summarized_trnas)
 
 
-def test_make_genome_summary(annotations, genome_summary_frame, summarized_genomes):
-    test_genome_summary = make_genome_summary(annotations, genome_summary_frame)
+def test_make_genome_summary(annotations, genome_summary_frame, summarized_genomes, logger):
+    test_genome_summary = make_genome_summary(annotations, genome_summary_frame, logger)
     assert type(test_genome_summary) is pd.DataFrame
     pd.testing.assert_frame_equal(test_genome_summary, summarized_genomes)
 
@@ -206,8 +227,8 @@ def etc_coverage_df():
                                  'complex_module_name'])
 
 
-def test_make_etc_coverage_df(test_annotations_df, etc_module_df, etc_coverage_df):
-    test_etc_coverage_df = make_etc_coverage_df(etc_module_df, test_annotations_df, 'scaffold')
+def test_make_etc_coverage_df(test_annotations_df, etc_module_df, etc_coverage_df, logger):
+    test_etc_coverage_df = make_etc_coverage_df(etc_module_df, test_annotations_df, logger, 'scaffold')
     pd.testing.assert_frame_equal(test_etc_coverage_df, etc_coverage_df)
 
 
@@ -237,7 +258,7 @@ def functional_df():
 
 
 def test_make_functional_df(test_annotations_df, function_heatmap_form, functional_df):
-    test_functional_df = make_functional_df(test_annotations_df, function_heatmap_form, 'scaffold')
+    test_functional_df = make_functional_df(test_annotations_df, function_heatmap_form, logger, 'scaffold')
     pd.testing.assert_frame_equal(test_functional_df, functional_df)
 
 
@@ -249,7 +270,7 @@ def test_make_functional_heatmap(functional_df):
 # TODO: actually test that the frames are correct, already done above
 def test_fill_liquor_dfs(test_annotations_df, test_module_net, etc_module_df, function_heatmap_form):
     module_nets = {'M12345': test_module_net}
-    liquor_dfs = fill_liquor_dfs(test_annotations_df, module_nets, etc_module_df, function_heatmap_form, 'scaffold')
+    liquor_dfs = fill_liquor_dfs(test_annotations_df, module_nets, etc_module_df, function_heatmap_form, logger, 'scaffold')
     assert len(liquor_dfs) == 3
     assert type(liquor_dfs[0]) is pd.DataFrame
     assert type(liquor_dfs[1]) is pd.DataFrame

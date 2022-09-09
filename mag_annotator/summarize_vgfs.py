@@ -8,7 +8,8 @@ from datetime import datetime
 import warnings
 
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.utils import get_ids_from_row, get_ids_from_annotation, get_ordered_uniques
+from mag_annotator.summarize_genomes import get_ids_from_annotations_by_row, \
+    get_ids_from_annotations_all, get_ordered_uniques, check_columns
 
 VOGDB_TYPE_NAMES = {'Xr': 'Viral replication genes', 'Xs': 'Viral structure genes',
                     'Xh': 'Viral genes with host benefits', 'Xp': 'Viral genes with viral benefits',
@@ -32,7 +33,7 @@ def add_custom_ms(annotations, distillate_form):
         if 'M' in row['amg_flags']:
             new_amg_flags.append(row['amg_flags'])
         else:
-            gene_annotations = set(get_ids_from_annotation(pd.DataFrame(row).transpose()).keys())
+            gene_annotations = set(get_ids_from_annotations_all(pd.DataFrame(row).transpose()).keys())
             if len(metabolic_genes & gene_annotations) > 0:
                 new_amg_flags.append(row['amg_flags'] + 'M')
             else:
@@ -104,8 +105,9 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
 
 def make_viral_distillate(potential_amgs, genome_summary_frame):
     rows = list()
+    potential_amgs['ids'] = get_ids_from_annotations_by_row(potential_amgs)
     for gene, row in potential_amgs.iterrows():
-        gene_ids = get_ids_from_row(row) & set(genome_summary_frame.index)
+        gene_ids = row.ids & set(genome_summary_frame.index)
         if len(gene_ids) > 0:
             for gene_id in gene_ids:
                 gene_summary = genome_summary_frame.loc[gene_id]
@@ -150,8 +152,7 @@ def make_viral_functional_df(annotations, genome_summary_frame, groupby_column='
     # build dict of ids per genome
     vgf_to_id_dict = defaultdict(defaultdict_list)
     for vgf, frame in annotations.groupby(groupby_column, sort=False):
-        for gene, row in frame.iterrows():
-            id_list = get_ids_from_row(row)
+        for gene, id_list in get_ids_from_annotations_by_row(frame).iteritems():
             for id_ in id_list:
                 vgf_to_id_dict[vgf][id_].append(gene)
     # build long from data frame
@@ -213,10 +214,18 @@ def make_viral_functional_heatmap(functional_df, vgf_order=None):
 #                    remove_fs=False, remove_js=False, custom_distillate=None):
 def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3,
                    remove_transposons=False, remove_fs=False, custom_distillate=None):
-    start_time = datetime.now()
+    # make output folder
+    mkdir(output_dir)
+    if log_file_path is None:
+        log_file_path = path.join(output_dir, "Distillation.log")
+    logger = logging.getLogger('distillation_log')
+    setup_logger(logger, log_file_path)
+    logger.info(f"The log file is created at {log_file_path}")
+
 
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0).fillna('')
+    check_columns(annotations, logger)
     database_handler = DatabaseHandler()
     if database_handler.dram_sheet_locs.get('genome_summary_form') is None:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
@@ -227,23 +236,23 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
         genome_summary_form = pd.concat([genome_summary_form, custom_distillate_form])
         # add M's from custom distillate
         annotations['amg_flags'] = add_custom_ms(annotations, custom_distillate_form)
-    print('%s: Retrieved database locations and descriptions' % (str(datetime.now() - start_time)))
+    logger.info('Retrieved database locations and descriptions')
 
     # get potential AMGs
     # potential_amgs = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
     #                                 remove_transposons=remove_transposons, remove_fs=remove_fs, remove_js=remove_js)
     potential_amgs = filter_to_amgs(annotations, max_aux=max_auxiliary_score,
                                     remove_transposons=remove_transposons, remove_fs=remove_fs)
-    print('%s: Determined potential amgs' % (str(datetime.now() - start_time)))
+    logger.info('Determined potential amgs')
 
     # make distillate
     viral_genome_stats = make_viral_stats_table(annotations, potential_amgs, groupby_column)
     viral_genome_stats.to_csv(path.join(output_dir, 'vMAG_stats.tsv'), sep='\t')
-    print('%s: Calculated viral genome statistics' % (str(datetime.now() - start_time)))
+    logger.info('Calculated viral genome statistics')
 
     viral_distillate = make_viral_distillate(potential_amgs, genome_summary_form)
     viral_distillate.to_csv(path.join(output_dir, 'amg_summary.tsv'), sep='\t', index=None)
-    print('%s: Generated AMG summary' % (str(datetime.now() - start_time)))
+    logger.info('Generated AMG summary')
 
     # make liquor
     vgf_order = make_vgf_order(potential_amgs)
@@ -251,5 +260,5 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     viral_function_df = make_viral_functional_df(potential_amgs, genome_summary_form, groupby_column=groupby_column)
     viral_functional_heatmap = make_viral_functional_heatmap(viral_function_df, vgf_order)
     alt.hconcat(amg_column, viral_functional_heatmap, spacing=5).save(path.join(output_dir, 'product.html'))
-    print('%s: Generated product heatmap' % (str(datetime.now() - start_time)))
-    print("%s: Completed distillation" % str(datetime.now() - start_time))
+    logger.info('Generated product heatmap')
+    logger.info("Completed distillation")
