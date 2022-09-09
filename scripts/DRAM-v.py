@@ -158,3 +158,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}
     args.func(**args_dict)
+
