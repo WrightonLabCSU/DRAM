@@ -48,6 +48,7 @@ def get_iso_date():
 def download_pfam_hmm(output_dir='.', logger=LOGGER, verbose=True):
     pfam_hmm = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
     link_path = 'ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz'
+    link_path = 'http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz'
     logger.debug(f"Downloading Pfam from: {link_path}")
     download_file(link_path, logger, pfam_hmm,
                   verbose=verbose)
@@ -87,6 +88,7 @@ def download_dbcan_subfam_ec(output_dir='.', logger=LOGGER, version=DEFAULT_DBCA
 def download_kofam_hmm(output_dir='.', logger=LOGGER, verbose=False):
     kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
     download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', logger, kofam_profile_tar_gz, verbose=verbose)
+    download_file('https://www.genome.jp/ftp/db/kofam/profiles.tar.gz', kofam_profile_tar_gz, verbose=verbose)
     return kofam_profile_tar_gz
 
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
@@ -143,6 +145,7 @@ def process_kofam_hmm(kofam_profile_tar_gz, output_dir=DFLT_OUTPUT_DIR, logger=L
 
 def download_kofam_ko_list(output_dir='.', logger=LOGGER, verbose=False):
     kofam_ko_list_gz = path.join(output_dir, 'kofam_ko_list.tsv.gz')
+    download_file('https://www.genome.jp/ftp/db/kofam/ko_list.gz', kofam_ko_list_gz, verbose=verbose)
     download_file('ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', logger, kofam_ko_list_gz, verbose=verbose)
     return kofam_ko_list_gz
 
@@ -151,6 +154,8 @@ def download_pfam(output_dir='.', logger=LOGGER, verbose=True):
     pfam_full_zipped = path.join(output_dir, 'Pfam-A.full.gz')
     download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz', logger, pfam_full_zipped,
                   verbose=verbose)
+            download_file('http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz', pfam_full_zipped,
+                      verbose=verbose)
     return pfam_full_zipped
 
 
@@ -158,15 +163,14 @@ def download_viral(output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FI
     """Can only download newest version"""
     # download all of the viral protein files, need to know the number of files
     # TODO: Make it so that you don't need to know number of viral files in refseq viral
-
     faa_base_name = 'viral.%s.protein.faa.gz'
     viral_faa_glob = path.join(output_dir, faa_base_name % '*')
     for number in range(viral_files):
         number += 1
         refseq_url = 'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
+        refseq_url = 'https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
         refseq_faa = path.join(output_dir, faa_base_name % number)
         download_file(refseq_url, logger, refseq_faa, verbose=verbose)
-
     # then merge files from above
     merged_viral_faas = path.join(output_dir, 'viral.merged.protein.faa.gz')
     run_process(['cat %s > %s' % (' '.join(glob(viral_faa_glob)), merged_viral_faas)], logger, shell=True)
@@ -246,6 +250,8 @@ def process_viral(merged_viral_faas, output_dir='.', logger=LOGGER, viral_files=
     LOGGER.info('RefSeq viral database processed')
     return {'viral': refseq_viral_mmseqs_db}
 
+
+        merops_url = 'https://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
 
 def process_peptidase(peptidase_faa, output_dir='.', logger=LOGGER, threads=10, verbose=True):
     peptidase_mmseqs_db = path.join(output_dir, 'peptidases.%s.mmsdb' % get_iso_date())
