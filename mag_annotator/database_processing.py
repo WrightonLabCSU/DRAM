@@ -47,10 +47,10 @@ def get_iso_date():
 
 def download_pfam_hmm(output_dir='.', logger=LOGGER, verbose=True):
     pfam_hmm = path.join(output_dir, 'Pfam-A.hmm.dat.gz')
-    link_path = 'ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz'
-    logger.debug(f"Downloading Pfam from: {link_path}")
-    download_file(link_path, logger, pfam_hmm,
-                  verbose=verbose)
+    url = 'ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz'
+    url_http = 'http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.dat.gz'
+    logger.debug(f"Downloading Pfam from: {url}")
+    download_file(url, pfam_hmm, logger, alt_urls=[url_http], verbose=verbose)
     return pfam_hmm
 
 
@@ -62,31 +62,33 @@ def download_dbcan(output_dir='.', logger=LOGGER, dbcan_hmm=None, version=DEFAUL
         link_path = f"http://bcb.unl.edu/dbCAN2/download/dbCAN-HMMdb-V{version}.txt"
 
     logger.debug(f"Downloading dbCAN from: {link_path}")
-    download_file(link_path, logger, dbcan_hmm, verbose=verbose)
+    download_file(link_path, dbcan_hmm, logger, verbose=verbose)
     return dbcan_hmm
 
 
 def download_dbcan_fam_activities (output_dir='.', logger=LOGGER, version=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, 
                                 verbose=True):
     dbcan_fam_activities = path.join(output_dir, f'CAZyDB.{upload_date}.fam-activities.txt')
-    link_path = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{version}/CAZyDB.{upload_date}.fam-activities.txt"
-    logger.info(f"Downloading dbCAN family activities from : {link_path}")
-    download_file(link_path, logger, dbcan_fam_activities, verbose=verbose)
+    url = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{version}/CAZyDB.{upload_date}.fam-activities.txt"
+    logger.info(f"Downloading dbCAN family activities from : {url}")
+    download_file(url, dbcan_fam_activities, logger, verbose=verbose)
     return dbcan_fam_activities
 
 
 def download_dbcan_subfam_ec(output_dir='.', logger=LOGGER, version=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
     dbcan_subfam_ec = path.join(output_dir, f"CAZyDB.{upload_date}.fam.subfam.ec.txt")
-    link_path = (f"https://bcb.unl.edu/dbCAN2/download/Databases/"
+    url = (f"https://bcb.unl.edu/dbCAN2/download/Databases/"
                  f"V{version}/CAZyDB.{upload_date}.fam.subfam.ec.txt")
-    logger.info(f"Downloading dbCAN sub-family encumber from : {link_path}")
-    download_file(link_path, logger, dbcan_subfam_ec, verbose=verbose)
+    logger.info(f"Downloading dbCAN sub-family encumber from : {url}")
+    download_file(url, dbcan_subfam_ec, logger, verbose=verbose)
     return dbcan_subfam_ec
 
 
 def download_kofam_hmm(output_dir='.', logger=LOGGER, verbose=False):
     kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
-    download_file('ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz', logger, kofam_profile_tar_gz, verbose=verbose)
+    url = 'ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz'  
+    url_http = 'https://www.genome.jp/ftp/db/kofam/profiles.tar.gz'
+    download_file(url, kofam_profile_tar_gz, logger, alt_urls=[url_http], verbose=verbose)
     return kofam_profile_tar_gz
 
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
@@ -110,6 +112,7 @@ def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
                 new_description += '; %s' % ko
         seq.metadata['description'] = new_description
         yield seq
+
 
 
 def process_kegg(kegg_loc, output_dir, logger, gene_ko_link_loc=None, download_date=None, 
@@ -143,14 +146,17 @@ def process_kofam_hmm(kofam_profile_tar_gz, output_dir=DFLT_OUTPUT_DIR, logger=L
 
 def download_kofam_ko_list(output_dir='.', logger=LOGGER, verbose=False):
     kofam_ko_list_gz = path.join(output_dir, 'kofam_ko_list.tsv.gz')
-    download_file('ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', logger, kofam_ko_list_gz, verbose=verbose)
+    url = 'ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', 
+    url_http = 'https://www.genome.jp/ftp/db/kofam/ko_list.gz'
+    download_file(url, kofam_ko_list_gz, logger, alt_urls=[url_http], verbose=verbose)
     return kofam_ko_list_gz
 
 
 def download_pfam(output_dir='.', logger=LOGGER, verbose=True):
     pfam_full_zipped = path.join(output_dir, 'Pfam-A.full.gz')
-    download_file('ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz', logger, pfam_full_zipped,
-                  verbose=verbose)
+    url = 'ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz'
+    http_url = 'http://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.full.gz'
+    download_file(url, pfam_full_zipped, logger, alt_urls=[http_url], verbose=verbose)
     return pfam_full_zipped
 
 
@@ -158,15 +164,14 @@ def download_viral(output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FI
     """Can only download newest version"""
     # download all of the viral protein files, need to know the number of files
     # TODO: Make it so that you don't need to know number of viral files in refseq viral
-
     faa_base_name = 'viral.%s.protein.faa.gz'
     viral_faa_glob = path.join(output_dir, faa_base_name % '*')
     for number in range(viral_files):
         number += 1
-        refseq_url = 'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
-        refseq_faa = path.join(output_dir, faa_base_name % number)
-        download_file(refseq_url, logger, refseq_faa, verbose=verbose)
-
+        url = 'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
+        url_http = 'https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.%s.protein.faa.gz' % number
+        output_name= path.join(output_dir, faa_base_name % number)
+        download_file(url, output_name, logger, alt_urls=[url_http], verbose=verbose)
     # then merge files from above
     merged_viral_faas = path.join(output_dir, 'viral.merged.protein.faa.gz')
     run_process(['cat %s > %s' % (' '.join(glob(viral_faa_glob)), merged_viral_faas)], logger, shell=True)
@@ -176,22 +181,25 @@ def download_viral(output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FI
 def download_uniref(output_dir='.', logger=LOGGER, version=DEFAULT_UNIREF_VERSION, 
                     threads=10, verbose=True):
     uniref_fasta_zipped = path.join(output_dir, 'uniref%s.fasta.gz' % version)
-    uniref_url = 'https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' % \
+    url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' % \
+          (version, version)
+    url_http = 'https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' % \
                  (version, version)
-    download_file(uniref_url, logger, uniref_fasta_zipped, verbose=verbose)
+    download_file(url, uniref_fasta_zipped, logger, alt_urls=[url_http], verbose=verbose)
     return uniref_fasta_zipped
 
 
 def download_peptidase(output_dir='.', logger=LOGGER, verbose=True):
-    peptidase_faa = path.join(output_dir, 'merops_peptidases_nr.faa')
-    merops_url = 'ftp://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
-    download_file(merops_url, logger, peptidase_faa, verbose=verbose)
-    return peptidase_faa
+    save_name = path.join(output_dir, 'merops_peptidases_nr.faa')
+    url = 'ftp://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
+    url_http = 'https://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
+    download_file(url, save_name, logger, alt_urls=[url_http], verbose=verbose)
+    return save_name
 
 def download_vogdb(output_dir='.', logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_hmm_targz = path.join(output_dir, 'vog.hmm.tar.gz')
     vogdb_url = f'http://fileshare.csb.univie.ac.at/vog/{version}/vog.hmm.tar.gz'
-    download_file(vogdb_url, logger, vog_hmm_targz, verbose=verbose)
+    download_file(vogdb_url, vog_hmm_targz, logger, verbose=verbose)
     return vog_hmm_targz
 
 
@@ -247,6 +255,7 @@ def process_viral(merged_viral_faas, output_dir='.', logger=LOGGER, viral_files=
     return {'viral': refseq_viral_mmseqs_db}
 
 
+
 def process_peptidase(peptidase_faa, output_dir='.', logger=LOGGER, threads=10, verbose=True):
     peptidase_mmseqs_db = path.join(output_dir, 'peptidases.%s.mmsdb' % get_iso_date())
     make_mmseqs_db(peptidase_faa, peptidase_mmseqs_db, logger, create_index=True, threads=threads, verbose=verbose)
@@ -268,43 +277,43 @@ def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_
 
 def download_vog_annotations(output_dir, logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_annotations = path.join(output_dir, 'vog_annotations_%s.tsv.gz' % version)
-    download_file('http://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % version, logger,
-                  vog_annotations, verbose=verbose)
+    download_file('http://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % version,
+                  vog_annotations, logger, verbose=verbose)
     return vog_annotations
 
 
 def download_genome_summary_form(output_dir, logger=LOGGER, branch='master', verbose=True):
     genome_summary_form = path.join(output_dir, 'genome_summary_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/genome_summary_form.tsv' % branch, logger,
-                  genome_summary_form, verbose=verbose)
+    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/genome_summary_form.tsv' % branch,
+                  genome_summary_form, logger, verbose=verbose)
     return genome_summary_form
 
 
 def download_module_step_form(output_dir, logger=LOGGER, branch='master', verbose=True):
     function_heatmap_form = path.join(output_dir, 'module_step_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/module_step_form.tsv' % branch, logger,
-                  function_heatmap_form, verbose=verbose)
+    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/module_step_form.tsv' % branch,
+                  function_heatmap_form, logger, verbose=verbose)
     return function_heatmap_form
 
 
 def download_etc_module_database(output_dir, logger=LOGGER, branch='master', verbose=True):
     etc_module_database = path.join(output_dir, 'etc_mdoule_database.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/etc_module_database.tsv' % branch, logger,
-                  etc_module_database, verbose=verbose)
+    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/etc_module_database.tsv' % branch,
+                  etc_module_database, logger, verbose=verbose)
     return etc_module_database
 
 
 def download_function_heatmap_form(output_dir, logger=LOGGER, branch='master', verbose=True):
     function_heatmap_form = path.join(output_dir, 'function_heatmap_form.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/function_heatmap_form.tsv' % branch, logger,
-                  function_heatmap_form, verbose=verbose)
+    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/function_heatmap_form.tsv' % branch,
+                  function_heatmap_form, logger, verbose=verbose)
     return function_heatmap_form
 
 
 def download_amg_database(output_dir, logger=LOGGER, branch='master', verbose=True):
     amg_database = path.join(output_dir, 'amg_database.%s.tsv' % get_iso_date())
-    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/amg_database.tsv' % branch, logger,
-                  amg_database, verbose=verbose)
+    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM/%s/data/amg_database.tsv' % branch, 
+                  amg_database, logger, verbose=verbose,)
     return amg_database
 
 

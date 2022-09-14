@@ -7,7 +7,7 @@ import logging
 
 from mag_annotator.utils import run_process, make_mmseqs_db, \
     merge_files, multigrep, remove_prefix, remove_suffix, \
-    setup_logger, parse_hmmsearch_domtblout, generic_hmmscan_formater
+    setup_logger, parse_hmmsearch_domtblout, generic_hmmscan_formater, download_file
 from mag_annotator.pull_sequences import get_genes_from_identifiers
 
 @pytest.fixture()
@@ -61,6 +61,26 @@ def files_to_merge_w_header(merge_test_dir):
         files_to_merge.append(merge_file)
     return files_to_merge
 
+
+def test_download_file(logger, tmpdir):
+    tempfile = tmpdir / 'out'
+    with pytest.raises(URLError):
+        download_file('https://notathingstupid.com', tempfile, logger)
+
+def test_download_file(logger, tmpdir):
+    tempfile = tmpdir / 'out'
+    download_file('https://raw.githubusercontent.com/WrightonLabCSU/DRAM'
+                  '/master/data/function_heatmap_form.tsv',
+                  tempfile, logger)
+    assert os.stat(tempfile).st_size > 0
+    
+def test_download_file(logger, tmpdir):
+    tempfile = tmpdir / 'out'
+    download_file('https://notathingstupid.nothing', tempfile, logger,
+                  alt_urls=['https://raw.githubusercontent.com/'
+                            'WrightonLabCSU/DRAM/master/data/'
+                            'function_heatmap_form.tsv'])
+    assert os.stat(tempfile).st_size > 0
 
 def test_merge_files(files_to_merge_no_header, files_to_merge_w_header, merge_test_dir):
     test_merge = merge_test_dir.join('merged_test.txt')

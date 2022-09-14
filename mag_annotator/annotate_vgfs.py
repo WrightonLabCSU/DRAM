@@ -1,3 +1,6 @@
+"""
+Main control point for the viral annotation process
+"""
 from datetime import datetime
 from os import path, mkdir
 import re

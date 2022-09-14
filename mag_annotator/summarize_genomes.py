@@ -728,12 +728,3 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
         liquor.save(path.join(output_dir, 'product.html'))
     logger.info('Generated product heatmap and table')
     logger.info("Completed distillation")
-
-
-"""
-import os
-
-os.system("rm -r ./test_15soil/distillation")
-os.system("DRAM.py distill -i ./test_15soil/annotations.tsv -o ./test_15soil/distillation")
-
-"""

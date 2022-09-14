@@ -2,7 +2,7 @@ import re
 import subprocess
 from os import path, stat
 from urllib.request import urlopen, urlretrieve
-from urllib.error import HTTPError
+from urllib.error import URLError
 import pandas as pd
 import logging
 from typing import Callable
@@ -17,20 +17,21 @@ BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOp
                     'tEnd', 'eVal', 'bitScore']
 
 
-
-def download_file(url, logger, output_file=None, verbose=True):
+def download_file(url: str, output_file: str, logger: logging.Logger, alt_urls: list[str] = None, verbose = True):
     # TODO: catching error 4 and give error message to retry or retry automatically
-    if verbose:
-        print('downloading %s' % url)
-    if output_file is None:
-        return urlopen(url).read().decode('utf-8')
-    else:
+    links = [url] if alt_urls is None else [url] + alt_urls
+    for l in links: 
+        if verbose:
+            print('downloading %s' % url)
         try:
-            urlretrieve(url, output_file)
-        except HTTPError as error:
-            logger.critical(f"Something went wrong with the download of the url: {url}")
-            raise error
-        # run_process(['wget', '-O', output_file, url], verbose=verbose)
+            urlretrieve(l, output_file)
+            return
+        except BaseException as error:
+            # BaseException is good http was to exact
+            logger.warning(f"Something went wrong with the download of the url: {l}")
+            logger.warning(error)
+    raise URLError("DRAM whas not able to download a key database, check the logg for details")
+    # run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
 def setup_logger(logger, *log_file_paths, level=logging.INFO):
@@ -68,11 +69,9 @@ def run_process(command, logger, shell:bool=False, capture_stdout:bool=True, sav
         logging.debug(results.stdout)
         if stop_on_error:
            raise subprocess.SubprocessError(f"The subcommand {' '.join(command)} experienced an error, see the log for more info.")
-
     if save_output is not None:
         with open(save_output, 'w') as out:
             out.write(results.stdout)
-
     if capture_stdout:
         return results.stdout
 
