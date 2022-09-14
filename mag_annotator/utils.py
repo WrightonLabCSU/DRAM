@@ -69,11 +69,9 @@ def run_process(command, logger, shell:bool=False, capture_stdout:bool=True, sav
         logging.debug(results.stdout)
         if stop_on_error:
            raise subprocess.SubprocessError(f"The subcommand {' '.join(command)} experienced an error, see the log for more info.")
-
     if save_output is not None:
         with open(save_output, 'w') as out:
             out.write(results.stdout)
-
     if capture_stdout:
         return results.stdout
 

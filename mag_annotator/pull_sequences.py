@@ -14,12 +14,6 @@ from mag_annotator.database_handler import DatabaseHandler
 # TODO: filter scaffolds file, gff file
 # TODO: add negate, aka pull not from given list
 
-"""
-import os
-
-os.system("DRAM.py strainer --i ./strainer.tsv -f genes.faa -o filter_genes.faa")
-os.system("DRAM.py strainer --i ./strainer.tsv -f genes.fna -o filter_genes.fna")
-"""
 
 def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=None, identifiers=None, categories=None,
                                custom_distillate=None):

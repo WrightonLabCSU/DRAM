@@ -88,7 +88,7 @@ def download_kofam_hmm(output_dir='.', logger=LOGGER, verbose=False):
     kofam_profile_tar_gz = path.join(output_dir, 'kofam_profiles.tar.gz')
     url = 'ftp://ftp.genome.jp/pub/db/kofam/profiles.tar.gz'  
     url_http = 'https://www.genome.jp/ftp/db/kofam/profiles.tar.gz'
-    download_file(url, kofam_profile_tar_gz, logger, url_http=[url_http], verbose=verbose)
+    download_file(url, kofam_profile_tar_gz, logger, alt_urls=[url_http], verbose=verbose)
     return kofam_profile_tar_gz
 
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
@@ -112,6 +112,7 @@ def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
                 new_description += '; %s' % ko
         seq.metadata['description'] = new_description
         yield seq
+
 
 
 def process_kegg(kegg_loc, output_dir, logger, gene_ko_link_loc=None, download_date=None, 
@@ -192,8 +193,8 @@ def download_peptidase(output_dir='.', logger=LOGGER, verbose=True):
     save_name = path.join(output_dir, 'merops_peptidases_nr.faa')
     url = 'ftp://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
     url_http = 'https://ftp.ebi.ac.uk/pub/databases/merops/current_release/pepunit.lib'
-    download_file(url, peptidase_faa, logger, alt_urls=[url_http], verbose=verbose)
-    return peptidase_faa
+    download_file(url, save_name, logger, alt_urls=[url_http], verbose=verbose)
+    return save_name
 
 def download_vogdb(output_dir='.', logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_hmm_targz = path.join(output_dir, 'vog.hmm.tar.gz')

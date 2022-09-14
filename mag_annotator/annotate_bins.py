@@ -16,23 +16,20 @@ from os import path, mkdir, stat
 from shutil import rmtree, copy2
 import pandas as pd
 
-# TODO Exceptions are not fully handled
-# TODO Distillate sheets is part of the config, drop it
-
-
 from mag_annotator.utils import run_process, make_mmseqs_db, merge_files, \
     multigrep, remove_suffix, setup_logger, run_hmmscan, sig_scores, get_sig_row, \
     generic_hmmscan_formater, get_reciprocal_best_hits, get_best_hits, BOUTFMT6_COLUMNS
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.fasta_dup_name_test import fastas_dup_check
+
+MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb') 
+
 # TODO: add ability to take into account multiple best hits as in old_code.py
 # TODO: add silent mode
 # TODO: add abx resistance genes
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
-# TODO: add ability to handle [] in file names
-
-MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb') 
-
+# TODO Exceptions are not fully handled
+# TODO Distillate sheets is part of the config, drop it
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
     """Removes sequences shorter than a set minimum from fasta files, outputs an object or to a file"""
