@@ -23,6 +23,6 @@
     "function_heatmap_form": null,
     "amg_database": null
   },
-  "description_db": "None",
-  "dram_version": "1.4.0"
+  "description_db": null,
+  "dram_version": null
 }
