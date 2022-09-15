@@ -39,8 +39,7 @@ jobs:
           name: Run tests in enviroment
           # This assumes pytest is installed via the install-package step above
           command: |
-            git pull
-            git branch
+            ls
             pytest
             # pytest tests/test_annotate_bins.py
             # pytest tests/test_annotate_vgfs.py
