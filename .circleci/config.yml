@@ -32,14 +32,13 @@ jobs:
             conda update -y conda
             conda create -n DRAM python=3.9
             source activate DRAM
-            ls mag_annotator/
-            cat mag_annotator/CONFIG
-            conda install pandas pytest pandas pytest scikit-bio scipy==1.8.1 prodigal mmseqs2!=10.6d92c hmmer!=3.3.1 trnascan-se>=2 sqlalchemy barrnap altair>=4 openpyxl networkx ruby parallel
+            conda install pandas pytest pandas pytest scikit-bio scipy==1.8.1 prodigal mmseqs2!=10.6d92c hmmer!=3.3.1 trnascan-se>=2 sqlalchemy barrnap altair>=4 openpyxl networkx ruby parallel pip
+            pip3 install ./
       - run:
           name: Run tests in enviroment
           # This assumes pytest is installed via the install-package step above
           command: |
-            ls
+            source $HOME/miniconda/bin/activate DRAM
             pytest
             # pytest tests/test_annotate_bins.py
             # pytest tests/test_annotate_vgfs.py
