@@ -27,7 +27,7 @@ jobs:
       - run:
           name: More conda stuff
           # This assumes pytest is installed via the install-package step above
-          command: 
+          command: |
             export PATH="$HOME/miniconda/bin:$PATH"
             conda update -y conda
             conda create -n DRAM python=3.9
