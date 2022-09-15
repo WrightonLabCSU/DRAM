@@ -14,8 +14,6 @@ jobs:
       - run:
           name: Setup Miniconda
           command: |
-            apt update
-            apt install -y wget
             cd $HOME
             wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
             export MINICONDA_PREFIX="$HOME/miniconda"
