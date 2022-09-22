@@ -228,7 +228,7 @@ def etc_coverage_df():
 
 
 def test_make_etc_coverage_df(test_annotations_df, etc_module_df, etc_coverage_df, logger):
-    test_etc_coverage_df = make_etc_coverage_df(etc_module_df, test_annotations_df, logger, 'scaffold')
+    test_etc_coverage_df = make_etc_coverage_df(etc_module_df, test_annotations_df, 'scaffold')
     pd.testing.assert_frame_equal(test_etc_coverage_df, etc_coverage_df)
 
 
