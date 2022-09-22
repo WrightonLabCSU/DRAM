@@ -56,7 +56,6 @@ ID_FUNCTION_DICT = {
     'camper_id': lambda x: [x],
     'fegenie_id': lambda x: [x],
     'sulfur_id': lambda x: [x],
-    'Sulphur_id': lambda x: [x], # Legacy # Legacy of stupid
     'methyl_id': lambda x: [i.split(' ')[0].strip() for i in x.split(',')]
 }
 
