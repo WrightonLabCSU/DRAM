@@ -28,8 +28,10 @@ MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidas
 # TODO: add silent mode
 # TODO: add abx resistance genes
 # TODO: in annotated gene faa checkout out ko id for actual kegg gene id
+# TODO: add ability to handle [] in file names
 # TODO Exceptions are not fully handled
 # TODO Distillate sheets is part of the config, drop it
+
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
     """Removes sequences shorter than a set minimum from fasta files, outputs an object or to a file"""
@@ -983,7 +985,7 @@ def annotate_bins(input_fasta:list, output_dir='.', min_contig_size=2500, prodig
     fasta_locs = [j for i in input_fasta for j in glob(i)]
     mkdir(output_dir)
     if log_file_path is None:
-        log_file_path = path.join(output_dir, "Annotation.log")
+        log_file_path = path.join(output_dir, "annotate_bins.log")
     logger = logging.getLogger('annotation_log')
     setup_logger(logger, log_file_path)
     logger.info(f"The log file is created at {log_file_path}.")
@@ -996,7 +998,7 @@ def annotate_bins(input_fasta:list, output_dir='.', min_contig_size=2500, prodig
     logger.info('%s FASTAs found' % len(fasta_locs))
     # set up
     db_handler = DatabaseHandler(logger, config_loc)
-    db_handler.filter_db_locs(low_mem_mode, use_uniref, use_sulphur,
+    db_handler.filter_db_locs(low_mem_mode, use_uniref,
                               use_vogdb, master_list=MAG_DBS_TO_ANNOTATE,)
     db_conf = db_handler.get_settings_str()
     logger.info(f"Starting the Annotation of Bins with database configuration: \n {db_conf}")

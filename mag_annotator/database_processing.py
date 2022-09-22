@@ -15,11 +15,11 @@ from skbio import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix, setup_logger
+
 NUMBER_OF_VIRAL_FILES = 2
-
-
-
-DEFAULT_DBCAN_RELEASE = '11'
+# DEFAULT_DBCAN_RELEASE = '11'
+# DEFAULT_DBCAN_DATE = '08062022'
+DEFAULT_DBCAN_RELEASE = '10'
 DEFAULT_DBCAN_DATE = '07292021'
 DEFAULT_UNIREF_VERSION = '90'
 DEFAULT_VOGDB_VERSION = 'latest'
@@ -146,7 +146,7 @@ def process_kofam_hmm(kofam_profile_tar_gz, output_dir=DFLT_OUTPUT_DIR, logger=L
 
 def download_kofam_ko_list(output_dir='.', logger=LOGGER, verbose=False):
     kofam_ko_list_gz = path.join(output_dir, 'kofam_ko_list.tsv.gz')
-    url = 'ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz', 
+    url = 'ftp://ftp.genome.jp/pub/db/kofam/ko_list.gz'
     url_http = 'https://www.genome.jp/ftp/db/kofam/ko_list.gz'
     download_file(url, kofam_ko_list_gz, logger, alt_urls=[url_http], verbose=verbose)
     return kofam_ko_list_gz

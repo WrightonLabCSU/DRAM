@@ -42,6 +42,7 @@ ID_FUNCTION_DICT = {
     'kegg_hit': lambda x: [i[1:-1] for i in 
                            re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
     'peptidase_family': lambda x: [j for j in x.split(';')],
+    'cazy_ids': lambda x: [i.split('_')[0] for i in x.split('; ')],
     'cazy_id': lambda x: [i.split('_')[0] for i in x.split('; ')],
     'cazy_hits': lambda x: [f"{i[1:3]}:{i[4:-1]}" for i in 
                             re.findall(r'\(EC [\d+\.]+[\d-]\)', x)
@@ -51,7 +52,12 @@ ID_FUNCTION_DICT = {
     'cazy_subfam_ec': lambda x: [f"EC:{i}" for i in 
                                  re.findall(r'[\d+\.]+[\d-]', x)],
     'pfam_hits': lambda x: [j[1:-1].split('.')[0]
-                            for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', x)]
+                            for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', x)],
+    'camper_id': lambda x: [x],
+    'fegenie_id': lambda x: [x],
+    'sulfur_id': lambda x: [x],
+    'Sulphur_id': lambda x: [x], # Legacy # Legacy of stupid
+    'methyl_id': lambda x: [i.split(' ')[0].strip() for i in x.split(',')]
 }
 
 
@@ -61,6 +67,7 @@ def check_columns(data, logger):
     logger.info("Note: the fallowing id fields "
           f"were not in the annotations file and are not being used: {missing},"
           f" but these are {list(functions.keys())}")
+
 
 def get_ids_from_annotations_by_row(data):
     functions = {i:j for i,j in ID_FUNCTION_DICT.items() if i in data.columns}
@@ -77,8 +84,8 @@ def get_ids_from_annotations_all(data):
 
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column, logger):
-    genome_summary_id_sets = [set([k.strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
-    for genome, frame in annotations.groupby(groupby_column, sort=False):
+    genome_summary_id_sets = [set([str(k).strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
+    def fill_a_frame(frame:pd.DataFrame):
         id_dict = get_ids_from_annotations_all(frame)
         counts = list()
         for i in genome_summary_id_sets:
@@ -87,7 +94,10 @@ def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column,
                 if j in id_dict:
                     identifier_count += id_dict[j]
             counts.append(identifier_count)
-        genome_summary_frame[genome] = counts
+        return pd.Series(counts, index=genome_summary_frame.index)
+        # genome_summary_frame[genome] = counts
+    counts = annotations.groupby(groupby_column, sort=False).apply(fill_a_frame)
+    genome_summary_frame = pd.concat([genome_summary_frame, counts.T], axis=1)
     return genome_summary_frame
 
 
@@ -440,7 +450,7 @@ def get_module_coverage(module_net: nx.DiGraph, genes_present: set):
     return max_path_len, len(max_coverage_genes), max_coverage, max_coverage_genes, max_coverage_missing_genes
 
 
-def make_etc_coverage_df(etc_module_df, annotations, logger, groupby_column='fasta'):
+def make_etc_coverage_df(etc_module_df, annotations, groupby_column='fasta'):
     etc_coverage_df_rows = list()
     for _, module_row in etc_module_df.iterrows():
         definition = module_row['definition']
@@ -556,7 +566,7 @@ def fill_liquor_dfs(annotations, module_nets, etc_module_df, function_heatmap_fo
     module_coverage_frame = make_module_coverage_frame(annotations, module_nets, groupby_column)
 
     # make ETC frame
-    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations, logger, groupby_column)
+    etc_coverage_df = make_etc_coverage_df(etc_module_df, annotations, groupby_column)
 
     # make functional frame
     function_df = make_functional_df(annotations, function_heatmap_form, logger, groupby_column)
@@ -631,7 +641,9 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     if 'bin_taxnomy' in annotations:
         annotations = annotations.sort_values('bin_taxonomy')
 
+    # Check the columns are present
     check_columns(annotations, logger)
+
     if trna_path is None:
         trna_frame = None
     else:
@@ -716,15 +728,17 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
                                          genomes, labels)
             liquor.save(path.join(output_dir, 'product_%s.html' % i))
         liquor_df = make_liquor_df(pd.concat(module_coverage_dfs), pd.concat(etc_coverage_dfs), pd.concat(function_dfs))
-        liquor_df.to_csv(path.join(output_dir, 'product.tsv'), sep='\t')
     else:
-        module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(annotations, module_nets,
-                                                                           etc_module_df,
-                                                                           function_heatmap_form,
-                                                                           logger,
-                                                                           groupby_column=groupby_column)
+        module_coverage_df, etc_coverage_df, function_df = fill_liquor_dfs(
+            annotations,
+            module_nets,
+            etc_module_df,
+            function_heatmap_form,
+            logger,
+            groupby_column=groupby_column)
         liquor_df = make_liquor_df(module_coverage_df, etc_coverage_df, function_df)
         liquor = make_liquor_heatmap(module_coverage_df, etc_coverage_df, function_df, genome_order, None)
         liquor.save(path.join(output_dir, 'product.html'))
+    liquor_df.to_csv(path.join(output_dir, 'product.tsv'), sep='\t')
     logger.info('Generated product heatmap and table')
     logger.info("Completed distillation")

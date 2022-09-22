@@ -64,13 +64,6 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
                                  help='Annotate these fastas against UniRef, drastically increases'
                                       ' run time and memory requirements')
-    # annotate_parser.add_argument('--use_camper', action='store_true', default=False,
-    #                        help="Annotate these fastas against the CAMPER dataset to study polyphenol metabolism")
-    # annotate_parser.add_argument('--use_fegenie', action='store_true', default=False,
-    #                        help="Annotate these fastas against the FeGenie dataset to study iron metabolism")
-    # annotate_parser.add_argument('--low_mem_mode', action='store_true', default=False,
-    #                              help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
-    #                                   'provided. Drastically decreases memory usage')
     annotate_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                  help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
                                       'provided. Drastically decreases memory usage')
@@ -91,6 +84,8 @@ if __name__ == '__main__':
                                 help="Do not consider genes on scaffolds with transposons as potential AMGs")
     distill_parser.add_argument("--remove_fs", default=False, action='store_true',
                                 help="Do not consider genes near ends of scaffolds as potential AMGs")
+    distill_parser.add_argument('--log_file_path', 
+                                       help="A name and loctation for the log file")
     # distill_parser.add_argument("--remove_js", default=False, action='store_true',
     #                             help="Do not consider genes on possible non-viral contigs as potential AMGs")
     distill_parser.add_argument("--custom_distillate", help="Custom distillate form to add your own modules")
@@ -158,4 +153,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args_dict = {i: j for i, j in vars(args).items() if i != 'func'}
     args.func(**args_dict)
-

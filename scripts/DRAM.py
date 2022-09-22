@@ -75,12 +75,6 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--use_uniref', action='store_true', default=False,
                                  help='Annotate these fastas against UniRef, drastically increases run time and memory '
                                       'requirements')
-    annotate_parser.add_argument('--use_camper', action='store_true', default=False,
-                                 help="Annotate these fastas against the CAMPER dataset to study polyphenol metabolism")
-    annotate_parser.add_argument('--use_fegenie', action='store_true', default=False,
-                                 help="Annotate these fastas against the FeGenie dataset to study iron metabolism")
-    annotate_parser.add_argument('--use_sulphur', action='store_true', default=False,
-                                 help="Annotate these fastas against the Sulphur dataset to study sulphur metabolism")
     annotate_parser.add_argument('--use_vogdb', action='store_true', default=False,
                                  help='Annotate these fastas against VOGDB, drastically decreases run time')
     annotate_parser.add_argument('--low_mem_mode', action='store_true', default=False,
@@ -121,12 +115,6 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,
                                        help='Annotate these fastas against UniRef, drastically increases run time and '
                                             'memory requirements')
-    annotate_genes_parser.add_argument('--use_camper', action='store_true', default=False,
-                                 help="Annotate these fastas against the CAMPER dataset to study polyphenol metabolism")
-    annotate_genes_parser.add_argument('--use_fegenie', action='store_true', default=False,
-                                 help="Annotate these fastas against the FeGenie dataset to study iron metabolism")
-    annotate_genes_parser.add_argument('--use_sulphur', action='store_true', default=False,
-                                 help="Annotate these fastas against the Sulphur dataset to study sulphur metabolism")
     annotate_genes_parser.add_argument('--use_vogdb', action='store_true', default=False,
                                  help='Annotate these fastas against VOGDB, drastically decreases run time')
     annotate_genes_parser.add_argument('--low_mem_mode', action='store_true', default=False,

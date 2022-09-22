@@ -359,10 +359,11 @@ class DatabaseHandler:
                 datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.logger.info(f'Description updated for the {db_name} database')
         # fill database
-        mmseqs_database= ['kegg', 'uniref',  'viral', 'peptidase']
+        mmseqs_database = ['kegg', 'uniref',  'viral', 'peptidase']
         process_functions = {i:partial(self.make_header_dict_from_mmseqs_db, 
                                        self.config['search_databases'][i]) 
-                             for i in mmseqs_database}
+                             for i in mmseqs_database
+                             if self.config['search_databases'][i] is not None}
         # Use table names
         process_functions.update({
             'pfam': partial(self.process_pfam_descriptions,
