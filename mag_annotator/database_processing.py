@@ -17,27 +17,114 @@ from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix, setup_logger
 
 NUMBER_OF_VIRAL_FILES = 2
-# DEFAULT_DBCAN_RELEASE = '11'
-# DEFAULT_DBCAN_DATE = '08062022'
-DEFAULT_DBCAN_RELEASE = '10'
-DEFAULT_DBCAN_DATE = '07292021'
+DEFAULT_DBCAN_RELEASE = '11'
+DEFAULT_DBCAN_DATE = '08062022'
 DEFAULT_UNIREF_VERSION = '90'
 DEFAULT_VOGDB_VERSION = 'latest'
 DFLT_OUTPUT_DIR = '.'
 LOGGER = logging.getLogger("database_processing.log")
 DEFAULT_MMMSPRO_DB_NAME = 'db'
 
-KEGG_CITATION = "Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M., and Tanabe, M.; KEGG: integrating viruses and cellular organisms. Nucleic Acids Res. 49, D545-D551 (2021)."
-GENE_KO_LINK_CITATION = ""
-KOFAM_CITATION = ""
-UNIREF_CITATION = ""
-PFAM_CITATION = ""
-DBCAN_CITATION = ""
-VOGDB_CITATION = ""
-VIRAL_REFSEQ_CITATION = ""
-PEPTIDASE_CITATION = "" 
-DRAM_CITATION = "" 
-# TODO: check if dbcan or pfam is down, raise appropriate error
+
+# KOFAM_CITATION = ("Aramaki T., Blanc-Mathieu R., Endo H., Ohkubo K., Kanehisa "
+#                   "M., Goto S., Ogata H.\nKofamKOALA: KEGG ortholog assignment"
+#                   " based on profile HMM and adaptive score threshold.\nBioinf"
+#                   "ormatics. 2019 Nov 19. pii: btz859. doi: 10.1093/bioinforma"
+#                   "tics/btz859."
+#                   ) # arguably not for kofam but the closest I saw
+# VIRAL_REFSEQ_CITATION = ("Brister JR, Ako-Adjei D, Bao Y, Blinkova O. NCBI vir"
+#                          "al genomes resource. Nucleic Acids Res. 2015 Jan;43("
+#                          "Database issue):D571-7 PubMed PubMedCentral"
+#                          ) # Three options but this one is viral specific
+# KEGG_CITATION = ("Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M."
+#                  ", and Tanabe, M.; KEGG: integrating viruses and cellular org"
+#                  "anisms. Nucleic Acids Res. 49, D545-D551 (2021)."
+#                  )
+# PFAM_CITATION = ("Pfam: The protein families database in 2021: J. Mistry, S. C"
+#                  "huguransky, L. Williams, M. Qureshi, G.A. Salazar, E.L.L. So"
+#                  "nnhammer, S.C.E. Tosatto, L. Paladin, S. Raj, L.J. Richardso"
+#                  "n, R.D. Finn, A. Bateman"
+#                  )
+# PEPTIDASE_CITATION = ("Rawlings, N.D., Barrett, A.J., Thomas, P.D., Huang, X.,"
+#                       " Bateman, A. & Finn, R.D. (2018) The MEROPS database of"
+#                       " proteolytic enzymes, their substrates and inhibitors i"
+#                       "n 2017 and a comparison with peptidases in the PANTHER "
+#                       "database. Nucleic Acids Res 46, D624-D632."
+#                       )
+# VOGDB_CITATION = ("Thannesberger, J., Hellinger, H. J., Klymiuk, I., Kastner, M"
+#                   ". T., Rieder, F. J., Schneider, M., ... & Steininger, C. (20"
+#                   "17). Viruses comprise an extensive pool of mobile genetic el"
+#                   "ements in eukaryote cell cultures and human clinical samples"
+#                   ". The FASEB Journal, 31(5), 1987-2000."
+#                   )
+# UNIREF_CITATION = ("Wang Y, Wang Q, Huang H, Huang W, Chen Y, McGarvey PB, Wu C"
+#                    "H, Arighi CN, UniProt Consortium. A crowdsourcing open plat"
+#                    "form for literature curation in UniProt Plos Biology. 19(12"
+#                    "):e3001464 (2021)"
+#                    )
+# DBCAN_CITATION = ("Yin Y*, Mao X*, Yang JC, Chen X, Mao F and Xu Y, dbCAN: a we"
+#                   "b resource for automated carbohydrate-active enzyme annotati"
+#                   "on, Nucleic Acids Res. 2012 Jul;40(Web Server issue):W445-51"
+#                   ) # again a citation for the tool not the db
+# DRAM_CITATION = ("M. Shaffer, M. A. Borton, B. B. McGivern, A. A. Zayed, S. L. "
+#                  "La Rosa, L. M. Solden, P. Liu, A. B. Narrowe, J. Rodríguez-Ra"
+#                  "mos, B. Bolduc et al., \"Dram for distilling microbial metabo"
+#                  "lism to automate the curation of microbiome function,\" Nucle"
+#                  "ic acids research, vol. 48, no. 16, pp. 8883–8900, 2020."
+#                  )
+
+
+VIRAL_REFSEQ_CITATION = ("T. Aramaki, R. Blanc-Mathieu, H. Endo, K. Ohkubo, M. "
+                         "Kanehisa, S. Goto, and H. Ogata, \"Kofamkoala: Kegg o"
+                         "rtholog assignment based on profile hmm and adaptive "
+                         "score threshold,\" Bioinformatics, vol. 36, no. 7, pp"
+                         ". 2251–2252, 2020."
+                         )
+KEGG_CITATION = ("J. R. Brister, D. Ako-Adjei, Y. Bao, and O. Blinkova, \"Ncbi "
+                 "viral genomes resource,\" Nucleic acids research, vol. 43, no"
+                 ". D1, pp. D571–D577, 2015. [3] M. Kanehisa, M. Furumichi, Y. "
+                 "Sato, M. Ishiguro-Watanabe, and M. Tan-abe, \"Kegg: integrati"
+                 "ng viruses and cellular organisms,\" Nucleic acids research, "
+                 "vol. 49, no. D1, pp. D545–D551, 2021."
+                 )
+PFAM_CITATION = ("J. Mistry, S. Chuguransky, L. Williams, M. Qureshi, G. A. Sal"
+                 "azar, E. L. Sonnhammer, S. C. Tosatto, L. Paladin, S. Raj, L."
+                 " J. Richardson et al., \"Pfam: The protein families database "
+                 "in 2021,\" Nucleic acids research, vol. 49, no. D1, pp. D412–"
+                 "D419, 2021."
+                 )
+PEPTIDASE_CITATION = ("N. D. Rawlings, A. J. Barrett, P. D. Thomas, X. Huang, A"
+                      ". Bateman, and R. D. Finn, \"The merops database of prot"
+                      "eolytic enzymes, their substrates and inhibitors in 2017"
+                      " and a comparison with peptidases in the panther databas"
+                      "e,\" Nucleic acids research, vol. 46, no. D1, pp. D624–D"
+                      "632, 2018."
+                      )
+VOGDB_CITATION = ("J. Thannesberger, H.-J. Hellinger, I. Klymiuk, M.-T. Kastner"
+                  ", F. J. Rieder, M. Schneider, S. Fister, T. Lion, K. Kosulin"
+                  ", J. Laengle et al., \"Viruses comprise an extensive pool of"
+                  " mobile genetic elements in eukaryote cell cultures and huma"
+                  "n clinical samples,\" The FASEB Journal, vol. 31, no. 5, pp."
+                  " 1987–2000, 2017."
+                  )
+UNIREF_CITATION = ("Y. Wang, Q. Wang, H. Huang, W. Huang, Y. Chen, P. B. McGarv"
+                  "ey, C. H. Wu, C. N. Arighi, and U. Consortium, \"A crowdsour"
+                  "cing open platform for literature curation in uniprot,\" PLo"
+                  "S Biology, vol. 19, no. 12, p. e3001464, 2021."
+                   )
+DBCAN_CITATION = ("Y. Yin, X. Mao, J. Yang, X. Chen, F. Mao, and Y. Xu, \"dbcan"
+                  ": a web resource for automated carbohydrate-active enzyme an"
+                  "notation,\" Nucleic acids research, vol. 40, no. W1, pp. W44"
+                  "5–W451, 2012."
+                  )
+DRAM_CITATION = ("M. Shaffer, M. A. Borton, B. B. McGivern, A. A. Zayed, S. L. "
+                 "La Rosa, L. M. Solden, P. Liu, A. B. Narrowe, J. Rodríguez-Ra"
+                 "mos, B. Bolduc et al., \"Dram for distilling microbial metabo"
+                 "lism to automate the curation of microbiome function,\" Nucle"
+                 "ic acids research, vol. 48, no. 16, pp. 8883–8900, 2020."
+                 )
+# check 
+# if dbcapfam is down, raise appropriate error
 # TODO: upgrade to pigz?
 
 

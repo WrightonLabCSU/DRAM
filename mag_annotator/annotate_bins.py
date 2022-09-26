@@ -985,7 +985,7 @@ def annotate_bins(input_fasta:list, output_dir='.', min_contig_size=2500, prodig
     fasta_locs = [j for i in input_fasta for j in glob(i)]
     mkdir(output_dir)
     if log_file_path is None:
-        log_file_path = path.join(output_dir, "annotate_bins.log")
+        log_file_path = path.join(output_dir, "annotate.log")
     logger = logging.getLogger('annotation_log')
     setup_logger(logger, log_file_path)
     logger.info(f"The log file is created at {log_file_path}.")
@@ -1092,7 +1092,7 @@ def perform_fasta_checks(fasta_locs, logger):
             raise ValueError('Genome file names must be unique. At least one name appears twice in this search.')
         fastas_dup_check(fasta_locs, '>')
     except ValueError as error:
-        logging.critical(error)
+        logger.critical(error)
         raise error
     logger.info("No duplicate names found")
 
@@ -1105,7 +1105,7 @@ def annotate_called_genes(fasta_locs, output_dir='.', bit_score_threshold=60, rb
 
     # Get a logger
     if log_file_path is None:
-        log_file_path = path.join(output_dir, "Annotation.log")
+        log_file_path = path.join(output_dir, "annotate.log")
     logger = logging.getLogger('annotation_log')
     setup_logger(logger, log_file_path)
     logger.info(f"The log file is created at {log_file_path}")
@@ -1215,8 +1215,8 @@ def merge_annotations_cmd(input_dirs, output_dir):
     mkdir(output_dir)
     # Get a logger
     annotations_list = list()
-    log_file_path = path.join(output_dir, "Annotation.log")
-    logger = logging.getLogger('annotation_log')
+    log_file_path = path.join(output_dir, "annotation.log")
+    logger = logging.getLogger('annotate.log')
     setup_logger(logger, log_file_path)
     logger.info(f"The log file is created at {log_file_path}")
 
