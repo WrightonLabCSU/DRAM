@@ -74,18 +74,23 @@ DEFAULT_MMMSPRO_DB_NAME = 'db'
 #                  )
 
 
-VIRAL_REFSEQ_CITATION = ("T. Aramaki, R. Blanc-Mathieu, H. Endo, K. Ohkubo, M. "
-                         "Kanehisa, S. Goto, and H. Ogata, \"Kofamkoala: Kegg o"
-                         "rtholog assignment based on profile hmm and adaptive "
-                         "score threshold,\" Bioinformatics, vol. 36, no. 7, pp"
-                         ". 2251–2252, 2020."
-                         )
-KEGG_CITATION = ("J. R. Brister, D. Ako-Adjei, Y. Bao, and O. Blinkova, \"Ncbi "
-                 "viral genomes resource,\" Nucleic acids research, vol. 43, no"
-                 ". D1, pp. D571–D577, 2015. [3] M. Kanehisa, M. Furumichi, Y. "
-                 "Sato, M. Ishiguro-Watanabe, and M. Tan-abe, \"Kegg: integrati"
-                 "ng viruses and cellular organisms,\" Nucleic acids research, "
-                 "vol. 49, no. D1, pp. D545–D551, 2021."
+KOFAM_CITATION = ("T. Aramaki, R. Blanc-Mathieu, H. Endo, K. Ohkubo, M. Kanehisa"
+                  ", S. Goto, and H. Ogata, \"Kofamkoala: Kegg ortholog assignme"
+                  "nt based on profile hmm and adaptive score threshold,\" Bioin"
+                  "formatics, vol. 36, no. 7, pp. 2251–2252, 2020."
+                  )
+VIRAL_REFSEQ_CITATION = ("J. R. Brister, D. Ako-Adjei, Y. Bao, and O. Blinkova, "
+                         "\"Ncbi viral genomes resource,\" Nucleic acids researc"
+                         "h, vol. 43, no. D1, pp. D571–D577, 2015. [3] M. Kanehi"
+                         "sa, M. Furumichi, Y. Sato, M. Ishiguro-Watanabe, and M"
+                         ". Tan-abe, \"Kegg: integrating viruses and cellular or"
+                         "ganisms,\" Nucleic acids research, vol. 49, no. D1, pp"
+                         ". D545–D551, 2021."
+                 )
+KEGG_CITATION = (" M. Kanehisa, M. Furumichi, Y. Sato, M. Ishiguro-Watanabe, and"
+                 " M. Tanabe, \"Kegg: integrating viruses and cellular organisms"
+                 ",\" Nucleic acids research, vol. 49, no. D1, pp. D545–D551, 20"
+                 "21."
                  )
 PFAM_CITATION = ("J. Mistry, S. Chuguransky, L. Williams, M. Qureshi, G. A. Sal"
                  "azar, E. L. Sonnhammer, S. C. Tosatto, L. Paladin, S. Raj, L."
@@ -614,8 +619,6 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
             db_handler.set_database_paths(**{f"{k}_loc":v})
             db_handler.write_config()
             LOGGER.info(f'Moved {k} to final destination, configuration updated')
-            
-
 
     LOGGER.info('Populating the description db, this may take some time')
     db_handler.config['description_db'] = path.realpath(path.join(output_dir, 'description_db.sqlite'))

@@ -24,13 +24,8 @@ from mag_annotator.fasta_dup_name_test import fastas_dup_check
 
 MAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'vogdb') 
 
-# TODO: add ability to take into account multiple best hits as in old_code.py
-# TODO: add silent mode
-# TODO: add abx resistance genes
-# TODO: in annotated gene faa checkout out ko id for actual kegg gene id
-# TODO: add ability to handle [] in file names
-# TODO Exceptions are not fully handled
-# TODO Distillate sheets is part of the config, drop it
+# TODO: Bind verbose to logging
+# TODO Exceptions are not fully handled by logging
 
 
 def filter_fasta(fasta_loc, min_len=5000, output_loc=None):
