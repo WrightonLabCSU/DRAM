@@ -18,4 +18,3 @@ dependencies:
   - networkx
   - ruby
   - parallel
-  - dram

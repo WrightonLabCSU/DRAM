@@ -2,7 +2,7 @@
 
 import argparse
 
-from mag_annotator.annotate_bins import annotate_bins_cmd, annotate_called_genes_cmd, merge_annotations_cmd
+from mag_annotator.annotate_bins import annotate_bins, annotate_called_genes_cmd, merge_annotations_cmd
 from mag_annotator.summarize_genomes import summarize_genomes
 from mag_annotator.pull_sequences import pull_sequences, get_gene_neighborhoods
 
@@ -35,6 +35,9 @@ if __name__ == '__main__':
     annotate_parser.add_argument('-o', '--output_dir', help="output directory")
     annotate_parser.add_argument('--min_contig_size', type=int, default=2500,
                                  help='minimum contig size to be used for gene prediction')
+    annotate_parser.add_argument('--config_loc', default=None,
+                                       help='location of an alternive config file that will over write the original at run time,'
+                                       ' but not be saved or modified')
     prodigal_mode_choices = ['train', 'meta', 'single']
     annotate_parser.add_argument('--prodigal_mode', type=str, default='meta', choices=prodigal_mode_choices,
                                  help='Mode of prodigal to use for gene calling. NOTE: normal or single mode require '
@@ -81,12 +84,14 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_parser.add_argument('--verbose', action='store_true', default=False)
-    annotate_parser.set_defaults(func=annotate_bins_cmd)
+    annotate_parser.set_defaults(func=annotate_bins)
 
     # parser for annotating already called genes
     annotate_genes_parser.add_argument('-i', '--input_faa', help="fasta file, optionally with wildcards to point to "
                                                                  "individual MAGs", required=True)
-    annotate_genes_parser.add_argument('-o', '--output_dir', help="output directory")
+    annotate_genes_parser.add_argument('-o', '--output_dir', help="output directory", required=True)
+    annotate_genes_parser.add_argument('--log_file_path', 
+                                       help="A name and loctation for the log file")
     annotate_genes_parser.add_argument('--bit_score_threshold', type=int, default=60,
                                        help='minimum bitScore of search to retain hits')
     annotate_genes_parser.add_argument('--rbh_bit_score_threshold', type=int, default=350,
@@ -110,9 +115,14 @@ if __name__ == '__main__':
     annotate_genes_parser.add_argument('--use_uniref', action='store_true', default=False,
                                        help='Annotate these fastas against UniRef, drastically increases run time and '
                                             'memory requirements')
+    annotate_genes_parser.add_argument('--use_vogdb', action='store_true', default=False,
+                                 help='Annotate these fastas against VOGDB, drastically decreases run time')
     annotate_genes_parser.add_argument('--low_mem_mode', action='store_true', default=False,
                                        help='Skip annotating with uniref and use kofam instead of KEGG genes even if '
                                             'provided. Drastically decreases memory usage')
+    annotate_genes_parser.add_argument('--config_loc', default=None,
+                                       help='location of an alternive config file that will over write the original at run time,'
+                                       ' but not be saved or modified')
     annotate_genes_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_genes_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_genes_parser.add_argument('--verbose', action='store_true', default=False)
@@ -121,6 +131,8 @@ if __name__ == '__main__':
     # parser for summarizing genomes
     distill_parser.add_argument("-i", "--input_file", help="Annotations path")
     distill_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
+    distill_parser.add_argument('--log_file_path', 
+                                       help="A name and loctation for the log file")
     distill_parser.add_argument("--rrna_path", help="rRNA output from annotation")
     distill_parser.add_argument("--trna_path", help="tRNA output from annotation")
     distill_parser.add_argument("--groupby_column", help="Column from annotations to group as organism units",
@@ -136,7 +148,10 @@ if __name__ == '__main__':
 
     # parser for getting genes
     input_group = strainer_parser.add_argument_group('Input and output files')
-    input_group.add_argument('-i', '--input_annotations', required=True, help='annotations file to pull genes from')
+    input_group.add_argument('-i', '--input_tsv', required=True, help="annotations file"
+                             " to pull genes from")
+    input_group.add_argument('--adjective_sheet', required=False, help='Output tsv file for strainer.'
+                             ' Use with the genes faa')
     input_group.add_argument('-f', '--input_fasta', required=True, help='fasta file to filter')
     input_group.add_argument('-o', '--output_fasta', default='pull_genes.fasta',
                              help='location to write filtered fasta')

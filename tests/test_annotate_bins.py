@@ -2,48 +2,26 @@ import pytest
 
 import os
 from io import StringIO
-from datetime import datetime
+import logging
 from functools import partial
 from filecmp import cmp
 import time
 from shutil import copy
 
 import pandas as pd
+import numpy as np
 from skbio.io import read as read_sequence
 
-from mag_annotator.utils import make_mmseqs_db
-from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.database_setup import DbcanDescription, create_description_db
+from mag_annotator.utils import make_mmseqs_db, parse_hmmsearch_domtblout, setup_logger
 from mag_annotator.annotate_bins import filter_fasta, run_prodigal, get_best_hits, \
     get_reciprocal_best_hits, process_reciprocal_best_hits, get_kegg_description, get_uniref_description, \
     get_basic_description, get_peptidase_description, get_sig_row, get_gene_data, get_unannotated, assign_grades, \
     generate_annotated_fasta, create_annotated_fasta, generate_renamed_fasta, rename_fasta, run_trna_scan, \
     run_barrnap, do_blast_style_search, count_motifs, strip_endings, process_custom_dbs, get_dups, \
-    parse_hmmsearch_domtblout, annotate_gff, make_gbk_from_gff_and_fasta, make_trnas_interval, make_rrnas_interval,\
-    add_intervals_to_gff, vogdb_hmmscan_formater, generic_hmmscan_formater, dbcan_hmmscan_formater, \
+    annotate_gff, make_gbk_from_gff_and_fasta, make_trnas_interval, make_rrnas_interval,\
+    add_intervals_to_gff, vogdb_hmmscan_formater, dbcan_hmmscan_formater, \
     kofam_hmmscan_formater
 
-
-
-@pytest.fixture()
-def db_handler():
-    return DatabaseHandler(path.join('tests', 'data', 'test_CONFIG'))
-
-
-@pytest.fixture()
-def db_handler_with_dbcan(tmpdir):
-    db_handler = DatabaseHandler(os.path.join('tests', 'data', 'test_CONFIG'))
-    test_db = os.path.join(tmpdir.mkdir('test_db'), 'test_db.sqlite')
-    create_description_db(test_db)
-    db_handler.description_loc = test_db
-    db_handler.start_db_session()
-    dbcan_entries = [{'id': 'GT4', 'description': 'The first description'},
-                     {'id': 'GT5', 'description': 'The second description'},
-                     {'id': 'GH1', 'description': 'A lone description'},
-                     ]
-    db_handler.add_descriptions_to_database(dbcan_entries, 'dbcan_description')
-    #assert len(db_handler.session.query(DbcanDescription).all()) == 3
-    return db_handler
 
 
 @pytest.fixture()
@@ -51,21 +29,11 @@ def fasta_loc():
     return os.path.join('tests', 'data', 'NC_001422.fasta')
 
 
-def test_dbcan_hmmscan_formater(db_handler_with_dbcan):
-    # TODO can we test with db-handler?
-    output_expt = pd.DataFrame({
-        "bin_1.scaffold_1": ["GT4; GT5", 'The first description; The second description'],
-        "bin_1.scaffold_2": ["GH1", 'A lone description']}, 
-                               index=["cazy_id", "cazy_hits"]).T
-    input_b6 = os.path.join('tests', 'data', 'unformatted_cazy.b6')
-    hits = parse_hmmsearch_domtblout(input_b6)
-    output_rcvd = dbcan_hmmscan_formater(hits=hits, db_name='cazy', 
-                                         db_handler=db_handler_with_dbcan)
-    #hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
-    # output_rcvd
-    output_rcvd.sort_index(inplace=True)
-    output_expt.sort_index(inplace=True)
-    assert output_rcvd.equals(output_expt), "Error in dbcan_hmmscan_formater"
+@pytest.fixture()
+def logger(tmpdir):
+    logger = logging.getLogger('test_log')
+    setup_logger(logger)
+    return logger
 
 def test_filter_fasta(fasta_loc, tmpdir):
     filtered_seq_5000 = filter_fasta(fasta_loc, min_len=5000)
@@ -79,9 +47,9 @@ def test_filter_fasta(fasta_loc, tmpdir):
 
 
 @pytest.fixture()
-def prodigal_dir(fasta_loc, tmpdir):
+def prodigal_dir(fasta_loc, tmpdir, logger):
     prodigal_output = tmpdir.mkdir('prodigal_output')
-    gff, fna, faa = run_prodigal(fasta_loc, str(prodigal_output))
+    gff, fna, faa = run_prodigal(fasta_loc, str(prodigal_output), logger)
     return gff, fna, faa
 
 
@@ -113,9 +81,9 @@ def mmseqs_db_dir(tmpdir):
 
 
 @pytest.fixture()
-def mmseqs_db(prodigal_faa, mmseqs_db_dir):
+def mmseqs_db(prodigal_faa, mmseqs_db_dir, logger):
     output_file = str(mmseqs_db_dir.join('mmseqs_db.mmsdb'))
-    make_mmseqs_db(prodigal_faa, output_file, True, 1)
+    make_mmseqs_db(prodigal_faa, output_file, logger, True, 1)
     return output_file
 
 
@@ -125,15 +93,15 @@ def phix_proteins():
 
 
 @pytest.fixture()
-def target_mmseqs_db(mmseqs_db_dir, phix_proteins):
+def target_mmseqs_db(mmseqs_db_dir, phix_proteins, logger):
     output_file = str(mmseqs_db_dir.join('target.mmsdb'))
-    make_mmseqs_db(phix_proteins, output_file, True, 1)
+    make_mmseqs_db(phix_proteins, output_file, logger, True, 1)
     return output_file
 
 
 @pytest.fixture()
-def best_hits_loc(mmseqs_db, target_mmseqs_db, mmseqs_db_dir):
-    best_hits_loc = get_best_hits(mmseqs_db, target_mmseqs_db, mmseqs_db_dir, threads=1, verbose=False)
+def best_hits_loc(mmseqs_db, target_mmseqs_db, mmseqs_db_dir, logger):
+    best_hits_loc = get_best_hits(mmseqs_db, target_mmseqs_db, logger, mmseqs_db_dir,threads=1, verbose=False)
     return best_hits_loc
 
 
@@ -142,9 +110,10 @@ def test_get_best_hits(best_hits_loc):
 
 
 @pytest.fixture()
-def reverse_best_hits_loc(best_hits_loc, mmseqs_db, target_mmseqs_db, mmseqs_db_dir):
-    reverse_best_hits_loc = get_reciprocal_best_hits(mmseqs_db, target_mmseqs_db, mmseqs_db_dir, threads=1,
-                                                     verbose=False)
+def reverse_best_hits_loc(best_hits_loc, mmseqs_db, target_mmseqs_db, mmseqs_db_dir, logger):
+    reverse_best_hits_loc = get_reciprocal_best_hits(
+        mmseqs_db, target_mmseqs_db, logger, mmseqs_db_dir, threads=1,
+        verbose=False)
     return reverse_best_hits_loc
 
 
@@ -158,6 +127,20 @@ def processed_hits():
     reverse = os.path.join('tests', 'data', 'target_query_hits.b6')
     processed_hits = process_reciprocal_best_hits(forward, reverse)
     return processed_hits
+
+def test_dbcan_hmmscan_formater():
+    # TODO can we test with db-handler?
+    output_expt = pd.DataFrame({"bin_1.scaffold_1": ["GT4; GT5", "GT5.hmm"],
+                           "bin_1.scaffold_2": ["GH1", "GH1.hmm"]}, index=["cazy_ids", "cazy_best_hit"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_cazy.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = dbcan_hmmscan_formater(hits=hits, db_name='cazy')
+    #hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    # output_rcvd
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in dbcan_hmmscan_formater"
+
 
 
 def test_process_reciprocal_best_hits(processed_hits):
@@ -298,9 +281,9 @@ def test_get_unannotated(phix_proteins):
 def test_assign_grades():
     annotations_data = [[True, 'K00001', False, 'KOER09234OK', ['PF00001']],
                         [False, 'K00002', True, 'KLODKJFSO234KL', ['PF01234']],
-                        [False, 'K00003', False, 'EIORWU234KLKDS', pd.np.NaN],
-                        [False, pd.np.NaN, False, pd.np.NaN, pd.np.NaN],
-                        [False, pd.np.NaN, False, pd.np.NaN, ['PF01235']]]
+                        [False, 'K00003', False, 'EIORWU234KLKDS', np.NaN],
+                        [False, np.NaN, False, np.NaN, np.NaN],
+                        [False, np.NaN, False, np.NaN, ['PF01235']]]
     annotations = pd.DataFrame(annotations_data, index=['gene1', 'gene2', 'gene3', 'gene4', 'gene5'],
                                columns=['kegg_RBH', 'kegg_hit', 'uniref_RBH', 'uniref_hit', 'pfam_hits'])
     test_grades = assign_grades(annotations)
@@ -312,9 +295,9 @@ def test_assign_grades():
     # test no uniref
     annotations_data2 = [[True, 'K00001', ['PF00001']],
                          [False, 'K00002', ['PF01234']],
-                         [False, 'K00003', pd.np.NaN],
-                         [False, pd.np.NaN, pd.np.NaN],
-                         [False, pd.np.NaN, ['PF01235']]]
+                         [False, 'K00003', np.NaN],
+                         [False, np.NaN, np.NaN],
+                         [False, np.NaN, ['PF01235']]]
     annotations2 = pd.DataFrame(annotations_data2, index=['gene1', 'gene2', 'gene3', 'gene4', 'gene5'],
                                 columns=['kegg_RBH', 'kegg_hit', 'pfam_hits'])
     test_grades2 = assign_grades(annotations2)
@@ -402,23 +385,22 @@ def test_rename_fasta(fasta_loc, tmpdir):
     assert os.path.isfile(filt_fasta)
 
 
-def test_run_trna_scan(tmpdir):
+def test_run_trna_scan(tmpdir, logger):
     filt_fasta = tmpdir.mkdir('test_trnascan1')
-    no_trna = run_trna_scan(os.path.join('tests', 'data', 'e_coli_16S.fasta'), str(filt_fasta), 'no_trnas',
-                            threads=1, verbose=False)
+    no_trna = run_trna_scan(os.path.join('tests', 'data', 'e_coli_16S.fasta'), 
+                            str(filt_fasta), 'no_trnas', logger, threads=1, verbose=False)
     assert no_trna is None
 
     filt_fasta = tmpdir.mkdir('test_trnascan2')
     trnas_loc = os.path.join('tests', 'data', 'trnas.fa')
-    trnas = run_trna_scan(trnas_loc, str(filt_fasta), 'phiX', threads=1, verbose=False)
+    trnas = run_trna_scan(trnas_loc, str(filt_fasta), 'phiX', logger, threads=1, verbose=False)
     assert trnas.shape == (6, 9)
 
 
-def test_run_barrnap(fasta_loc):
-    no_rrnas = run_barrnap(fasta_loc, 'phiX', threads=1, verbose=False)
+def test_run_barrnap(fasta_loc, logger):
+    no_rrnas = run_barrnap(fasta_loc, 'phiX', logger, threads=1, verbose=False)
     assert no_rrnas is None
-
-    rrna_table = run_barrnap(os.path.join('tests', 'data', 'e_coli_16S.fasta'), 'coli', threads=1, verbose=False)
+    rrna_table = run_barrnap(os.path.join('tests', 'data', 'e_coli_16S.fasta'), 'coli', logger, threads=1, verbose=False)
     assert rrna_table.shape == (1, 8)
     assert rrna_table.loc[0, 'type'] == '16S rRNA'
     assert rrna_table.loc[0, 'fasta'] == 'coli'
@@ -433,12 +415,13 @@ class FakeDatabaseHandler:
         return []
 
 
-def test_do_blast_style_search(mmseqs_db, target_mmseqs_db, tmpdir):
+def test_do_blast_style_search(mmseqs_db, target_mmseqs_db, tmpdir, logger):
     database_handler = FakeDatabaseHandler()
     working_dir = tmpdir.mkdir('test_blast_search')
     get_fake_description = partial(get_basic_description, db_name='fake')
-    do_blast_style_search(mmseqs_db, target_mmseqs_db, str(working_dir), database_handler, get_fake_description,
-                          datetime.now(), db_name='fake', threads=1)
+    do_blast_style_search(mmseqs_db, target_mmseqs_db, str(working_dir),
+                          database_handler, get_fake_description, logger,
+                          db_name='fake', threads=1)
 
 
 def test_count_motifs(phix_proteins):
@@ -454,14 +437,14 @@ def test_strip_endings():
     assert strip_endings('123456', ['.efg', '.jkl']) == '123456'
 
 
-def test_process_custom_dbs(phix_proteins, tmpdir):
+def test_process_custom_dbs(phix_proteins, tmpdir, logger):
     custom_db_dir = tmpdir.mkdir('custom_dbs')
-    process_custom_dbs([phix_proteins], ['phix'], os.path.join(custom_db_dir, 'custom_dbs0'))
+    process_custom_dbs([phix_proteins], ['phix'], os.path.join(custom_db_dir, 'custom_dbs0'), logger)
     assert os.path.isfile(os.path.join(custom_db_dir, 'custom_dbs0', 'phix.custom.mmsdb'))
-    process_custom_dbs(None, None, os.path.join(custom_db_dir, 'custom_dbs1'))
+    process_custom_dbs(None, None, os.path.join(custom_db_dir, 'custom_dbs1'), logger)
     assert len(os.listdir(os.path.join(custom_db_dir, 'custom_dbs1'))) == 0
     with pytest.raises(ValueError):
-        process_custom_dbs(['thing1', 'thing2'], ['thing1'], os.path.join(custom_db_dir, 'custom_dbs2'))
+        process_custom_dbs(['thing1', 'thing2'], ['thing1'], os.path.join(custom_db_dir, 'custom_dbs2'), logger)
 
 
 def test_get_dubs():
@@ -488,13 +471,13 @@ def annotated_fake_gff_loc():
 
 @pytest.fixture()
 def fake_phix_annotations():
-    return pd.DataFrame([[pd.np.NaN],
+    return pd.DataFrame([[np.NaN],
                          ['GH13'],
-                         [pd.np.NaN],
-                         [pd.np.NaN],
-                         [pd.np.NaN],
-                         [pd.np.NaN],
-                         [pd.np.NaN]],
+                         [np.NaN],
+                         [np.NaN],
+                         [np.NaN],
+                         [np.NaN],
+                         [np.NaN]],
                         index=['NC_001422.1_1', 'NC_001422.1_2', 'NC_001422.1_3', 'NC_001422.1_4',
                                'NC_001422.1_5', 'NC_001422.1_6', 'NC_001422.1_7'],
                         columns=['cazy_id'])
@@ -545,38 +528,6 @@ def test_kofam_hmmscan_formater():
     assert output_rcvd.equals(output_expt), "Error in kofam_hmmscan_formater"
 
 
-def test_generic_hmmscan_formater_custom_cuts():
-    output_expt = pd.DataFrame({
-        "bin_1.scaffold_2": ["K00002", "KO2; description 2"]
-    }, index=["test_id", "test_hits"]).T
-    input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
-    hits = parse_hmmsearch_domtblout(input_b6)
-    output_rcvd = generic_hmmscan_formater(
-        hits,
-        hmm_info_path=os.path.join('tests', 'data', 'hmm_thresholds.txt'),
-        db_name='test',
-        top_hit=True)
-    output_rcvd.sort_index(inplace=True)
-    output_expt.sort_index(inplace=True)
-    assert output_rcvd.equals(output_expt), "Error in generic_hmmscan_formater, with custom cuts"
-
-
-def test_generic_hmmscan_formater():
-    output_expt = pd.DataFrame({
-        "bin_1.scaffold_1": ["K00001"],
-        "bin_1.scaffold_2": ["K00002"]
-    }, index=["test_id"]).T
-    input_b6 = os.path.join('tests', 'data', 'unformatted_kofam.b6')
-    hits = parse_hmmsearch_domtblout(input_b6)
-    output_rcvd = generic_hmmscan_formater(
-        hits,
-        db_name='test',
-        top_hit=True)
-    output_rcvd.sort_index(inplace=True)
-    output_expt.sort_index(inplace=True)
-    assert output_rcvd.equals(output_expt), "Error in generic_hmmscan_formater"
-
-
 def test_vogdb_hmmscan_formater():
     #TODO Not Done
     output_expt = pd.DataFrame({
@@ -591,6 +542,18 @@ def test_vogdb_hmmscan_formater():
     assert output_rcvd.equals(output_expt), "Error in vogdb_hmmscan_formater"
 
 
+def test_dbcan_hmmscan_formater():
+    # TODO can we test with db-handler?
+    output_expt = pd.DataFrame({"bin_1.scaffold_1": ["GT4; GT5", "GT5.hmm"],
+                           "bin_1.scaffold_2": ["GH1", "GH1.hmm"]}, index=["cazy_ids", "cazy_best_hit"]).T
+    input_b6 = os.path.join('tests', 'data', 'unformatted_cazy.b6')
+    hits = parse_hmmsearch_domtblout(input_b6)
+    output_rcvd = dbcan_hmmscan_formater(hits=hits, db_name='cazy')
+    #hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
+    # output_rcvd
+    output_rcvd.sort_index(inplace=True)
+    output_expt.sort_index(inplace=True)
+    assert output_rcvd.equals(output_expt), "Error in dbcan_hmmscan_formater"
 
 
 test_gbk = """LOCUS       NC_001422.1   5386 bp   DNA   linear   ENV   %s
@@ -739,7 +702,7 @@ def test_make_trnas_interval():
     i = 1
 
     test_row1 = {'Begin': 1, 'End': 13, 'Score': 1000, 'Codon': 'AUG', 'Type': 'AUG codon coding tRNA',
-                 'Note': pd.np.NaN}
+                 'Note': np.NaN}
     begin1, end1, metadata1 = make_trnas_interval(test_scaffold, test_row1, i)
     assert begin1 == 1
     assert end1 == 13
@@ -787,11 +750,11 @@ def test_add_intervals_to_gff(annotated_fake_gff_loc, tmpdir):
     annotate_fake_gff_loc_w_rna = os.path.join(add_intervals_test_loc, 'fake.gff')
     copy(annotated_fake_gff_loc, annotate_fake_gff_loc_w_rna)
     fake_rrnas_loc = os.path.join(add_intervals_test_loc, 'rrnas.tsv')
-    fake_rrnas = pd.DataFrame([['fake_NC_001422.1', 990, 1000, 101.0, '+', '16S ribosomal rRNA gene', pd.np.NaN]],
+    fake_rrnas = pd.DataFrame([['fake_NC_001422.1', 990, 1000, 101.0, '+', '16S ribosomal rRNA gene', np.NaN]],
                               columns=['scaffold', 'begin', 'end', 'e-value', 'strand', 'type', 'note'])
     fake_rrnas.to_csv(fake_rrnas_loc, sep='\t')
-    add_intervals_to_gff(fake_rrnas_loc, annotate_fake_gff_loc_w_rna, {'fake_NC_001422.1': 6000}, make_rrnas_interval,
-                         'scaffold')
+    add_intervals_to_gff(fake_rrnas_loc, annotate_fake_gff_loc_w_rna, {'fake_NC_001422.1': 6000}, 
+                         make_rrnas_interval, 'scaffold', logger)
     assert os.path.isfile(annotate_fake_gff_loc_w_rna)
     gff = list(read_sequence(annotate_fake_gff_loc_w_rna, format='gff3'))
     assert type(gff) is list

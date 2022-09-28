@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from mag_annotator import __version__ as version
 from os import path
 
-__author__ = 'shafferm'
+__author__ = 'shafferm, rmflynn'
 __version__ = version
 
 here = path.abspath(path.dirname(__file__))

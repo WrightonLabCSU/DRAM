@@ -8,14 +8,12 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: ubuntu:focal
+      - image: cimg/base:2022.09
     steps:
       - checkout
       - run:
           name: Setup Miniconda
           command: |
-            apt update
-            apt install -y wget
             cd $HOME
             wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
             export MINICONDA_PREFIX="$HOME/miniconda"
@@ -27,22 +25,29 @@ jobs:
             conda config --add channels conda-forge
             conda info -a
       - run:
-          name: Run tests in enviroment
+          name: More conda stuff
           # This assumes pytest is installed via the install-package step above
           command: |
             export PATH="$HOME/miniconda/bin:$PATH"
             conda update -y conda
             conda create -n DRAM python=3.9
             source activate DRAM
-            conda install  pandas pytest pandas pytest scikit-bio scipy<=1.8.1 prodigal mmseqs2!=10.6d92c hmmer!=3.3.1 trnascan-se >=2 sqlalchemy barrnap altair >=4 openpyxl networkx ruby parallel dram
-            pytest tests/test_annotate_bins.py
-            pytest tests/test_annotate_vgfs.py
-            pytest tests/test_database_handler.py
-            pytest tests/test_database_processing.py
-            pytest tests/test_database_setup.py
-            pytest tests/test_summarize_genomes.py
-            pytest tests/test_summarize_vgfs.py
-            pytest tests/test_utils.py
+            conda install pandas pytest pandas pytest scikit-bio scipy==1.8.1 prodigal mmseqs2!=10.6d92c hmmer!=3.3.1 trnascan-se>=2 sqlalchemy barrnap altair>=4 openpyxl networkx ruby parallel pip
+            pip3 install ./
+      - run:
+          name: Run tests in enviroment
+          # This assumes pytest is installed via the install-package step above
+          command: |
+            source $HOME/miniconda/bin/activate DRAM
+            pytest
+            # pytest tests/test_annotate_bins.py
+            # pytest tests/test_annotate_vgfs.py
+            # pytest tests/test_database_handler.py
+            # pytest tests/test_database_processing.py
+            # pytest tests/test_database_setup.py
+            # pytest tests/test_summarize_genomes.py
+            # pytest tests/test_summarize_vgfs.py
+            # pytest tests/test_utils.py
 # Invoke jobs via workflows
 workflows:
   all-tests:

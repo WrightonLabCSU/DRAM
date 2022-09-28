@@ -3,9 +3,11 @@ from skbio import read as read_sequence
 from skbio import write as write_sequence
 from os import mkdir, path
 import warnings
+import logging
 
 from mag_annotator.summarize_vgfs import filter_to_amgs
-from mag_annotator.utils import get_ids_from_row
+from mag_annotator.utils import setup_logger
+from mag_annotator.summarize_genomes import get_ids_from_annotations_by_row
 from mag_annotator.database_handler import DatabaseHandler
 
 # TODO: filter by taxonomic level, completeness, contamination
@@ -40,9 +42,8 @@ def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=N
 
         # make a dictionary of genes to
         gene_to_ids = dict()
-        for i, row in annotations_to_keep.iterrows():
-            row_ids = get_ids_from_row(row)
-            if len(row_ids) > 0:
+        for i, row_ids in get_ids_from_annotations_by_row(annotations_to_keep).iteritems():
+           if len(row_ids) > 0:
                 gene_to_ids[i] = set(row_ids)
 
         # get genes with ids
@@ -69,55 +70,71 @@ def get_genes_from_identifiers(annotations, genes=None, fastas=None, scaffolds=N
     return annotation_genes_to_keep
 
 
-def pull_sequences(input_annotations, input_fasta, output_fasta, fastas=None, scaffolds=None, genes=None,
-                   identifiers=None, categories=None, taxonomy=None, completeness=None, contamination=None,
+def pull_sequences(input_tsv, input_fasta, output_fasta, fastas=None, scaffolds=None, genes=None,
+                   identifiers=None, adjective_sheet:str=None, categories=None, taxonomy=None, completeness=None, contamination=None,
                    amg_flags=None, aux_scores=None, virsorter_category=None, putative_amgs=False,
                    max_auxiliary_score=3, remove_transposons=False, remove_fs=False, custom_distillate=None):
-    annotations = pd.read_csv(input_annotations, sep='\t', index_col=0)
 
-    # first filter based on specific names
-    annotation_genes_to_keep = get_genes_from_identifiers(annotations, genes, fastas, scaffolds, identifiers,
-                                                          categories, custom_distillate)
-    annotations = annotations.loc[annotation_genes_to_keep]
-    if len(annotations) == 0:
-        raise ValueError("Categories or identifiers provided yielded no annotations")
+    #setup logger
+    logger = logging.getLogger('strainer_log')
+    setup_logger(logger)
 
-    # DRAM specific filtering
-    if taxonomy is not None:
-        taxonomy = set(taxonomy)
-        annotations = annotations.loc[[len(set(i.split(';')) & taxonomy) > 0 for i in annotations['bin_taxonomy']]]
-    if completeness is not None:
-        annotations = annotations.loc[annotations['bin_completeness'].astype(float) > completeness]
-    if contamination is not None:
-        annotations = annotations.loc[annotations['bin_contamination'].astype(float) < contamination]
-    if len(annotations) == 0:
-        raise ValueError("DRAM filters yielded no annotations")
+    try:
+        annotations = pd.read_csv(input_tsv, sep='\t', index_col=0)
+        if adjective_sheet is not None:
+            adjective_sheet = pd.read_csv(input_tsv, sep='\t', index_col=0) 
+            annotations = annotations.loc[adjective_sheet.index]
+            breakpoint()
+        annotation_genes_to_keep = get_genes_from_identifiers(annotations, genes, fastas, scaffolds, identifiers,
+                                                              categories, custom_distillate)
+        annotations = annotations.loc[annotation_genes_to_keep]
+        if len(annotations) == 0:
+            raise ValueError("Categories or identifiers provided yielded no annotations")
 
-    # DRAM-v specific filtering
-    if putative_amgs:  # get potential amgs
-        # annotations = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
-        #                              remove_transposons=remove_transposons, remove_fs=remove_fs, remove_js=remove_js)
-        annotations = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
-                                     remove_transposons=remove_transposons, remove_fs=remove_fs)
-    else:
-        # filter based on virsorter categories
-        if virsorter_category is not None:
-            annotations = annotations.loc[[i in virsorter_category for i in annotations.virsorter]]
-        # filter based on aux scores
-        if aux_scores is not None:
-            annotations = annotations.loc[[i in aux_scores for i in annotations.auxiliary_score]]
-        # filter based on amg flags
-        if amg_flags is not None:
-            amg_flags = set(amg_flags)
-            annotations = annotations.loc[[len(set(i) & amg_flags) > 0 if not pd.isna(i) else False
-                                           for i in annotations.amg_flags]]
-    if len(annotations) == 0:
-        raise ValueError("DRAM-v filters yielded no annotations")
 
-    # make output
-    output_fasta_generator = (i for i in read_sequence(input_fasta, format='fasta')
-                              if i.metadata['id'] in annotations.index)
-    write_sequence(output_fasta_generator, format='fasta', into=output_fasta)
+        # DRAM specific filtering
+        if taxonomy is not None:
+            taxonomy = set(taxonomy)
+            annotations = annotations.loc[[len(set(i.split(';')) & taxonomy) > 0 for i in annotations['bin_taxonomy']]]
+        if completeness is not None:
+            annotations = annotations.loc[annotations['bin_completeness'].astype(float) > completeness]
+        if contamination is not None:
+            annotations = annotations.loc[annotations['bin_contamination'].astype(float) < contamination]
+        if len(annotations) == 0:
+            raise ValueError("DRAM filters yielded no annotations")
+        # DRAM-v specific filtering
+        if putative_amgs:  # get potential amgs
+            annotations = filter_to_amgs(annotations.fillna(''), max_aux=max_auxiliary_score,
+                                         remove_transposons=remove_transposons, remove_fs=remove_fs)
+        else:
+            # filter based on virsorter categories
+            if virsorter_category is not None:
+                annotations = annotations.loc[[i in virsorter_category for i in annotations.virsorter]]
+            # filter based on aux scores
+            if aux_scores is not None:
+                annotations = annotations.loc[[i in aux_scores for i in annotations.auxiliary_score]]
+            # filter based on amg flags
+            if amg_flags is not None:
+                amg_flags = set(amg_flags)
+                annotations = annotations.loc[[len(set(i) & amg_flags) > 0 if not pd.isna(i) else False
+                                               for i in annotations.amg_flags]]
+        if len(annotations) == 0:
+            raise ValueError("DRAM-v filters yielded no annotations")
+
+        # make output
+        output_fasta_generator = (i for i in read_sequence(input_fasta, format='fasta')
+                                  if i.metadata['id'] in annotations.index)
+        write_sequence(output_fasta_generator, format='fasta', into=output_fasta)
+    except KeyError as err:
+        logger.error(err)
+        logger.critical("It looks like your input files are not appropriate for the filter you are trying to apply."
+                     " For example using a Viral or AMG filter on an annotations that has no viral information.")
+        
+        raise err
+    except Exception as err:
+        logger.error(err)
+        logger.critical('Unknown error, exiting')
+        raise err
 
 
 def find_neighborhoods(annotations, genes_from_ids, distance_bp=None, distance_genes=None):
@@ -166,9 +183,17 @@ def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None,
 
     mkdir(output_dir)
 
+    #setup logger
+    # Get a logger
+    # if log_file_path is None:
+    log_file_path = path.join(output_dir, "Strainer.log")
+    logger = logging.getLogger('strainer_log')
+    setup_logger(logger, log_file_path)
+    logger.info(f"The log file is created at {log_file_path}")
+
     neighborhood_all_annotations = find_neighborhoods(annotations, genes_from_ids, distance_bp, distance_genes)
     neighborhood_all_annotations.to_csv(path.join(output_dir, 'neighborhood_annotations.tsv'), sep='\t')
-
+    logger.info("Neighborhood Annotations witten to tsv")
     # filter files if given
     if genes_loc is not None:
         output_fasta_generator = (i for i in read_sequence(genes_loc, format='fasta')
@@ -176,7 +201,7 @@ def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None,
         # TODO: potentially generate one fasta file per neighborhood
         write_sequence(output_fasta_generator, format='fasta',
                        into=path.join(output_dir, 'neighborhood_genes.%s' % genes_loc.split('.')[-1]))
-
+        logger.info("Gene Neighborhood fasta generated")
     if scaffolds_loc is not None:
         neighborhood_all_annotations['scaffold_mod'] = ['%s_%s' % (row['fasta'], row['scaffold'])
                                                         for i, row in neighborhood_all_annotations.iterrows()]
@@ -191,3 +216,4 @@ def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None,
                                                            neighborhood_frame['end_position'][-1]])
         write_sequence((i for i in neighborhood_scaffolds), format='fasta',
                        into=path.join(output_dir, 'neighborhood_scaffolds.fna'))
+        logger.info("Scaffolds Neighborhood fasta generated")
