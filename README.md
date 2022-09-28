@@ -12,7 +12,7 @@ For information on how DRAM is changing, please read the [release note](https://
 
 To install DRAM you also must install some dependencies. The easiest way to install both DRAM and its dependencies is to use [conda](https://docs.conda.io/en/latest/miniconda.html),  but you can also use manual instructions, or if you are an adventurer you can install a release candidate from this repository .
    
-_Conda Installation_
+### Conda Installation
 
 Install DRAM into a new [conda](https://docs.conda.io/en/latest/) environment using the provided
 environment.yaml file.
@@ -27,7 +27,7 @@ conda activate DRAM
 
 You have now installed DRAM, and are ready to set up the databases.
 
-_Manual Installation_
+### Manual Installation
 
 If you do not install via a conda environment, then the dependencies [pandas](https://pandas.pydata.org/), [networkx](https://networkx.github.io/), [scikit-bio](http://scikit-bio.org/), [prodigal](https://github.com/hyattpd/Prodigal), [mmseqs2](https://github.com/soedinglab/mmseqs2), [hmmer](http://hmmer.org/) and [tRNAscan-SE](http://lowelab.ucsc.edu/tRNAscan-SE/) need to be installed manually. Then you can install DRAM using pip:
 ```bash
@@ -36,7 +36,7 @@ pip install DRAM-bio
 
 You have now installed DRAM, and are ready to set up the databases.
 
-_Release Candidate Installation_
+### Release Candidate Installation
 
 The latest version of DRAM is often a release candidate, and these are not pushed to pypi, or Bioconda and so can't be installed with the methods above. You can tell if there is currently a release candidate by reading the [release note](https://github.com/WrightonLabCSU/DRAM/releases/latest).
 
@@ -59,7 +59,7 @@ You have now installed DRAM, and are ready to set up the databases.
 
 ## Getting Started Part 2: Setup Databases
 
-_I Want to Use an Already Setup Databases_
+### I Want to Use an Already Setup Databases
 
 If you already installed and set up a previous version of dram and want to use your old databases, then you can do it with two steps.
 
@@ -77,7 +77,7 @@ conda activate my_new_env
 DRAM-setup.py import_config --config_loc  my_old_config.txt
 ```
 
-_I have access to KEGG_
+### I have access to KEGG
 
 Set up DRAM using the following command:
 
@@ -87,7 +87,7 @@ DRAM-setup.py prepare_databases --output_dir DRAM_data --kegg_loc kegg.pep
 
 `kegg.pep` is the path to the amino acid FASTA file downloaded from KEGG. This can be any of the gene fasta files that are provided by the KEGG FTP server or a concatenated version of them. `DRAM_data` is the path  to the processed databases used by DRAM. If you already have any of the databases downloaded to your server and don't want to download them again then you can pass them to the `prepare_databases` command by use the `--{db_name}_loc` flags such as `--uniref_loc` and `--viral_loc`.
 
-_I don't have access to KEGG_
+### I don't have access to KEGG
 
 Not a problem. Then use this command:
 
