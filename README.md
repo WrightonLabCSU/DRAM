@@ -38,7 +38,7 @@ You have now installed DRAM, and are ready to set up the databases.
 
 ### Release Candidate Installation
 
-The latest version of DRAM is often a release candidate, and these are not pushed to pypi, or Bioconda and so can't be installed with the methods above. You can tell if there is currently a release candidate by reading the [release note](https://github.com/WrightonLabCSU/DRAM/releases/latest).
+The latest version of DRAM is often a release candidate, and these are not pushed to pypi, or Bioconda and so can't be installed with the methods above. You can tell if there is currently a release candidate by reading the [release notes](https://github.com/WrightonLabCSU/DRAM/releases).
 
 To install a potentially unstable release candidate, follow the instructions below. Note the comments within the code sections as there is a context in which commands must be used.
 
