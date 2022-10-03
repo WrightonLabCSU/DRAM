@@ -17,7 +17,7 @@ BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOp
                     'tEnd', 'eVal', 'bitScore']
 
 
-def download_file(url: str, output_file: str, logger: logging.Logger, alt_urls: list[str] = None, verbose = True):
+def download_file(url: str, output_file: str, logger: logging.Logger, alt_urls: list = None, verbose = True):
     # TODO: catching error 4 and give error message to retry or retry automatically
     links = [url] if alt_urls is None else [url] + alt_urls
     for l in links: 
