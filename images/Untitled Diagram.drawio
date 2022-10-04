@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-10-04T23:02:23.634Z" agent="5.0 (X11)" etag="4CGRpcBDe76xjm0zECdG" version="20.4.0" type="github">
+<mxfile host="app.diagrams.net" modified="2022-10-04T23:03:50.442Z" agent="5.0 (X11)" etag="9EgAuwtq9E4OLU6U9FgY" version="20.4.0" type="github">
   <diagram id="prtHgNgQTEPvFCAcTncT" name="Page-1">
     <mxGraphModel dx="2361" dy="1345" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -18,6 +18,18 @@
         </mxCell>
         <mxCell id="-uMLt3uFbst9-DU3asHZ-5" value="&lt;div&gt;Study v-MAGs&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="550" y="150" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="-uMLt3uFbst9-DU3asHZ-6" value="&lt;div&gt;You run:&lt;/div&gt;&lt;div&gt;DRAM-setup.py&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="220" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-uMLt3uFbst9-DU3asHZ-7" value="&lt;div&gt;You run:&lt;/div&gt;&lt;div&gt;DRAM.py&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="325" y="220" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-uMLt3uFbst9-DU3asHZ-8" value="&lt;div&gt;You run:&lt;/div&gt;&lt;div&gt;DRAM-v.py&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="220" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-uMLt3uFbst9-DU3asHZ-9" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="540" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
