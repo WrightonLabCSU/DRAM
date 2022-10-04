@@ -14,7 +14,7 @@ from skbio import read as read_sequence
 from skbio import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
-from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix, setup_logger
+from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix, remove_suffix, setup_logger
 
 NUMBER_OF_VIRAL_FILES = 2
 DEFAULT_DBCAN_RELEASE = '11'
@@ -529,7 +529,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         del database_settings['uniref']
     
     
-    locs = {i.removesuffix('_loc'):j for i, j in locals().items() if i.endswith('_loc') and j is not None}
+    locs = {remove_suffix(i, '_loc'):j for i, j in locals().items() if i.endswith('_loc') and j is not None}
     download_functions = {i[9:]:j for i,j in globals().items() if callable(j) and i.startswith('download_')}
     process_functions = {i[8:]:j for i,j in globals().items() if callable(j) and i.startswith('process_')}
     functions = {i:j for i,j in globals().items() if callable(j) and i.startswith('download_')}

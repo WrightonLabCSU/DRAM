@@ -149,6 +149,11 @@ def test_multigrep(multigrep_inputs, logger):
 def test_remove_prefix():
     assert remove_prefix('prefix', 'pre') == 'fix'
     assert remove_prefix('postfix', 'pre') == 'postfix'
+    text = 'loc_This'
+    prefix = 'loc_'
+    out_expected = 'This'
+    out_real = remove_prefix(text, prefix)
+    assert out_expected == out_real
 
 
 def test_remove_suffix():
