@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2022-10-04T23:03:50.442Z" agent="5.0 (X11)" etag="9EgAuwtq9E4OLU6U9FgY" version="20.4.0" type="github">
+<mxfile host="app.diagrams.net" modified="2022-10-05T15:52:15.735Z" agent="5.0 (X11)" etag="5uyOyYFPW8T0A8zewbHh" version="20.4.0" type="github">
   <diagram id="prtHgNgQTEPvFCAcTncT" name="Page-1">
-    <mxGraphModel dx="2361" dy="1345" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2065" dy="1345" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -28,8 +28,8 @@
         <mxCell id="-uMLt3uFbst9-DU3asHZ-8" value="&lt;div&gt;You run:&lt;/div&gt;&lt;div&gt;DRAM-v.py&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="530" y="220" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="-uMLt3uFbst9-DU3asHZ-9" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="150" y="540" width="120" height="60" as="geometry" />
+        <mxCell id="-uMLt3uFbst9-DU3asHZ-9" value="/&amp;gt; DRAM-setup.py" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="210" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
