@@ -196,7 +196,8 @@ class DatabaseHandler:
     def set_database_paths(self, kegg_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_loc=None,
                            pfam_loc=None, pfam_hmm_loc=None, dbcan_loc=None, dbcan_fam_activities_loc=None,
                            dbcan_subfam_ec_loc=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None, 
-                           vog_annotations_loc=None, description_db_loc=None, genome_summary_form_loc=None, 
+                           vog_annotations_loc=None, description_db_loc=None, log_path_loc=None, 
+                           genome_summary_form_loc=None, 
                            module_step_form_loc=None, etc_module_database_loc=None, 
                            function_heatmap_form_loc=None, amg_database_loc=None, write_config=True):
         def check_exists_and_add_to_location_dict(loc, old_value):
@@ -238,6 +239,7 @@ class DatabaseHandler:
             for k in locs[i]} for i in locs})
 
         self.config['description_db'] = check_exists_and_add_to_location_dict(description_db_loc, self.config.get('description_db'))
+        self.config['log_path'] = check_exists_and_add_to_location_dict(log_path_loc, self.config.get('log_path_db'))
         self.start_db_session()
 
         if write_config:
@@ -489,25 +491,24 @@ def import_config(config_loc):
     print('Import, appears to be successfull.')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def mv_db_folder(new_location:str, old_config_file:str=None):
+    db_handler = DatabaseHandler(None, old_config_file)
+    paths = ["search_databases", "dram_sheets", "database_descriptions"]
+    def auto_move_path(k:str, v:str):
+        if v is None:
+            db_handler.logger.warn(f"The path for {k} was not set, so can't update.")
+            return
+        new_path = path.join(new_location, path.basename(v))
+        if not path.exists(new_path):
+            db_handler.logger.warn(f"There is no file at path {v},"
+                                   f" so no new location will be set for {k}.")
+            return
+        db_handler.logger.info(f"Moving {k} to {v}")
+        db_handler.set_database_paths(**{f"{k}_loc": new_path}, write_config=True)
+    auto_move_path('log_path', db_handler.config.get('log_path'))
+    auto_move_path('description_db', db_handler.config.get('description_db'))
+    for i in paths:
+        for k, v in db_handler.config.get(i).items():
+            auto_move_path(k, v)
 
 

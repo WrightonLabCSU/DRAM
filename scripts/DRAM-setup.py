@@ -2,10 +2,10 @@
 
 import argparse
 
-from mag_annotator.database_processing import prepare_databases, update_dram_forms, \
-    DEFAULT_DBCAN_DATE, DEFAULT_DBCAN_RELEASE, DEFAULT_UNIREF_VERSION
-from mag_annotator.database_handler import DatabaseHandler,  set_database_paths,  populate_description_db, \
-    export_config, import_config, print_database_locations, print_database_settings
+from mag_annotator.database_processing import (prepare_databases, update_dram_forms,
+    DEFAULT_DBCAN_DATE, DEFAULT_DBCAN_RELEASE, DEFAULT_UNIREF_VERSION)
+from mag_annotator.database_handler import (DatabaseHandler,  set_database_paths,  populate_description_db,
+    export_config, import_config, print_database_locations, print_database_settings, mv_db_folder)
 from mag_annotator import __version__ as version
 
 
@@ -19,6 +19,10 @@ if __name__ == '__main__':
                                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     set_db_locs_parser = subparsers.add_parser('set_database_locations',
                                                help="Set database locations for already processed databases",
+                                               formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    new_data_loc_parser = subparsers.add_parser('mv_db_folder',
+                                                help="If you move a databases folder this will update all locations"
+                                                " for all databases moved",
                                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     update_description_db_parser = subparsers.add_parser('update_description_db', help='Update description database',
                                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -130,6 +134,13 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--amg_database_loc', default=None, help="File path to amg database")
     set_db_locs_parser.add_argument('--update_description_db', action='store_true', default=False)
     set_db_locs_parser.set_defaults(func=set_database_paths)
+    new_data_loc_parser.add_argument('--new_location', default='.', help="Path to directory containing databases,"
+                                     " will default to current directory. Note that paths will not be changed if"
+                                     " a db can't be found")
+    new_data_loc_parser.add_argument('--old_config_file', default=None, help="Path to the old config file if the current"
+                                     " config is for diferent database")
+    new_data_loc_parser.set_defaults(func=mv_db_folder)
+
 
     # parser for updating database descriptions
     update_description_db_parser.add_argument('--output_loc', help="Location to store desciption database, will be "

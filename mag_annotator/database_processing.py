@@ -642,5 +642,7 @@ def update_dram_forms(output_dir, branch='master'):
     form_locs['etc_module_database_loc'] = download_etc_module_database(output_dir, branch)
     form_locs['function_heatmap_form_loc'] = download_function_heatmap_form(output_dir, branch)
     form_locs['amg_database_loc'] = download_amg_database(output_dir, branch)
-    db_handler = DatabaseHandler()
+    main_log = path.join(output_dir, 'database_processing.log')
+    setup_logger(LOGGER, main_log)
+    db_handler = DatabaseHandler(LOGGER)
     db_handler.set_database_paths(**form_locs)
