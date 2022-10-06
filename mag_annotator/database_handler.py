@@ -17,7 +17,7 @@ from mag_annotator import __version__ as current_dram_version
 from mag_annotator.database_setup import TABLE_NAME_TO_CLASS_DICT, create_description_db
 from mag_annotator.utils import divide_chunks, setup_logger
 
-SEARCH_DATABASES = {'kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan', 
+SEARCH_DATABASES = {'kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'pfam', 'dbcan',
                     'viral', 'peptidase', 'vogdb' }
 DRAM_SHEETS = ('genome_summary_form', 'module_step_form', 'etc_module_database', 'function_heatmap_form',
                 'amg_database')
@@ -43,12 +43,12 @@ def clear_dict(val):
         return {k: clear_dict(v) for k, v in val.items()}
     else:
         return None
-    
+
 
 class DatabaseHandler:
 
     def __init__(self, logger, config_loc=None):
-        # read in new configuration 
+        # read in new configuration
         # TODO: validate config file after reading it in
         if config_loc is None:
             config_loc = get_config_loc()
@@ -64,7 +64,7 @@ class DatabaseHandler:
                           " import fails then you should check that"
                           " the origin of the file is valid.")
             self.__construct_from_dram_pre_1_4_0(conf)
-        else: 
+        else:
             conf_version = conf.get('dram_version')
             if conf_version is None:
                 db_handler = self.__construct_from_dram_pre_1_4_0(conf)
@@ -91,7 +91,7 @@ class DatabaseHandler:
 
 
     def __construct_default(self, conf:dict):
-        self.config = conf 
+        self.config = conf
 
         # set up description database connection
         description_loc = self.config.get('description_db')
@@ -136,7 +136,7 @@ class DatabaseHandler:
             warnings.warn('Database does not exist at path %s' % self.config.get('description_db'))
         else:
             self.start_db_session()
-    
+
     def start_db_session(self):
         engine = create_engine('sqlite:///%s' % self.config.get('description_db'))
         db_session = sessionmaker(bind=engine)
@@ -149,7 +149,7 @@ class DatabaseHandler:
         if clear_table:
             self.session.query(description_class).delete()
         # TODO: try batching
-        self.session.bulk_save_objects([description_class(**i) for i in description_list]) 
+        self.session.bulk_save_objects([description_class(**i) for i in description_list])
         self.session.commit()
         self.session.expunge_all()
 
@@ -160,9 +160,9 @@ class DatabaseHandler:
     def get_descriptions(self, ids, db_name, description_name='description'):
         description_class = TABLE_NAME_TO_CLASS_DICT[db_name]
         descriptions = [
-            des 
+            des
             for chunk in divide_chunks(list(ids), 499)
-            for des in self.session.query(description_class).filter(description_class.id.in_(chunk)).all() 
+            for des in self.session.query(description_class).filter(description_class.id.in_(chunk)).all()
         ]
         # [des for des in self.session.query(description_class).filter(description_class.id.in_(list(ids))).all() ]
         # [i.id for i in self.session.query(TABLE_NAME_TO_CLASS_DICT['dbcan_description']).all()]
@@ -179,7 +179,7 @@ class DatabaseHandler:
         out_str = ""
         settings = self.config.get('setup_info')
         if settings is None:
-            raise Warning('there are no settings, the config is corrupted or too old.')
+            warnings.warn('there are no settings, the config is corrupted or too old.', DeprecationWarning)
             return 'there are no settings, the config is corrupted or too old.'
         for i in ["search_databases", "database_descriptions", "dram_sheets"]:
             out_str += "\n"
@@ -195,10 +195,10 @@ class DatabaseHandler:
 
     def set_database_paths(self, kegg_loc=None, kofam_hmm_loc=None, kofam_ko_list_loc=None, uniref_loc=None,
                            pfam_loc=None, pfam_hmm_loc=None, dbcan_loc=None, dbcan_fam_activities_loc=None,
-                           dbcan_subfam_ec_loc=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None, 
-                           vog_annotations_loc=None, description_db_loc=None, log_path_loc=None, 
-                           genome_summary_form_loc=None, 
-                           module_step_form_loc=None, etc_module_database_loc=None, 
+                           dbcan_subfam_ec_loc=None, viral_loc=None, peptidase_loc=None, vogdb_loc=None,
+                           vog_annotations_loc=None, description_db_loc=None, log_path_loc=None,
+                           genome_summary_form_loc=None,
+                           module_step_form_loc=None, etc_module_database_loc=None,
                            function_heatmap_form_loc=None, amg_database_loc=None, write_config=True):
         def check_exists_and_add_to_location_dict(loc, old_value):
             if loc is None:  # if location is none then return the old value
@@ -235,7 +235,7 @@ class DatabaseHandler:
         }
 
         self.config.update({i:{
-            k:check_exists_and_add_to_location_dict(locs[i][k], self.config.get(i).get(k)) 
+            k:check_exists_and_add_to_location_dict(locs[i][k], self.config.get(i).get(k))
             for k in locs[i]} for i in locs})
 
         self.config['description_db'] = check_exists_and_add_to_location_dict(description_db_loc, self.config.get('description_db'))
@@ -308,7 +308,7 @@ class DatabaseHandler:
                 return pd.DataFrame({'id': line[0], 'description': description.replace('\n', ' ')}, index=[0])
         with open(dbcan_fam_activities) as f:
             description_data = pd.concat([line_reader(line) for line in f.readlines()])
-        
+
         ec_data = (pd.read_csv(dbcan_subfam_ec, sep='\t',names=['id', 'id2','ec'], comment='#')[['id', 'ec']]
                            .drop_duplicates())
         ec_data = (pd.concat([ec_data['id'],
@@ -362,8 +362,8 @@ class DatabaseHandler:
             self.logger.info(f'Description updated for the {db_name} database')
         # fill database
         mmseqs_database = ['kegg', 'uniref',  'viral', 'peptidase']
-        process_functions = {i:partial(self.make_header_dict_from_mmseqs_db, 
-                                       self.config['search_databases'][i]) 
+        process_functions = {i:partial(self.make_header_dict_from_mmseqs_db,
+                                       self.config['search_databases'][i])
                              for i in mmseqs_database
                              if self.config['search_databases'][i] is not None}
         # Use table names
@@ -371,17 +371,17 @@ class DatabaseHandler:
             'pfam': partial(self.process_pfam_descriptions,
                                 self.config.get('database_descriptions')['pfam_hmm']),
             'dbcan': partial(self.process_dbcan_descriptions,
-                                            self.config.get('database_descriptions')['dbcan_fam_activities'], 
+                                            self.config.get('database_descriptions')['dbcan_fam_activities'],
                                             self.config.get('database_descriptions')['dbcan_subfam_ec']),
             'vogdb': partial(self.process_vogdb_descriptions,
-                                         self.config.get('database_descriptions')['vog_annotations']) 
+                                         self.config.get('database_descriptions')['vog_annotations'])
         })
         if select_db is not None:
             process_functions = {i:k for i, k in process_functions.items() if i in select_db}
 
         for i, k in process_functions.items():
             check_db(i, k)
-            
+
         if update_config:  # if new description db is set then save it
             self.write_config()
 
