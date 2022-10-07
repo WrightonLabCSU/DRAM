@@ -110,13 +110,13 @@ def make_viral_distillate(potential_amgs, genome_summary_form):
     potential_amgs.iloc[0]
     logger =  logging.getLogger()
     check_columns(potential_amgs, logger)
-    breakpoint()
+    # breakpoint()
     for gene, row in potential_amgs.iterrows():
         gene_ids = row.ids & set(genome_summary_form.index)
         if len(gene_ids) > 0:
             for gene_id in gene_ids:
                 gene_summary = genome_summary_form.loc[gene_id]
-                breakpoint()
+                # breakpoint()
                 if type(gene_summary) is pd.Series:
                     rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'],
                                  gene_summary['sheet'], gene_summary['header'], gene_summary['subheader'],
@@ -292,7 +292,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     check_columns(potential_amgs, logger)
     annotations.kegg_hit
     annotations.iloc[0]
-    breakpoint()
+    # breakpoint()
     logger.info('Determined potential amgs')
 
     # make distillate
@@ -300,7 +300,6 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     viral_genome_stats.to_csv(path.join(output_dir, 'vMAG_stats.tsv'), sep='\t')
     logger.info('Calculated viral genome statistics')
 
-    
     # viral_distillate = make_viral_distillate2(
     #     potential_amgs,
     #     genome_summary_form,
