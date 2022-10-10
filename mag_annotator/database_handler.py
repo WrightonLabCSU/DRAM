@@ -492,8 +492,10 @@ def import_config(config_loc):
 
 
 def mv_db_folder(new_location:str, old_config_file:str=None):
+    db_handler = DatabaseHandler(None)
     new_location = path.abspath(new_location)
-    db_handler = DatabaseHandler(None, old_config_file)
+    if old_config_file is not None:
+        import_config(old_config_file)
     paths = ["search_databases", "dram_sheets", "database_descriptions"]
     def auto_move_path(k:str, v:str):
         if v is None:
