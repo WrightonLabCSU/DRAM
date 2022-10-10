@@ -507,10 +507,10 @@ def mv_db_folder(new_location:str='./', old_config_file:str=None):
             return
         new_path = path.join(new_location, path.basename(v))
         if not path.exists(new_path):
-            db_handler.logger.warn(f"There is no file at path {v},"
+            db_handler.logger.warn(f"There is no file at path {new_path},"
                                    f" so no new location will be set for {k}.")
             return
-        db_handler.logger.info(f"Moving {k} to {v}")
+        db_handler.logger.info(f"Moving {k} to {new_path}")
         db_handler.set_database_paths(**{f"{k}_loc": new_path}, write_config=True)
     auto_move_path('log_path', db_handler.config.get('log_path'))
     auto_move_path('description_db', db_handler.config.get('description_db'))
