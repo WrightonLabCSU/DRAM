@@ -21,13 +21,13 @@ from mag_annotator.utils import get_ordered_uniques, setup_logger
 
 FRAME_COLUMNS = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader']
 RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
-HEATMAP_MODULES = ['M00001', 'M00004', 'M00008', 'M00009', 'M00012', 'M00165', 'M00173', 
+HEATMAP_MODULES = ['M00001', 'M00004', 'M00008', 'M00009', 'M00012', 'M00165', 'M00173',
                    'M00374', 'M00375', 'M00376', 'M00377', 'M00422', 'M00567']
 HEATMAP_CELL_HEIGHT = 10
 HEATMAP_CELL_WIDTH = 10
 KO_REGEX = r'^K\d\d\d\d\d$'
-ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'genome', 'path_length', 
-                        'path_length_coverage', 'percent_coverage', 'genes', 'missing_genes', 
+ETC_COVERAGE_COLUMNS = ['module_id', 'module_name', 'complex', 'genome', 'path_length',
+                        'path_length_coverage', 'percent_coverage', 'genes', 'missing_genes',
                         'complex_module_name']
 TAXONOMY_LEVELS = ['d', 'p', 'c', 'o', 'f', 'g', 's']
 COL_HEADER, COL_SUBHEADER, COL_MODULE, COL_GENE_ID, COL_GENE_DESCRIPTION = 'header', 'subheader', 'module', 'gene_id', 'gene_description'
@@ -35,21 +35,21 @@ CONSTANT_DISTILLATE_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, CO
 DISTILATE_SORT_ORDER_COLUMNS = [COL_HEADER, COL_SUBHEADER, COL_MODULE, COL_GENE_ID]
 EXCEL_MAX_CELL_SIZE = 32767
 
-ID_FUNCTION_DICT = { 
+ID_FUNCTION_DICT = {
     'kegg_genes_id': lambda x: [x],
     'ko_id': lambda x: [j for j in x.split(',')],
     'kegg_id': lambda x: [j for j in x.split(',')],
-    'kegg_hit': lambda x: [i[1:-1] for i in 
+    'kegg_hit': lambda x: [i[1:-1] for i in
                            re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
     'peptidase_family': lambda x: [j for j in x.split(';')],
     # 'cazy_ids': lambda x: [i.split('_')[0] for i in x.split('; ')],
     # 'cazy_id': lambda x: [i.split('_')[0] for i in x.split('; ')],
-    # 'cazy_hits': lambda x: [f"{i[1:3]}:{i[4:-1]}" for i in 
+    # 'cazy_hits': lambda x: [f"{i[1:3]}:{i[4:-1]}" for i in
     #                         re.findall(r'\(EC [\d+\.]+[\d-]\)', x)
     #                         ] + [
-    #                         i[1:-1].split('_')[0] 
+    #                         i[1:-1].split('_')[0]
     #                         for i in re.findall(r'\[[A-Z]*\d*?\]', x)],
-    # 'cazy_subfam_ec': lambda x: [f"EC:{i}" for i in 
+    # 'cazy_subfam_ec': lambda x: [f"EC:{i}" for i in
     #                              re.findall(r'[\d+\.]+[\d-]', x)],
     'cazy_best_hit': lambda x: [x.split('_')[0]],
     'pfam_hits': lambda x: [j[1:-1].split('.')[0]
@@ -217,7 +217,7 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
             gene_columns = list(set(frame.columns) - set(CONSTANT_DISTILLATE_COLUMNS))
             split_genes = pd.concat([split_names_to_long(frame[i].astype(str)) for i in gene_columns], axis=1)
             frame = pd.concat([frame[CONSTANT_DISTILLATE_COLUMNS],  split_genes], axis=1)
-            grame.to_excel(writer, sheet_name=sheet, index=False)
+            frame.to_excel(writer, sheet_name=sheet, index=False)
 
 
 # TODO: add assembly stats like N50, longest contig, total assembled length etc
@@ -266,7 +266,7 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, groupby_col
                     has_rrna.append(False)
         if trna_frame is not None:
             # TODO: remove psuedo from count?
-            row.append(trna_frame.loc[trna_frame[groupby_column] == genome].shape[0])  
+            row.append(trna_frame.loc[trna_frame[groupby_column] == genome].shape[0])
         if 'assembly quality' in columns:
             if frame['bin_completeness'][0] > 90 and frame['bin_contamination'][0] < 5 and np.all(has_rrna) and \
                len(set(trna_frame.loc[trna_frame[groupby_column] == genome].Type)) >= 18:
@@ -625,7 +625,7 @@ def make_strings_no_repeats(genome_taxa_dict):
     return labels
 
 
-def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.', 
+def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.',
                       groupby_column='fasta', log_file_path=None, custom_distillate=None,
                       distillate_gene_names=False, genomes_per_product=1000):
     # make output folder
