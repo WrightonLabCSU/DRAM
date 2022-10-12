@@ -84,7 +84,6 @@ def pull_sequences(input_tsv, input_fasta, output_fasta, fastas=None, scaffolds=
         if adjective_sheet is not None:
             adjective_sheet = pd.read_csv(input_tsv, sep='\t', index_col=0) 
             annotations = annotations.loc[adjective_sheet.index]
-            breakpoint()
         annotation_genes_to_keep = get_genes_from_identifiers(annotations, genes, fastas, scaffolds, identifiers,
                                                               categories, custom_distillate)
         annotations = annotations.loc[annotation_genes_to_keep]
