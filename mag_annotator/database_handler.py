@@ -80,7 +80,7 @@ class DatabaseHandler:
             conf_version = conf.get('dram_version')
             if conf_version is None:
                 self.__construct_from_dram_pre_1_4_0(conf)
-            elif conf_version not in {current_dram_version, "1.4.0",  "1.4.0rc1", "1.4.0rc2", "1.4.0rc3"}: # Known suported versions
+            elif conf_version not in {current_dram_version, "1.4.0",  "1.4.0rc1", "1.4.0rc2", "1.4.0rc3", "1.4.0rc4"}: # Known suported versions
                 warnings.warn("The DRAM version in your config is not listed in the versions "
                               "that are known to work. This may not be a problem, but if this "
                               "import fails then you should contact suport.")

@@ -52,9 +52,9 @@ def summarized_genomes():
 
 def test_get_ids_from_row(logger):
     in_data = pd.concat([pd.DataFrame({'ko_id': 'K00001,K00003'}, index=['id_set1']),
-                        pd.DataFrame({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}, index=['id_set2']),
-                        pd.DataFrame({'peptidase_family': 'ABC1;BCD2'}, index=['id_set3']),
-                        pd.DataFrame({'cazy_best_hit': 'GH4'}, index=['id_set4'])
+                         pd.DataFrame({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}, index=['id_set2']),
+                         pd.DataFrame({'peptidase_family': 'ABC1;BCD2'}, index=['id_set3']),
+                         pd.DataFrame({'cazy_best_hit': 'GH4'}, index=['id_set4'])
                         ])
     out_data = get_ids_from_annotations_by_row(in_data)
     assert out_data['id_set1'] == {'K00001', 'K00003'}
