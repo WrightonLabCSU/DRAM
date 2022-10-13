@@ -1210,7 +1210,7 @@ def merge_annotations_cmd(input_dirs, output_dir):
     mkdir(output_dir)
     # Get a logger
     annotations_list = list()
-    log_file_path = path.join(output_dir, "annotation.log")
+    log_file_path = path.join(output_dir, "annotate.log")
     logger = logging.getLogger('annotate.log')
     setup_logger(logger, log_file_path)
     logger.info(f"The log file is created at {log_file_path}")

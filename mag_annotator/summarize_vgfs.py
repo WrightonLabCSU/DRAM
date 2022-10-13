@@ -221,7 +221,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     # make output folder
     mkdir(output_dir)
     if log_file_path is None:
-        log_file_path = path.join(output_dir, "Distillation.log")
+        log_file_path = path.join(output_dir, "distill.log")
     logger = logging.getLogger('distillation_log')
     setup_logger(logger, log_file_path)
     logger.info(f"The log file is created at {log_file_path}")

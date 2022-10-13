@@ -185,7 +185,7 @@ def get_gene_neighborhoods(input_file, output_dir, genes=None, identifiers=None,
     #setup logger
     # Get a logger
     # if log_file_path is None:
-    log_file_path = path.join(output_dir, "Strainer.log")
+    log_file_path = path.join(output_dir, "strainer.log")
     logger = logging.getLogger('strainer_log')
     setup_logger(logger, log_file_path)
     logger.info(f"The log file is created at {log_file_path}")

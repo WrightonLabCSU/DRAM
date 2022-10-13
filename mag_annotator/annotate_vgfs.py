@@ -431,7 +431,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                   custom_hmm_name=(), use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
                   keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     mkdir(output_dir)
-    log_file_path = path.join(output_dir, "Annotation.log")
+    log_file_path = path.join(output_dir, "annotate.log")
     logger = logging.getLogger('annotation_log')
     setup_logger(logger, log_file_path)
 
