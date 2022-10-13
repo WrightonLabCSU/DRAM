@@ -243,10 +243,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     # get potential AMGs
     potential_amgs = filter_to_amgs(annotations, max_aux=max_auxiliary_score,
                                     remove_transposons=remove_transposons, remove_fs=remove_fs)
-    check_columns(annotations, logger)
     check_columns(potential_amgs, logger)
-    annotations.kegg_hit
-    annotations.iloc[0]
     logger.info('Determined potential amgs')
 
     # make distillate
