@@ -434,6 +434,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
     log_file_path = path.join(output_dir, "Annotation.log")
     logger = logging.getLogger('annotation_log')
     setup_logger(logger, log_file_path)
+    breakpoint()
 
     # check inputs
     prodigal_modes = ['train', 'meta', 'single']
@@ -446,8 +447,9 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # get database locations
     db_handler = DatabaseHandler(logger)
+    breakpoint()
     db_handler.filter_db_locs(low_mem_mode=low_mem_mode, use_uniref=use_uniref, use_vogdb=True, master_list=VMAG_DBS_TO_ANNOTATE)
-
+    breakpoint()
     if virsorter_affi_contigs is not None:
         virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
     else:
@@ -482,6 +484,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # annotate vMAGs
     rename_bins = False
+    breakpoint()
     annotations = annotate_fastas(
         fasta_locs=contig_locs,
         output_dir=output_dir, 

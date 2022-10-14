@@ -891,6 +891,7 @@ def annotate_fastas(fasta_locs, output_dir, db_handler, logger, min_contig_size=
     tmp_dir = path.join(output_dir, 'working_dir')
     mkdir(tmp_dir)
 
+    breakpoint()
     # setup custom databases to be searched
     custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'),
                                         logger, threads, verbose)
@@ -906,6 +907,7 @@ def annotate_fastas(fasta_locs, output_dir, db_handler, logger, min_contig_size=
         logger.info('Annotating %s' % fasta_name)
         fasta_dir = path.join(tmp_dir, fasta_name)
         mkdir(fasta_dir)
+        breakpoint()
         annotations_list.append(
             annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_handler, logger, min_contig_size, prodigal_mode,
                            trans_table, custom_db_locs, custom_hmm_locs, custom_hmm_cutoffs_locs,
