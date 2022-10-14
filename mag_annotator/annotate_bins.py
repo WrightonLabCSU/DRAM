@@ -244,11 +244,16 @@ def kofam_hmmscan_formater(hits:pd.DataFrame, hmm_info_path:str=None, use_dbcan2
 
 
 
-def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
+def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, logger:logging.Logger,
+                           db_handler=None):
+    categories_col = f"{db_name}_categories"
+    id_col = f"{db_name}_id"
+    description_col = f"{db_name}_description"
     hits_sig = hits[hits.apply(get_sig_row, axis=1)]
     if len(hits_sig) == 0:
+        logger.warn("No significant hits for vog_db")
         # if nothing significant then return nothing, don't get descriptions
-        return pd.DataFrame()
+        return pd.DataFrame(columns=[categories_col, id_col, description_col])
     # Get the best hits
     hits_best = hits_sig.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
     if db_handler is None:
@@ -257,16 +262,16 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
         # get_descriptions
         desc_col = f"{db_name}_hits"
         descriptions = pd.DataFrame(
-            db_handler.get_descriptions(hits_best['target_id'].unique(), f"{db_name}_description"),
+            db_handler.get_descriptions(hits_best['target_id'].unique(), description_col),
             index=[desc_col]).T
         categories = descriptions[desc_col].apply(lambda x: x.split('; ')[-1])
-        descriptions[f"{db_name}_categories"] = categories.apply(
+        descriptions[categories_col] = categories.apply(
             lambda x: ';'.join(set([x[i:i + 2] for i in range(0, len(x), 2)])))
         descriptions['target_id'] = descriptions.index
         hits_df = pd.merge(hits_best[['query_id', 'target_id']], descriptions, on=f'target_id')
     hits_df.set_index('query_id', inplace=True, drop=True)
     hits_df.rename_axis(None, inplace=True)
-    hits_df.rename(columns={'target_id': f"{db_name}_id"}, inplace=True)
+    hits_df.rename(columns={'target_id': id_col}, inplace=True)
     return hits_df
 
 
@@ -753,6 +758,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
                                            formater=partial(
                                                vogdb_hmmscan_formater,
                                                db_name='vogdb',
+                                               logger=logger,
                                                db_handler=db_handler
                                            ),
                                            logger=logger))

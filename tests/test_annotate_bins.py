@@ -1,3 +1,4 @@
+from re import L
 import pytest
 
 import os
@@ -387,7 +388,7 @@ def test_rename_fasta(fasta_loc, tmpdir):
 
 def test_run_trna_scan(tmpdir, logger):
     filt_fasta = tmpdir.mkdir('test_trnascan1')
-    no_trna = run_trna_scan(os.path.join('tests', 'data', 'e_coli_16S.fasta'), 
+    no_trna = run_trna_scan(os.path.join('tests', 'data', 'e_coli_16S.fasta'),
                             str(filt_fasta), 'no_trnas', logger, threads=1, verbose=False)
     assert no_trna is None
 
@@ -536,7 +537,7 @@ def test_vogdb_hmmscan_formater():
     }, index=["vogdb_id"]).T
     input_b6 = os.path.join('tests', 'data', 'unformatted_vogdb.b6')
     hits = parse_hmmsearch_domtblout(input_b6)
-    output_rcvd = vogdb_hmmscan_formater(hits=hits, db_name='vogdb')
+    output_rcvd = vogdb_hmmscan_formater(hits=hits, db_name='vogdb', logger=logger)
     output_rcvd.sort_index(inplace=True)
     output_expt.sort_index(inplace=True)
     assert output_rcvd.equals(output_expt), "Error in vogdb_hmmscan_formater"
@@ -753,7 +754,7 @@ def test_add_intervals_to_gff(annotated_fake_gff_loc, tmpdir):
     fake_rrnas = pd.DataFrame([['fake_NC_001422.1', 990, 1000, 101.0, '+', '16S ribosomal rRNA gene', np.NaN]],
                               columns=['scaffold', 'begin', 'end', 'e-value', 'strand', 'type', 'note'])
     fake_rrnas.to_csv(fake_rrnas_loc, sep='\t')
-    add_intervals_to_gff(fake_rrnas_loc, annotate_fake_gff_loc_w_rna, {'fake_NC_001422.1': 6000}, 
+    add_intervals_to_gff(fake_rrnas_loc, annotate_fake_gff_loc_w_rna, {'fake_NC_001422.1': 6000},
                          make_rrnas_interval, 'scaffold', logger)
     assert os.path.isfile(annotate_fake_gff_loc_w_rna)
     gff = list(read_sequence(annotate_fake_gff_loc_w_rna, format='gff3'))
