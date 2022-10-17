@@ -933,45 +933,6 @@ def make_fasta_namses_df(fasta_loc):
     return pd.DataFrame(names)
 
 
-def annotate_fastas_as_one(fasta_locs, output_dir, db_handler, logger:logging.Logger, min_contig_size=5000, prodigal_mode='meta',
-                    trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
-                    custom_fasta_loc=(), custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(),
-                    kofam_use_dbcan2_thresholds=False, skip_trnascan=False, rename_bins=True, keep_tmp_dir=True,
-                    threads=10, verbose=True):
-    # check for no conflicting options/configurations
-    tmp_dir = path.join(output_dir, 'working_dir')
-    mkdir(tmp_dir)
-
-    # setup custom databases to be searched
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'),
-                                        logger, threads, verbose)
-    custom_hmm_locs = process_custom_hmms(custom_hmm_loc, custom_hmm_name, logger)
-    custom_hmm_cutoffs_locs= process_custom_hmm_cutoffs(custom_hmm_cutoffs_loc, custom_hmm_name, logger)
-    logger.info('Retrieved database locations and descriptions')
-
-    # iterate over list of fastas and annotate each individually
-    annotations_list = list()
-    names = pd.concat([])
-    for fasta_loc in fasta_locs:
-        # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
-        fasta_name = get_fasta_name(fasta_loc)
-        logger.info('Annotating %s' % fasta_name)
-        fasta_dir = path.join(tmp_dir, fasta_name)
-        mkdir(fasta_dir)
-        annotations_list.append(
-            annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_handler, logger, min_contig_size, prodigal_mode,
-                           trans_table, custom_db_locs, custom_hmm_locs, custom_hmm_cutoffs_locs,
-                           bit_score_threshold, rbh_bit_score_threshold, kofam_use_dbcan2_thresholds,
-                           skip_trnascan, threads, rename_bins, keep_tmp_dir, verbose))
-    logger.info('Annotations complete, processing annotations')
-    all_annotations = merge_annotations(annotations_list, output_dir)
-
-    # clean up
-    if not keep_tmp_dir:
-        rmtree(tmp_dir)
-    return all_annotations
-
-
 # TODO: Add force flag to remove output dir if it already exists
 # TODO: Add continute flag to continue if output directory already exists
 # TODO: make fasta loc either a string or list to remove annotate_bins_cmd and annotate_called_genes_cmd?

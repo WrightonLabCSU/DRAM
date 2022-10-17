@@ -110,13 +110,12 @@ def make_viral_distillate(potential_amgs, genome_summary_form):
     potential_amgs.iloc[0]
     logger =  logging.getLogger()
     check_columns(potential_amgs, logger)
-    # breakpoint()
+    missing_count = 0
     for gene, row in potential_amgs.iterrows():
         gene_ids = row.ids & set(genome_summary_form.index)
         if len(gene_ids) > 0:
             for gene_id in gene_ids:
                 gene_summary = genome_summary_form.loc[gene_id]
-                # breakpoint()
                 if type(gene_summary) is pd.Series:
                     rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'],
                                  gene_summary['sheet'], gene_summary['header'], gene_summary['subheader'],
