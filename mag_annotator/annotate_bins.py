@@ -244,11 +244,16 @@ def kofam_hmmscan_formater(hits:pd.DataFrame, hmm_info_path:str=None, use_dbcan2
 
 
 
-def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
+def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, logger:logging.Logger,
+                           db_handler=None):
+    categories_col = f"{db_name}_categories"
+    id_col = f"{db_name}_id"
+    description_col = f"{db_name}_description"
     hits_sig = hits[hits.apply(get_sig_row, axis=1)]
     if len(hits_sig) == 0:
+        logger.warn("No significant hits for vog_db")
         # if nothing significant then return nothing, don't get descriptions
-        return pd.DataFrame()
+        return pd.DataFrame(columns=[categories_col, id_col, description_col])
     # Get the best hits
     hits_best = hits_sig.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
     if db_handler is None:
@@ -257,16 +262,16 @@ def vogdb_hmmscan_formater(hits:pd.DataFrame,  db_name:str, db_handler=None):
         # get_descriptions
         desc_col = f"{db_name}_hits"
         descriptions = pd.DataFrame(
-            db_handler.get_descriptions(hits_best['target_id'].unique(), f"{db_name}_description"),
+            db_handler.get_descriptions(hits_best['target_id'].unique(), description_col),
             index=[desc_col]).T
         categories = descriptions[desc_col].apply(lambda x: x.split('; ')[-1])
-        descriptions[f"{db_name}_categories"] = categories.apply(
+        descriptions[categories_col] = categories.apply(
             lambda x: ';'.join(set([x[i:i + 2] for i in range(0, len(x), 2)])))
         descriptions['target_id'] = descriptions.index
         hits_df = pd.merge(hits_best[['query_id', 'target_id']], descriptions, on=f'target_id')
     hits_df.set_index('query_id', inplace=True, drop=True)
     hits_df.rename_axis(None, inplace=True)
-    hits_df.rename(columns={'target_id': f"{db_name}_id"}, inplace=True)
+    hits_df.rename(columns={'target_id': id_col}, inplace=True)
     return hits_df
 
 
@@ -753,6 +758,7 @@ def annotate_orfs(gene_faa, db_handler, tmp_dir, logger, custom_db_locs=(), cust
                                            formater=partial(
                                                vogdb_hmmscan_formater,
                                                db_name='vogdb',
+                                               logger=logger,
                                                db_handler=db_handler
                                            ),
                                            logger=logger))
@@ -925,45 +931,6 @@ def make_fasta_namses_df(fasta_loc):
     fasta_name = get_fasta_name(fasta_loc)
     names = [{'fasta': fasta_name, 'seq': seq.metadata['id']} for seq in read_sequence(fasta_loc,format='fasta')]
     return pd.DataFrame(names)
-
-
-def annotate_fastas_as_one(fasta_locs, output_dir, db_handler, logger:logging.Logger, min_contig_size=5000, prodigal_mode='meta',
-                    trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350, custom_db_name=(),
-                    custom_fasta_loc=(), custom_hmm_name=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(),
-                    kofam_use_dbcan2_thresholds=False, skip_trnascan=False, rename_bins=True, keep_tmp_dir=True,
-                    threads=10, verbose=True):
-    # check for no conflicting options/configurations
-    tmp_dir = path.join(output_dir, 'working_dir')
-    mkdir(tmp_dir)
-
-    # setup custom databases to be searched
-    custom_db_locs = process_custom_dbs(custom_fasta_loc, custom_db_name, path.join(tmp_dir, 'custom_dbs'),
-                                        logger, threads, verbose)
-    custom_hmm_locs = process_custom_hmms(custom_hmm_loc, custom_hmm_name, logger)
-    custom_hmm_cutoffs_locs= process_custom_hmm_cutoffs(custom_hmm_cutoffs_loc, custom_hmm_name, logger)
-    logger.info('Retrieved database locations and descriptions')
-
-    # iterate over list of fastas and annotate each individually
-    annotations_list = list()
-    names = pd.concat([])
-    for fasta_loc in fasta_locs:
-        # get name of file e.g. /home/shaffemi/my_genome.fa -> my_genome
-        fasta_name = get_fasta_name(fasta_loc)
-        logger.info('Annotating %s' % fasta_name)
-        fasta_dir = path.join(tmp_dir, fasta_name)
-        mkdir(fasta_dir)
-        annotations_list.append(
-            annotate_fasta(fasta_loc, fasta_name, fasta_dir, db_handler, logger, min_contig_size, prodigal_mode,
-                           trans_table, custom_db_locs, custom_hmm_locs, custom_hmm_cutoffs_locs,
-                           bit_score_threshold, rbh_bit_score_threshold, kofam_use_dbcan2_thresholds,
-                           skip_trnascan, threads, rename_bins, keep_tmp_dir, verbose))
-    logger.info('Annotations complete, processing annotations')
-    all_annotations = merge_annotations(annotations_list, output_dir)
-
-    # clean up
-    if not keep_tmp_dir:
-        rmtree(tmp_dir)
-    return all_annotations
 
 
 # TODO: Add force flag to remove output dir if it already exists
