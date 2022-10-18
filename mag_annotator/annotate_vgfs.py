@@ -16,7 +16,7 @@ from mag_annotator.annotate_bins import annotate_fastas, get_fasta_name, perform
 from mag_annotator.utils import setup_logger
 from mag_annotator.summarize_genomes import get_ids_from_annotations_all
 
-VMAG_DBS_TO_ANNOTATE = ('kegg', 'kofam', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'viral', 'vogdb')
+VMAG_DBS_TO_ANNOTATE = ('kegg', 'kofam_hmm', 'kofam_ko_list', 'uniref', 'peptidase', 'pfam', 'dbcan', 'viral', 'vogdb')
 VIRSORTER_COLUMN_NAMES = ['gene_name', 'start_position', 'end_position', 'length', 'strandedness',
                           'viral_protein_cluster_hit', 'viral_protein_cluster_hit_score',
                           'viral_protein_cluster_hit_evalue', 'viral_protein_cluster_category', 'pfam_hit',
@@ -288,9 +288,6 @@ def get_metabolic_flags(annotations, metabolic_genes, amgs, verified_amgs, scaff
     flag_dict = dict()
     metabolic_genes = set(metabolic_genes)
     for scaffold, scaffold_annotations in annotations.groupby('scaffold'):
-        # perc_xh = sum([i == 'Xh' if not pd.isna(i) else False for i in scaffold_annotations['vogdb_categories']]) \
-        #           / scaffold_annotations.shape[0]
-        # is_j = perc_xh >= 0.18
         for gene, row in scaffold_annotations.iterrows():
             # set up
             flags = ''
@@ -431,10 +428,9 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                   custom_hmm_name=(), use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
                   keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     mkdir(output_dir)
-    log_file_path = path.join(output_dir, "Annotation.log")
+    log_file_path = path.join(output_dir, "annotate.log")
     logger = logging.getLogger('annotation_log')
     setup_logger(logger, log_file_path)
-    breakpoint()
 
     # check inputs
     prodigal_modes = ['train', 'meta', 'single']
@@ -447,9 +443,10 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # get database locations
     db_handler = DatabaseHandler(logger)
-    breakpoint()
-    db_handler.filter_db_locs(low_mem_mode=low_mem_mode, use_uniref=use_uniref, use_vogdb=True, master_list=VMAG_DBS_TO_ANNOTATE)
-    breakpoint()
+    db_handler.filter_db_locs(low_mem_mode=low_mem_mode,
+                              use_uniref=use_uniref,
+                              use_vogdb=True,
+                              master_list=VMAG_DBS_TO_ANNOTATE)
     if virsorter_affi_contigs is not None:
         virsorter_hits = get_virsorter_hits(virsorter_affi_contigs)
     else:
@@ -484,7 +481,6 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
 
     # annotate vMAGs
     rename_bins = False
-    breakpoint()
     annotations = annotate_fastas(
         fasta_locs=contig_locs,
         output_dir=output_dir, 
