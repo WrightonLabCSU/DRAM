@@ -51,16 +51,16 @@ def summarized_genomes():
 
 
 def test_get_ids_from_row(logger):
-     in_data = pd.concat([pd.DataFrame({'ko_id': 'K00001,K00003'}, index=['id_set1']),
+    in_data = pd.concat([pd.DataFrame({'ko_id': 'K00001,K00003'}, index=['id_set1']),
                          pd.DataFrame({'kegg_hit': 'Some text and then [EC:0.0.0.0]; also [EC:1.1.1.1]'}, index=['id_set2']),
                          pd.DataFrame({'peptidase_family': 'ABC1;BCD2'}, index=['id_set3']),
-                         pd.DataFrame({'cazy_hits': 'GH4 some things [GH4]; GT6 other things [GT6]'}, index=['id_set4'])
-                         ])
-     out_data = get_ids_from_annotations_by_row(in_data)
-     assert out_data['id_set1'] == {'K00001', 'K00003'}
-     assert out_data['id_set2'] == {'EC:0.0.0.0', 'EC:1.1.1.1'}
-     assert out_data['id_set3'] == {'ABC1', 'BCD2'}
-     assert out_data['id_set4'] == {'GH4', 'GT6'}
+                         pd.DataFrame({'cazy_best_hit': 'GH4'}, index=['id_set4'])
+                        ])
+    out_data = get_ids_from_annotations_by_row(in_data)
+    assert out_data['id_set1'] == {'K00001', 'K00003'}
+    assert out_data['id_set2'] == {'EC:0.0.0.0', 'EC:1.1.1.1'}
+    assert out_data['id_set3'] == {'ABC1', 'BCD2'}
+    assert out_data['id_set4'] == {'GH4'}
 
 
 def test_fill_genome_summary_frame(annotations, genome_summary_frame, summarized_genomes, logger):

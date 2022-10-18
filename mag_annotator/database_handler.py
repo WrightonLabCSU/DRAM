@@ -50,13 +50,25 @@ class DatabaseHandler:
     def __init__(self, logger, config_loc=None):
         # read in new configuration
         # TODO: validate config file after reading it in
+        if logger is None:
+            logger = logging.getLogger("database_handler.log")
+            # log_path = self.get_log_path()
+            # setup_logger(logger, log_path)
+            setup_logger(logger)
+            logger.info(f"Logging to console")
+        self.logger = logger
         if config_loc is None:
             config_loc = get_config_loc()
+        self.load_config(config_loc)
 
         self.config_loc = config_loc
-        conf = json.loads(open(self.config_loc).read())
+
+
+
+    def load_config(self, config_file):
+        conf = json.loads(open(config_file).read())
         if len(conf) == 0:
-            logger.warn('There is no config information in the provided file')
+            self.logger.warn('There is no config information in the provided file')
             self.clear_config(write_config=False)
         if 'dram_version' not in conf:
             warnings.warn("The DRAM version in your config is empty."
@@ -67,21 +79,12 @@ class DatabaseHandler:
         else:
             conf_version = conf.get('dram_version')
             if conf_version is None:
-                db_handler = self.__construct_from_dram_pre_1_4_0(conf)
-            elif conf_version not in {current_dram_version, "1.4.0"}: # Known suported versions
+                self.__construct_from_dram_pre_1_4_0(conf)
+            elif conf_version not in {current_dram_version, "1.4.0",  "1.4.0rc1", "1.4.0rc2", "1.4.0rc3", "1.4.0rc4"}: # Known suported versions
                 warnings.warn("The DRAM version in your config is not listed in the versions "
                               "that are known to work. This may not be a problem, but if this "
                               "import fails then you should contact suport.")
-            db_handler = self.__construct_default(conf)
-
-        if logger is None:
-            logger = logging.getLogger("database_handler.log")
-            # log_path = self.get_log_path()
-            # setup_logger(logger, log_path)
-            setup_logger(logger)
-            logger.info(f"Logging to console")
-
-        self.logger = logger
+            self.__construct_default(conf)
 
     def get_log_path(self):
         path = self.config.get('log_path')
@@ -491,9 +494,12 @@ def import_config(config_loc):
     print('Import, appears to be successfull.')
 
 
-def mv_db_folder(new_location:str, old_config_file:str=None):
+def mv_db_folder(new_location:str='./', old_config_file:str=None):
     new_location = path.abspath(new_location)
-    db_handler = DatabaseHandler(None, old_config_file)
+    old_config_file = path.abspath(old_config_file)
+    db_handler = DatabaseHandler(None)
+    if old_config_file is not None:
+        db_handler.load_config(old_config_file)
     paths = ["search_databases", "dram_sheets", "database_descriptions"]
     def auto_move_path(k:str, v:str):
         if v is None:
@@ -501,10 +507,10 @@ def mv_db_folder(new_location:str, old_config_file:str=None):
             return
         new_path = path.join(new_location, path.basename(v))
         if not path.exists(new_path):
-            db_handler.logger.warn(f"There is no file at path {v},"
+            db_handler.logger.warn(f"There is no file at path {new_path},"
                                    f" so no new location will be set for {k}.")
             return
-        db_handler.logger.info(f"Moving {k} to {v}")
+        db_handler.logger.info(f"Moving {k} to {new_path}")
         db_handler.set_database_paths(**{f"{k}_loc": new_path}, write_config=True)
     auto_move_path('log_path', db_handler.config.get('log_path'))
     auto_move_path('description_db', db_handler.config.get('description_db'))
