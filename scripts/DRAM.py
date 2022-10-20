@@ -137,6 +137,9 @@ if __name__ == '__main__':
     distill_parser.add_argument("--trna_path", help="tRNA output from annotation")
     distill_parser.add_argument("--groupby_column", help="Column from annotations to group as organism units",
                                 default='fasta')
+    distill_parser.add_argument('--config_loc', default=None,
+                                help='location of an alternive config file that will over write the original at run time,'
+                                ' but not be saved or modified')
     distill_parser.add_argument("--custom_distillate", help="Custom distillate form to add your own modules")
     distill_parser.add_argument("--distillate_gene_names", action='store_true', default=False,
                                 help="Give names of genes instead of counts in genome metabolism summary")
