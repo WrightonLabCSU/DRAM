@@ -1039,7 +1039,7 @@ def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60,
     annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold,
                           custom_db_name, custom_fasta_loc, custom_hmm_loc, custom_hmm_name,
                           custom_hmm_cutoffs_loc, use_uniref, use_vogdb, kofam_use_dbcan2_thresholds,
-                          rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose,
+                          rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose, None,
                           config_loc)
 
 def perform_fasta_checks(fasta_locs, logger):
