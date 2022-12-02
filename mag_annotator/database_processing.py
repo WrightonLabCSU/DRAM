@@ -535,9 +535,9 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     functions = {i:j for i,j in globals().items() if callable(j) and i.startswith('download_')}
 
     # Check any specified paths exist
-    missing_user_inputs = [i for i in locs if not path.exists(i)]
+    missing_user_inputs = [f"{i} at {j}" for i, j in locs.items() if not path.exists(j)]
     if len(missing_user_inputs) > 1:
-        raise ValueError(f"The fallowing user provided paths don't seem to exist: {missing_user_inputs}")
+        raise ValueError(f"The fallowing user provided paths don't seem to exist: {', '.join(missing_user_inputs)}")
 
     un_obtainable = [i for i in database_settings if i not in locs and i not in download_functions]
 
