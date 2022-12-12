@@ -308,10 +308,12 @@ class DatabaseHandler:
                 for i in locs
             }
         )
-
-        self.config["description_db"] = check_exists_and_add_to_location_dict(
-            description_db_loc, self.config.get("description_db")
-        )
+        if update_description_db:
+            self.populate_description_db(output_loc=description_db_loc)
+        else:
+            self.config["description_db"] = check_exists_and_add_to_location_dict(
+                description_db_loc, self.config.get("description_db")
+            )
         self.config["log_path"] = check_exists_and_add_to_location_dict(
             log_path_loc, self.config.get("log_path_db")
         )
@@ -319,8 +321,6 @@ class DatabaseHandler:
 
         if write_config:
             self.write_config()
-        if update_description_db:
-            self.populate_description_db()
 
 
     def write_config(self, config_loc=None):
@@ -554,14 +554,12 @@ class DatabaseHandler:
             self.write_config()
 
 
-def set_database_paths(clear_config=False, update_description_db=False, **kargs):
+def set_database_paths(clear_config=False, **kargs):
     # TODO Add tests
     db_handler = DatabaseHandler(None)
     if clear_config:
         db_handler.clear_config(write_config=True)
     db_handler.set_database_paths(**kargs, write_config=True)
-    if update_description_db:
-        db_handler.populate_description_db()
 
 
 def print_database_locations(config_loc=None):
