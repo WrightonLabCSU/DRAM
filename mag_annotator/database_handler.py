@@ -141,6 +141,12 @@ class DatabaseHandler:
         self.config_loc = system_config_loc
 
         # read in configuration # TODO: validate config file after reading it in
+        if 'viral_refseq' in config_old:
+            config_old['viral'] = config_old.get('viral_refseq')
+        if 'kofam' in config_old:
+            config_old['kofam_hmm'] = config_old.get('kofam')
+        if 'pfam_hmm_dat' in config_old:
+            config_old['pfam_hmm'] = config_old.get('pfam_hmm_dat')
         self.config["search_databases"] = {
             key: value for key, value in config_old.items() if key in SEARCH_DATABASES
         }
@@ -248,7 +254,7 @@ class DatabaseHandler:
         dbcan_loc=None,
         dbcan_fam_activities_loc=None,
         dbcan_subfam_ec_loc=None,
-        viral_refseq_loc=None,
+        viral_loc=None,
         peptidase_loc=None,
         vogdb_loc=None,
         vog_annotations_loc=None,
@@ -278,7 +284,7 @@ class DatabaseHandler:
                 "uniref": uniref_loc,
                 "pfam": pfam_loc,
                 "dbcan": dbcan_loc,
-                "viral": viral_refseq_loc,
+                "viral": viral_loc,
                 "peptidase": peptidase_loc,
                 "vogdb": vogdb_loc,
             },
@@ -580,6 +586,7 @@ def print_database_locations(config_loc=None):
     )
     print("VOGDB db: %s" % conf.config.get("search_databases").get("vogdb"))
     # database descriptions used during description db population
+    print()
     print("Descriptions of search database entries")
     print("Pfam hmm dat: %s" % conf.config.get("database_descriptions").get("pfam_hmm"))
     print(
