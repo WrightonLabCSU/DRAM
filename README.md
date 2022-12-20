@@ -15,11 +15,9 @@ To install DRAM you also must install some dependencies. The easiest way to inst
    
 ### Conda Installation
 
-Install DRAM into a new [conda](https://docs.conda.io/en/latest/) environment using the provided
-environment.yaml file.
+Install DRAM into a new [conda](https://docs.conda.io/en/latest/) environment through the bioconda channel:
 ```bash
-wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
-conda env create -f environment.yaml -n DRAM
+conda create -n DRAM -c bioconda dram
 ```
 If this installation method is used, then all further steps should be run inside the newly created DRAM environment, or with the full path to the executable, use `which` with the environment active to find these, the eg. `which DRAM.py`. This environment can be activated using this command:
 ```bash
