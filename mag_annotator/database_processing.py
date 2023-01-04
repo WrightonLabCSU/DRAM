@@ -26,54 +26,6 @@ LOGGER = logging.getLogger("database_processing.log")
 DEFAULT_MMMSPRO_DB_NAME = 'db'
 
 
-# KOFAM_CITATION = ("Aramaki T., Blanc-Mathieu R., Endo H., Ohkubo K., Kanehisa "
-#                   "M., Goto S., Ogata H.\nKofamKOALA: KEGG ortholog assignment"
-#                   " based on profile HMM and adaptive score threshold.\nBioinf"
-#                   "ormatics. 2019 Nov 19. pii: btz859. doi: 10.1093/bioinforma"
-#                   "tics/btz859."
-#                   ) # arguably not for kofam but the closest I saw
-# VIRAL_REFSEQ_CITATION = ("Brister JR, Ako-Adjei D, Bao Y, Blinkova O. NCBI vir"
-#                          "al genomes resource. Nucleic Acids Res. 2015 Jan;43("
-#                          "Database issue):D571-7 PubMed PubMedCentral"
-#                          ) # Three options but this one is viral specific
-# KEGG_CITATION = ("Kanehisa, M., Furumichi, M., Sato, Y., Ishiguro-Watanabe, M."
-#                  ", and Tanabe, M.; KEGG: integrating viruses and cellular org"
-#                  "anisms. Nucleic Acids Res. 49, D545-D551 (2021)."
-#                  )
-# PFAM_CITATION = ("Pfam: The protein families database in 2021: J. Mistry, S. C"
-#                  "huguransky, L. Williams, M. Qureshi, G.A. Salazar, E.L.L. So"
-#                  "nnhammer, S.C.E. Tosatto, L. Paladin, S. Raj, L.J. Richardso"
-#                  "n, R.D. Finn, A. Bateman"
-#                  )
-# PEPTIDASE_CITATION = ("Rawlings, N.D., Barrett, A.J., Thomas, P.D., Huang, X.,"
-#                       " Bateman, A. & Finn, R.D. (2018) The MEROPS database of"
-#                       " proteolytic enzymes, their substrates and inhibitors i"
-#                       "n 2017 and a comparison with peptidases in the PANTHER "
-#                       "database. Nucleic Acids Res 46, D624-D632."
-#                       )
-# VOGDB_CITATION = ("Thannesberger, J., Hellinger, H. J., Klymiuk, I., Kastner, M"
-#                   ". T., Rieder, F. J., Schneider, M., ... & Steininger, C. (20"
-#                   "17). Viruses comprise an extensive pool of mobile genetic el"
-#                   "ements in eukaryote cell cultures and human clinical samples"
-#                   ". The FASEB Journal, 31(5), 1987-2000."
-#                   )
-# UNIREF_CITATION = ("Wang Y, Wang Q, Huang H, Huang W, Chen Y, McGarvey PB, Wu C"
-#                    "H, Arighi CN, UniProt Consortium. A crowdsourcing open plat"
-#                    "form for literature curation in UniProt Plos Biology. 19(12"
-#                    "):e3001464 (2021)"
-#                    )
-# DBCAN_CITATION = ("Yin Y*, Mao X*, Yang JC, Chen X, Mao F and Xu Y, dbCAN: a we"
-#                   "b resource for automated carbohydrate-active enzyme annotati"
-#                   "on, Nucleic Acids Res. 2012 Jul;40(Web Server issue):W445-51"
-#                   ) # again a citation for the tool not the db
-# DRAM_CITATION = ("M. Shaffer, M. A. Borton, B. B. McGivern, A. A. Zayed, S. L. "
-#                  "La Rosa, L. M. Solden, P. Liu, A. B. Narrowe, J. Rodríguez-Ra"
-#                  "mos, B. Bolduc et al., \"Dram for distilling microbial metabo"
-#                  "lism to automate the curation of microbiome function,\" Nucle"
-#                  "ic acids research, vol. 48, no. 16, pp. 8883–8900, 2020."
-#                  )
-
-
 KOFAM_CITATION = ("T. Aramaki, R. Blanc-Mathieu, H. Endo, K. Ohkubo, M. Kanehisa"
                   ", S. Goto, and H. Ogata, \"Kofamkoala: Kegg ortholog assignme"
                   "nt based on profile hmm and adaptive score threshold,\" Bioin"

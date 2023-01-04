@@ -46,8 +46,10 @@ def genome_summary_frame():
                                      columns=['gene_description', 'module', 'sheet', 'header', 'subheader']))
 
 
-def test_make_viral_distillate(pamgs, genome_summary_frame):
-    test_viral_distillate = make_viral_distillate(pamgs, genome_summary_frame)
+def test_make_viral_distillate(pamgs, genome_summary_frame, logger):
+    amg_database = pd.DataFrame()
+    test_viral_distillate = make_viral_distillate(pamgs, genome_summary_frame, amg_database=amg_database, logger=logger)
+    breakpoint()
     viral_distillate = pd.DataFrame([['gene_3', 'scaffold_1', 'K00001', 'description', 'main', 'header1', 'subheader1',
                                       'module1', 3, 'MFTJ'],
                                      ['gene_3', 'scaffold_1', 'K00001', 'description3', 'other', 'header1',
