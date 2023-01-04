@@ -32,7 +32,7 @@ if __name__ == '__main__':
     annotate_parser.add_argument('-i', '--input_fasta', action='append',
                                  help="fasta file, optionally with wildcards to point to multiple fastas",
                                  required=True)
-    annotate_parser.add_argument('-o', '--output_dir', help="output directory")
+    annotate_parser.add_argument('-o', '--output_dir', help="output directory", required=True)
     annotate_parser.add_argument('--min_contig_size', type=int, default=2500,
                                  help='minimum contig size to be used for gene prediction')
     annotate_parser.add_argument('--config_loc', default=None,
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
     # parser for summarizing genomes
     distill_parser.add_argument("-i", "--input_file", help="Annotations path")
-    distill_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
+    distill_parser.add_argument("-o", "--output_dir", required=True, help="Directory to write summarized genomes")
     distill_parser.add_argument('--log_file_path', 
                                        help="A name and loctation for the log file")
     distill_parser.add_argument("--rrna_path", help="rRNA output from annotation")
@@ -179,7 +179,7 @@ if __name__ == '__main__':
 
     # parser for getting gene neighborhoods
     neighborhood_parser.add_argument("-i", "--input_file", help="Annotations path")
-    neighborhood_parser.add_argument("-o", "--output_dir", help="Directory to write gene neighborhoods")
+    neighborhood_parser.add_argument("-o", "--output_dir", required=True, help="Directory to write gene neighborhoods")
     neighborhood_parser.add_argument("--genes", nargs='*', help="Gene names from DRAM to find neighborhoods around")
     neighborhood_parser.add_argument("--identifiers", nargs='*',
                                      help="Database identifiers assigned by DRAM to find neighborhoods around")
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     # TODO: Make it work with append so you can use multiple -i's
     merge_annotations_parser.add_argument("-i", "--input_dirs", help="Path with wildcards pointing to DRAM annotation "
                                                                      "output directories")
-    merge_annotations_parser.add_argument("-o", "--output_dir", help="Path to output merged annotations files")
+    merge_annotations_parser.add_argument("-o", "--output_dir", required=True,  help="Path to output merged annotations files")
     merge_annotations_parser.set_defaults(func=merge_annotations_cmd)
 
     args = parser.parse_args()
