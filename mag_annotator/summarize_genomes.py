@@ -42,15 +42,6 @@ ID_FUNCTION_DICT = {
     'kegg_hit': lambda x: [i[1:-1] for i in
                            re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
     'peptidase_family': lambda x: [j for j in x.split(';')],
-    # 'cazy_ids': lambda x: [i.split('_')[0] for i in x.split('; ')],
-    # 'cazy_id': lambda x: [i.split('_')[0] for i in x.split('; ')],
-    # 'cazy_hits': lambda x: [f"{i[1:3]}:{i[4:-1]}" for i in
-    #                         re.findall(r'\(EC [\d+\.]+[\d-]\)', x)
-    #                         ] + [
-    #                         i[1:-1].split('_')[0]
-    #                         for i in re.findall(r'\[[A-Z]*\d*?\]', x)],
-    # 'cazy_subfam_ec': lambda x: [f"EC:{i}" for i in
-    #                              re.findall(r'[\d+\.]+[\d-]', x)],
     'cazy_best_hit': lambda x: [x.split('_')[0]],
     'pfam_hits': lambda x: [j[1:-1].split('.')[0]
                             for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', x)],
@@ -627,7 +618,7 @@ def make_strings_no_repeats(genome_taxa_dict):
 
 def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.',
                       groupby_column='fasta', log_file_path=None, custom_distillate=None,
-                      distillate_gene_names=False, genomes_per_product=1000):
+                      distillate_gene_names=False, genomes_per_product=1000, config_loc=None):
     # make output folder
     mkdir(output_dir)
     if log_file_path is None:
@@ -654,7 +645,7 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
         rrna_frame = pd.read_csv(rrna_path, sep='\t')
 
     # get db_locs and read in dbs
-    database_handler = DatabaseHandler(logger)
+    database_handler = DatabaseHandler(logger, config_loc=config_loc)
     if 'genome_summary_form' not in database_handler.config["dram_sheets"]:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     if 'module_step_form' not in database_handler.config["dram_sheets"]:

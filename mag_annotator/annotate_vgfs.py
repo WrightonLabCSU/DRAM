@@ -426,7 +426,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                   prodigal_mode='meta', trans_table='11', bit_score_threshold=60, rbh_bit_score_threshold=350,
                   custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_cutoffs_loc=(),
                   custom_hmm_name=(), use_uniref=False, kofam_use_dbcan2_thresholds=False, skip_trnascan=False,
-                  keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
+                  keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True, config_loc:str=None ):
     mkdir(output_dir)
     log_file_path = path.join(output_dir, "annotate.log")
     logger = logging.getLogger('annotation_log')
@@ -442,7 +442,7 @@ def annotate_vgfs(input_fasta, virsorter_affi_contigs=None, output_dir='.', min_
                       'training to work well.')
 
     # get database locations
-    db_handler = DatabaseHandler(logger)
+    db_handler = DatabaseHandler(logger, config_loc=config_loc)
     db_handler.filter_db_locs(low_mem_mode=low_mem_mode,
                               use_uniref=use_uniref,
                               use_vogdb=True,

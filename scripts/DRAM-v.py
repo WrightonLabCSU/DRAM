@@ -71,6 +71,9 @@ if __name__ == '__main__':
     annotate_parser.add_argument('--keep_tmp_dir', action='store_true', default=False)
     annotate_parser.add_argument('--threads', type=int, default=10, help='number of processors to use')
     annotate_parser.add_argument('--verbose', action='store_true', default=False)
+    annotate_parser.add_argument('--config_loc', default=None,
+                                 help='location of an alternive config file that will over write the original at run time,'
+                                 ' but not be saved or modified')
     annotate_parser.set_defaults(func=annotate_vgfs)
 
     # parser for summarizing genomes
@@ -89,6 +92,9 @@ if __name__ == '__main__':
     # distill_parser.add_argument("--remove_js", default=False, action='store_true',
     #                             help="Do not consider genes on possible non-viral contigs as potential AMGs")
     distill_parser.add_argument("--custom_distillate", help="Custom distillate form to add your own modules")
+    distill_parser.add_argument('--config_loc', default=None,
+                                 help='location of an alternive config file that will over write the original at run time,'
+                                 ' but not be saved or modified')
     distill_parser.set_defaults(func=summarize_vgfs)
 
     # parser for getting genes

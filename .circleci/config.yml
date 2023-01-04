@@ -30,9 +30,25 @@ jobs:
           command: |
             export PATH="$HOME/miniconda/bin:$PATH"
             conda update -y conda
-            conda create -n DRAM python=3.7
+            conda create -n DRAM python=3.8
             source activate DRAM
-            conda install pandas pytest pandas pytest scikit-bio scipy==1.8.1 prodigal mmseqs2!=10.6d92c hmmer!=3.3.1 trnascan-se>=2 sqlalchemy barrnap altair>=4 openpyxl networkx ruby parallel pip
+            conda install pandas
+            conda install pytest
+            conda install pandas
+            conda install pytest
+            conda install scikit-bio
+            conda install scipy==1.8.1
+            conda install prodigal
+            conda install mmseqs2!=10.6d92c
+            conda install hmmer!=3.3.1
+            conda install trnascan-se>=2
+            conda install sqlalchemy
+            conda install barrnap
+            conda install altair>=4
+            conda install openpyxl
+            conda install networkx
+            conda install ruby
+            conda install parallel pip
             pip3 install ./
       - run:
           name: Run tests in enviroment

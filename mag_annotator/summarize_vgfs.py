@@ -105,7 +105,7 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
 
 
 def make_viral_distillate(potential_amgs, genome_summary_form, amg_database, logger):
-    """Make a summary of what in our database makes somthing a AMG or likly AMG to dram"""
+    """Make a summary of what in our database makes something a AMG or likly AMG to dram"""
     # Transform the amg database to make it more workable
     def look_up_metabolic_info(search_db, match_db, match_db_name):
         id_genes = set(match_db.index)
@@ -232,7 +232,8 @@ def make_viral_functional_heatmap(functional_df, vgf_order=None):
 
 
 def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxiliary_score=3,
-                   remove_transposons=False, remove_fs=False, custom_distillate=None, log_file_path:str=None):
+                   remove_transposons=False, remove_fs=False, custom_distillate=None,
+                   log_file_path:str=None, config_loc=None):
     # make output folder
     mkdir(output_dir)
     if log_file_path is None:
@@ -244,7 +245,7 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
 
     # set up
     annotations = pd.read_csv(input_file, sep='\t', index_col=0).fillna('')
-    database_handler = DatabaseHandler(logger)
+    database_handler = DatabaseHandler(logger, config_loc=config_loc)
     if database_handler.config["dram_sheets"].get('genome_summary_form') is None:
         raise ValueError('Genome summary form location must be set in order to summarize genomes')
     genome_summary_form = pd.read_csv(database_handler.config['dram_sheets']['genome_summary_form'], sep='\t', index_col=0)
