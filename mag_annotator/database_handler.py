@@ -5,11 +5,10 @@ import gzip
 import logging
 from shutil import copy2
 import warnings
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
 from datetime import datetime
 from functools import partial
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 import pandas as pd
 
