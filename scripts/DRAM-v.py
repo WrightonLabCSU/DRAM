@@ -27,7 +27,7 @@ if __name__ == '__main__':
     annotate_parser.add_argument('-i', '--input_fasta', help="fasta file, output from ", required=True)
     annotate_parser.add_argument('-v', '--virsorter_affi_contigs', help="VirSorter VIRSorter_affi-contigs.tab "
                                                                         "output file")
-    annotate_parser.add_argument('-o', '--output_dir', help="output directory")
+    annotate_parser.add_argument('-o', '--output_dir', help="output directory", required=True)
     annotate_parser.add_argument('--min_contig_size', type=int, default=2500,
                                  help='minimum contig size to be used for gene prediction')
     annotate_parser.add_argument('--split_contigs', action='store_true', default=False,
@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
     # parser for summarizing genomes
     distill_parser.add_argument("-i", "--input_file", help="Annotations path")
-    distill_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes")
+    distill_parser.add_argument("-o", "--output_dir", help="Directory to write summarized genomes", required=True)
     distill_parser.add_argument("--groupby_column", help="Column from annotations to group as VGF units",
                                 default='scaffold')
     distill_parser.add_argument("--max_auxiliary_score", type=int, default=3,
@@ -134,7 +134,7 @@ if __name__ == '__main__':
 
     # parser for getting gene neighborhoods
     neighborhood_parser.add_argument("-i", "--input_file", help="Annotations path")
-    neighborhood_parser.add_argument("-o", "--output_dir", help="Directory to write gene neighborhoods")
+    neighborhood_parser.add_argument("-o", "--output_dir", help="Directory to write gene neighborhoods", required=True)
     neighborhood_parser.add_argument("--genes", nargs='*', help="Gene names from DRAM to find neighborhoods around")
     neighborhood_parser.add_argument("--identifiers", nargs='*',
                                      help="Database identifiers assigned by DRAM to find neighborhoods around")

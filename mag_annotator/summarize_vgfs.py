@@ -104,33 +104,49 @@ def make_viral_stats_table(annotations, potential_amgs, groupby_column='scaffold
     return pd.DataFrame(viral_stats_series).fillna(0)
 
 
-def make_viral_distillate(potential_amgs, genome_summary_form):
-    rows = list()
-    potential_amgs['ids'] = get_ids_from_annotations_by_row(potential_amgs)
-    potential_amgs.iloc[0]
-    logger =  logging.getLogger()
-    check_columns(potential_amgs, logger)
-    missing_count = 0
-    for gene, row in potential_amgs.iterrows():
-        gene_ids = row.ids & set(genome_summary_form.index)
-        if len(gene_ids) > 0:
-            for gene_id in gene_ids:
-                gene_summary = genome_summary_form.loc[gene_id]
-                if type(gene_summary) is pd.Series:
-                    rows.append([gene, row['scaffold'], gene_id, gene_summary['gene_description'],
-                                 gene_summary['sheet'], gene_summary['header'], gene_summary['subheader'],
-                                 gene_summary['module'], row['auxiliary_score'], row['amg_flags']])
-                else:
-                    for sub_gene_id, sub_gene_summary in gene_summary.iterrows():
-                        rows.append([gene, row['scaffold'], gene_id, sub_gene_summary['gene_description'],
-                                     sub_gene_summary['sheet'], sub_gene_summary['header'],
-                                     sub_gene_summary['subheader'], sub_gene_summary['module'],
-                                     row['auxiliary_score'], row['amg_flags']])
-        else:
-            warnings.warn("No distillate information found for gene %s" % gene)
-            rows.append([gene, row['scaffold'], '', '', '', '', '', '', row['auxiliary_score'],
-                         row['amg_flags']])
-    return pd.DataFrame(rows, columns=VIRAL_DISTILLATE_COLUMNS)
+def make_viral_distillate(potential_amgs, genome_summary_form, amg_database, logger):
+    """Make a summary of what in our database makes something a AMG or likly AMG to dram"""
+    # Transform the amg database to make it more workable
+    def look_up_metabolic_info(search_db, match_db, match_db_name):
+        id_genes = set(match_db.index)
+        return (
+            (search_db
+             .assign(gene_id = lambda x: x['ids'].apply(lambda y: y & id_genes))
+             )[['gene_id', 'scaffold', 'auxiliary_score', 'amg_flags']]
+            .explode('gene_id')
+            .dropna(subset=['gene_id'])
+            .merge(match_db, how='left', left_on='gene_id', right_index=True)
+            .assign(gene_id_origin=match_db_name))
+
+    amg_database_frame = (amg_database
+                          .melt(value_vars=['KO', 'EC', 'PFAM'], 
+                                id_vars=['gene', 'module', 'metabolism', 
+                                         'reference', 'verified'],
+                                value_name='gene_id')
+                          .drop('variable', axis=1)
+                          .assign(
+                              gene_id=lambda x: x['gene_id'].apply(
+                                  lambda y: [i.strip() for i in str(y).split(';')]))
+                          .explode('gene_id')
+                          .dropna(subset='gene_id')
+                          .set_index('gene_id')
+                          .rename(columns = {'gene': 'gene_description'})
+                          )
+    potential_amgs = potential_amgs.assign(ids=get_ids_from_annotations_by_row(potential_amgs))
+    metabolic_df = look_up_metabolic_info(potential_amgs, genome_summary_form, 'genome_summary_form')
+    amg_df = look_up_metabolic_info(potential_amgs, amg_database_frame, 'amg_database')
+    missing = list(set(potential_amgs.index) - (set(metabolic_df.index) | (set(amg_df.index)) ))
+    # evaluate what is mising
+    logger.warning(f"No distillate information found for {len(missing)} genes.")
+    logger.debug('\n'.join(missing))
+
+
+    summary = pd.concat([
+        metabolic_df,
+        amg_df,
+        potential_amgs.loc[missing, ['scaffold', 'auxiliary_score', 'amg_flags']]])
+    summary.reset_index(inplace=True, drop=False, names='gene')
+    return summary
 
 
 def make_vgf_order(amgs):
@@ -251,7 +267,11 @@ def summarize_vgfs(input_file, output_dir, groupby_column='scaffold', max_auxili
     viral_genome_stats.to_csv(path.join(output_dir, 'vMAG_stats.tsv'), sep='\t')
     logger.info('Calculated viral genome statistics')
 
-    viral_distillate = make_viral_distillate(potential_amgs, genome_summary_form)
+    viral_distillate = make_viral_distillate(
+        potential_amgs,
+        genome_summary_form,
+        pd.read_csv(database_handler.config["dram_sheets"].get('amg_database'), sep='\t'),
+        logger)
     viral_distillate.to_csv(path.join(output_dir, 'amg_summary.tsv'), sep='\t', index=None)
     logger.info('Generated AMG summary')
 

@@ -97,7 +97,7 @@ def fill_genome_summary_frame_gene_names(annotations, genome_summary_frame, grou
     for genome, frame in annotations.groupby(groupby_column, sort=False):
         # make dict of identifiers to gene names
         id_gene_dict = defaultdict(list)
-        for gene, ids in get_ids_from_annotations_by_row(frame).iteritems():
+        for gene, ids in get_ids_from_annotations_by_row(frame).items():
             for id_ in ids:
                 id_gene_dict[id_].append(gene)
         # fill in genome summary_frame
@@ -316,7 +316,7 @@ def get_module_step_coverage(kos, module_net):
 def make_module_coverage_df(annotation_df, module_nets):
     kos_to_genes = defaultdict(list)
     ko_id_name = 'kegg_id' if 'kegg_id' in annotation_df.columns else 'ko_id'
-    for gene_id, ko_list in annotation_df[ko_id_name].iteritems():
+    for gene_id, ko_list in annotation_df[ko_id_name].items():
         if type(ko_list) is str:
             for ko in ko_list.split(','):
                 kos_to_genes[ko].append(gene_id)
