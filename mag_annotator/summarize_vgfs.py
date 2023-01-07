@@ -119,8 +119,8 @@ def make_viral_distillate(potential_amgs, genome_summary_form, amg_database, log
             .assign(gene_id_origin=match_db_name))
 
     amg_database_frame = (amg_database
-                          .melt(value_vars=['KO', 'EC', 'PFAM'], 
-                                id_vars=['gene', 'module', 'metabolism', 
+                          .melt(value_vars=['KO', 'EC', 'PFAM'],
+                                id_vars=['gene', 'module', 'metabolism',
                                          'reference', 'verified'],
                                 value_name='gene_id')
                           .drop('variable', axis=1)

@@ -11,14 +11,8 @@ from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.utils import setup_logger
 
 
-@pytest.fixture()
-def logger(tmpdir):
-    logger = logging.getLogger('test_log')
-    setup_logger(logger)
-    return logger
 
-
-def db_w_entries(logger):
+def test_clean_config():
     empty_config = {
         "search_databases": {
         "kegg": None,
@@ -47,5 +41,6 @@ def db_w_entries(logger):
       "description_db": None,
       "dram_version": None
     }
-    db_handler = DatabaseHandler(logger, path.join('tests', 'data', 'test_CONFIG'))
+    logger = logging.getLogger('test_log')
+    db_handler = DatabaseHandler(logger)
     assert db_handler.config == empty_config
