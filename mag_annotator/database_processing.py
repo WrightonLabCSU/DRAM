@@ -16,7 +16,7 @@ from skbio import write as write_sequence
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix, remove_suffix, setup_logger
 
-NUMBER_OF_VIRAL_FILES = 2
+NUMBER_OF_VIRAL_FILES = 1
 DEFAULT_DBCAN_RELEASE = '11'
 DEFAULT_DBCAN_DATE = '08062022'
 DEFAULT_UNIREF_VERSION = '90'
