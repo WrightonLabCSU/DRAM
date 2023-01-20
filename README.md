@@ -4,7 +4,7 @@
 
 DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes and [VirSorter](https://github.com/simroux/VirSorter) identified viral contigs. DRAM annotates MAGs and viral contigs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene, and then a distill step to curate these annotations into useful functional categories. Additionally, viral contigs are further analyzed during to identify potential AMGs. This is done via assigning an auxiliary score and flags representing the confidence that a gene is both metabolic and viral.
 
-For more detail on DRAM and how DRAM works please see our [paper](https://academic.oup.com/nar/article/48/16/8883/5884738) as well as the [wiki](https://github.com/shafferm/DRAM/wiki).
+For more detail on DRAM and how DRAM works please see our [paper](https://academic.oup.com/nar/article/48/16/8883/5884738) as well as the [wiki](https://github.com/WrightonLabCSU/DRAM/wiki).
 For information on how DRAM is changing, please read the [release note](https://github.com/WrightonLabCSU/DRAM/releases/latest)
 
 ## Getting Started Part 1: Installation
@@ -18,7 +18,7 @@ To install DRAM you also must install some dependencies. The easiest way to inst
 Install DRAM into a new [conda](https://docs.conda.io/en/latest/) environment using the provided
 environment.yaml file.
 ```bash
-wget https://raw.githubusercontent.com/shafferm/DRAM/master/environment.yaml
+wget https://raw.githubusercontent.com/WrightonLabCSU/DRAM/master/environment.yaml
 conda env create -f environment.yaml -n DRAM
 ```
 If this installation method is used, then all further steps should be run inside the newly created DRAM environment, or with the full path to the executable, use `which` with the environment active to find these, the eg. `which DRAM.py`. This environment can be activated using this command:
