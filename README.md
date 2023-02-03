@@ -5,7 +5,10 @@
 DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes and [VirSorter](https://github.com/simroux/VirSorter) identified viral contigs. DRAM annotates MAGs and viral contigs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene, and then a distill step to curate these annotations into useful functional categories. Additionally, viral contigs are further analyzed during to identify potential AMGs. This is done via assigning an auxiliary score and flags representing the confidence that a gene is both metabolic and viral.
 
 For more detail on DRAM and how DRAM works please see our [paper](https://academic.oup.com/nar/article/48/16/8883/5884738) as well as the [wiki](https://github.com/WrightonLabCSU/DRAM/wiki).
-For information on how DRAM is changing, please read the [release note](https://github.com/WrightonLabCSU/DRAM/releases/latest)
+
+For information on how DRAM is changing, please read the most recent [release notes](https://github.com/WrightonLabCSU/DRAM/releases/latest).
+
+**NOTE** The DRAM development team is actively working on DRAM 2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM 1, but for the time being, we will continue to fix bugs and assist the user community in troubleshooting DRAM 1. 
 
 ## Getting Started Part 1: Installation
 
