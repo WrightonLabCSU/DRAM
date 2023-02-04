@@ -8,7 +8,9 @@ For more detail on DRAM and how DRAM works please see our [paper](https://academ
 
 For information on how DRAM is changing, please read the most recent [release notes](https://github.com/WrightonLabCSU/DRAM/releases/latest).
 
-**NOTE** The DRAM development team is actively working on DRAM 2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM 1, but for the time being, we will continue to fix bugs and assist the user community in troubleshooting DRAM 1. 
+### DRAM2 Development Note
+
+The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1. Features requested for DRAM1 will be added to DRAM2, to the best of our ability and as appropriate.  We will continue to fix bugs and assist the user community in troubleshooting DRAM1, and support will not end for a long time yet, but the 1.4 release cycle will be the last.
 
 ## Getting Started Part 1: Installation
 
