@@ -9,8 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Check if labeled triaged'
-        if: contains(github.event.label.name, 'triaged' )
-        uses: seripap/gh-linear-action@v1.0.3
+        uses: seripap/gh-linear-action@v1.0.4
         with:
           linear-key: ${{ secrets.LINEAR_API_TOKEN }}
           linear-team-id: "DRAM"
