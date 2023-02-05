@@ -4,28 +4,16 @@ on:
   issues:
     types: [opened]
 
+
 jobs:
   create-linear-issue:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Check if labeled triaged'
-        uses: seripap/gh-linear-action@v1.0.4
+      - name: Create Linear Issue
+        uses: Dev-CasperTheGhost/create-linear-issue@1.3.1
         with:
-          linear-key: ${{ secrets.LINEAR_API_TOKEN }}
-          linear-team-id: "DRAM"
-          title: ${{ github.event.issue.title }}
-          body: ${{ github.event.issue.body }}
-          url: ${{ github.event.issue.html_url }}
-
-#jobs:
-#  create-linear-issue:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Create Linear Issue
-#        uses: Dev-CasperTheGhost/create-linear-issue@1.3.1
-#        with:
-#          # from GitHub Secrets within the repo
-#          linear-api-token: ${{ secrets.LINEAR_API_TOKEN }}
-#          team-id: ${{ secrets.TEAM_ID }}
-#          state-id: ${{ secrets.STATE_ID }}
+          # from GitHub Secrets within the repo
+          linear-api-token: ${{ secrets.LINEAR_API_TOKEN }}
+          team-id: ${{ secrets.TEAM_ID }}
+          state-id: ${{ secrets.STATE_ID }}
 
