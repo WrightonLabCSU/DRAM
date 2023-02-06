@@ -14,6 +14,5 @@ jobs:
         with:
           # from GitHub Secrets within the repo
           linear-api-token: ${{ secrets.LINEAR_API_TOKEN }}
-          team-id: "DRAM"
-          state-id: "Todo"
-
+          team-id: DRAM
+          state-id: Todo
