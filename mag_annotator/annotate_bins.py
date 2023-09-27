@@ -33,6 +33,7 @@ from mag_annotator.utils import (
 )
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.fasta_dup_name_test import fastas_dup_check
+from mag_annotator.camper_kit import search as camper_search, DRAM_SETTINGS as CAMPER_SETTINGS
 
 MAG_DBS_TO_ANNOTATE = (
     "kegg",
@@ -44,6 +45,7 @@ MAG_DBS_TO_ANNOTATE = (
     "dbcan",
     "vogdb",
 )
+MAG_DBS_TO_ANNOTATE += tuple(CAMPER_SETTINGS.keys())
 
 # TODO: Bind verbose to logging
 # TODO Exceptions are not fully handled by logging
@@ -1024,6 +1026,20 @@ def annotate_orfs(
                 logger=logger,
             )
         )
+    if db_handler.config['search_databases'].get('camper_hmm') is not None and \
+            db_handler.config['search_databases'].get('camper_fa_db') is not None:
+        logger.info('Getting hits from CAMPER')
+        annotation_list.append(
+            camper_search(query_db=query_db, 
+                          genes_faa=gene_faa, 
+                          tmp_dir=tmp_dir, 
+                          logger=logger, 
+                          threads=threads,
+                          camper_fa_db=db_handler.config['search_databases']['camper_fa_db'], 
+                          verbose=verbose,
+                          camper_hmm=db_handler.config['search_databases']['camper_hmm'], 
+                          camper_fa_db_cutoffs=db_handler.config['search_databases']['camper_fa_db_cutoffs'], 
+                          camper_hmm_cutoffs=db_handler.config['search_databases']['camper_hmm_cutoffs']))
     else:
         logger.warning(
             "No KEGG source provided so distillation will be of limited use."
@@ -1449,6 +1465,7 @@ def annotate_bins(
     custom_hmm_loc=(),
     custom_hmm_cutoffs_loc=(),
     use_uniref=False,
+    use_camper=False,
     use_vogdb=False,
     kofam_use_dbcan2_thresholds=False,
     skip_trnascan=False,
@@ -1485,6 +1502,7 @@ def annotate_bins(
     db_handler.filter_db_locs(
         low_mem_mode,
         use_uniref,
+        use_camper,
         use_vogdb,
         master_list=MAG_DBS_TO_ANNOTATE,
     )
@@ -1584,49 +1602,19 @@ def annotate_bins(
     logger.info("Completed annotations")
 
 
-def annotate_called_genes_cmd(
-    input_faa,
-    output_dir=".",
-    bit_score_threshold=60,
-    rbh_bit_score_threshold=350,
-    custom_db_name=(),
-    custom_fasta_loc=(),
-    custom_hmm_loc=(),
-    custom_hmm_name=(),
-    custom_hmm_cutoffs_loc=(),
-    use_uniref=False,
-    log_file_path: str = None,
-    use_vogdb=False,
-    kofam_use_dbcan2_thresholds=False,
-    rename_genes=True,
-    keep_tmp_dir=True,
-    low_mem_mode=False,
-    threads=10,
-    verbose=True,
-    config_loc: str = None,
-):
+def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60, 
+                              rbh_bit_score_threshold=350,
+                              custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
+                              custom_hmm_cutoffs_loc=(), use_uniref=False, use_camper=False, use_fegenie=False, 
+                              use_sulphur=False, log_file_path:str=None,
+                              use_vogdb=False, kofam_use_dbcan2_thresholds=False, rename_genes=True, 
+                              keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
-    annotate_called_genes(
-        fasta_locs,
-        output_dir,
-        bit_score_threshold,
-        rbh_bit_score_threshold,
-        custom_db_name,
-        custom_fasta_loc,
-        custom_hmm_loc,
-        custom_hmm_name,
-        custom_hmm_cutoffs_loc,
-        use_uniref,
-        use_vogdb,
-        kofam_use_dbcan2_thresholds,
-        rename_genes,
-        keep_tmp_dir,
-        low_mem_mode,
-        threads,
-        verbose,
-        None,
-        config_loc,
-    )
+    annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, 
+                          custom_db_name, custom_fasta_loc, custom_hmm_loc, custom_hmm_name, 
+                          custom_hmm_cutoffs_loc, use_uniref, use_camper, use_fegenie, 
+                          use_sulphur, use_vogdb, kofam_use_dbcan2_thresholds, 
+                          rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose)
 
 
 def perform_fasta_checks(fasta_locs, logger):
@@ -1659,6 +1647,7 @@ def annotate_called_genes(
     custom_hmm_name=(),
     custom_hmm_cutoffs_loc=(),
     use_uniref=False,
+    use_camper=False,
     use_vogdb=False,
     kofam_use_dbcan2_thresholds=False,
     rename_genes=True,
@@ -1680,7 +1669,7 @@ def annotate_called_genes(
     # get database locations
     db_handler = DatabaseHandler(logger, config_loc)
     db_handler.filter_db_locs(
-        low_mem_mode, use_uniref, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE
+        low_mem_mode, use_uniref, use_camper, use_vogdb, master_list=MAG_DBS_TO_ANNOTATE
     )
 
     # Check fastas

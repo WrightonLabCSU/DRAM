@@ -82,7 +82,7 @@ def pull_sequences(input_tsv, input_fasta, output_fasta, fastas=None, scaffolds=
     try:
         annotations = pd.read_csv(input_tsv, sep='\t', index_col=0)
         if adjective_sheet is not None:
-            adjective_sheet = pd.read_csv(input_tsv, sep='\t', index_col=0) 
+            adjective_sheet = pd.read_csv(input_tsv, sep='\t', index_col=0)
             annotations = annotations.loc[adjective_sheet.index]
         annotation_genes_to_keep = get_genes_from_identifiers(annotations, genes, fastas, scaffolds, identifiers,
                                                               categories, custom_distillate)
@@ -128,7 +128,7 @@ def pull_sequences(input_tsv, input_fasta, output_fasta, fastas=None, scaffolds=
         logger.error(err)
         logger.critical("It looks like your input files are not appropriate for the filter you are trying to apply."
                      " For example using a Viral or AMG filter on an annotations that has no viral information.")
-        
+
         raise err
     except Exception as err:
         logger.error(err)

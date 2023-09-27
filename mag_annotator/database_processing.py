@@ -15,6 +15,11 @@ from skbio import write as write_sequence
 
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.utils import run_process, make_mmseqs_db, download_file, merge_files, remove_prefix, remove_suffix, setup_logger
+from mag_annotator.camper_kit import DRAM_SETTINGS as CAMPER_DRAM_SETTINGS
+from mag_annotator.camper_kit import PROCESS_OPTIONS as CAMPER_PROCESS_OPTIONS
+from mag_annotator.camper_kit import DOWNLOAD_OPTIONS as CAMPER_DOWNLOAD_OPTIONS
+from mag_annotator.camper_kit import process as process_camper_tar_gz
+from mag_annotator.camper_kit import download as download_camper_tar_gz
 
 NUMBER_OF_VIRAL_FILES = 1
 DEFAULT_DBCAN_RELEASE = '11'
@@ -85,6 +90,61 @@ DRAM_CITATION = ("M. Shaffer, M. A. Borton, B. B. McGivern, A. A. Zayed, S. L. "
 # TODO: upgrade to pigz?
 
 
+KOFAM_CITATION = ("T. Aramaki, R. Blanc-Mathieu, H. Endo, K. Ohkubo, M. Kanehisa"
+                  ", S. Goto, and H. Ogata, \"Kofamkoala: Kegg ortholog assignme"
+                  "nt based on profile hmm and adaptive score threshold,\" Bioin"
+                  "formatics, vol. 36, no. 7, pp. 2251–2252, 2020."
+                  )
+VIRAL_REFSEQ_CITATION = ("J. R. Brister, D. Ako-Adjei, Y. Bao, and O. Blinkova, "
+                         "\"Ncbi viral genomes resource,\" Nucleic acids researc"
+                         "h, vol. 43, no. D1, pp. D571–D577, 2015. [3] M. Kanehi"
+                         "sa, M. Furumichi, Y. Sato, M. Ishiguro-Watanabe, and M"
+                         ". Tan-abe, \"Kegg: integrating viruses and cellular or"
+                         "ganisms,\" Nucleic acids research, vol. 49, no. D1, pp"
+                         ". D545–D551, 2021."
+                 )
+KEGG_CITATION = (" M. Kanehisa, M. Furumichi, Y. Sato, M. Ishiguro-Watanabe, and"
+                 " M. Tanabe, \"Kegg: integrating viruses and cellular organisms"
+                 ",\" Nucleic acids research, vol. 49, no. D1, pp. D545–D551, 20"
+                 "21."
+                 )
+PFAM_CITATION = ("J. Mistry, S. Chuguransky, L. Williams, M. Qureshi, G. A. Sal"
+                 "azar, E. L. Sonnhammer, S. C. Tosatto, L. Paladin, S. Raj, L."
+                 " J. Richardson et al., \"Pfam: The protein families database "
+                 "in 2021,\" Nucleic acids research, vol. 49, no. D1, pp. D412–"
+                 "D419, 2021."
+                 )
+PEPTIDASE_CITATION = ("N. D. Rawlings, A. J. Barrett, P. D. Thomas, X. Huang, A"
+                      ". Bateman, and R. D. Finn, \"The merops database of prot"
+                      "eolytic enzymes, their substrates and inhibitors in 2017"
+                      " and a comparison with peptidases in the panther databas"
+                      "e,\" Nucleic acids research, vol. 46, no. D1, pp. D624–D"
+                      "632, 2018."
+                      )
+VOGDB_CITATION = ("J. Thannesberger, H.-J. Hellinger, I. Klymiuk, M.-T. Kastner"
+                  ", F. J. Rieder, M. Schneider, S. Fister, T. Lion, K. Kosulin"
+                  ", J. Laengle et al., \"Viruses comprise an extensive pool of"
+                  " mobile genetic elements in eukaryote cell cultures and huma"
+                  "n clinical samples,\" The FASEB Journal, vol. 31, no. 5, pp."
+                  " 1987–2000, 2017."
+                  )
+UNIREF_CITATION = ("Y. Wang, Q. Wang, H. Huang, W. Huang, Y. Chen, P. B. McGarv"
+                  "ey, C. H. Wu, C. N. Arighi, and U. Consortium, \"A crowdsour"
+                  "cing open platform for literature curation in uniprot,\" PLo"
+                  "S Biology, vol. 19, no. 12, p. e3001464, 2021."
+                   )
+DBCAN_CITATION = ("Y. Yin, X. Mao, J. Yang, X. Chen, F. Mao, and Y. Xu, \"dbcan"
+                  ": a web resource for automated carbohydrate-active enzyme an"
+                  "notation,\" Nucleic acids research, vol. 40, no. W1, pp. W44"
+                  "5–W451, 2012."
+                  )
+DRAM_CITATION = ("M. Shaffer, M. A. Borton, B. B. McGivern, A. A. Zayed, S. L. "
+                 "La Rosa, L. M. Solden, P. Liu, A. B. Narrowe, J. Rodríguez-Ra"
+                 "mos, B. Bolduc et al., \"Dram for distilling microbial metabo"
+                 "lism to automate the curation of microbiome function,\" Nucle"
+                 "ic acids research, vol. 48, no. 16, pp. 8883–8900, 2020."
+                 )
+
 def get_iso_date():
     return datetime.today().strftime('%Y%m%d')
 
@@ -110,7 +170,7 @@ def download_dbcan(output_dir='.', logger=LOGGER, dbcan_hmm=None, version=DEFAUL
     return dbcan_hmm
 
 
-def download_dbcan_fam_activities (output_dir='.', logger=LOGGER, version=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, 
+def download_dbcan_fam_activities (output_dir='.', logger=LOGGER, version=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE,
                                 verbose=True):
     dbcan_fam_activities = path.join(output_dir, f'CAZyDB.{upload_date}.fam-activities.txt')
     url = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{version}/CAZyDB.{upload_date}.fam-activities.txt"
@@ -222,7 +282,7 @@ def download_viral(output_dir='.', logger=LOGGER, viral_files=NUMBER_OF_VIRAL_FI
     return merged_viral_faas
 
 
-def download_uniref(output_dir='.', logger=LOGGER, version=DEFAULT_UNIREF_VERSION, 
+def download_uniref(output_dir='.', logger=LOGGER, version=DEFAULT_UNIREF_VERSION,
                     threads=10, verbose=True):
     uniref_fasta_zipped = path.join(output_dir, 'uniref%s.fasta.gz' % version)
     url = 'ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref%s/uniref%s.fasta.gz' % \
@@ -255,7 +315,7 @@ def process_kofam_ko_list(kofam_ko_list_gz, output_dir='.', logger=LOGGER, threa
     return {'kofam_ko_list': kofam_ko_list}
 
 
-def process_uniref(uniref_fasta_zipped, output_dir='.', logger=LOGGER, 
+def process_uniref(uniref_fasta_zipped, output_dir='.', logger=LOGGER,
                    version=DEFAULT_UNIREF_VERSION, threads=10,
                    verbose=True):
     uniref_mmseqs_db = path.join(output_dir, 'uniref%s.%s.mmsdb' % (version, get_iso_date()))
@@ -268,11 +328,11 @@ def process_mmspro(full_alignment, output_dir, logger=LOGGER, db_name=DEFAULT_MM
     mmseqs_msa = path.join(output_dir, '%s.mmsmsa' % db_name)
     run_process(['mmseqs', 'convertmsa', full_alignment, mmseqs_msa], logger, verbose=verbose)
     mmseqs_profile = path.join(output_dir, '%s.mmspro' % db_name)
-    run_process(['mmseqs', 'msa2profile', mmseqs_msa, mmseqs_profile, '--match-mode', '1', '--threads', str(threads)], 
+    run_process(['mmseqs', 'msa2profile', mmseqs_msa, mmseqs_profile, '--match-mode', '1', '--threads', str(threads)],
                 logger,
                 verbose=verbose)
     tmp_dir = path.join(output_dir, 'tmp')
-    run_process(['mmseqs', 'createindex', mmseqs_profile, tmp_dir, '-k', '5', '-s', '7', '--threads', str(threads)], 
+    run_process(['mmseqs', 'createindex', mmseqs_profile, tmp_dir, '-k', '5', '-s', '7', '--threads', str(threads)],
                 logger,
                 verbose=verbose)
     return mmseqs_profile
@@ -314,7 +374,7 @@ def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_
     vogdb_targz.extractall(hmm_dir)
     vog_hmms = path.join(output_dir, f'vog_{version}_hmms.txt')
     merge_files(glob(path.join(hmm_dir, 'VOG*.hmm')), vog_hmms)
-    run_process(['hmmpress', '-f', vog_hmms], logger, verbose=verbose) 
+    run_process(['hmmpress', '-f', vog_hmms], logger, verbose=verbose)
     LOGGER.info('VOGdb database processed')
     return {'vogdb': vog_hmms}
 
@@ -386,32 +446,32 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
 
 
     dram_settings = {
-        'kegg':                  {'name': 'KEGG db', 
-                                  'description_db_updated': 'Unknown, or Never', 
+        'kegg':                  {'name': 'KEGG db',
+                                  'description_db_updated': 'Unknown, or Never',
                                   'citation': KEGG_CITATION},
         'gene_ko_link':          {'name': 'KEGG Gene KO link', 'citation': KEGG_CITATION},
         "kofam_hmm":             {'name': 'KOfam db', 'citation': KOFAM_CITATION},
         "kofam_ko_list":         {'name': 'KOfam KO list', 'citation': KOFAM_CITATION},
-        'uniref':                {'name': 'UniRef db', 
-                                  'description_db_updated': 'Unknown, or Never', 
+        'uniref':                {'name': 'UniRef db',
+                                  'description_db_updated': 'Unknown, or Never',
                                   'citation': UNIREF_CITATION},
         'pfam':                  {'name': 'Pfam db', 'citation': PFAM_CITATION},
-        "pfam_hmm":          {'name': 'Pfam hmm dat', 
-                                  'description_db_updated': 'Unknown, or Never', 
+        "pfam_hmm":          {'name': 'Pfam hmm dat',
+                                  'description_db_updated': 'Unknown, or Never',
                                   'citation': PFAM_CITATION},
         "dbcan":                 {'name': 'dbCAN db', 'citation': DBCAN_CITATION},
-        "dbcan_fam_activities":  {'name': 'dbCAN family activities', 'citation': DBCAN_CITATION}, 
+        "dbcan_fam_activities":  {'name': 'dbCAN family activities', 'citation': DBCAN_CITATION},
         "dbcan_subfam_ec":       {'name': 'dbCAN subfamily EC numbers', 'citation': DBCAN_CITATION},
         "vogdb":                 {'name': 'VOGDB db', 'citation': VOGDB_CITATION},
-        "vog_annotations":       {'name': 'VOG annotations', 
-                                  'description_db_updated': 'Unknown, or Never', 
+        "vog_annotations":       {'name': 'VOG annotations',
+                                  'description_db_updated': 'Unknown, or Never',
                                   'citation': VOGDB_CITATION},
-        "viral":          {'name': 'RefSeq Viral db', 
-                                  'description_db_updated': 'Unknown, or Never', 
+        "viral":          {'name': 'RefSeq Viral db',
+                                  'description_db_updated': 'Unknown, or Never',
                                   'citation': VIRAL_REFSEQ_CITATION},
-        "peptidase":             {'name': 'MEROPS peptidase db', 
-                                  'description_db_updated': 'Unknown, or Never', 
-                                  'citation': PEPTIDASE_CITATION}, 
+        "peptidase":             {'name': 'MEROPS peptidase db',
+                                  'description_db_updated': 'Unknown, or Never',
+                                  'citation': PEPTIDASE_CITATION},
         "genome_summary_form":   {'name': 'Genome summary form'},
         "module_step_form":      {'name': 'Module step form'},
         "function_heatmap_form": {'name': 'Function heatmap form'},
@@ -427,12 +487,12 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         'pfam':                  {},
         "pfam_hmm":          {},
         "dbcan":                 {'version': dbcan_version},
-        "dbcan_fam_activities":  {'version': dbcan_version, 'upload_date': dbcan_date}, 
+        "dbcan_fam_activities":  {'version': dbcan_version, 'upload_date': dbcan_date},
         "dbcan_subfam_ec":       {'version': dbcan_version, 'upload_date': dbcan_date},
         "vogdb":                 {'version': vogdb_version},
         "vog_annotations":       {'version': vogdb_version},
         "viral":                 {},
-        "peptidase":             {}, 
+        "peptidase":             {},
         "genome_summary_form":   {"branch": branch},
         "module_step_form":      {"branch": branch},
         "function_heatmap_form": {"branch": branch},
@@ -448,12 +508,12 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
         'pfam': {},
         "pfam_hmm": {},
         "dbcan": {},
-        "dbcan_fam_activities": {}, 
+        "dbcan_fam_activities": {},
         "dbcan_subfam_ec": {},
         "vogdb": {},
         "vog_annotations": {},
         "viral": {'viral_files': number_of_viral_files},
-        "peptidase": {}, 
+        "peptidase": {},
         "genome_summary_form": {},
         "module_step_form": {},
         "function_heatmap_form": {},
@@ -503,7 +563,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     if skip_uniref and uniref_loc is not None:
         raise ValueError('Cannot skip UniRef processing and provide a location of UniRef.'
                          ' Skipping UniRef will cause provided UniRef file to not be used.')
-    
+
     if select_db is not None:
         miss_name = [i for i in select_db if i not in database_settings]
         user_inputs = [i for i in locs if i not in select_db]
@@ -512,7 +572,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
                             f"you passed {miss_name} which is/are not in the list,"
                             f" select from {list(database_settings.keys())}.")
             raise ValueError('Bad user input, see log')
-        
+
         if len(user_inputs) > 0:
             LOGGER.error(f"The user provided location for {user_inputs}, but required it not be used by proving"
                              f" the select_db argument for other databases. This would suggest that the"
@@ -548,11 +608,11 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     LOGGER.info("All raw data files were downloaded successfully")
 
     # Process databases
-    for i in locs: 
-        processed_locs = {} 
+    for i in locs:
+        processed_locs = {}
         if i in process_functions:
             LOGGER.info(f"Processing {i}")
-            processed_locs = process_functions[i](locs[i], output_dir, LOGGER, 
+            processed_locs = process_functions[i](locs[i], output_dir, LOGGER,
                                                        threads=threads, verbose=verbose, **process_settings[i])
         else:
             processed_locs = {i:locs[i]}
@@ -566,7 +626,7 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
             #  and database_settings, which are per input file.
             if db_handler.config.get('setup_info') is None:
                 db_handler.config['setup_info'] = {}
-            db_handler.config['setup_info'][k] = {**dram_settings[k], **process_settings[i], 
+            db_handler.config['setup_info'][k] = {**dram_settings[k], **process_settings[i],
                                                   **database_settings[i]}
             db_handler.set_database_paths(**{f"{k}_loc":v})
             db_handler.write_config()

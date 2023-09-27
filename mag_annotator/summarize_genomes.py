@@ -14,6 +14,7 @@ from datetime import datetime
 
 from mag_annotator.database_handler import DatabaseHandler
 from mag_annotator.utils import get_ordered_uniques, setup_logger
+from mag_annotator.camper_kit import NAME as CAMPER_NAME
 
 # TODO: add RBH information to output
 # TODO: add flag to output table and not xlsx
@@ -76,19 +77,25 @@ def get_ids_from_annotations_all(data):
 
 def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column, logger):
     genome_summary_id_sets = [set([str(k).strip() for k in j.split(',')]) for j in genome_summary_frame['gene_id']]
-    def fill_a_frame(frame:pd.DataFrame):
+    
+    def fill_a_frame(frame: pd.DataFrame):
         id_dict = get_ids_from_annotations_all(frame)
+        
         counts = list()
         for i in genome_summary_id_sets:
             identifier_count = 0
             for j in i:
-                if j in id_dict:
-                    identifier_count += id_dict[j]
+                # Try matching with and without '.hmm'
+                matching_keys = [key for key in id_dict.keys() if j == key or key.startswith(j + ".")]
+                for key in matching_keys:
+                    identifier_count += id_dict[key]
             counts.append(identifier_count)
+        
         return pd.Series(counts, index=genome_summary_frame.index)
-        # genome_summary_frame[genome] = counts
+    
     counts = annotations.groupby(groupby_column, sort=False).apply(fill_a_frame)
     genome_summary_frame = pd.concat([genome_summary_frame, counts.T], axis=1)
+    
     return genome_summary_frame
 
 
@@ -657,6 +664,13 @@ def summarize_genomes(input_file, trna_path=None, rrna_path=None, output_dir='.'
     genome_summary_form = pd.read_csv(database_handler.config["dram_sheets"]['genome_summary_form'], sep='\t')
     if custom_distillate is not None:
         genome_summary_form = pd.concat([genome_summary_form, pd.read_csv(custom_distillate, sep='\t')])
+    if f"{CAMPER_NAME}_id" in annotations:
+        if 'camper_distillate' not in database_handler.config["dram_sheets"]:
+            raise ValueError(f"Genome summary form location for {CAMPER_NAME} "
+                             "must be set in order to summarize genomes with this database.")
+        genome_summary_form = pd.concat([
+            genome_summary_form,
+            pd.read_csv(database_handler.config["dram_sheets"]['camper_distillate'], sep='\t')])
     genome_summary_form = genome_summary_form.drop('potential_amg', axis=1)
     module_steps_form = pd.read_csv(
         database_handler.config["dram_sheets"]['module_step_form'], sep='\t')

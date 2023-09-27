@@ -26,12 +26,15 @@ SEARCH_DATABASES = {
     "viral",
     "peptidase",
     "vogdb",
+    'camper',
 }
 DRAM_SHEETS = (
     "genome_summary_form",
     "module_step_form",
     "etc_module_database",
     "function_heatmap_form",
+    "camper_fa_db_cotoffs",
+    "camper_hmm_cutoffs",
     "amg_database",
 )
 DATABASE_DESCRIPTIONS = ("pfam_hmm", "dbcan_fam_activities", "vog_annotations")
@@ -259,6 +262,11 @@ class DatabaseHandler:
         vog_annotations_loc=None,
         description_db_loc=None,
         log_path_loc=None,
+        camper_hmm_loc=None, 
+        camper_fa_db_loc=None, 
+        camper_hmm_cutoffs_loc=None,
+        camper_fa_db_cutoffs_loc=None, 
+        camper_distillate_loc=None,
         genome_summary_form_loc=None,
         module_step_form_loc=None,
         etc_module_database_loc=None,
@@ -286,6 +294,10 @@ class DatabaseHandler:
                 "viral": viral_loc,
                 "peptidase": peptidase_loc,
                 "vogdb": vogdb_loc,
+                "camper_hmm": camper_hmm_loc,
+                "camper_fa_db": camper_fa_db_loc,
+                "camper_hmm_cutoffs": camper_hmm_cutoffs_loc,
+                "camper_fa_db_cutoffs": camper_fa_db_cutoffs_loc
             },
             "database_descriptions": {
                 "pfam_hmm": pfam_hmm_loc,
@@ -294,6 +306,7 @@ class DatabaseHandler:
                 "vog_annotations": vog_annotations_loc,
             },
             "dram_sheets": {
+                "camper_distillate": camper_distillate_loc,
                 "genome_summary_form": genome_summary_form_loc,
                 "module_step_form": module_step_form_loc,
                 "etc_module_database": etc_module_database_loc,
@@ -508,7 +521,7 @@ class DatabaseHandler:
             self.write_config()
 
     def filter_db_locs(
-        self, low_mem_mode=False, use_uniref=True, use_vogdb=True, master_list=None
+        self, low_mem_mode=False, use_uniref=True, use_camper=True, use_vogdb=True, master_list=None
     ):
         if master_list is None:
             dbs_to_use = self.config["search_databases"].keys()
@@ -531,6 +544,8 @@ class DatabaseHandler:
                 )
         else:
             dbs_to_use = [i for i in dbs_to_use if i != "uniref"]
+        if not use_camper:
+            dbs_to_use = [i for i in dbs_to_use if 'camper' not in i]
         # check on vogdb status
         if use_vogdb:
             if "vogdb" not in self.config.get("search_databases"):
@@ -584,6 +599,10 @@ def print_database_locations(config_loc=None):
         "MEROPS peptidase db: %s" % conf.config.get("search_databases").get("peptidase")
     )
     print("VOGDB db: %s" % conf.config.get("search_databases").get("vogdb"))
+    print('CAMPER HMM db: %s' % conf.config.get('search_databases').get('camper_hmm'))
+    print('CAMPER FASTA db: %s' % conf.config.get('search_databases').get('camper_fa_db'))
+    print('CAMPER HMM cutoffs: %s' % conf.config.get('search_databases').get('camper_hmm_cutoffs'))
+    print('CAMPER FASTA cutoffs: %s' % conf.config.get('search_databases').get('camper_fa_db_cutoffs'))
     # database descriptions used during description db population
     print()
     print("Descriptions of search database entries")
@@ -618,6 +637,7 @@ def print_database_locations(config_loc=None):
         % conf.config.get("dram_sheets").get("function_heatmap_form")
     )
     print("AMG database: %s" % conf.config.get("dram_sheets").get("amg_database"))
+    print('CAMPER Distillate form: %s' % conf.config.get('dram_sheets').get('camper_distillate'))
 
 
 def print_database_settings(config_loc=None):
