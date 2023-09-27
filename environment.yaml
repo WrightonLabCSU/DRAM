@@ -2,20 +2,20 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - python>=3.7
-  - pandas
-  - pytest
-  - scikit-bio
-  - prodigal
+  - python=3.10
+  - pandas=1.5.2
+  - pytest=7.2.0
+  - scikit-bio=0.5.7
+  - prodigal=2.6.3
   - mmseqs2==13.45111
-  - hmmer!=3.3.1
-  - trnascan-se >=2
-  - scipy<=1.8.1
-  - sqlalchemy
-  - barrnap
-  - altair >=4
-  - openpyxl
-  - networkx
-  - ruby
-  - parallel
-  - dram
+  - hmmer=3.3.2
+  - trnascan-se=2.0.11
+  - scipy=1.8.1
+  - sqlalchemy=1.4.46
+  - barrnap=0.9
+  - altair=4.2.0
+  - openpyxl=3.0.10
+  - networkx=2.8.8
+  - ruby=3.1.2
+  - parallel=20221122
+  - dram=1.5.0
