@@ -1042,7 +1042,7 @@ def annotate_orfs(
                           camper_hmm_cutoffs=db_handler.config['search_databases']['camper_hmm_cutoffs']))
     else:
         logger.warning(
-            "No KEGG source provided so distillation will be of limited use."
+            "One of your requested annotation databases is missing. If you did not specify KEGG database, distillate will be of limited use. If no CAMPER source was provided (as of DRAM v1.5.0, it is still not automatically included), and you want to annotate with CAMPER - see instructions on GitHub for downloading if you would like to run this tool: https://github.com/WrightonLabCSU/CAMPER."
         )
 
     # Get uniref hits
