@@ -1,0 +1,14 @@
+containers/*.sif
+test_data/
+nextflow-LOCAL.config
+.nextflow.log*
+.nextflow/history
+work/
+.Rhistory
+.nextflow*
+databases/
+assets/forms/kofam*
+assets/forms/*hmm*
+assets/bbmap/*
+assets/bbmap
+assets/bbmap/

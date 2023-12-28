@@ -1,0 +1,280 @@
+KO	EC	PFAM	gene	module	metabolism	reference	verified
+K00616	EC:2.2.1.2		talC; transaldolase	M00007	M	Thompson et al. 2011	TRUE
+K00036	EC:1.1.1.49; EC:1.1.1.363; EC:1.1.1.388		zwf; glucose-6-phosphate 1-dehydrogenase	M00006	M	Thompson et al. 2011	TRUE
+K19243	EC:1.1.1.49; EC:1.1.1.363; EC:1.1.1.388		zwf; glucose-6-phosphate 1-dehydrogenase 	M00006	M	Thompson et al. 2011	TRUE
+K00033	EC:1.1.1.44; EC:1.1.1.343		gnd; 6-phosphogluconate dehydrogenase 	M00004	M	Thompson et al. 2011	TRUE
+K02703	EC:1.10.3.9		psbA; photosystem II reaction center D1 protein	M00161	M	Clokie et al. 2006; Sullivan et al. 2005; Lindell et al. 2004; Lindell et al. 2005; Mann et al. 2003	TRUE
+K02706	EC:1.10.3.9		psbD; photosystem II reaction center D2 protein	M00161	M	Clokie et al. 2006; Sullivan et al. 2005; Lindell et al. 2004; Mann et al. 2003	TRUE
+		PF00504	hlip; high-light inducible protein	M00161		Lindell et al. 2004; Lindell et al. 2005; Sullivan et al. 2005	TRUE
+K02040		PF01384; PF10032	pstS; phosphate transport system substrate-binding protein		M	Zeng et al. 2012; Sullivan et al. 2005	TRUE
+		PF02672	cp12, calvin cycle protein inhibitor	M00006		Thompson et al. 2011	TRUE
+K00525	EC:1.17.4.1	PF00317; PF02867; PF03477	nrdA/nrdB; ribonucleotide reductase (RNR)	M00053		Thompson et al. 2011; Sullivan et al. 2005	TRUE
+K06217		PF02562	phoH; phosphate starvation-inducible protein			Zeng et al. 2012; Sullivan et al. 2005	FALSE
+K01077	EC:3.1.3.1		phoA; alkaline phosphatase	M00126		Zeng et al. 2012	TRUE
+K05383		PF06206	cpeT; phycoerythrin biosynthesis gene	M00161		Doron et al. 2016; Gasper et al. 2017	TRUE
+K02639			petE; ferredoxin	M00161 	M	Sullivan et al. 2005; Doron et al. 2016	TRUE
+K02639			petF; ferredoxin	M00161 	M	Sullivan et al. 2005	FALSE
+K10946	EC:1.14.18.3		amoC; ammonia monooxygenase c	M00174	M	Roux et al. 2016; Ahlgren et al. 2018	FALSE
+K00058		PF00389	D-isomer specific 2-hydroxyacid dehydrogenase, catalytic domain		M	Roux et al. 2016	FALSE
+K00058		PF02826	D-isomer specific 2-hydroxyacid dehydrogenase, NAD binding domain		M	Roux et al. 2016	FALSE
+		PF10014	2OG-Fe dioxygenase		M	Roux et al. 2016	FALSE
+		PF03171	2OG-Fe(II) oxygenase superfamily		M	Roux et al. 2016	FALSE
+		PF13532	2OG-Fe(II) oxygenase superfamily		M	Roux et al. 2016	FALSE
+		PF13640	2OG-Fe(II) oxygenase superfamily		M	Roux et al. 2016	FALSE
+		PF13661	2OG-Fe(II) oxygenase superfamily		M	Roux et al. 2016	FALSE
+		PF13759	Putative 2OG-Fe(II) oxygenase		M	Roux et al. 2016	FALSE
+K23558	EC:1.1.1.418	PF01073	3-beta hydroxysteroid dehydrogenase/isomerase family		M	Roux et al. 2016	FALSE
+K00022	EC:1.1.1.35	PF02737	3-hydroxyacyl-CoA dehydrogenase, NAD binding domain		M	Roux et al. 2016	FALSE
+K00033	EC:1.1.1.44; EC:1.1.1.343	PF00393	6-phosphogluconate dehydrogenase, C-terminal domain		M	Roux et al. 2016	FALSE
+K00132	EC:1.2.1.10	PF09290	Prokaryotic acetaldehyde dehydrogenase, dimerisation		M	Roux et al. 2016	FALSE
+K01681	EC:4.2.1.3	PF00330	Aconitase family (aconitate hydratase)		M	Roux et al. 2016	FALSE
+		PF08545	3-Oxoacyl-[acyl-carrier-protein (ACP)] synthase III		M	Roux et al. 2016	FALSE
+		PF08541	3-Oxoacyl-[acyl-carrier-protein (ACP)] synthase III C terminal		M	Roux et al. 2016	FALSE
+		PF00441	Acyl-CoA dehydrogenase, C-terminal domain		M	Roux et al. 2016	FALSE
+		PF02771	Acyl-CoA dehydrogenase, N-terminal domain		M	Roux et al. 2016	FALSE
+		PF00106	short chain dehydrogenase		M	Roux et al. 2016	FALSE
+		PF13561	Enoyl-(Acyl carrier protein) reductase		M	Roux et al. 2016	FALSE
+		PF00171	Aldehyde dehydrogenase family		M	Roux et al. 2016	FALSE
+		PF00248	Aldo/keto reductase family		M	Roux et al. 2016	FALSE
+K08964	EC:4.2.1.109	PF00596	Class II Aldolase and Adducin N-terminal domain		M	Roux et al. 2016	FALSE
+		PF02274	Amidinotransferase		M	Roux et al. 2016	FALSE
+		PF04909	Amidohydrolase		M	Roux et al. 2016	FALSE
+		PF07969	Amidohydrolase family		M	Roux et al. 2016	FALSE
+		PF13594	Amidohydrolase		M	Roux et al. 2016	FALSE
+		PF00155	Aminotransferase class I and II		M	Roux et al. 2016	FALSE
+		PF00266	Aminotransferase class-V		M	Roux et al. 2016	FALSE
+		PF04896	Ammonia monooxygenase/methane monooxygenase, subunit C		M	Roux et al. 2016	FALSE
+		PF01637	Archaeal ATPase		M	Roux et al. 2016	FALSE
+		PF00491	Arginase family		M	Roux et al. 2016	FALSE
+		PF00733	Asparagine synthase		M	Roux et al. 2016	FALSE
+		PF00119	ATP synthase A chain		M	Roux et al. 2016	FALSE
+		PF00116	Cytochrome C oxidase subunit II, periplasmic domain		M	Roux et al. 2016	FALSE
+		PF02633	Creatinine amidohydrolase		M	Roux et al. 2016	FALSE
+		PF01053	Cys/Met metabolism PLP-dependent enzyme		M	Roux et al. 2016	FALSE
+		PF00032	Cytochrome b(C-terminal)/b6/petD		M	Roux et al. 2016	FALSE
+		PF13631	Cytochrome b(N-terminal)/b6/petB		M	Roux et al. 2016	FALSE
+		PF00034	Cytochrome c		M	Roux et al. 2016	FALSE
+		PF03264	NapC/NirT cytochrome c family, N-terminal region		M	Roux et al. 2016	FALSE
+		PF13442	Cytochrome C oxidase, cbb3-type, subunit III		M	Roux et al. 2016	FALSE
+		PF01474	Class-II DAHP synthetase family		M	Roux et al. 2016	FALSE
+		PF00926	3,4-dihydroxy-2-butanone 4-phosphate synthase		M	Roux et al. 2016	FALSE
+		PF04358	DsrC like protein		M	Roux et al. 2016; Anantharaman et al. 2014	FALSE
+		PF00378	Enoyl-CoA hydratase/isomerase family		M	Roux et al. 2016	FALSE
+		PF00208	Glutamate/Leucine/Phenylalanine/Valine dehydrogenase		M	Roux et al. 2016	FALSE
+		PF02812	Glu/Leu/Phe/Val dehydrogenase, dimerisation domain		M	Roux et al. 2016	FALSE
+		PF00113	Enolase, C-terminal TIM barrel domain		M	Roux et al. 2016	FALSE
+		PF01116	Fructose-bisphosphate aldolase class-II		M	Roux et al. 2016	FALSE
+		PF00487	Fatty acid desaturase		M	Roux et al. 2016	FALSE
+		PF07977	FabA-like domain		M	Roux et al. 2016	FALSE
+		PF03320	Bacterial fructose-1,6-bisphosphatase, glpX-encoded		M	Roux et al. 2016	FALSE
+		PF02911	Formyl transferase, C-terminal domain		M	Roux et al. 2016	FALSE
+		PF00551	Formyl transferase		M	Roux et al. 2016	FALSE
+		PF02781	Glucose-6-phosphate dehydrogenase, C-terminal domain		M	Roux et al. 2016	FALSE
+		PF00479	Glucose-6-phosphate dehydrogenase, NAD binding domain		M	Roux et al. 2016	FALSE
+		PF00310	Glutamine amidotransferases class-II		M	Roux et al. 2016	FALSE
+		PF02649	Type I GTP cyclohydrolase folE2		M	Roux et al. 2016	FALSE
+		PF01597	Glycine cleavage H-protein		M	Roux et al. 2016	FALSE
+		PF02347	Glycine cleavage system P-protein		M	Roux et al. 2016	FALSE
+		PF00120	Glutamine synthetase, catalytic domain		M	Roux et al. 2016	FALSE
+		PF03951	Glutamine synthetase, beta-Grasp domain		M	Roux et al. 2016	FALSE
+		PF01182	Glucosamine-6-phosphate isomerases/6-phosphogluconolactonase		M	Roux et al. 2016	FALSE
+		PF00274	Fructose-bisphosphate aldolase class-I		M	Roux et al. 2016	FALSE
+		PF02800	Glyceraldehyde 3-phosphate dehydrogenase, C-terminal domain		M	Roux et al. 2016	FALSE
+		PF00044	Glyceraldehyde 3-phosphate dehydrogenase, NAD binding domain		M	Roux et al. 2016	FALSE
+		PF00977	Histidine biosynthesis protein		M	Roux et al. 2016	FALSE
+		PF00742	Homoserine dehydrogenase		M	Roux et al. 2016	FALSE
+		PF00463	Isocitrate lyase family		M	Roux et al. 2016	FALSE
+		PF02502	Ribose/Galactose Isomerase		M	Roux et al. 2016	FALSE
+K01809	EC:5.3.1.8	PF01050	manA; mannose-6-phosphate isomerase		M	Roux et al. 2016; Hurwitz et al. 2015	FALSE
+		PF13714	Phosphoenolpyruvate phosphomutase		M	Roux et al. 2016	FALSE
+		PF00391	PEP-utilising enzyme, mobile domain		M	Roux et al. 2016	FALSE
+		PF01293	Phosphoenolpyruvate carboxykinase		M	Roux et al. 2016	FALSE
+		PF00162	Phosphoglycerate kinase		M	Roux et al. 2016	FALSE
+		PF00408	Phosphoglucomutase/phosphomannomutase, C-terminal domain		M	Roux et al. 2016	FALSE
+		PF00343	Carbohydrate phosphorylase		M	Roux et al. 2016	FALSE
+		PF00124	Photosynthetic reaction centre protein		M	Roux et al. 2016	FALSE
+		PF03332	Eukaryotic phosphomannomutase		M	Roux et al. 2016	FALSE
+		PF14100	Methane oxygenase PmoA		M	Roux et al. 2016	FALSE
+		PF01048	Phosphorylase superfamily		M	Roux et al. 2016	FALSE
+		PF01619	Proline dehydrogenase		M	Roux et al. 2016	FALSE
+		PF02666	Phosphatidylserine decarboxylase		M	Roux et al. 2016	FALSE
+		PF14765	Polyketide synthase dehydratase		M	Roux et al. 2016	FALSE
+		PF00223	Photosystem I psaA/psaB protein		M	Roux et al. 2016; Sharon et al. 2011	FALSE
+		PF02531	PsaD		M	Roux et al. 2016; Sharon et al. 2011	FALSE
+		PF02468	Photosystem II reaction centre N protein (psbN)		M	Roux et al. 2016; Sharon et al. 2011	FALSE
+		PF02507	Photosystem I reaction centre subunit III		M	Roux et al. 2016	FALSE
+		PF01701	Photosystem I reaction centre subunit IX / PsaJ		M	Roux et al. 2016; Sharon et al. 2011	FALSE
+		PF00834	Ribulose-phosphate 3 epimerase family		M	Roux et al. 2016	FALSE
+		PF00016	Ribulose bisphosphate carboxylase large chain, catalytic domain		M	Roux et al. 2016	FALSE
+		PF00101	Ribulose bisphosphate carboxylase, small chain		M	Roux et al. 2016	FALSE
+		PF01118	Semialdehyde dehydrogenase, NAD binding domain		M	Roux et al. 2016	FALSE
+		PF00464	Serine hydroxymethyltransferase		M	Roux et al. 2016	FALSE
+		PF13501	Sulfur oxidation protein SoxY		M	Roux et al. 2016	FALSE
+		PF08770	Sulphur oxidation protein SoxZ		M	Roux et al. 2016	FALSE
+		PF00108	Thiolase, N-terminal domain		M	Roux et al. 2016	FALSE
+		PF00923	Transaldolase		M	Roux et al. 2016	FALSE
+		PF02779	Transketolase, pyrimidine binding domain		M	Roux et al. 2016	FALSE
+		PF02780	Transketolase, C-terminal domain		M	Roux et al. 2016	FALSE
+		PF00456	Transketolase, thiamine diphosphate binding domain		M	Roux et al. 2016	FALSE
+		PF01654	Bacterial Cytochrome Ubiquinol Oxidase		M	Roux et al. 2016	FALSE
+		PF01817	Chorismate mutase type II		M	Roux et al. 2016	FALSE
+		PF00135	Carboxylesterase family		M	Roux et al. 2016	FALSE
+		PF00701	Dihydrodipicolinate synthetase family		M	Roux et al. 2016	FALSE
+		PF01761	3-dehydroquinate synthase		M	Roux et al. 2016	FALSE
+		PF00676	Dehydrogenase E1 component		M	Roux et al. 2016	FALSE
+		PF06339	Ectoine synthase		M	Roux et al. 2016	FALSE
+		PF13950	galE; UDP-glucose 4-epimerase C-term subunit		M	Roux et al. 2016; Hurwitz et al. 2015	FALSE
+		PF04800	ETC complex I subunit conserved region		M	Roux et al. 2016	FALSE
+		PF01557	Fumarylacetoacetate (FAA) hydrolase family		M	Roux et al. 2016	FALSE
+		PF05013	N-formylglutamate amidohydrolase		M	Roux et al. 2016	FALSE
+		PF01070	FMN-dependent dehydrogenase		M	Roux et al. 2016	FALSE
+		PF03328	HpcH/HpaI aldolase/citrate lyase family		M	Roux et al. 2016	FALSE
+		PF00109	Beta-ketoacyl synthase, N-terminal domain		M	Roux et al. 2016	FALSE
+		PF02801	Beta-ketoacyl synthase, C-terminal domain		M	Roux et al. 2016	FALSE
+		PF01451	Low molecular weight phosphotyrosine protein phosphatase		M	Roux et al. 2016	FALSE
+		PF03331	UDP-3-O-acyl N-acetylglycosamine deacetylase		M	Roux et al. 2016	FALSE
+		PF02401	LytB protein		M	Roux et al. 2016	FALSE
+		PF06967	Mo-dependent nitrogenase C-terminus		M	Roux et al. 2016	FALSE
+		PF01188	Mandelate racemase / muconate lactonizing enzyme, C-terminal domain		M	Roux et al. 2016	FALSE
+		PF03446	NAD binding domain of 6-phosphogluconate dehydrogenase		M	Roux et al. 2016	FALSE
+		PF02423	Ornithine cyclodeaminase/mu-crystallin family		M	Roux et al. 2016	FALSE
+		PF02729	Aspartate/ornithine carbamoyltransferase, carbamoyl-P binding domain		M	Roux et al. 2016	FALSE
+		PF00361	NADH-Ubiquinone/plastoquinone (complex I), various chains		M	Roux et al. 2016	FALSE
+		PF05138	Phenylacetic acid catabolic protein		M	Roux et al. 2016	FALSE
+		PF00291	Pyridoxal-phosphate dependent enzyme		M	Roux et al. 2016	FALSE
+		PF01503	Phosphoribosyl-ATP pyrophosphohydrolase		M	Roux et al. 2016	FALSE
+		PF14819	Nitrile reductase, 7-cyano-7-deazaguanine-reductase N-term		M	Roux et al. 2016	FALSE
+		PF00301	Rubredoxin		M	Roux et al. 2016	FALSE
+		PF03435	Saccharopine dehydrogenase		M	Roux et al. 2016	FALSE
+K02233 	EC:2.7.8.26		cobS; cobalamin-5-phosphate synthase	M00122 		Lopez-Perez et al. 2018; Ignacio?Espinoza et al. 2012; Sullivan et al. 2005	FALSE
+K05369	EC:1.3.7.2		pebA; Phycoerythrobilin biosynthesis			Sullivan et al. 2005	FALSE
+			ho1; heme biosynthesis			Sullivan et al. 2005	FALSE
+K05371	EC:1.3.7.6		pebS; phycoerythrobilin synthase			Dammeyer et al. 2008; Ignacio?Espinoza et al. 2012	TRUE
+	EC:1.3.7.5		pcyA; Phycocyanobilin biosynthesis			Sullivan et al. 2005	FALSE
+K00762	EC:2.4.2.10		pyrE; Orootate phosphoribosyltransferase			Sullivan et al. 2005	FALSE
+K00602	EC:2.1.2.33.5.4.10		purH; phosphoribosyl formyl glycinamide synthase			Sullivan et al. 2005	FALSE
+K01952	EC:6.3.5.3		purL; phosphoribosyl formyl glycinamide cyclo-ligase			Sullivan et al. 2005	FALSE
+K01933	EC:6.3.3.1		purM;AICARFT/IMPCHase bienzyme			Sullivan et al. 2005	FALSE
+K01492	EC:2.1.2.2; EC:2.1.2.3		purN; phophoribosyl glycinamide formyltransferase			Sullivan et al. 2005	FALSE
+K04765	EC:3.6.1.9		mazG; pyrophosphohydrolase/pyrophosphatase			Rihtman et al. 2019; Sullivan et al. 2005; Ignacio?Espinoza et al. 2012; BorbÈly et al. 1980	TRUE
+K00568		PF06983	3-demethylubiquinone-9 3-methyltransferase			Roux et al. 2016	FALSE
+K06133	EC:2.7.8.-	PF01648	4'-phosphopantetheinyl transferase superfamily			Roux et al. 2016	FALSE
+	EC:2.7.4.3	PF00406	Adenylate kinase			Roux et al. 2016	FALSE
+	EC:2.7.4.3	PF05191	Adenylate kinase, active site lid			Roux et al. 2016	FALSE
+		PF05221	S-adenosyl-L-homocysteine hydrolase			Roux et al. 2016	FALSE
+		PF02675	speD; S-adenosylmethionine decarboxylase			Sullivan et al. 2005; Ignacio?Espinoza et al. 2012; Hurwitz et al. 2015; Roux et al. 2016	FALSE
+	EC:4.2.1.24	PF00490	Delta-aminolevulinic acid dehydratase			Roux et al. 2016	FALSE
+K00324	EC:1.6.1.27.1.1.1	PF05222	Alanine dehydrogenase/PNT, N-terminal domain			Roux et al. 2016	FALSE
+		PF02522	Aminoglycoside 3-N-acetyltransferase			Roux et al. 2016	FALSE
+		PF12139	Adenosine-5'-phosphosulfate reductase beta subunit			Roux et al. 2016	FALSE
+		PF09206	Alpha-L-arabinofuranosidase B, catalytic			Roux et al. 2016	FALSE
+		PF02397	Bacterial sugar transferase			Roux et al. 2016	FALSE
+		PF01144	Coenzyme A transferase			Roux et al. 2016	FALSE
+		PF01923	Cobalamin adenosyltransferase			Roux et al. 2016	FALSE
+		PF06213	Cobalamin biosynthesis protein CobT			Roux et al. 2016	FALSE
+		PF11775	Cobalamin biosynthesis protein CobT VWA domain			Roux et al. 2016	FALSE
+		PF01218	Coproporphyrinogen III oxidase			Roux et al. 2016	FALSE
+		PF01148	Cytidylyltransferase family			Roux et al. 2016	FALSE
+		PF01467	Cytidylyltransferase			Roux et al. 2016	FALSE
+		PF02348	Cytidylyltransferase			Roux et al. 2016	FALSE
+		PF07732	Multicopper oxidase			Roux et al. 2016	FALSE
+		PF02224	Cytidylate kinase			Roux et al. 2016	FALSE
+		PF06442	R67 dihydrofolate reductase			Roux et al. 2016	FALSE
+		PF01762	Galactosyltransferase			Roux et al. 2016	FALSE
+		PF04107	Glutamate-cysteine ligase family 2(GCS2)			Roux et al. 2016	FALSE
+		PF01408	Oxidoreductase family, NAD-binding Rossmann fold			Roux et al. 2016	FALSE
+		PF00288	GHMP kinases N terminal domain			Roux et al. 2016	FALSE
+		PF01832	Mannosyl-glycoprotein endo-beta-N-acetylglucosaminidase			Roux et al. 2016	FALSE
+		PF04488	Glycosyltransferase sugar-binding region containing DXD motif			Roux et al. 2016	FALSE
+		PF00723	Glycosyl hydrolases family 15			Roux et al. 2016	FALSE
+		PF00933	Glycosyl hydrolase family 3 N terminal domain			Roux et al. 2016	FALSE
+		PF04724	Glycosyltransferase family 17			Roux et al. 2016	FALSE
+		PF00534	Glycosyl transferases group 1			Roux et al. 2016	FALSE
+		PF00255	Glutathione peroxidase			Roux et al. 2016	FALSE
+		PF13417	Glutathione S-transferase, N-terminal domain			Roux et al. 2016	FALSE
+		PF01227	GTP cyclohydrolase I			Roux et al. 2016	FALSE
+		PF09778	Guanylylate cyclase			Roux et al. 2016	FALSE
+		PF00625	Guanylate kinase			Roux et al. 2016	FALSE
+		PF01126	Heme oxygenase			Roux et al. 2016	FALSE
+		PF00132	Bacterial transferase hexapeptide (six repeats)			Roux et al. 2016	FALSE
+		PF01717	Cobalamin-independent synthase, Catalytic domain			Roux et al. 2016	FALSE
+		PF00141	Peroxidase			Roux et al. 2016	FALSE
+		PF01663	Type I phosphodiesterase / nucleotide pyrophosphatase			Roux et al. 2016	FALSE
+		PF02585	GlcNAc-PI de-N-acetylase			Roux et al. 2016	FALSE
+		PF05045	Rhamnan synthesis protein F			Roux et al. 2016	FALSE
+		PF08501	Shikimate dehydrogenase substrate binding domain			Roux et al. 2016	FALSE
+		PF00494	Squalene/phytoene synthase			Roux et al. 2016	FALSE
+		PF00685	Sulfotransferase domain			Roux et al. 2016	FALSE
+		PF03567	Sulfotransferase family			Roux et al. 2016	FALSE
+		PF13469	Sulfotransferase family			Roux et al. 2016	FALSE
+		PF09037	Stf0 sulphotransferase			Roux et al. 2016	FALSE
+		PF02668	Taurine catabolism dioxygenase TauD, TfdA family			Roux et al. 2016	FALSE
+		PF02882	Tetrahydrofolate dehydrogenase/cyclohydrolase, NAD(P)-binding domain			Roux et al. 2016	FALSE
+		PF10396	GTP-binding protein TrmE N-terminus			Roux et al. 2016	FALSE
+		PF00749	tRNA synthetases class I (E and Q), catalytic domain			Roux et al. 2016	FALSE
+		PF00984	UDP-glucose/GDP-mannose dehydrogenase family, central domain			Roux et al. 2016	FALSE
+	EC:1.1.1.22	PF03721	UDP-glucose/GDP-mannose dehydrogenase family, NAD binding domain			Roux et al. 2016	FALSE
+K01599	EC:4.1.1.37	PF01208	Uroporphyrinogen decarboxylase (URO-D)			Roux et al. 2016	FALSE
+		PF05090	Vitamin K-dependent gamma-carboxylase			Roux et al. 2016	FALSE
+		PF07884	Vitamin K epoxide reductase family			Roux et al. 2016	FALSE
+		PF05935	Arylsulfotransferase (ASST)			Roux et al. 2016	FALSE
+		PF01145	SPFH domain / Band 7 family			Roux et al. 2016	FALSE
+		PF04940	Sensors of blue-light using FAD			Roux et al. 2016	FALSE
+		PF03703	Bacterial PH domain			Roux et al. 2016	FALSE
+		PF00262	Calreticulin family			Roux et al. 2016	FALSE
+		PF09489	Probable cobalt transporter subunit (CbtB)			Roux et al. 2016	FALSE
+		PF01066	CDP-alcohol phosphatidyltransferase			Roux et al. 2016	FALSE
+		PF02543	Carbamoyltransferase			Roux et al. 2016	FALSE
+		PF00289	Carbamoyl-phosphate synthase L chain, N-terminal domain			Roux et al. 2016	FALSE
+		PF02787	Carbamoyl-phosphate synthetase large chain, oligomerisation domain			Roux et al. 2016	FALSE
+		PF01791	DeoC/LacD family aldolase			Roux et al. 2016	FALSE
+		PF00122	E1-E2 ATPase			Roux et al. 2016	FALSE
+		PF01370	NAD dependent epimerase/dehydratase family			Roux et al. 2016	FALSE
+	EC:5.1.3.14	PF02350	UDP-N-acetylglucosamine 2-epimerase			Roux et al. 2016	FALSE
+		PF03016	Exostosin family			Roux et al. 2016	FALSE
+		PF00941	FAD binding domain in molybdopterin dehydrogenase			Roux et al. 2016	FALSE
+		PF02913	FAD linked oxidases, C-terminal domain			Roux et al. 2016	FALSE
+		PF05996	Ferredoxin-dependent bilin reductase			Roux et al. 2016	FALSE
+		PF02152	Dihydroneopterin aldolase			Roux et al. 2016	FALSE
+		PF00682	HMGL-like			Roux et al. 2016	FALSE
+		PF07700	Heme NO binding			Roux et al. 2016	FALSE
+		PF01288	7,8-dihydro-6-hydroxymethylpterin-pyrophosphokinase (HPPK)			Roux et al. 2016	FALSE
+		PF00920	Dehydratase family			Roux et al. 2016	FALSE
+		PF04362	Bacterial Fe(2+) trafficking			Roux et al. 2016	FALSE
+		PF00206	Lyase			Roux et al. 2016	FALSE
+		PF01596	O-methyltransferase			Roux et al. 2016	FALSE
+		PF06463	Molybdenum Cofactor Synthesis C			Roux et al. 2016	FALSE
+		PF00384	Molybdopterin oxidoreductase			Roux et al. 2016	FALSE
+		PF02445	Quinolinate synthetase A protein			Roux et al. 2016	FALSE
+		PF04131	Putative N-acetylmannosamine-6-phosphate epimerase			Roux et al. 2016	FALSE
+		PF04095	Nicotinate phosphoribosyltransferase (NAPRTase) family			Roux et al. 2016	FALSE
+		PF03824	High-affinity nickel-transport protein			Roux et al. 2016	FALSE
+		PF00543	Nitrogen regulatory protein P-II			Roux et al. 2016	FALSE
+		PF02548	Ketopantoate hydroxymethyltransferase			Roux et al. 2016	FALSE
+		PF01734	Patatin-like phospholipase			Roux et al. 2016	FALSE
+		PF13091	PLD-like domain			Roux et al. 2016	FALSE
+		PF00348	Polyprenyl synthetase			Roux et al. 2016	FALSE
+		PF02541	Ppx/GppA phosphatase family			Roux et al. 2016	FALSE
+		PF00485	Phosphoribulokinase / Uridine kinase family			Roux et al. 2016	FALSE
+		PF01242	6-pyruvoyl tetrahydropterin synthase			Roux et al. 2016	FALSE
+		PF02700	Phosphoribosylformylglycinamidine (FGAM) synthase			Roux et al. 2016	FALSE
+		PF06508	Queuosine biosynthesis protein QueC			Roux et al. 2016	FALSE
+		PF14489	QueF-like protein			Roux et al. 2016	FALSE
+		PF04321	RmlD substrate binding domain			Roux et al. 2016	FALSE
+		PF02915	Rubrerythrin			Roux et al. 2016	FALSE
+		PF01259	SAICAR synthetase			Roux et al. 2016	FALSE
+		PF00550	Phosphopantetheine attachment site			Roux et al. 2016	FALSE
+		PF00719	Inorganic pyrophosphatase			Roux et al. 2016	FALSE
+		 PF00722	Glycosyl hydrolases family 16; beta-1,3-glucanase			Sun et al. 2000; Emerson et al. 2018	TRUE
+		 PF00150	Cellulase; endo-beta-1,4-mannosidase			Emerson et al. 2018	TRUE
+		 PF0232	Glycosyl hydrolase family 70; alpha amylase			Emerson et al. 2018	FALSE
+		 PF07971	Alpha-1,2-mannosidase			Emerson et al. 2018	FALSE
+	EC:3.2.1.51	 PF01120	Alpha-L-fucosidase			Emerson et al. 2018	FALSE
+		 PF04616	Glycosyl hydrolases family 43; beta-1,4-xylosidase			Emerson et al. 2018	FALSE
+		 PF00703	Glycosyl hydrolases family 2; beta-galactosidase			Emerson et al. 2018	FALSE
+		 PF01373	Glycosyl hydrolase family 14; beta-galactosidase			Emerson et al. 2018	FALSE
+		 PF03659	Glycosyl hydrolase family 71; endo-alpha-mannosidase			Emerson et al. 2018	FALSE
+		 PF13385	Concanavalin A-like lectin; extracellular arabinase			Emerson et al. 2018	FALSE
+K01779	EC:5.1.1.13		racD; aspartate Racmase			Trubl et al. 2018	FALSE
+		PF01786	Plastoquinol terminal oxidase (PTOX)			Sullivan et al. 2010; Ignacio?Espinoza et al. 2012; Roux et al. 2016	FALSE
+		PF01077; PF03460	rdsrA; reverse-acting dissimilatory sulfite reductase (alpha subunit)			Anantharaman et al. 2014	FALSE
