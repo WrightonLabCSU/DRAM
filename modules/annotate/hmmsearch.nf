@@ -17,7 +17,7 @@ process HMM_SEARCH {
     hmmsearch \\
     --domtblout ${sample}_hmmsearch.out \\
     --cpu 2 \\
-    *.hmm) \\
+    *.hmm \\
     ${fasta}
 
     """
