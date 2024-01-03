@@ -18,4 +18,6 @@ dependencies:
   - networkx=2.8.8
   - ruby=3.1.2
   - parallel=20221122
-  - dram=1.4.6
+  - pip
+  - pip:
+    - DRAM-bio==1.5.0
