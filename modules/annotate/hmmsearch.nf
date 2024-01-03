@@ -4,7 +4,7 @@ process HMM_SEARCH {
 
     input:
     tuple val( sample ), path( fasta )
-    val( database_loc )
+    path( database_loc )
 
     output:
     tuple val( sample ), path("${sample}_hmmsearch.out"), emit: hmm_search_out
