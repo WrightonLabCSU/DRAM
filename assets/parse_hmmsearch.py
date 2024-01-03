@@ -1,6 +1,6 @@
+#!/usr/bin/env python
 import sys
 import pandas as pd
-import re
 
 HMMSCAN_ALL_COLUMNS = ['query_id', 'query_ascession', 'query_length', 'target_id', 'target_ascession', 'target_length', 'full_evalue', 'full_score', 'full_bias', 'domain_number', 'domain_count', 'domain_cevalue', 'domain_ievalue', 'domain_score', 'domain_bias', 'target_start', 'target_end', 'alignment_start', 'alignment_end', 'query_start', 'query_end', 'accuracy', 'description']
 HMMSCAN_COLUMN_TYPES = [str, str, int, str, str, int, float, float, float, int, int, float, float, float, float, int, int, int, int, int, int, float, str]
@@ -9,7 +9,7 @@ def parse_hmmsearch_domtblout(file):
     df_lines = list()
     for line in open(file):
         if not line.startswith('#'):
-            line = re.split(r'\s+', line.strip())
+            line = line.split()
             line = line[:22] + [' '.join(line[22:])]
             df_lines.append(line)
     hmmsearch_frame = pd.DataFrame(df_lines, columns=HMMSCAN_ALL_COLUMNS)
