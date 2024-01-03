@@ -16,10 +16,20 @@ def parse_hmmsearch_domtblout(file):
             except Exception as e:
                 print(f"Error in line {i + 1}: {e}")
                 print(f"Line content: {line}")
-    hmmsearch_frame = pd.DataFrame(df_lines, columns=HMMSCAN_ALL_COLUMNS)
-    for i, column in enumerate(hmmsearch_frame.columns):
-        hmmsearch_frame[column] = hmmsearch_frame[column].astype(HMMSCAN_COLUMN_TYPES[i])
-    return hmmsearch_frame
+    if not df_lines:
+        print("No valid lines found in the input file.")
+        return pd.DataFrame()
+    try:
+        hmmsearch_frame = pd.DataFrame(df_lines, columns=HMMSCAN_ALL_COLUMNS)
+        for i, column in enumerate(hmmsearch_frame.columns):
+            hmmsearch_frame[column] = hmmsearch_frame[column].astype(HMMSCAN_COLUMN_TYPES[i])
+        return hmmsearch_frame
+    except Exception as e:
+        print(f"Error in creating DataFrame: {e}")
+        print("DataFrame creation failed. Lines:")
+        for line in df_lines:
+            print(line)
+        return pd.DataFrame()
 
 
 if __name__ == '__main__':
