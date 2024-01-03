@@ -7,11 +7,10 @@ HMMSCAN_COLUMN_TYPES = [str, str, int, str, str, int, float, float, float, int, 
 
 def parse_hmmsearch_domtblout(file):
     df_lines = list()
-    for i, line in enumerate(open(file)):
-        print(f"Original line {i + 1}: {line.strip()}")  # Debugging statement
+    for i, line in enumerate(file):
         if not line.startswith('#'):
             try:
-                line = line.split(maxsplit=21)
+                line = line.split()
                 line = line[:22] + [' '.join(line[22:])]
                 df_lines.append(line)
             except Exception as e:
@@ -33,15 +32,8 @@ def parse_hmmsearch_domtblout(file):
         return pd.DataFrame()
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print("Usage: python script.py input_file output_file")
-        sys.exit(1)
-    
-    input_file = sys.argv[1]
-    output_file = sys.argv[2]
     try:
-        result = parse_hmmsearch_domtblout(input_file)
-        result.to_csv(output_file, index=False)
-        print(f"Output written to {output_file}")
+        result = parse_hmmsearch_domtblout(sys.stdin)
+        result.to_csv(sys.stdout, index=False)
     except Exception as e:
         print(f"Error: {e}")
