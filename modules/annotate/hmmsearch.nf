@@ -17,7 +17,7 @@ process HMM_SEARCH {
     hmmsearch \\
     --domtblout ${sample}_hmmsearch.out \\
     --cpu 2 \\
-    "${database_loc}/*" \\
+    ${database_loc}/* \\
     ${fasta}
 
     """
