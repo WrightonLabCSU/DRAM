@@ -13,12 +13,12 @@ process HMM_SEARCH {
 
     """
     ln -s ${database_loc}/* .
-    files=($(ls *))
+    files=files("*")
 
     hmmsearch \\
     --domtblout ${sample}_hmmsearch.out \\
     --cpu 2 \\
-    "\${files[@]}" \\
+    "\${files}" \\
     ${fasta}
 
     """
