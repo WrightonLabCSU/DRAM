@@ -12,7 +12,7 @@ process HMM_SEARCH {
     script:
 
     """
-    cp ${database_loc}/* .\
+    ln -s ${database_loc}/* .
 
     hmmsearch \\
     --domtblout ${sample}_hmmsearch.out \\
