@@ -9,11 +9,10 @@ def parse_hmmsearch_domtblout(file):
     df_lines = list()
     for line in open(file):
         if not line.startswith('#'):
-            continue  # Skip lines that don't start with #
-        
-        line = line.split()
-        line = line[:22] + [' '.join(line[22:])]
-        df_lines.append(line)
+            fields = line.split()
+            if len(fields) >= 22:  # Check if the line has the expected number of fields
+                line = fields[:22] + [' '.join(fields[22:])]
+                df_lines.append(line)
     
     hmmsearch_frame = pd.DataFrame(df_lines, columns=HMMSCAN_ALL_COLUMNS)
     for i, column in enumerate(hmmsearch_frame.columns):
