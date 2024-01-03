@@ -9,7 +9,7 @@ def parse_hmmsearch_domtblout(file):
     df_lines = []
     for line in open(file):
         if not line.startswith('#'):
-            line = line.split()
+            line = line.split(maxsplit=21)
             line = line[:22] + [' '.join(line[22:])]
             df_lines.append(line)
 
