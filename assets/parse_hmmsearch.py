@@ -10,7 +10,7 @@ def parse_hmmsearch_domtblout(lines):
     for i, line in enumerate(lines):
         if not line.startswith('#'):
             try:
-                line = line.split()
+                line = line.split(maxsplit=21)
                 line = line[:22] + [' '.join(line[22:])]
                 df_lines.append(line)
             except Exception as e:
