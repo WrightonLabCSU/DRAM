@@ -14,11 +14,10 @@ process HMM_SEARCH {
     """
     ln -s ${database_loc}/* .
     files=(*)
-    
     hmmsearch \\
     --domtblout ${sample}_hmmsearch.out \\
     --cpu 2 \\
-    "\${files[@]}" \\
+    "\$(join(files, ' '))" \\
     ${fasta}
 
     """
