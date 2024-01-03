@@ -9,8 +9,9 @@ def parse_hmmsearch_domtblout(file):
     df_lines = list()
     for i, line in enumerate(open(file)):
         if not line.startswith('#'):
-            line = line.split()
             try:
+                print(f"Raw Line {i + 1}: {line}")
+                line = line.split()
                 line = line[:22] + [' '.join(line[22:])]
                 df_lines.append(line)
             except Exception as e:
