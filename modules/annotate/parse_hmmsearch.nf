@@ -10,6 +10,6 @@ process PARSE_HMM {
 
     script:
     """
-    python ./assets/parse_hmmsearch.py ${inputHMMSearch} ${sample}_parsed_hmm.out
+    python ~/assets/parse_hmmsearch.py ${inputHMMSearch} ${sample}_parsed_hmm.out
     """
 }
