@@ -10,6 +10,7 @@ process PARSE_HMM {
 
     script:
     """
-    python \$(readlink -f ./assets/parse_hmmsearch.py) ${inputHMMSearch} ${sample}_parsed_hmm.out
+    bash -c "python \$(readlink -f ./assets/parse_hmmsearch.py) small_sample-fasta_hmmsearch.out ${sample}_parsed_hmm.out"
+
     """
 }
