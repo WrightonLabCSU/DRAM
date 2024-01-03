@@ -6,10 +6,11 @@ HMMSCAN_ALL_COLUMNS = ['query_id', 'query_ascession', 'query_length', 'target_id
 HMMSCAN_COLUMN_TYPES = [str, str, int, str, str, int, float, float, float, int, int, float, float, float, float, int, int, int, int, int, int, float, str]
 
 def parse_hmmsearch_domtblout(file):
-    df_lines = []
+    df_lines = list()
     for line in open(file):
         if not line.startswith('#'):
             line = line.split()
+            line = line[:22] + [' '.join(line[22:])]
             df_lines.append(line)
     hmmsearch_frame = pd.DataFrame(df_lines, columns=HMMSCAN_ALL_COLUMNS)
     for i, column in enumerate(hmmsearch_frame.columns):
@@ -19,9 +20,16 @@ def parse_hmmsearch_domtblout(file):
 if __name__ == '__main__':
     input_file = sys.argv[1]
     output_file = sys.argv[2]
+    
+    print(f"Input file: {input_file}")
+    print(f"Output file: {output_file}")
+    
     result = parse_hmmsearch_domtblout(input_file)
+    
+    print("Result DataFrame:")
+    print(result)
+    
     result.to_csv(output_file, index=False)
-
 
 
 
