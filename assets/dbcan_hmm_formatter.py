@@ -10,49 +10,45 @@ def find_best_dbcan_hit(group):
     best_hit = group[group['full_evalue'] == group['full_evalue'].min()]
     return best_hit['target_id'].values[0]
 
-def dbcan_hmmscan_formater(hits, db_name, db_handler=None):
-    hits_sig = hits[hits.apply(partial(get_sig_row, evalue_lim=1e-18), axis=1]
+def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
+    # Sort hits within each group based on 'full_evalue'
+    hits['rank'] = hits.groupby('query_id')['full_evalue'].rank()
 
-    if len(hits_sig) == 0:
-        return pd.DataFrame()
+    # Calculate 'score_rank'
+    hits['score_rank'] = hits.groupby('query_id')['full_score'].rank(ascending=False)
 
-    hit_groups = hits_sig.groupby('query_id')
-    all_hits = hit_groups.apply(lambda x: "; ".join(x['target_id'].apply(lambda y: y[:-4]).unique()))
+    # Calculate 'bitScore'
+    hits['bitScore'] = hits.groupby('query_id')['full_score'].transform('min')
 
-    hits_df = pd.DataFrame(all_hits)
-    hits_df.columns = [f"{db_name}_ids"]
+    # Extract family and subfamily from target_id
+    hits['family'] = hits['target_id'].str.extract(r'([A-Za-z0-9_]+)_\d*')
+    hits['subfamily'] = hits['target_id'].str.extract(r'([A-Za-z0-9_]+)')
 
-    def description_pull(x):
-        id_list = [re.findall("^[A-Z]*[0-9]*", str(x))[0] for x in x.split("; ")]
-        id_list = [y for x in id_list for y in x if len(x) > 0]
-        description_list = db_handler.get_descriptions(id_list, "dbcan_description").values()
-        description_str = "; ".join(description_list)
-        return description_str
+    # Extract 'dbcan-best-hit'
+    hits['dbcan-best-hit'] = hits.groupby('query_id')['target_id'].transform(lambda x: x.str[:-4].unique().min())
 
-    if db_handler is not None:
-        hits_df[f"{db_name}_hits"] = hits_df[f"{db_name}_ids"].apply(description_pull)
-        hits_df[f"{db_name}_subfam_ec"] = hits_df[f"{db_name}_ids"].apply(lambda x: "; ".join(
-            db_handler.get_descriptions(x.split("; "), "dbcan_description", description_name="ec").values()))
+    # Extract 'family-activities' based on 'target_id'
+    fam_mapping = pd.read_csv(ch_dbcan_fam, sep='\t', index_col=0, header=None, names=['family-activities'])
+    hits = hits.join(fam_mapping, on='family')
 
-    hits_df[f"{db_name}_best_hit"] = [find_best_dbcan_hit(group) for _, group in hit_groups]
-    hits_df.rename_axis(None, inplace=True)
+    # Extract 'subfam-EC' and 'subfam-GenBank' based on 'target_id'
+    subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-EC', 'subfam-GenBank'])
+    hits = hits.join(subfam_mapping.set_index(0), on='subfamily')
 
-    return hits_df
+    # Concatenate values when there are multiple matches
+    hits['subfam-EC'] = hits.groupby('query_id')['subfam-EC'].transform(lambda x: "; ".join(x))
+    hits['subfam-GenBank'] = hits.groupby('query_id')['subfam-GenBank'].transform(lambda x: "; ".join(x))
+
+    return hits[['query_id', 'target_id', 'score_rank', 'bitScore', 'family-activities', 'subfam-EC', 'subfam-GenBank', 'dbcan-best-hit']]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Format DBCAN HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
-    parser.add_argument("--db_name", type=str, help="Name of the DBCAN database.")
+    parser.add_argument("--fam", type=str, help="Path to the family activities file.")
+    parser.add_argument("--subfam", type=str, help="Path to the subfamily EC file.")
     parser.add_argument("--output", type=str, help="Path to the formatted output file.")
 
     args = parser.parse_args()
 
-    # Mock database handler (replace with actual data)
-    db_handler = {
-        "EC1": "Description for EC1",
-        "EC2": "Description for EC2",
-        # Add more EC numbers and descriptions as needed
-    }
-
-    formatted_hits = dbcan_hmmscan_formater(pd.read_csv(args.hits_csv), args.db_name, db_handler)
+    formatted_hits = dbcan_hmmscan_formater(pd.read_csv(args.hits_csv), args.fam, args.subfam)
     formatted_hits.to_csv(args.output, index=False)
