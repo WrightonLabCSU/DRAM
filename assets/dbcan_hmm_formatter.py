@@ -69,6 +69,14 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
         print("\nColumn names after join with 'fam_mapping':")
         print(hits.columns)
 
+        # Hits DataFrame after joining with 'fam_mapping':
+        print("\nHits DataFrame after joining with 'fam_mapping':")
+        print(hits.head())
+
+        # Check column names after join with 'fam_mapping'
+        print("\nColumn names after join with 'fam_mapping':")
+        print(hits.columns)
+
         # Extract 'subfam-EC' and 'subfam-GenBank' based on 'target_id'
         subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-GenBank', 'subfam-EC'])
         hits = hits.join(subfam_mapping.set_index(0), on='subfamily')
@@ -81,9 +89,21 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
         print("\nColumn names after join with 'subfam_mapping':")
         print(hits.columns)
 
+        # Add this line for additional debugging
+        print("\nHits DataFrame before final processing:")
+        print(hits.head())
+
         # Concatenate values when there are multiple matches
         hits['subfam-EC'] = hits.groupby('query_id')['subfam-EC'].transform(lambda x: "; ".join(x))
         hits['subfam-GenBank'] = hits.groupby('query_id')['subfam-GenBank'].transform(lambda x: "; ".join(x))
+
+        # Handle lines with additional columns
+        additional_columns = [col for col in hits.columns[23:] if hits[col].notna().any()]
+        hits['family-activities'] = hits.apply(lambda row: "; ".join(filter(None, [row['family-activities']] + row[additional_columns].astype(str))), axis=1)
+
+        # Debugging statement 9
+        print("\nHits DataFrame after final processing:")
+        print(hits.head())
 
         # Debugging statement 9
         print("\nHits DataFrame after concatenating 'subfam-EC' and 'subfam-GenBank' columns:")
