@@ -42,12 +42,17 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
         print(hits.head())
 
         # Extract 'subfam-EC' and 'subfam-GenBank' based on 'target_id'
+        # Add these lines after subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-GenBank', 'subfam-EC'])
         subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-GenBank', 'subfam-EC'])
-        hits = hits.join(subfam_mapping.set_index(0), on='subfamily')
+        print("\nsubfam_mapping DataFrame:")
+        print(subfam_mapping.head())
 
-        # Debugging statement 4
-        print("\nHits DataFrame after joining with 'subfam_mapping':")
+        hits = hits.join(subfam_mapping.set_index(0), on='subfamily', how='left')
+
+        # Add this line after the join
+        print("\nHits DataFrame after joining with 'subfam_mapping' (left join):")
         print(hits.head())
+
 
         # Concatenate values when there are multiple matches
         additional_columns = [col for col in hits.columns[23:] if hits[col].notna().any()]
