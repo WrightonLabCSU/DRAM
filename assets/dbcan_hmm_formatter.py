@@ -50,12 +50,13 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
         print(hits.head())
 
         # Concatenate values when there are multiple matches
-        hits['subfam-EC'] = hits.groupby('query_id')['subfam-EC'].transform(lambda x: "; ".join(x))
-        hits['subfam-GenBank'] = hits.groupby('query_id')['subfam-GenBank'].transform(lambda x: "; ".join(x))
-
-        # Handle lines with additional columns
         additional_columns = [col for col in hits.columns[23:] if hits[col].notna().any()]
-        hits['family-activities'] = hits.apply(lambda row: "; ".join(filter(None, [row['family-activities']] + row[additional_columns].astype(str))), axis=1)
+        
+        def concat_additional_columns(row):
+            values = [row[col] for col in additional_columns if not pd.isna(row[col])]
+            return "; ".join(values)
+
+        hits['family-activities'] = hits.apply(lambda row: concat_additional_columns(row), axis=1)
 
         # Debugging statement 5
         print("\nHits DataFrame after final processing:")
