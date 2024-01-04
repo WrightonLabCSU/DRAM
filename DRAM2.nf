@@ -228,6 +228,9 @@ if( params.use_dbset == "adjectives_set" ){
 //  channels for the various annotation databases
 
 if( params.annotate ){
+    //This is just temporary - want these in the containers eventually
+    ch_parse_hmmsearch = file(params.parse_hmmsearch_script)
+
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
     } else {
@@ -444,7 +447,7 @@ workflow {
             HMM_SEARCH_KOFAM ( called_proteins, ch_kofam_db )
             ch_kofam_hmms = HMM_SEARCH_KOFAM.out.hmm_search_out
 
-            PARSE_HMM_KOFAM ( ch_kofam_hmms )
+            PARSE_HMM_KOFAM ( ch_kofam_hmms, ch_parse_hmmsearch )
             ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
             KEGG_HMM_FORMATTER ( params.kofam_db_info, ch_kofam_parsed, params.kofam_top_hit )

@@ -4,12 +4,13 @@ process PARSE_HMM {
     
     input:
     tuple val( sample ), path( inputHMMSearch )
+    file (ch_parse_hmmsearch)
 
     output:
     tuple val( sample ), path( "${sample}_parsed_hmm.out" ), emit: parsed_hmm
 
     script:
     """
-    python ${params.parse_hmmsearch_script} ${inputHMMSearch} ${sample}_parsed_hmm.out
+    python ${ch_parse_hmmsearch} ${inputHMMSearch} ${sample}_parsed_hmm.out
     """
 }
