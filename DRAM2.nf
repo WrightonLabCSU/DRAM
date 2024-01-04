@@ -235,6 +235,7 @@ if( params.annotate ){
     ch_count_annots_script = file(params.count_annots_script)
     ch_distill_summary_script = file(params.distill_summary_script)
     ch_distill_final_script = file(params.distill_final_script)
+    ch_dbcan_formatter = file(params.dbcan_hmm_formatter_script)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
@@ -460,16 +461,16 @@ workflow {
         }
         // DBCAN not finished - this needs editing!
         if( annotate_dbcan == 1 ){
-            /*
-            HMM_SEARCH_DBCAN ( called_proteins, params.dbcan_hmm_loc )
+            
+            HMM_SEARCH_DBCAN ( called_proteins, ch_dbcan_db )
             ch_dbcan_hmms = HMM_SEARCH_DBCAN.out.hmm_search_out
 
-            PARSE_HMM_DBCAN ( ch_dbcan_hmms )
-            ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
+            //PARSE_HMM_DBCAN ( ch_dbcan_hmms )
+            //ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
-            DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit )
-            ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.formatted_hits
-            */
+            //DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit )
+            //ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.formatted_hits
+            
         }
 
         if (annotate_camper == 1){
