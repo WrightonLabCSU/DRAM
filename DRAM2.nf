@@ -230,6 +230,7 @@ if( params.use_dbset == "adjectives_set" ){
 if( params.annotate ){
     //This is just temporary - want these in the containers eventually
     ch_parse_hmmsearch = file(params.parse_hmmsearch_script)
+    ch_kegg_formatter = file(kegg_formatter_script)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
@@ -450,7 +451,7 @@ workflow {
             PARSE_HMM_KOFAM ( ch_kofam_hmms, ch_parse_hmmsearch )
             ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
-            KEGG_HMM_FORMATTER ( params.kofam_db_info, ch_kofam_parsed, params.kofam_top_hit )
+            KEGG_HMM_FORMATTER ( params.kofam_db_info, ch_kofam_parsed, params.kofam_top_hit, ch_kegg_formatter )
             ch_kofam_formatted = KEGG_HMM_FORMATTER.out.formatted_hits
         }
         // DBCAN not finished - this needs editing!
