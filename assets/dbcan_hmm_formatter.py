@@ -61,6 +61,14 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
         print("\nHits DataFrame after joining with 'fam_mapping':")
         print(hits.head())
 
+        # Hits DataFrame after joining with 'fam_mapping':
+        print("\nHits DataFrame after joining with 'fam_mapping':")
+        print(hits.head())
+
+        # Check column names after join with 'fam_mapping'
+        print("\nColumn names after join with 'fam_mapping':")
+        print(hits.columns)
+
         # Extract 'subfam-EC' and 'subfam-GenBank' based on 'target_id'
         subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-GenBank', 'subfam-EC'])
         hits = hits.join(subfam_mapping.set_index(0), on='subfamily')
@@ -68,6 +76,10 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
         # Debugging statement 8
         print("\nHits DataFrame after joining with 'subfam_mapping':")
         print(hits.head())
+
+        # Check column names after join with 'subfam_mapping'
+        print("\nColumn names after join with 'subfam_mapping':")
+        print(hits.columns)
 
         # Concatenate values when there are multiple matches
         hits['subfam-EC'] = hits.groupby('query_id')['subfam-EC'].transform(lambda x: "; ".join(x))
