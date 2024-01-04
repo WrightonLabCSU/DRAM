@@ -4,7 +4,7 @@ process PARSE_HMM {
     
     input:
     tuple val( sample ), path( inputHMMSearch )
-    file (ch_parse_hmmsearch)
+    file( ch_parse_hmmsearch )
 
     output:
     tuple val( sample ), path( "${sample}_parsed_hmm.out" ), emit: parsed_hmm
