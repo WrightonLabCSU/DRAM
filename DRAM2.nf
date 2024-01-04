@@ -94,30 +94,31 @@ if( params.use_dbset){
     Load Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { RENAME_FASTA                          } from './modules/call/rename_fasta.nf'
-include { CALL_GENES                            } from './modules/call/call_genes_prodigal.nf'
+include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
+include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
 
-include { MMSEQS2                               } from './modules/mmseqs2.nf'
+include { MMSEQS2                                       } from './modules/mmseqs2.nf'
 
-include { HMM_SEARCH as HMM_SEARCH_KOFAM        } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_KOFAM          } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
 
-include { HMM_SEARCH as HMM_SEARCH_DBCAN        } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_DBCAN          } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_DBCAN                  } from './modules/annotate/parse_hmmsearch.nf'
 
-include { GENERIC_HMM_FORMATTER                 } from './modules/annotate/generic_hmm_formatter.nf'
-include { KEGG_HMM_FORMATTER                    } from './modules/annotate/kegg_hmm_formatter.nf'
-include { DBCAN_HMM_FORMATTER                   } from './modules/annotate/dbcan_hmm_formatter.nf'
+include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
+include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
+include { KEGG_HMM_FORMATTER as KEGG_HMM_FORMATTER_KOFAM} from './modules/annotate/kegg_hmm_formatter.nf'
+include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
 
-include { INDEX as KEGG_INDEX                   } from './modules/index.nf'
+include { INDEX as KEGG_INDEX                           } from './modules/index.nf'
 
-include { COMBINE_ANNOTATIONS                   } from './modules/annotate/combine_annotations.nf'
-include { COUNT_ANNOTATIONS                     } from './modules/annotate/count_annotations.nf'
+include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
+include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
 
-include { DISTILL_SUMMARY                       } from './modules/distill/distill_summary.nf'
-include { DISTILL_FINAL                         } from './modules/distill/distill_final.nf'
+include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
+include { DISTILL_FINAL                                 } from './modules/distill/distill_final.nf'
 
-include { PRODUCT_HEATMAP                       } from './modules/product/product_heatmap.nf'
+include { PRODUCT_HEATMAP                               } from './modules/product/product_heatmap.nf'
 
 
 /*
@@ -456,7 +457,7 @@ workflow {
             PARSE_HMM_KOFAM ( ch_kofam_hmms, ch_parse_hmmsearch )
             ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
-            KEGG_HMM_FORMATTER ( params.kofam_db_info, ch_kofam_parsed, params.kofam_top_hit, ch_kegg_formatter )
+            KEGG_HMM_FORMATTER_KOFAM ( params.kofam_db_info, ch_kofam_parsed, params.kofam_top_hit, ch_kegg_formatter )
             ch_kofam_formatted = KEGG_HMM_FORMATTER.out.formatted_hits
         }
         // DBCAN not finished - this needs editing!
@@ -469,7 +470,7 @@ workflow {
             ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
             DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, ch_dbcan_formatter )
-            ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.formatted_hits
+            ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
             
         }
 
