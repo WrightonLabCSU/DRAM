@@ -28,7 +28,7 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
         hits['dbcan-best-hit'] = hits.groupby('query_id')['target_id'].transform(lambda x: x.str[:-4].unique().min())
 
         # Extract 'family-activities' based on 'target_id'
-        fam_mapping = pd.read_csv(ch_dbcan_fam, sep='\t', index_col=0, comment='#', header=None, names=['family-activities'], warn_bad_lines=False, error_bad_lines=False)
+        fam_mapping = pd.read_csv(ch_dbcan_fam, sep='\t', index_col=0, comment='#', header=None, names=['family-activities'], error_bad_lines=False, warn_bad_lines=False)
         fam_mapping.index = fam_mapping.index.map(str)  # Convert index to string to avoid issues
         hits['family'] = hits['family'].astype(str)  # Convert 'family' column to string
         hits = hits.join(fam_mapping, on='family')
