@@ -237,8 +237,8 @@ if( params.annotate ){
     ch_distill_summary_script = file(params.distill_summary_script)
     ch_distill_final_script = file(params.distill_final_script)
     ch_dbcan_formatter = file(params.dbcan_hmm_formatter_script)
-    ch_dbcan_fam = file(dbcan_fam_activities)
-    ch_dbcan_subfam = file(dbcan_subfam_activities)
+    ch_dbcan_fam = file(params.dbcan_fam_activities)
+    ch_dbcan_subfam = file(params.dbcan_subfam_activities)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
