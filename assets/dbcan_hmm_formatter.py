@@ -61,7 +61,11 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
         print("\nHits DataFrame after final processing:")
         print(hits.head())
 
-        return hits[['query_id', 'target_id', 'score_rank', 'bitScore', 'family-activities', 'subfam-EC', 'subfam-GenBank', 'dbcan-best-hit']]
+        # Ensure required columns are present
+        required_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family-activities', 'subfam-EC', 'subfam-GenBank', 'dbcan-best-hit']
+        selected_columns = [col for col in required_columns if col in hits.columns]
+
+        return hits[selected_columns]
 
     except KeyError as e:
         print(f"Error: {e}")
