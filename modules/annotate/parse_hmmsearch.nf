@@ -11,6 +11,6 @@ process PARSE_HMM {
 
     script:
     """
-    python ${ch_parse_hmmsearch} ${inputHMMSearch} ${sample}_parsed_hmm.out
+    python ./${ch_parse_hmmsearch} ${inputHMMSearch} ${sample}_parsed_hmm.out
     """
 }
