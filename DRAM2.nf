@@ -231,6 +231,7 @@ if( params.annotate ){
     //This is just temporary - want these in the containers eventually
     ch_parse_hmmsearch = file(params.parse_hmmsearch_script)
     ch_kegg_formatter = file(params.kegg_formatter_script)
+    ch_combine_annot_script = file(params.combine_annotations_script)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
@@ -521,7 +522,7 @@ workflow {
         // 2) also need to add one additional columns after the gene_name (1st) column: sample name 
         // 3) if params.add_annotations is present with a path to a valid annotations.tsv input file, need to merge this as well
         // 4) ?
-        COMBINE_ANNOTATIONS( collected_formatted_hits )
+        COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
         COUNT_ANNOTATIONS ( ch_combined_annotations )

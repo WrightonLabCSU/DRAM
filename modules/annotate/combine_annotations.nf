@@ -2,6 +2,7 @@ process COMBINE_ANNOTATIONS {
 
     input:
     val all_annotations
+    file(ch_combine_annot_script)
 
     output:
     path "combined_annotations.tsv", emit: combined_annotations_out
@@ -15,7 +16,7 @@ process COMBINE_ANNOTATIONS {
     touch logs/combine_annotations.log
     log_file="logs/combine_annotations.log"
 
-    python /home/rwoyda/Projects/DRAM2-Nextflow/DRAM2-NF/assets/combine_annotations.py --annotations ${all_annotations} --output "combined_annotations.tsv" >> \$log_file 2>&1
+    python ${ch_combine_annot_script} --annotations ${all_annotations} --output "combined_annotations.tsv" >> \$log_file 2>&1
 
     """
 }
