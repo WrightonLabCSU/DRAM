@@ -465,8 +465,8 @@ workflow {
             HMM_SEARCH_DBCAN ( called_proteins, ch_dbcan_db )
             ch_dbcan_hmms = HMM_SEARCH_DBCAN.out.hmm_search_out
 
-            //PARSE_HMM_DBCAN ( ch_dbcan_hmms )
-            //ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
+            PARSE_HMM_DBCAN ( ch_dbcan_hmms )
+            ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
             //DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit )
             //ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.formatted_hits
