@@ -458,7 +458,7 @@ workflow {
             ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
             KEGG_HMM_FORMATTER_KOFAM ( params.kofam_db_info, ch_kofam_parsed, params.kofam_top_hit, ch_kegg_formatter )
-            ch_kofam_formatted = KEGG_HMM_FORMATTER.out.formatted_hits
+            ch_kofam_formatted = KEGG_HMM_FORMATTER_KOFAM.out.formatted_hits
         }
         // DBCAN not finished - this needs editing!
         if( annotate_dbcan == 1 ){
