@@ -1,10 +1,6 @@
 import pandas as pd
 import argparse
 
-def process_additional_fields(line):
-    # Append data from additional fields to the second column
-    return '\t'.join([line[1], '\t'.join(line[2:])])
-
 def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
     try:
         # Debugging statement 1
