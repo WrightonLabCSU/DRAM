@@ -1,5 +1,7 @@
 import pandas as pd
 import argparse
+import re
+from functools import partial
 
 def get_sig_row(row, evalue_lim):
     return row['full_evalue'] < evalue_lim
@@ -22,23 +24,35 @@ def dbcan_hmmscan_formatter(hits, ch_dbcan_fam, ch_dbcan_subfam):
     hits['family'] = hits['target_id'].str.extract(r'([A-Za-z0-9_]+)_\d*')
     hits['subfamily'] = hits['target_id'].str.extract(r'([A-Za-z0-9_]+)')
 
-    # Debug prints to check the columns in hits DataFrame
-    print("Columns in hits DataFrame:", hits.columns)
-
     # Extract 'dbcan-best-hit'
     hits['dbcan-best-hit'] = hits.groupby('query_id')['target_id'].transform(lambda x: x.str[:-4].unique().min())
 
+    # Attempt to load fam_mapping file with error handling
+    try:
+        fam_mapping = pd.read_csv(ch_dbcan_fam, sep='\t', index_col=0, comment='#', header=None, names=['family-activities'])
+    except pd.errors.EmptyDataError:
+        # Handle the case when the file is empty
+        print(f"The file {ch_dbcan_fam} is empty.")
+        fam_mapping = pd.DataFrame(columns=['family-activities'])
 
-    # Extract 'family-activities' based on 'target_id'
-    fam_mapping = pd.read_csv(ch_dbcan_fam, sep='\t', index_col=0, comment='#', header=None, names=['family-activities'], error_bad_lines=False)
+    # Debug prints to check the columns in fam_mapping DataFrame
+    print("Columns in fam_mapping DataFrame:", fam_mapping.columns)
+
+    # Join 'family-activities' based on 'family'
     hits = hits.join(fam_mapping, on='family')
+
+    # Attempt to load subfam_mapping file with error handling
+    try:
+        subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-EC', 'subfam-GenBank'])
+    except pd.errors.EmptyDataError:
+        # Handle the case when the file is empty
+        print(f"The file {ch_dbcan_subfam} is empty.")
+        subfam_mapping = pd.DataFrame(columns=['subfam-EC', 'subfam-GenBank'])
 
     # Debug prints to check the columns in subfam_mapping DataFrame
     print("Columns in subfam_mapping DataFrame:", subfam_mapping.columns)
 
-
-    # Extract 'subfam-EC' and 'subfam-GenBank' based on 'target_id'
-    subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-EC', 'subfam-GenBank'])
+    # Extract 'subfam-EC' and 'subfam-GenBank' based on 'subfamily'
     hits = hits.join(subfam_mapping.set_index(0), on='subfamily')
 
     # Concatenate values when there are multiple matches
@@ -56,5 +70,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    formatted_hits = dbcan_hmmscan_formatter(pd.read_csv(args.hits_csv), args.fam, args.subfam)
+    # Load hits CSV
+    hits_df = pd.read_csv(args.hits_csv)
+
+    # Format hits
+    formatted_hits = dbcan_hmmscan_formatter(hits_df, args.fam, args.subfam)
+
+    # Save formatted output
     formatted_hits.to_csv(args.output, index=False)
