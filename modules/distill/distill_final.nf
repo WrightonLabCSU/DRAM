@@ -2,6 +2,7 @@ process DISTILL_FINAL {
 
     input:
     path( metabolism_summary )
+    file( ch_distill_final_script )
 
     output:
     path( "distillate.xlsx" ), emit: distillate
@@ -9,8 +10,7 @@ process DISTILL_FINAL {
     script:
     """
 
-    python /home/rwoyda/Projects/DRAM2-Nextflow/DRAM2-NF/assets/generate_multi_sheet_xlsx.py --input-file ${metabolism_summary} --output-file distillate.xlsx
-
+    python ${ch_distill_final_script} --input-file ${metabolism_summary} --output-file distillate.xlsx
 
     """
 }

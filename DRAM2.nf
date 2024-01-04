@@ -233,6 +233,8 @@ if( params.annotate ){
     ch_kegg_formatter = file(params.kegg_formatter_script)
     ch_combine_annot_script = file(params.combine_annotations_script)
     ch_count_annots_script = file(params.count_annots_script)
+    ch_distill_summary_script = file(params.distill_summary_script)
+    ch_distill_final_script = file(params.distill_final_script)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
@@ -542,10 +544,10 @@ workflow {
     if( params.distill )
     {
         
-        DISTILL_SUMMARY( ch_combined_annotations, COUNT_ANNOTATIONS.out.target_id_counts )
+        DISTILL_SUMMARY( ch_combined_annotations, COUNT_ANNOTATIONS.out.target_id_counts, ch_distill_summary_script )
         ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
-        DISTILL_FINAL( ch_simple_matab_summ )
+        DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
         //PRODUCT_HEATMAP( ch_annotation_counts )
     }
 
