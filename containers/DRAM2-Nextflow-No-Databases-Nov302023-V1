@@ -62,12 +62,12 @@ From: ubuntu:22.04
     conda install trnascan-se=2.0.11
     conda install scipy=1.8.1
     conda install sqlalchemy=1.4.46
-    barrnap=0.9
-    altair=4.2.0
-    openpyxl=3.0.10
-    networkx=2.8.8
-    ruby=3.1.2
-    parallel=20221122    
+    conda install barrnap=0.9
+    conda install altair=4.2.0
+    conda install openpyxl=3.0.10
+    conda install networkx=2.8.8
+    conda install ruby=3.1.2
+    conda install parallel=20221122    
 
 
 
