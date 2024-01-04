@@ -232,6 +232,7 @@ if( params.annotate ){
     ch_parse_hmmsearch = file(params.parse_hmmsearch_script)
     ch_kegg_formatter = file(params.kegg_formatter_script)
     ch_combine_annot_script = file(params.combine_annotations_script)
+    ch_count_annots_script = file(params.count_annots_script)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
@@ -525,7 +526,7 @@ workflow {
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
-        COUNT_ANNOTATIONS ( ch_combined_annotations )
+        COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
         ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
 
     }
