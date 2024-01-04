@@ -9,7 +9,7 @@ process DBCAN_HMM_FORMATTER {
     file( ch_dbcan_formatter )
 
     output:
-    tuple val( sample ), path ( "${sample}_formatted_hits.out" ), emit: formatted_hits
+    tuple val( sample ), path ( "${sample}_formatted_hits.out" ), emit: dbcan_formatted_hits
 
 
     output:
