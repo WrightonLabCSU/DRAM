@@ -21,9 +21,9 @@ def generate_multi_sheet_xlsx(input_file, output_file):
                 sheet_data[sheet_name] = []
 
             # Exclude the "sheet" column and move "gene_id" as the second column
-            row_data = row.drop('sheet')
-            gene_id = row['gene_id']
-            row_data = pd.concat([pd.Series(gene_id), row_data[1:]], ignore_index=True)
+            # Include the count under the "sample" column
+            row_data = row[['query_id', 'score_rank', 'sample', 'gene_id', 'potential_amg', 'gene_description', 'module']].tolist()
+            row_data += [sheet_name, row['header'], row['subheader'], row['BB02'], row['small_sample-fasta']]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -33,13 +33,13 @@ def generate_multi_sheet_xlsx(input_file, output_file):
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame
-        column_names = data.columns.tolist()
+        column_names = ['query_id', 'score_rank', 'sample', 'gene_id', 'potential_amg', 'gene_description', 'module', 'sheet', 'header', 'subheader', 'BB02', 'small_sample-fasta']
 
         # Append column names as the first row
         ws.append(column_names)
 
         # Append data rows to the worksheet
-        for r_idx, row in enumerate(dataframe_to_rows(pd.DataFrame(sheet_rows), index=False, header=False), 1):
+        for r_idx, row in enumerate(sheet_rows, 1):
             ws.append(row)
 
         # Create a table from the data for filtering
