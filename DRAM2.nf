@@ -230,7 +230,7 @@ if( params.use_dbset == "adjectives_set" ){
 if( params.annotate ){
     //This is just temporary - want these in the containers eventually
     ch_parse_hmmsearch = file(params.parse_hmmsearch_script)
-    ch_kegg_formatter = file(kegg_formatter_script)
+    ch_kegg_formatter = file(params.kegg_formatter_script)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
