@@ -48,8 +48,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    # Read CSV file with comma as the delimiter
-    hits_df = pd.read_csv(args.hits_csv, delimiter=',', error_bad_lines=False)
+    # Read CSV file with tab as the delimiter
+    hits_df = pd.read_csv(args.hits_csv, delimiter='\t', error_bad_lines=False)
     
     # Format hits
     formatted_hits = dbcan_hmmscan_formater(hits_df, args.fam, args.subfam)
