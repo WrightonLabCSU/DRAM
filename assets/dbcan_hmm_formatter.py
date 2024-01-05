@@ -46,6 +46,10 @@ if __name__ == "__main__":
     hits_df = pd.read_csv(args.hits_csv)
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC'])
 
+    print("Contents of ch_dbcan_subfam:")
+    print(ch_dbcan_subfam.head())
+
+
     hits_df['bitScore'] = hits_df.apply(bitScore_per_row, axis=1)
     hits_df['score_rank'] = hits_df.apply(rank_per_row, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
