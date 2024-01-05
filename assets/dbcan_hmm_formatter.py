@@ -26,13 +26,23 @@ def generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
 def generate_subfam_genbank(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
-    genbank_accessions = matching_rows['subfam-GenBank'].tolist()
-    return "; ".join(genbank_accessions) if genbank_accessions else ""
+    
+    if not matching_rows.empty:
+        # Select the row with the highest score
+        selected_row = matching_rows.loc[matching_rows['score'].idxmax()]
+        return selected_row['subfam-GenBank']
+    else:
+        return ""
 
 def generate_subfam_ec(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
-    return "; ".join(map(str, matching_rows['subfam-EC'].dropna())) if not matching_rows.empty else ""
+    
+    if not matching_rows.empty:
+        # Concatenate all EC values with "; "
+        return "; ".join(matching_rows['subfam-EC'].astype(str).unique())
+    else:
+        return ""
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -46,7 +56,7 @@ def main():
     # Read HMM search results CSV file and subfam file
     hits_df = pd.read_csv(args.hits_csv)
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None,
-                                  names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC'], engine='python')
+                                  names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC', 'score'], engine='python')
     ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None,
                                names=['target_id', 'subfamily'], engine='python', error_bad_lines=False,
                                delimiter='\t', usecols=[0, 1], quoting=3)
