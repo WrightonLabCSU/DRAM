@@ -30,7 +30,8 @@ def generate_subfam_EC(row, ch_dbcan_subfam):
     target_id = row['target_id']
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
     if not matching_rows.empty:
-        return "; ".join(matching_rows['subfam-EC'])
+        # Handle NaN values in 'subfam-EC' before joining
+        return "; ".join(str(val) for val in matching_rows['subfam-EC'] if pd.notna(val))
     else:
         return ""
 
