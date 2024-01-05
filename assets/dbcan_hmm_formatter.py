@@ -22,19 +22,21 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
     
     if not matching_rows.empty:
-        ec_values = matching_rows.iloc[0, 2]  # Assuming 0-based index for columns
+        ec_values = '; '.join(matching_rows.iloc[:, 2].astype(str).tolist())  # Assuming 0-based index for columns
         return ec_values if pd.notna(ec_values) else ""
 
     return ""
+
 
 def extract_subfam_genbank(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
     
     if not matching_rows.empty:
-        genbank_values = matching_rows.iloc[0, 1]  # Assuming 0-based index for columns
+        genbank_values = '; '.join(matching_rows.iloc[:, 1].astype(str).tolist())  # Assuming 0-based index for columns
         return genbank_values if pd.notna(genbank_values) else ""
 
     return ""
+
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
