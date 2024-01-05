@@ -23,7 +23,7 @@ def generate_subfam_GenBank(row, ch_dbcan_subfam):
 def generate_subfam_EC(row, ch_dbcan_subfam):
     target_id = row['target_id']
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
-    return "; ".join(map(str, matching_rows['subfam-EC'].dropna())) if not matching_rows.empty else ""
+    return "; ".join(map(str, matching_rows['subfamily'].dropna())) if not matching_rows.empty else ""
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -74,9 +74,9 @@ if __name__ == "__main__":
     ch_dbcan_subfam = ch_dbcan_subfam.drop_duplicates(subset='target_id')
 
     # Update the mapping in hits_df with correct column assignments
-    hits_df['subfamily'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfamily'])
-    hits_df['subfam-GenBank'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfam-GenBank'])
-    hits_df['subfam-EC'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfam-EC'])
+    hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam), axis=1)
+    hits_df['subfam-GenBank'] = hits_df.apply(lambda row: generate_subfam_GenBank(row, ch_dbcan_subfam), axis=1)
+    hits_df['subfam-EC'] = hits_df.apply(lambda row: generate_subfam_EC(row, ch_dbcan_subfam), axis=1)
 
     # Print column names and contents of hits_df
     print("Column names of hits_df:", hits_df.columns)
