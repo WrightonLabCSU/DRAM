@@ -26,7 +26,13 @@ def main():
     args = parser.parse_args()
 
     # Read hits file
-    hits_df = pd.read_csv(args.hits_csv, sep="\t")
+    hits_df = pd.read_csv(args.hits_csv, sep=",")  # Assuming comma as the delimiter
+
+    # Debugging: Print column names and contents of hits_df
+    print("Column names of hits_df:", hits_df.columns)
+    print("Contents of hits_df:")
+    print(hits_df.head())
+
 
     # Read ch_dbcan_fam file
     ch_dbcan_fam = read_ch_dbcan_fam(args.fam)
