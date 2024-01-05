@@ -45,9 +45,9 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
     return ""
 
 def find_best_dbcan_hit(df):
-    df["perc_cov"] = (df["target_end"] - df["target_start"]) / df["target_length"]
-    df.sort_values(["perc_cov", "full_evalue"], inplace=True)
+    df.sort_values("full_evalue", inplace=True)
     return df.iloc[0]["target_id"]
+
 
 def mark_best_hit_based_on_rank(df):
     best_hit_idx = df["score_rank"].idxmin()
