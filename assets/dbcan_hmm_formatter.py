@@ -33,7 +33,7 @@ def generate_subfam_EC(row, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
     return "; ".join(map(str, matching_rows['subfam-EC'].dropna())) if not matching_rows.empty else ""
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
     parser.add_argument("--fam", type=str, help="Path to the fam file.")
@@ -44,8 +44,8 @@ if __name__ == "__main__":
 
     # Read HMM search results CSV file and subfam file
     hits_df = pd.read_csv(args.hits_csv)
-    ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC'])
-    ch_dbcan_fam = pd.read_csv(args.fam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily'])
+    ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC'], engine='python')
+    ch_dbcan_fam = pd.read_csv(args.fam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily'], engine='python')
 
     # Remove the '.hmm' extension from 'target_id' in hits_df
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
@@ -94,3 +94,6 @@ if __name__ == "__main__":
 
     # Save the formatted output to a file
     hits_df[['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']].to_csv(args.output, sep="\t", index=False)
+
+if __name__ == "__main__":
+    main()
