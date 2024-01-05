@@ -11,7 +11,7 @@ def rank_per_row(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
 def generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
-    target_id = row['target_id']
+    target_id = row['target_id'].replace('.hmm', '')
     matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
     matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'].str.contains(target_id)]
     
@@ -24,12 +24,13 @@ def generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
         return subfamily
 
 def generate_subfam_genbank(row, ch_dbcan_subfam):
-    target_id = row['target_id']
+    target_id = row['target_id'].replace('.hmm', '')
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
-    return "; ".join(matching_rows['subfam-GenBank']) if not matching_rows.empty else ""
+    genbank_accessions = matching_rows['subfam-GenBank'].tolist()
+    return "; ".join(genbank_accessions) if genbank_accessions else ""
 
 def generate_subfam_ec(row, ch_dbcan_subfam):
-    target_id = row['target_id']
+    target_id = row['target_id'].replace('.hmm', '')
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
     return "; ".join(map(str, matching_rows['subfam-EC'].dropna())) if not matching_rows.empty else ""
 
@@ -53,34 +54,10 @@ def main():
     # Remove the '.hmm' extension from 'target_id' in hits_df
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
-    # Print unique target_id values in hits_df after modification
-    print("\nUnique target_id values in hits_df after modification:")
-    print(hits_df['target_id'].unique().tolist())
-
-    # Print unique target_id values in ch_dbcan_subfam
-    print("\nUnique target_id values in ch_dbcan_subfam:")
-    print(ch_dbcan_subfam['target_id'].unique().tolist())
-
-    # Display the target_id structure in hits_df
-    print("\nStructure of target_id values in hits_df:")
-    print(hits_df['target_id'].head(10))
-
-    # Display the target_id structure in ch_dbcan_subfam
-    print("\nStructure of target_id values in ch_dbcan_subfam:")
-    print(ch_dbcan_subfam['target_id'].head(10))
-
-    print("Contents of ch_dbcan_subfam:")
-    print(ch_dbcan_subfam.head())
-
     # Add new columns to hits_df
     hits_df['bitScore'] = hits_df.apply(bit_score_per_row, axis=1)
     hits_df['score_rank'] = hits_df.apply(rank_per_row, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
-
-    # Filter matching rows between hits_df and ch_dbcan_subfam
-    matching_rows = hits_df[hits_df['target_id'].isin(ch_dbcan_subfam['target_id'])]
-    print("Matching rows between hits_df and ch_dbcan_subfam:")
-    print(matching_rows[['target_id', 'bitScore', 'score_rank']].head())
 
     # Generate subfamily information
     hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam), axis=1)
