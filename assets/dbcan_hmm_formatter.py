@@ -13,7 +13,7 @@ def calculate_rank(row):
 def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
     target_id = row['target_id'].replace('.hmm', '')
 
-    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam[1] == target_id]
+    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam[1].str.contains(target_id)]
     matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam[0] == target_id]
 
     if not matching_rows_subfam.empty:
@@ -25,7 +25,7 @@ def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
 
 def extract_subfam_ec(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[1] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[1].str.contains(target_id)]
     
     if not matching_rows.empty:
         # Concatenate all EC values with "; "
@@ -35,7 +35,7 @@ def extract_subfam_ec(row, ch_dbcan_subfam):
     
 def extract_subfam_genbank(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[1] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[1].str.contains(target_id)]
 
     if not matching_rows.empty:
         # Drop NaN values from the 'score' column
