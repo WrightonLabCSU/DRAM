@@ -70,10 +70,14 @@ if __name__ == "__main__":
     print("Matching rows between hits_df and ch_dbcan_subfam:")
     print(matching_rows[['query_id', 'target_id', 'score_rank', 'bitScore']])
 
-    # Generate subfamily-related columns
+    # Remove duplicates from ch_dbcan_subfam DataFrame
+    ch_dbcan_subfam = ch_dbcan_subfam.drop_duplicates(subset='target_id')
+
+    # Update the mapping in hits_df
     hits_df['subfamily'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfamily'])
     hits_df['subfam-GenBank'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfam-GenBank'])
     hits_df['subfam-EC'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfam-EC'])
+
 
 
 
