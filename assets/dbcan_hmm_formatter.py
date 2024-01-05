@@ -73,13 +73,10 @@ if __name__ == "__main__":
     # Remove duplicates from ch_dbcan_subfam DataFrame
     ch_dbcan_subfam = ch_dbcan_subfam.drop_duplicates(subset='target_id')
 
-    # Update the mapping in hits_df
+    # Update the mapping in hits_df with correct column assignments
     hits_df['subfamily'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfamily'])
     hits_df['subfam-GenBank'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfam-GenBank'])
     hits_df['subfam-EC'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfam-EC'])
-
-
-
 
     # Print column names and contents of hits_df
     print("Column names of hits_df:", hits_df.columns)
