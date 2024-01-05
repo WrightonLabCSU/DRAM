@@ -84,7 +84,10 @@ def main():
 
 
     # Find the best hit for each unique query_id
-    hits_df['dbcan-best-hit'] = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(drop=True)
+    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan-best-hit')
+
+    # Merge the best hits back to the original DataFrame
+    hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
 
     # Mark the best hit for each unique query_id based on score_rank
     hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
