@@ -10,19 +10,27 @@ def bitScore_per_row(row):
 def rank_per_row(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def generate_subfamily(row, ch_dbcan_subfam):
+def generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
     target_id = row['target_id']
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
-    return matching_rows.iloc[0]['subfamily'] if not matching_rows.empty else ""
+    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
+    matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'].str.contains(target_id)]
+    
+    subfamily = matching_rows_subfam.iloc[0]['subfamily'] if not matching_rows_subfam.empty else ""
+    
+    if subfamily == "":
+        fam_subfamily = matching_rows_fam.iloc[0]['subfamily'] if not matching_rows_fam.empty else ""
+        return fam_subfamily
+    else:
+        return subfamily
 
 def generate_subfam_GenBank(row, ch_dbcan_subfam):
     target_id = row['target_id']
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
     return "; ".join(matching_rows['subfam-GenBank']) if not matching_rows.empty else ""
 
 def generate_subfam_EC(row, ch_dbcan_subfam):
     target_id = row['target_id']
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
     return "; ".join(map(str, matching_rows['subfam-EC'].dropna())) if not matching_rows.empty else ""
 
 if __name__ == "__main__":
@@ -37,6 +45,7 @@ if __name__ == "__main__":
     # Read HMM search results CSV file and subfam file
     hits_df = pd.read_csv(args.hits_csv)
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC'])
+    ch_dbcan_fam = pd.read_csv(args.fam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily'])
 
     # Remove the '.hmm' extension from 'target_id' in hits_df
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
@@ -74,7 +83,7 @@ if __name__ == "__main__":
     ch_dbcan_subfam = ch_dbcan_subfam.drop_duplicates(subset='target_id')
 
     # Update the mapping in hits_df with correct column assignments
-    hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam), axis=1)
+    hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam), axis=1)
     hits_df['subfam-GenBank'] = hits_df.apply(generate_subfam_GenBank, axis=1, ch_dbcan_subfam=ch_dbcan_subfam)
     hits_df['subfam-EC'] = hits_df.apply(generate_subfam_EC, axis=1, ch_dbcan_subfam=ch_dbcan_subfam)
 
