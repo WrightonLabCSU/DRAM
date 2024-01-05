@@ -37,18 +37,20 @@ def extract_subfam_ec(row, ch_dbcan_subfam):
     
 def extract_subfam_genbank(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
+
+    print(f"Matching Rows for {target_id}:\n{matching_rows}")
 
     if not matching_rows.empty:
-        # Drop NaN values from the 'score' column
-        matching_rows = matching_rows.dropna(subset=['score'])
+        # Filter out rows with NaN values in 'subfam-GenBank'
+        matching_rows = matching_rows.dropna(subset=['subfam-GenBank'])
 
         if not matching_rows.empty:
-            # Select the row with the highest score
-            selected_row = matching_rows.loc[matching_rows['score'].idxmax()]
-            return selected_row['subfam-GenBank']
-    
+            # Concatenate all 'subfam-GenBank' values with "; "
+            return "; ".join(matching_rows['subfam-GenBank'].astype(str).unique())
+
     return ""
+
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
