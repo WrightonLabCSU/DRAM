@@ -24,32 +24,37 @@ def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
         return ""
 
 
-
 def extract_subfam_ec(row, ch_dbcan_subfam):
-    target_id = row['target_id'].replace('.hmm', '')
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
-    
-    if not matching_rows.empty:
-        # Concatenate all EC values with "; "
-        return "; ".join(matching_rows['subfam-EC'].astype(str).unique())
-    else:
-        return ""
-    
-def extract_subfam_genbank(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
 
-    print(f"Matching Rows for {target_id}:\n{matching_rows}")
+    if not matching_rows.empty:
+        # Filter out rows with NaN values in 'subfam-EC'
+        matching_rows = matching_rows.dropna(subset=['subfam-EC'])
+
+        if not matching_rows.empty:
+            # Filter values that match the EC pattern
+            ec_values = matching_rows['subfam-EC'].str.extract(r'(\d+\.\d+\.\d+\.\d+)', expand=False).dropna()
+            if not ec_values.empty:
+                # Concatenate all matching EC values with "; "
+                return "; ".join(ec_values.unique())
+
+    return ""
+
+def extract_subfam_genbank(row, ch_dbcan_subfam):
+    target_id = row['target_id'].replace('.hmm', '')
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
 
     if not matching_rows.empty:
         # Filter out rows with NaN values in 'subfam-GenBank'
         matching_rows = matching_rows.dropna(subset=['subfam-GenBank'])
 
         if not matching_rows.empty:
-            # Concatenate all 'subfam-GenBank' values with "; "
+            # Concatenate all GenBank values with "; "
             return "; ".join(matching_rows['subfam-GenBank'].astype(str).unique())
 
     return ""
+
 
 
 def main():
