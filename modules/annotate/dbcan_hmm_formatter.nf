@@ -20,3 +20,4 @@ process DBCAN_HMM_FORMATTER {
     
     """
 }
+
