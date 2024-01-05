@@ -54,5 +54,9 @@ if __name__ == "__main__":
     hits_df['subfam-GenBank'] = hits_df.apply(lambda row: generate_subfam_GenBank(row, ch_dbcan_subfam), axis=1)
     hits_df['subfam-EC'] = hits_df.apply(lambda row: generate_subfam_EC(row, ch_dbcan_subfam), axis=1)
 
+    print("Column names of hits_df:", hits_df.columns)
+    print("Contents of hits_df:")
+    print(hits_df)
+
     hits_df = hits_df[['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']]
     hits_df.to_csv(args.output, sep="\t", index=False)
