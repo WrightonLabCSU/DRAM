@@ -1,47 +1,49 @@
 import pandas as pd
 import argparse
 
-def extract_subfamily_description(row, fam_data):
-    target_id = row['target_id'].replace('.hmm', '')  # Remove the ".hmm" extension
-    if target_id in fam_data.index:
-        return fam_data.loc[target_id, 'Description']
-    else:
-        return None
+def remove_extension(target_id):
+    # Remove the ".hmm" extension from target_id
+    return target_id.replace(".hmm", "")
 
-def extract_genbank_ec(row, subfam_data):
-    target_id = row['target_id'].replace('.hmm', '')  # Remove the ".hmm" extension
-    if target_id in subfam_data.index:
-        return subfam_data.loc[target_id, 'Genbank'], subfam_data.loc[target_id, 'EC']
-    else:
-        return None, None
-
-def get_sig_row(row):
-    return row['full_evalue'] < 1e-5
-
-def bitScore_per_row(row):
-    return row['full_score'] / row['domain_number']
-
-def rank_per_row(row):
-    return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Format KEGG HMM search results.")
-    parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
-    parser.add_argument("--fam", type=str, help="Path to the CAZyDB fam-activities file.")
-    parser.add_argument("--subfam", type=str, help="Path to the CAZyDB fam.subfam.ec file.")
-    parser.add_argument("--output", type=str, help="Path to the formatted output file.")
+def main():
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="DBCAN HMM Formatter")
+    parser.add_argument("--hits_csv", required=True, help="Path to hits CSV file")
+    parser.add_argument("--fam", required=True, help="Path to ch_dbcan_fam file")
+    parser.add_argument("--subfam", required=True, help="Path to ch_dbcan_subfam file")
+    parser.add_argument("--output", required=True, help="Output file name")
 
     args = parser.parse_args()
 
-    fam_data = pd.read_csv(args.fam, sep="\t", comment='#', header=None, names=['AA', 'Description'], usecols=[0, 1], index_col=0)
-    subfam_data = pd.read_csv(args.subfam, sep="\t", header=None, names=['Subfamily', 'Genbank', 'EC'], usecols=[0, 1, 2], index_col=0)
-    hits = pd.read_csv(args.hits_csv)
+    # Read hits file
+    hits_df = pd.read_csv(args.hits_csv, sep="\t")
 
-    hits['subfamily'] = hits.apply(lambda row: extract_subfamily_description(row, fam_data), axis=1)
-    hits['subfam-GenBank'], hits['subfam-EC'] = zip(*hits.apply(lambda row: extract_genbank_ec(row, subfam_data), axis=1))
-    hits['bitScore'] = hits.apply(bitScore_per_row, axis=1)
-    hits['score_rank'] = hits.apply(rank_per_row, axis=1)
-    hits.dropna(subset=['score_rank'], inplace=True)
-    hits = hits[['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']]
+    # Read ch_dbcan_fam file
+    ch_dbcan_fam = pd.read_csv(args.fam, sep="\t", comment='#', header=None, names=['AA', 'Description'])
 
-    hits.to_csv(args.output, sep="\t", index=False)
+    # Read ch_dbcan_subfam file
+    ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", header=None, names=['AA', 'GenBank', 'EC'])
+
+    # Remove ".hmm" extension from target_id in hits_df
+    hits_df['target_id'] = hits_df['target_id'].apply(remove_extension)
+
+    # Merge hits_df with ch_dbcan_fam to get subfamily
+    hits_df = pd.merge(hits_df, ch_dbcan_fam, left_on='target_id', right_on='AA', how='left')
+
+    # Merge hits_df with ch_dbcan_subfam to get GenBank and EC
+    merged_df = pd.merge(hits_df, ch_dbcan_subfam, on='AA', how='left')
+
+    # Group by query_id and aggregate multiple GenBank and EC values
+    grouped_df = merged_df.groupby('query_id').agg({
+        'target_id': 'first',
+        'bitScore': 'first',
+        'subfamily': 'first',
+        'GenBank': lambda x: "; ".join(x.dropna()),  # Concatenate GenBank values
+        'EC': lambda x: "; ".join(x.dropna())  # Concatenate EC values
+    }).reset_index()
+
+    # Save the formatted hits to the output file
+    grouped_df.to_csv(args.output, sep="\t", index=False)
+
+if __name__ == "__main__":
+    main()
