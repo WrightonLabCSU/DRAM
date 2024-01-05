@@ -56,7 +56,7 @@ def main():
     # Read HMM search results CSV file and subfam file
     hits_df = pd.read_csv(args.hits_csv)
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None,names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC', 'score'], engine='python')
-    ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None,names=['target_id', 'subfamily'], engine='python', error_bad_lines=False,delimiter='\t', usecols=[0, 1], quoting=3)
+    ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, names=['target_id', 'subfamily'], engine='python', error_bad_lines=False, delimiter='\t', usecols=[0, 1], quoting=3, na_values=['nan'])
 
     # Remove the '.hmm' extension from 'target_id' in hits_df
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
