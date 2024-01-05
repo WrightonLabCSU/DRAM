@@ -12,42 +12,39 @@ def calculate_rank(row):
 
 def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
     target_id = row['target_id'].replace('.hmm', '')
-    
-    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
-    matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'].str.contains(target_id)]
-    
+
+    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam[1] == target_id]
+    matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam[0] == target_id]
+
     if not matching_rows_subfam.empty:
-        return matching_rows_subfam.iloc[0]['subfamily']
+        return matching_rows_subfam.iloc[0][0]
     elif not matching_rows_fam.empty:
-        return matching_rows_fam.iloc[0]['subfamily']
+        return matching_rows_fam.iloc[0][1]
     else:
         return ""
 
 def extract_subfam_ec(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[1] == target_id]
     
     if not matching_rows.empty:
         # Concatenate all EC values with "; "
-        return "; ".join(matching_rows['subfam-EC'].astype(str).unique())
+        return "; ".join(matching_rows[3].astype(str).unique())
     else:
         return ""
     
 def extract_subfam_genbank(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
-    
-    print(f"Matching Rows for {target_id}:\n{matching_rows}")
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[1] == target_id]
 
     if not matching_rows.empty:
         # Drop NaN values from the 'score' column
-        matching_rows = matching_rows.dropna(subset=['score'])
-        
+        matching_rows = matching_rows.dropna(subset=[4])
+
         if not matching_rows.empty:
             # Select the row with the highest score
-            selected_row = matching_rows.loc[matching_rows['score'].idxmax()]
-            print(f"Selected Row:\n{selected_row}")
-            return selected_row['subfam-GenBank']
+            selected_row = matching_rows.loc[matching_rows[4].idxmax()]
+            return selected_row[2]
     
     return ""
 
