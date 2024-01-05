@@ -41,7 +41,6 @@ if __name__ == "__main__":
     # Remove the '.hmm' extension from 'target_id' in hits_df
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
-
     # Print unique target_id values in hits_df after modification
     print("\nUnique target_id values in hits_df after modification:")
     print(hits_df['target_id'].unique().tolist())
