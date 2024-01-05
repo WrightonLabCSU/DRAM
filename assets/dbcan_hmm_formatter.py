@@ -53,35 +53,34 @@ def main():
 
     args = parser.parse_args()
 
-    # Read HMM search results CSV file and subfam file
+    print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
+    print("Loading subfam file...")
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC', 'score'], engine='python')
+    print("Loading fam file...")
     ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, names=['target_id', 'subfamily'], engine='python', error_bad_lines=False, delimiter='\t', usecols=[0, 1], quoting=3, na_values=['nan'])
 
-    # Remove the '.hmm' extension from 'target_id' in hits_df
+    print("Processing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
-    # Add new columns to hits_df
     hits_df['bitScore'] = hits_df.apply(bit_score_per_row, axis=1)
     hits_df['score_rank'] = hits_df.apply(rank_per_row, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Generate subfamily information
     hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam), axis=1)
 
-    # Generate subfam-GenBank and subfam-EC information
     hits_df['subfam-GenBank'] = hits_df.apply(lambda row: generate_subfam_genbank(row, ch_dbcan_subfam), axis=1)
     hits_df['subfam-EC'] = hits_df.apply(lambda row: generate_subfam_ec(row, ch_dbcan_subfam), axis=1)
 
-    # Filter significant rows
     sig_hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
 
-    # Sort the significant hits by score rank
     sig_hits_df = sig_hits_df.sort_values(by='score_rank')
 
-    # Save the formatted output to a new CSV file
+    print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']
     sig_hits_df[selected_columns].to_csv(args.output, index=False)
+
+    print("Process completed successfully!")
 
 if __name__ == "__main__":
     main()
