@@ -71,9 +71,10 @@ if __name__ == "__main__":
     print(matching_rows[['query_id', 'target_id', 'score_rank', 'bitScore']])
 
     # Generate subfamily-related columns
-    hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam), axis=1)
-    hits_df['subfam-GenBank'] = hits_df.apply(lambda row: generate_subfam_GenBank(row, ch_dbcan_subfam), axis=1)
-    hits_df['subfam-EC'] = hits_df.apply(lambda row: generate_subfam_EC(row, ch_dbcan_subfam), axis=1)
+    hits_df['subfamily'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfamily'])
+    hits_df['subfam-GenBank'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfam-GenBank'])
+    hits_df['subfam-EC'] = hits_df['target_id'].map(ch_dbcan_subfam.set_index('target_id')['subfam-EC'])
+
 
 
     # Print column names and contents of hits_df
