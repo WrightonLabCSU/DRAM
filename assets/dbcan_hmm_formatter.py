@@ -10,13 +10,10 @@ def calculate_bit_score(row):
 def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def extract_subfamily(target_id, ch_dbcan_subfam, ch_dbcan_fam):
-    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
+def extract_subfamily(target_id, ch_dbcan_fam):
     matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'] == target_id]
     
-    if not matching_rows_subfam.empty:
-        return matching_rows_subfam.iloc[0]['subfamily']
-    elif not matching_rows_fam.empty:
+    if not matching_rows_fam.empty:
         return matching_rows_fam.iloc[0]['subfamily']
     else:
         return ""
@@ -63,7 +60,7 @@ def main():
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Apply the extraction functions to create new columns
-    hits_df['subfamily'] = hits_df['target_id'].apply(lambda x: extract_subfamily(x, ch_dbcan_subfam, ch_dbcan_fam))
+    hits_df['subfamily'] = hits_df['target_id'].apply(lambda x: extract_subfamily(x, ch_dbcan_fam))
     hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
     hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
 
