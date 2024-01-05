@@ -1,6 +1,9 @@
 import pandas as pd
 import argparse
 
+# Suppress pandas warning
+pd.set_option('mode.chained_assignment', None)
+
 def get_sig_row(row):
     return row['full_evalue'] < 1e-5
 
