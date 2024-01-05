@@ -51,7 +51,6 @@ def find_best_dbcan_hit(df):
 
 def mark_best_hit_based_on_rank(df):
     best_hit_idx = df["score_rank"].idxmin()
-    df.loc[:, "best_hit"] = False
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
@@ -82,6 +81,7 @@ def main():
     hits_df['family'] = hits_df['target_id'].apply(lambda x: extract_family(x, ch_dbcan_fam))
     hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
     hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
+
 
     # Find the best hit for each unique query_id
     hits_df['dbcan-best-hit'] = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(drop=True)
