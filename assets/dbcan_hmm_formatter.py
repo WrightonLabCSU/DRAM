@@ -96,7 +96,8 @@ def main():
     sig_hits_df = sig_hits_df.sort_values(by='score_rank')
 
     # Save the formatted output to a new CSV file
-    sig_hits_df.to_csv(args.output, index=False)
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']
+    sig_hits_df[selected_columns].to_csv(args.output, index=False)
 
 if __name__ == "__main__":
     main()
