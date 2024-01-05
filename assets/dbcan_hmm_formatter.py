@@ -50,8 +50,7 @@ def find_best_dbcan_hit(df):
     return df.iloc[0]["target_id"]
 
 def find_best_hit_based_on_rank(df):
-    df.sort_values("score_rank", inplace=True)
-    return df.iloc[0]
+    return df[df["score_rank"] == df["score_rank"].min()]
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
