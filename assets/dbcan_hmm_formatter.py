@@ -49,6 +49,10 @@ def find_best_dbcan_hit(df):
     df.sort_values(["perc_cov", "full_evalue"], inplace=True)
     return df.iloc[0]["target_id"]
 
+def find_best_hit_based_on_rank(df):
+    df.sort_values("score_rank", inplace=True)
+    return df.iloc[0]
+
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -80,12 +84,12 @@ def main():
     # Find the best hit for each unique query_id
     hits_df['dbcan-best-hit'] = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(drop=True)
 
-    sig_hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
-    sig_hits_df = sig_hits_df.sort_values(by='score_rank')
+    # Find the overall best hit for each unique query_id based on score_rank
+    overall_best_hits_df = hits_df.groupby('query_id').apply(find_best_hit_based_on_rank).reset_index(drop=True)
 
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan-best-hit']
-    sig_hits_df[selected_columns].to_csv(args.output, index=False)
+    overall_best_hits_df[selected_columns].to_csv(args.output, index=False)
 
     print("Process completed successfully!")
 
