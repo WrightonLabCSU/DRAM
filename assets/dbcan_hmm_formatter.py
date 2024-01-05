@@ -1,9 +1,6 @@
 import pandas as pd
 import argparse
 
-# Suppress pandas warning
-pd.set_option('mode.chained_assignment', None)
-
 def get_sig_row(row):
     return row['full_evalue'] < 1e-5
 
@@ -16,27 +13,17 @@ def rank_per_row(row):
 def generate_subfamily(row, ch_dbcan_subfam):
     target_id = row['target_id']
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
-    if not matching_rows.empty:
-        return "; ".join(matching_rows['subfamily'])
-    else:
-        return ""
+    return "; ".join(matching_rows['subfamily']) if not matching_rows.empty else ""
 
 def generate_subfam_GenBank(row, ch_dbcan_subfam):
     target_id = row['target_id']
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
-    if not matching_rows.empty:
-        return "; ".join(matching_rows['subfam-GenBank'])
-    else:
-        return ""
+    return "; ".join(matching_rows['subfam-GenBank']) if not matching_rows.empty else ""
 
 def generate_subfam_EC(row, ch_dbcan_subfam):
     target_id = row['target_id']
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
-    if not matching_rows.empty:
-        # Handle NaN values in 'subfam-EC' before joining
-        return "; ".join(str(val) for val in matching_rows['subfam-EC'] if pd.notna(val))
-    else:
-        return ""
+    return "; ".join(map(str, matching_rows['subfam-EC'].dropna())) if not matching_rows.empty else ""
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -47,6 +34,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # Read HMM search results CSV file and subfam file
     hits_df = pd.read_csv(args.hits_csv)
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC'])
 
@@ -72,21 +60,25 @@ if __name__ == "__main__":
     print("Contents of ch_dbcan_subfam:")
     print(ch_dbcan_subfam.head())
 
+    # Add new columns to hits_df
     hits_df['bitScore'] = hits_df.apply(bitScore_per_row, axis=1)
     hits_df['score_rank'] = hits_df.apply(rank_per_row, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
+    # Filter matching rows between hits_df and ch_dbcan_subfam
     matching_rows = hits_df[hits_df['target_id'].isin(ch_dbcan_subfam['target_id'])]
     print("Matching rows between hits_df and ch_dbcan_subfam:")
     print(matching_rows[['query_id', 'target_id', 'score_rank', 'bitScore']])
 
+    # Generate subfamily-related columns
     hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam), axis=1)
     hits_df['subfam-GenBank'] = hits_df.apply(lambda row: generate_subfam_GenBank(row, ch_dbcan_subfam), axis=1)
     hits_df['subfam-EC'] = hits_df.apply(lambda row: generate_subfam_EC(row, ch_dbcan_subfam), axis=1)
 
+    # Print column names and contents of hits_df
     print("Column names of hits_df:", hits_df.columns)
     print("Contents of hits_df:")
     print(hits_df)
 
-    hits_df = hits_df[['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']]
-    hits_df.to_csv(args.output, sep="\t", index=False)
+    # Save the formatted output to a file
+    hits_df[['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']].to_csv(args.output, sep="\t", index=False)
