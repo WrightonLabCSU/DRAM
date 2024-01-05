@@ -39,7 +39,8 @@ if __name__ == "__main__":
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC'])
 
     # Remove the '.hmm' extension from 'target_id' in hits_df
-    hits_df['target_id'] = hits_df['target_id'].str.replace('.hmm', '')
+    hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
+
 
     # Print unique target_id values in hits_df after modification
     print("\nUnique target_id values in hits_df after modification:")
