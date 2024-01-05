@@ -23,17 +23,6 @@ def generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
     else:
         return ""
 
-def generate_subfam_genbank(row, ch_dbcan_subfam):
-    target_id = row['target_id'].replace('.hmm', '')
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
-    
-    if not matching_rows.empty:
-        # Select the row with the highest score
-        selected_row = matching_rows.loc[matching_rows['score'].idxmax()]
-        return selected_row['subfam-GenBank']
-    else:
-        return ""
-
 def generate_subfam_ec(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
