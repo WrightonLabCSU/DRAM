@@ -43,7 +43,9 @@ def dbcan_hmmscan_formater(hits, ch_dbcan_fam, ch_dbcan_subfam):
 
         # Extract 'subfam-EC' and 'subfam-GenBank' based on 'target_id'
         # Add these lines after subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-GenBank', 'subfam-EC'])
-        subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfam-GenBank', 'subfam-EC'])
+        subfam_mapping = pd.read_csv(ch_dbcan_subfam, sep='\t', header=None, names=['subfamily', 'subfam-GenBank', 'subfam-EC'])
+        subfam_mapping.drop_duplicates(subset='subfamily', inplace=True)
+        hits = pd.merge(hits, subfam_mapping, on='subfamily', how='left')
         print("\nsubfam_mapping DataFrame:")
         print(subfam_mapping.head())
 
