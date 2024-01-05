@@ -49,9 +49,6 @@ if __name__ == "__main__":
     print("Contents of ch_dbcan_subfam:")
     print(ch_dbcan_subfam.head())
 
-    print("Contents of hits_df before merging:")
-    print(hits_df.head())
-
     hits_df['bitScore'] = hits_df.apply(bitScore_per_row, axis=1)
     hits_df['score_rank'] = hits_df.apply(rank_per_row, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
@@ -60,8 +57,9 @@ if __name__ == "__main__":
     hits_df['subfam-GenBank'] = hits_df.apply(lambda row: generate_subfam_GenBank(row, ch_dbcan_subfam), axis=1)
     hits_df['subfam-EC'] = hits_df.apply(lambda row: generate_subfam_EC(row, ch_dbcan_subfam), axis=1)
 
-    print("Column names of hits_df after adding subfamilies:")
-    print(hits_df.columns)
+    print("Column names of hits_df:", hits_df.columns)
+    print("Contents of hits_df:")
+    print(hits_df)
 
     hits_df = hits_df[['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']]
     hits_df.to_csv(args.output, sep="\t", index=False)
