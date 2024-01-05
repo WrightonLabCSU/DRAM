@@ -19,11 +19,11 @@ def extract_subfamily(target_id, ch_dbcan_fam):
         return ""
 
 def extract_subfam_ec(target_id, ch_dbcan_subfam):
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[0] == target_id]
     
     if not matching_rows.empty:
-        ec_values = matching_rows.iloc[0]['subfam-EC']
-        return ec_values if pd.notna(ec_values) else ""
+        ec_values = matching_rows.iloc[:, 2].astype(str).unique()
+        return "; ".join(ec_values)
 
     return ""
 
@@ -48,7 +48,7 @@ def main():
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
     print("Loading subfam file...")
-    ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC', 'score'], engine='python')
+    ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, engine='python')
     print("Loading fam file...")
     ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, names=['target_id', 'subfamily'], engine='python', on_bad_lines='skip', delimiter='\t', usecols=[0, 1], quoting=3)
 
