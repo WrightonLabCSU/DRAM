@@ -13,7 +13,7 @@ def calculate_rank(row):
 def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
     target_id = row['target_id'].replace('.hmm', '')
 
-    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
+    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
     matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'] == target_id]
 
     if not matching_rows_subfam.empty:
@@ -22,6 +22,8 @@ def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
         return matching_rows_fam.iloc[0]['subfamily']
     else:
         return ""
+
+
 
 def extract_subfam_ec(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
@@ -33,18 +35,20 @@ def extract_subfam_ec(row, ch_dbcan_subfam):
     else:
         return ""
     
-def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
+def extract_subfam_genbank(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
 
-    matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
-    matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'] == target_id]
+    if not matching_rows.empty:
+        # Drop NaN values from the 'score' column
+        matching_rows = matching_rows.dropna(subset=['score'])
 
-    if not matching_rows_subfam.empty:
-        return matching_rows_subfam.iloc[0]['subfamily']
-    elif not matching_rows_fam.empty:
-        return matching_rows_fam.iloc[0]['subfamily']
-    else:
-        return ""
+        if not matching_rows.empty:
+            # Select the row with the highest score
+            selected_row = matching_rows.loc[matching_rows['score'].idxmax()]
+            return selected_row['subfam-GenBank']
+    
+    return ""
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
