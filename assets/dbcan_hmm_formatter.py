@@ -11,27 +11,27 @@ def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
 def extract_subfamily(target_id, ch_dbcan_fam):
-    matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'] == target_id]
+    matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam.iloc[:, 0] == target_id]
     
     if not matching_rows_fam.empty:
-        return matching_rows_fam.iloc[0]['subfamily']
+        return matching_rows_fam.iloc[0].iloc[1]  # Assuming 0-based index for columns
     else:
         return ""
 
 def extract_subfam_ec(target_id, ch_dbcan_subfam):
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[0] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
     
     if not matching_rows.empty:
-        ec_values = matching_rows.iloc[0][3]  # Assuming 0-based index for columns
+        ec_values = matching_rows.iloc[0].iloc[3]  # Assuming 0-based index for columns
         return ec_values if pd.notna(ec_values) else ""
 
     return ""
 
 def extract_subfam_genbank(target_id, ch_dbcan_subfam):
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[0] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
     
     if not matching_rows.empty:
-        genbank_values = matching_rows.iloc[0][2]  # Assuming 0-based index for columns
+        genbank_values = matching_rows.iloc[0].iloc[2]  # Assuming 0-based index for columns
         return genbank_values if pd.notna(genbank_values) else ""
 
     return ""
@@ -48,9 +48,9 @@ def main():
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
     print("Loading subfam file...")
-    ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC', 'score'], engine='python')
+    ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, engine='python')
     print("Loading fam file...")
-    ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, names=['target_id', 'subfamily'], engine='python', on_bad_lines='skip', delimiter='\t', usecols=[0, 1], quoting=3)
+    ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, engine='python', on_bad_lines='skip', delimiter='\t', usecols=[0, 1], quoting=3)
 
     print("Processing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
