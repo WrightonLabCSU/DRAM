@@ -46,11 +46,12 @@ if __name__ == "__main__":
     hits_df = pd.read_csv(args.hits_csv)
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC'])
 
-    print("Unique target_id values in hits_df:")
+    print("\nUnique target_id values in hits_df:")
     print(hits_df['target_id'].unique())
 
     print("\nUnique target_id values in ch_dbcan_subfam:")
     print(ch_dbcan_subfam['target_id'].unique())
+
     print("Contents of ch_dbcan_subfam:")
     print(ch_dbcan_subfam.head())
 
