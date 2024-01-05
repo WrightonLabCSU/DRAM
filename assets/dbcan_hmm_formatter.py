@@ -4,13 +4,13 @@ import argparse
 def get_sig_row(row):
     return row['full_evalue'] < 1e-5
 
-def bit_score_per_row(row):
+def calculate_bit_score(row):
     return row['full_score'] / row['domain_number']
 
-def rank_per_row(row):
+def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
+def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
     target_id = row['target_id'].replace('.hmm', '')
     
     matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
@@ -23,7 +23,7 @@ def generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
     else:
         return ""
 
-def generate_subfam_ec(row, ch_dbcan_subfam):
+def extract_subfam_ec(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
     
@@ -33,7 +33,7 @@ def generate_subfam_ec(row, ch_dbcan_subfam):
     else:
         return ""
     
-def generate_subfam_genbank(row, ch_dbcan_subfam):
+def extract_subfam_genbank(row, ch_dbcan_subfam):
     target_id = row['target_id'].replace('.hmm', '')
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
     
@@ -51,7 +51,6 @@ def generate_subfam_genbank(row, ch_dbcan_subfam):
     
     return ""
 
-    
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -68,21 +67,19 @@ def main():
     print("Loading fam file...")
     ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, names=['target_id', 'subfamily'], engine='python', on_bad_lines='skip', delimiter='\t', usecols=[0, 1], quoting=3)
 
-
     print("Processing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
-    hits_df['bitScore'] = hits_df.apply(bit_score_per_row, axis=1)
-    hits_df['score_rank'] = hits_df.apply(rank_per_row, axis=1)
+    hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
+    hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam), axis=1)
+    hits_df['subfamily'] = hits_df.apply(lambda row: extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam), axis=1)
 
-    hits_df['subfam-GenBank'] = hits_df.apply(lambda row: generate_subfam_genbank(row, ch_dbcan_subfam), axis=1)
-    hits_df['subfam-EC'] = hits_df.apply(lambda row: generate_subfam_ec(row, ch_dbcan_subfam), axis=1)
+    hits_df['subfam-GenBank'] = hits_df.apply(lambda row: extract_subfam_genbank(row, ch_dbcan_subfam), axis=1)
+    hits_df['subfam-EC'] = hits_df.apply(lambda row: extract_subfam_ec(row, ch_dbcan_subfam), axis=1)
 
     sig_hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
-
     sig_hits_df = sig_hits_df.sort_values(by='score_rank')
 
     print("Saving the formatted output to CSV...")
