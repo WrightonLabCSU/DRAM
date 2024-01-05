@@ -14,7 +14,7 @@ def extract_subfamily(target_id, ch_dbcan_fam):
     matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam.iloc[:, 0] == target_id]
     
     if not matching_rows_fam.empty:
-        return matching_rows_fam.iloc[0].iloc[1]  # Assuming 0-based index for columns
+        return matching_rows_fam.iloc[0, 1]  # Assuming 0-based index for columns
     else:
         return ""
 
@@ -22,7 +22,7 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
     
     if not matching_rows.empty:
-        ec_values = matching_rows.iloc[0].iloc[3]  # Assuming 0-based index for columns
+        ec_values = matching_rows.iloc[0, 2]  # Assuming 0-based index for columns
         return ec_values if pd.notna(ec_values) else ""
 
     return ""
@@ -31,7 +31,7 @@ def extract_subfam_genbank(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
     
     if not matching_rows.empty:
-        genbank_values = matching_rows.iloc[0].iloc[2]  # Assuming 0-based index for columns
+        genbank_values = matching_rows.iloc[0, 1]  # Assuming 0-based index for columns
         return genbank_values if pd.notna(genbank_values) else ""
 
     return ""
