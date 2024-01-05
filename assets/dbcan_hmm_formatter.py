@@ -10,7 +10,7 @@ def calculate_bit_score(row):
 def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def extract_subfamily(target_id, ch_dbcan_fam):
+def extract_family(target_id, ch_dbcan_fam):
     target_id_without_extension = target_id.replace('.hmm', '')
     target_id_without_underscore = target_id.split('_')[0]
 
@@ -20,11 +20,10 @@ def extract_subfamily(target_id, ch_dbcan_fam):
     matching_rows = pd.concat([matching_rows_fam_exact, matching_rows_fam_partial])
 
     if not matching_rows.empty:
-        subfamily_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
-        return subfamily_values if pd.notna(subfamily_values) else ""
+        family_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
+        return family_values if pd.notna(family_values) else ""
 
     return ""
-
 
 def extract_subfam_genbank(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
@@ -43,8 +42,6 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
         return ec_values if pd.notna(ec_values) else ""
 
     return ""
-
-
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -70,7 +67,7 @@ def main():
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Apply the extraction functions to create new columns
-    hits_df['subfamily'] = hits_df['target_id'].apply(lambda x: extract_subfamily(x, ch_dbcan_fam))
+    hits_df['family'] = hits_df['target_id'].apply(lambda x: extract_family(x, ch_dbcan_fam))
     hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
     hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
 
@@ -78,7 +75,7 @@ def main():
     sig_hits_df = sig_hits_df.sort_values(by='score_rank')
 
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC']
     sig_hits_df[selected_columns].to_csv(args.output, index=False)
 
     print("Process completed successfully!")
