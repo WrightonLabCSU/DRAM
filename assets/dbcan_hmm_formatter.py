@@ -53,6 +53,10 @@ if __name__ == "__main__":
     hits_df['score_rank'] = hits_df.apply(rank_per_row, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
+    matching_rows = hits_df[hits_df['target_id'].isin(ch_dbcan_subfam['target_id'])]
+    print("Matching rows between hits_df and ch_dbcan_subfam:")
+    print(matching_rows[['query_id', 'target_id', 'score_rank', 'bitScore']])
+
     hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam), axis=1)
     hits_df['subfam-GenBank'] = hits_df.apply(lambda row: generate_subfam_GenBank(row, ch_dbcan_subfam), axis=1)
     hits_df['subfam-EC'] = hits_df.apply(lambda row: generate_subfam_EC(row, ch_dbcan_subfam), axis=1)
