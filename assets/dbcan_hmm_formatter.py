@@ -44,13 +44,10 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
 
     return ""
 
-def find_best_dbcan_hit(group):
-    group["perc_cov"] = group.apply(
-        lambda x: (x["target_end"] - x["target_start"]) / x["target_length"], axis=1
-    )
-    group.sort_values("perc_cov", inplace=True)
-    group.sort_values("full_evalue", inplace=True)
-    return group.iloc[0]["target_id"]
+def find_best_dbcan_hit(df):
+    df["perc_cov"] = (df["target_end"] - df["target_start"]) / df["target_length"]
+    df.sort_values(["perc_cov", "full_evalue"], inplace=True)
+    return df.iloc[0]["target_id"]
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -80,8 +77,8 @@ def main():
     hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
     hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
 
-    # Find the best hit for each group of query_id values
-    hits_df['dbcan-best-hit'] = hits_df.groupby('query_id').apply(find_best_dbcan_hit)
+    # Find the best hit for each unique query_id
+    hits_df['dbcan-best-hit'] = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(drop=True)
 
     sig_hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
     sig_hits_df = sig_hits_df.sort_values(by='score_rank')
