@@ -5,6 +5,16 @@ def remove_extension(target_id):
     # Remove the ".hmm" extension from target_id
     return target_id.replace(".hmm", "")
 
+def read_ch_dbcan_fam(file_path):
+    # Read ch_dbcan_fam file with flexible delimiter handling
+    lines = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            # Split each line based on tabs
+            fields = line.strip().split('\t', 1)
+            lines.append(fields)
+    return pd.DataFrame(lines, columns=['AA', 'Description'])
+
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="DBCAN HMM Formatter")
@@ -19,7 +29,7 @@ def main():
     hits_df = pd.read_csv(args.hits_csv, sep="\t")
 
     # Read ch_dbcan_fam file
-    ch_dbcan_fam = pd.read_csv(args.fam, sep="\t", comment='#', header=None, names=['AA', 'Description'])
+    ch_dbcan_fam = read_ch_dbcan_fam(args.fam)
 
     # Read ch_dbcan_subfam file
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", header=None, names=['AA', 'GenBank', 'EC'])
