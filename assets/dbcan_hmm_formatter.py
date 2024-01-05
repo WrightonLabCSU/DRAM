@@ -10,23 +10,34 @@ def calculate_bit_score(row):
 def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
-    target_id = row['target_id'].replace('.hmm', '')
+def extract_subfamily(target_id, ch_dbcan_subfam, ch_dbcan_fam):
     matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
     matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'] == target_id]
-    return matching_rows_subfam.iloc[0]['subfamily'] if not matching_rows_subfam.empty else matching_rows_fam.iloc[0]['subfamily'] if not matching_rows_fam.empty else ""
+    
+    if not matching_rows_subfam.empty:
+        return matching_rows_subfam.iloc[0]['subfamily']
+    elif not matching_rows_fam.empty:
+        return matching_rows_fam.iloc[0]['subfamily']
+    else:
+        return ""
 
-def extract_subfam_ec(row, ch_dbcan_subfam):
-    target_id = row['target_id'].replace('.hmm', '')
+def extract_subfam_ec(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
-    matching_rows_ec = matching_rows.dropna(subset=['subfam-EC'])
-    return "; ".join(matching_rows_ec['subfam-EC'].astype(str).unique()) if not matching_rows_ec.empty else ""
+    
+    if not matching_rows.empty:
+        ec_values = matching_rows.iloc[0]['subfam-EC']
+        return ec_values if pd.notna(ec_values) else ""
 
-def extract_subfam_genbank(row, ch_dbcan_subfam):
-    target_id = row['target_id'].replace('.hmm', '')
+    return ""
+
+def extract_subfam_genbank(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
-    matching_rows_genbank = matching_rows.dropna(subset=['subfam-GenBank'])
-    return "; ".join(matching_rows_genbank['subfam-GenBank'].astype(str).unique()) if not matching_rows_genbank.empty else ""
+    
+    if not matching_rows.empty:
+        genbank_values = matching_rows.iloc[0]['subfam-GenBank']
+        return genbank_values if pd.notna(genbank_values) else ""
+
+    return ""
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -45,18 +56,16 @@ def main():
     ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, names=['target_id', 'subfamily'], engine='python', on_bad_lines='skip', delimiter='\t', usecols=[0, 1], quoting=3)
 
     print("Processing HMM search results...")
+    hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
-    # Remove unnecessary column transformations
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Simplify subfamily extraction
-    hits_df['subfamily'] = hits_df.apply(lambda row: extract_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam), axis=1)
-
-    # Simplify EC and GenBank extraction
-    hits_df['subfam-GenBank'] = hits_df.apply(lambda row: extract_subfam_genbank(row, ch_dbcan_subfam), axis=1)
-    hits_df['subfam-EC'] = hits_df.apply(lambda row: extract_subfam_ec(row, ch_dbcan_subfam), axis=1)
+    # Apply the extraction functions to create new columns
+    hits_df['subfamily'] = hits_df['target_id'].apply(lambda x: extract_subfamily(x, ch_dbcan_subfam, ch_dbcan_fam))
+    hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
+    hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
 
     sig_hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
     sig_hits_df = sig_hits_df.sort_values(by='score_rank')
