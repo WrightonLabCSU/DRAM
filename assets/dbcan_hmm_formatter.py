@@ -19,19 +19,19 @@ def extract_subfamily(target_id, ch_dbcan_fam):
         return ""
 
 def extract_subfam_ec(target_id, ch_dbcan_subfam):
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[0] == target_id]
     
     if not matching_rows.empty:
-        ec_values = matching_rows.iloc[0]['subfam-EC']
+        ec_values = matching_rows.iloc[0][3]  # Assuming 0-based index for columns
         return ec_values if pd.notna(ec_values) else ""
 
     return ""
 
 def extract_subfam_genbank(target_id, ch_dbcan_subfam):
-    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam['target_id'] == target_id]
+    matching_rows = ch_dbcan_subfam[ch_dbcan_subfam[0] == target_id]
     
     if not matching_rows.empty:
-        genbank_values = matching_rows.iloc[0]['subfam-GenBank']
+        genbank_values = matching_rows.iloc[0][2]  # Assuming 0-based index for columns
         return genbank_values if pd.notna(genbank_values) else ""
 
     return ""
