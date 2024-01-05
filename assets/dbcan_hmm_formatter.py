@@ -15,13 +15,12 @@ def generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam):
     matching_rows_subfam = ch_dbcan_subfam[ch_dbcan_subfam['target_id'].str.contains(target_id)]
     matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam['target_id'].str.contains(target_id)]
     
-    subfamily = matching_rows_subfam.iloc[0]['subfamily'] if not matching_rows_subfam.empty else ""
-    
-    if subfamily == "":
-        fam_subfamily = matching_rows_fam.iloc[0]['subfamily'] if not matching_rows_fam.empty else ""
-        return fam_subfamily
+    if not matching_rows_subfam.empty:
+        return matching_rows_subfam.iloc[0]['subfamily']
+    elif not matching_rows_fam.empty:
+        return matching_rows_fam.iloc[0]['subfamily']
     else:
-        return subfamily
+        return ""
 
 def generate_subfam_GenBank(row, ch_dbcan_subfam):
     target_id = row['target_id']
