@@ -58,7 +58,7 @@ def main():
     print("Loading subfam file...")
     ch_dbcan_subfam = pd.read_csv(args.subfam, sep="\t", comment='#', header=None, names=['target_id', 'subfamily', 'subfam-GenBank', 'subfam-EC', 'score'], engine='python')
     print("Loading fam file...")
-    ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, names=['target_id', 'subfamily'], engine='python', error_bad_lines=False, delimiter='\t', usecols=[0, 1], quoting=3, na_values=['nan'])
+    ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, names=['target_id', 'subfamily'], engine='python', error_bad_lines=False, delimiter='\t', usecols=[0, 1], quoting=3, na_values=['nan', 'n/a', 'N/A', ''])
 
     print("Processing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
