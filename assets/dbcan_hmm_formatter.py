@@ -11,12 +11,20 @@ def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
 def extract_subfamily(target_id, ch_dbcan_fam):
-    matching_rows_fam = ch_dbcan_fam[ch_dbcan_fam.iloc[:, 0] == target_id]
-    
-    if not matching_rows_fam.empty:
-        return matching_rows_fam.iloc[0, 1]  # Assuming 0-based index for columns
-    else:
-        return ""
+    target_id_without_extension = target_id.replace('.hmm', '')
+    target_id_without_underscore = target_id.split('_')[0]
+
+    matching_rows_fam_exact = ch_dbcan_fam[ch_dbcan_fam.iloc[:, 0] == target_id_without_extension]
+    matching_rows_fam_partial = ch_dbcan_fam[ch_dbcan_fam.iloc[:, 0] == target_id_without_underscore]
+
+    matching_rows = pd.concat([matching_rows_fam_exact, matching_rows_fam_partial])
+
+    if not matching_rows.empty:
+        subfamily_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
+        return subfamily_values if pd.notna(subfamily_values) else ""
+
+    return ""
+
 
 def extract_subfam_genbank(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
