@@ -11,7 +11,7 @@ process DBCAN_HMM_FORMATTER {
     file( ch_dbcan_formatter )
 
     output:
-    tuple val( sample ), path ( "${sample}_formatted_hits.out" ), emit: dbcan_formatted_hits
+    tuple val( sample ), path ( "${sample}_formatted_dbcan_hits.out" ), emit: dbcan_formatted_hits
 
 
     output:
@@ -19,7 +19,7 @@ process DBCAN_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_dbcan_formatter} --hits_csv ${hits_file} --fam ${ch_dbcan_fam} --subfam ${ch_dbcan_subfam} --output "formatted_dbcan_hits.out"
+    python ${ch_dbcan_formatter} --hits_csv ${hits_file} --fam ${ch_dbcan_fam} --subfam ${ch_dbcan_subfam} --output "${sample}_formatted_dbcan_hits.out"
     
     """
 }
