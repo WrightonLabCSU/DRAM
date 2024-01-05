@@ -50,6 +50,25 @@ def main():
     # Remove the '.hmm' extension from 'target_id' in hits_df
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
+    # Print unique target_id values in hits_df after modification
+    print("\nUnique target_id values in hits_df after modification:")
+    print(hits_df['target_id'].unique().tolist())
+
+    # Print unique target_id values in ch_dbcan_subfam
+    print("\nUnique target_id values in ch_dbcan_subfam:")
+    print(ch_dbcan_subfam['target_id'].unique().tolist())
+
+    # Display the target_id structure in hits_df
+    print("\nStructure of target_id values in hits_df:")
+    print(hits_df['target_id'].head(10))
+
+    # Display the target_id structure in ch_dbcan_subfam
+    print("\nStructure of target_id values in ch_dbcan_subfam:")
+    print(ch_dbcan_subfam['target_id'].head(10))
+
+    print("Contents of ch_dbcan_subfam:")
+    print(ch_dbcan_subfam.head())
+
     # Add new columns to hits_df
     hits_df['bitScore'] = hits_df.apply(bitScore_per_row, axis=1)
     hits_df['score_rank'] = hits_df.apply(rank_per_row, axis=1)
@@ -57,6 +76,8 @@ def main():
 
     # Filter matching rows between hits_df and ch_dbcan_subfam
     matching_rows = hits_df[hits_df['target_id'].isin(ch_dbcan_subfam['target_id'])]
+    print("Matching rows between hits_df and ch_dbcan_subfam:")
+    print(matching_rows[['query_id', 'target_id', 'score_rank', 'bitScore']])
 
     # Remove duplicates from ch_dbcan_subfam DataFrame
     ch_dbcan_subfam = ch_dbcan_subfam.drop_duplicates(subset='target_id')
@@ -65,6 +86,11 @@ def main():
     hits_df['subfamily'] = hits_df.apply(lambda row: generate_subfamily(row, ch_dbcan_subfam, ch_dbcan_fam), axis=1)
     hits_df['subfam-GenBank'] = hits_df.apply(generate_subfam_GenBank, axis=1, ch_dbcan_subfam=ch_dbcan_subfam)
     hits_df['subfam-EC'] = hits_df.apply(generate_subfam_EC, axis=1, ch_dbcan_subfam=ch_dbcan_subfam)
+
+    # Print column names and contents of hits_df
+    print("Column names of hits_df:", hits_df.columns)
+    print("Contents of hits_df:")
+    print(hits_df)
 
     # Save the formatted output to a file
     hits_df[['query_id', 'target_id', 'score_rank', 'bitScore', 'subfamily', 'subfam-GenBank', 'subfam-EC']].to_csv(args.output, sep="\t", index=False)
