@@ -17,14 +17,6 @@ def combine_annotations(annotation_files, output_file):
         sample = annotation_files[i]
         file_path = annotation_files[i + 1]
 
-        # Extract sample names from the input
-        sample = sample.split('\'')[1] if '\'' in sample else sample
-
-        # Print the first two lines of the annotation file
-        with open(file_path, 'r') as file:
-            first_two_lines = [file.readline().strip() for _ in range(2)]
-            logging.info(f"First two lines of annotation file {file_path}:\n{', '.join(first_two_lines)}")
-
         # Read each annotation file
         logging.info(f"Processing annotation file: {file_path}")
         annotation_data = pd.read_csv(file_path, sep='\t')
@@ -33,25 +25,19 @@ def combine_annotations(annotation_files, output_file):
             query_id = row.get('query_id')
 
             if query_id is None:
-                raise ValueError("Could not find a column containing 'query_id'.")
+                raise ValueError("Could not find a column containing 'query_id'. Please check the input file format.")
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
-                # Combine values for target_id, score_rank, and bitScore
-                data_dict[query_id]['target_id'] = data_dict[query_id]['target_id'] + "; " + str(row['target_id'])
-                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row['score_rank'])
-                data_dict[query_id]['bitScore'] = data_dict[query_id]['bitScore'] + "; " + str(row.get('bitScore', ''))
+                # Combine values for target_id and score_rank
+                data_dict[query_id]['target_id'] = data_dict[query_id]['target_id'] + "; " + str(row.get('target_id', ''))
+                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row.get('score_rank', ''))
                 # Append the sample to the list
                 if sample not in data_dict[query_id]['sample']:
                     data_dict[query_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
-                data_dict[query_id] = {
-                    'target_id': row['target_id'],
-                    'score_rank': row['score_rank'],
-                    'bitScore': row.get('bitScore', ''),
-                    'sample': [sample]
-                }
+                data_dict[query_id] = {'target_id': row.get('target_id', ''), 'score_rank': row.get('score_rank', ''), 'sample': [sample]}
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
     # Create a DataFrame from the dictionary
@@ -73,8 +59,5 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='Output file name', required=True)
 
     args = parser.parse_args()
-
-    # Remove square brackets and extra commas
-    args.annotations = [arg.strip("[],") for arg in args.annotations]
 
     combine_annotations(args.annotations, args.output)
