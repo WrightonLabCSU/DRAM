@@ -25,31 +25,29 @@ def combine_annotations(annotation_files, output_file):
         annotation_data = pd.read_csv(file_path, sep='\t')
 
         for index, row in annotation_data.iterrows():
-            # Dynamically find the query_id column
-            query_id_col = next((col for col in annotation_data.columns if 'query_id' in col.lower()), None)
-            if query_id_col is None:
-                raise ValueError("Could not find a column containing 'query_id'.")
+            # Dynamically find the target_id column
+            target_id_col = next((col for col in annotation_data.columns if 'target_id' in col.lower()), None)
+            if target_id_col is None:
+                raise ValueError("Could not find a column containing 'target_id'.")
 
-            query_id = row[query_id_col]
+            target_id = row[target_id_col]
 
             # Check if query_id already exists in the dictionary
-            if query_id in data_dict:
+            if target_id in data_dict:
                 # Combine values for target_id, score_rank, and bitScore
-                data_dict[query_id]['target_id'] = data_dict[query_id]['target_id'] + "; " + str(row['target_id'])
-                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row['score_rank'])
-                data_dict[query_id]['bitScore'] = data_dict[query_id]['bitScore'] + "; " + str(row.get('bitScore', ''))
+                data_dict[target_id]['score_rank'] = str(data_dict[target_id]['score_rank']) + "; " + str(row['score_rank'])
+                data_dict[target_id]['bitScore'] = data_dict[target_id]['bitScore'] + "; " + str(row.get('bitScore', ''))
                 # Append the sample to the list
-                if sample not in data_dict[query_id]['sample']:
-                    data_dict[query_id]['sample'].append(sample)
+                if sample not in data_dict[target_id]['sample']:
+                    data_dict[target_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
-                data_dict[query_id] = {
-                    'target_id': row['target_id'],
+                data_dict[target_id] = {
                     'score_rank': row['score_rank'],
                     'bitScore': row.get('bitScore', ''),
                     'sample': [sample]
                 }
-            logging.info(f"Processed query_id: {query_id} for sample: {sample}")
+            logging.info(f"Processed target_id: {target_id} for sample: {sample}")
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
