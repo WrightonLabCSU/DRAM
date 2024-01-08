@@ -46,13 +46,11 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
 
 def find_best_dbcan_hit(df):
     df.sort_values("full_evalue", inplace=True)
-    return df.iloc[0]["target_id"]
-
+    return df.iloc[0][["query_id", "target_id", "score_rank", "bitScore", "family", "subfam-GenBank", "subfam-EC", "dbcan-best-hit"]]
 
 def mark_best_hit_based_on_rank(df):
-    best_hit_idx = df["score_rank"].idxmin()
-    df.at[best_hit_idx, "best_hit"] = True
-    return df
+    df.sort_values("score_rank", inplace=True)
+    return df.iloc[0][["query_id", "target_id", "score_rank", "bitScore", "family", "subfam-GenBank", "subfam-EC", "dbcan-best-hit"]]
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -82,27 +80,16 @@ def main():
     hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
     hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
 
-
     # Find the best hit for each unique query_id
-    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan-best-hit')
-
-    # Merge the best hits back to the original DataFrame
-    hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
-
-    # Mark the best hit for each unique query_id based on score_rank
-    hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
+    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(drop=True)
 
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan-best-hit']
-    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_best_hit']
-
-    # Ensure the columns exist in the DataFrame before renaming
-    if set(selected_columns).issubset(hits_df.columns):
-        # Rename the selected columns
-        hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
+    modified_columns = ["query_id", "target_id", "score_rank", "bitScore", "family", "subfam-GenBank", "subfam-EC", "dbcan-best-hit"]
     
+    # Ensure the columns exist in the DataFrame before renaming
+    if set(modified_columns).issubset(best_hits.columns):
         # Save the modified DataFrame to CSV
-        hits_df[modified_columns].to_csv(args.output, index=False)
+        best_hits[modified_columns].to_csv(args.output, index=False)
 
         print("Process completed successfully!")
     else:
