@@ -37,6 +37,10 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
         query_id_col = query_id_col[0]
 
+        if i == 0:
+            # Extract additional columns only from the first annotation file
+            additional_columns = annotation_data.columns.difference([query_id_col, 'target_id', 'score_rank'])
+
         for index, row in annotation_data.iterrows():
             query_id = row[query_id_col]
 
@@ -52,8 +56,7 @@ def combine_annotations(annotation_files, output_file):
                 # Create a new entry in the dictionary
                 data_dict[query_id] = {'target_id': row['target_id'], 'score_rank': row['score_rank'], 'sample': [sample]}
                 
-                # Extract additional columns dynamically
-                additional_columns = annotation_data.columns.difference([query_id_col, 'target_id', 'score_rank'])
+                # Extract additional columns dynamically only for the first annotation file
                 for col in additional_columns:
                     data_dict[query_id][col] = row[col]
 
