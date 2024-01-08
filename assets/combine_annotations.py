@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 
 # Configure the logger
-logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
@@ -93,8 +93,5 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='Output file name', required=True)
 
     args = parser.parse_args()
-
-    # Remove square brackets and extra commas
-    args.annotations = [arg.strip("[],") for arg in args.annotations]
 
     combine_annotations(args.annotations, args.output)
