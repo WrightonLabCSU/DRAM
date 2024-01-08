@@ -520,7 +520,7 @@ workflow {
             .mix( ch_dbcan_formatted )
             .collect()
             .set { collected_formatted_hits }
-
+        collected_formatted_hits.view()
             //will need to add these, if they are different, for all databases:
             //.mix( KEGG_HMM_FORMATTER.out.formatted_hits )
             //.mix( DBCAN_HMM_FORMATTER.out.formatted_hits )
