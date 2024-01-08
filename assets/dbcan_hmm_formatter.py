@@ -94,9 +94,19 @@ def main():
 
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan-best-hit']
-    hits_df[selected_columns].to_csv(args.output, index=False)
+    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'subfam_GenBank', 'subfam_EC', 'dbcan_best_hit']
 
-    print("Process completed successfully!")
+    # Ensure the columns exist in the DataFrame before renaming
+    if set(selected_columns).issubset(hits_df.columns):
+        # Rename the selected columns
+        hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
+    
+        # Save the modified DataFrame to CSV
+        hits_df[modified_columns].to_csv(args.output, index=False)
+
+        print("Process completed successfully!")
+    else:
+        print("Error: Some columns are missing in the DataFrame.")
 
 if __name__ == "__main__":
     main()
