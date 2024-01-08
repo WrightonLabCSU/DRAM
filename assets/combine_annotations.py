@@ -12,6 +12,9 @@ def combine_annotations(annotation_files, output_file):
     # Create a dictionary to store values for each unique query_id
     data_dict = {}
 
+    # Set to store all unique column names
+    all_columns = set()
+
     # Process the input annotation files
     for i in range(0, len(annotation_files), 2):
         sample = annotation_files[i]
@@ -37,6 +40,9 @@ def combine_annotations(annotation_files, output_file):
         if not query_id_col:
             raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
         query_id_col = query_id_col[0]
+
+        # Update set of all columns
+        all_columns.update(annotation_data.columns)
 
         for index, row in annotation_data.iterrows():
             query_id = row[query_id_col]
@@ -64,8 +70,8 @@ def combine_annotations(annotation_files, output_file):
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
     
-    # Rename the columns
-    combined_data.columns = [query_id_col, 'target_id', 'score_rank', 'sample'] + list(additional_columns)
+    # Rename the columns using all unique columns
+    combined_data.columns = [query_id_col, 'target_id', 'score_rank', 'sample'] + list(all_columns.difference([query_id_col, 'target_id', 'score_rank']))
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
