@@ -62,7 +62,8 @@ def combine_annotations(annotation_files, output_file):
                 # Extract additional columns dynamically
                 additional_columns = annotation_data.columns.difference([query_id_col, 'target_id', 'score_rank'])
                 for col in additional_columns:
-                    data_dict[query_id][col] = row[col] if col in annotation_data.columns else None
+                    # Assign correct values to each additional column
+                    data_dict[query_id][col] = row[col]
 
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
