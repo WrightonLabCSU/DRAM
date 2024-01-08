@@ -46,13 +46,20 @@ def combine_annotations(annotation_files, output_file):
             else:
                 # Create a new entry in the dictionary
                 data_dict[query_id] = {'target_id': row['target_id'], 'score_rank': row['score_rank'], 'sample': [sample]}
+                
+                # Extract additional columns dynamically
+                additional_columns = annotation_data.columns.difference(['query_id', 'target_id', 'score_rank'])
+                for col in additional_columns:
+                    data_dict[query_id][col] = row[col]
+
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
+    
     # Rename the columns
-    combined_data.columns = ['query_id', 'target_id', 'score_rank', 'sample']
+    combined_data.columns = ['query_id', 'target_id', 'score_rank', 'sample'] + list(additional_columns)
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
