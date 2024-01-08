@@ -31,11 +31,12 @@ def clean_ec_numbers(ec_entry):
         str: The cleaned EC numbers.
     """
     # Find all occurrences of EC numbers within '[EC:' and ']'
-    ec_matches = re.findall(r'\[EC:([^\]]*)\]', ec_entry)
+    ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
     
     # Split each match by space and join the EC numbers with '; '
     cleaned_ec_numbers = '; '.join(' '.join(ec.split()) for match in ec_matches for ec in match.split())
     return cleaned_ec_numbers
+
 
 
 def main():
