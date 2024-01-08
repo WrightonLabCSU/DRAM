@@ -29,22 +29,29 @@ def combine_annotations(annotation_files, output_file):
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
-                # Combine values for target_id and score_rank
+                # Combine values for target_id, score_rank, and bitScore
                 data_dict[query_id]['target_id'] = data_dict[query_id]['target_id'] + "; " + str(row['target_id'])
                 data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row['score_rank'])
+                data_dict[query_id]['bitScore'] = data_dict[query_id]['bitScore'] + "; " + str(row.get('bitScore', ''))
                 # Append the sample to the list
                 if sample not in data_dict[query_id]['sample']:
                     data_dict[query_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
-                data_dict[query_id] = {'target_id': row['target_id'], 'score_rank': row['score_rank'], 'sample': [sample]}
+                data_dict[query_id] = {
+                    'target_id': row['target_id'],
+                    'score_rank': row['score_rank'],
+                    'bitScore': row.get('bitScore', ''),
+                    'sample': [sample]
+                }
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
-    # Rename the columns
-    combined_data.columns = ['query_id', 'target_id', 'score_rank', 'sample']
+
+    # Dynamically set DataFrame columns based on unique column names
+    combined_data.columns = ['query_id', 'target_id', 'score_rank', 'sample'] + list(annotation_data.columns.difference(['query_id', 'target_id', 'score_rank', 'bitScore']))
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
