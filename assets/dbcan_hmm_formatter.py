@@ -94,7 +94,7 @@ def main():
 
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan-best-hit']
-    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'subfam_GenBank', 'subfam_EC', 'dbcan_best_hit']
+    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_best_hit']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
