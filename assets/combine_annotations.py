@@ -28,12 +28,14 @@ def combine_annotations(annotation_files, output_file):
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
+        # Make the script case-insensitive when checking for 'query_id'
+        query_id_col = [col for col in annotation_data.columns if col.lower() == 'query_id']
+        if not query_id_col:
+            raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
+        query_id_col = query_id_col[0]
+
         for index, row in annotation_data.iterrows():
-            try:
-                query_id = row['query_id']
-            except KeyError as e:
-                logging.error(f"KeyError: {e} in row: {row}")
-                continue
+            query_id = row[query_id_col]
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
@@ -48,7 +50,7 @@ def combine_annotations(annotation_files, output_file):
                 data_dict[query_id] = {'target_id': row['target_id'], 'score_rank': row['score_rank'], 'sample': [sample]}
                 
                 # Extract additional columns dynamically
-                additional_columns = annotation_data.columns.difference(['query_id', 'target_id', 'score_rank'])
+                additional_columns = annotation_data.columns.difference([query_id_col, 'target_id', 'score_rank'])
                 for col in additional_columns:
                     data_dict[query_id][col] = row[col]
 
@@ -59,7 +61,7 @@ def combine_annotations(annotation_files, output_file):
     combined_data.reset_index(inplace=True)
     
     # Rename the columns
-    combined_data.columns = ['query_id', 'target_id', 'score_rank', 'sample'] + list(additional_columns)
+    combined_data.columns = [query_id_col, 'target_id', 'score_rank', 'sample'] + list(additional_columns)
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
