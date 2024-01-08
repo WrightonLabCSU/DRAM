@@ -56,11 +56,12 @@ def combine_annotations(annotation_files, output_file):
             if query_id in data_dict:
                 # Choose the row with the highest bitScore
                 db_name = os.path.basename(file_path).split('_')[0]
-                if row[f'{db_name}_bitScore'] > data_dict[query_id][f'{db_name}_bitScore']:
-                    data_dict[query_id] = row
-                # Append the sample to the list
-                if sample not in data_dict[query_id]['sample']:
-                    data_dict[query_id]['sample'].append(sample)
+                if f'{db_name}_bitScore' in row.index and f'{db_name}_bitScore' in data_dict[query_id].index:
+                    if row[f'{db_name}_bitScore'] > data_dict[query_id][f'{db_name}_bitScore']:
+                        data_dict[query_id] = row
+                    # Append the sample to the list
+                    if sample not in data_dict[query_id]['sample']:
+                        data_dict[query_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
                 data_dict[query_id] = row
