@@ -62,13 +62,7 @@ def combine_annotations(annotation_files, output_file):
                 # Extract additional columns dynamically
                 additional_columns = annotation_data.columns.difference([query_id_col, 'target_id', 'score_rank'])
                 for col in additional_columns:
-                    # Assign correct values to each additional column
-                    if col.lower() == 'family':
-                        data_dict[query_id][col] = row['subfam-GenBank']
-                    elif col.lower() == 'bitscore':
-                        data_dict[query_id][col] = row['subfam-EC']
-                    else:
-                        data_dict[query_id][col] = row[col]
+                    data_dict[query_id][col] = row[col]
 
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
@@ -77,7 +71,7 @@ def combine_annotations(annotation_files, output_file):
     combined_data.reset_index(inplace=True)
     
     # Rearrange the columns to match the desired order
-    output_columns_order = [query_id_col, 'sample', 'target_id', 'score_rank', 'bitScore'] + list(all_columns.difference([query_id_col, 'target_id', 'score_rank', 'subfam-GenBank', 'subfam-EC']))
+    output_columns_order = [query_id_col, 'sample', 'target_id', 'score_rank', 'bitScore'] + list(all_columns.difference([query_id_col, 'target_id', 'score_rank']))
     combined_data = combined_data[output_columns_order]
 
     # Remove duplicate samples within the same row and separate them with a semicolon
