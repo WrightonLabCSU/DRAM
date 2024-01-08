@@ -79,7 +79,7 @@ def combine_annotations(annotation_files, output_file):
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
 
     # Rearrange the columns to match the desired order
-    output_columns_order = [query_id_col, 'sample'] + list(all_columns.difference([query_id_col, 'sample']))
+    output_columns_order = [query_id_col, 'sample'] + sorted(list(all_columns.difference([query_id_col, 'sample'])))
     combined_data = combined_data[output_columns_order]
 
     # Remove duplicate samples within the same row and separate them with a semicolon
