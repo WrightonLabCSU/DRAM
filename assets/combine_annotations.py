@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 
 # Configure the logger
-logging.basicConfig(filename="combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
+logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
 def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
@@ -22,14 +22,18 @@ def combine_annotations(annotation_files, output_file):
 
         # Read each annotation file
         logging.info(f"Processing annotation file: {file_path}")
-        
+
         try:
             annotation_data = pd.read_csv(file_path, sep='\t')
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
         for index, row in annotation_data.iterrows():
-            query_id = row['query_id']
+            try:
+                query_id = row['query_id']
+            except KeyError as e:
+                logging.error(f"KeyError: {e} in row: {row}")
+                continue
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
