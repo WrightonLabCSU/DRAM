@@ -236,6 +236,7 @@ if( params.annotate ){
     ch_count_annots_script = file(params.count_annots_script)
     ch_distill_summary_script = file(params.distill_summary_script)
     ch_distill_final_script = file(params.distill_final_script)
+    ch_kofam_formatter = file(params.kofam_hmm_formatter_script)
     ch_kofam_list = file(params.kofam_list)
     ch_dbcan_formatter = file(params.dbcan_hmm_formatter_script)
     ch_dbcan_fam = file(params.dbcan_fam_activities)
@@ -460,7 +461,7 @@ workflow {
             PARSE_HMM_KOFAM ( ch_kofam_hmms, ch_parse_hmmsearch )
             ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
-            KOFAM_HMM_FORMATTER ( ch_kofam_parsed, params.kofam_top_hit, ch_kofam_list, ch_kegg_formatter )
+            KOFAM_HMM_FORMATTER ( ch_kofam_parsed, params.kofam_top_hit, ch_kofam_list, ch_kofam_formatter )
             ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
         }
         // DBCAN not finished - this needs editing!
