@@ -34,17 +34,14 @@ def combine_annotations(annotation_files, output_file):
         # Print column names for each annotation file
         logging.info(f"Column names: {annotation_data.columns}")
 
-        # Make the script case-insensitive when checking for 'query_id'
-        query_id_col = [col for col in annotation_data.columns if col.lower() == 'query_id']
-        if not query_id_col:
-            raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
-        query_id_col = query_id_col[0]
-
-        # Determine the bitScore column dynamically based on the file type
-        bitScore_col = [col for col in annotation_data.columns if col.lower().endswith('_bitscore')]
-        if not bitScore_col:
+        # Make the script case-insensitive when checking for '*_bitScore'
+        bit_score_col = [col for col in annotation_data.columns if col.lower().endswith('_bitscore')]
+        if not bit_score_col:
             raise ValueError(f"BitScore column not found in the annotation file: {file_path}")
-        bitScore_col = bitScore_col[0]
+        bit_score_col = bit_score_col[0]
+
+        # Sort the DataFrame by bitScore and keep the highest for each query_id
+        annotation_data = annotation_data.sort_values(by=bit_score_col, ascending=False).drop_duplicates('query_id')
 
         # Merge dataframes based on 'query_id' column
         if combined_data.empty:
@@ -55,9 +52,6 @@ def combine_annotations(annotation_files, output_file):
             combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols, suffixes=('_dbcan', '_kofam'))
 
         logging.info(f"Processed annotation file: {file_path} for sample: {sample}")
-
-    # Sort and drop duplicates based on the determined bitScore column
-    combined_data = combined_data.sort_values(by=bitScore_col, ascending=False).drop_duplicates('query_id')
 
     # Rearrange the columns to match the desired order
     output_columns_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
