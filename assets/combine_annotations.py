@@ -40,6 +40,9 @@ def combine_annotations(annotation_files, output_file):
         # Add the sample column to the annotation data
         annotation_data['sample'] = sample_name
 
+        # Keep only rows with the best hit for each query_id
+        annotation_data = annotation_data.sort_values(by='dbcan_bitScore', ascending=False).drop_duplicates('query_id')
+
         # Merge dataframes based on 'query_id' column
         if combined_data.empty:
             combined_data = annotation_data.copy()
