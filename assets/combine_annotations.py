@@ -40,12 +40,13 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
         query_id_col = query_id_col[0]
 
-        # Merge dataframes based on 'query_id' column
+        # Merge dataframes based on 'query_id' and 'sample' columns
         if combined_data.empty:
             combined_data = annotation_data.copy()
         else:
+            merge_cols = ['query_id', 'sample']
             common_cols = set(combined_data.columns) & set(annotation_data.columns)
-            merge_cols = ['query_id', 'sample'] + list(common_cols - {'query_id', 'sample'})
+            merge_cols += list(common_cols - {'query_id', 'sample'})
             combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols)
 
         logging.info(f"Processed annotation file: {file_path} for sample: {sample}")
