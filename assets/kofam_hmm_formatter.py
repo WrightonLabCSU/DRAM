@@ -22,7 +22,7 @@ def mark_best_hit_based_on_rank(df):
     return df
 
 def clean_ec_numbers(ec_entry):
-    """Clean up EC numbers by removing '[EC:' and ']'.
+    """Clean up EC numbers by removing '[EC:' and ']'. Replace spaces between EC numbers with ';'.
 
     Args:
         ec_entry (str): The input string containing EC numbers.
@@ -33,9 +33,9 @@ def clean_ec_numbers(ec_entry):
     # Find all occurrences of EC numbers within '[EC:' and ']'
     ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
 
-    # Flatten the nested list and join EC numbers with '; '
+    # Replace spaces between EC numbers with '; '
     cleaned_ec_numbers = '; '.join(' '.join(ec.split()) for match in ec_matches for ec in match.split())
-    
+
     return cleaned_ec_numbers
 
 def main():
