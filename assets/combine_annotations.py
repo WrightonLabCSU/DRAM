@@ -32,8 +32,8 @@ def combine_annotations(annotation_files, output_file):
         logging.info(f"Processing annotation file: {file_path}")
 
         try:
-            # Read CSV with custom separator
-            annotation_data = pd.read_csv(file_path, sep='\t', header=0)
+            # Read CSV with custom separator and split column names
+            annotation_data = pd.read_csv(file_path, sep='\t', header=0, names=['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'subfam_GenBank', 'subfam_EC', 'dbcan_best_hit'])
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
@@ -41,10 +41,7 @@ def combine_annotations(annotation_files, output_file):
         logging.info(f"Column names: {annotation_data.columns}")
 
         # Make the script case-insensitive when checking for 'query_id'
-        query_id_col = [col for col in annotation_data.columns if col.lower() == 'query_id']
-        if not query_id_col:
-            raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
-        query_id_col = query_id_col[0]
+        query_id_col = 'query_id'
 
         # Update set of all columns
         all_columns.update(annotation_data.columns)
@@ -55,7 +52,7 @@ def combine_annotations(annotation_files, output_file):
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
                 # Choose the row with the highest bitScore
-                if row['{}_bitScore'.format(file_path.split('_')[0])] > data_dict[query_id]['{}_bitScore'.format(file_path.split('_')[0])]:
+                if row['dbcan_bitScore'] > data_dict[query_id]['dbcan_bitScore']:
                     data_dict[query_id] = row
                 # Append the sample to the list
                 if sample not in data_dict[query_id]['sample']:
