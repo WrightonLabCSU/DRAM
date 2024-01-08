@@ -92,9 +92,15 @@ def main():
     merged_df['kofam_definition'] = merged_df['definition'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
     merged_df['kofam_EC'] = merged_df['definition'].apply(lambda x: clean_ec_numbers(str(x)) if pd.notna(x) else '')
 
-    # Save the formatted output to CSV
+    # Save the formatted output to CSV with modified column names
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']
-    merged_df[selected_columns].to_csv(args.output, index=False)
+    modified_columns = ['query_id', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC']
+    
+    # Rename the selected columns
+    merged_df[selected_columns].rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
+    
+    # Save the modified DataFrame to CSV
+    merged_df[modified_columns].to_csv(args.output, index=False)
 
     print("Process completed successfully!")
 
