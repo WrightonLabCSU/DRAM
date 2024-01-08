@@ -40,23 +40,23 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
         query_id_col = query_id_col[0]
 
-        # Merge dataframes based on 'query_id' and 'sample' columns
+        # Merge dataframes based on 'query_id' column
         if combined_data.empty:
             combined_data = annotation_data.copy()
         else:
+            # Include additional columns for reference
             merge_cols = ['query_id', 'sample']
-            common_cols = set(combined_data.columns) & set(annotation_data.columns)
-            merge_cols += list(common_cols - {'query_id', 'sample'})
-            combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols)
+            combined_data = pd.merge(combined_data, annotation_data, how='outer', on=query_id_col, suffixes=('', f'_{sample}'))
 
         logging.info(f"Processed annotation file: {file_path} for sample: {sample}")
 
     # Rearrange the columns to match the desired order
-    output_columns_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
+    output_columns_order = ['query_id'] + sorted([col for col in combined_data.columns if 'sample' in col or col not in ['query_id']])
     combined_data = combined_data[output_columns_order]
 
     # Remove duplicate samples within the same row and separate them with a semicolon
-    combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x.split(';')))))
+    sample_cols = [col for col in combined_data.columns if 'sample' in col]
+    combined_data['sample'] = combined_data[sample_cols].apply(lambda row: "; ".join(filter(lambda x: pd.notna(x), row)), axis=1)
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
