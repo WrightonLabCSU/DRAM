@@ -12,45 +12,51 @@ def combine_annotations(annotation_files, output_file):
 
     # Process the input annotation files
     for annotation_file in annotation_files:
-        # Extract sample name from the input file path
-        sample = os.path.splitext(os.path.basename(annotation_file))[0]
+        # Split the sample name and file path
+        sample, file_path = map(str.strip, annotation_file.split(','))
 
         # Check if the file exists
-        if not os.path.exists(annotation_file):
-            raise ValueError(f"Could not find file: {annotation_file}")
+        if not os.path.exists(file_path):
+            raise ValueError(f"Could not find file: {file_path}")
 
         # Read each annotation file
-        logging.info(f"Processing annotation file: {annotation_file}")
+        logging.info(f"Processing annotation file: {file_path}")
 
         try:
-            # Read CSV without specifying names
-            annotation_data = pd.read_csv(annotation_file, header=0)
+            # Read CSV with custom separator and without specifying names
+            annotation_data = pd.read_csv(file_path, sep=',', header=0)
         except FileNotFoundError:
-            raise ValueError(f"Could not find file: {annotation_file}")
+            raise ValueError(f"Could not find file: {file_path}")
 
         # Print column names for each annotation file
         logging.info(f"Column names: {annotation_data.columns}")
 
-        # Find the '*_bitScore' column dynamically
-        bit_score_col = [col for col in annotation_data.columns if col.endswith('_bitScore')]
-        if not bit_score_col:
-            raise ValueError(f"No '*_bitScore' column found in the annotation file: {annotation_file}")
-        bit_score_col = bit_score_col[0]
+        # Make the script case-insensitive when checking for 'query_id'
+        query_id_col = [col for col in annotation_data.columns if col.lower() == 'query_id']
+        if not query_id_col:
+            raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
+        query_id_col = query_id_col[0]
 
-        # Find the row with the highest bitScore for each query_id
-        annotation_data = annotation_data.sort_values(by=bit_score_col, ascending=False).drop_duplicates('query_id')
+        # Keep the first occurrence of each query_id based on *_bitScore
+        annotation_data = annotation_data.sort_values(by=f'{query_id_col}_bitScore', ascending=False).drop_duplicates('query_id')
 
         # Merge dataframes based on 'query_id' column
         if combined_data.empty:
             combined_data = annotation_data.copy()
         else:
-            combined_data = pd.concat([combined_data, annotation_data], ignore_index=True)
+            common_cols = set(combined_data.columns) & set(annotation_data.columns)
+            merge_cols = ['query_id'] + list(common_cols - {'query_id'})
+            combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols, suffixes=('_dbcan', '_kofam'))
 
-        logging.info(f"Processed annotation file: {annotation_file} for sample: {sample}")
+        logging.info(f"Processed annotation file: {file_path} for sample: {sample}")
 
     # Rearrange the columns to match the desired order
-    output_columns_order = ['query_id'] + sorted([col for col in combined_data.columns if col != 'query_id'])
+    output_columns_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
     combined_data = combined_data[output_columns_order]
+
+    # Convert 'sample' column values to strings and join them with a semicolon
+    sample_cols = [col for col in combined_data.columns if col.startswith('sample')]
+    combined_data['sample'] = combined_data[sample_cols].apply(lambda row: "; ".join(map(str, filter(lambda x: pd.notna(x), row))), axis=1)
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
