@@ -25,7 +25,12 @@ def combine_annotations(annotation_files, output_file):
         annotation_data = pd.read_csv(file_path, sep='\t')
 
         for index, row in annotation_data.iterrows():
-            query_id = row['query_id']
+            # Dynamically find the query_id column
+            query_id_col = next((col for col in annotation_data.columns if 'query_id' in col.lower()), None)
+            if query_id_col is None:
+                raise ValueError("Could not find a column containing 'query_id'.")
+
+            query_id = row[query_id_col]
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
