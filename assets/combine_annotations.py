@@ -24,7 +24,7 @@ def combine_annotations(annotation_files, output_file):
         logging.info(f"Processing annotation file: {file_path}")
 
         try:
-            annotation_data = pd.read_csv(file_path, sep='\t')
+            annotation_data = pd.read_csv(file_path)
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
