@@ -33,10 +33,26 @@ def clean_ec_numbers(ec_entry):
     # Find all occurrences of EC numbers within '[EC:' and ']'
     ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
 
-    # Replace spaces between EC numbers with '; '
-    cleaned_ec_numbers = '; '.join(' '.join(ec.split()) for match in ec_matches for ec in match.split())
+    cleaned_ec_numbers = []
 
-    return cleaned_ec_numbers
+    # Process each match
+    for match in ec_matches:
+        # Split the match into individual EC numbers
+        ec_numbers = match.split()
+
+        # Process each EC number
+        for ec in ec_numbers:
+            # Remove any non-digit characters
+            cleaned_ec = ''.join(filter(str.isdigit, ec))
+
+            # Add the cleaned EC number to the list
+            cleaned_ec_numbers.append(cleaned_ec)
+
+    # Replace spaces between EC numbers with '; '
+    result = '; '.join(cleaned_ec_numbers)
+
+    return result
+
 
 def main():
     # Command-line arguments
