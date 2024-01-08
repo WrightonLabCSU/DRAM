@@ -28,6 +28,9 @@ def combine_annotations(annotation_files, output_file):
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
+        # Print column names for each annotation file
+        logging.info(f"Column names: {annotation_data.columns}")
+
         # Make the script case-insensitive when checking for 'query_id'
         query_id_col = [col for col in annotation_data.columns if col.lower() == 'query_id']
         if not query_id_col:
