@@ -55,7 +55,8 @@ def combine_annotations(annotation_files, output_file):
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
                 # Choose the row with the highest bitScore
-                if row['{}_bitScore'.format(file_path.split('_')[0])] > data_dict[query_id]['{}_bitScore'.format(file_path.split('_')[0])]:
+                db_name = os.path.basename(file_path).split('_')[0]
+                if row[f'{db_name}_bitScore'] > data_dict[query_id][f'{db_name}_bitScore']:
                     data_dict[query_id] = row
                 # Append the sample to the list
                 if sample not in data_dict[query_id]['sample']:
