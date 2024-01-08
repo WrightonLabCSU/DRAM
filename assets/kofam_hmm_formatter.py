@@ -95,14 +95,19 @@ def main():
     # Save the formatted output to CSV with modified column names
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']
     modified_columns = ['query_id', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC']
-    
-    # Rename the selected columns
-    merged_df[selected_columns].rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
-    
-    # Save the modified DataFrame to CSV
-    merged_df[modified_columns].to_csv(args.output, index=False)
 
-    print("Process completed successfully!")
+    # Ensure the columns exist in the DataFrame before renaming
+    if set(selected_columns).issubset(merged_df.columns):
+        # Rename the selected columns
+        merged_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
+        
+        # Save the modified DataFrame to CSV
+        merged_df[modified_columns].to_csv(args.output, index=False)
+
+        print("Process completed successfully!")
+    else:
+        print("Error: Some columns are missing in the DataFrame.")
+
 
 if __name__ == "__main__":
     main()
