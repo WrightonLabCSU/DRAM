@@ -58,6 +58,7 @@ def combine_annotations(annotation_files, output_file):
                 db_name = os.path.basename(file_path).split('_')[0]
                 if f'{db_name}_bitScore' in row.index and f'{db_name}_bitScore' in data_dict[query_id].index:
                     if row[f'{db_name}_bitScore'] >= data_dict[query_id][f'{db_name}_bitScore']:
+                        data_dict[query_id][f'{db_name}_bitScore'] = row[f'{db_name}_bitScore']
                         data_dict[query_id].update(row)
                     # Append the sample to the list
                     if sample not in data_dict[query_id]['sample']:
