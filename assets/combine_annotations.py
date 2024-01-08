@@ -63,7 +63,12 @@ def combine_annotations(annotation_files, output_file):
                 additional_columns = annotation_data.columns.difference([query_id_col, 'target_id', 'score_rank'])
                 for col in additional_columns:
                     # Assign correct values to each additional column
-                    data_dict[query_id][col] = row[col]
+                    if col.lower() == 'family':
+                        data_dict[query_id][col] = row['subfam-GenBank']
+                    elif col.lower() == 'bitscore':
+                        data_dict[query_id][col] = row['subfam-EC']
+                    else:
+                        data_dict[query_id][col] = row[col]
 
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
@@ -71,8 +76,9 @@ def combine_annotations(annotation_files, output_file):
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
     
-    # Rename the columns using all unique columns
-    combined_data.columns = [query_id_col, 'target_id', 'score_rank', 'sample'] + list(all_columns.difference([query_id_col, 'target_id', 'score_rank']))
+    # Rearrange the columns to match the desired order
+    output_columns_order = [query_id_col, 'sample', 'target_id', 'score_rank', 'bitScore'] + list(all_columns.difference([query_id_col, 'target_id', 'score_rank', 'subfam-GenBank', 'subfam-EC']))
+    combined_data = combined_data[output_columns_order]
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
