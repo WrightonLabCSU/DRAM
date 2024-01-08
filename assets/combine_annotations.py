@@ -33,7 +33,7 @@ def combine_annotations(annotation_files, output_file):
 
         try:
             # Read CSV with custom separator
-            annotation_data = pd.read_csv(file_path, sep=',', header=0)
+            annotation_data = pd.read_csv(file_path, sep='\t', header=0)
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
@@ -54,37 +54,31 @@ def combine_annotations(annotation_files, output_file):
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
-                # Combine values for target_id and score_rank
-                data_dict[query_id]['target_id'] = data_dict[query_id]['target_id'] + "; " + str(row['target_id'])
-                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row['score_rank'])
+                # Choose the row with the highest bitScore
+                if row['{}_bitScore'.format(file_path.split('_')[0])] > data_dict[query_id]['{}_bitScore'.format(file_path.split('_')[0])]:
+                    data_dict[query_id] = row
                 # Append the sample to the list
                 if sample not in data_dict[query_id]['sample']:
                     data_dict[query_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
-                data_dict[query_id] = {'target_id': row['target_id'], 'score_rank': row['score_rank'], 'sample': [sample]}
+                data_dict[query_id] = row
+                data_dict[query_id]['sample'] = [sample]
 
-                # Extract additional columns dynamically
-                additional_columns = annotation_data.columns.difference([query_id_col, 'target_id', 'score_rank'])
-                for col in additional_columns:
-                    # Assign correct values to each additional column
-                    data_dict[query_id][col] = row[col]
-
-            logging.info(f"Processed query_id: {query_id} for sample: {sample}")
+        logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
-    combined_data.reset_index(inplace=True)
 
     # Rearrange the columns to match the desired order
-    output_columns_order = [query_id_col, 'sample', 'target_id', 'score_rank'] + list(all_columns.difference([query_id_col, 'target_id', 'score_rank']))
+    output_columns_order = [query_id_col, 'sample'] + list(all_columns.difference([query_id_col, 'sample']))
     combined_data = combined_data[output_columns_order]
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
 
     # Save the combined data to the output file
-    combined_data.to_csv(output_file, sep='\t', index=False, columns=['query_id', 'target_id', 'score_rank'])
+    combined_data.to_csv(output_file, sep='\t', index=False)
     logging.info("Combining annotations completed.")
 
 if __name__ == '__main__':
