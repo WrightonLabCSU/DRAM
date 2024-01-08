@@ -45,7 +45,7 @@ def combine_annotations(annotation_files, output_file):
             combined_data = annotation_data.copy()
         else:
             common_cols = set(combined_data.columns) & set(annotation_data.columns)
-            merge_cols = ['query_id'] + list(common_cols - {'query_id'})
+            merge_cols = ['query_id', 'sample'] + list(common_cols - {'query_id', 'sample'})
             combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols)
 
         logging.info(f"Processed annotation file: {file_path} for sample: {sample}")
