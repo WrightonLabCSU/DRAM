@@ -10,10 +10,19 @@ def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
 
+    # Create a dictionary to store values for each unique query_id
+    data_dict = {}
+
+    # Set to store all unique column names
+    all_columns = set()
+
     # Process the input annotation files
-    for annotation_file in annotation_files:
-        # Split the sample name and file path
-        sample, file_path = map(str.strip, annotation_file.split(','))
+    for i in range(0, len(annotation_files), 2):
+        sample = annotation_files[i]
+        file_path = annotation_files[i + 1]
+
+        # Extract sample names from the input
+        sample = sample.strip('\'"')
 
         # Check if the file exists
         if not os.path.exists(file_path):
@@ -37,26 +46,44 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
         query_id_col = query_id_col[0]
 
-        # Keep the first occurrence of each query_id based on *_bitScore
-        annotation_data = annotation_data.sort_values(by=f'{query_id_col}_bitScore', ascending=False).drop_duplicates('query_id')
+        # Update set of all columns
+        all_columns.update(annotation_data.columns)
 
-        # Merge dataframes based on 'query_id' column
-        if combined_data.empty:
-            combined_data = annotation_data.copy()
-        else:
-            common_cols = set(combined_data.columns) & set(annotation_data.columns)
-            merge_cols = ['query_id'] + list(common_cols - {'query_id'})
-            combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols, suffixes=('_dbcan', '_kofam'))
+        for index, row in annotation_data.iterrows():
+            query_id = row[query_id_col]
 
-        logging.info(f"Processed annotation file: {file_path} for sample: {sample}")
+            # Check if query_id already exists in the dictionary
+            if query_id in data_dict:
+                # Choose the row with the highest bitScore independently for each file
+                db_name = os.path.basename(file_path).split('_')[0]
+                if f'{db_name}_bitScore' in row.index and f'{db_name}_bitScore' in data_dict[query_id].index:
+                    if row[f'{db_name}_bitScore'] >= data_dict[query_id][f'{db_name}_bitScore']:
+                        data_dict[query_id].update(row)
+                    # Append the sample to the list
+                    if sample not in data_dict[query_id]['sample']:
+                        data_dict[query_id]['sample'].append(sample)
+                else:
+                    # If bitScore information is missing, update the row without checking bitScore
+                    data_dict[query_id].update(row)
+                    # Append the sample to the list
+                    if sample not in data_dict[query_id]['sample']:
+                        data_dict[query_id]['sample'].append(sample)
+            else:
+                # Create a new entry in the dictionary
+                data_dict[query_id] = row
+                data_dict[query_id]['sample'] = [sample]
+
+            logging.info(f"Processed query_id: {query_id} for sample: {sample}")
+
+    # Create a DataFrame from the dictionary
+    combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
 
     # Rearrange the columns to match the desired order
-    output_columns_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
+    output_columns_order = [query_id_col, 'sample'] + list(all_columns.difference([query_id_col, 'sample']))
     combined_data = combined_data[output_columns_order]
 
-    # Convert 'sample' column values to strings and join them with a semicolon
-    sample_cols = [col for col in combined_data.columns if col.startswith('sample')]
-    combined_data['sample'] = combined_data[sample_cols].apply(lambda row: "; ".join(map(str, filter(lambda x: pd.notna(x), row))), axis=1)
+    # Remove duplicate samples within the same row and separate them with a semicolon
+    combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
@@ -68,5 +95,8 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='Output file name', required=True)
 
     args = parser.parse_args()
+
+    # Remove square brackets and extra commas
+    args.annotations = [arg.strip("[],") for arg in args.annotations]
 
     combine_annotations(args.annotations, args.output)
