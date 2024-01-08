@@ -10,13 +10,10 @@ def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
 
-    # Process the input annotation files
+    # Iterate over input annotation files
     for i in range(0, len(annotation_files), 2):
-        sample = annotation_files[i]
+        sample_name = annotation_files[i].strip('\'"')
         file_path = annotation_files[i + 1]
-
-        # Extract sample names from the input
-        sample = sample.strip('\'"')
 
         # Check if the file exists
         if not os.path.exists(file_path):
@@ -40,6 +37,9 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
         query_id_col = query_id_col[0]
 
+        # Add the sample column to the annotation data
+        annotation_data['sample'] = sample_name
+
         # Merge dataframes based on 'query_id' column
         if combined_data.empty:
             combined_data = annotation_data.copy()
@@ -48,8 +48,7 @@ def combine_annotations(annotation_files, output_file):
             merge_cols = ['query_id'] + list(common_cols - {'query_id'})
             combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols, suffixes=('_dbcan', '_kofam'))
 
-
-        logging.info(f"Processed annotation file: {file_path} for sample: {sample}")
+        logging.info(f"Processed annotation file: {file_path} for sample: {sample_name}")
 
     # Rearrange the columns to match the desired order
     output_columns_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
