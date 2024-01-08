@@ -58,20 +58,26 @@ def combine_annotations(annotation_files, output_file):
                 db_name = os.path.basename(file_path).split('_')[0]
                 if f'{db_name}_bitScore' in row.index and f'{db_name}_bitScore' in data_dict[query_id].index:
                     if row[f'{db_name}_bitScore'] >= data_dict[query_id][f'{db_name}_bitScore']:
-                        data_dict[query_id].update(row)
-                    # Append the sample to the list
-                    if sample not in data_dict[query_id]['sample']:
-                        data_dict[query_id]['sample'].append(sample)
+                        # Update the row only if it's from the same source file or if the source file is not specified
+                        if not data_dict[query_id]['source'] or data_dict[query_id]['source'] == db_name:
+                            data_dict[query_id].update(row)
+                        # Append the sample to the list only if it's not present
+                        if sample not in data_dict[query_id]['sample']:
+                            data_dict[query_id]['sample'].append(sample)
                 else:
                     # If bitScore information is missing, update the row without checking bitScore
-                    data_dict[query_id].update(row)
-                    # Append the sample to the list
+                    # Update the row only if it's from the same source file or if the source file is not specified
+                    if not data_dict[query_id]['source'] or data_dict[query_id]['source'] == db_name:
+                        data_dict[query_id].update(row)
+                    # Append the sample to the list only if it's not present
                     if sample not in data_dict[query_id]['sample']:
                         data_dict[query_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
                 data_dict[query_id] = row
                 data_dict[query_id]['sample'] = [sample]
+                # Store the source file information
+                data_dict[query_id]['source'] = os.path.basename(file_path).split('_')[0]
 
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
