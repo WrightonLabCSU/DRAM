@@ -20,41 +20,45 @@ def combine_annotations(annotation_files, output_file):
         # Extract sample names from the input
         sample = sample.split('\'')[1] if '\'' in sample else sample
 
+        # Print the first two lines of the annotation file
+        with open(file_path, 'r') as file:
+            first_two_lines = [file.readline().strip() for _ in range(2)]
+            logging.info(f"First two lines of annotation file {file_path}:\n{', '.join(first_two_lines)}")
+
         # Read each annotation file
         logging.info(f"Processing annotation file: {file_path}")
         annotation_data = pd.read_csv(file_path, sep='\t')
 
         for index, row in annotation_data.iterrows():
-            # Dynamically find the target_id column
-            target_id_col = next((col for col in annotation_data.columns if 'target_id' in col.lower()), None)
-            if target_id_col is None:
-                raise ValueError("Could not find a column containing 'target_id'.")
+            query_id = row.get('query_id')
 
-            target_id = row[target_id_col]
+            if query_id is None:
+                raise ValueError("Could not find a column containing 'query_id'.")
 
             # Check if query_id already exists in the dictionary
-            if target_id in data_dict:
+            if query_id in data_dict:
                 # Combine values for target_id, score_rank, and bitScore
-                data_dict[target_id]['score_rank'] = str(data_dict[target_id]['score_rank']) + "; " + str(row['score_rank'])
-                data_dict[target_id]['bitScore'] = data_dict[target_id]['bitScore'] + "; " + str(row.get('bitScore', ''))
+                data_dict[query_id]['target_id'] = data_dict[query_id]['target_id'] + "; " + str(row['target_id'])
+                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row['score_rank'])
+                data_dict[query_id]['bitScore'] = data_dict[query_id]['bitScore'] + "; " + str(row.get('bitScore', ''))
                 # Append the sample to the list
-                if sample not in data_dict[target_id]['sample']:
-                    data_dict[target_id]['sample'].append(sample)
+                if sample not in data_dict[query_id]['sample']:
+                    data_dict[query_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
-                data_dict[target_id] = {
+                data_dict[query_id] = {
+                    'target_id': row['target_id'],
                     'score_rank': row['score_rank'],
                     'bitScore': row.get('bitScore', ''),
                     'sample': [sample]
                 }
-            logging.info(f"Processed target_id: {target_id} for sample: {sample}")
+            logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
-
-    # Dynamically set DataFrame columns based on unique column names
-    combined_data.columns = ['query_id', 'target_id', 'score_rank', 'sample'] + list(annotation_data.columns.difference(['query_id', 'target_id', 'score_rank', 'bitScore']))
+    # Rename the columns
+    combined_data.columns = ['query_id', 'target_id', 'score_rank', 'sample']
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
