@@ -459,7 +459,7 @@ workflow {
             PARSE_HMM_KOFAM ( ch_kofam_hmms, ch_parse_hmmsearch )
             ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
-            KOFAM_HMM_FORMATTER_KOFAM ( params.kofam_db_info, ch_kofam_parsed, params.kofam_top_hit, ch_kegg_formatter )
+            KOFAM_HMM_FORMATTER ( params.kofam_db_info, ch_kofam_parsed, params.kofam_top_hit, ch_kegg_formatter )
             ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.formatted_hits
         }
         // DBCAN not finished - this needs editing!
