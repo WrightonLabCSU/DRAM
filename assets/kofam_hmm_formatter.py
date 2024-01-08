@@ -32,12 +32,11 @@ def clean_ec_numbers(ec_entry):
     """
     # Find all occurrences of EC numbers within '[EC:' and ']'
     ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
-    
-    # Split each match by space and join the EC numbers with '; '
+
+    # Flatten the nested list and join EC numbers with '; '
     cleaned_ec_numbers = '; '.join(' '.join(ec.split()) for match in ec_matches for ec in match.split())
+    
     return cleaned_ec_numbers
-
-
 
 def main():
     # Command-line arguments
@@ -76,10 +75,7 @@ def main():
 
     # Extract values for kofam_definition and kofam_EC
     merged_df['kofam_definition'] = merged_df['definition'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
-    merged_df['kofam_EC'] = merged_df['definition'].apply(lambda x: re.search(r'\[EC:[^\]]*\]', str(x)).group(0) if re.search(r'\[EC:[^\]]*\]', str(x)) else '')
-
-    # Clean up kofam_EC entries by removing '[EC:' and ']'
-    merged_df['kofam_EC'] = merged_df['kofam_EC'].apply(clean_ec_numbers)
+    merged_df['kofam_EC'] = merged_df['definition'].apply(lambda x: clean_ec_numbers(str(x)) if pd.notna(x) else '')
 
     # Save the formatted output to CSV
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']
