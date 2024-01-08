@@ -1,4 +1,4 @@
-process kofam_HMM_FORMATTER {
+process KOFAM_HMM_FORMATTER {
 
     input:
     tag { sample }
