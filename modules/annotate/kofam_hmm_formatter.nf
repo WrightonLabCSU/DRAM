@@ -6,8 +6,7 @@ process KOFAM_HMM_FORMATTER {
     input:
     tuple val( sample ), path( hits_file )
     val( top_hit )
-    file( ch_kofam_fam )
-    file( ch_kofam_subfam )
+    file( ch_kofam_list )
     file( ch_kofam_formatter )
 
     output:
@@ -16,7 +15,7 @@ process KOFAM_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_kofam_formatter} --hits_csv ${hits_file} --fam ${ch_kofam_fam} --subfam ${ch_kofam_subfam} --output "${sample}_formatted_kofam_hits.out"
+    python ${ch_kofam_formatter} --hits_csv ${hits_file} --fam ${ch_kofam_list} --output "${sample}_formatted_kofam_hits.out"
     
     """
 }
