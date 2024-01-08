@@ -15,7 +15,7 @@ process KOFAM_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_kofam_formatter} --hits_csv ${hits_file} --fam ${ch_kofam_list} --output "${sample}_formatted_kofam_hits.out"
+    python ${ch_kofam_formatter} --hits_csv ${hits_file} --ch_kofam_ko ${ch_kofam_list} --output "${sample}_formatted_kofam_hits.out"
     
     """
 }
