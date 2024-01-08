@@ -107,7 +107,7 @@ include { PARSE_HMM as PARSE_HMM_DBCAN                  } from './modules/annota
 
 include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
 include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
-include { KEGG_HMM_FORMATTER as KEGG_HMM_FORMATTER_KOFAM} from './modules/annotate/kegg_hmm_formatter.nf'
+include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
 include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
 
 include { INDEX as KEGG_INDEX                           } from './modules/index.nf'
