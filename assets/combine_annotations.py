@@ -34,14 +34,14 @@ def combine_annotations(annotation_files, output_file):
         # Print column names for each annotation file
         logging.info(f"Column names: {annotation_data.columns}")
 
-        # Make the script case-insensitive when checking for '*_bitScore'
-        bit_score_col = [col for col in annotation_data.columns if col.lower().endswith('_bitscore')]
-        if not bit_score_col:
-            raise ValueError(f"BitScore column not found in the annotation file: {file_path}")
-        bit_score_col = bit_score_col[0]
+        # Make the script case-insensitive when checking for 'query_id'
+        query_id_col = [col for col in annotation_data.columns if col.lower() == 'query_id']
+        if not query_id_col:
+            raise ValueError(f"Column 'query_id' not found in the annotation file: {file_path}")
+        query_id_col = query_id_col[0]
 
-        # Sort the DataFrame by bitScore and keep the highest for each query_id
-        annotation_data = annotation_data.sort_values(by=bit_score_col, ascending=False).drop_duplicates('query_id')
+        # Keep the row with the highest bitScore for each query_id
+        annotation_data = annotation_data.sort_values(by=f'{sample}_bitScore', ascending=False).drop_duplicates('query_id')
 
         # Merge dataframes based on 'query_id' column
         if combined_data.empty:
@@ -49,9 +49,13 @@ def combine_annotations(annotation_files, output_file):
         else:
             common_cols = set(combined_data.columns) & set(annotation_data.columns)
             merge_cols = ['query_id'] + list(common_cols - {'query_id'})
-            combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols, suffixes=('_dbcan', '_kofam'))
+            combined_data = pd.merge(combined_data, annotation_data, how='outer', on=merge_cols, suffixes=('_dbcan', f'_{sample}'))
 
         logging.info(f"Processed annotation file: {file_path} for sample: {sample}")
+
+    # Check if 'sample' column exists before saving to the output file
+    if 'sample' not in combined_data.columns:
+        raise ValueError("'sample' column not found in the combined data.")
 
     # Rearrange the columns to match the desired order
     output_columns_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
