@@ -27,7 +27,7 @@ def combine_annotations(annotation_files, output_file):
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
-        # Merge based on 'query_id' using an outer join
+        # Merge based on the index using an outer join
         combined_data = pd.merge(
             combined_data,
             annotation_data.drop(columns=['query_id'] if sample == 'small_sample-fasta' else []),
@@ -41,6 +41,9 @@ def combine_annotations(annotation_files, output_file):
 
     # Reorder columns alphabetically
     combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
+
+    # Reset the index to include 'query_id'
+    combined_data.reset_index(inplace=True)
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
