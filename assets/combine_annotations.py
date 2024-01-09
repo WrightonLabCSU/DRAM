@@ -83,7 +83,8 @@ def combine_annotations(annotation_files, output_file):
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
-    combined_data.reset_index(drop=True, inplace=True)
+    combined_data.reset_index(inplace=True, col_fill='query_id')
+
 
 
     # Remove duplicate samples within the same row and separate them with a semicolon
