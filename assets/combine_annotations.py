@@ -5,6 +5,12 @@ import logging
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
+def identify_columns(column_names, suffix):
+    matching_columns = [col for col in column_names if col.lower().endswith(suffix)]
+    if not matching_columns:
+        raise ValueError(f"No column ending with '{suffix}' found.")
+    return matching_columns[0]
+
 def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
@@ -24,25 +30,14 @@ def combine_annotations(annotation_files, output_file):
         logging.info(f"Processing annotation file: {file_path}")
 
         try:
-            annotation_data = pd.read_csv(file_path, sep=',', quotechar='"')
+            annotation_data = pd.read_csv(file_path, sep=',')  # Assume comma-separated input
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
-        for col in annotation_data.columns:
-            # Check for query_id
-            if col.lower() == 'query_id':
-                continue
-
-            # Check for target_id
-            if col.lower().endswith('_id') and col.lower() != 'query_id':
-                target_id_col = col
-                break
-        else:
-            raise ValueError("No target_id column found in the input files.")
-
-        # Similarly, find the score_rank and bitScore columns
-        score_rank_col = [col for col in annotation_data.columns if col.lower().endswith('_score_rank')][0]
-        bit_score_col = [col for col in annotation_data.columns if col.lower().endswith('_bitScore')][0]
+        # Identify target_id, bitScore, and score_rank columns
+        target_id_col = identify_columns(annotation_data.columns, "_id")
+        bitScore_col = identify_columns(annotation_data.columns, "_bitScore")
+        score_rank_col = identify_columns(annotation_data.columns, "_score_rank")
 
         for index, row in annotation_data.iterrows():
             try:
@@ -62,9 +57,9 @@ def combine_annotations(annotation_files, output_file):
             else:
                 # Create a new entry in the dictionary
                 data_dict[query_id] = {'target_id': row[target_id_col], 'score_rank': row[score_rank_col], 'sample': [sample]}
-                
+
                 # Extract additional columns dynamically
-                additional_columns = [col for col in annotation_data.columns if col.lower() not in ['query_id', target_id_col, score_rank_col, bit_score_col]]
+                additional_columns = annotation_data.columns.difference(['query_id', target_id_col, score_rank_col])
                 for col in additional_columns:
                     data_dict[query_id][col] = row[col]
 
@@ -73,9 +68,11 @@ def combine_annotations(annotation_files, output_file):
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
-    
-    # Rearrange columns and remove duplicate samples within the same row
-    combined_data = combined_data[['query_id', 'target_id', 'sample', 'score_rank', 'bitScore'] + sorted(additional_columns)]
+
+    # Rename the columns
+    combined_data.columns = ['query_id', 'target_id', 'sample', 'score_rank', 'bitScore'] + list(additional_columns)
+
+    # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
 
     # Save the combined data to the output file
