@@ -44,16 +44,17 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
     
     if not matching_rows.empty:
         ec_values = '; '.join(set(matching_rows.iloc[:, 2].astype(str)))  # Assuming 0-based index for columns
-        return ec_values.replace('|', '; ') if pd.notna(ec_values) else ""
+        ec_values = ec_values.replace('|', '; ')  # Replace "|" with "; "
+        return ec_values if pd.notna(ec_values) else ""
 
     return ""
 
 def extract_dbcan_ec(dbcan_family):
-    ec_matches = re.findall(r'\(EC [^\)]*\)', dbcan_family)
-    return '; '.join(set(ec_matches)) if ec_matches else ""
+    ec_matches = re.findall(r'\(EC [^)]*\)', dbcan_family)
+    cleaned_ec_numbers = '; '.join(ec_matches) if ec_matches else ""
+    return cleaned_ec_numbers
 
 def find_best_dbcan_hit(df):
-    # Sort by ascending order of E-value and descending order of coverage
     df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
     return df.iloc[0]
 
@@ -93,7 +94,7 @@ def main():
     hits_df['family'] = hits_df['target_id'].apply(lambda x: extract_family(x, ch_dbcan_fam))
     hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
     hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
-
+    
     # Filter based on E-value
     hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
 
@@ -106,17 +107,22 @@ def main():
     # Mark the best hit for each unique query_id based on score_rank
     hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-    # Extract "(EC *)" occurrences from dbcan_family and create dbcan_EC column
+    # Extract "(EC *)" occurrences and create a new column dbcan_EC
     hits_df['dbcan_EC'] = hits_df['family'].apply(extract_dbcan_ec)
 
-    # Replace "|" with "; " in dbcan_subfam_EC column
-    hits_df['dbcan_subfam_EC'] = hits_df['dbcan_subfam_EC'].replace('|', '; ')
+    print("Saving the formatted output to CSV...")
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan_EC']
+    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_EC']
 
-    # Save the formatted output to CSV
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan-subfam-EC', 'dbcan_EC']
-    hits_df[selected_columns].to_csv(args.output, index=False)
+    # Ensure the columns exist in the DataFrame before renaming
+    if set(selected_columns).issubset(hits_df.columns):
+        # Rename the selected columns
+        hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
 
-    print("Process completed successfully!")
+        # Save the formatted output to CSV
+        hits_df[modified_columns].to_csv(args.output, index=False)
+
+        print("Process completed successfully!")
 
 if __name__ == "__main__":
     main()
