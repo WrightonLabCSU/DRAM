@@ -21,7 +21,7 @@ def combine_annotations(annotation_files, output_file):
         logging.info(f"Processing annotation file: {file_path}")
 
         try:
-            annotation_data = pd.read_csv(file_path, sep='\t')
+            annotation_data = pd.read_csv(file_path, sep=',')  # Change separator to ','
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
@@ -49,7 +49,6 @@ def combine_annotations(annotation_files, output_file):
             if query_id is None:
                 logging.error(f"'query_id' not found in row: {row}")
                 continue
-
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
@@ -84,16 +83,13 @@ def combine_annotations(annotation_files, output_file):
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
-    combined_data.reset_index(inplace=True)
+    combined_data.reset_index(inplace=True, drop=True)  # Drop the old index column
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
 
-    # Rename the columns
-    combined_data.columns = list(combined_data.columns)
-
     # Save the combined data to the output file
-    combined_data.to_csv(output_file, sep='\t', index=False)
+    combined_data.to_csv(output_file, sep='\t', index=False, columns=['query_id', 'target_id', 'sample', 'score_rank', bitScore_col] + list(additional_columns))
     logging.info("Combining annotations completed.")
 
 if __name__ == '__main__':
