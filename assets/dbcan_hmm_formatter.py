@@ -25,12 +25,11 @@ def extract_family(target_id, ch_dbcan_fam):
 
     if not matching_rows.empty:
         family_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
-        family_values = family_values.replace("(EC ", "").replace(")", "")  # Remove "(EC " and ")"
+        family_values = re.sub(r'\(EC [^)]*\)', '', family_values)  # Remove "(EC *)" occurrences
         family_values = family_values.strip()  # Remove leading and trailing spaces
         return family_values if pd.notna(family_values) else ""
 
     return ""
-
 
 def extract_subfam_genbank(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
