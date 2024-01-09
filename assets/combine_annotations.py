@@ -28,6 +28,10 @@ def combine_annotations(annotation_files, output_file):
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
+        # Identify target_id and score_rank columns
+        target_id_col = [col for col in annotation_data.columns if col.lower().endswith('_id') and col.lower() != 'query_id'][0]
+        score_rank_col = [col for col in annotation_data.columns if col.lower().endswith('_score_rank')][0]
+
         for index, row in annotation_data.iterrows():
             try:
                 query_id = row['query_id']
@@ -37,18 +41,14 @@ def combine_annotations(annotation_files, output_file):
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
-                # Combine values for target_id and score_rank
-                data_dict[query_id]['target_id'] = row.get('_id', '')
-                data_dict[query_id]['score_rank'] = row.get('_score_rank', '')
-                # Append the sample to the list
-                if sample not in data_dict[query_id]['sample']:
-                    data_dict[query_id]['sample'].append(sample)
+                # Compare bitscores and retain the entry with the highest bitscore
+                if row[score_rank_col] > data_dict[query_id][score_rank_col]:
+                    data_dict[query_id] = row.to_dict()
             else:
                 # Create a new entry in the dictionary
-                data_dict[query_id] = {'target_id': row.get('_id', ''), 'score_rank': row.get('_score_rank', ''), 'sample': [sample]}
-                
-                # Retain additional columns in the output
-                additional_columns = annotation_data.columns.difference(['query_id', '_id', '_score_rank'])
+                data_dict[query_id] = row.to_dict()
+                # Extract additional columns dynamically
+                additional_columns = annotation_data.columns.difference(['query_id', target_id_col, score_rank_col])
                 for col in additional_columns:
                     data_dict[query_id][col] = row[col]
 
@@ -58,8 +58,8 @@ def combine_annotations(annotation_files, output_file):
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
     
-    # Reorder columns
-    combined_data = combined_data[['query_id', 'target_id', 'sample', 'score_rank'] + sorted(list(additional_columns))]
+    # Rename the columns
+    combined_data.columns = ['query_id', 'sample', target_id_col, 'bitScore', score_rank_col] + list(additional_columns)
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
