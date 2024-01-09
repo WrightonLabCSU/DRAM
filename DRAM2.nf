@@ -535,8 +535,8 @@ workflow {
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
-        COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
-        ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+        //COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
+        //ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
 
     }
 
