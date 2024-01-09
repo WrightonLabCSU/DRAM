@@ -14,13 +14,13 @@ target_id_data = pd.DataFrame()
 
 # For each column ending with "_id", explode the list and create separate rows
 for col in id_columns:
-    target_id_data[col] = data[col].str.split('; ').explode()
+    target_id_data = target_id_data.append(data[col].str.split('; ').explode())
 
 # Combine the "sample" column with the target ID columns
 target_id_data['sample'] = samples.explode()
 
-# Concatenate all "_id" columns into a single column named "target_id"
-target_id_data['target_id'] = target_id_data[id_columns].apply(lambda row: ';'.join(row.dropna()), axis=1)
+# Rename the column containing values from "_id" columns to "target_id"
+target_id_data = target_id_data.rename(columns={0: 'target_id'})
 
 # Create a new DataFrame for counting occurrences using crosstab
 table = pd.crosstab(index=target_id_data['target_id'], columns=target_id_data['sample']).fillna(0)
