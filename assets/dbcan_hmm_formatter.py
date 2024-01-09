@@ -10,6 +10,9 @@ def calculate_bit_score(row):
 def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
+def calculate_coverage(row):
+    return (row['target_end'] - row['target_start']) / row['target_length']
+
 def extract_family(target_id, ch_dbcan_fam):
     target_id_without_extension = target_id.replace('.hmm', '')
     target_id_without_underscore = target_id.split('_')[0]
@@ -46,7 +49,7 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
 
 def find_best_dbcan_hit(df):
     # Sort by ascending order of E-value and descending order of coverage
-    df.sort_values(["full_evalue", "coverage"], inplace=True, ascending=[True, False])
+    df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
     return df.iloc[0]["target_id"]
 
 def mark_best_hit_based_on_rank(df):
@@ -75,6 +78,10 @@ def main():
 
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
+
+    # Calculate coverage
+    hits_df['perc_cov'] = hits_df.apply(calculate_coverage, axis=1)
+
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Apply the extraction functions to create new columns
