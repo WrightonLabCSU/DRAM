@@ -20,7 +20,7 @@ def find_best_dbcan_hit(df):
         lambda x: (x['target_end'] - x['target_start']) / x['target_length'], axis=1
     )
     df.sort_values(by=['full_evalue', 'perc_cov'], inplace=True, ascending=[True, False])
-    return df.iloc[0]["target_id"]
+    return df.iloc[0]
 
 def mark_best_hit_based_on_rank(df):
     """Mark the best hit for each unique query_id based on score_rank."""
@@ -70,8 +70,8 @@ def main():
     hits_df = hits_df[hits_df['full_evalue'] >= 1e-18]
 
     # Find the best hit for each unique query_id
-    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan-best-hit')
-
+    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(drop=True)
+    
     # Merge the best hits back to the original DataFrame
     hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
 
