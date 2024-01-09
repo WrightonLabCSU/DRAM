@@ -29,10 +29,10 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Could not find file: {file_path}")
 
         # Identify the *_bitScore column
-        bitScore_col_candidates = [col for col in annotation_data.columns if col.endswith("bitScore")]
+        bitScore_col_candidates = [col for col in annotation_data.columns if col.endswith("_bitScore")]
 
         if not bitScore_col_candidates:
-            logging.warning(f"No '*bitScore' column found in the file: {file_path}")
+            logging.warning(f"No '*_bitScore' column found in the file: {file_path}")
             continue
 
         # For simplicity, we'll consider the first matching column
