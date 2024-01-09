@@ -22,20 +22,17 @@ def combine_annotations(annotation_files, output_file):
         logging.info(f"Processing annotation file: {file_path}")
 
         try:
-            annotation_data = pd.read_csv(file_path, sep=',', quotechar='"')
+            # Use the first column as the index
+            annotation_data = pd.read_csv(file_path, sep=',', quotechar='"', index_col=0)
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
-
-        # Check if 'query_id' column exists in the annotation data
-        if 'query_id' not in annotation_data.columns:
-            logging.error(f"Error: 'query_id' column not found in {file_path}. Skipping this file.")
-            continue
 
         # Merge based on 'query_id' using an outer join
         combined_data = pd.merge(
             combined_data,
             annotation_data.drop(columns=['query_id'] if sample == 'small_sample-fasta' else []),
-            on='query_id',
+            left_index=True,
+            right_index=True,
             how='outer',
             suffixes=('', f'_{sample}')
         )
