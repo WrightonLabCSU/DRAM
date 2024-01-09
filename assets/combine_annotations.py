@@ -1,62 +1,60 @@
 import argparse
 import pandas as pd
 import logging
+import os
 
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
+def extract_samples_and_paths(annotation_files):
+    samples_and_paths = []
+    for i in range(0, len(annotation_files), 2):
+        sample = annotation_files[i].strip('[], ')
+        path = annotation_files[i + 1].strip('[], ')
+        samples_and_paths.append((sample, path))
+    return samples_and_paths
+
 def combine_annotations(annotation_files, output_file):
+    # Extract samples and paths from the input annotation_files
+    samples_and_paths = extract_samples_and_paths(annotation_files)
+
     # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
 
     # Process the input annotation files
-    for i in range(0, len(annotation_files), 2):
-        # Extract sample name from the input annotation_files
-        sample = annotation_files[i].split(',')[0]
-        # Remove quotes from the sample name if present
-        sample = sample.strip("'")
-
-        file_path = annotation_files[i + 1]
-
-        # Read each annotation file
-        logging.info(f"Processing annotation file: {file_path}")
-
+    for sample, path in samples_and_paths:
+        # Load each annotation file into a DataFrame
         try:
-            # Use the first column as the index
-            annotation_data = pd.read_csv(file_path, sep=',', quotechar='"', index_col=0)
-        except FileNotFoundError:
-            raise ValueError(f"Could not find file: {file_path}")
+            annotation_df = pd.read_csv(path)
+        except pd.errors.EmptyDataError:
+            logging.warning(f"Empty DataFrame for sample: {sample}, skipping.")
+            continue
+        except Exception as e:
+            logging.error(f"Error loading DataFrame for sample {sample}: {str(e)}")
+            continue
 
-        # Merge based on the index using an outer join
-        combined_data = pd.merge(
-            combined_data,
-            annotation_data.drop(columns=['query_id'] if sample == 'small_sample-fasta' else []),
-            left_index=True,
-            right_index=True,
-            how='outer',
-            suffixes=('', f'_{sample}')
-        )
+        # Add the 'sample' column
+        annotation_df.insert(1, 'sample', sample)
 
-        logging.info(f"Processed annotation file: {file_path}")
+        # Combine data based on the 'query_id' column
+        combined_data = pd.concat([combined_data, annotation_df], ignore_index=True, sort=False)
 
-    # Reorder columns alphabetically
-    combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
+    # Combine rows with the same 'query_id' into a single row
+    combined_data = combined_data.groupby('query_id', as_index=False).first()
 
-    # Reset the index to include 'query_id'
-    combined_data.reset_index(inplace=True)
+    # Save the combined DataFrame to the output file
+    combined_data.to_csv(output_file, index=False, sep='\t')
 
-    # Save the combined data to the output file
-    combined_data.to_csv(output_file, sep='\t', index=False)
-    logging.info("Combining annotations completed.")
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Combine multiple annotation files into one.')
-    parser.add_argument('--annotations', nargs='+', help='List of input annotation files and sample names', required=True)
-    parser.add_argument('--output', help='Output file name', required=True)
-
+if __name__ == "__main__":
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Combine annotation files based on query_id.")
+    parser.add_argument("--annotations", nargs='+', help="List of annotation files and sample names.")
+    parser.add_argument("--output", help="Output file path for the combined annotations.")
     args = parser.parse_args()
 
-    # Remove square brackets and extra commas
-    args.annotations = [arg.strip("[],") for arg in args.annotations]
-
-    combine_annotations(args.annotations, args.output)
+    # Combine annotations
+    if args.annotations and args.output:
+        combine_annotations(args.annotations, args.output)
+        logging.info(f"Combined annotations saved to {args.output}")
+    else:
+        logging.error("Missing required arguments. Use --help for usage information.")
