@@ -28,11 +28,11 @@ def combine_annotations(annotation_files, output_file):
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
-        # Identify the *_bitScore column
-        bitScore_col_candidates = [col for col in annotation_data.columns if col.endswith("_bitScore")]
+        # Identify the bitScore column
+        bitScore_col_candidates = [col for col in annotation_data.columns if "bitScore" in col]
 
         if not bitScore_col_candidates:
-            logging.warning(f"No '*_bitScore' column found in the file: {file_path}")
+            logging.warning(f"No 'bitScore' column found in the file: {file_path}")
             continue
 
         # For simplicity, we'll consider the first matching column
@@ -68,7 +68,7 @@ def combine_annotations(annotation_files, output_file):
                     'sample': [sample],
                     bitScore_col: row.get(bitScore_col, '')
                 }
-                
+
                 # Extract additional columns dynamically
                 additional_columns = annotation_data.columns.difference(['query_id', 'target_id', 'score_rank', bitScore_col])
                 for col in additional_columns:
@@ -79,7 +79,7 @@ def combine_annotations(annotation_files, output_file):
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
-    
+
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
 
