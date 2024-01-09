@@ -15,6 +15,9 @@ def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
 
+    # Create a dictionary to store values for each unique query_id
+    data_dict = {}
+
     # Process the input annotation files
     for i in range(0, len(annotation_files), 2):
         sample = annotation_files[i]
@@ -36,20 +39,36 @@ def combine_annotations(annotation_files, output_file):
         score_rank_col = identify_columns(annotation_data.columns, "_score_rank")
         bitScore_col = identify_columns(annotation_data.columns, "_bitScore")
 
-        # Merge additional columns with the existing columns (excluding 'query_id')
-        additional_cols = annotation_data.columns.difference(['query_id'])
-        cols_to_merge = ['query_id', 'sample'] + additional_cols.tolist()
+        for index, row in annotation_data.iterrows():
+            try:
+                query_id = row['query_id']
+            except KeyError as e:
+                logging.error(f"KeyError: {e} in row: {row}")
+                continue
 
-        # Merge data based on 'query_id'
-        combined_data = pd.merge(combined_data, annotation_data[cols_to_merge], on='query_id', how='outer')
+            # Check if query_id already exists in the dictionary
+            if query_id in data_dict:
+                # Keep the duplicate with the highest bitScore
+                if row[bitScore_col] > data_dict[query_id][bitScore_col]:
+                    data_dict[query_id] = row.to_dict()
+            else:
+                data_dict[query_id] = row.to_dict()
 
         logging.info(f"Processed annotation file: {file_path}")
 
+    # Create a DataFrame from the dictionary
+    combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
+    combined_data.reset_index(inplace=True)
+    
     # Reorder columns alphabetically
     combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
+
+    # Select only the required columns in the output
+    output_columns = ['query_id', 'sample'] + [col for col in combined_data.columns if col != 'query_id']
+    combined_data = combined_data[output_columns]
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
