@@ -18,12 +18,12 @@ def extract_dbcan_ec(target_id, ch_dbcan_fam):
     matching_rows = ch_dbcan_fam[ch_dbcan_fam.iloc[:, 0] == target_id]
 
     if not matching_rows.empty:
-        ec_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
-        ec_values = re.sub(r'\(EC [^)]*\)', '', ec_values)  # Remove "(EC *)" occurrences
-        ec_values = ec_values.strip()  # Remove leading and trailing spaces
-        return ec_values if pd.notna(ec_values) else ""
+        ec_values = matching_rows.iloc[:, 1].astype(str)
+        ec_values = re.findall(r'\(EC ([^)]*)\)', '; '.join(ec_values))
+        return '; '.join(ec_values).strip() if ec_values else ""
 
     return ""
+
 
 def extract_family(target_id, ch_dbcan_fam):
     target_id_without_extension = target_id.replace('.hmm', '')
