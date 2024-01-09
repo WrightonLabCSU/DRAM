@@ -11,7 +11,11 @@ def combine_annotations(annotation_files, output_file):
 
     # Process the input annotation files
     for i in range(0, len(annotation_files), 2):
+        # Extract sample name from the input annotation_files
         sample = annotation_files[i].split(',')[0]
+        # Remove quotes from the sample name if present
+        sample = sample.strip("'")
+
         file_path = annotation_files[i + 1]
 
         # Read each annotation file
