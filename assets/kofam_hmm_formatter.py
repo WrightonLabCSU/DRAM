@@ -10,7 +10,7 @@ def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def find_best_dbcan_hit(df):
+def find_best_kofam_hit(df):
     """Find the best hit based on E-value and coverage."""
     df['perc_cov'] = (df['target_end'] - df['target_start']) / df['target_length']
     df.sort_values(by=["full_evalue", "perc_cov"], ascending=[True, False], inplace=True)
@@ -55,7 +55,7 @@ def main():
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Find the best hit for each unique query_id
-    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan-best-hit')
+    best_hits = hits_df.groupby('query_id').apply(find_best_kofam_hit).reset_index(name='kofam-best-hit')
 
     # Merge the best hits back to the original DataFrame
     hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
