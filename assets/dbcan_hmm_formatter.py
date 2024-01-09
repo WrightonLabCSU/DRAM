@@ -1,5 +1,6 @@
 import pandas as pd
 import argparse
+import re
 
 def get_sig_row(row):
     return row['full_evalue'] < 1e-18
@@ -43,9 +44,13 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
     
     if not matching_rows.empty:
         ec_values = '; '.join(set(matching_rows.iloc[:, 2].astype(str)))  # Assuming 0-based index for columns
-        return ec_values if pd.notna(ec_values) else ""
+        return ec_values.replace('|', '; ') if pd.notna(ec_values) else ""
 
     return ""
+
+def extract_dbcan_ec(dbcan_family):
+    ec_matches = re.findall(r'\(EC [^\)]*\)', dbcan_family)
+    return '; '.join(set(ec_matches)) if ec_matches else ""
 
 def find_best_dbcan_hit(df):
     # Sort by ascending order of E-value and descending order of coverage
@@ -101,21 +106,17 @@ def main():
     # Mark the best hit for each unique query_id based on score_rank
     hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-    print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC']
-    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC']
+    # Extract "(EC *)" occurrences from dbcan_family and create dbcan_EC column
+    hits_df['dbcan_EC'] = hits_df['family'].apply(extract_dbcan_ec)
 
-    # Ensure the columns exist in the DataFrame before renaming
-    if set(selected_columns).issubset(hits_df.columns):
-        # Rename the selected columns
-        hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
-    
-        # Save the modified DataFrame to CSV
-        hits_df[modified_columns].to_csv(args.output, index=False)
+    # Replace "|" with "; " in dbcan_subfam_EC column
+    hits_df['dbcan_subfam_EC'] = hits_df['dbcan_subfam_EC'].replace('|', '; ')
 
-        print("Process completed successfully!")
-    else:
-        print("Error: Some columns are missing in the DataFrame.")
+    # Save the formatted output to CSV
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan-subfam-EC', 'dbcan_EC']
+    hits_df[selected_columns].to_csv(args.output, index=False)
+
+    print("Process completed successfully!")
 
 if __name__ == "__main__":
     main()
