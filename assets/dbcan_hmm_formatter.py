@@ -92,7 +92,8 @@ def main():
     hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
 
     # Mark the best hit for each unique query_id based on score_rank
-    hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
+    hits_df = hits_df.groupby('query_id', group_keys=False).apply(mark_best_hit_based_on_rank).reset_index(drop=True)
+
 
     # Save the formatted output to CSV
     selected_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'family', 'dbcan_subfam_EC', 'subfam-GenBank', 'subfam-EC', 'dbcan-best-hit']
