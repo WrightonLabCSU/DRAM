@@ -23,4 +23,5 @@ target_id_data = target_id_data.rename(columns={0: 'target_id'})
 table = target_id_data.groupby(['target_id', 'sample']).size().unstack(fill_value=0)
 
 # Save the resulting table to a TSV file
-table.to_csv("target_id_counts.tsv", sep='\t')
+table.reset_index().to_csv("target_id_counts.tsv", sep='\t', index=False)
+
