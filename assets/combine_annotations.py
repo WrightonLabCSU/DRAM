@@ -5,8 +5,8 @@ import logging
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
-def identify_columns(column_names, suffix):
-    matching_columns = [col for col in column_names if col.endswith(suffix)]
+def identify_columns(columns, suffix):
+    matching_columns = [col for col in columns if col.lower().endswith(suffix.lower())]
     if not matching_columns:
         raise ValueError(f"No column ending with '{suffix}' found.")
     return matching_columns[0]
@@ -34,52 +34,33 @@ def combine_annotations(annotation_files, output_file):
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
-        query_id_col = 'query_id'
+        # Identify columns based on suffixes
         target_id_col = identify_columns(annotation_data.columns, "_id")
         score_rank_col = identify_columns(annotation_data.columns, "_score_rank")
         bitScore_col = identify_columns(annotation_data.columns, "_bitScore")
 
         for index, row in annotation_data.iterrows():
             try:
-                query_id = row[query_id_col]
+                query_id = row['query_id']
             except KeyError as e:
                 logging.error(f"KeyError: {e} in row: {row}")
                 continue
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
-                # Check if current bitScore is higher than the stored one
-                current_bitScore = row[bitScore_col]
-                stored_bitScore = data_dict[query_id]['bitScore']
-                if current_bitScore > stored_bitScore:
-                    # Update values for target_id, score_rank, and bitScore
-                    data_dict[query_id][target_id_col] = row[target_id_col]
-                    data_dict[query_id][score_rank_col] = row[score_rank_col]
-                    data_dict[query_id][bitScore_col] = current_bitScore
-                # Append the sample to the list
-                if sample not in data_dict[query_id]['sample']:
-                    data_dict[query_id]['sample'].append(sample)
+                # Keep the duplicate with the highest bitScore
+                if row[bitScore_col] > data_dict[query_id][bitScore_col]:
+                    data_dict[query_id] = row.to_dict()
             else:
-                # Create a new entry in the dictionary
-                data_dict[query_id] = {
-                    'target_id': row[target_id_col],
-                    'score_rank': row[score_rank_col],
-                    'bitScore': row[bitScore_col],
-                    'sample': [sample]
-                }
+                data_dict[query_id] = row.to_dict()
 
-                # Extract additional columns dynamically
-                additional_columns = annotation_data.columns.difference([query_id_col, target_id_col, score_rank_col, bitScore_col])
-                for col in additional_columns:
-                    data_dict[query_id][col] = row[col]
-
-            logging.info(f"Processed query_id: {query_id} for sample: {sample}")
+        logging.info(f"Processed annotation file: {file_path}")
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
-
-    # Sort columns alphabetically
+    
+    # Reorder columns alphabetically
     combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
 
     # Remove duplicate samples within the same row and separate them with a semicolon
