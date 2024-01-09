@@ -1,6 +1,8 @@
 import pandas as pd
 import argparse
-import re
+
+def get_sig_row(row):
+    return row['full_evalue'] < 1e-18
 
 def calculate_bit_score(row):
     return row['full_score'] / row['domain_number']
@@ -8,7 +10,10 @@ def calculate_bit_score(row):
 def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def extract_family_and_ec(target_id, ch_dbcan_fam):
+def calculate_coverage(row):
+    return (row['target_end'] - row['target_start']) / row['target_length']
+
+def extract_family(target_id, ch_dbcan_fam):
     target_id_without_extension = target_id.replace('.hmm', '')
     target_id_without_underscore = target_id.split('_')[0]
 
@@ -20,18 +25,13 @@ def extract_family_and_ec(target_id, ch_dbcan_fam):
     if not matching_rows.empty:
         family_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
         family_values = family_values.strip()  # Remove leading and trailing spaces
+        return family_values if pd.notna(family_values) else ""
 
-        # Extract EC numbers and replace '|' with '; ' in the 'dbcan_subfam_EC' column
-        ec_values = '; '.join(re.findall(r'\(EC [^\)]*\)', family_values))
-        family_values = re.sub(r' \(EC [^\)]*\)', '', family_values)
-
-        return family_values if pd.notna(family_values) else "", ec_values if pd.notna(ec_values) else ""
-
-    return "", ""
+    return ""
 
 def extract_subfam_genbank(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
-
+    
     if not matching_rows.empty:
         genbank_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
         return genbank_values if pd.notna(genbank_values) else ""
@@ -40,7 +40,7 @@ def extract_subfam_genbank(target_id, ch_dbcan_subfam):
 
 def extract_subfam_ec(target_id, ch_dbcan_subfam):
     matching_rows = ch_dbcan_subfam[ch_dbcan_subfam.iloc[:, 0] == target_id]
-
+    
     if not matching_rows.empty:
         ec_values = '; '.join(set(matching_rows.iloc[:, 2].astype(str)))  # Assuming 0-based index for columns
         return ec_values if pd.notna(ec_values) else ""
@@ -48,8 +48,9 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
     return ""
 
 def find_best_dbcan_hit(df):
+    # Sort by ascending order of E-value and descending order of coverage
     df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
-    return df.iloc[0]["target_id"]
+    return df.iloc[0]
 
 def mark_best_hit_based_on_rank(df):
     best_hit_idx = df["score_rank"].idxmin()
@@ -77,33 +78,44 @@ def main():
 
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
-    hits_df['perc_cov'] = hits_df.apply(lambda x: (x["target_end"] - x["target_start"]) / x["target_length"], axis=1)
+
+    # Calculate coverage
+    hits_df['perc_cov'] = hits_df.apply(calculate_coverage, axis=1)
+
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Apply the extraction functions to create new columns
-    hits_df['dbcan_family'], hits_df['dbcan_subfam_EC'] = zip(*hits_df['target_id'].apply(lambda x: extract_family_and_ec(x, ch_dbcan_fam)))
-    hits_df['subfam_GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
-    hits_df['dbcan_subfam_EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
+    hits_df['family'] = hits_df['target_id'].apply(lambda x: extract_family(x, ch_dbcan_fam))
+    hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
+    hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
 
-    # Calculate bitScore and score_rank
-    hits_df['dbcan_bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
-    hits_df['dbcan_score_rank'] = hits_df.apply(calculate_rank, axis=1)
+    # Filter based on E-value
+    hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
 
     # Find the best hit for each unique query_id
-    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan_best_hit')
+    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit)
 
-    # Merge the best hits back to the original DataFrame
-    hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
+    # Keep only the rows with the best hits
+    hits_df = best_hits.reset_index(drop=True)
 
     # Mark the best hit for each unique query_id based on score_rank
-    hits_df = hits_df.groupby('query_id', group_keys=False).apply(mark_best_hit_based_on_rank).reset_index(drop=True)
+    hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-    # Save the formatted output to CSV
-    selected_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_EC', 'subfam_GenBank', 'dbcan_best_hit']
+    print("Saving the formatted output to CSV...")
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC']
+    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC']
 
-    hits_df[selected_columns].to_csv(args.output, index=False)
+    # Ensure the columns exist in the DataFrame before renaming
+    if set(selected_columns).issubset(hits_df.columns):
+        # Rename the selected columns
+        hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
+    
+        # Save the modified DataFrame to CSV
+        hits_df[modified_columns].to_csv(args.output, index=False)
 
-    print("Process completed successfully!")
+        print("Process completed successfully!")
+    else:
+        print("Error: Some columns are missing in the DataFrame.")
 
 if __name__ == "__main__":
     main()
