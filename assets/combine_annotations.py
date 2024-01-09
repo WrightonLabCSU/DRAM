@@ -48,26 +48,31 @@ def combine_annotations(annotation_files, output_file):
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
                 # Check and update based on bitScore
-                current_bitscore = float(data_dict[query_id][bitScore_col]) if bitScore_col in data_dict[query_id] else float('-inf')
-                new_bitscore = float(row[bitScore_col])
+                current_bitscore = float(data_dict[query_id].get(bitScore_col, float('-inf')))
+                new_bitscore = float(row.get(bitScore_col, float('-inf')))
 
                 if new_bitscore > current_bitscore:
-                    # Update values for target_id and score_rank
-                    data_dict[query_id]['target_id'] = row['target_id']
-                    data_dict[query_id]['score_rank'] = row['score_rank']
-                    data_dict[query_id][bitScore_col] = row[bitScore_col]
+                    # Update values for target_id, score_rank, and bitScore_col
+                    data_dict[query_id]['target_id'] = row.get('target_id', '')
+                    data_dict[query_id]['score_rank'] = row.get('score_rank', '')
+                    data_dict[query_id][bitScore_col] = row.get(bitScore_col, '')
 
                 # Append the sample to the list
                 if sample not in data_dict[query_id]['sample']:
                     data_dict[query_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
-                data_dict[query_id] = {'target_id': row['target_id'], 'score_rank': row['score_rank'], 'sample': [sample], bitScore_col: row[bitScore_col]}
+                data_dict[query_id] = {
+                    'target_id': row.get('target_id', ''),
+                    'score_rank': row.get('score_rank', ''),
+                    'sample': [sample],
+                    bitScore_col: row.get(bitScore_col, '')
+                }
                 
                 # Extract additional columns dynamically
                 additional_columns = annotation_data.columns.difference(['query_id', 'target_id', 'score_rank', bitScore_col])
                 for col in additional_columns:
-                    data_dict[query_id][col] = row[col]
+                    data_dict[query_id][col] = row.get(col, '')
 
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
