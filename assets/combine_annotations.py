@@ -32,7 +32,13 @@ def combine_annotations(annotation_files, output_file):
             continue
 
         # Merge based on 'query_id' using an outer join
-        combined_data = pd.merge(combined_data, annotation_data, on='query_id', how='outer', suffixes=('', f'_{sample}'))
+        combined_data = pd.merge(
+            combined_data,
+            annotation_data.drop(columns=['query_id'] if sample == 'small_sample-fasta' else []),
+            on='query_id',
+            how='outer',
+            suffixes=('', f'_{sample}')
+        )
 
         logging.info(f"Processed annotation file: {file_path}")
 
