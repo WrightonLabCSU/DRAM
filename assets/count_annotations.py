@@ -20,7 +20,7 @@ for col in id_columns:
 target_id_data['sample'] = samples.explode()
 
 # Create a new DataFrame for counting occurrences using crosstab
-table = pd.crosstab(index=target_id_data['target_id'], columns=target_id_data['sample']).fillna(0)
+table = pd.crosstab(index=target_id_data[id_columns[0]], columns=target_id_data['sample']).fillna(0)
 
 # Save the resulting table to a TSV file
 table.to_csv("target_id_counts.tsv", sep='\t')
