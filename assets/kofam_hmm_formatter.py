@@ -80,8 +80,18 @@ def main():
     # Remove duplicates based on query_id
     final_output_df.drop_duplicates(subset='query_id', keep='first', inplace=True)
 
+    # Rename the columns in the final output
+    final_output_df.rename(columns={
+        'query_id': 'query_id',
+        'target_id': 'kofam_id',
+        'score_rank': 'kofam_score_rank',
+        'bitScore': 'kofam_bitScore',
+        'kofam_definition': 'kofam_definition',
+        'kofam_EC': 'kofam_EC'
+    }, inplace=True)
+
     # Save the modified DataFrame to CSV
-    final_output_df[['query_id', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']].to_csv(args.output, index=False)
+    final_output_df[['query_id', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC']].to_csv(args.output, index=False)
 
     print("Process completed successfully!")
 
