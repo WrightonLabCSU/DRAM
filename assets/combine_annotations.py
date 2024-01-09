@@ -5,11 +5,8 @@ import logging
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
-def identify_id_columns(column_names):
-    return [col for col in column_names if col.lower().endswith("_id") and col.lower() != "query_id"]
-
-def identify_columns(column_names, suffix):
-    matching_columns = [col for col in column_names if col.lower().endswith(suffix.lower())]
+def identify_columns(columns, suffix):
+    matching_columns = [col for col in columns if col.lower().endswith(suffix.lower())]
     if not matching_columns:
         raise ValueError(f"No column ending with '{suffix}' found.")
     return matching_columns[0]
@@ -17,9 +14,6 @@ def identify_columns(column_names, suffix):
 def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
-
-    # Create a dictionary to store values for each unique query_id
-    data_dict = {}
 
     # Process the input annotation files
     for i in range(0, len(annotation_files), 2):
@@ -33,56 +27,26 @@ def combine_annotations(annotation_files, output_file):
         logging.info(f"Processing annotation file: {file_path}")
 
         try:
-            annotation_data = pd.read_csv(file_path, sep=',')  # Assume comma-separated input
+            annotation_data = pd.read_csv(file_path, sep=',', quotechar='"')
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
-        # Identify _id, _bitScore, and _score_rank columns dynamically
-        id_columns = identify_id_columns(annotation_data.columns)
-        bitScore_col = identify_columns(annotation_data.columns, "_bitScore")
+        # Identify columns based on suffixes
+        target_id_col = identify_columns(annotation_data.columns, "_id")
         score_rank_col = identify_columns(annotation_data.columns, "_score_rank")
+        bitScore_col = identify_columns(annotation_data.columns, "_bitScore")
 
-        for index, row in annotation_data.iterrows():
-            try:
-                query_id = row['query_id']
-            except KeyError as e:
-                logging.error(f"KeyError: {e} in row: {row}")
-                continue
+        # Merge additional columns with the existing columns (excluding 'query_id')
+        additional_cols = annotation_data.columns.difference(['query_id'])
+        cols_to_merge = ['query_id', 'sample'] + additional_cols.tolist()
 
-            # Check if query_id already exists in the dictionary
-            if query_id in data_dict:
-                # Combine values for _id, _score_rank, and _bitScore
-                for id_col in id_columns:
-                    # Use .get() to safely retrieve the value or return an empty string if the key is not present
-                    data_dict[query_id][id_col] = data_dict[query_id].get(id_col, "") + "; " + str(row.get(id_col, ""))
-                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row.get(score_rank_col, ""))
-                data_dict[query_id]['bitScore'] = str(data_dict[query_id]['bitScore']) + "; " + str(row.get(bitScore_col, ""))
-                # Append the sample to the list
-                if sample not in data_dict[query_id]['sample']:
-                    data_dict[query_id]['sample'].append(sample)
-            else:
-                # Create a new entry in the dictionary
-                data_dict[query_id] = {'sample': [sample]}
+        # Merge data based on 'query_id'
+        combined_data = pd.merge(combined_data, annotation_data[cols_to_merge], on='query_id', how='outer')
 
-                # Extract _id columns dynamically
-                for id_col in id_columns:
-                    # Use .get() to safely retrieve the value or return an empty string if the key is not present
-                    data_dict[query_id][id_col] = row.get(id_col, "")
+        logging.info(f"Processed annotation file: {file_path}")
 
-                # Extract additional columns dynamically
-                additional_columns = annotation_data.columns.difference(['query_id'] + id_columns + [bitScore_col, score_rank_col])
-                for col in additional_columns:
-                    data_dict[query_id][col] = row[col]
-
-            logging.info(f"Processed query_id: {query_id} for sample: {sample}")
-
-    # Create a DataFrame from the dictionary
-    combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
-    combined_data.reset_index(inplace=True)
-
-    # Rename the columns
-    column_order = ['query_id', 'sample'] + id_columns + list(additional_columns) + ['score_rank', 'bitScore']
-    combined_data = combined_data[column_order]
+    # Reorder columns alphabetically
+    combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
