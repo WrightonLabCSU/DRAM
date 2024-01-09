@@ -36,11 +36,20 @@ def combine_annotations(annotation_files, output_file):
         bitScore_col = bitScore_col_candidates[0]
 
         for index, row in annotation_data.iterrows():
-            query_id = row.get('query_id', None)
+            # Find the column containing 'query_id' in its name
+            query_id_col = next((col for col in row.index if 'query_id' in col), None)
+
+            if query_id_col is None:
+                logging.error(f"'query_id' column not found in row: {row}")
+                continue
+
+            # Extract 'query_id' value from the row
+            query_id = row.get(query_id_col, None)
 
             if query_id is None:
                 logging.error(f"'query_id' not found in row: {row}")
                 continue
+
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
