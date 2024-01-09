@@ -88,9 +88,9 @@ if __name__ == '__main__':
     parser.add_argument('--add_module3', required=False, help='Path to the additional module3 file')
     parser.add_argument('--add_module4', required=False, help='Path to the additional module4 file')
     parser.add_argument('--add_module5', required=False, help='Path to the additional module5 file')
-    parser.add_argument('--target_id_col', required=True, help='Column name containing target ids in combined_annotations file')
+    parser.add_argument('--target_id_col', required=True, help='Name of the target_id column in combined_annotations.tsv')
 
     args = parser.parse_args()
     add_modules = [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
-    
+
     distill_summary(args.combined_annotations, args.genome_summary_form, args.target_id_counts, args.output, add_modules, args.target_id_col)
