@@ -117,7 +117,8 @@ def main():
     hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
     # Extract "(EC *)" occurrences and create a new column dbcan_EC
-    hits_df['dbcan_EC'] = hits_df['family'].apply(extract_dbcan_ec)
+    hits_df['dbcan_EC'] = hits_df.apply(lambda row: extract_dbcan_ec(row['target_id'], ch_dbcan_fam), axis=1)
+
 
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan_EC']
