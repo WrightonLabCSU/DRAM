@@ -1,33 +1,34 @@
+import argparse
 import pandas as pd
 
-# Read the data from the combined_annotations.tsv file
-data = pd.read_csv("combined_annotations.tsv", sep='\t')
-
-# Identify columns containing database IDs by searching for names ending with "_id"
-id_columns = [col for col in data.columns if col.endswith("_id") and col != "query_id"]
-
-# Extract "sample" column
-samples = data['sample'].str.split('; ')
-
-# Create an empty DataFrame to store the target_id data
-target_id_data = pd.DataFrame()
-
-# Process the input annotation files
-for i in range(0, len(annotation_files), 2):
-    # Read the data from the annotation file
-    data = pd.read_csv(annotation_files[i + 1], sep='\t')
+def count_annotations(input_file, output_file):
+    # Read the data from the combined_annotations.tsv file
+    data = pd.read_csv(input_file, sep='\t')
 
     # Identify columns containing database IDs by searching for names ending with "_id"
     id_columns = [col for col in data.columns if col.endswith("_id") and col != "query_id"]
 
-    # Create a DataFrame with 'sample' and the current '_id' column exploded
-    exploded_data = pd.concat([data[['sample', col]].explode(col) for col in id_columns])
+    # Create an empty DataFrame to store the combined data
+    target_id_data = pd.DataFrame()
 
-    # Append the exploded data to the target_id_data DataFrame
-    target_id_data = pd.concat([target_id_data, exploded_data])
+    # Iterate through each ID column, explode the values, and append to the target_id_data DataFrame
+    for col in id_columns:
+        target_id_data = target_id_data.append(data[['sample', col]].explode(col))
 
-# Create a new DataFrame for counting occurrences using groupby
-table = target_id_data.groupby(['sample', 'target_id']).size().unstack(fill_value=0)
+    # Rename the columns for clarity
+    target_id_data.columns = ['sample', 'target_id']
 
-# Save the resulting table to a TSV file
-table.reset_index().to_csv("target_id_counts.tsv", sep='\t', index=False)
+    # Group by "target_id" and "sample," then count the occurrences
+    table = target_id_data.groupby(['target_id', 'sample']).size().unstack(fill_value=0)
+
+    # Save the resulting table to a TSV file
+    table.to_csv(output_file, sep='\t')
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Count occurrences of target_ids for each sample.")
+    parser.add_argument("input_file", help="Input file (combined_annotations.tsv)")
+    parser.add_argument("output_file", help="Output file (target_id_counts.tsv)")
+
+    args = parser.parse_args()
+
+    count_annotations(args.input_file, args.output_file)
