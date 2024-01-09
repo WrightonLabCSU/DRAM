@@ -90,7 +90,7 @@ def combine_annotations(annotation_files, output_file):
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
 
     # Rename the columns
-    combined_data.columns = ['query_id', 'target_id', 'sample', 'score_rank', bitScore_col] + list(additional_columns)
+    combined_data.columns = list(combined_data.columns)
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
