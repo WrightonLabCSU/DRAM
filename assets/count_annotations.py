@@ -4,18 +4,26 @@ import pandas as pd
 data = pd.read_csv("combined_annotations.tsv", sep='\t')
 
 # Identify columns containing database IDs by searching for names ending with "_id"
-id_columns = [col for col in data.columns if col.endswith("_id") and col != "query_id"]
+id_columns = [col for col in data.columns if col.endswith("_id")]
 
-# Split the "query_id" and "sample" columns by the delimiter "; " and create separate rows for each element
-data['query_id'] = data['query_id'].str.split('; ')
-data['sample'] = data['sample'].str.split('; ')
+# Extract "sample" column
+samples = data['sample'].str.split('; ')
 
-# Explode the lists to create separate rows for each element
-data = data.explode('query_id')
+# Explode the "sample" list to create separate rows for each element
 data = data.explode('sample')
 
-# Group by "query_id" and "sample," then count the occurrences for each database ID column
-table = data.groupby(['query_id', 'sample'])[id_columns].count().fillna(0)
+# Create a new DataFrame for target IDs and samples
+target_id_data = pd.DataFrame()
+
+# For each column ending with "_id", explode the list and create separate rows
+for col in id_columns:
+    target_id_data[col] = data[col].str.split('; ').explode()
+
+# Combine the "sample" column with the target ID columns
+target_id_data['sample'] = samples.explode()
+
+# Group by target IDs and samples, then count the occurrences
+table = target_id_data.groupby(['sample'] + id_columns).size().unstack(fill_value=0)
 
 # Save the resulting table to a TSV file
 table.to_csv("target_id_counts.tsv", sep='\t')
