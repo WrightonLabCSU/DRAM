@@ -5,6 +5,9 @@ import logging
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
+def identify_id_columns(column_names):
+    return [col for col in column_names if col.lower().endswith("_id") and col.lower() != "query_id"]
+
 def identify_columns(column_names, suffix):
     matching_columns = [col for col in column_names if col.lower().endswith(suffix.lower())]
     if not matching_columns:
@@ -35,7 +38,7 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Could not find file: {file_path}")
 
         # Identify _id, _bitScore, and _score_rank columns dynamically
-        id_columns = [col for col in annotation_data.columns if col.lower().endswith("_id") and col.lower() != "query_id"]
+        id_columns = identify_id_columns(annotation_data.columns)
         bitScore_col = identify_columns(annotation_data.columns, "_bitScore")
         score_rank_col = identify_columns(annotation_data.columns, "_score_rank")
 
@@ -50,7 +53,9 @@ def combine_annotations(annotation_files, output_file):
             if query_id in data_dict:
                 # Combine values for _id, _score_rank, and _bitScore
                 for id_col in id_columns:
-                    data_dict[query_id][id_col] = data_dict[query_id][id_col] + "; " + str(row[id_col])
+                    # Check if the id_col is present in the row
+                    if id_col in row:
+                        data_dict[query_id][id_col] = data_dict[query_id][id_col] + "; " + str(row[id_col])
                 data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row[score_rank_col])
                 data_dict[query_id]['bitScore'] = str(data_dict[query_id]['bitScore']) + "; " + str(row[bitScore_col])
                 # Append the sample to the list
@@ -62,7 +67,9 @@ def combine_annotations(annotation_files, output_file):
 
                 # Extract _id columns dynamically
                 for id_col in id_columns:
-                    data_dict[query_id][id_col] = row[id_col]
+                    # Check if the id_col is present in the row
+                    if id_col in row:
+                        data_dict[query_id][id_col] = row[id_col]
 
                 # Extract additional columns dynamically
                 additional_columns = annotation_data.columns.difference(['query_id'] + id_columns + [bitScore_col, score_rank_col])
