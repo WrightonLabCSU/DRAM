@@ -5,13 +5,13 @@ import logging
 # Configure the logger
 logging.basicConfig(filename="distill_summary.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
-def expand_target_ids(data):
+def expand_target_ids(data, target_id_col):
     rows = []
     for _, row in data.iterrows():
-        target_ids = row['target_id'].split('; ')
+        target_ids = row[target_id_col].split('; ')
         for target_id in target_ids:
             new_row = row.copy()
-            new_row['target_id'] = target_id
+            new_row[target_id_col] = target_id
             rows.append(new_row)
     return pd.DataFrame(rows)
 
@@ -29,13 +29,14 @@ def combine_dataframes(primary_df, additional_df):
 
     return merged_df
 
-def distill_summary(combined_annotations, genome_summary_form, target_id_counts, output_file, add_modules):
+def distill_summary(combined_annotations, genome_summary_form, target_id_counts, output_file, add_modules, target_id_col):
     # Log the input arguments
     logging.info(f"Combined Annotations file: {combined_annotations}")
     logging.info(f"Genome Summary Form file: {genome_summary_form}")
     logging.info(f"Target ID Counts file: {target_id_counts}")
     logging.info(f"Output file: {output_file}")
     logging.info(f"Add Modules: {add_modules}")
+    logging.info(f"Target ID Column: {target_id_col}")
 
     # Read the data from the input files using pandas
     combined_annotations_data = pd.read_csv(combined_annotations, sep='\t')
@@ -59,15 +60,15 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
             combined_data = combine_dataframes(combined_data, additional_module_data)
 
         # Merge the combined data with target_id_counts_data
-        expanded_annotations = expand_target_ids(combined_annotations_data)
-        merged_data = expanded_annotations.merge(combined_data, left_on='target_id', right_on='gene_id', how='inner')
+        expanded_annotations = expand_target_ids(combined_annotations_data, target_id_col)
+        merged_data = expanded_annotations.merge(combined_data, left_on=target_id_col, right_on='gene_id', how='inner')
 
         # Merge with target_id_counts, handle duplicate column names, and fill missing values with zeros
-        combined_data = merged_data.merge(target_id_counts_data, left_on='target_id', right_on='target_id', how='left')
+        combined_data = merged_data.merge(target_id_counts_data, left_on=target_id_col, right_on='target_id', how='left')
         combined_data = combined_data.fillna(0)
 
-        # Remove the "target_id" column
-        combined_data = combined_data.drop(columns=['target_id'])
+        # Remove the target_id column
+        combined_data = combined_data.drop(columns=[target_id_col])
 
         # Log the number of rows in the output data
         logging.info(f"Number of rows in the output data: {len(combined_data)}")
@@ -87,8 +88,9 @@ if __name__ == '__main__':
     parser.add_argument('--add_module3', required=False, help='Path to the additional module3 file')
     parser.add_argument('--add_module4', required=False, help='Path to the additional module4 file')
     parser.add_argument('--add_module5', required=False, help='Path to the additional module5 file')
+    parser.add_argument('--target_id_col', required=True, help='Column name containing target ids in combined_annotations file')
 
     args = parser.parse_args()
     add_modules = [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
     
-    distill_summary(args.combined_annotations, args.genome_summary_form, args.target_id_counts, args.output, add_modules)
+    distill_summary(args.combined_annotations, args.genome_summary_form, args.target_id_counts, args.output, add_modules, args.target_id_col)
