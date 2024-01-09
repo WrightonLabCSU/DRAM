@@ -32,19 +32,11 @@ def clean_ec_numbers(ec_entry):
         str: The cleaned EC numbers.
     """
     ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
-    cleaned_ec_numbers = []
-
-    for match in ec_matches:
-        ec_numbers = match.split()
-        for ec in ec_numbers:
-            cleaned_ec = re.sub(r'[^0-9.-]', '', ec)
-            cleaned_ec_numbers.append(cleaned_ec)
-
+    cleaned_ec_numbers = [re.sub(r'[^0-9.-]', '', ec) for match in ec_matches for ec in match.split()]
     result = '; '.join(cleaned_ec_numbers)
     return result
 
 def main():
-    # Command-line arguments
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
     parser.add_argument("--ch_kofam_ko", type=str, help="Path to the ch_kofam_ko file.")
@@ -54,11 +46,6 @@ def main():
     # Load HMM search results CSV file
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
-
-    # Calculate coverage for each hit
-    hits_df['perc_cov'] = hits_df.apply(
-        lambda x: (x['target_end'] - x['target_start']) / x['target_length'], axis=1
-    )
 
     # Preprocess HMM search results
     print("Processing HMM search results...")
@@ -87,21 +74,16 @@ def main():
     merged_df['kofam_definition'] = merged_df['definition'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
     merged_df['kofam_EC'] = merged_df['definition'].apply(lambda x: clean_ec_numbers(str(x)) if pd.notna(x) else '')
 
-    # Save the formatted output to CSV with modified column names
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC', 'perc_cov']
-    modified_columns = ['query_id', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC', 'perc_cov']
+    # Keep only the rows with the best hits for each query_id
+    final_output_df = merged_df[merged_df['best_hit'] == True]
 
-    # Ensure the columns exist in the DataFrame before renaming
-    if set(selected_columns).issubset(merged_df.columns):
-        # Rename the selected columns
-        merged_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
-        
-        # Save the modified DataFrame to CSV
-        merged_df[modified_columns].to_csv(args.output, index=False)
+    # Remove duplicates based on query_id
+    final_output_df.drop_duplicates(subset='query_id', keep='first', inplace=True)
 
-        print("Process completed successfully!")
-    else:
-        print("Error: Some columns are missing in the DataFrame.")
+    # Save the modified DataFrame to CSV
+    final_output_df[['query_id', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']].to_csv(args.output, index=False)
+
+    print("Process completed successfully!")
 
 if __name__ == "__main__":
     main()
