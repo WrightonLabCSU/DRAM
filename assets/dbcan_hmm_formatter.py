@@ -50,7 +50,7 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
 def find_best_dbcan_hit(df):
     # Sort by ascending order of E-value and descending order of coverage
     df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
-    return df.iloc[0]["target_id"]
+    return df.iloc[0]
 
 def mark_best_hit_based_on_rank(df):
     best_hit_idx = df["score_rank"].idxmin()
@@ -93,17 +93,17 @@ def main():
     hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
 
     # Find the best hit for each unique query_id
-    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan-best-hit')
+    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit)
 
-    # Merge the best hits back to the original DataFrame
-    hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
+    # Keep only the rows with the best hits
+    hits_df = best_hits.reset_index(drop=True)
 
     # Mark the best hit for each unique query_id based on score_rank
     hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan-best-hit']
-    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_best_hit']
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC']
+    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
