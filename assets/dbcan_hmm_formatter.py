@@ -52,7 +52,9 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
 def extract_dbcan_ec(dbcan_family):
     ec_matches = re.findall(r'\(EC [^)]*\)', dbcan_family)
     cleaned_ec_numbers = '; '.join(ec_matches) if ec_matches else ""
+    cleaned_ec_numbers = cleaned_ec_numbers.replace("(EC", "").replace(")", "")  # Remove "(EC" and ")"
     return cleaned_ec_numbers
+
 
 def find_best_dbcan_hit(df):
     df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
