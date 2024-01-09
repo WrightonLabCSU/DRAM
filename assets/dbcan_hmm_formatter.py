@@ -81,7 +81,11 @@ def main():
     print("Loading fam file...")
     ch_dbcan_fam = pd.read_csv(args.fam, comment='#', header=None, engine='python', on_bad_lines='skip', delimiter='\t', usecols=[0, 1], quoting=3)
 
-    print("Processing HMM search results...")
+    # Display the column names for verification
+    print("\nColumn names in hits_df:")
+    print(hits_df.columns)
+
+    print("\nProcessing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
@@ -109,6 +113,10 @@ def main():
     # Mark the best hit for each unique query_id based on score_rank
     hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
+    # Display the column names again after processing
+    print("\nColumn names in hits_df after processing:")
+    print(hits_df.columns)
+
     # Replace "|" with "; " in dbcan_subfam_EC column
     hits_df['dbcan_subfam_EC'] = hits_df['dbcan_subfam_EC'].str.replace('|', '; ')
 
@@ -117,15 +125,18 @@ def main():
 
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan_family', 'dbcan_subfam_EC', 'dbcan_EC']
-    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_EC']
+    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_EC', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
         # Rename the selected columns
         hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
     
+        # Reorder the columns as per the new arrangement
+        hits_df = hits_df[modified_columns]
+
         # Save the modified DataFrame to CSV
-        hits_df[modified_columns].to_csv(args.output, index=False)
+        hits_df.to_csv(args.output, index=False)
 
         print("Process completed successfully!")
     else:
