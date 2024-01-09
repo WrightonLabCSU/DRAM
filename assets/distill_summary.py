@@ -8,22 +8,23 @@ logging.basicConfig(filename="distill_summary.log", level=logging.INFO, format='
 def find_target_id_col(data):
     # Search for columns ending with "_id" but excluding "query_id"
     target_id_cols = [col for col in data.columns if col.endswith("_id") and not col.endswith("query_id")]
-    
+
     if len(target_id_cols) == 0:
         raise ValueError("No columns ending with '_id' (excluding 'query_id') found in the combined_annotations file.")
-    elif len(target_id_cols) > 1:
-        raise ValueError("Multiple columns ending with '_id' (excluding 'query_id') found in the combined_annotations file. Please specify the target_id_col using the --target_id_col argument.")
-    
+
     return target_id_cols[0]
 
 def expand_target_ids(data, target_id_col):
     rows = []
+
     for _, row in data.iterrows():
         target_ids = row[target_id_col].split('; ')
+        
         for target_id in target_ids:
             new_row = row.copy()
             new_row[target_id_col] = target_id
             rows.append(new_row)
+
     return pd.DataFrame(rows)
 
 def combine_dataframes(primary_df, additional_df):
@@ -56,39 +57,34 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Identify the target ID column in the combined_annotations file
     target_id_col = find_target_id_col(combined_annotations_data)
 
-    # Create an empty dictionary to store additional modules
-    additional_modules = {}
+    # Expand target IDs
+    expanded_annotations = expand_target_ids(combined_annotations_data, target_id_col)
 
-    for i, add_module_file in enumerate(add_modules, 1):
+    # Start with the genome_summary_data
+    combined_data = genome_summary_data
+
+    # Merge with additional modules
+    for add_module_file in add_modules:
         if add_module_file and add_module_file != 'empty':
             additional_module_data = pd.read_csv(add_module_file, sep='\t')
-            additional_modules[f'add_module{i}'] = additional_module_data
-
-    if additional_modules:
-        # Start with the genome_summary_data
-        combined_data = genome_summary_data
-
-        # Merge with additional modules
-        for module_name, additional_module_data in additional_modules.items():
             combined_data = combine_dataframes(combined_data, additional_module_data)
 
-        # Merge the combined data with target_id_counts_data
-        expanded_annotations = expand_target_ids(combined_annotations_data, target_id_col)
-        merged_data = expanded_annotations.merge(combined_data, left_on=target_id_col, right_on='gene_id', how='inner')
+    # Merge the combined data with target_id_counts_data
+    merged_data = expanded_annotations.merge(combined_data, left_on=target_id_col, right_on='gene_id', how='inner')
 
-        # Merge with target_id_counts, handle duplicate column names, and fill missing values with zeros
-        combined_data = merged_data.merge(target_id_counts_data, left_on=target_id_col, right_on='target_id', how='left')
-        combined_data = combined_data.fillna(0)
+    # Merge with target_id_counts, handle duplicate column names, and fill missing values with zeros
+    combined_data = merged_data.merge(target_id_counts_data, left_on=target_id_col, right_on='target_id', how='left')
+    combined_data = combined_data.fillna(0)
 
-        # Remove the target ID column
-        combined_data = combined_data.drop(columns=[target_id_col])
+    # Remove the target_id_col column
+    combined_data = combined_data.drop(columns=[target_id_col])
 
-        # Log the number of rows in the output data
-        logging.info(f"Number of rows in the output data: {len(combined_data)}")
+    # Log the number of rows in the output data
+    logging.info(f"Number of rows in the output data: {len(combined_data)}")
 
-        # Save the resulting dataframe to the output file in TSV format
-        combined_data.to_csv(output_file, sep='\t', index=False)
-        logging.info("Distill summary completed.")
+    # Save the resulting dataframe to the output file in TSV format
+    combined_data.to_csv(output_file, sep='\t', index=False)
+    logging.info("Distill summary completed.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
@@ -104,5 +100,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     add_modules = [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
-
+    
     distill_summary(args.combined_annotations, args.genome_summary_form, args.target_id_counts, args.output, add_modules)
