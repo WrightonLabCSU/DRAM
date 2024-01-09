@@ -9,6 +9,6 @@ process COUNT_ANNOTATIONS {
 
     script:
     """
-    python ${ch_count_annots_script} "${combined_annotations}"
+    python ${ch_count_annots_script} "${combined_annotations}" "target_id_counts.tsv"
     """
 }
