@@ -24,8 +24,9 @@ def find_best_dbcan_hit(df):
 
 def mark_best_hit_based_on_rank(df):
     """Mark the best hit for each unique query_id based on score_rank."""
-    best_hit_idx = df["score_rank"].idxmin()
-    df.at[best_hit_idx, "best_hit"] = True
+    if 'score_rank' in df.columns and not df['score_rank'].empty:
+        best_hit_idx = df["score_rank"].idxmin()
+        df.at[best_hit_idx, "best_hit"] = True
     return df
 
 def clean_ec_numbers(ec_entry):
@@ -71,7 +72,7 @@ def main():
 
     # Find the best hit for each unique query_id
     best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(drop=True)
-    
+
     # Merge the best hits back to the original DataFrame
     hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
 
