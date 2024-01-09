@@ -81,12 +81,12 @@ def main():
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Apply the extraction functions to create new columns
-    hits_df['family'], hits_df['dbcan_subfam_EC'] = zip(*hits_df['target_id'].apply(lambda x: extract_family_and_ec(x, ch_dbcan_fam)))
-    hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
-    hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
+    hits_df['dbcan_family'], hits_df['dbcan_subfam_EC'] = zip(*hits_df['target_id'].apply(lambda x: extract_family_and_ec(x, ch_dbcan_fam)))
+    hits_df['subfam_GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
+    hits_df['dbcan_subfam_EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
 
     # Find the best hit for each unique query_id
-    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan-best-hit')
+    best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan_best_hit')
 
     # Merge the best hits back to the original DataFrame
     hits_df = pd.merge(hits_df, best_hits, on='query_id', how='left')
@@ -94,9 +94,8 @@ def main():
     # Mark the best hit for each unique query_id based on score_rank
     hits_df = hits_df.groupby('query_id', group_keys=False).apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-
     # Save the formatted output to CSV
-    selected_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'family', 'dbcan_subfam_EC', 'subfam-GenBank', 'subfam-EC', 'dbcan-best-hit']
+    selected_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_EC', 'subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_best_hit']
     hits_df[selected_columns].to_csv(args.output, index=False)
 
     print("Process completed successfully!")
