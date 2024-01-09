@@ -27,25 +27,26 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Could not find file: {file_path}")
 
         # Merge based on 'query_id' using an outer join
-        if combined_data.empty:
-            combined_data = annotation_data
-        else:
-            combined_data = pd.merge(combined_data, annotation_data, on='query_id', how='outer')
+        combined_data = pd.merge(combined_data, annotation_data, on='query_id', how='outer')
 
         logging.info(f"Processed annotation file: {file_path}")
 
     # Reorder columns alphabetically
     combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
 
-    # Extract 'query_id' and 'sample' columns to come first
-    col_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
+    # Ensure 'sample' column is present before reordering
+    if 'sample' in combined_data.columns:
+        # Extract 'query_id' and 'sample' columns to come first
+        col_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
 
-    # Reorder columns in the desired order
-    combined_data = combined_data[col_order]
+        # Reorder columns in the desired order
+        combined_data = combined_data[col_order]
 
-    # Save the combined data to the output file
-    combined_data.to_csv(output_file, sep='\t', index=False)
-    logging.info("Combining annotations completed.")
+        # Save the combined data to the output file
+        combined_data.to_csv(output_file, sep='\t', index=False)
+        logging.info("Combining annotations completed.")
+    else:
+        logging.error("Error: 'sample' column not found in the combined data.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Combine multiple annotation files into one.')
