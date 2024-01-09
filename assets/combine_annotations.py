@@ -24,7 +24,7 @@ def combine_annotations(annotation_files, output_file):
         logging.info(f"Processing annotation file: {file_path}")
 
         try:
-            annotation_data = pd.read_csv(file_path, sep='\t')
+            annotation_data = pd.read_csv(file_path, sep=',')  # Assuming comma-separated, update if necessary
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
@@ -37,32 +37,32 @@ def combine_annotations(annotation_files, output_file):
 
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
-                # Combine values for target_id and score_rank
-                data_dict[query_id]['target_id'] = data_dict[query_id]['target_id'] + "; " + str(row['target_id'])
-                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row['score_rank'])
+                # Retain entry with the higher bitscore
+                if row['bitScore'] > data_dict[query_id]['bitScore']:
+                    data_dict[query_id] = row
                 # Append the sample to the list
                 if sample not in data_dict[query_id]['sample']:
                     data_dict[query_id]['sample'].append(sample)
             else:
                 # Create a new entry in the dictionary
-                data_dict[query_id] = {'target_id': row['target_id'], 'score_rank': row['score_rank'], 'sample': [sample]}
-                
-                # Extract additional columns dynamically
-                additional_columns = annotation_data.columns.difference(['query_id', 'target_id', 'score_rank'])
-                for col in additional_columns:
-                    data_dict[query_id][col] = row[col]
+                data_dict[query_id] = row
+                data_dict[query_id]['sample'] = [sample]
 
             logging.info(f"Processed query_id: {query_id} for sample: {sample}")
 
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
-    combined_data.reset_index(inplace=True)
-    
-    # Rename the columns
-    combined_data.columns = ['query_id', 'target_id', 'score_rank', 'sample'] + list(additional_columns)
+
+    # Remove prefixes from specific columns
+    combined_data.columns = combined_data.columns.str.replace(r'(target_id|sample|score_rank|bitScore)_', '', regex=True)
+
+    # Reorder columns as specified
+    output_columns = ['query_id', 'target_id', 'sample', 'score_rank', 'bitScore'] + sorted(combined_data.columns.difference(['query_id', 'target_id', 'sample', 'score_rank', 'bitScore']))
+
+    combined_data = combined_data[output_columns]
 
     # Remove duplicate samples within the same row and separate them with a semicolon
-    combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
+    combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))) if x else "")
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
