@@ -53,11 +53,10 @@ def combine_annotations(annotation_files, output_file):
             if query_id in data_dict:
                 # Combine values for _id, _score_rank, and _bitScore
                 for id_col in id_columns:
-                    # Check if the id_col is present in the row
-                    if id_col in row:
-                        data_dict[query_id][id_col] = data_dict[query_id][id_col] + "; " + str(row[id_col])
-                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row[score_rank_col])
-                data_dict[query_id]['bitScore'] = str(data_dict[query_id]['bitScore']) + "; " + str(row[bitScore_col])
+                    # Use .get() to safely retrieve the value or return an empty string if the key is not present
+                    data_dict[query_id][id_col] = data_dict[query_id].get(id_col, "") + "; " + str(row.get(id_col, ""))
+                data_dict[query_id]['score_rank'] = str(data_dict[query_id]['score_rank']) + "; " + str(row.get(score_rank_col, ""))
+                data_dict[query_id]['bitScore'] = str(data_dict[query_id]['bitScore']) + "; " + str(row.get(bitScore_col, ""))
                 # Append the sample to the list
                 if sample not in data_dict[query_id]['sample']:
                     data_dict[query_id]['sample'].append(sample)
@@ -67,9 +66,8 @@ def combine_annotations(annotation_files, output_file):
 
                 # Extract _id columns dynamically
                 for id_col in id_columns:
-                    # Check if the id_col is present in the row
-                    if id_col in row:
-                        data_dict[query_id][id_col] = row[id_col]
+                    # Use .get() to safely retrieve the value or return an empty string if the key is not present
+                    data_dict[query_id][id_col] = row.get(id_col, "")
 
                 # Extract additional columns dynamically
                 additional_columns = annotation_data.columns.difference(['query_id'] + id_columns + [bitScore_col, score_rank_col])
