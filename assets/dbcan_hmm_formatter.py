@@ -1,5 +1,6 @@
 import pandas as pd
 import argparse
+import re
 
 def get_sig_row(row):
     return row['full_evalue'] < 1e-18
@@ -57,6 +58,13 @@ def mark_best_hit_based_on_rank(df):
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
+def extract_dbcan_ec_from_family(dbcan_family):
+    # Use regular expression to find all occurrences of "(EC *)" in dbcan_family
+    ec_matches = re.findall(r'\(EC [^)]*\)', dbcan_family)
+
+    # Concatenate the matches with "; " if there are multiple occurrences
+    return '; '.join(ec_matches) if ec_matches else ''
+
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -101,9 +109,15 @@ def main():
     # Mark the best hit for each unique query_id based on score_rank
     hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
+    # Replace "|" with "; " in dbcan_subfam_EC column
+    hits_df['dbcan_subfam_EC'] = hits_df['dbcan_subfam_EC'].str.replace('|', '; ')
+
+    # Extract dbcan_EC from dbcan_family column
+    hits_df['dbcan_EC'] = hits_df['dbcan_family'].apply(extract_dbcan_ec_from_family)
+
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC']
-    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC']
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan_family', 'dbcan_subfam_EC', 'dbcan_EC']
+    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_EC']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
@@ -115,7 +129,7 @@ def main():
 
         print("Process completed successfully!")
     else:
-        print("Error: Some columns are missing in the DataFrame.")
+        print("Error: One or more specified columns not found in the DataFrame.")
 
 if __name__ == "__main__":
     main()
