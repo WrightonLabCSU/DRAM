@@ -27,7 +27,10 @@ def combine_annotations(annotation_files, output_file):
             raise ValueError(f"Could not find file: {file_path}")
 
         # Merge based on 'query_id' using an outer join
-        combined_data = pd.merge(combined_data, annotation_data, on='query_id', how='outer')
+        if combined_data.empty:
+            combined_data = annotation_data
+        else:
+            combined_data = pd.merge(combined_data, annotation_data, on='query_id', how='outer')
 
         logging.info(f"Processed annotation file: {file_path}")
 
