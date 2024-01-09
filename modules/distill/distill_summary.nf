@@ -14,7 +14,7 @@ process DISTILL_SUMMARY {
     mkdir -p logs
   
     # Define the log file path
-    log_file="logs/combine_annotations.log"
+    log_file="logs/distill.log"
   
     if [[ "${params.add_module1}" != "empty" || "${params.add_module2}" != "empty" || "${params.add_module3}" != "empty" || "${params.add_module4}" != "empty" || "${params.add_module5}" != "empty" ]]; then
         python "${ch_distill_summary_script}" \
