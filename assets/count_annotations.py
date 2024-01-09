@@ -19,14 +19,8 @@ for col in id_columns:
 # Combine the "sample" column with the target ID columns
 target_id_data['sample'] = samples.explode()
 
-# Create a new DataFrame for counting occurrences
-occurrences_data = target_id_data.groupby(['sample'] + id_columns).size().reset_index(name='occurrences')
-
-# Use the first column from target_id_data as the target_id values
-occurrences_data['target_id'] = target_id_data.iloc[:, 0]
-
-# Pivot the table to have samples as columns and target_ids as rows with the count of occurrences
-table = occurrences_data.pivot(index='target_id', columns='sample', values='occurrences').fillna(0)
+# Create a new DataFrame for counting occurrences using crosstab
+table = pd.crosstab(index=target_id_data['target_id'], columns=target_id_data['sample']).fillna(0)
 
 # Save the resulting table to a TSV file
 table.to_csv("target_id_counts.tsv", sep='\t')
