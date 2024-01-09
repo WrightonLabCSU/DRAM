@@ -14,11 +14,8 @@ def combine_annotations(annotation_files, output_file):
 
     # Process the input annotation files
     for i in range(0, len(annotation_files), 2):
-        sample = annotation_files[i]
+        sample = annotation_files[i].split(',')[0]
         file_path = annotation_files[i + 1]
-
-        # Extract sample names from the input
-        sample = sample.split('\'')[1] if '\'' in sample else sample
 
         # Read each annotation file
         logging.info(f"Processing annotation file: {file_path}")
@@ -52,8 +49,10 @@ def combine_annotations(annotation_files, output_file):
     # Reorder columns alphabetically
     combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
 
-    # Remove duplicate samples within the same row and separate them with a semicolon
-    combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
+    # Check if 'sample' column exists in the DataFrame
+    if 'sample' in combined_data.columns:
+        # Remove duplicate samples within the same row and separate them with a semicolon
+        combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
@@ -61,7 +60,7 @@ def combine_annotations(annotation_files, output_file):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Combine multiple annotation files into one.')
-    parser.add_argument('--annotations', nargs='+', help='List of input annotation files', required=True)
+    parser.add_argument('--annotations', nargs='+', help='List of input annotation files and sample names', required=True)
     parser.add_argument('--output', help='Output file name', required=True)
 
     args = parser.parse_args()
