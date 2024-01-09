@@ -14,6 +14,17 @@ def calculate_rank(row):
 def calculate_coverage(row):
     return (row['target_end'] - row['target_start']) / row['target_length']
 
+def extract_dbcan_ec(target_id, ch_dbcan_fam):
+    matching_rows = ch_dbcan_fam[ch_dbcan_fam.iloc[:, 0] == target_id]
+
+    if not matching_rows.empty:
+        ec_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
+        ec_values = re.sub(r'\(EC [^)]*\)', '', ec_values)  # Remove "(EC *)" occurrences
+        ec_values = ec_values.strip()  # Remove leading and trailing spaces
+        return ec_values if pd.notna(ec_values) else ""
+
+    return ""
+
 def extract_family(target_id, ch_dbcan_fam):
     target_id_without_extension = target_id.replace('.hmm', '')
     target_id_without_underscore = target_id.split('_')[0]
@@ -23,15 +34,14 @@ def extract_family(target_id, ch_dbcan_fam):
 
     matching_rows = pd.concat([matching_rows_fam_exact, matching_rows_fam_partial])
 
-    dbcan_EC_values = '; '.join(set(matching_rows.iloc[:, 2].astype(str))) if not matching_rows.empty else ""
-
     if not matching_rows.empty:
         family_values = '; '.join(set(matching_rows.iloc[:, 1].astype(str)))  # Assuming 0-based index for columns
         family_values = re.sub(r'\(EC [^)]*\)', '', family_values)  # Remove "(EC *)" occurrences
         family_values = family_values.strip()  # Remove leading and trailing spaces
-        return family_values, dbcan_EC_values if pd.notna(family_values) else "", ""
+        return family_values if pd.notna(family_values) else ""
 
-    return "", dbcan_EC_values
+    return ""
+
 
 
 def extract_subfam_genbank(target_id, ch_dbcan_subfam):
@@ -52,13 +62,6 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
         return ec_values if pd.notna(ec_values) else ""
 
     return ""
-
-def extract_dbcan_ec(dbcan_family):
-    ec_matches = re.findall(r'\(EC [^)]*\)', dbcan_family)
-    cleaned_ec_numbers = '; '.join(ec_matches) if ec_matches else ""
-    cleaned_ec_numbers = cleaned_ec_numbers.replace("(EC", "").replace(")", "")  # Remove "(EC" and ")"
-    return cleaned_ec_numbers
-
 
 def find_best_dbcan_hit(df):
     df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
