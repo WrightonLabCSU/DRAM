@@ -2,7 +2,7 @@ import pandas as pd
 import argparse
 
 def get_sig_row(row):
-    return row['full_evalue'] < 1e-5
+    return row['full_evalue'] < 1e-18
 
 def calculate_bit_score(row):
     return row['full_score'] / row['domain_number']
@@ -45,9 +45,9 @@ def extract_subfam_ec(target_id, ch_dbcan_subfam):
     return ""
 
 def find_best_dbcan_hit(df):
-    df.sort_values("full_evalue", inplace=True)
+    # Sort by ascending order of E-value and descending order of coverage
+    df.sort_values(["full_evalue", "coverage"], inplace=True, ascending=[True, False])
     return df.iloc[0]["target_id"]
-
 
 def mark_best_hit_based_on_rank(df):
     best_hit_idx = df["score_rank"].idxmin()
@@ -82,6 +82,8 @@ def main():
     hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
     hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
 
+    # Filter based on E-value
+    hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
 
     # Find the best hit for each unique query_id
     best_hits = hits_df.groupby('query_id').apply(find_best_dbcan_hit).reset_index(name='dbcan-best-hit')
