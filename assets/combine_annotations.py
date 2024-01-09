@@ -5,12 +5,6 @@ import logging
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
-def identify_columns(columns, suffix):
-    matching_columns = [col for col in columns if col.lower().endswith(suffix.lower())]
-    if not matching_columns:
-        raise ValueError(f"No column ending with '{suffix}' found.")
-    return matching_columns[0]
-
 def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
@@ -34,11 +28,6 @@ def combine_annotations(annotation_files, output_file):
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
-        # Identify columns based on suffixes
-        target_id_col = identify_columns(annotation_data.columns, "_id")
-        score_rank_col = identify_columns(annotation_data.columns, "_score_rank")
-        bitScore_col = identify_columns(annotation_data.columns, "_bitScore")
-
         for index, row in annotation_data.iterrows():
             try:
                 query_id = row['query_id']
@@ -49,7 +38,7 @@ def combine_annotations(annotation_files, output_file):
             # Check if query_id already exists in the dictionary
             if query_id in data_dict:
                 # Keep the duplicate with the highest bitScore
-                if row[bitScore_col] > data_dict[query_id][bitScore_col]:
+                if 'bitScore' in row and 'bitScore' in data_dict[query_id] and row['bitScore'] > data_dict[query_id]['bitScore']:
                     data_dict[query_id] = row.to_dict()
             else:
                 data_dict[query_id] = row.to_dict()
@@ -59,16 +48,12 @@ def combine_annotations(annotation_files, output_file):
     # Create a DataFrame from the dictionary
     combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
     combined_data.reset_index(inplace=True)
-    
+
     # Reorder columns alphabetically
     combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
-
-    # Select only the required columns in the output
-    output_columns = ['query_id', 'sample'] + [col for col in combined_data.columns if col != 'query_id']
-    combined_data = combined_data[output_columns]
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
