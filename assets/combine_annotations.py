@@ -5,11 +5,12 @@ import logging
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
-def identify_columns(column_names, suffix):
-    matching_columns = [col for col in column_names if col.lower().endswith(suffix)]
+def identify_columns(column_names, target_suffix):
+    matching_columns = [col for col in column_names if target_suffix.lower() in col.lower()]
     if not matching_columns:
-        raise ValueError(f"No column ending with '{suffix}' found.")
+        raise ValueError(f"No column containing '{target_suffix}' found.")
     return matching_columns[0]
+
 
 def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
