@@ -31,13 +31,13 @@ def combine_annotations(annotation_files, output_file):
             logging.error(f"Error: 'query_id' column not found in {file_path}. Skipping this file.")
             continue
 
-        # Specify the order of columns for the merge
-        merge_order = ['query_id', 'sample'] + sorted([col for col in annotation_data.columns if col not in ['query_id', 'sample']])
-
         # Merge based on 'query_id' using an outer join
-        combined_data = pd.merge(combined_data, annotation_data[merge_order], on=['query_id', 'sample'], how='outer')
+        combined_data = pd.merge(combined_data, annotation_data, on='query_id', how='outer', suffixes=('', f'_{sample}'))
 
         logging.info(f"Processed annotation file: {file_path}")
+
+    # Reorder columns alphabetically
+    combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
