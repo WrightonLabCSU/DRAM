@@ -71,7 +71,8 @@ def combine_annotations(annotation_files, output_file):
     combined_data.reset_index(inplace=True)
 
     # Rename the columns
-    combined_data.columns = ['query_id', 'target_id', 'sample', 'score_rank', 'bitScore'] + list(additional_columns)
+    column_order = ['query_id', 'target_id', 'sample', 'score_rank', 'bitScore'] + sorted(additional_columns)
+    combined_data = combined_data[column_order]
 
     # Remove duplicate samples within the same row and separate them with a semicolon
     combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
