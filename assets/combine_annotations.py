@@ -6,9 +6,6 @@ import logging
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
 def combine_annotations(annotation_files, output_file):
-    # Create an empty DataFrame to store the combined data
-    combined_data = pd.DataFrame()
-
     # Create a dictionary to store values for each unique query_id
     data_dict = {}
 
@@ -39,10 +36,10 @@ def combine_annotations(annotation_files, output_file):
         bitScore_col = bitScore_col_candidates[0]
 
         for index, row in annotation_data.iterrows():
-            try:
-                query_id = row['query_id']
-            except KeyError as e:
-                logging.error(f"KeyError: {e} in row: {row}")
+            query_id = row.get('query_id', None)
+
+            if query_id is None:
+                logging.error(f"'query_id' not found in row: {row}")
                 continue
 
             # Check if query_id already exists in the dictionary
