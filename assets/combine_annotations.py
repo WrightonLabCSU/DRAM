@@ -9,9 +9,6 @@ def combine_annotations(annotation_files, output_file):
     # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
 
-    # Create a dictionary to store values for each unique query_id
-    data_dict = {}
-
     # Process the input annotation files
     for i in range(0, len(annotation_files), 2):
         sample = annotation_files[i].split(',')[0]
@@ -25,34 +22,19 @@ def combine_annotations(annotation_files, output_file):
         except FileNotFoundError:
             raise ValueError(f"Could not find file: {file_path}")
 
-        for index, row in annotation_data.iterrows():
-            try:
-                query_id = row['query_id']
-            except KeyError as e:
-                logging.error(f"KeyError: {e} in row: {row}")
-                continue
-
-            # Check if query_id already exists in the dictionary
-            if query_id in data_dict:
-                # Keep the duplicate with the highest bitScore
-                if 'bitScore' in row and 'bitScore' in data_dict[query_id] and row['bitScore'] > data_dict[query_id]['bitScore']:
-                    data_dict[query_id] = row.to_dict()
-            else:
-                data_dict[query_id] = row.to_dict()
+        # Merge based on 'query_id' using an outer join
+        combined_data = pd.merge(combined_data, annotation_data, on='query_id', how='outer')
 
         logging.info(f"Processed annotation file: {file_path}")
-
-    # Create a DataFrame from the dictionary
-    combined_data = pd.DataFrame.from_dict(data_dict, orient='index')
-    combined_data.reset_index(inplace=True)
 
     # Reorder columns alphabetically
     combined_data = combined_data.reindex(sorted(combined_data.columns), axis=1)
 
-    # Check if 'sample' column exists in the DataFrame
-    if 'sample' in combined_data.columns:
-        # Remove duplicate samples within the same row and separate them with a semicolon
-        combined_data['sample'] = combined_data['sample'].apply(lambda x: "; ".join(list(set(x))))
+    # Extract 'query_id' and 'sample' columns to come first
+    col_order = ['query_id', 'sample'] + sorted([col for col in combined_data.columns if col not in ['query_id', 'sample']])
+
+    # Reorder columns in the desired order
+    combined_data = combined_data[col_order]
 
     # Save the combined data to the output file
     combined_data.to_csv(output_file, sep='\t', index=False)
