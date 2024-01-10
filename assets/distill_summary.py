@@ -6,21 +6,11 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, output_
     combined_annotations = pd.read_csv(combined_annotations_file, sep='\t')
     genome_summary_form = pd.read_csv(genome_summary_form_file, sep='\t')
 
-    # Extract gene_id, query_id, and sample information
-    distilled_summary = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
+    # Merge DataFrames based on gene_id
+    merged_data = pd.merge(genome_summary_form, combined_annotations, left_on='gene_id', right_on='query_id', how='inner')
 
-    for index, row in genome_summary_form.iterrows():
-        gene_id = row['gene_id']
-
-        # Check if the gene_id is present in combined_annotations
-        column_name = f"{gene_id}_id"
-        if column_name in combined_annotations.columns:
-            matching_data = combined_annotations.loc[combined_annotations[column_name].notnull(), ['query_id', 'sample', column_name]]
-            matching_data = matching_data.rename(columns={column_name: 'query_id'})
-            matching_data['gene_id'] = gene_id
-
-            # Append matching data to the distilled_summary dataframe
-            distilled_summary = pd.concat([distilled_summary, matching_data], ignore_index=True)
+    # Extract relevant columns
+    distilled_summary = merged_data[['gene_id', 'query_id', 'sample']]
 
     # Write the distilled summary to the output file
     distilled_summary.to_csv(output_file, sep='\t', index=False)
