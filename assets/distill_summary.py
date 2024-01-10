@@ -74,8 +74,8 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                             else:
                                 distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = new_value
                         else:
-                            # Convert values to strings before assigning
-                            distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = str(row[add_module_col])
+                            # Add new add_moduleX columns after existing columns
+                            distill_summary_df[add_module_col] = str(row[add_module_col])
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
