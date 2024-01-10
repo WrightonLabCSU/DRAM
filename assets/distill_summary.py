@@ -5,6 +5,7 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Read input files
     combined_annotations_data = pd.read_csv(combined_annotations, sep='\t')
     genome_summary_form_data = pd.read_csv(genome_summary_form, sep='\t')
+    target_id_counts_data = pd.read_csv(target_id_counts, sep='\t')
 
     # Create a dictionary to store additional modules data
     additional_modules = {}
@@ -23,17 +24,11 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Select relevant columns from merged_data
     output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
 
-    # Create a DataFrame to store the final result
-    final_data = pd.DataFrame(columns=output_columns)
-
-    # Iterate over rows in merged_data to handle multiple gene_id values
-    for _, row in merged_data.iterrows():
-        gene_ids = row['gene_id'].split('; ')
-        for gene_id in gene_ids:
-            final_data = final_data.append(row[output_columns[:-1]] + pd.Series([gene_id]), ignore_index=True)
+    # Print column names of target_id_counts_data
+    print("Columns of target_id_counts_data:", target_id_counts_data.columns)
 
     # Merge with target_id_counts on 'sample' column
-    final_data = pd.merge(final_data, target_id_counts, left_on='sample', right_on='sample', how='left').drop(columns='gene_id_y').rename(columns={'gene_id_x': 'gene_id'})
+    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='sample', right_on='sample', how='left')
 
     # Append additional modules data
     for key, additional_module_data in additional_modules.items():
@@ -57,6 +52,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     add_modules = [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
 
-    target_id_counts_data = pd.read_csv(args.target_id_counts, sep='\t')
-
-    distill_summary(args.combined_annotations, args.genome_summary_form, target_id_counts_data, args.output, add_modules)
+    distill_summary(args.combined_annotations, args.genome_summary_form, args.target_id_counts, args.output, add_modules)
