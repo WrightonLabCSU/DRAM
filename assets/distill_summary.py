@@ -20,6 +20,9 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Concatenate values from ID columns for each row
     combined_annotations_data['gene_id'] = combined_annotations_data[id_columns].apply(lambda x: '; '.join(x.dropna()), axis=1)
 
+    # Split rows with multiple gene_id values
+    combined_annotations_data = combined_annotations_data.assign(gene_id=combined_annotations_data['gene_id'].str.split(';')).explode('gene_id')
+
     # Merge combined_annotations with genome_summary_form on gene_id
     merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, on='gene_id', how='left')
 
