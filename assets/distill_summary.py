@@ -15,6 +15,13 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     for col in additional_columns:
         distill_summary_df[col] = ''
 
+    # Additional columns from combined_annotations (excluding "_id" columns and specific columns)
+    combined_columns_to_add = [col for col in combined_annotations.columns
+                               if not (col.endswith('_id') or col in ['query_id', 'banana_id', 'apple_id', 'pear_id', 'grape_id'])]
+
+    for col in combined_columns_to_add:
+        distill_summary_df[col] = ''
+
     # Iterate through gene_id values in genome_summary_form
     for gene_id in genome_summary_form['gene_id']:
         # Search for a match in combined_annotations columns ending in "_id"
@@ -37,6 +44,10 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     distill_summary_df.at[distill_summary_df.index[-1], col] = genome_summary_form.loc[
                         genome_summary_form['gene_id'] == gene_id, col
                     ].values[0]
+
+                # Add values from selected columns in combined_annotations
+                for col in combined_columns_to_add:
+                    distill_summary_df.at[distill_summary_df.index[-1], col] = match_rows[col].values[0]
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
