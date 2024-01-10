@@ -31,6 +31,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
     parser.add_argument('--combined_annotations', required=True, help='Path to the combined annotations file')
     parser.add_argument('--genome_summary_form', required=True, help='Path to the genome summary file')
+    parser.add_argument('--target_id_counts', required=True, help='Path to the target_id_counts file')
     parser.add_argument('--output', required=True, help='Path to the output file')
     parser.add_argument('--add_module1', required=False, help='Path to the additional module1 file')
     parser.add_argument('--add_module2', required=False, help='Path to the additional module2 file')
