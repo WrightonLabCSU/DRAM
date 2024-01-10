@@ -21,14 +21,14 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
             additional_modules[f'add_module{i}'] = additional_module_data
 
     # Select relevant columns from merged_data
-    output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
+    output_columns = ['query_id', 'sample'] + list(genome_summary_form_data.columns[1:])
 
     # Append additional modules data
     for key, additional_module_data in additional_modules.items():
         merged_data = pd.merge(merged_data, additional_module_data, on='gene_id', how='left', suffixes=('', f'_{key}'))
 
     # Write the final result to the output file
-    merged_data.to_csv(output, sep='\t', index=False)
+    merged_data[output_columns].to_csv(output, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
