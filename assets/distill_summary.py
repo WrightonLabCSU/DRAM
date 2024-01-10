@@ -1,71 +1,103 @@
 import argparse
 import pandas as pd
-from openpyxl import Workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
-from openpyxl.worksheet.table import Table, TableStyleInfo
 
-def generate_multi_sheet_xlsx(input_file, output_file):
-    # Read the data from the input file using pandas with tab as the separator
-    data = pd.read_csv(input_file, sep='\t')
+def distill_summary(combined_annotations_path, genome_summary_form_path, output_path, add_module_paths):
+    # Read input files
+    combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
+    genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
 
-    # Create a Workbook
-    wb = Workbook()
+    # Initialize the output DataFrame with gene_id, query_id, and sample columns
+    distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
-    # Create a dictionary to store data for each sheet
-    sheet_data = {}
+    # Additional columns from genome_summary_form
+    additional_columns = ['gene_description', 'module', 'sheet', 'header', 'subheader']
 
-    # Fixed columns
-    fixed_columns = ['gene_id', 'query_id', 'sample', 'gene_description', 'module', 'sheet', 'header', 'subheader', 'potential_amg']
+    for col in additional_columns:
+        distill_summary_df[col] = ''
 
-    for _, row in data.iterrows():
-        # Split the "sheet" values by "; " and iterate over them
-        for sheet_name in row['sheet'].split('; '):
-            sheet_name = sheet_name.replace(" ", "_")
-            if sheet_name not in sheet_data:
-                sheet_data[sheet_name] = []
+    # Additional columns from combined_annotations (excluding "_id" columns and specific columns)
+    combined_columns_to_add = [col for col in combined_annotations.columns
+                               if not (col.endswith('_id') or col in ['query_id', 'banana_id', 'apple_id', 'pear_id', 'grape_id'])]
 
-            # Exclude the "sheet" column and move "gene_id" as the second column
-            # Include the count under the "sample" column
-            row_data = [row[col] for col in fixed_columns]
-            row_data += [sheet_name] + [row[col] for col in data.columns if col not in fixed_columns]
+    for col in combined_columns_to_add:
+        distill_summary_df[col] = ''
 
-            # Append the modified row to the corresponding sheet
-            sheet_data[sheet_name].append(row_data)
+    # Additional columns from add_module files
+    for i, add_module_path in enumerate(add_module_paths, start=1):
+        add_module_data = pd.read_csv(add_module_path, sep='\t')
+        add_module_columns = [f'add_module{i}_{col}' for col in additional_columns]
 
-    for sheet_name, sheet_rows in sheet_data.items():
-        # Create a worksheet for each sheet
-        ws = wb.create_sheet(title=sheet_name)
+        for col in add_module_columns:
+            distill_summary_df[col] = ''
 
-        # Extract column names from the original DataFrame
-        column_names = fixed_columns + [col for col in data.columns if col not in fixed_columns]
+    # Iterate through gene_id values in genome_summary_form
+    for gene_id in genome_summary_form['gene_id']:
+        # Search for matches in combined_annotations columns ending in "_id"
+        match_columns = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id']
 
-        # Append column names as the first row
-        ws.append(column_names)
+        for column in match_columns:
+            # Check for matches
+            match_rows = combined_annotations[combined_annotations[column] == gene_id]
 
-        # Append data rows to the worksheet
-        for r_idx, row in enumerate(sheet_rows, 1):
-            ws.append(row)
+            for _, match_row in match_rows.iterrows():
+                # Check for duplicate gene_id within the same sample and query_id
+                if distill_summary_df[
+                        (distill_summary_df['gene_id'] == gene_id) &
+                        (distill_summary_df['query_id'] == match_row['query_id']) &
+                        (distill_summary_df['sample'] == match_row['sample'])
+                ].shape[0] > 0:
+                    raise ValueError(f'Duplicate gene_id "{gene_id}" found in the same sample and query_id.')
 
-        # Create a table from the data for filtering
-        tab = Table(displayName=f"{sheet_name}_Table", ref=ws.dimensions)
-        style = TableStyleInfo(
-            name="TableStyleMedium9", showFirstColumn=False,
-            showLastColumn=False, showRowStripes=True, showColumnStripes=True
-        )
-        tab.tableStyleInfo = style
-        ws.add_table(tab)
+                # Add matching information to the output DataFrame
+                distill_summary_df = distill_summary_df.append({
+                    'gene_id': gene_id,
+                    'query_id': match_row['query_id'],
+                    'sample': match_row['sample'],
+                }, ignore_index=True)
 
-    # Remove the default "Sheet" that was created
-    default_sheet = wb['Sheet']
-    wb.remove(default_sheet)
+                # Add values from additional columns in genome_summary_form
+                for col in additional_columns:
+                    distill_summary_df.at[distill_summary_df.index[-1], col] = genome_summary_form.loc[
+                        genome_summary_form['gene_id'] == gene_id, col
+                    ].values[0]
 
-    # Save the workbook as the output file
-    wb.save(output_file)
+                # Add values from selected columns in combined_annotations
+                for col in combined_columns_to_add:
+                    distill_summary_df.at[distill_summary_df.index[-1], col] = match_row[col]
+
+                # Add values from add_module files
+                for i, add_module_path in enumerate(add_module_paths, start=1):
+                    add_module_data = pd.read_csv(add_module_path, sep='\t')
+                    add_module_columns = [f'add_module{i}_{col}' for col in additional_columns]
+
+                    for col in add_module_columns:
+                        # Check if the column is present in add_module_data
+                        if col.replace(f'add_module{i}_', '') in add_module_data.columns:
+                            distill_summary_df.at[distill_summary_df.index[-1], col] = ';'.join(
+                                add_module_data.loc[
+                                    add_module_data['gene_id'] == gene_id,
+                                    col.replace(f'add_module{i}_', '')
+                                ]
+                            )
+
+    # Write the output to a TSV file
+    distill_summary_df.to_csv(output_path, sep='\t', index=False)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate multi-sheet XLSX file')
-    parser.add_argument('--input-file', required=True, help='Path to the input TSV file')
-    parser.add_argument('--output-file', required=True, help='Path to the output XLSX file')
+    parser = argparse.ArgumentParser(description='Generate distill summary')
+    parser.add_argument('--combined_annotations', required=True, help='Path to the combined annotations file')
+    parser.add_argument('--genome_summary_form', required=True, help='Path to the genome summary file')
+    parser.add_argument('--output', required=True, help='Path to the output file')
+    parser.add_argument('--add_module1', default='empty', help='Path to the first additional module file')
+    parser.add_argument('--add_module2', default='empty', help='Path to the second additional module file')
+    parser.add_argument('--add_module3', default='empty', help='Path to the third additional module file')
+    parser.add_argument('--add_module4', default='empty', help='Path to the fourth additional module file')
+    parser.add_argument('--add_module5', default='empty', help='Path to the fifth additional module file')
 
     args = parser.parse_args()
-    generate_multi_sheet_xlsx(args.input_file, args.output_file)
+
+    # Call the distill_summary function with provided arguments
+    add_module_paths = [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
+    add_module_paths = [path for path in add_module_paths if path != 'empty']
+
+    distill_summary(args.combined_annotations, args.genome_summary_form, args.output, add_module_paths)
