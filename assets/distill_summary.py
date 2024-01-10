@@ -17,14 +17,16 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
     # Additional columns from genome_summary_form
-    additional_columns = ['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    additional_columns = required_columns[1:]  # Skip 'gene_description' since it's handled separately
 
     for col in additional_columns:
         distill_summary_df[col] = ''
 
     # Additional columns from combined_annotations (excluding "_id" columns and specific columns)
     combined_columns_to_add = [col for col in combined_annotations.columns
-                               if not (col.endswith('_id') or col in ['query_id', 'banana_id', 'apple_id', 'pear_id', 'grape_id'])]
+                            if not (col.endswith('_id') and col != 'query_id'
+                                    or col in ['query_id'] + additional_columns)]
+
 
     for col in combined_columns_to_add:
         distill_summary_df[col] = ''
@@ -45,11 +47,13 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     'query_id': match_row['query_id'],
                     'sample': match_row['sample'],
                     'gene_description': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'gene_description'].values[0],
-                    'pathway': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'pathway'].values[0],
-                    'topic_ecosystem': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'topic_ecosystem'].values[0],
-                    'category': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'category'].values[0],
-                    'subcategory': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'subcategory'].values[0],
                 }, ignore_index=True)
+
+                # Add values from additional columns in genome_summary_form
+                for col in additional_columns:
+                    distill_summary_df.at[distill_summary_df.index[-1], col] = genome_summary_form.loc[
+                        genome_summary_form['gene_id'] == gene_id, col
+                    ].values[0]
 
                 # Add values from selected columns in combined_annotations
                 for col in combined_columns_to_add:
