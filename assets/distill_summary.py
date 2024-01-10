@@ -15,10 +15,10 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
             additional_modules[f'add_module{i}'] = additional_module_data
 
     # Select columns ending in '_id' for gene_id
-    id_columns = [col for col in combined_annotations_data.columns if col.endswith('_id')]
+    id_columns = [col for col in combined_annotations_data.columns if col.endswith('_id') and col != 'query_id']
     
-    # Choose the first non-null value from ID columns for gene_id
-    combined_annotations_data['gene_id'] = combined_annotations_data[id_columns].apply(lambda x: next((val for val in x if pd.notna(val)), ''), axis=1)
+    # Concatenate values from ID columns for each row
+    combined_annotations_data['gene_id'] = combined_annotations_data[id_columns].apply(lambda x: '; '.join(x.dropna()), axis=1)
 
     # Merge combined_annotations with genome_summary_form on gene_id
     merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, on='gene_id', how='left')
