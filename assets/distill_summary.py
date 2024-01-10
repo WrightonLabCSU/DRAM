@@ -6,27 +6,12 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
     genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
 
-    # Initialize the output DataFrame with gene_id, query_id, and sample columns
-    distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
-
-    # Additional columns from genome_summary_form
-    additional_columns = list(genome_summary_form.columns)[1:]
-
-    for col in additional_columns:
-        distill_summary_df[col] = ''
-
-    # Additional columns from combined_annotations (excluding "_id" columns and specific columns)
-    combined_columns_to_add = [col for col in combined_annotations.columns
-                               if not (col.endswith('_id') or col in ['query_id', 'banana_id', 'apple_id', 'pear_id', 'grape_id'])]
-
-    for col in combined_columns_to_add:
-        distill_summary_df[col] = ''
-
     # Additional columns from add_moduleX files
     additional_modules = {}
     for i, add_module_file in enumerate(add_module_files, start=1):
         if add_module_file != 'empty':
             additional_module_data = pd.read_csv(add_module_file, sep='\t')
+            additional_module_data.columns = [f'{col}_{i}' if col != 'gene_id' else col for col in additional_module_data.columns]
             additional_modules[f'add_module{i}'] = additional_module_data
 
     # Merge add_moduleX data with genome_summary_form
@@ -34,11 +19,17 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
         # Use explicit suffixes to avoid duplicate columns
         genome_summary_form = pd.merge(
             genome_summary_form,
-            add_module_data.add_prefix(f'{module_name}_'),
+            add_module_data,
             left_on='gene_id',
-            right_on=f'{module_name}_gene_id',
+            right_on=f'gene_id_{module_name}',
             how='left'
         )
+
+    # Drop duplicate gene_id columns
+    genome_summary_form = genome_summary_form.loc[:,~genome_summary_form.columns.duplicated()]
+
+    # Initialize the output DataFrame
+    distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
     # Iterate through gene_id values in genome_summary_form
     for _, row in genome_summary_form.iterrows():
@@ -65,15 +56,17 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     }, index=[0])], ignore_index=True)
 
                     # Add values from additional columns in genome_summary_form
-                    for col in additional_columns:
-                        distill_summary_df.at[distill_summary_df.index[-1], col] = row[col]
+                    for col in genome_summary_form.columns:
+                        if col not in ['gene_id'] + match_columns:
+                            distill_summary_df.at[distill_summary_df.index[-1], col] = row[col]
 
                     # Add values from selected columns in combined_annotations
-                    for col in combined_columns_to_add:
-                        distill_summary_df.at[distill_summary_df.index[-1], col] = match_row[col]
+                    for col in combined_annotations.columns:
+                        if col not in ['query_id'] + match_columns:
+                            distill_summary_df.at[distill_summary_df.index[-1], col] = match_row[col]
 
                     # Add values from add_moduleX columns
-                    for add_module_col in add_module_data.columns[1:]:
+                    for add_module_col in add_module_data.columns:
                         distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = row[add_module_col]
 
     # Write the output to a TSV file
@@ -92,10 +85,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    # Call the distill_summary function with provided arguments
-    distill_summary(
-        args.combined_annotations,
-        args.genome_summary_form,
-        args.output,
-        [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
-    )
+    add_module_files = [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
+    distill_summary(args.combined_annotations, args.genome_summary_form, args.output, add_module_files)
