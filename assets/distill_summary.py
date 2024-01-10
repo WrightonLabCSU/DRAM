@@ -1,11 +1,10 @@
 import pandas as pd
 import argparse
 
-def distill_summary(combined_annotations, genome_summary_form, target_id_counts, output, add_modules):
+def distill_summary(combined_annotations, genome_summary_form, output, add_modules):
     # Read input files
     combined_annotations_data = pd.read_csv(combined_annotations, sep='\t')
     genome_summary_form_data = pd.read_csv(genome_summary_form, sep='\t')
-    target_id_counts_data = pd.read_csv(target_id_counts, sep='\t')
 
     # Create a dictionary to store additional modules data
     additional_modules = {}
@@ -21,28 +20,20 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Merge combined_annotations with genome_summary_form on gene_id
     merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, on='gene_id', how='inner')
 
-    # Select relevant columns from merged_data
-    output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
-
-    # Print column names before the merge
-    print("Columns of merged_data:", merged_data.columns)
-    print("Columns of target_id_counts_data:", target_id_counts_data.columns)
-
-    # Merge with target_id_counts on 'sample' column
-    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='sample', right_on='sample', how='left')
-
     # Append additional modules data
     for key, additional_module_data in additional_modules.items():
-        final_data = pd.merge(final_data, additional_module_data, on='gene_id', how='left', suffixes=('', f'_{key}'))
+        merged_data = pd.merge(merged_data, additional_module_data, on='gene_id', how='left', suffixes=('', f'_{key}'))
+
+    # Select relevant columns for the final output
+    output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
 
     # Write the final result to the output file
-    final_data.to_csv(output, sep='\t', index=False)
+    merged_data[output_columns].to_csv(output, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
     parser.add_argument('--combined_annotations', required=True, help='Path to the combined annotations file')
     parser.add_argument('--genome_summary_form', required=True, help='Path to the genome summary file')
-    parser.add_argument('--target_id_counts', required=True, help='Path to the target_id_counts file')
     parser.add_argument('--output', required=True, help='Path to the output file')
     parser.add_argument('--add_module1', required=False, help='Path to the additional module1 file')
     parser.add_argument('--add_module2', required=False, help='Path to the additional module2 file')
@@ -53,4 +44,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     add_modules = [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
 
-    distill_summary(args.combined_annotations, args.genome_summary_form, args.target_id_counts, args.output, add_modules)
+    distill_summary(args.combined_annotations, args.genome_summary_form, args.output, add_modules)
