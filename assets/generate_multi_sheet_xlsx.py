@@ -19,15 +19,15 @@ def generate_multi_sheet_xlsx(input_file, output_file):
 
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
-        for sheet_name in row['sheet'].split('; '):
+        for sheet_name in row['topic_ecosystem'].split('; '):  # Assuming 'topic_ecosystem' corresponds to 'sheet'
             sheet_name = sheet_name.replace(" ", "_")
             if sheet_name not in sheet_data:
                 sheet_data[sheet_name] = []
 
             # Exclude the "sheet" column and move "gene_id" as the second column
             # Include the count under the "sample" column
-            row_data = [row[col] for col in fixed_columns]
-            row_data += [sheet_name] + [row[col] for col in data.columns if col not in fixed_columns]
+            row_data = [row['gene_id'], row['query_id'], row['sample'], row['gene_description'], row['pathway'], sheet_name, row['category'], row['subcategory'], row['potential_amg']]
+            row_data += [row[col] for col in data.columns if col not in fixed_columns]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -37,7 +37,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame
-        column_names = fixed_columns + [col for col in data.columns if col not in fixed_columns]
+        column_names = ['gene_id', 'query_id', 'sample', 'gene_description', 'pathway', 'sheet', 'category', 'subcategory', 'potential_amg'] + [col for col in data.columns if col not in fixed_columns]
 
         # Append column names as the first row
         ws.append(column_names)
