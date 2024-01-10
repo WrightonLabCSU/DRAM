@@ -24,8 +24,14 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Select relevant columns from merged_data
     output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
 
-    # Merge with target_id_counts on sample
-    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='sample', right_on='sample', how='left')
+    # Set 'sample' as the index in merged_data
+    merged_data.set_index('sample', inplace=True)
+
+    # Merge with target_id_counts on index (sample)
+    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_index=True, right_index=True, how='left')
+
+    # Reset index to bring 'sample' back as a regular column
+    final_data.reset_index(inplace=True)
 
     # Append additional modules data
     for key, additional_module_data in additional_modules.items():
