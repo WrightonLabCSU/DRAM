@@ -14,8 +14,16 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     for i, add_module_file in enumerate(add_modules, start=1):
         if add_module_file and add_module_file != 'empty':
             additional_module_data = pd.read_csv(add_module_file, sep='\t')
+
+            # Print debugging information
+            print(f"Additional Module {i} Columns: {additional_module_data.columns}")
+            
             # Add gene_id values from additional modules to the set
             valid_gene_ids.update(additional_module_data['gene_id'])
+            
+            # Print debugging information
+            print(f"Valid Gene IDs: {valid_gene_ids}")
+
             # Append additional module columns to combined_data if the column exists
             combined_data = pd.merge(combined_data, additional_module_data, on='gene_id', how='left')
 
