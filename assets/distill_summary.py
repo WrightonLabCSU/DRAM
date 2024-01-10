@@ -1,45 +1,37 @@
 import pandas as pd
 import argparse
 
-def distill_summary(combined_annotations_file, genome_summary_form_file, target_id_counts_file, output_file, add_module_files):
+def distill_summary(combined_annotations, genome_summary_form, target_id_counts, output, add_modules):
     # Read input files
-    combined_annotations = pd.read_csv(combined_annotations_file, sep='\t')
-    genome_summary_form = pd.read_csv(genome_summary_form_file, sep='\t')
-    target_id_counts = pd.read_csv(target_id_counts_file, sep='\t')
+    combined_annotations_data = pd.read_csv(combined_annotations, sep='\t')
+    genome_summary_form_data = pd.read_csv(genome_summary_form, sep='\t')
+    target_id_counts_data = pd.read_csv(target_id_counts, sep='\t')
 
-    # Print column names for debugging
-    print("combined_annotations columns:", combined_annotations.columns)
-    print("target_id_counts columns:", target_id_counts.columns)
-
-    # Reshape target_id_counts for merging
-    target_id_counts_melted = target_id_counts.melt(id_vars='target_id', var_name='sample', value_name='count')
-
-    # Merge data from combined_annotations and reshaped target_id_counts
-    merged_data = pd.merge(combined_annotations, target_id_counts_melted, on='sample')
-
-    # Create a dictionary to store additional module data
+    # Initialize additional modules
     additional_modules = {}
-    for i, add_module_file in enumerate(add_module_files):
+    
+    # Read additional modules
+    for i, add_module_file in enumerate(add_modules, start=1):
         if add_module_file and add_module_file != 'empty':
             additional_module_data = pd.read_csv(add_module_file, sep='\t')
-            additional_modules[f'add_module{i+1}'] = additional_module_data
+            additional_modules[f'add_module{i}'] = additional_module_data
 
-    # Process additional modules and merge with merged_data
+    # Merge combined_annotations with genome_summary_form on gene_id
+    merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, on='gene_id', how='left')
+
+    # Merge with target_id_counts on sample
+    merged_data = pd.merge(merged_data, target_id_counts_data, on='sample', how='left')
+
+    # Merge with additional modules
     for module_name, module_data in additional_modules.items():
-        for id_column in combined_annotations.filter(regex='_id$').columns:
-            merged_data = pd.merge(merged_data, module_data, left_on=id_column, right_on='gene_id', how='left')
+        merged_data = pd.merge(merged_data, module_data, on='gene_id', how='left', suffixes=('', f'_module{module_name[-1]}'))
 
-            # Concatenate values if the column already exists in the output
-            for column in module_data.columns[1:]:
-                if column in merged_data.columns:
-                    merged_data[column] = merged_data[column].astype(str) + "; " + module_data[column]
+    # Select relevant columns for the output
+    output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:]) + list(combined_annotations_data.columns[4:])
+    output_data = merged_data[output_columns]
 
-    # Create the final output dataframe
-    output_data = merged_data[['query_id', 'sample'] + list(combined_annotations.filter(regex='_id$').columns)]
-    output_data = pd.merge(output_data, genome_summary_form, left_on='gene_id', right_on='gene_id', how='left')
-
-    # Write the output to a TSV file
-    output_data.to_csv(output_file, sep='\t', index=False)
+    # Write the output to the distill_summary.tsv file
+    output_data.to_csv(output, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
