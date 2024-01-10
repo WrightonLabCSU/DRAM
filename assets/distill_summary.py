@@ -30,8 +30,15 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
             additional_modules[f'add_module{i}'] = additional_module_data
 
     # Merge add_moduleX data with genome_summary_form
-    for _, add_module_data in additional_modules.items():
-        genome_summary_form = pd.merge(genome_summary_form, add_module_data, on='gene_id', how='left')
+    for module_name, add_module_data in additional_modules.items():
+        # Use explicit suffixes to avoid duplicate columns
+        genome_summary_form = pd.merge(
+            genome_summary_form,
+            add_module_data.add_prefix(f'{module_name}_'),
+            left_on='gene_id',
+            right_on=f'{module_name}_gene_id',
+            how='left'
+        )
 
     # Iterate through gene_id values in genome_summary_form
     for _, row in genome_summary_form.iterrows():
