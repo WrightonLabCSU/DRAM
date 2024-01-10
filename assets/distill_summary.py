@@ -7,8 +7,15 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, target_
     genome_summary_form = pd.read_csv(genome_summary_form_file, sep='\t')
     target_id_counts = pd.read_csv(target_id_counts_file, sep='\t')
 
-    # Merge data from combined_annotations and target_id_counts based on sample
-    merged_data = pd.merge(combined_annotations, target_id_counts, on='sample')
+    # Print column names for debugging
+    print("combined_annotations columns:", combined_annotations.columns)
+    print("target_id_counts columns:", target_id_counts.columns)
+
+    # Reshape target_id_counts for merging
+    target_id_counts_melted = target_id_counts.melt(id_vars='target_id', var_name='sample', value_name='count')
+
+    # Merge data from combined_annotations and reshaped target_id_counts
+    merged_data = pd.merge(combined_annotations, target_id_counts_melted, on='sample')
 
     # Create a dictionary to store additional module data
     additional_modules = {}
