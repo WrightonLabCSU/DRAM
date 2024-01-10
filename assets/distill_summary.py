@@ -18,18 +18,14 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     id_columns = [col for col in combined_annotations_data.columns if col.endswith('_id')]
     combined_annotations_data['gene_id'] = combined_annotations_data[id_columns].apply(lambda x: '; '.join(x.dropna()), axis=1)
 
-    # Merge combined_annotations with genome_summary_form on gene_id
-    merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, on='gene_id', how='left')
+    # Merge combined_annotations with genome_summary_form on both query_id and gene_id
+    merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, left_on=['query_id', 'gene_id'], right_on=['query_id', 'gene_id'], how='left')
 
     # Select relevant columns from merged_data
-    output_columns = ['query_id', 'gene_id'] + list(genome_summary_form_data.columns[1:])
+    output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[2:])
 
     # Merge with target_id_counts on 'gene_id' column
     final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='gene_id', right_on='target_id', how='left').drop(columns=['target_id', 'BB02', 'small_sample-fasta'])
-
-    # Split concatenated gene_id values into separate rows
-    final_data['gene_id'] = final_data['gene_id'].apply(lambda x: x.split('; ') if pd.notnull(x) else [x])
-    final_data = final_data.explode('gene_id')
 
     # Append additional modules data
     for key, additional_module_data in additional_modules.items():
