@@ -1,42 +1,29 @@
 import argparse
 import pandas as pd
 
-def distill_summary(combined_annotations_file, genome_summary_form_file, output_file):
+def distill_summary(combined_annotations_path, genome_summary_form_path, output_path):
     # Read input files
-    combined_annotations = pd.read_csv(combined_annotations_file, sep='\t')
-    genome_summary_form = pd.read_csv(genome_summary_form_file, sep='\t')
+    combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
+    genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
 
-    # Print gene_ids in genome_summary_form for debugging
-    print("gene_ids in genome_summary_form:")
-    print(genome_summary_form['gene_id'])
+    # Initialize the output DataFrame
+    distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
-    # Print columns in combined_annotations for debugging
-    print("Columns in combined_annotations:")
-    print(combined_annotations.columns)
+    # Iterate through gene_ids in genome_summary_form
+    for gene_id in genome_summary_form['gene_id']:
+        # Find matching rows in combined_annotations based on gene_id
+        matching_rows = combined_annotations[combined_annotations[gene_id + '_id'] == gene_id]
 
-    # Identify columns in combined_annotations that end with '_id'
-    matching_columns = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id']
-
-    # Ensure there is at least one matching column
-    if not matching_columns:
-        raise ValueError("No matching columns found in combined_annotations.")
-
-    # Merge DataFrames based on gene_id and matching_columns
-    merged_data = pd.merge(genome_summary_form, combined_annotations[['gene_id'] + matching_columns], on='gene_id', how='inner')
-
-    # Print gene_ids after merging for debugging
-    print("gene_ids after merging:")
-    print(merged_data['gene_id'].unique())
-
-    # Extract relevant columns
-    distilled_summary = merged_data[['gene_id', 'query_id', 'sample']]
-
-    # Print distilled summary for debugging
-    print("Distilled Summary:")
-    print(distilled_summary)
+        # Add information to distill_summary_df if matches are found
+        if not matching_rows.empty:
+            distill_summary_df = distill_summary_df.append({
+                'gene_id': gene_id,
+                'query_id': matching_rows['query_id'].iloc[0],
+                'sample': matching_rows['sample'].iloc[0]
+            }, ignore_index=True)
 
     # Write the distilled summary to the output file
-    distilled_summary.to_csv(output_file, sep='\t', index=False)
+    distill_summary_df.to_csv(output_path, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
