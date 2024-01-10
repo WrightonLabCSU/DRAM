@@ -37,22 +37,22 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     for _, row in genome_summary_form.iterrows():
         gene_id = row['gene_id']
 
-        # Check if gene_id is present in combined_annotations columns ending in "_id"
+        # Search for matches in combined_annotations columns ending in "_id"
         match_columns = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id']
 
-        if any(combined_annotations[col].eq(gene_id).any() for col in match_columns):
-            # If gene_id is present, proceed with adding information to the output DataFrame
+        # Check if gene_id is present in combined_annotations
+        if any(combined_annotations[column].eq(gene_id).any() for column in match_columns):
             for column in match_columns:
                 # Check for matches
                 match_rows = combined_annotations[combined_annotations[column] == gene_id]
 
                 for _, match_row in match_rows.iterrows():
-                    # Instead of using DataFrame.append, use pandas.concat
-                    distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame({
+                    # Add matching information to the output DataFrame
+                    distill_summary_df = distill_summary_df.append({
                         'gene_id': gene_id,
                         'query_id': match_row['query_id'],
                         'sample': match_row['sample'],
-                    }, index=[0])], ignore_index=True)
+                    }, ignore_index=True)
 
                     # Add values from additional columns in genome_summary_form
                     for col in additional_columns:
@@ -62,9 +62,12 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     for col in combined_columns_to_add:
                         distill_summary_df.at[distill_summary_df.index[-1], col] = match_row[col]
 
-                    # Add values from add_moduleX columns
+                    # Add values from add_moduleX columns, concatenate values with "; "
                     for add_module_col in add_module_data.columns[1:]:
-                        distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = match_row[add_module_col]
+                        if add_module_col in distill_summary_df.columns:
+                            distill_summary_df.at[distill_summary_df.index[-1], add_module_col] += f'; {row[add_module_col]}'
+                        else:
+                            distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = row[add_module_col]
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
