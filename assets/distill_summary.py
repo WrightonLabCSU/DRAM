@@ -28,8 +28,13 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     id_columns_combined.append('gene_id')
 
     # Merge combined_data with genome_summary and additional modules based on columns ending with "_id"
-    merged_data = pd.merge(combined_data, genome_summary, left_on=id_columns_combined, right_on=['gene_id'] * len(id_columns_combined), how='left')
-    merged_data = pd.merge(merged_data, additional_modules_combined, left_on=id_columns_combined, right_on=['add_module1', 'gene_id'] * len(id_columns_combined), how='left')
+    merged_data = pd.merge(
+        combined_data,
+        genome_summary,
+        left_on=id_columns_combined,
+        right_on=['gene_id'] * len(id_columns_combined),
+        how='left'
+    )
 
     # Create the distill_summary dataframe
     distill_summary = merged_data[['query_id', 'sample', 'gene_id'] + list(genome_summary.columns[1:])]
