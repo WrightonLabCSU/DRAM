@@ -16,13 +16,19 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
             # Add gene_id values from additional modules to the set
             valid_gene_ids.update(additional_module_data['gene_id'])
             # Append additional module columns to combined_data if the column exists
-            combined_data = pd.merge(combined_data, additional_module_data, on='gene_id', how='left')
+            combined_data = pd.merge(
+                combined_data,
+                additional_module_data,
+                left_on='query_id',  # Adjust the column name for the merge
+                right_on='gene_id',  # Adjust the column name for the merge
+                how='left'
+            )
 
     # Filter rows with valid gene_id values
     combined_data = combined_data[combined_data['gene_id'].isin(valid_gene_ids)]
 
     # Merge with genome_summary_data on gene_id
-    result = pd.merge(combined_data, genome_summary_data, on='gene_id', how='left')
+    result = pd.merge(combined_data, genome_summary_data, left_on='gene_id', right_on='gene_id', how='left')
 
     # Write the result to the output file
     result.to_csv(output, sep='\t', index=False)
