@@ -29,11 +29,15 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Merge combined_annotations with genome_summary_form on gene_id
     merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, on='gene_id', how='left')
 
+    # Convert 'sample' columns to strings in both dataframes
+    merged_data['sample'] = merged_data['sample'].astype(str)
+    target_id_counts_data['target_id'] = target_id_counts_data['target_id'].astype(str)
+
     # Select relevant columns from merged_data
     output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
 
     # Merge with target_id_counts on 'sample' column
-    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='sample', right_on='BB02', how='left').drop(columns='target_id')
+    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='sample', right_on='target_id', how='left').drop(columns='target_id')
 
     # Append additional modules data
     for key, additional_module_data in additional_modules.items():
