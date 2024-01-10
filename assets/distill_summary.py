@@ -64,7 +64,8 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
                     # Add values from add_moduleX columns, concatenate values with "; "
                     for add_module_col in add_module_data.columns[1:]:
-                        new_col_name = f'{add_module_col}_add_module{i}'
+                        new_col_name = add_module_col  # Keep the original column name without prefix
+
                         if new_col_name in distill_summary_df.columns:
                             existing_value = distill_summary_df.at[distill_summary_df.index[-1], new_col_name]
                             new_value = str(row[add_module_col])
