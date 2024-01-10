@@ -11,22 +11,22 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
         if add_module_file != 'empty':
             add_module_data = pd.read_csv(add_module_file, sep='\t')
 
-            # Concatenate sheet and module columns with a semicolon (;)
-            add_module_data['sheet'] = add_module_data['sheet'].astype(str) + '; '
-            add_module_data['module'] = add_module_data['module'].astype(str) + '; '
-
             # Rename columns to include add_moduleX prefix
             add_module_data = add_module_data.rename(lambda x: f'add_module{i}_{x}' if x != 'gene_id' else x, axis=1)
 
             # Merge add_moduleX data with genome_summary_form and concatenate values for duplicate columns
             genome_summary_form = pd.merge(genome_summary_form, add_module_data, on='gene_id', how='left')
             duplicate_cols = genome_summary_form.columns[genome_summary_form.columns.duplicated()]
+
             for col in duplicate_cols:
-                # Check if the column is sheet or module, then concatenate with a semicolon (;)
                 if col.endswith('_sheet') or col.endswith('_module'):
-                    orig_col_name = col.replace(f'_add_module{i}', '')
-                    genome_summary_form[orig_col_name] = genome_summary_form[[orig_col_name, col]].apply(lambda x: '; '.join(x.dropna()), axis=1)
-                    genome_summary_form = genome_summary_form.drop(columns=col)
+                    # Concatenate values with a semicolon (;) for sheet and module columns
+                    genome_summary_form[col[:-7]] = genome_summary_form[[col, f'{col}_add_module{i}']].apply(lambda x: '; '.join(x.dropna()), axis=1)
+                else:
+                    genome_summary_form[col] = genome_summary_form[[col, f'{col}_add_module{i}']].apply(lambda x: x.dropna().iloc[0] if x.dropna().any() else pd.NA, axis=1)
+
+            # Drop the add_moduleX columns
+            genome_summary_form = genome_summary_form.drop(columns=add_module_data.columns[1:])
 
     # Initialize the output DataFrame with gene_id, query_id, and sample columns
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
