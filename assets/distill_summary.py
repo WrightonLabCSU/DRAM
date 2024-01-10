@@ -1,39 +1,36 @@
 import argparse
 import pandas as pd
+import os
 
-def distill_summary(combined_annotations_file, genome_summary_form_file, output_file, add_module_files=None):
+def distill_summary(combined_annotations, genome_summary_form, output, add_modules):
     # Read input files
-    combined_annotations = pd.read_csv(combined_annotations_file, sep='\t')
-    genome_summary_form = pd.read_csv(genome_summary_form_file, sep='\t')
+    combined_data = pd.read_csv(combined_annotations, sep='\t')
+    genome_data = pd.read_csv(genome_summary_form, sep='\t')
 
-    # Identify the column containing gene IDs dynamically
-    gene_id_column = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id'][0]
+    # Initialize an empty DataFrame for additional module data
+    additional_modules = pd.DataFrame()
 
-    # Create a dictionary to store additional modules if provided
-    additional_modules = {}
-    if add_module_files:
-        for i, add_module_file in enumerate(add_module_files):
-            if add_module_file and add_module_file != 'empty':
-                additional_module_data = pd.read_csv(add_module_file, sep='\t')
-                additional_modules[f'add_module{i + 1}'] = additional_module_data
+    # Read additional module files if provided
+    for i, add_module_file in enumerate(add_modules, start=1):
+        if add_module_file and add_module_file != 'empty':
+            additional_module_data = pd.read_csv(add_module_file, sep='\t')
+            additional_modules[f'add_module{i}'] = additional_module_data
 
-    # Merge genome_summary_form with combined_annotations based on gene_id
-    merged_data = pd.merge(combined_annotations, genome_summary_form, left_on=gene_id_column, right_on='gene_id', how='inner')
+    # Merge dataframes based on gene_id
+    merged_data = pd.merge(combined_data, genome_data, left_on='gene_id', right_on='gene_id', how='inner')
 
-    # Add additional modules if available
-    for module_name, module_data in additional_modules.items():
-        merged_data = pd.merge(merged_data, module_data, left_on=gene_id_column, right_on='gene_id', how='left')
+    # Concatenate additional module data, if available
+    if not additional_modules.empty:
+        merged_data = pd.concat([merged_data, additional_modules], axis=1)
 
-    # Select columns for the distill_summary.tsv output
-    output_columns = ['gene_id'] + list(genome_summary_form.columns[1:]) + list(additional_modules.keys())
-
-    # Write the distilled summary to the output file
-    merged_data[output_columns].to_csv(output_file, sep='\t', index=False)
+    # Write the result to the output file
+    merged_data.to_csv(output, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
     parser.add_argument('--combined_annotations', required=True, help='Path to the combined annotations file')
     parser.add_argument('--genome_summary_form', required=True, help='Path to the genome summary file')
+    parser.add_argument('--target_id_counts', required=True, help='Path to the target_id_counts file')
     parser.add_argument('--output', required=True, help='Path to the output file')
     parser.add_argument('--add_module1', required=False, help='Path to the additional module1 file')
     parser.add_argument('--add_module2', required=False, help='Path to the additional module2 file')
@@ -43,6 +40,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    # Call the distill_summary function with the provided arguments
+    # Check if output directory exists, create if not
+    output_dir = os.path.dirname(args.output)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Call the distill_summary function
     distill_summary(args.combined_annotations, args.genome_summary_form, args.output,
                     [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5])
