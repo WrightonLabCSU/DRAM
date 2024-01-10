@@ -6,8 +6,14 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
     genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
 
-    # Initialize the output DataFrame
+    # Initialize the output DataFrame with gene_id, query_id, and sample columns
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
+
+    # Additional columns from genome_summary_form
+    additional_columns = list(genome_summary_form.columns)[1:]
+
+    for col in additional_columns:
+        distill_summary_df[col] = ''
 
     # Iterate through gene_id values in genome_summary_form
     for gene_id in genome_summary_form['gene_id']:
@@ -25,6 +31,12 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     'query_id': match_rows['query_id'].values[0],
                     'sample': match_rows['sample'].values[0],
                 }, ignore_index=True)
+
+                # Add values from additional columns in genome_summary_form
+                for col in additional_columns:
+                    distill_summary_df.at[distill_summary_df.index[-1], col] = genome_summary_form.loc[
+                        genome_summary_form['gene_id'] == gene_id, col
+                    ].values[0]
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
