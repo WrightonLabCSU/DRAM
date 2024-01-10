@@ -13,6 +13,10 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, output_
     # Merge DataFrames based on gene_id and query_id
     merged_data = pd.merge(genome_summary_form, combined_annotations, left_on='gene_id', right_on='query_id', how='inner')
 
+    # Print gene_ids after merging for debugging
+    print("gene_ids after merging:")
+    print(merged_data['gene_id'].unique())
+
     # Extract relevant columns
     distilled_summary = merged_data[['gene_id', 'query_id', 'sample']]
 
