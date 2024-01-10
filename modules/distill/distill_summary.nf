@@ -20,7 +20,6 @@ process DISTILL_SUMMARY {
         python "${ch_distill_summary_script}" \
             --combined_annotations "${combined_annotations}" \
             --genome_summary_form "${params.genome_summary_form}" \
-            --target_id_counts "${target_id_counts}" \
             --output "genome_summary.tsv" \
             --add_module1 "${params.add_module1}" \
             --add_module2 "${params.add_module2}" \
@@ -31,7 +30,6 @@ process DISTILL_SUMMARY {
         python "${ch_distill_summary_script}" \
             --combined_annotations "${combined_annotations}" \
             --genome_summary_form "${params.genome_summary_form}" \
-            --target_id_counts "${target_id_counts}" \
             --output "genome_summary.tsv" >> "\$log_file" 2>&1
     fi
     """
