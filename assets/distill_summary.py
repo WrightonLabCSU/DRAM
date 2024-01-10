@@ -15,32 +15,21 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
             additional_modules[f'add_module{i}'] = additional_module_data
 
     # Select columns ending in '_id' for gene_id
-    id_columns = [col for col in combined_annotations_data.columns if col.endswith('_id') and col != 'query_id']
-    
-    # Concatenate values from ID columns for each row
+    id_columns = [col for col in combined_annotations_data.columns if col.endswith('_id')]
     combined_annotations_data['gene_id'] = combined_annotations_data[id_columns].apply(lambda x: '; '.join(x.dropna()), axis=1)
-
-    # Split rows with multiple gene_id values
-    combined_annotations_data = combined_annotations_data.assign(gene_id=combined_annotations_data['gene_id'].str.split(';')).explode('gene_id')
-
-    # Strip leading and trailing spaces from gene_id values
-    combined_annotations_data['gene_id'] = combined_annotations_data['gene_id'].str.strip()
 
     # Merge combined_annotations with genome_summary_form on gene_id
     merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, on='gene_id', how='left')
 
-    # Convert 'sample' columns to strings in both dataframes
-    merged_data['sample'] = merged_data['sample'].astype(str)
-
     # Select relevant columns from merged_data
-    output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
+    output_columns = ['query_id', 'gene_id'] + list(genome_summary_form_data.columns[1:])
+
+    # Merge with target_id_counts on 'sample' column
+    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='gene_id', right_on='target_id', how='left').drop(columns=['target_id', 'BB02', 'small_sample-fasta'])
 
     # Append additional modules data
     for key, additional_module_data in additional_modules.items():
-        merged_data = pd.merge(merged_data, additional_module_data, on='gene_id', how='left', suffixes=('', f'_{key}'))
-
-    # Append columns from target_id_counts_data to the final result
-    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='sample', right_on='target_id', how='left').drop(columns='target_id')
+        final_data = pd.merge(final_data, additional_module_data, on='gene_id', how='left', suffixes=('', f'_{key}'))
 
     # Write the final result to the output file
     final_data.to_csv(output, sep='\t', index=False)
