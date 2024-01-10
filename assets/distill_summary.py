@@ -24,9 +24,9 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
             for col in duplicate_cols:
                 # Check if the column is sheet or module, then concatenate with a semicolon (;)
                 if col.endswith('_sheet') or col.endswith('_module'):
-                    genome_summary_form[col] = genome_summary_form[[col, f'{col}_add_module{i}']].apply(lambda x: '; '.join(x.dropna()), axis=1)
-                else:
-                    genome_summary_form[col] = genome_summary_form[[col, f'{col}_add_module{i}']].apply(lambda x: '; '.join(x.dropna()), axis=1)
+                    orig_col_name = col.replace(f'_add_module{i}', '')
+                    genome_summary_form[orig_col_name] = genome_summary_form[[orig_col_name, col]].apply(lambda x: '; '.join(x.dropna()), axis=1)
+                    genome_summary_form = genome_summary_form.drop(columns=col)
 
     # Initialize the output DataFrame with gene_id, query_id, and sample columns
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
