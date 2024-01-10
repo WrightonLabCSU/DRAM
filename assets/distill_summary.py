@@ -10,7 +10,7 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
     # Additional columns from genome_summary_form
-    additional_columns = list(genome_summary_form.columns)[1:]
+    additional_columns = ['gene_description', 'module', 'sheet', 'header', 'subheader', 'potential_amg']
 
     for col in additional_columns:
         distill_summary_df[col] = ''
@@ -37,13 +37,13 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     'gene_id': gene_id,
                     'query_id': match_row['query_id'],
                     'sample': match_row['sample'],
+                    'gene_description': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'gene_description'].values[0],
+                    'module': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'module'].values[0],
+                    'sheet': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'sheet'].values[0],
+                    'header': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'header'].values[0],
+                    'subheader': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'subheader'].values[0],
+                    'potential_amg': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'potential_amg'].values[0],
                 }, ignore_index=True)
-
-                # Add values from additional columns in genome_summary_form
-                for col in additional_columns:
-                    distill_summary_df.at[distill_summary_df.index[-1], col] = genome_summary_form.loc[
-                        genome_summary_form['gene_id'] == gene_id, col
-                    ].values[0]
 
                 # Add values from selected columns in combined_annotations
                 for col in combined_columns_to_add:
