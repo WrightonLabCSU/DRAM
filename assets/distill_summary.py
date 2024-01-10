@@ -17,12 +17,8 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, output_
     # Identify columns in combined_annotations that end with '_id'
     matching_columns = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id']
 
-    # Ensure there's only one matching column in genome_summary_form
-    if len(matching_columns) != 1:
-        raise ValueError("There should be exactly one matching column in combined_annotations for each gene_id.")
-
     # Merge DataFrames based on gene_id and matching_columns
-    merged_data = pd.merge(genome_summary_form, combined_annotations, left_on='gene_id', right_on=matching_columns[0], how='inner')
+    merged_data = pd.merge(genome_summary_form, combined_annotations, left_on='gene_id', right_on=matching_columns, how='inner')
 
     # Print gene_ids after merging for debugging
     print("gene_ids after merging:")
