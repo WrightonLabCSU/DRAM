@@ -555,7 +555,7 @@ workflow {
         ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
         DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
-        PRODUCT_HEATMAP( ch_annotation_counts )
+        //PRODUCT_HEATMAP( ch_annotation_counts )
     }
 
     /*
