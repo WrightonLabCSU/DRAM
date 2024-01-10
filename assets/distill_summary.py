@@ -17,15 +17,17 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
 
             # Print debugging information
             print(f"Additional Module {i} Columns: {additional_module_data.columns}")
-            
+
             # Add gene_id values from additional modules to the set
             valid_gene_ids.update(additional_module_data['gene_id'])
-            
-            # Print debugging information
-            print(f"Valid Gene IDs: {valid_gene_ids}")
 
-            # Append additional module columns to combined_data if the column exists
-            combined_data = pd.merge(combined_data, additional_module_data, on='gene_id', how='left')
+            # Dynamically identify columns ending with "_id" in combined_data
+            id_columns = [col for col in combined_data.columns if col.endswith('_id')]
+
+            # Update merging logic to consider dynamically identified gene_id columns
+            for gene_id_col in id_columns:
+                if gene_id_col in additional_module_data.columns:
+                    combined_data = pd.merge(combined_data, additional_module_data, left_on=gene_id_col, right_on=gene_id_col, how='left')
 
     # Filter rows with valid gene_id values
     combined_data = combined_data[combined_data['gene_id'].isin(valid_gene_ids)]
