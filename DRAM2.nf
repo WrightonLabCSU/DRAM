@@ -554,8 +554,8 @@ workflow {
         DISTILL_SUMMARY( ch_combined_annotations, COUNT_ANNOTATIONS.out.target_id_counts, ch_distill_summary_script )
         ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
-        //DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
-        //PRODUCT_HEATMAP( ch_annotation_counts )
+        DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
+        PRODUCT_HEATMAP( ch_annotation_counts )
     }
 
     /*
