@@ -24,8 +24,8 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Select relevant columns from merged_data
     output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
 
-    # Convert the 'sample' column to 'object' type
-    merged_data['sample'] = merged_data['sample'].astype('object')
+    # Convert all columns in target_id_counts_data to string
+    target_id_counts_data = target_id_counts_data.astype(str)
 
     # Print column names of target_id_counts_data
     print("Columns of target_id_counts_data:", target_id_counts_data.columns)
