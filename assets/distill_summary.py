@@ -26,12 +26,13 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, target_
 
     # Process additional modules and merge with merged_data
     for module_name, module_data in additional_modules.items():
-        merged_data = pd.merge(merged_data, module_data, on='gene_id', how='left')
+        for id_column in combined_annotations.filter(regex='_id$').columns:
+            merged_data = pd.merge(merged_data, module_data, left_on=id_column, right_on='gene_id', how='left')
 
-        # Concatenate values if the column already exists in the output
-        for column in module_data.columns[1:]:
-            if column in merged_data.columns:
-                merged_data[column] = merged_data[column].astype(str) + "; " + module_data[column]
+            # Concatenate values if the column already exists in the output
+            for column in module_data.columns[1:]:
+                if column in merged_data.columns:
+                    merged_data[column] = merged_data[column].astype(str) + "; " + module_data[column]
 
     # Create the final output dataframe
     output_data = merged_data[['query_id', 'sample'] + list(combined_annotations.filter(regex='_id$').columns)]
