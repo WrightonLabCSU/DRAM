@@ -11,6 +11,10 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
         if add_module_file != 'empty':
             add_module_data = pd.read_csv(add_module_file, sep='\t')
 
+            # Concatenate sheet and module columns with a semicolon (;)
+            add_module_data['sheet'] = add_module_data['sheet'].astype(str) + '; '
+            add_module_data['module'] = add_module_data['module'].astype(str) + '; '
+
             # Rename columns to include add_moduleX prefix
             add_module_data = add_module_data.rename(lambda x: f'add_module{i}_{x}' if x != 'gene_id' else x, axis=1)
 
