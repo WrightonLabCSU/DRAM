@@ -71,14 +71,14 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     add_module_columns = [f'add_module{i}_{col}' for col in additional_columns]
 
                     for col in add_module_columns:
-                        distill_summary_df.at[distill_summary_df.index[-1], col] = ';'.join(
-                            add_module_data.loc[
-                                (add_module_data['gene_id'] == gene_id) &
-                                (add_module_data['query_id'] == match_row['query_id']) &
-                                (add_module_data['sample'] == match_row['sample']),
-                                col.replace(f'add_module{i}_', '')
-                            ]
-                        )
+                        # Check if the column is present in add_module_data
+                        if col.replace(f'add_module{i}_', '') in add_module_data.columns:
+                            distill_summary_df.at[distill_summary_df.index[-1], col] = ';'.join(
+                                add_module_data.loc[
+                                    add_module_data['gene_id'] == gene_id,
+                                    col.replace(f'add_module{i}_', '')
+                                ]
+                            )
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
