@@ -17,9 +17,11 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     # Merge add_moduleX data with genome_summary_form
     for module_name, add_module_data in additional_modules.items():
         # Use explicit suffixes to avoid duplicate columns
+        # Exclude 'gene_id' column from add_moduleX files
+        cols_to_merge = [col for col in add_module_data.columns if col != 'gene_id']
         genome_summary_form = pd.merge(
             genome_summary_form,
-            add_module_data,
+            add_module_data[cols_to_merge],
             left_on='gene_id',
             right_on=f'gene_id_{module_name}',
             how='left'
@@ -67,7 +69,8 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
                     # Add values from add_moduleX columns
                     for add_module_col in add_module_data.columns:
-                        distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = row[add_module_col]
+                        if add_module_col != 'gene_id':
+                            distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = row[add_module_col]
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
