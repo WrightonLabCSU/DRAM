@@ -11,16 +11,12 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
     # Additional columns from genome_summary_form
     additional_columns = list(genome_summary_form.columns)[1:]
-
-    for col in additional_columns:
-        distill_summary_df[col] = ''
+    distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame(columns=additional_columns)], axis=1)
 
     # Additional columns from combined_annotations (excluding "_id" columns and specific columns)
     combined_columns_to_add = [col for col in combined_annotations.columns
                                if not (col.endswith('_id') or col in ['query_id', 'banana_id', 'apple_id', 'pear_id', 'grape_id'])]
-
-    for col in combined_columns_to_add:
-        distill_summary_df[col] = ''
+    distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame(columns=combined_columns_to_add)], axis=1)
 
     # Additional columns from add_moduleX files
     for i, add_module_file in enumerate(add_module_files, start=1):
@@ -48,23 +44,16 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
                 for _, match_row in match_rows.iterrows():
                     # Add matching information to the output DataFrame
-                    distill_summary_df = distill_summary_df.append({
-                        'gene_id': gene_id,
-                        'query_id': match_row['query_id'],
-                        'sample': match_row['sample'],
-                    }, ignore_index=True)
-
-                    # Add values from additional columns in genome_summary_form
-                    for col in additional_columns:
-                        distill_summary_df.at[distill_summary_df.index[-1], col] = row[col]
-
-                    # Add values from selected columns in combined_annotations
-                    for col in combined_columns_to_add:
-                        distill_summary_df.at[distill_summary_df.index[-1], col] = match_row[col]
-
-                    # Add values from add_moduleX columns
-                    for add_module_col in add_module_data.columns[1:]:
-                        distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = row[add_module_col]
+                    distill_summary_df = pd.concat([
+                        distill_summary_df,
+                        pd.DataFrame({
+                            'gene_id': gene_id,
+                            'query_id': match_row['query_id'],
+                            'sample': match_row['sample'],
+                            **row.to_dict(),
+                            **match_row[combined_columns_to_add].to_dict()
+                        }, index=[0])
+                    ], ignore_index=True)
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
