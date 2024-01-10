@@ -27,9 +27,6 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
         if add_module_file != 'empty':
             add_module_data = pd.read_csv(add_module_file, sep='\t')
 
-            # Rename columns to include add_moduleX prefix
-            add_module_data = add_module_data.rename(lambda x: f'add_module{i}_{x}' if x != 'gene_id' else x, axis=1)
-
             # Merge add_moduleX data with genome_summary_form
             genome_summary_form = pd.merge(genome_summary_form, add_module_data, on='gene_id', how='left')
 
@@ -64,20 +61,15 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
                     # Add values from add_moduleX columns, concatenate values with "; "
                     for add_module_col in add_module_data.columns[1:]:
-                        new_col_name = add_module_col  # Keep the original column name without prefix
-
-                        if new_col_name in distill_summary_df.columns:
-                            existing_value = distill_summary_df.at[distill_summary_df.index[-1], new_col_name]
+                        if add_module_col in distill_summary_df.columns:
+                            existing_value = distill_summary_df.at[distill_summary_df.index[-1], add_module_col]
                             new_value = str(match_row[add_module_col])
 
                             # Check if the existing value is not NaN (numeric), then concatenate with "; "
                             if pd.notna(existing_value):
-                                distill_summary_df.at[distill_summary_df.index[-1], new_col_name] = f'{existing_value}; {new_value}'
+                                distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = f'{existing_value}; {new_value}'
                             else:
-                                distill_summary_df.at[distill_summary_df.index[-1], new_col_name] = new_value
-                        else:
-                            # Add new add_moduleX columns after existing columns
-                            distill_summary_df[new_col_name] = str(match_row[add_module_col])
+                                distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = new_value
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
