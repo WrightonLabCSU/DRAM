@@ -13,12 +13,14 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, output_
         gene_id = row['gene_id']
 
         # Check if the gene_id is present in combined_annotations
-        matching_data = combined_annotations.loc[combined_annotations[f"{gene_id}_id"].notnull(), ['query_id', 'sample', f"{gene_id}_id"]]
-        matching_data = matching_data.rename(columns={f"{gene_id}_id": 'query_id'})
-        matching_data['gene_id'] = gene_id
+        column_name = f"{gene_id}_id"
+        if column_name in combined_annotations.columns:
+            matching_data = combined_annotations.loc[combined_annotations[column_name].notnull(), ['query_id', 'sample', column_name]]
+            matching_data = matching_data.rename(columns={column_name: 'query_id'})
+            matching_data['gene_id'] = gene_id
 
-        # Append matching data to the distilled_summary dataframe
-        distilled_summary = pd.concat([distilled_summary, matching_data], ignore_index=True)
+            # Append matching data to the distilled_summary dataframe
+            distilled_summary = pd.concat([distilled_summary, matching_data], ignore_index=True)
 
     # Write the distilled summary to the output file
     distilled_summary.to_csv(output_file, sep='\t', index=False)
