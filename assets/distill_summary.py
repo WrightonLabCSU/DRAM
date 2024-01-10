@@ -1,7 +1,7 @@
 import argparse
 import pandas as pd
 
-def distill_summary(combined_annotations_path, genome_summary_form_path, output_path):
+def distill_summary(combined_annotations_path, genome_summary_form_path, output_path, add_module_paths):
     # Read input files
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
     genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
@@ -49,6 +49,43 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                 for col in combined_columns_to_add:
                     distill_summary_df.at[distill_summary_df.index[-1], col] = match_row[col]
 
+    # Iterate through add_moduleX files
+    for add_module_path in add_module_paths:
+        if add_module_path != "empty":
+            add_module_data = pd.read_csv(add_module_path, sep='\t')
+
+            # Iterate through gene_id values in add_moduleX
+            for gene_id in add_module_data['gene_id']:
+                # Search for matches in combined_annotations columns ending in "_id"
+                match_columns = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id']
+
+                for column in match_columns:
+                    # Check for matches
+                    match_rows = combined_annotations[combined_annotations[column] == gene_id]
+
+                    for _, match_row in match_rows.iterrows():
+                        # Add matching information to the output DataFrame
+                        distill_summary_df = distill_summary_df.append({
+                            'gene_id': gene_id,
+                            'query_id': match_row['query_id'],
+                            'sample': match_row['sample'],
+                        }, ignore_index=True)
+
+                        # Add values from additional columns in genome_summary_form and add_moduleX
+                        for col in additional_columns:
+                            # Concatenate values with ";" if the column is present in both files
+                            if col in add_module_data.columns:
+                                distill_summary_df.at[distill_summary_df.index[-1], col] = \
+                                    f"{genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, col].values[0]}; " \
+                                    f"{add_module_data.loc[add_module_data['gene_id'] == gene_id, col].values[0]}"
+                            else:
+                                distill_summary_df.at[distill_summary_df.index[-1], col] = \
+                                    genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, col].values[0]
+
+                        # Add values from selected columns in combined_annotations
+                        for col in combined_columns_to_add:
+                            distill_summary_df.at[distill_summary_df.index[-1], col] = match_row[col]
+
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
 
@@ -57,8 +94,18 @@ if __name__ == '__main__':
     parser.add_argument('--combined_annotations', required=True, help='Path to the combined annotations file')
     parser.add_argument('--genome_summary_form', required=True, help='Path to the genome summary file')
     parser.add_argument('--output', required=True, help='Path to the output file')
+    parser.add_argument('--add_module1', default='empty', help='Path to add_module1 file')
+    parser.add_argument('--add_module2', default='empty', help='Path to add_module2 file')
+    parser.add_argument('--add_module3', default='empty', help='Path to add_module3 file')
+    parser.add_argument('--add_module4', default='empty', help='Path to add_module4 file')
+    parser.add_argument('--add_module5', default='empty', help='Path to add_module5 file')
 
     args = parser.parse_args()
 
     # Call the distill_summary function with provided arguments
-    distill_summary(args.combined_annotations, args.genome_summary_form, args.output)
+    distill_summary(
+        args.combined_annotations,
+        args.genome_summary_form,
+        args.output,
+        [args.add_module1, args.add_module2, args.add_module3, args.add_module4, args.add_module5]
+    )
