@@ -6,6 +6,20 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
     genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
 
+    # Additional columns from add_moduleX files
+    for i, add_module_file in enumerate(add_module_files, start=1):
+        if add_module_file != 'empty':
+            add_module_data = pd.read_csv(add_module_file, sep='\t')
+
+            # Rename columns to include add_moduleX prefix
+            add_module_data = add_module_data.rename(lambda x: f'add_module{i}_{x}' if x != 'gene_id' else x, axis=1)
+
+            # Merge add_moduleX data with genome_summary_form and concatenate values for duplicate columns
+            genome_summary_form = pd.merge(genome_summary_form, add_module_data, on='gene_id', how='left')
+            duplicate_cols = genome_summary_form.columns[genome_summary_form.columns.duplicated()]
+            for col in duplicate_cols:
+                genome_summary_form[col] = genome_summary_form[[col, f'{col}_add_module{i}']].apply(lambda x: '; '.join(x.dropna()), axis=1)
+
     # Initialize the output DataFrame with gene_id, query_id, and sample columns
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
@@ -21,14 +35,6 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
     for col in combined_columns_to_add:
         distill_summary_df[col] = ''
-
-    # Additional columns from add_moduleX files
-    for i, add_module_file in enumerate(add_module_files, start=1):
-        if add_module_file != 'empty':
-            add_module_data = pd.read_csv(add_module_file, sep='\t')
-
-            # Merge add_moduleX data with genome_summary_form
-            genome_summary_form = pd.merge(genome_summary_form, add_module_data, on='gene_id', how='left')
 
     # Iterate through gene_id values in genome_summary_form
     for _, row in genome_summary_form.iterrows():
@@ -61,15 +67,20 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
                     # Add values from add_moduleX columns, concatenate values with "; "
                     for add_module_col in add_module_data.columns[1:]:
-                        if add_module_col in distill_summary_df.columns:
-                            existing_value = distill_summary_df.at[distill_summary_df.index[-1], add_module_col]
-                            new_value = str(match_row[add_module_col])
+                        new_col_name = add_module_col  # Keep the original column name without prefix
+
+                        if new_col_name in distill_summary_df.columns:
+                            existing_value = distill_summary_df.at[distill_summary_df.index[-1], new_col_name]
+                            new_value = str(row[add_module_col])
 
                             # Check if the existing value is not NaN (numeric), then concatenate with "; "
                             if pd.notna(existing_value):
-                                distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = f'{existing_value}; {new_value}'
+                                distill_summary_df.at[distill_summary_df.index[-1], new_col_name] = f'{existing_value}; {new_value}'
                             else:
-                                distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = new_value
+                                distill_summary_df.at[distill_summary_df.index[-1], new_col_name] = new_value
+                        else:
+                            # Add new add_moduleX columns after existing columns
+                            distill_summary_df[new_col_name] = str(row[add_module_col])
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
