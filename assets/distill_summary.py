@@ -7,10 +7,8 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     genome_summary_form_data = pd.read_csv(genome_summary_form, sep='\t')
     target_id_counts_data = pd.read_csv(target_id_counts, sep='\t')
 
-    # Initialize additional modules
+    # Create a dictionary to store additional modules data
     additional_modules = {}
-    
-    # Read additional modules
     for i, add_module_file in enumerate(add_modules, start=1):
         if add_module_file and add_module_file != 'empty':
             additional_module_data = pd.read_csv(add_module_file, sep='\t')
@@ -19,19 +17,22 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Merge combined_annotations with genome_summary_form on gene_id
     merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, on='gene_id', how='left')
 
+    # Concatenate columns ending in '_id' to form gene_id
+    id_columns = [col for col in combined_annotations_data.columns if col.endswith('_id')]
+    merged_data['gene_id'] = merged_data[id_columns].apply(lambda x: '; '.join(x.dropna()), axis=1)
+
+    # Select relevant columns from merged_data
+    output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:])
+
     # Merge with target_id_counts on sample
-    merged_data = pd.merge(merged_data, target_id_counts_data, on='sample', how='left')
+    final_data = pd.merge(merged_data[output_columns], target_id_counts_data, left_on='sample', right_on='sample', how='left')
 
-    # Merge with additional modules
-    for module_name, module_data in additional_modules.items():
-        merged_data = pd.merge(merged_data, module_data, on='gene_id', how='left', suffixes=('', f'_module{module_name[-1]}'))
+    # Append additional modules data
+    for key, additional_module_data in additional_modules.items():
+        final_data = pd.merge(final_data, additional_module_data, on='gene_id', how='left', suffixes=('', f'_{key}'))
 
-    # Select relevant columns for the output
-    output_columns = ['query_id', 'sample', 'gene_id'] + list(genome_summary_form_data.columns[1:]) + list(combined_annotations_data.columns[4:])
-    output_data = merged_data[output_columns]
-
-    # Write the output to the distill_summary.tsv file
-    output_data.to_csv(output, sep='\t', index=False)
+    # Write the final result to the output file
+    final_data.to_csv(output, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
