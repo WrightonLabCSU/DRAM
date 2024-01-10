@@ -6,6 +6,9 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, output_
     combined_annotations = pd.read_csv(combined_annotations_file, sep='\t')
     genome_summary_form = pd.read_csv(genome_summary_form_file, sep='\t')
 
+    # Identify the column containing gene IDs dynamically
+    gene_id_column = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id'][0]
+
     # Create a dictionary to store additional modules if provided
     additional_modules = {}
     if add_module_files:
@@ -15,11 +18,11 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, output_
                 additional_modules[f'add_module{i + 1}'] = additional_module_data
 
     # Merge genome_summary_form with combined_annotations based on gene_id
-    merged_data = pd.merge(combined_annotations, genome_summary_form, left_on='gene_id', right_on='gene_id', how='inner')
+    merged_data = pd.merge(combined_annotations, genome_summary_form, left_on=gene_id_column, right_on='gene_id', how='inner')
 
     # Add additional modules if available
     for module_name, module_data in additional_modules.items():
-        merged_data = pd.merge(merged_data, module_data, left_on='gene_id', right_on='gene_id', how='left')
+        merged_data = pd.merge(merged_data, module_data, left_on=gene_id_column, right_on='gene_id', how='left')
 
     # Select columns for the distill_summary.tsv output
     output_columns = ['gene_id'] + list(genome_summary_form.columns[1:]) + list(additional_modules.keys())
@@ -31,7 +34,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
     parser.add_argument('--combined_annotations', required=True, help='Path to the combined annotations file')
     parser.add_argument('--genome_summary_form', required=True, help='Path to the genome summary file')
-    parser.add_argument('--target_id_counts', required=True, help='Path to the target_id_counts file')
     parser.add_argument('--output', required=True, help='Path to the output file')
     parser.add_argument('--add_module1', required=False, help='Path to the additional module1 file')
     parser.add_argument('--add_module2', required=False, help='Path to the additional module2 file')
