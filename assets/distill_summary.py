@@ -9,20 +9,24 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     # Initialize the output DataFrame
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
-    # Iterate through gene_ids in genome_summary_form
+    # Iterate through gene_id values in genome_summary_form
     for gene_id in genome_summary_form['gene_id']:
-        # Find matching rows in combined_annotations based on gene_id
-        matching_rows = combined_annotations[combined_annotations[gene_id + '_id'] == gene_id]
+        # Search for a match in combined_annotations columns ending in "_id"
+        match_columns = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id']
 
-        # Add information to distill_summary_df if matches are found
-        if not matching_rows.empty:
-            distill_summary_df = distill_summary_df.append({
-                'gene_id': gene_id,
-                'query_id': matching_rows['query_id'].iloc[0],
-                'sample': matching_rows['sample'].iloc[0]
-            }, ignore_index=True)
+        for column in match_columns:
+            # Check for a match
+            match_rows = combined_annotations[combined_annotations[column] == gene_id]
 
-    # Write the distilled summary to the output file
+            if not match_rows.empty:
+                # Add matching information to the output DataFrame
+                distill_summary_df = distill_summary_df.append({
+                    'gene_id': gene_id,
+                    'query_id': match_rows['query_id'].values[0],
+                    'sample': match_rows['sample'].values[0],
+                }, ignore_index=True)
+
+    # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
 
 if __name__ == '__main__':
@@ -33,4 +37,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    # Call the distill_summary function with provided arguments
     distill_summary(args.combined_annotations, args.genome_summary_form, args.output)
