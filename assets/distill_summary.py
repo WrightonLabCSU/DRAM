@@ -48,11 +48,11 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
                 for _, match_row in match_rows.iterrows():
                     # Instead of using DataFrame.append, use pandas.concat
-                    distill_summary_df = pd.concat([distill_summary_df, {
+                    distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame({
                         'gene_id': gene_id,
                         'query_id': match_row['query_id'],
                         'sample': match_row['sample'],
-                    }], ignore_index=True)
+                    }, index=[0])], ignore_index=True)
 
                     # Add values from additional columns in genome_summary_form
                     for col in additional_columns:
