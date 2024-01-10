@@ -1,26 +1,27 @@
 import argparse
 import pandas as pd
 
-def distill_summary(combined_annotations_file, genome_summary_form_file, output_file):
-    try:
-        # Read input files into dataframes
-        combined_annotations = pd.read_csv(combined_annotations_file, sep='\t')
-        genome_summary_form = pd.read_csv(genome_summary_form_file, sep='\t')
+def distill_summary(combined_annotations_file, genome_summary_file, output_file):
+    # Read input files into DataFrames
+    combined_annotations = pd.read_csv(combined_annotations_file, sep='\t')
+    genome_summary = pd.read_csv(genome_summary_file, sep='\t')
 
-        # Check if 'gene_id' column exists in genome_summary_form
-        if 'gene_id' not in genome_summary_form.columns:
-            raise KeyError("'gene_id' column not found in genome_summary_form file.")
+    # Initialize the output DataFrame
+    distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
-        # Merge data based on gene_id
-        merged_data = pd.merge(genome_summary_form, combined_annotations, how='left',left_on='gene_id', right_on='gene_id')
+    # Iterate through gene_ids in genome_summary_file
+    for gene_id in genome_summary['gene_id']:
+        # Find matching row in combined_annotations based on _id columns
+        match_row = combined_annotations[combined_annotations.filter(like='_id').eq(gene_id).any(axis=1)]
 
-        # Write output to TSV file
-        merged_data.to_csv(output_file, sep='\t', index=False)
+        if not match_row.empty:
+            # Extract relevant information and append to distill_summary_df
+            query_id = match_row['query_id'].iloc[0]
+            sample = match_row['sample'].iloc[0]
+            distill_summary_df = distill_summary_df.append({'gene_id': gene_id, 'query_id': query_id, 'sample': sample}, ignore_index=True)
 
-        print("Distill summary completed successfully.")
-
-    except Exception as e:
-        print(f"Error: {str(e)}")
+    # Write the result to the output file
+    distill_summary_df.to_csv(output_file, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
@@ -30,5 +31,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    # Call distill_summary function
+    # Call the distill_summary function with the provided arguments
     distill_summary(args.combined_annotations, args.genome_summary_form, args.output)
