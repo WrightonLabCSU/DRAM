@@ -7,7 +7,7 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
 
     # Check if the required columns are present in the genome_summary_form
-    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'potential_amg']
     missing_columns = set(required_columns) - set(genome_summary_form.columns)
 
     if missing_columns:
@@ -24,9 +24,8 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
     # Additional columns from combined_annotations (excluding "_id" columns and specific columns)
     combined_columns_to_add = [col for col in combined_annotations.columns
-                            if not (col.endswith('_id') and col != 'query_id'
-                                    or col in ['query_id'] + additional_columns)]
-
+                               if not (col.endswith('_id') and col not in ['query_id', 'potential_amg']
+                                       or col in ['query_id', 'potential_amg'] + additional_columns)]
 
     for col in combined_columns_to_add:
         distill_summary_df[col] = ''

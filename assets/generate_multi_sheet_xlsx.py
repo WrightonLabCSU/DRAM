@@ -15,7 +15,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
     sheet_data = {}
 
     # Fixed columns
-    fixed_columns = ['gene_id', 'query_id', 'sample', 'gene_description', 'module', 'sheet', 'header', 'subheader', 'potential_amg']
+    fixed_columns = ['gene_id', 'query_id', 'sample', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
@@ -26,8 +26,12 @@ def generate_multi_sheet_xlsx(input_file, output_file):
 
             # Exclude the "sheet" column and move "gene_id" as the second column
             # Include the count under the "sample" column
-            row_data = [row['gene_id'], row['query_id'], row['sample'], row['gene_description'], row['pathway'], sheet_name, row['category'], row['subcategory'], row['potential_amg']]
-            row_data += [row[col] for col in data.columns if col not in fixed_columns]
+            row_data = [row[col] for col in fixed_columns]
+            row_data += [sheet_name] + [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
+            
+            # Include the 'potential_amg' column if it exists
+            if 'potential_amg' in data.columns:
+                row_data.append(row['potential_amg'])
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -37,7 +41,11 @@ def generate_multi_sheet_xlsx(input_file, output_file):
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame
-        column_names = ['gene_id', 'query_id', 'sample', 'gene_description', 'pathway', 'sheet', 'category', 'subcategory', 'potential_amg'] + [col for col in data.columns if col not in fixed_columns]
+        column_names = fixed_columns + [col for col in data.columns if col not in fixed_columns and col != 'potential_amg']
+
+        # Include 'potential_amg' column if it exists
+        if 'potential_amg' in data.columns:
+            column_names.append('potential_amg')
 
         # Append column names as the first row
         ws.append(column_names)
