@@ -23,6 +23,11 @@ def distill_summary(combined_annotations, genome_summary_form, output, add_modul
     if not additional_modules.empty:
         merged_data = pd.concat([merged_data, additional_modules], axis=1)
 
+    # Check if output directory exists, create if not
+    output_dir = os.path.dirname(output)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     # Write the result to the output file
     merged_data.to_csv(output, sep='\t', index=False)
 
@@ -39,11 +44,6 @@ if __name__ == '__main__':
     parser.add_argument('--add_module5', required=False, help='Path to the additional module5 file')
 
     args = parser.parse_args()
-
-    # Check if output directory exists, create if not
-    output_dir = os.path.dirname(args.output)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
 
     # Call the distill_summary function
     distill_summary(args.combined_annotations, args.genome_summary_form, args.output,
