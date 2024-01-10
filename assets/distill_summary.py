@@ -33,7 +33,6 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
             # Merge add_moduleX data with genome_summary_form
             genome_summary_form = pd.merge(genome_summary_form, add_module_data, on='gene_id', how='left')
 
-
     # Iterate through gene_id values in genome_summary_form
     for _, row in genome_summary_form.iterrows():
         gene_id = row['gene_id']
@@ -46,6 +45,9 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
             for column in match_columns:
                 # Check for matches
                 match_rows = combined_annotations[combined_annotations[column] == gene_id]
+
+                if match_rows.empty:
+                    print(f"No matches found for gene_id: {gene_id}")  # Debug statement
 
                 for _, match_row in match_rows.iterrows():
                     # Instead of using DataFrame.append, use pandas.concat
