@@ -65,9 +65,10 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     # Add values from add_moduleX columns, concatenate values with "; "
                     for add_module_col in add_module_data.columns[1:]:
                         if add_module_col in distill_summary_df.columns:
-                            distill_summary_df.at[distill_summary_df.index[-1], add_module_col] += f'; {row[add_module_col]}'
+                            # Convert values to strings before concatenating
+                            distill_summary_df.at[distill_summary_df.index[-1], add_module_col] += f'; {str(row[add_module_col])}'
                         else:
-                            distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = row[add_module_col]
+                            distill_summary_df.at[distill_summary_df.index[-1], add_module_col] = str(row[add_module_col])
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
