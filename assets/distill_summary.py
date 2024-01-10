@@ -25,7 +25,7 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
             )
 
     # Filter rows with valid gene_id values
-    combined_data = combined_data[combined_data['gene_id'].isin(valid_gene_ids)]
+    combined_data = combined_data[combined_data['query_id'].isin(valid_gene_ids)]  # Adjust the column name for filtering
 
     # Merge with genome_summary_data on gene_id
     result = pd.merge(combined_data, genome_summary_data, left_on='gene_id', right_on='gene_id', how='left')
