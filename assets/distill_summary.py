@@ -24,15 +24,18 @@ def distill_summary(combined_annotations, genome_summary_form, target_id_counts,
     # Exclude 'query_id' from the list of columns to be considered for merging
     id_columns_combined = [col for col in id_columns_combined if col != 'query_id']
 
+    # Ensure 'gene_id' is included in the list of columns to be considered for merging
+    id_columns_combined.append('gene_id')
+
     # Merge combined_data with genome_summary and additional modules based on columns ending with "_id"
     merged_data = pd.merge(combined_data, genome_summary, left_on=id_columns_combined, right_on='gene_id', how='inner')
     merged_data = pd.merge(merged_data, additional_modules_combined, left_on=id_columns_combined, right_on=('add_module1', 'gene_id'), how='outer')
 
     # Create the distill_summary dataframe
-    distill_summary = merged_data[['query_id', 'sample', 'gene_id'] + list(genome_summary.columns[1:])]
+    distill_summary_df = merged_data[['query_id', 'sample', 'gene_id'] + list(genome_summary.columns[1:])]
 
     # Write the distill_summary dataframe to the output file
-    distill_summary.to_csv(output, sep='\t', index=False)
+    distill_summary_df.to_csv(output, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
