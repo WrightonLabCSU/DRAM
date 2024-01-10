@@ -6,11 +6,18 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
     genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
 
+    # Check if the required columns are present in the genome_summary_form
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    missing_columns = set(required_columns) - set(genome_summary_form.columns)
+
+    if missing_columns:
+        raise ValueError(f"The following required columns are missing in genome_summary_form: {', '.join(missing_columns)}")
+
     # Initialize the output DataFrame with gene_id, query_id, and sample columns
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
     # Additional columns from genome_summary_form
-    additional_columns = ['gene_description', 'module', 'sheet', 'header', 'subheader', 'potential_amg']
+    additional_columns = ['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
     for col in additional_columns:
         distill_summary_df[col] = ''
@@ -38,11 +45,10 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                     'query_id': match_row['query_id'],
                     'sample': match_row['sample'],
                     'gene_description': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'gene_description'].values[0],
-                    'module': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'module'].values[0],
-                    'sheet': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'sheet'].values[0],
-                    'header': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'header'].values[0],
-                    'subheader': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'subheader'].values[0],
-                    'potential_amg': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'potential_amg'].values[0],
+                    'pathway': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'pathway'].values[0],
+                    'topic_ecosystem': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'topic_ecosystem'].values[0],
+                    'category': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'category'].values[0],
+                    'subcategory': genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, 'subcategory'].values[0],
                 }, ignore_index=True)
 
                 # Add values from selected columns in combined_annotations
