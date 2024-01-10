@@ -11,21 +11,11 @@ def distill_summary(combined_annotations_file, genome_summary_form_file, output_
         if 'gene_id' not in genome_summary_form.columns:
             raise KeyError("'gene_id' column not found in genome_summary_form file.")
 
-        # Extract gene_id values from genome_summary_form
-        gene_ids = genome_summary_form['gene_id'].tolist()
-
-        # Filter columns in combined_annotations for matching
-        matching_columns = [col for col in combined_annotations.columns if col.endswith('_id') and col != 'query_id']
-
         # Merge data based on gene_id
-        merged_data = pd.merge(genome_summary_form, combined_annotations[['query_id', 'sample'] + matching_columns], how='left',left_on='gene_id', right_on=matching_columns)
-
-        # Select relevant columns for output
-        output_columns = ['gene_id', 'gene_description', 'module', 'sheet', 'header', 'subheader', 'potential_amg']
-        output_data = merged_data[['gene_id'] + output_columns]
+        merged_data = pd.merge(genome_summary_form, combined_annotations, how='left',left_on='gene_id', right_on='gene_id')
 
         # Write output to TSV file
-        output_data.to_csv(output_file, sep='\t', index=False)
+        merged_data.to_csv(output_file, sep='\t', index=False)
 
         print("Distill summary completed successfully.")
 
