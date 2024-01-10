@@ -2,33 +2,30 @@ import pandas as pd
 import argparse
 
 def distill_summary(combined_annotations, genome_summary_form, target_id_counts, output, add_modules):
-    # Read input files
-    combined_annotations_data = pd.read_csv(combined_annotations, sep='\t')
-    genome_summary_form_data = pd.read_csv(genome_summary_form, sep='\t')
+    # Read input files into pandas dataframes
+    combined_data = pd.read_csv(combined_annotations, sep='\t')
+    genome_summary_data = pd.read_csv(genome_summary_form, sep='\t')
 
-    # Select columns ending in '_id' for gene_id
-    id_columns = [col for col in combined_annotations_data.columns if col.endswith('_id')]
-    combined_annotations_data['gene_id'] = combined_annotations_data[id_columns].apply(lambda x: '; '.join(x.dropna()), axis=1)
+    # Create a set of all gene_id values from genome_summary_form
+    valid_gene_ids = set(genome_summary_data['gene_id'])
 
-    # Merge combined_annotations with genome_summary_form on gene_id
-    merged_data = pd.merge(combined_annotations_data, genome_summary_form_data, left_on=['gene_id'], right_on=['gene_id'], how='left')
-
-    # Create a dictionary to store additional modules data
-    additional_modules = {}
+    # Process additional module files
     for i, add_module_file in enumerate(add_modules, start=1):
         if add_module_file and add_module_file != 'empty':
             additional_module_data = pd.read_csv(add_module_file, sep='\t')
-            additional_modules[f'add_module{i}'] = additional_module_data
+            # Add gene_id values from additional modules to the set
+            valid_gene_ids.update(additional_module_data['gene_id'])
+            # Append additional module columns to combined_data if the column exists
+            combined_data = pd.merge(combined_data, additional_module_data, on='gene_id', how='left')
 
-    # Select relevant columns from merged_data
-    output_columns = ['query_id', 'sample'] + list(genome_summary_form_data.columns[1:])
+    # Filter rows with valid gene_id values
+    combined_data = combined_data[combined_data['gene_id'].isin(valid_gene_ids)]
 
-    # Append additional modules data
-    for key, additional_module_data in additional_modules.items():
-        merged_data = pd.merge(merged_data, additional_module_data, on='gene_id', how='left', suffixes=('', f'_{key}'))
+    # Merge with genome_summary_data on gene_id
+    result = pd.merge(combined_data, genome_summary_data, on='gene_id', how='left')
 
-    # Write the final result to the output file
-    merged_data[output_columns].to_csv(output, sep='\t', index=False)
+    # Write the result to the output file
+    result.to_csv(output, sep='\t', index=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate distill summary')
