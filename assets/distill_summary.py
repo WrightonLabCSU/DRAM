@@ -68,7 +68,7 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
                         if new_col_name in distill_summary_df.columns:
                             existing_value = distill_summary_df.at[distill_summary_df.index[-1], new_col_name]
-                            new_value = str(row[add_module_col])
+                            new_value = str(match_row[add_module_col])
 
                             # Check if the existing value is not NaN (numeric), then concatenate with "; "
                             if pd.notna(existing_value):
@@ -77,7 +77,7 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                                 distill_summary_df.at[distill_summary_df.index[-1], new_col_name] = new_value
                         else:
                             # Add new add_moduleX columns after existing columns
-                            distill_summary_df[new_col_name] = str(row[add_module_col])
+                            distill_summary_df[new_col_name] = str(match_row[add_module_col])
 
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
