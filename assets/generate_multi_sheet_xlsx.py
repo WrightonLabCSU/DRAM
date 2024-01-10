@@ -1,3 +1,4 @@
+import argparse
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
@@ -13,6 +14,9 @@ def generate_multi_sheet_xlsx(input_file, output_file):
     # Create a dictionary to store data for each sheet
     sheet_data = {}
 
+    # Fixed columns
+    fixed_columns = ['gene_id', 'query_id', 'sample', 'gene_description', 'module', 'sheet', 'header', 'subheader', 'potential_amg']
+
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
         for sheet_name in row['sheet'].split('; '):
@@ -22,8 +26,8 @@ def generate_multi_sheet_xlsx(input_file, output_file):
 
             # Exclude the "sheet" column and move "gene_id" as the second column
             # Include the count under the "sample" column
-            row_data = row[['query_id', 'score_rank', 'sample', 'gene_id', 'potential_amg', 'gene_description', 'module']].tolist()
-            row_data += [sheet_name, row['header'], row['subheader'], row['BB02'], row['small_sample-fasta']]
+            row_data = [row[col] for col in fixed_columns]
+            row_data += [sheet_name] + [row[col] for col in data.columns if col not in fixed_columns]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -33,7 +37,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame
-        column_names = ['query_id', 'score_rank', 'sample', 'gene_id', 'potential_amg', 'gene_description', 'module', 'sheet', 'header', 'subheader', 'BB02', 'small_sample-fasta']
+        column_names = fixed_columns + [col for col in data.columns if col not in fixed_columns]
 
         # Append column names as the first row
         ws.append(column_names)
@@ -59,7 +63,6 @@ def generate_multi_sheet_xlsx(input_file, output_file):
     wb.save(output_file)
 
 if __name__ == '__main__':
-    import argparse
     parser = argparse.ArgumentParser(description='Generate multi-sheet XLSX file')
     parser.add_argument('--input-file', required=True, help='Path to the input TSV file')
     parser.add_argument('--output-file', required=True, help='Path to the output XLSX file')
