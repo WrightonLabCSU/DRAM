@@ -23,15 +23,15 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
         distill_summary_df[col] = ''
 
     # Additional columns from add_moduleX files
+    additional_modules = {}
     for i, add_module_file in enumerate(add_module_files, start=1):
         if add_module_file != 'empty':
-            add_module_data = pd.read_csv(add_module_file, sep='\t')
+            additional_module_data = pd.read_csv(add_module_file, sep='\t')
+            additional_modules[f'add_module{i}'] = additional_module_data
 
-            # Rename columns to include add_moduleX prefix
-            add_module_data = add_module_data.rename(lambda x: f'add_module{i}_{x}' if x != 'gene_id' else x, axis=1)
-
-            # Merge add_moduleX data with genome_summary_form
-            genome_summary_form = pd.merge(genome_summary_form, add_module_data, on='gene_id', how='left')
+    # Merge add_moduleX data with genome_summary_form
+    for _, add_module_data in additional_modules.items():
+        genome_summary_form = pd.merge(genome_summary_form, add_module_data, on='gene_id', how='left')
 
     # Iterate through gene_id values in genome_summary_form
     for _, row in genome_summary_form.iterrows():
