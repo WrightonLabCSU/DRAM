@@ -6,14 +6,6 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
     genome_summary_form = pd.read_csv(genome_summary_form_path, sep='\t')
 
-    # Check for duplicate gene_ids within genome_summary_form and add_moduleX files
-    for file_path in [genome_summary_form_path] + add_module_paths:
-        file_data = pd.read_csv(file_path, sep='\t')
-        duplicate_gene_ids = file_data[file_data.duplicated(subset=['gene_id'], keep=False)]['gene_id'].unique()
-
-        if len(duplicate_gene_ids) > 0:
-            raise ValueError(f'Duplicate gene_ids found within {file_path}: {", ".join(duplicate_gene_ids)}')
-
     # Initialize the output DataFrame with gene_id, query_id, and sample columns
     distill_summary_df = pd.DataFrame(columns=['gene_id', 'query_id', 'sample'])
 
@@ -48,6 +40,14 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
             match_rows = combined_annotations[combined_annotations[column] == gene_id]
 
             for _, match_row in match_rows.iterrows():
+                # Check for duplicate gene_id within the same sample and query_id
+                if distill_summary_df[
+                        (distill_summary_df['gene_id'] == gene_id) &
+                        (distill_summary_df['query_id'] == match_row['query_id']) &
+                        (distill_summary_df['sample'] == match_row['sample'])
+                ].shape[0] > 0:
+                    raise ValueError(f'Duplicate gene_id "{gene_id}" found in the same sample and query_id.')
+
                 # Add matching information to the output DataFrame
                 distill_summary_df = distill_summary_df.append({
                     'gene_id': gene_id,
@@ -57,9 +57,9 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
 
                 # Add values from additional columns in genome_summary_form
                 for col in additional_columns:
-                    distill_summary_df.at[distill_summary_df.index[-1], col] = ';'.join(
-                        genome_summary_form.loc[genome_summary_form['gene_id'] == gene_id, col]
-                    )
+                    distill_summary_df.at[distill_summary_df.index[-1], col] = genome_summary_form.loc[
+                        genome_summary_form['gene_id'] == gene_id, col
+                    ].values[0]
 
                 # Add values from selected columns in combined_annotations
                 for col in combined_columns_to_add:
