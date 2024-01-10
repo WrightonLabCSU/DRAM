@@ -92,7 +92,6 @@ def distill_summary(combined_annotations_path, genome_summary_form_path, output_
                             print(distill_summary_df.columns)
                             distill_summary_df[new_col_name] = str(row[add_module_col])
 
-
     # Write the output to a TSV file
     distill_summary_df.to_csv(output_path, sep='\t', index=False)
 
