@@ -527,7 +527,7 @@ workflow {
         */
 
         /* Combine formatted annotations */
-
+        /*
         // Collect all sample formatted_hits in prep for distill_summary
         Channel.empty()
             .mix( ch_kofam_formatted )
@@ -535,22 +535,14 @@ workflow {
             .collect()
             .set { collected_formatted_hits }
 
-            //will need to add these, if they are different, for all databases:
-            //.mix( KEGG_HMM_FORMATTER.out.formatted_hits )
-            //.mix( DBCAN_HMM_FORMATTER.out.formatted_hits )
-            //.mix( CAMPER_HMM_FORMATTER.out.formatted_hits )
-            //...
 
         //COMBINE_ANNOTATIONS will collect all of the sample annotations files across ALL databases
-        // 1) will merge all into one giant annotations file (DRAM1 as "annotations.tsv")
-        // 2) also need to add one additional columns after the gene_name (1st) column: sample name 
-        // 3) if params.add_annotations is present with a path to a valid annotations.tsv input file, need to merge this as well
-        // 4) ?
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
         COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
         ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+        */
 
     }
 
