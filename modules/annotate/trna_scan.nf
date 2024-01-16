@@ -15,25 +15,23 @@ process TRNA_SCAN {
     script:
 
     """
-    python3 - <<EOF
-    import os
-    import pandas as pd
-    import subprocess
-    # Access the threads parameter using environment variables
-    threads = os.environ['NXF_THREADS']
+    tRNAscan-SE \\
+    -G \\
+    --thread ${params.threads} \\
+    -o ${sample}_trna_out.txt \\
+    ${fasta}
 
-    # Run tRNAscan-SE
-    subprocess.run(['tRNAscan-SE', '-G', '--thread', str(threads), '-o', f'{sample}_trna_out.txt', f'{fasta}'])
+    # Process tRNAscan-SE Output
 
-    # Read the tRNAscan-SE output into a DataFrame
-    df = pd.read_csv('{sample}_trna_out.txt', sep='\\t', skiprows=2)
+    # Remove first and third lines
+    sed -i '1d;3d' ${sample}_trna_out.txt
 
-    # Process the DataFrame
-    processed_df = df[['Name', 'tRNA #', 'Begin', 'End', 'Type', 'Codon', 'Score']].drop_duplicates(subset=['Begin'])
+    # Remove "Note" column
+    awk '{NF=NF-1}1' ${sample}_trna_out.txt > ${sample}_trna_out_temp.txt
+    mv ${sample}_trna_out_temp.txt ${sample}_trna_out.txt
 
-    # Save the processed DataFrame to a new TSV file
-    processed_df.to_csv('{sample}_processed_trnas.tsv', sep='\\t', index=False)
-    EOF
+    # Retain specific columns and first occurrence of "Begin" and "End"
+    awk '!seen[$3,$4]++ {print $1, $2, $3, $4, $5, $6, $9}' ${sample}_trna_out.txt > ${sample}_processed_trnas.tsv
     """
 
 
