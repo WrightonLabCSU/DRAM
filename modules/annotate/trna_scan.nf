@@ -26,7 +26,6 @@ process TRNA_SCAN {
         # Save the processed tRNA frame to a new file, including the header
         echo -e "Name\ttRNA #\tBegin\tEnd\tType\tCodon\tScore" > ${sample}_processed_trnas.tsv
         echo -e "\$trna_frame" | column -t -s $'\\t' >> \${sample}_processed_trnas.tsv
-
     else
         echo "No tRNAs were detected, no trnas.tsv file will be created."
         exit 1
