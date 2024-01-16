@@ -23,8 +23,7 @@ process TRNA_SCAN {
 
     # Process tRNAscan-SE Output
     if [ -s ${sample}_trna_out.txt ]; then
-        awk -F'\t' 'NR > 2 && !/^-+/{ if (NR == 3) print "Name\ttRNA #\tBegin\tEnd\tType\tCodon\tScore"; if (!/Begin\.[0-9]+|End\.[0-9]+/) print "bin.112\t"$1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6 }' bin.112_trna_out.txt > bin.112_processed_trnas.tsv
-
+        awk -F'\t' 'NR > 2 && !/^-+/{ if (NR == 3) print "Name\ttRNA #\tBegin\tEnd\tType\tCodon\tScore"; if (!/Begin[.][0-9]+|End[.][0-9]+/) print "bin.112\t"$1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6 }' bin.112_trna_out.txt > bin.112_processed_trnas.tsv
     else
         echo "No tRNAs were detected, no trnas.tsv file will be created."
         exit 1
