@@ -21,7 +21,7 @@ process TRNA_SCAN {
 
     # Process tRNAscan-SE Output
     if [ -s ${sample}_trna_out.txt ]; then
-        trna_frame=\$(awk -F'\t' 'NR > 1 && !/^-+/{ print \$0 }' ${sample}_trna_out.txt | cut -f 1,2,3,4,5)
+        trna_frame=\$(awk -F'\t' 'NR > 1 && !/^-+/{ print \$0 }' ${sample}_trna_out.txt | cut -f 1,2,3,4,5,6,9)
 
         # Remove additional occurrences of "Begin" and "End"
         trna_frame=\$(awk 'BEGIN{OFS=FS="\t"}{gsub(/Begin.[0-9]+|End.[0-9]+/, "", \$0)}1' <<< "\$trna_frame")
