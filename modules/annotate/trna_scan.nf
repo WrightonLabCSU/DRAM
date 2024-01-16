@@ -18,10 +18,8 @@ process TRNA_SCAN {
     python3 - <<EOF
     import pandas as pd
     import subprocess
-    from nextflow import Nextflow
-
-    # Access the threads parameter using the nextflow object
-    threads = Nextflow().params.threads
+    # Access the threads parameter using environment variables
+    threads = os.environ['NXF_THREADS']
 
     # Run tRNAscan-SE
     subprocess.run(['tRNAscan-SE', '-G', '--thread', str(threads), '-o', f'{sample}_trna_out.txt', f'{fasta}'])
