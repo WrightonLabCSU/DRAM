@@ -16,6 +16,7 @@ process TRNA_SCAN {
 
     """
     python3 - <<EOF
+    import os
     import pandas as pd
     import subprocess
     # Access the threads parameter using environment variables
