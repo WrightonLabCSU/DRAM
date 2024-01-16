@@ -31,7 +31,7 @@ process TRNA_SCAN {
         trna_frame="\${sample} \$trna_frame"
 
         # Save the processed tRNA frame to a new file
-        echo -e "\$trna_frame" > \${sample}_processed_trnas.tsv
+        echo -e "\$trna_frame" > ${sample}_processed_trnas.tsv
     else
         echo "No tRNAs were detected, no trnas.tsv file will be created."
         exit 1
