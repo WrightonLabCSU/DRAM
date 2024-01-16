@@ -97,6 +97,9 @@ if( params.use_dbset){
 include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
 include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
 
+include { TRNA_SCAN                                    } from './modules/annotate/trna_scan.nf'
+include { RRNA_SCAN                                    } from './modules/annotate/rrna_scan.nf'
+
 include { MMSEQS2                                       } from './modules/mmseqs2.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
