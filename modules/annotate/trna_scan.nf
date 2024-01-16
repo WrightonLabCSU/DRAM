@@ -18,9 +18,13 @@ process TRNA_SCAN {
     python3 - <<EOF
     import pandas as pd
     import subprocess
+    from nextflow import Nextflow
+
+    # Access the threads parameter using the nextflow object
+    threads = Nextflow().params.threads
 
     # Run tRNAscan-SE
-    subprocess.run(['tRNAscan-SE', '-G', '--thread', str(params.threads), '-o', f'{sample}_trna_out.txt', f'{fasta}'])
+    subprocess.run(['tRNAscan-SE', '-G', '--thread', str(threads), '-o', f'{sample}_trna_out.txt', f'{fasta}'])
 
     # Read the tRNAscan-SE output into a DataFrame
     df = pd.read_csv('{sample}_trna_out.txt', sep='\\t', skiprows=2)
@@ -31,7 +35,7 @@ process TRNA_SCAN {
     # Save the processed DataFrame to a new TSV file
     processed_df.to_csv('{sample}_processed_trnas.tsv', sep='\\t', index=False)
     EOF
-
     """
+
 
 }
