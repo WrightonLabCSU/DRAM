@@ -12,12 +12,14 @@ process TRNA_SCAN {
 
     script:
 
+    script:
+
     """
-    tRNAscan-SE \
-    -G \
-    --thread \${params.threads} \
-    -o \${sample}_trna_out.txt \
-    \${fasta}
+    tRNAscan-SE \\
+    -G \\
+    --thread ${params.threads} \\
+    -o \${sample}_trna_out.txt \\
+    ${fasta}
 
     # Process tRNAscan-SE Output
     if [ -s \${sample}_trna_out.txt ]; then
@@ -31,6 +33,7 @@ process TRNA_SCAN {
         exit 1
     fi
     """
+
 
 
 }
