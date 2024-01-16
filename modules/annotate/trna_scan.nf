@@ -18,8 +18,8 @@ process TRNA_SCAN {
     ${fasta}
 
     # Process tRNAscan-SE Output
-    if [ -s \${sample}_trna_out.txt ]; then
-        trna_frame=\$(awk -F'rsity ' 'NR > 2 { print \$0 }' \${sample}_trna_out.txt | cut -f 1,3-)
+    if [ -s ${sample}_trna_out.txt ]; then
+        trna_frame=\$(awk -F'rsity ' 'NR > 2 { print \$0 }' ${sample}_trna_out.txt | cut -f 1,3-)
 
         # Remove columns like "Begin.1" or "End.1"
         trna_frame=\$(awk 'BEGIN{OFS=FS="--"}{gsub(/Begin.1|End.1/, "", \$0)}1' <<< "\$trna_frame")
