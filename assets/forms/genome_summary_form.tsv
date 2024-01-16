@@ -1,4 +1,4 @@
-gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	potential_amg
 K02981	small subunit ribosomal protein S2e	Ribosome, eukaryotes	MISC	Information systems		TRUE
 K02985	small subunit ribosomal protein S3e	Ribosome, eukaryotes	MISC	Information systems		TRUE
 K02984	small subunit ribosomal protein S3Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE

@@ -346,7 +346,7 @@ if( params.call ){
 
     // Convert ch_fastas into a tuple: [samplename, file]
     ch_fastas.map {
-        sampleName = it.getName().replaceAll(/([^.]+)[._].*/, '$1')
+        sampleName = it.getName().replaceAll(/\.[^.]+$/, '')
         tuple(sampleName, it)
     }.set{fastas}
 }
@@ -361,7 +361,7 @@ if( params.annotate ){
     // Convert the input_genes into a tuple: [samplename, file]
     if( params.input_genes != 0 ){
         called_proteins = Channel.fromPath(ch_called_genes).map {
-            sampleName = it.getName().replaceAll(/([^.]+)[._].*/, '$1')
+            sampleName = it.getName().replaceAll(/\.[^.]+$/, '')
             tuple(sampleName, it)
         }
         called_proteins = ch_called_genes
@@ -447,6 +447,17 @@ workflow {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
     if( params.annotate ){
+
+        // Not sure if we want these default or optional yet
+        TRNA_SCAN( fasta )
+        ch_trna_scan = TRNA_SCAN.out.trna_scan_out
+        // Will have to collect these and process eventually
+
+        RRNA_SCAN( fasta )
+        ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
+        // Will have to collect these and process eventually
+
+
 
         if( annotate_kegg == 1 ){
             //KEGG_INDEX ( params.kegg_mmseq_loc )
