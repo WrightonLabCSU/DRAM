@@ -19,8 +19,7 @@ process TRNA_SCAN {
     import pandas as pd
 
     # Run tRNAscan-SE
-    # Replace the placeholders with actual paths and variables
-    # subprocess.run(['tRNAscan-SE', '-G', '--thread', str(params.threads), '-o', f'{sample}_trna_out.txt', f'{fasta}'])
+    subprocess.run(['tRNAscan-SE', '-G', '--thread', str(params.threads), '-o', f'{sample}_trna_out.txt', f'{fasta}'])
 
     # Read the tRNAscan-SE output into a DataFrame
     df = pd.read_csv('${sample}_trna_out.txt', sep='\\t', skiprows=2)
