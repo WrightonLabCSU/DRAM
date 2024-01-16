@@ -18,7 +18,7 @@ process TRNA_SCAN {
     tRNAscan-SE \\
     -G \\
     --thread ${params.threads} \\
-    -o \${sample}_trna_out.txt \\
+    -o ${sample}_trna_out.txt \\
     ${fasta}
 
     # Process tRNAscan-SE Output
