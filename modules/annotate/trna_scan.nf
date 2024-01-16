@@ -15,19 +15,23 @@ process TRNA_SCAN {
     script:
 
     """
-    tRNAscan-SE \\
-    -G \\
-    --thread ${params.threads} \\
-    -o ${sample}_trna_out.txt \\
-    ${fasta}
+    python3 - <<EOF
+    import pandas as pd
 
-    # Process tRNAscan-SE Output
-    if [ -s \${sample}_trna_out.txt ]; then
-        awk -F'\t' 'NR > 2 && !/^-+/ && NR != 4 { if (NR == 3) print "Name\ttRNA #\tBegin\tEnd\tType\tCodon\tScore"; if (\$1 != "Begin" && \$1 != "End" && \$3 ~ /^[0-9]+$/ && \$4 ~ /^[0-9]+$/) print \$1"\t"\$2"\t"\$3"\t"\$4"\t"\$5"\t"\$6"\t"\$7 }' \${sample}_trna_out.txt > \${sample}_processed_trnas.tsv
-    else
-        echo "No tRNAs were detected, no trnas.tsv file will be created."
-        exit 1
-    fi
+    # Run tRNAscan-SE
+    # Replace the placeholders with actual paths and variables
+    # subprocess.run(['tRNAscan-SE', '-G', '--thread', str(params.threads), '-o', f'{sample}_trna_out.txt', f'{fasta}'])
+
+    # Read the tRNAscan-SE output into a DataFrame
+    df = pd.read_csv('${sample}_trna_out.txt', sep='\\t', skiprows=2)
+
+    # Process the DataFrame
+    processed_df = df[['Name', 'tRNA #', 'Begin', 'End', 'Type', 'Codon', 'Score']].drop_duplicates(subset=['Begin'])
+
+    # Save the processed DataFrame to a new TSV file
+    processed_df.to_csv('${sample}_processed_trnas.tsv', sep='\\t', index=False)
+    EOF
+
     """
 
 }
