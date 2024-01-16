@@ -31,7 +31,7 @@ process TRNA_SCAN {
     mv ${sample}_trna_out_temp.txt ${sample}_trna_out.txt
 
     # Retain specific columns and first occurrence of "Begin" and "End"
-    awk '!seen[\$3,\$4]++ {print \$1, \$2, \$3, \$4, \$5, \$6, \$9}' ${sample}_trna_out.txt > ${sample}_processed_trnas.tsv
+    awk '!seen[\$3,\$4]++ {print \$1, \$2, \$5, \$6, \$7, \$8, \$9}' ${sample}_trna_out.txt > ${sample}_processed_trnas.tsv
     """
 
 
