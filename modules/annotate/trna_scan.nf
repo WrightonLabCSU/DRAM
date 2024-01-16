@@ -22,8 +22,8 @@ process TRNA_SCAN {
     ${fasta}
 
     # Process tRNAscan-SE Output
-    if [ -s ${sample}_trna_out.txt ]; then
-        awk -F'\t' 'NR > 3 && !/^-+/{ if (NR == 4) print "Name\ttRNA #\tBegin\tEnd\tType\tCodon\tScore"; if (!/Begin[.][0-9]+|End[.][0-9]+/) print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7 }' ${sample}_trna_out.txt > ${sample}_processed_trnas.tsv
+    if [ -s \${sample}_trna_out.txt ]; then
+        awk -F'\t' 'NR > 3 && !/^-+/{ if (NR == 4) print "Name\ttRNA #\tBegin\tEnd\tType\tCodon\tScore"; if (\$1 != "Begin" && \$1 != "End" && \$3 ~ /^[0-9]+$/ && \$4 ~ /^[0-9]+$/) print \$1"\t"\$2"\t"\$3"\t"\$4"\t"\$5"\t"\$6"\t"\$7 }' \${sample}_trna_out.txt > \${sample}_processed_trnas.tsv
     else
         echo "No tRNAs were detected, no trnas.tsv file will be created."
         exit 1
