@@ -17,18 +17,19 @@ process TRNA_SCAN {
     """
     python3 - <<EOF
     import pandas as pd
+    import subprocess
 
     # Run tRNAscan-SE
     subprocess.run(['tRNAscan-SE', '-G', '--thread', str(params.threads), '-o', f'{sample}_trna_out.txt', f'{fasta}'])
 
     # Read the tRNAscan-SE output into a DataFrame
-    df = pd.read_csv('${sample}_trna_out.txt', sep='\\t', skiprows=2)
+    df = pd.read_csv('{sample}_trna_out.txt', sep='\\t', skiprows=2)
 
     # Process the DataFrame
     processed_df = df[['Name', 'tRNA #', 'Begin', 'End', 'Type', 'Codon', 'Score']].drop_duplicates(subset=['Begin'])
 
     # Save the processed DataFrame to a new TSV file
-    processed_df.to_csv('${sample}_processed_trnas.tsv', sep='\\t', index=False)
+    processed_df.to_csv('{sample}_processed_trnas.tsv', sep='\\t', index=False)
     EOF
 
     """
