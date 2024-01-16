@@ -21,16 +21,13 @@ process TRNA_SCAN {
 
     # Process tRNAscan-SE Output
     if [ -s ${sample}_trna_out.txt ]; then
-        trna_frame=\$(awk -F'rsity ' 'NR > 2 { print \$0 }' ${sample}_trna_out.txt | cut -f 1,3-)
+        trna_frame=\$(awk -F'\t' 'NR > 1 && !/^-+/{ print \$0 }' ${sample}_trna_out.txt | cut -f 1,2,3,4,5)
 
-        # Remove columns like "Begin.1" or "End.1"
-        trna_frame=\$(awk 'BEGIN{OFS=FS="--"}{gsub(/Begin.1|End.1/, "", \$0)}1' <<< "\$trna_frame")
+        # Remove additional occurrences of "Begin" and "End"
+        trna_frame=\$(awk 'BEGIN{OFS=FS="\t"}{gsub(/Begin.[0-9]+|End.[0-9]+/, "", \$0)}1' <<< "\$trna_frame")
 
-        # Remove duplicate columns
-        trna_frame=\$(awk '{a[\$0]++}END{for (i in a) print i}' <<< "\$trna_frame")
-
-        # Insert a new column for the sample name
-        trna_frame="${sample} \$trna_frame"
+        # Remove the "Note" column if it exists
+        trna_frame=\$(awk 'BEGIN{OFS=FS="\t"}{NF--; print}' <<< "\$trna_frame")
 
         # Save the processed tRNA frame to a new file
         echo -e "\$trna_frame" > ${sample}_processed_trnas.tsv
