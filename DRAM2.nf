@@ -97,8 +97,11 @@ if( params.use_dbset){
 include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
 include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
 
-include { TRNA_SCAN                                    } from './modules/annotate/trna_scan.nf'
-include { RRNA_SCAN                                    } from './modules/annotate/rrna_scan.nf'
+include { TRNA_SCAN                                     } from './modules/annotate/trna_scan.nf'
+include { RRNA_SCAN                                     } from './modules/annotate/rrna_scan.nf'
+include { TRNA_COLLECT                                  } from './modules/annotate/trna_collect.nf'
+include { RRNA_COLLECT                                  } from './modules/annotate/rrna_collect.nf'
+
 
 include { MMSEQS2                                       } from './modules/mmseqs2.nf'
 
@@ -454,12 +457,22 @@ workflow {
         // Not sure if we want these default or optional yet
         TRNA_SCAN( fasta )
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out
-        // Will have to collect these and process eventually
+        // Collect all sample formatted tRNA files
+        Channel.empty()
+            .mix( ch_trna_scan )
+            .collect()
+            .set { ch_collected_tRNAs }
+        //TRNA_COLLECT( ch_collected_tRNAs )
+
 
         RRNA_SCAN( fasta )
         ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
-        // Will have to collect these and process eventually
-
+        // Collect all sample formatted rRNA files
+        Channel.empty()
+            .mix( ch_rrna_scan )
+            .collect()
+            .set { ch_collected_rRNAs }
+        //RRNA_COLLECT( ch_collected_rRNAs )
 
 
         if( annotate_kegg == 1 ){
