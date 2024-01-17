@@ -12,8 +12,11 @@ process TRNA_COLLECT {
     """
     #!/usr/bin/env python
 
+    # Convert combined_trnas to a String
+    combined_trnas_str = ','.join(${combined_trnas.collect { "'${it}'" }})
+
     # Replace single quotes with double quotes
-    combined_trnas = ${combined_trnas.replace("'", '"')}
+    combined_trnas = combined_trnas_str.replace("'", '"')
 
     import pandas as pd
 
