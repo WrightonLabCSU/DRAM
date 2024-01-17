@@ -15,7 +15,8 @@ process RRNA_SCAN {
     """
     barrnap \\
     --threads ${params.threads} \\
-    ${fasta}
+    ${fasta} \\
+    > ${sample}_rrnas.tsv
 
 
 
