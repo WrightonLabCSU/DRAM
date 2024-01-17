@@ -38,12 +38,8 @@ process TRNA_SCAN {
         print("Column names after removing 'Note':")
         print(trna_frame.columns)
 
-        # Remove the first and third lines
+        # Keep only every second row starting from the second row
         trna_frame = trna_frame.iloc[1::2]
-
-        # Print column names after removing lines
-        print("Column names after removing lines:")
-        print(trna_frame.columns)
 
         # Keep only the first occurrence of "Begin" and "End" columns
         trna_frame = trna_frame.loc[:, ~trna_frame.columns.duplicated(keep='first')]
