@@ -473,6 +473,7 @@ workflow {
             .mix( ch_rrna_scan )
             .collect()
             .set { ch_collected_rRNAs }
+        ch_collected_rRNAs.view()
         //RRNA_COLLECT( ch_collected_rRNAs )
 
 
