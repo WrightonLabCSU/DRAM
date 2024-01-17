@@ -352,7 +352,7 @@ if( params.call ){
 
     // Convert ch_fastas into a tuple: [samplename, file]
     ch_fastas.map {
-        sampleName = it.getName().replaceAll(/\.[^.]+$/, '')
+        sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
         tuple(sampleName, it)
     }.set{fastas}
 }
@@ -367,7 +367,7 @@ if( params.annotate ){
     // Convert the input_genes into a tuple: [samplename, file]
     if( params.input_genes != 0 ){
         called_proteins = Channel.fromPath(ch_called_genes).map {
-            sampleName = it.getName().replaceAll(/\.[^.]+$/, '')
+            sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
             tuple(sampleName, it)
         }
         called_proteins = ch_called_genes
