@@ -32,7 +32,8 @@ process TRNA_SCAN {
         trna_frame = trna_frame.iloc[1::2]
 
         # Keep only the first occurrence of "Begin" and "End" columns
-        trna_frame = trna_frame.loc[:, ~trna_frame.columns.duplicated(keep='first')]
+        unique_columns = trna_frame.columns.difference(["Begin", "End"])
+        trna_frame = trna_frame.loc[:, unique_columns].join(trna_frame[["Begin", "End"]].apply(lambda col: col.first_valid_index(), axis=1))
 
         # Print column names again for debugging
         print("Column names after processing:")
