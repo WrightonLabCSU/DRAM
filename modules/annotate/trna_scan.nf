@@ -22,7 +22,7 @@ process TRNA_SCAN {
         trna_frame = pd.read_csv(input_file, sep="\t", skiprows=[0, 2])
 
         # Print column names for debugging
-        print("Column names before processing:")
+        print("Original Columns:")
         print(trna_frame.columns)
 
         # Remove the "Note" column if present
@@ -32,25 +32,12 @@ process TRNA_SCAN {
         trna_frame = trna_frame.iloc[1::2]
 
         # Keep only the first occurrence of "Begin" and "End" columns
-        unique_columns = trna_frame.columns.difference(["Begin", "End"])
-        trna_frame = trna_frame.loc[:, unique_columns].join(trna_frame[["Begin", "End"]].apply(lambda col: col.first_valid_index(), axis=1)).rename(columns={"Begin": "Begin", "End": "End"})
+        trna_frame = trna_frame.loc[:, ~trna_frame.columns.duplicated(keep='first')]
 
-        # Print column names again for debugging
-        print("Column names after processing:")
-        print(trna_frame.columns)
-
-        # Reorder columns
-        columns_order = ["Name", "tRNA #", "Begin", "End", "Type", "Codon", "Score"]
-
-        # Print debugging information
-        print("Columns to keep in order:")
-        print(columns_order)
-
-        # Try to reorder columns
-        try:
+        # Reorder columns if "Name" is present
+        if "Name" in trna_frame.columns:
+            columns_order = ["Name", "tRNA #", "Begin", "End", "Type", "Codon", "Score"]
             trna_frame = trna_frame[columns_order]
-        except KeyError as e:
-            print(f"Error: {e}")
 
         # Write the processed DataFrame to the output file
         trna_frame.to_csv(output_file, sep="\t", index=False)
