@@ -19,6 +19,10 @@ process TRNA_COLLECT {
         samples_and_paths = [(combined_trnas[i], combined_trnas[i + 1]) for i in range(0, len(combined_trnas), 2)]
         return samples_and_paths
 
+    # Debugging statements
+    print("Debug: Initial value of combined_trnas")
+    print("${combined_trnas}")
+
     # Load and preprocess combined_trnas
     combined_trnas_list = literal_eval(open("${combined_trnas}").read())
 
@@ -45,5 +49,6 @@ process TRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
     """
 }
