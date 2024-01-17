@@ -12,17 +12,33 @@ process TRNA_COLLECT {
     """
     #!/usr/bin/env python
 
+    # Replace single quotes with double quotes
+    combined_trnas = ${combined_trnas.replace("'", '"')}
+
     import pandas as pd
 
-    # Extract sample names and paths from the combined_trnas variable
-    combined_trnas_list = ${combined_trnas}
-    samples = [combined_trnas_list[i].strip("'") for i in range(0, len(combined_trnas_list), 2)]
-    paths = [combined_trnas_list[i + 1] for i in range(0, len(combined_trnas_list), 2)]
+    # Create an empty DataFrame to store collected data
+    collected_df = pd.DataFrame()
 
-    # Create an empty DataFrame with the desired columns
-    collected_trnas = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
+    # Iterate through combined_trnas to extract sample names and paths
+    for i in range(0, len(combined_trnas), 2):
+        sample_name = combined_trnas[i]
+        file_path = combined_trnas[i + 1]
 
-    # Save the DataFrame to the output file
-    collected_trnas.to_csv("collected_trnas.tsv", sep="\\t", index=False)
+        # Read the input file into a DataFrame
+        trna_frame = pd.read_csv(file_path, sep="\\t", skiprows=[0, 2])
+
+        # Extract relevant columns from the input DataFrame
+        trna_frame = trna_frame[["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score"]]
+
+        # Rename columns based on sample_name
+        columns_mapping = {col: f"{sample_name}_{col}" for col in trna_frame.columns[1:]}
+        trna_frame.rename(columns=columns_mapping, inplace=True)
+
+        # Merge the extracted data into the collected DataFrame
+        collected_df = pd.merge(collected_df, trna_frame, how='outer', on="sample")
+
+    # Write the collected DataFrame to the output file
+    collected_df.to_csv("collected_trnas.tsv", sep="\\t", index=False)
     """
 }
