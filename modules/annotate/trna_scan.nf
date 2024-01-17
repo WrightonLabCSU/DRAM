@@ -35,7 +35,7 @@ process TRNA_SCAN {
         trna_frame = trna_frame.loc[:, ~trna_frame.columns.duplicated(keep='first')]
 
         # Remove columns starting with "Begin" or "End"
-        trna_frame = trna_frame.loc[:, ~trna_frame.columns.str.startswith(('Begin', 'End'))]
+        trna_frame = trna_frame.loc[:, ~trna_frame.columns.str.match('(Begin|End)\\.')]
 
         # Reorder columns
         columns_order = ["sample", "Name", "tRNA #", "Begin", "End", "Type", "Codon", "Score"]
