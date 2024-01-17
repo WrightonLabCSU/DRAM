@@ -15,7 +15,7 @@ process TRNA_COLLECT {
     import pandas as pd
 
     # Extract sample names and paths from combined_trnas
-    combined_trnas_list = ${combined_trnas.toList()}
+    combined_trnas_list = ["bin-129", "/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/work/8b/8c868d679c8c3992b88d937db77c9e/bin-129_processed_trnas.tsv", "bin-124", "/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/work/a0/cdc89e04894ad16ff616a0baf4052c/bin-124_processed_trnas.tsv"]
     samples_and_paths = [combined_trnas_list[i] for i in range(0, len(combined_trnas_list), 2)]
 
     # Create an empty DataFrame to store the collected data
@@ -28,7 +28,7 @@ process TRNA_COLLECT {
 
         # Read the processed tRNAs file for the current sample
         try:
-            trna_data = pd.read_csv(path, sep="\t", skiprows=[0, 2])
+            trna_data = pd.read_csv(path, sep="\\t", skiprows=[0, 2])
         except pd.errors.EmptyDataError:
             continue  # Skip empty files
 
@@ -37,6 +37,6 @@ process TRNA_COLLECT {
         # collected_data[sample] = ...
 
     # Write the collected data to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+    collected_data.to_csv("collected_trnas.tsv", sep="\\t", index=False)
     """
 }
