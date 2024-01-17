@@ -12,13 +12,13 @@ process TRNA_COLLECT {
     """
     #!/usr/bin/env python
 
+    import pandas as pd
+
     # Convert combined_trnas to a String
     combined_trnas_str = ','.join(${combined_trnas.collect { "'${it}'" }})
 
     # Replace single quotes with double quotes
     combined_trnas = combined_trnas_str.replace("'", '"')
-
-    import pandas as pd
 
     # Create an empty DataFrame to store collected data
     collected_df = pd.DataFrame()
@@ -29,7 +29,11 @@ process TRNA_COLLECT {
         file_path = combined_trnas[i + 1]
 
         # Read the input file into a DataFrame
-        trna_frame = pd.read_csv(file_path, sep="\\t", skiprows=[0, 2])
+        try:
+            trna_frame = pd.read_csv(file_path, sep="\\t", skiprows=[0, 2])
+        except FileNotFoundError as e:
+            print(f"Error reading file: {e}")
+            continue  # Skip to the next iteration if the file is not found
 
         # Extract relevant columns from the input DataFrame
         trna_frame = trna_frame[["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score"]]
