@@ -16,16 +16,13 @@ process TRNA_COLLECT {
 
     # Extract sample names and paths from combined_trnas
     combined_trnas_list = ${combined_trnas.toList()}
-    samples_and_paths = [combined_trnas_list[i] for i in range(0, len(combined_trnas_list), 2)]
+    samples_and_paths = [combined_trnas_list[i:i+2] for i in range(0, len(combined_trnas_list), 2)]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples_and_paths)
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + [sample[0] for sample in samples_and_paths])
 
     # Iterate over each sample and corresponding path
-    for i in range(0, len(samples_and_paths), 2):
-        sample = samples_and_paths[i]
-        path = samples_and_paths[i + 1]
-
+    for sample, path in samples_and_paths:
         # Read the processed tRNAs file for the current sample
         try:
             trna_data = pd.read_csv(path, sep="\t", skiprows=[0, 2])
