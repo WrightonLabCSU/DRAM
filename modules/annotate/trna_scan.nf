@@ -54,7 +54,9 @@ process TRNA_SCAN {
 
         # Reorder columns
         columns_order = ["Sample", "Name", "tRNA #", "Begin", "End", "Type", "Codon", "Score"]
-        trna_frame = trna_frame[columns_order]
+
+        # Rename "Name" column to "query_id"
+        trna_frame = trna_frame.rename(columns={"Name": "query_id"})
 
         # Print final column names
         print("Final column names:")
