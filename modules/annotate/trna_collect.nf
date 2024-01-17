@@ -3,7 +3,7 @@ process TRNA_COLLECT {
     errorStrategy 'finish'
 
     input:
-    file combined_trnas
+    val combined_trnas
 
     output:
     tuple val(sample), path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
