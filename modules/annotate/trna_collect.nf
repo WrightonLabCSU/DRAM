@@ -16,13 +16,13 @@ process TRNA_COLLECT {
     import pandas as pd
 
     # Extract sample names from the file names
-    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in "${input}".split()]
+    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in "\${combined_trnas}".split()]
 
     # Create an empty DataFrame to store the collected data
     collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
     # Iterate over each input file
-    for file, sample in zip("${input}".split(), samples):
+    for file, sample in zip("\${combined_trnas}".split(), samples):
         try:
             # Read the processed tRNAs file for the current sample
             trna_data = pd.read_csv(file, sep="\t", skiprows=[0, 2])
