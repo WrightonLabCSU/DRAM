@@ -18,7 +18,7 @@ process RRNA_SCAN {
     import io
     import subprocess
 
-    def run_barrnap(fasta, fasta_name, threads=10, verbose=True):
+    def run_barrnap(fasta, sample_name, threads=10, verbose=True):
         barrnap_command = [
             "barrnap",
             "--threads", str(threads),
@@ -41,7 +41,7 @@ process RRNA_SCAN {
             }
             rrna_table_rows.append(
                 [
-                    fasta_name,
+                    sample_name,
                     row.begin,
                     row.end,
                     row.strand,
@@ -59,7 +59,7 @@ process RRNA_SCAN {
             return None
 
     RAW_RRNA_COLUMNS = [
-        "scaffold",
+        "query_id",  # Changed from "scaffold" to "query_id"
         "tool_name",
         "type",
         "begin",
@@ -69,7 +69,7 @@ process RRNA_SCAN {
         "empty",
         "note",
     ]
-    RRNA_COLUMNS = ["fasta", "begin", "end", "strand", "type", "e-value", "note"]
+    RRNA_COLUMNS = ["sample", "begin", "end", "strand", "type", "e-value", "note"]  # Changed from "fasta" to "sample"
 
     # Run barrnap
     rrna_df = run_barrnap("${fasta}", "${sample}", threads=${params.threads}, verbose=True)
