@@ -22,22 +22,37 @@ process TRNA_SCAN {
         trna_frame = pd.read_csv(input_file, sep="\t", skiprows=[0, 2])
 
         # Print column names for debugging
-        print("Original Columns:")
+        print("Original column names:")
         print(trna_frame.columns)
 
         # Remove the "Note" column if present
         trna_frame = trna_frame.drop(columns=["Note"], errors="ignore")
 
+        # Print column names after removing "Note" column
+        print("Column names after removing 'Note':")
+        print(trna_frame.columns)
+
         # Remove the first and third lines
         trna_frame = trna_frame.iloc[1::2]
 
-        # Remove additional occurrences of "Begin" and "End" columns along with their values
+        # Print column names after removing lines
+        print("Column names after removing lines:")
+        print(trna_frame.columns)
+
+        # Keep only the first occurrence of "Begin" and "End" columns
         trna_frame = trna_frame.loc[:, ~trna_frame.columns.duplicated(keep='first')]
 
-        # Reorder columns if "Name" is present
-        if "Name" in trna_frame.columns:
-            columns_order = ["Name", "tRNA #", "Begin", "End", "Type", "Codon", "Score"]
-            trna_frame = trna_frame[columns_order]
+        # Print column names after keeping the first occurrence of "Begin" and "End"
+        print("Column names after keeping the first occurrence of 'Begin' and 'End':")
+        print(trna_frame.columns)
+
+        # Reorder columns
+        columns_order = ["Name", "tRNA #", "Begin", "End", "Type", "Codon", "Score"]
+        trna_frame = trna_frame[columns_order]
+
+        # Print final column names
+        print("Final column names:")
+        print(trna_frame.columns)
 
         # Write the processed DataFrame to the output file
         trna_frame.to_csv(output_file, sep="\t", index=False)
