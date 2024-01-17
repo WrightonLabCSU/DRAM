@@ -48,6 +48,5 @@ process TRNA_SCAN {
 
     # Process tRNAscan-SE output
     process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
-
     """
 }
