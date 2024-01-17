@@ -18,11 +18,9 @@ process RRNA_SCAN {
     import io
     import subprocess
 
-    def run_barrnap(fasta, fasta_name, logger, threads=10, verbose=True):
-        # The provided run_process function is assumed to be defined elsewhere in your code
+    def run_barrnap(fasta, fasta_name, threads=10, verbose=True):
         raw_rrna_str = run_process(
             ["barrnap", "--threads", str(threads), fasta],
-            logger,
             capture_stdout=True,
             check=False,
             verbose=verbose,
@@ -56,7 +54,7 @@ process RRNA_SCAN {
                 rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS
             ).reset_index()
         else:
-            logger.warning("No rRNAs were detected, no rrnas.tsv file will be created.")
+            print("No rRNAs were detected, no rrnas.tsv file will be created.")
             return None
 
     RAW_RRNA_COLUMNS = [
@@ -73,7 +71,7 @@ process RRNA_SCAN {
     RRNA_COLUMNS = ["fasta", "begin", "end", "strand", "type", "e-value", "note"]
 
     # Run barrnap
-    rrna_df = run_barrnap("${fasta}", "${sample}", logger, threads=${params.threads}, verbose=True)
+    rrna_df = run_barrnap("${fasta}", "${sample}", threads=${params.threads}, verbose=True)
 
     if rrna_df is not None:
         # Save rrna_df to ${sample}_processed_rrnas.tsv
