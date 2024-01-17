@@ -17,6 +17,7 @@ process RRNA_SCAN {
     import pandas as pd
     import io
     import subprocess
+    from sys import stderr
 
     def run_barrnap(fasta, sample_name, threads=10, verbose=True):
         barrnap_command = [
@@ -55,7 +56,7 @@ process RRNA_SCAN {
                 rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS
             ).reset_index()
         else:
-            print("No rRNAs were detected, no rrnas.tsv file will be created.")
+            print(f"No rRNAs were detected for {sample_name}.", file=stderr)
             return None
 
     RAW_RRNA_COLUMNS = [
@@ -77,9 +78,5 @@ process RRNA_SCAN {
     if rrna_df is not None:
         # Save rrna_df to ${sample}_processed_rrnas.tsv
         rrna_df.to_csv("${sample}_processed_rrnas.tsv", sep="\t", index=False)
-    else:
-        # No rRNAs detected, create an empty file
-        with open("${sample}_processed_rrnas.tsv", 'w') as empty_file:
-            pass
     """
 }
