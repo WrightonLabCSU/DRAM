@@ -14,29 +14,28 @@ process TRNA_COLLECT {
 
     import pandas as pd
 
-    # Replace single quotes with double quotes in the combined_trnas variable
-    combined_trnas = ${combined_trnas.replaceAll("'", '\"')}
+    # Extract sample names and paths from combined_trnas
+    samples_and_paths = (${combined_trnas//\'/}).split()
 
-    # Function to read the first two lines of each input file
-    def read_first_two_lines(file_path):
-        with open(file_path, 'r') as file:
-            lines = [file.readline().strip() for _ in range(2)]
-        return lines
+    # Create an empty DataFrame to store the collected data
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples_and_paths[::2])
 
-    # Split the modified string into a list
-    combined_trnas_list = eval(combined_trnas)
+    # Iterate over each sample and corresponding path
+    for i in range(0, len(samples_and_paths), 2):
+        sample = samples_and_paths[i]
+        path = samples_and_paths[i + 1]
 
-    # Iterate over samples and file paths in combined_trnas
-    for i in range(0, len(combined_trnas_list), 2):
-        sample = combined_trnas_list[i]
-        file_path = combined_trnas_list[i + 1]
+        # Read the processed tRNAs file for the current sample
+        try:
+            trna_data = pd.read_csv(path, sep="\\t", skiprows=[0, 2])
+        except pd.errors.EmptyDataError:
+            continue  # Skip empty files
 
-        # Read the first two lines of the input file
-        lines = read_first_two_lines(file_path)
+        # Add data to the collected DataFrame
+        # Update the following line based on how you want to populate the values
+        # collected_data[sample] = ...
 
-        # Print sample name, file path, and first two lines
-        print(f"Sample: {sample}, File: {file_path}")
-        print("\n".join(lines))
-        print("\n" + "=" * 50 + "\n")  # Separator line
+    # Write the collected data to the output file
+    collected_data.to_csv("collected_trnas.tsv", sep="\\t", index=False)
     """
 }
