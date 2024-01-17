@@ -14,7 +14,7 @@ process RRNA_SCAN {
 
     """
     barrnap \\
-    --cpu ${params.threads} \\
+    --threads ${params.threads} \\
     ${fasta}
 
 
