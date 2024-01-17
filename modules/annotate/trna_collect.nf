@@ -12,38 +12,29 @@ process TRNA_COLLECT {
     """
     #!/usr/bin/env python
 
+    import os
     import pandas as pd
 
-    def extract_samples_and_paths(combined_trnas):
-        samples_and_paths = [(combined_trnas[i], combined_trnas[i + 1]) for i in range(0, len(combined_trnas), 2)]
-        return samples_and_paths
-
-    # Debugging statements
-    print("Debug: Initial value of combined_trnas")
-    print("${combined_trnas}")
-
-    # Load and preprocess combined_trnas
-    combined_trnas_str = "${combined_trnas}"
-    combined_trnas_list = extract_samples_and_paths(combined_trnas_str)
+    # Extract sample names from the file names
+    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in "${input}".split()]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + [sample for sample, _ in combined_trnas_list])
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
-    # Iterate over each sample and corresponding path
-    for sample, path in combined_trnas_list:
+    # Iterate over each input file
+    for file, sample in zip("${input}".split(), samples):
         try:
-            with open(path, 'r') as file:
-                # Read the processed tRNAs file for the current sample
-                trna_data = pd.read_csv(file, sep="\t", skiprows=[0, 2])
-                
-                # Add data to the collected DataFrame
-                # Update the following line based on how you want to populate the values
-                # collected_data[sample] = ...
+            # Read the processed tRNAs file for the current sample
+            trna_data = pd.read_csv(file, sep="\t", skiprows=[0, 2])
+            
+            # Add data to the collected DataFrame
+            # Update the following line based on how you want to populate the values
+            # collected_data[sample] = ...
 
         except FileNotFoundError:
-            print(f"Debug: File {path} not found.")
+            print(f"Debug: File {file} not found.")
         except pd.errors.EmptyDataError:
-            print(f"Debug: File {path} is empty.")
+            print(f"Debug: File {file} is empty.")
         except Exception as e:
             print(f"Debug: Error reading {sample}: {e}")
 
