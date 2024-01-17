@@ -15,7 +15,7 @@ process TRNA_COLLECT {
     import pandas as pd
 
     # Extract sample names and paths from combined_trnas
-    samples_and_paths = (${combined_trnas//\'/}).split()
+    samples_and_paths = (${combined_trnas.replace("'", "").toList()})
 
     # Create an empty DataFrame to store the collected data
     collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples_and_paths[::2])
