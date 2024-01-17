@@ -15,6 +15,7 @@ process TRNA_SCAN {
     #!/usr/bin/env python
 
     import pandas as pd
+    import subprocess
 
     def process_trnascan_output(input_file, output_file):
         # Read the input file into a DataFrame
@@ -38,7 +39,7 @@ process TRNA_SCAN {
 
     # Run tRNAscan-SE
     trna_out = "${sample}_trna_out.txt"
-    run_process(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"])
+    subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"], check=True)
 
     # Process tRNAscan-SE output
     process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv")
