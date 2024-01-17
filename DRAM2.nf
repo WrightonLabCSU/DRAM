@@ -99,7 +99,7 @@ include { CALL_GENES                                    } from './modules/call/c
 
 include { TRNA_SCAN                                     } from './modules/annotate/trna_scan.nf'
 include { RRNA_SCAN                                     } from './modules/annotate/rrna_scan.nf'
-//include { TRNA_COLLECT                                  } from './modules/annotate/trna_collect.nf'
+include { TRNA_COLLECT                                  } from './modules/annotate/trna_collect.nf'
 //include { RRNA_COLLECT                                  } from './modules/annotate/rrna_collect.nf'
 
 
@@ -463,7 +463,7 @@ workflow {
             .collect()
             .set { ch_collected_tRNAs }
         ch_collected_tRNAs.view()
-        //TRNA_COLLECT( ch_collected_tRNAs )
+        TRNA_COLLECT( ch_collected_tRNAs )
 
 
         RRNA_SCAN( fasta )
