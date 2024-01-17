@@ -12,40 +12,28 @@ process TRNA_COLLECT {
     """
     #!/usr/bin/env python
 
+    # Replace single quotes with double quotes in the combined_trnas variable
+    combined_trnas = ${combined_trnas.replace("'", "\"")}
+
     import pandas as pd
 
-    # Convert combined_trnas to a String
-    combined_trnas_str = ','.join(${combined_trnas.collect { "'${it}'" }})
+    # Function to read the first two lines of each input file
+    def read_first_two_lines(file_path):
+        with open(file_path, 'r') as file:
+            lines = [file.readline().strip() for _ in range(2)]
+        return lines
 
-    # Replace single quotes with double quotes
-    combined_trnas = combined_trnas_str.replace("'", '"')
-
-    # Create an empty DataFrame to store collected data
-    collected_df = pd.DataFrame()
-
-    # Iterate through combined_trnas to extract sample names and paths
+    # Iterate over samples and file paths in combined_trnas
     for i in range(0, len(combined_trnas), 2):
-        sample_name = combined_trnas[i]
+        sample = combined_trnas[i]
         file_path = combined_trnas[i + 1]
 
-        # Read the input file into a DataFrame
-        try:
-            trna_frame = pd.read_csv(file_path, sep="\\t", skiprows=[0, 2])
-        except FileNotFoundError as e:
-            print(f"Error reading file: {e}")
-            continue  # Skip to the next iteration if the file is not found
+        # Read the first two lines of the input file
+        lines = read_first_two_lines(file_path)
 
-        # Extract relevant columns from the input DataFrame
-        trna_frame = trna_frame[["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score"]]
-
-        # Rename columns based on sample_name
-        columns_mapping = {col: f"{sample_name}_{col}" for col in trna_frame.columns[1:]}
-        trna_frame.rename(columns=columns_mapping, inplace=True)
-
-        # Merge the extracted data into the collected DataFrame
-        collected_df = pd.merge(collected_df, trna_frame, how='outer', on="sample")
-
-    # Write the collected DataFrame to the output file
-    collected_df.to_csv("collected_trnas.tsv", sep="\\t", index=False)
+        # Print sample name, file path, and first two lines
+        print(f"Sample: {sample}, File: {file_path}")
+        print("\n".join(lines))
+        print("\n" + "=" * 50 + "\n")  # Separator line
     """
 }
