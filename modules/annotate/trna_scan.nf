@@ -1,4 +1,4 @@
-process trnaScanProcess {
+process TRNA_SCAN {
 
 
     errorStrategy 'finish'
