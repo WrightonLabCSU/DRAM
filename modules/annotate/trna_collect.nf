@@ -15,10 +15,11 @@ process TRNA_COLLECT {
     import pandas as pd
 
     # Extract sample names and paths from combined_trnas
-    samples_and_paths = ${combined_trnas.toList().join(',').replace("'", "").toList()}
+    combined_trnas_list = ${combined_trnas.toList()}
+    samples_and_paths = [combined_trnas_list[i] for i in range(0, len(combined_trnas_list), 2)]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples_and_paths[1::2])
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples_and_paths)
 
     # Iterate over each sample and corresponding path
     for i in range(0, len(samples_and_paths), 2):
@@ -27,7 +28,7 @@ process TRNA_COLLECT {
 
         # Read the processed tRNAs file for the current sample
         try:
-            trna_data = pd.read_csv(path, sep="\\t", skiprows=[0, 2])
+            trna_data = pd.read_csv(path, sep="\t", skiprows=[0, 2])
         except pd.errors.EmptyDataError:
             continue  # Skip empty files
 
@@ -36,6 +37,6 @@ process TRNA_COLLECT {
         # collected_data[sample] = ...
 
     # Write the collected data to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="\\t", index=False)
+    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
     """
 }
