@@ -31,13 +31,7 @@ process TRNA_SCAN {
     mv ${sample}_trna_out_temp.txt ${sample}_trna_out.txt
 
     # Remove extra occurrences of "Begin" and "End" columns
-    awk '!seen[\$3,\$4]++ {print \$1, \$2, \$5, \$6, \$9}' ${sample}_trna_out.txt > ${sample}_processed_trnas.tsv
-
-    # Add the Score column header to the output file
-    echo -e "Name\ttRNA #\tType\tCodon\tBegin\tEnd\tScore" > ${sample}_processed_trnas.tsv
-
-    # Append the processed data to the output file
-    awk '!seen[\$3,\$4]++ {print \$1, \$2, \$5, \$6, \$9}' ${sample}_trna_out.txt >> ${sample}_processed_trnas.tsv
+    awk '!seen[\$3,\$4]++ {print \$1, \$2, \$3, \$5, \$6, \$9}' ${sample}_trna_out.txt > ${sample}_processed_trnas.tsv
     """
 
 }
