@@ -29,24 +29,17 @@ process TRNA_COLLECT {
     combined_trnas_list = extract_samples_and_paths(combined_trnas_str)
     print(f"Debug: Combined_trnas_list: {combined_trnas_list}")
 
-    # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + [sample for sample, _ in combined_trnas_list])
-
-    # Iterate over each sample and corresponding path
+    # Print the first two lines of each input file
     for sample, path in combined_trnas_list:
-
-        # Read the processed tRNAs file for the current sample
         try:
-            trna_data = pd.read_csv(path, sep="\t", skiprows=[0, 2])
-        except pd.errors.EmptyDataError:
-            continue  # Skip empty files
+            with open(path, 'r') as file:
+                lines = file.readlines()[:2]
+                print(f"Debug: First two lines of {sample}: {lines}")
+        except FileNotFoundError:
+            print(f"Debug: File {path} not found.")
+        except Exception as e:
+            print(f"Debug: Error reading {sample}: {e}")
 
-        # Add data to the collected DataFrame
-        # Update the following line based on how you want to populate the values
-        # collected_data[sample] = ...
-
-    # Write the collected data to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
 
     """
 }
