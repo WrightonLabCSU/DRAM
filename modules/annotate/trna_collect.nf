@@ -6,7 +6,7 @@ process TRNA_COLLECT {
     val combined_trnas
 
     output:
-    tuple val(sample), path("${sample}_collected_trnas.tsv"), emit: trna_collected_out, optional: true
+    tuple val(sample), path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
 
     script:
     """
