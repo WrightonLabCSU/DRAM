@@ -21,6 +21,9 @@ process TRNA_SCAN {
         # Read the input file into a DataFrame
         trna_frame = pd.read_csv(input_file, sep="\t", skiprows=[0, 2])
 
+        # Strip leading and trailing spaces from column names
+        trna_frame.columns = trna_frame.columns.str.strip()
+
         # Print column names for debugging
         print("Original column names:")
         print(trna_frame.columns)
