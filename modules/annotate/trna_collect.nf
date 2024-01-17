@@ -14,18 +14,15 @@ process TRNA_COLLECT {
 
     import pandas as pd
 
-    # Convert the combined_trnas string to a list
+    # Extract sample names and paths from the combined_trnas variable
     combined_trnas_list = ${combined_trnas}
+    samples = [combined_trnas_list[i].strip("'") for i in range(0, len(combined_trnas_list), 2)]
+    paths = [combined_trnas_list[i + 1] for i in range(0, len(combined_trnas_list), 2)]
 
-    # Initialize an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame()
+    # Create an empty DataFrame with the desired columns
+    collected_trnas = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
-    # Iterate through the combined_trnas_list to extract sample names
-    for i in range(0, len(combined_trnas_list), 2):
-        sample_name = combined_trnas_list[i][1:-1]  # Remove single quotes from sample name
-        collected_data[sample_name] = ""
-
-    # Write the DataFrame to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="\\t", index=False)
+    # Save the DataFrame to the output file
+    collected_trnas.to_csv("collected_trnas.tsv", sep="\t", index=False)
     """
 }
