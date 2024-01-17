@@ -14,21 +14,18 @@ process TRNA_COLLECT {
 
     import pandas as pd
 
-    # Create a dictionary to store data for each sample
-    sample_data = {}
+    # Convert the combined_trnas string to a list
+    combined_trnas_list = ${combined_trnas}
 
-    # Loop through combined_trnas to extract sample names and paths
-    for i in range(0, len(combined_trnas), 2):
-        sample_name = combined_trnas[i].strip("'")
-        sample_path = combined_trnas[i + 1]
+    # Initialize an empty DataFrame to store the collected data
+    collected_data = pd.DataFrame()
 
-        # Create an empty DataFrame for each sample
-        sample_data[sample_name] = pd.read_csv(sample_path, sep="\\t", nrows=0)
+    # Iterate through the combined_trnas_list to extract sample names
+    for i in range(0, len(combined_trnas_list), 2):
+        sample_name = combined_trnas_list[i][1:-1]  # Remove single quotes from sample name
+        collected_data[sample_name] = ""
 
-    # Concatenate DataFrames along columns to form the collected_trnas DataFrame
-    collected_trnas = pd.concat(sample_data.values(), axis=1)
-
-    # Write the collected_trnas DataFrame to the output file
-    collected_trnas.to_csv("collected_trnas.tsv", sep="\\t", index=False)
+    # Write the DataFrame to the output file
+    collected_data.to_csv("collected_trnas.tsv", sep="\\t", index=False)
     """
 }

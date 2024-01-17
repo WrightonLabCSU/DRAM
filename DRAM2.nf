@@ -462,7 +462,6 @@ workflow {
             .mix( ch_trna_scan )
             .collect()
             .set { ch_collected_tRNAs }
-        ch_collected_tRNAs.view()
         TRNA_COLLECT( ch_collected_tRNAs )
 
 
@@ -473,7 +472,6 @@ workflow {
             .mix( ch_rrna_scan )
             .collect()
             .set { ch_collected_rRNAs }
-        ch_collected_rRNAs.view()
         //RRNA_COLLECT( ch_collected_rRNAs )
 
 
