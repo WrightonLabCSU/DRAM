@@ -13,7 +13,7 @@ process TRNA_COLLECT {
     #!/usr/bin/env python
 
     # Replace single quotes with double quotes in the combined_trnas variable
-    combined_trnas = '${combined_trnas.replaceAll("'", '\"')}'
+    combined_trnas = """${combined_trnas.replaceAll("'", '\"')}"""
 
     import pandas as pd
 
