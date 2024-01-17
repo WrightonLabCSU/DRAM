@@ -8,7 +8,7 @@ process RRNA_SCAN {
     tuple val(sample), path(fasta)
 
     output:
-    tuple val(sample), path("${sample}__processed_rrnas.tsv"), emit: trna_scan_out, optinal: true
+    tuple val(sample), path("${sample}__processed_rrnas.tsv"), emit: trna_scan_out, optional: true
 
     script:
 
