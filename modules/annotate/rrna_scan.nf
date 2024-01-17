@@ -19,12 +19,13 @@ process RRNA_SCAN {
     import subprocess
 
     def run_barrnap(fasta, fasta_name, threads=10, verbose=True):
-        raw_rrna_str = run_process(
-            ["barrnap", "--threads", str(threads), fasta],
-            capture_stdout=True,
-            check=False,
-            verbose=verbose,
-        )
+        barrnap_command = [
+            "barrnap",
+            "--threads", str(threads),
+            "--kingdom", "bacteria",  # Add any other necessary barrnap options
+            fasta
+        ]
+        raw_rrna_str = subprocess.run(barrnap_command, capture_output=True, text=True).stdout
         raw_rrna_table = pd.read_csv(
             io.StringIO(raw_rrna_str),
             skiprows=1,
