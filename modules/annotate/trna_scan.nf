@@ -17,8 +17,6 @@ process TRNA_SCAN {
     import pandas as pd
     import subprocess
 
-    threads = "${params.threads}"
-
     # Function to process tRNAscan output
     def process_trnascan_output(input_file, output_file, sample_name):
         # Read the input file into a DataFrame
@@ -45,14 +43,15 @@ process TRNA_SCAN {
         # Rename specified columns
         trna_frame = trna_frame.rename(columns={"Name": "query_id", "Begin": "begin", "End": "end", "Type": "type", "Codon": "codon", "Score": "score"})
 
-        # Write the processed DataFrame to the output file
-        trna_frame.to_csv(output_file, sep="\\t", index=False)
+        # Check if DataFrame is empty
+        if not trna_frame.empty:
+            # Write the processed DataFrame to the output file
+            trna_frame.to_csv(output_file, sep="\\t", index=False)
 
     # Run tRNAscan-SE with the necessary input to avoid prompts
     trna_out = "${sample}_trna_out.txt"
-    subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", threads, "${fasta}"], input=b'O\\n', check=True)
+    subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"], input=b'O\\n', check=True)
 
     # Process tRNAscan-SE output
     process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
-    """
 }
