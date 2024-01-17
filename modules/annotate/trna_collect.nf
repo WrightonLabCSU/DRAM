@@ -3,7 +3,7 @@ process TRNA_COLLECT {
     errorStrategy 'finish'
 
     input:
-    val combined_trnas
+    file combined_trnas
 
     output:
     tuple val(sample), path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
@@ -13,7 +13,6 @@ process TRNA_COLLECT {
     #!/usr/bin/env python
 
     import pandas as pd
-    from ast import literal_eval
 
     def extract_samples_and_paths(combined_trnas):
         samples_and_paths = [(combined_trnas[i], combined_trnas[i + 1]) for i in range(0, len(combined_trnas), 2)]
@@ -24,7 +23,8 @@ process TRNA_COLLECT {
     print("${combined_trnas}")
 
     # Load and preprocess combined_trnas
-    combined_trnas_list = literal_eval(open("${combined_trnas}").read())
+    combined_trnas_str = "${combined_trnas}"
+    combined_trnas_list = extract_samples_and_paths(combined_trnas_str)
 
     # Create an empty DataFrame to store the collected data
     collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + [sample for sample, _ in combined_trnas_list])
