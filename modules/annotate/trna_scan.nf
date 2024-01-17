@@ -17,12 +17,15 @@ process TRNA_SCAN {
     import pandas as pd
     import subprocess
 
-    def process_trnascan_output(input_file, output_file):
+    def process_trnascan_output(input_file, output_file, sample_name):
         # Read the input file into a DataFrame
         trna_frame = pd.read_csv(input_file, sep="\t", skiprows=[0, 2])
 
         # Strip leading and trailing spaces from column names
         trna_frame.columns = trna_frame.columns.str.strip()
+
+        # Add a new "Sample" column and populate it with the sample_name value
+        trna_frame.insert(0, "Sample", sample_name)
 
         # Print column names for debugging
         print("Original column names:")
@@ -50,7 +53,7 @@ process TRNA_SCAN {
         print(trna_frame.columns)
 
         # Reorder columns
-        columns_order = ["Name", "tRNA #", "Begin", "End", "Type", "Codon", "Score"]
+        columns_order = ["Sample", "Name", "tRNA #", "Begin", "End", "Type", "Codon", "Score"]
         trna_frame = trna_frame[columns_order]
 
         # Print final column names
@@ -65,6 +68,6 @@ process TRNA_SCAN {
     subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"], check=True)
 
     # Process tRNAscan-SE output
-    process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv")
+    process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
     """
 }
