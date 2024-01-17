@@ -12,10 +12,10 @@ process TRNA_COLLECT {
     """
     #!/usr/bin/env python
 
-    # Replace single quotes with double quotes in the combined_trnas variable
-    combined_trnas = """${combined_trnas.replaceAll("'", '\"')}"""
-
     import pandas as pd
+
+    # Replace single quotes with double quotes in the combined_trnas variable
+    combined_trnas = ${combined_trnas.replaceAll("'", '\"')}
 
     # Function to read the first two lines of each input file
     def read_first_two_lines(file_path):
