@@ -23,6 +23,6 @@ process TRNA_COLLECT {
     collected_trnas = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
     # Save the DataFrame to the output file
-    collected_trnas.to_csv("collected_trnas.tsv", sep="\t", index=False)
+    collected_trnas.to_csv("collected_trnas.tsv", sep="\\t", index=False)
     """
 }
