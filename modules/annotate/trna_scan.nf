@@ -19,7 +19,7 @@ process TRNA_SCAN {
 
     def process_trnascan_output(input_file, output_file, sample_name):
         # Read the input file into a DataFrame
-        trna_frame = pd.read_csv(input_file, sep="\t", skiprows=[0, 2])
+        trna_frame = pd.read_csv(input_file, sep="	", skiprows=[0, 2])
 
         # Strip leading and trailing spaces from column names
         trna_frame.columns = trna_frame.columns.str.strip()
@@ -40,7 +40,7 @@ process TRNA_SCAN {
         trna_frame = trna_frame.rename(columns={"Name": "query_id", "Begin": "begin", "End": "end", "Type": "type", "Codon": "codon", "Score": "score"})
 
         # Write the processed DataFrame to the output file
-        trna_frame.to_csv(output_file, sep="\t", index=False)
+        trna_frame.to_csv(output_file, sep="	", index=False)
 
     # Run tRNAscan-SE with the necessary input to avoid prompts
     trna_out = "${sample}_trna_out.txt"
