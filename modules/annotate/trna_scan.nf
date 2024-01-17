@@ -31,7 +31,7 @@ process TRNA_SCAN {
         # Remove the first and third lines
         trna_frame = trna_frame.iloc[1::2]
 
-        # Keep only the first occurrence of "Begin" and "End" columns
+        # Remove additional occurrences of "Begin" and "End" columns along with their values
         trna_frame = trna_frame.loc[:, ~trna_frame.columns.duplicated(keep='first')]
 
         # Reorder columns if "Name" is present
