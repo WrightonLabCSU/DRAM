@@ -3,7 +3,7 @@ process TRNA_COLLECT {
     errorStrategy 'finish'
 
     input:
-    val combined_trnas
+    file combined_trnas
 
     output:
     tuple val(sample), path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
@@ -13,9 +13,13 @@ process TRNA_COLLECT {
     #!/usr/bin/env python
 
     import pandas as pd
+    from ast import literal_eval
+
+    # Load and preprocess combined_trnas
+    combined_trnas_str = "${combined_trnas}".replace("\\", "\\\\")
+    combined_trnas_list = literal_eval(combined_trnas_str)
 
     # Extract sample names and paths from combined_trnas
-    combined_trnas_list = ${combined_trnas}
     samples_and_paths = [combined_trnas_list[i] for i in range(0, len(combined_trnas_list), 2)]
 
     # Create an empty DataFrame to store the collected data
