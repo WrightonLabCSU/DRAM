@@ -15,21 +15,27 @@ process TRNA_COLLECT {
     import pandas as pd
     from ast import literal_eval
 
+    # Function to extract samples and paths from combined_trnas
+    def extract_samples_and_paths(combined_trnas):
+        samples_and_paths = []
+        for i in range(0, len(combined_trnas), 2):
+            sample = combined_trnas[i].strip('[], ')
+            path = combined_trnas[i + 1].strip('[], ')
+            samples_and_paths.append((sample, path))
+        return samples_and_paths
+
     # Load and preprocess combined_trnas
     combined_trnas_str = "${combined_trnas}".replace("\\", "\\\\")
     combined_trnas_list = literal_eval(combined_trnas_str)
 
-    # Extract sample names and paths from combined_trnas
-    samples_and_paths = [combined_trnas_list[i] for i in range(0, len(combined_trnas_list), 2)]
+    # Extract sample names and paths from combined_trnas using the function
+    samples_and_paths = extract_samples_and_paths(combined_trnas_list)
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples_and_paths)
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + [sample for sample, _ in samples_and_paths])
 
     # Iterate over each sample and corresponding path
-    for i in range(0, len(samples_and_paths), 2):
-        sample = samples_and_paths[i]
-        path = samples_and_paths[i + 1]
-
+    for sample, path in samples_and_paths:
         # Read the processed tRNAs file for the current sample
         try:
             trna_data = pd.read_csv(path, sep="\\t", skiprows=[0, 2])
