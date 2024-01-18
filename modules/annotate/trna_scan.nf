@@ -28,8 +28,13 @@ process TRNA_SCAN {
         # Add a new "sample" column and populate it with the sample_name value
         trna_frame.insert(0, "sample", sample_name)
 
-        # Remove the "Note" column if present
-        trna_frame = trna_frame.drop(columns=["Note"], errors="ignore")
+        # Check if "Note" column is present
+        if "Note" in trna_frame.columns:
+            # Process the "Note" column to update the "type" column
+            trna_frame["type"] = trna_frame.apply(lambda row: row["type"] + " (pseudo)" if str(row["Note"]).lower().startswith("pseudo") else row["type"], axis=1)
+
+            # Drop the processed "Note" column
+            trna_frame = trna_frame.drop(columns=["Note"])
 
         # Keep only the first occurrence of "Begin" and "End" columns
         trna_frame = trna_frame.loc[:, ~trna_frame.columns.duplicated(keep='first')]
@@ -45,12 +50,6 @@ process TRNA_SCAN {
 
         # Check if DataFrame is empty
         if not trna_frame.empty:
-            # Process the "Note" column to update the "type" column
-            trna_frame["type"] = trna_frame.apply(lambda row: row["type"] + " (pseudo)" if str(row["Note"]).lower().startswith("pseudo") else row["type"], axis=1)
-
-            # Drop the processed "Note" column
-            trna_frame = trna_frame.drop(columns=["Note"])
-
             # Write the processed DataFrame to the output file
             trna_frame.to_csv(output_file, sep="\\t", index=False)
 
