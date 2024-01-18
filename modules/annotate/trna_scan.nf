@@ -49,10 +49,10 @@ process TRNA_SCAN {
         # Drop the "Note" column
         trna_frame = trna_frame.drop(columns=["Note"], errors="ignore")
 
-    # Check if DataFrame is empty
-    if not trna_frame.empty:
-        # Write the processed DataFrame to the output file
-        trna_frame.to_csv(output_file, sep="\t", index=False)
+        # Check if DataFrame is empty
+        if not trna_frame.empty:
+            # Write the processed DataFrame to the output file
+            trna_frame.to_csv(output_file, sep="\t", index=False)
 
 
     # Run tRNAscan-SE with the necessary input to avoid prompts
@@ -61,5 +61,6 @@ process TRNA_SCAN {
 
     # Process tRNAscan-SE output
     process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
+
     """
 }
