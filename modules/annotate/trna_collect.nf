@@ -51,7 +51,8 @@ process TRNA_COLLECT {
         collected_data.loc[:, 'module'] = df['module']
         collected_data.loc[:, 'header'] = df['header']
         collected_data.loc[:, 'subheader'] = df['subheader']
-        collected_data.loc[:, sample_name] = df['score']
+        # Leave sample-named columns empty for now
+        collected_data.loc[:, sample_name] = ''
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
