@@ -22,15 +22,12 @@ process TRNA_COLLECT {
     samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_description", "module", "header", "subheader"] + samples)
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
     # Iterate through each TSV file
     for file in tsv_files:
         # Read the TSV file into a DataFrame
         df = pd.read_csv(file, sep='\t', skiprows=[1])
-
-        # Print the columns of the DataFrame to check its structure
-        print(f"Columns of DataFrame from {file}:\n{df.columns}")
 
         # Construct the gene_id column
         df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
@@ -48,15 +45,27 @@ process TRNA_COLLECT {
         # Extract sample name from the file name
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
-        # Count occurrences of each gene_id for the current sample
-        gene_id_counts = df['gene_id'].value_counts().reset_index()
-        gene_id_counts.columns = ['gene_id', sample_name]
+        # Update the count for each gene_id and sample
+        for index, row in df.iterrows():
+            gene_id = row['gene_id']
+            gene_index = collected_data.index[collected_data['gene_id'] == gene_id]
 
-        # Merge collected_data with the counts
-        collected_data = pd.merge(collected_data, gene_id_counts, on='gene_id', how='outer').fillna(0)
+            if not gene_index.empty:
+                # Gene_id already present, update the count for the corresponding sample
+                collected_data.at[gene_index[0], sample_name] += 1
+            else:
+                # Gene_id not present, add a new row to collected_data
+                collected_data = collected_data.append({
+                    'gene_id': gene_id,
+                    'gene_description': row['gene_description'],
+                    'module': row['module'],
+                    'header': row['header'],
+                    'subheader': row['subheader'],
+                    sample_name: 1
+                }, ignore_index=True)
 
-    # Reorder columns
-    collected_data = collected_data[["gene_description", "module", "header", "subheader"] + samples]
+    # Fill NaN values with 0 in the sample columns
+    collected_data[samples] = collected_data[samples].fillna(0).astype(int)
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
