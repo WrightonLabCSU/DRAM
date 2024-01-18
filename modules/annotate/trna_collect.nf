@@ -1,5 +1,3 @@
-#!/usr/bin/env nextflow
-
 process TRNA_COLLECT {
 
     errorStrategy 'finish'
@@ -53,17 +51,16 @@ process TRNA_COLLECT {
         collected_data.loc[:, 'module'] = df['module']
         collected_data.loc[:, 'header'] = df['header']
         collected_data.loc[:, 'subheader'] = df['subheader']
-
-        # Count occurrences of each unique gene_id for the current sample
+        
+        # Count occurrences of each unique gene_id value
         gene_id_counts = df['gene_id'].value_counts()
-
-        # Remove duplicates from the gene_id column in collected_data
-        collected_data = collected_data.drop_duplicates(subset='gene_id', keep='first')
-
-        # Update the sample-named columns with counts (fill with 0 if not present)
-        collected_data.loc[:, sample_name] = gene_id_counts.reindex(collected_data['gene_id']).fillna(0).astype(int)
+        
+        # Populate counts in the corresponding sample-named columns
+        for unique_gene_id, count in gene_id_counts.items():
+            collected_data.loc[collected_data['gene_id'] == unique_gene_id, sample_name] = count
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
     """
 }
