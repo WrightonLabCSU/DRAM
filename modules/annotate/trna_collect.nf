@@ -32,29 +32,17 @@ process TRNA_COLLECT {
         # Extract sample name from the file name
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
-        # Update the count for each gene_id and sample
-        for index, row in df.iterrows():
-            # Construct the gene_id value to match
-            gene_id_to_match = f"{row['type']} ({row['codon']})"
-            
-            # Check if the gene_id is already present in collected_data
-            if gene_id_to_match in collected_data['gene_id'].values:
-                # Get the index of the matching gene_id
-                gene_index = collected_data.index[collected_data['gene_id'] == gene_id_to_match].tolist()[0]
-                
-                # Update the count for the corresponding sample
-                collected_data.at[gene_index, sample_name] += 1
-            else:
-                # Gene_id not present, add a new row to collected_data
-                new_row = pd.DataFrame({
-                    'gene_id': [gene_id_to_match],
-                    'gene_description': [f"{row['type']} tRNA with {row['codon']} Codon"],
-                    'module': [f"{row['type']} tRNA"],
-                    'header': ['tRNA'],
-                    'subheader': [''],
-                    sample_name: [1]
-                })
-                collected_data = pd.concat([collected_data, new_row], ignore_index=True)
+        # Create a DataFrame to count occurrences of each unique gene_id
+        gene_counts = df.groupby(['type', 'codon']).size().reset_index(name='count')
+
+        # Merge gene counts into the main collected_data DataFrame
+        collected_data = pd.merge(collected_data, gene_counts, how='left', left_on=['gene_id'], right_on=['type', 'codon'])
+
+        # Rename the count column to the sample_name
+        collected_data.rename(columns={'count': sample_name}, inplace=True)
+
+        # Drop the unnecessary columns from the merged DataFrame
+        collected_data.drop(['type', 'codon'], axis=1, inplace=True)
 
     # Fill NaN values with 0 in the sample columns
     collected_data[samples] = collected_data[samples].fillna(0).astype(int)
