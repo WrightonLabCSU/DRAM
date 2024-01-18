@@ -22,7 +22,7 @@ process TRNA_COLLECT {
     samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
+    collected_data = pd.DataFrame(columns=["gene_description", "module", "header", "subheader"] + samples)
 
     # Iterate through each TSV file
     for file in tsv_files:
@@ -52,12 +52,12 @@ process TRNA_COLLECT {
         # Merge collected_data with the counts
         collected_data = pd.merge(collected_data, gene_id_counts, on='gene_id', how='outer').fillna(0)
 
-    # Reorder columns dynamically
-    col_order = ["gene_description", "module", "header", "subheader"] + samples
-    collected_data = collected_data[collected_data.columns.intersection(col_order)]
+    # Reorder columns
+    collected_data = collected_data[["gene_description", "module", "header", "subheader"] + samples]
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
     """
 }
