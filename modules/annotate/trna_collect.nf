@@ -56,5 +56,6 @@ process TRNA_COLLECT {
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
 
 
+
     """
 }
