@@ -73,6 +73,6 @@ process TRNA_COLLECT {
     collected_data = collected_data[collected_data['gene_id'] != 'gene_id']
 
     # Write the collected data to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)\
     """
 }
