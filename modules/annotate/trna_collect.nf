@@ -27,28 +27,39 @@ process TRNA_COLLECT {
     # Iterate through each TSV file
     for file in tsv_files:
         # Read the TSV file into a DataFrame
-        df = pd.read_csv(file, sep='\t')
+        df = pd.read_csv(file, sep='\t', skiprows=[1])
+
+        # Construct the gene_id column
+        df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
+
+        # Construct the gene_description column
+        df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
+
+        # Construct the module column
+        df['module'] = df['type'] + ' tRNA'
+
+        # Add constant values to header and subheader columns
+        df['header'] = 'tRNA'
+        df['subheader'] = ''
 
         # Extract sample name from the file name
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
-        # Create a DataFrame to count occurrences of each unique gene_id
-        gene_counts = df.groupby(['type', 'codon', 'gene_id']).size().reset_index(name='count')
+        # Update the corresponding columns in the collected_data DataFrame
+        collected_data.loc[:, 'gene_id'] = df['gene_id']
+        collected_data.loc[:, 'gene_description'] = df['gene_description']
+        collected_data.loc[:, 'module'] = df['module']
+        collected_data.loc[:, 'header'] = df['header']
+        collected_data.loc[:, 'subheader'] = df['subheader']
+        # Leave sample-named columns empty for now
+        collected_data.loc[:, sample_name] = ''
 
-        # Merge gene counts into the main collected_data DataFrame
-        collected_data = pd.merge(collected_data, gene_counts, how='left', left_on=['gene_id'], right_on=['type', 'codon', 'gene_id'])
-
-        # Rename the count column to the sample_name
-        collected_data.rename(columns={'count': sample_name}, inplace=True)
-
-        # Drop the unnecessary columns from the merged DataFrame
-        collected_data.drop(['type', 'codon', 'gene_id'], axis=1, inplace=True)
-
-    # Fill NaN values with 0 in the sample columns
-    collected_data[samples] = collected_data[samples].fillna(0).astype(int)
+    # Drop duplicate rows based on the gene_id column
+    collected_data = collected_data.drop_duplicates(subset=['gene_id'])
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
     """
 }
