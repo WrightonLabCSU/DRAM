@@ -1,3 +1,7 @@
+#!/usr/bin/env nextflow
+
+nextflow.enable.dsl=2
+
 process TRNA_COLLECT {
 
     errorStrategy 'finish'
@@ -14,6 +18,7 @@ process TRNA_COLLECT {
 
     import os
     import pandas as pd
+    import re  // Import the 're' module for regular expressions
 
     # List all tsv files in the current directory
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
@@ -46,8 +51,11 @@ process TRNA_COLLECT {
     # Populate other columns based on the given rules
     collected_data['gene_description'] = collected_data['gene_id'] + " tRNA with " + collected_data['codon'] + " Codon"
     collected_data['module'] = collected_data['gene_id'] + " tRNA"
+
+    # Remove parentheses and text in between from gene_description and module columns
     collected_data['gene_description'] = collected_data['gene_description'].apply(lambda x: re.sub(r'\([^)]*\)', '', x))
     collected_data['module'] = collected_data['module'].apply(lambda x: re.sub(r'\([^)]*\)', '', x))
+
     collected_data['header'] = "tRNA"
     collected_data['subheader'] = ""
 
