@@ -31,6 +31,8 @@ process TRNA_COLLECT {
 
             # Read the processed tRNAs file for the current sample
             trna_data = pd.read_csv(file, sep="\t")
+            
+            print(f"Debug: Loaded data from file {file}")
 
             # Generate values for each column based on the clarified requirements
             gene_id = f"{trna_data['type'].iloc[0]} ({trna_data['codon'].iloc[0]})"
