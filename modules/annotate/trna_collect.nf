@@ -58,8 +58,8 @@ process TRNA_COLLECT {
                 new_row = pd.DataFrame([[unique_gene_id, df.loc[df['gene_id'] == unique_gene_id, 'gene_description'].values[0], df.loc[df['gene_id'] == unique_gene_id, 'module'].values[0], df.loc[df['gene_id'] == unique_gene_id, 'header'].values[0], df.loc[df['gene_id'] == unique_gene_id, 'subheader'].values[0]] + [0] * len(samples)], columns=collected_data.columns)
                 collected_data = pd.concat([collected_data, new_row], ignore_index=True)
 
-            # Update the count for the corresponding sample-named column
-            collected_data.loc[mask, sample_name] += count
+            # Update the count for the corresponding sample-named column using the index
+            collected_data.at[mask[mask].index[0], sample_name] += count
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
