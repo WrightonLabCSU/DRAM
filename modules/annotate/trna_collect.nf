@@ -27,8 +27,13 @@ process TRNA_COLLECT {
     # Iterate over each input file
     for file, sample in zip(tsv_files, samples):
         try:
+            print(f"Debug: Processing {file} for sample {sample}")
+            
             # Read the processed tRNAs file for the current sample
             trna_data = pd.read_csv(file, sep="\t")
+
+            # Debugging statement
+            print(f"Debug: Data for {sample}:\n{trna_data}")
 
             # Generate values for each column based on the clarified requirements
             gene_id = f"{trna_data['type'].iloc[0]} ({trna_data['codon'].iloc[0]})"
@@ -36,6 +41,13 @@ process TRNA_COLLECT {
             module = f"{trna_data['type'].iloc[0]} tRNA"
             header = "tRNA"
             subheader = ""
+
+            # Debugging statements
+            print(f"Debug: gene_id for {sample}: {gene_id}")
+            print(f"Debug: gene_description for {sample}: {gene_description}")
+            print(f"Debug: module for {sample}: {module}")
+            print(f"Debug: header for {sample}: {header}")
+            print(f"Debug: subheader for {sample}: {subheader}")
 
             # Add data to the collected DataFrame
             # Replace 0 with your logic for populating values based on the trna_data
@@ -47,6 +59,9 @@ process TRNA_COLLECT {
             print(f"Debug: File {file} is empty.")
         except Exception as e:
             print(f"Debug: Error reading {sample}: {e}")
+
+    # Debugging statement
+    print(f"Debug: Final collected_data DataFrame:\n{collected_data}")
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
