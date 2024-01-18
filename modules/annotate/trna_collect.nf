@@ -45,7 +45,7 @@ process TRNA_COLLECT {
 
     # Populate other columns based on the given rules
     collected_data['gene_description'] = collected_data['type'] + " tRNA with " + collected_data['codon'] + " Codon"
-    collected_data['module'] = collected_data['type'] + " tRNA"
+    collected_data['module'] = collected_data.apply(lambda row: row['type'] + " tRNA" if row['gene_id'] in sample_counts[row.name] else "", axis=1)
     collected_data['header'] = "tRNA"
     collected_data['subheader'] = ""
 
@@ -61,9 +61,6 @@ process TRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
-
-
 
 
     """
