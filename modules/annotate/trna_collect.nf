@@ -33,7 +33,11 @@ process TRNA_COLLECT {
         df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
 
         # Remove duplicates from gene_id column within each sample
-        df['gene_id'] = df.groupby('sample')['gene_id'].transform(lambda x: x.unique()).str.join(', ')
+        unique_gene_ids = df.groupby('sample')['gene_id'].unique().apply(','.join).reset_index()
+        df = pd.merge(df, unique_gene_ids, on='sample', how='left', suffixes=('', '_unique'))
+        df['gene_id'] = df['gene_id_unique']
+        df = df.drop(['gene_id_unique'], axis=1)
+
 
         # Construct the gene_description column
         df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
