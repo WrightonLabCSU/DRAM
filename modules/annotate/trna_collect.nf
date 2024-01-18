@@ -48,11 +48,11 @@ process TRNA_COLLECT {
         # Update the count for each gene_id and sample
         for index, row in df.iterrows():
             gene_id = row['gene_id']
-            gene_index = collected_data.index[collected_data['gene_id'] == gene_id]
 
-            if not gene_index.empty:
-                # Gene_id already present, update the count for the corresponding sample
-                collected_data.at[gene_index[0], sample_name] += 1
+            # Check if the gene_id is already present in collected_data
+            if gene_id in collected_data['gene_id'].values:
+                # Update the count for the corresponding sample
+                collected_data.at[collected_data['gene_id'] == gene_id, sample_name] += 1
             else:
                 # Gene_id not present, add a new row to collected_data
                 collected_data = collected_data.append({
@@ -69,7 +69,6 @@ process TRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
 
     """
 }
