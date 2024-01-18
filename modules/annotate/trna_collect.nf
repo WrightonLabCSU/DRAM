@@ -24,11 +24,25 @@ process TRNA_COLLECT {
     # Create an empty DataFrame to store the collected data
     collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
+    # Iterate through each input file
+    for file in tsv_files:
+        # Read the input file into a DataFrame
+        input_data = pd.read_csv(file, sep='\t', skiprows=[0, 2], header=None, names=["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
 
+        # Populate the gene_id column
+        collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
+
+    # Populate other columns based on the given rules
+    collected_data['gene_description'] = collected_data['type'] + " tRNA with " + collected_data['codon'] + " Codon"
+    collected_data['module'] = collected_data['type'] + " tRNA"
+    collected_data['header'] = "tRNA"
+    collected_data['subheader'] = ""
+
+    # Deduplicate the rows based on gene_id
+    collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
 
 
     """
