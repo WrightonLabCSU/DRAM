@@ -18,7 +18,7 @@ process TRNA_COLLECT {
 
     import os
     import pandas as pd
-    import re  // Import the 're' module for regular expressions
+    import re
 
     # List all tsv files in the current directory
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
