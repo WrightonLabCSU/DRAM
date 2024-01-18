@@ -44,8 +44,10 @@ process TRNA_COLLECT {
     collected_data['codon'] = ""
 
     # Populate other columns based on the given rules
-    collected_data['gene_description'] = (collected_data['gene_id'].str.replace(r'\([^)]*\)', '', regex=True) + " tRNA with " + collected_data['codon'] + " Codon").astype(str)
-    collected_data['module'] = (collected_data['gene_id'].str.replace(r'\([^)]*\)', '', regex=True) + " tRNA").astype(str)
+    collected_data['gene_description'] = collected_data['gene_id'] + " tRNA with " + collected_data['codon'] + " Codon"
+    collected_data['module'] = collected_data['gene_id'] + " tRNA"
+    collected_data['gene_description'] = collected_data['gene_description'].str.replace(r'\([^)]*\)', '', regex=True)
+    collected_data['module'] = collected_data['module'].str.replace(r'\([^)]*\)', '', regex=True)
     collected_data['header'] = "tRNA"
     collected_data['subheader'] = ""
 
