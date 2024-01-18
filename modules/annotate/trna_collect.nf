@@ -16,13 +16,10 @@ process TRNA_COLLECT {
     import pandas as pd
 
     # List all tsv files in the current directory
-    tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
-
-    # Extract sample names from the file names
-    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
+    tsv_files = [f for f in os.listdir('.') if f.endswith('_processed_trnas.tsv')]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"])
 
     # Iterate through each TSV file
     for file in tsv_files:
@@ -40,7 +37,7 @@ process TRNA_COLLECT {
             # Check if the gene_id is already present in collected_data
             if gene_id_to_match in collected_data['gene_id'].values:
                 # Update the count for the corresponding sample
-                collected_data.loc[collected_data['gene_id'] == gene_id_to_match, sample_name] += 1
+                collected_data.at[collected_data['gene_id'] == gene_id_to_match, sample_name] += 1
             else:
                 # Gene_id not present, add a new row to collected_data
                 new_row = pd.DataFrame({
@@ -54,10 +51,9 @@ process TRNA_COLLECT {
                 collected_data = pd.concat([collected_data, new_row], ignore_index=True)
 
     # Fill NaN values with 0 in the sample columns
-    collected_data[samples] = collected_data[samples].fillna(0).astype(int)
+    collected_data[sample_name] = collected_data[sample_name].fillna(0).astype(int)
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
     """
 }
