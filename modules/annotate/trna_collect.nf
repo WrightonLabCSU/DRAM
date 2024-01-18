@@ -1,61 +1,49 @@
-process TRNA_COLLECT {
+#!/usr/bin/env python
 
-    errorStrategy 'finish'
+import os
+import pandas as pd
 
-    input:
-    file combined_trnas
+# List all tsv files in the current directory
+tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
 
-    output:
-    path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
+# Extract sample names from the file names
+samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
 
-    script:
-    """
-    #!/usr/bin/env python
+# Create an empty DataFrame to store the collected data
+collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
-    import os
-    import pandas as pd
+# Iterate through each TSV file
+for file in tsv_files:
+    # Read the TSV file into a DataFrame
+    df = pd.read_csv(file, sep='\t', skiprows=[1])
 
-    # List all tsv files in the current directory
-    tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
+    # Construct the gene_id column
+    df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
 
-    # Extract sample names from the file names
-    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
+    # Construct the gene_description column
+    df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
 
-    # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
+    # Construct the module column
+    df['module'] = df['type'] + ' tRNA'
 
-    # Iterate through each TSV file
-    for file in tsv_files:
-        # Read the TSV file into a DataFrame
-        df = pd.read_csv(file, sep='\t', skiprows=[1])
+    # Add constant values to header and subheader columns
+    df['header'] = 'tRNA'
+    df['subheader'] = ''
 
-        # Construct the gene_id column
-        df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
+    # Extract sample name from the file name
+    sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
-        # Construct the gene_description column
-        df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
+    # Update the corresponding columns in the collected_data DataFrame
+    collected_data.loc[:, 'gene_id'] = df['gene_id']
+    collected_data.loc[:, 'gene_description'] = df['gene_description']
+    collected_data.loc[:, 'module'] = df['module']
+    collected_data.loc[:, 'header'] = df['header']
+    collected_data.loc[:, 'subheader'] = df['subheader']
+    # Leave sample-named columns empty for now
+    collected_data.loc[:, sample_name] = ''
 
-        # Construct the module column
-        df['module'] = df['type'] + ' tRNA'
+# Drop duplicate rows based on the gene_id column
+collected_data = collected_data.drop_duplicates(subset=['gene_id'])
 
-        # Add constant values to header and subheader columns
-        df['header'] = 'tRNA'
-        df['subheader'] = ''
-
-        # Extract sample name from the file name
-        sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
-
-        # Update the corresponding columns in the collected_data DataFrame
-        collected_data.loc[:, 'gene_id'] = df['gene_id']
-        collected_data.loc[:, 'gene_description'] = df['gene_description']
-        collected_data.loc[:, 'module'] = df['module']
-        collected_data.loc[:, 'header'] = df['header']
-        collected_data.loc[:, 'subheader'] = df['subheader']
-        # Leave sample-named columns empty for now
-        collected_data.loc[:, sample_name] = ''
-
-    # Write the collected data to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
-    """
-}
+# Write the collected data to the output file
+collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
