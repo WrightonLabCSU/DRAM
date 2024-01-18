@@ -32,13 +32,9 @@ process TRNA_COLLECT {
         # Construct the gene_id column
         df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
 
-        # Construct the gene_description column
+        # Construct other columns as before
         df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
-
-        # Construct the module column
         df['module'] = df['type'] + ' tRNA'
-
-        # Add constant values to header and subheader columns
         df['header'] = 'tRNA'
         df['subheader'] = ''
 
@@ -46,19 +42,19 @@ process TRNA_COLLECT {
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
         # Update the corresponding columns in the collected_data DataFrame
-        unique_gene_ids = df['gene_id'].unique()
-        counts = df['gene_id'].value_counts()
+        collected_data.loc[:, 'gene_id'] = df['gene_id']
+        collected_data.loc[:, 'gene_description'] = df['gene_description']
+        collected_data.loc[:, 'module'] = df['module']
+        collected_data.loc[:, 'header'] = df['header']
+        collected_data.loc[:, 'subheader'] = df['subheader']
+        # Leave sample-named columns empty for now
+        collected_data.loc[:, sample_name] = ''
 
-        for gene_id in unique_gene_ids:
-            count = counts[gene_id] if gene_id in counts else 0
-            collected_data.loc[:, 'gene_id'] = gene_id
-            collected_data.loc[:, 'gene_description'] = df.loc[df['gene_id'] == gene_id, 'gene_description'].values[0]
-            collected_data.loc[:, 'module'] = df.loc[df['gene_id'] == gene_id, 'module'].values[0]
-            collected_data.loc[:, 'header'] = df.loc[df['gene_id'] == gene_id, 'header'].values[0]
-            collected_data.loc[:, 'subheader'] = df.loc[df['gene_id'] == gene_id, 'subheader'].values[0]
-            collected_data.loc[:, sample_name] = count
+    # Extract unique variations of gene_id
+    unique_gene_ids = collected_data['gene_id'].unique()
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
     """
 }
