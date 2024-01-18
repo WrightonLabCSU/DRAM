@@ -45,12 +45,15 @@ process TRNA_COLLECT {
         # Extract sample name from the file name
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
+        # Deduplicate the gene_id column
+        df_deduplicated = df.drop_duplicates(subset=['gene_id'])
+
         # Update the corresponding columns in the collected_data DataFrame
-        collected_data.loc[:, 'gene_id'] = df['gene_id']
-        collected_data.loc[:, 'gene_description'] = df['gene_description']
-        collected_data.loc[:, 'module'] = df['module']
-        collected_data.loc[:, 'header'] = df['header']
-        collected_data.loc[:, 'subheader'] = df['subheader']
+        collected_data.loc[:, 'gene_id'] = df_deduplicated['gene_id']
+        collected_data.loc[:, 'gene_description'] = df_deduplicated['gene_description']
+        collected_data.loc[:, 'module'] = df_deduplicated['module']
+        collected_data.loc[:, 'header'] = df_deduplicated['header']
+        collected_data.loc[:, 'subheader'] = df_deduplicated['subheader']
         
         # Count occurrences of each unique gene_id value
         gene_id_counts = df['gene_id'].value_counts()
