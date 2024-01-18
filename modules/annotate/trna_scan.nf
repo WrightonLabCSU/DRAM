@@ -48,6 +48,9 @@ process TRNA_SCAN {
         # Rename specified columns
         trna_frame = trna_frame.rename(columns={"Name": "query_id", "Begin": "begin", "End": "end", "Type": "type", "Codon": "codon", "Score": "score"})
 
+        # Create the "gene_id" column by concatenating "type" and "codon"
+        trna_frame["gene_id"] = trna_frame["type"] + " (" + trna_frame["codon"] + ")"
+
         # Check if DataFrame is empty
         if not trna_frame.empty:
             # Write the processed DataFrame to the output file

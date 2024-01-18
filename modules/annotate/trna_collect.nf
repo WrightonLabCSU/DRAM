@@ -24,37 +24,7 @@ process TRNA_COLLECT {
     # Create an empty DataFrame to store the collected data
     collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
-    # Iterate through each TSV file
-    for file in tsv_files:
-        # Read the TSV file into a DataFrame
-        df = pd.read_csv(file, sep='\t', skiprows=[1])
 
-        # Construct the gene_id column
-        df['gene_id'] = df.apply(lambda row: f"{row['type']} ({row['codon']})" if 'pseudo' not in row['type'].lower() else f"{row['type']} (pseudo) ({row['codon']})", axis=1)
-
-        # Construct other columns as before
-        df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
-        df['module'] = df['type'] + ' tRNA'
-        df['header'] = 'tRNA'
-        df['subheader'] = ''
-
-        # Extract sample name from the file name
-        sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
-
-        # Update the corresponding columns in the collected_data DataFrame
-        for index, row in df.iterrows():
-            gene_id = row['gene_id']
-            # If gene_id is not in collected_data, add it
-            if gene_id not in collected_data['gene_id'].values:
-                collected_data = collected_data.append({'gene_id': gene_id, 'gene_description': row['gene_description'],
-                                                        'module': row['module'], 'header': row['header'],
-                                                        'subheader': row['subheader'], sample_name: 1}, ignore_index=True)
-            else:
-                # If gene_id is already in collected_data, update the count for the sample
-                collected_data.at[collected_data['gene_id'] == gene_id, sample_name] += 1
-
-    # Extract unique variations of gene_id
-    unique_gene_ids = collected_data['gene_id'].unique()
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
