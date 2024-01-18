@@ -30,7 +30,7 @@ process TRNA_COLLECT {
         df = pd.read_csv(file, sep='\t', skiprows=[1])
 
         # Construct the gene_id column
-        df['gene_id'] = df.groupby('sample')['gene_id'].transform(lambda x: ', '.join(x.unique()))
+        df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
 
         # Construct the gene_description column
         df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
@@ -51,8 +51,12 @@ process TRNA_COLLECT {
         collected_data.loc[:, 'module'] = df['module']
         collected_data.loc[:, 'header'] = df['header']
         collected_data.loc[:, 'subheader'] = df['subheader']
-        # Leave sample-named columns empty for now
-        collected_data.loc[:, sample_name] = ''
+
+        # Count occurrences of each unique gene_id for the current sample
+        gene_id_counts = df['gene_id'].value_counts()
+
+        # Update the sample-named columns with counts (fill with 0 if not present)
+        collected_data.loc[:, sample_name] = gene_id_counts.reindex(collected_data['gene_id']).fillna(0).astype(int)
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
