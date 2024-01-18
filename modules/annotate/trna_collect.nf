@@ -45,25 +45,12 @@ process TRNA_COLLECT {
         # Extract sample name from the file name
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
-        # Iterate through each row in the input file
-        for index, row in df.iterrows():
-            # Extract the gene_id value from the current row
-            gene_id = row['gene_id']
+        # Count occurrences of each gene_id for the current sample
+        gene_id_counts = df['gene_id'].value_counts().reset_index()
+        gene_id_counts.columns = ['gene_id', sample_name]
 
-            # Check if gene_id is already in collected_data
-            if gene_id in collected_data['gene_id'].values:
-                # Update the count for the corresponding sample
-                collected_data.loc[collected_data['gene_id'] == gene_id, sample_name] += 1
-            else:
-                # Add a new row for the gene_id in collected_data
-                collected_data = collected_data.append({
-                    'gene_id': gene_id,
-                    'gene_description': row['gene_description'],
-                    'module': row['module'],
-                    'header': row['header'],
-                    'subheader': row['subheader'],
-                    sample_name: 1  # Initialize the count for the current sample
-                }, ignore_index=True)
+        # Update collected_data with the counts
+        collected_data = pd.merge(collected_data, gene_id_counts, on='gene_id', how='outer').fillna(0)
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
