@@ -30,7 +30,7 @@ process TRNA_COLLECT {
     # Iterate through each input file
     for file in tsv_files:
         # Read the input file into a DataFrame
-        input_data = pd.read_csv(file, sep='	', skiprows=[0, 2], header=None, names=["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
+        input_data = pd.read_csv(file, sep='\t', header=None, names=["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
 
         # Populate the gene_id column
         collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
@@ -44,8 +44,8 @@ process TRNA_COLLECT {
     collected_data['codon'] = ""
 
     # Populate other columns based on the given rules
-    collected_data['gene_description'] = collected_data['type'] + " tRNA with " + collected_data['codon'] + " Codon"
-    collected_data['module'] = collected_data.apply(lambda row: row['type'] + " tRNA" if row['gene_id'] in sample_counts[row.name] else "", axis=1)
+    collected_data['gene_description'] = collected_data['gene_id'] + " tRNA with " + collected_data['codon'] + " Codon"
+    collected_data['module'] = collected_data['gene_id'] + " tRNA"
     collected_data['header'] = "tRNA"
     collected_data['subheader'] = ""
 
@@ -60,7 +60,8 @@ process TRNA_COLLECT {
     collected_data.drop(['type', 'codon'], axis=1, inplace=True)
 
     # Write the collected data to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="	", index=False)
+    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
 
 
