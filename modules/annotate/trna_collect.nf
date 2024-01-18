@@ -28,7 +28,7 @@ process TRNA_COLLECT {
     for file, sample in zip(tsv_files, samples):
         try:
             # Read the processed tRNAs file for the current sample
-            trna_data = pd.read_csv(file, sep="\t", skiprows=[0, 2])
+            trna_data = pd.read_csv(file, sep="\t")
 
             # Generate values for each column based on the clarified requirements
             gene_id = f"{trna_data['type'].iloc[0]} ({trna_data['codon'].iloc[0]})"
@@ -38,7 +38,8 @@ process TRNA_COLLECT {
             subheader = ""
 
             # Add data to the collected DataFrame
-            collected_data[sample] = 0  # Replace 0 with your logic for populating values based on the trna_data
+            # Replace 0 with your logic for populating values based on the trna_data
+            collected_data[sample] = 0
 
         except FileNotFoundError:
             print(f"Debug: File {file} not found.")
