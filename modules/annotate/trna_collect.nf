@@ -30,7 +30,7 @@ process TRNA_COLLECT {
         df = pd.read_csv(file, sep='\t', skiprows=[1])
 
         # Construct the gene_id column
-        df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
+        df['gene_id'] = df.apply(lambda row: f"{row['type']} ({row['codon']})" if 'pseudo' not in row['type'].lower() else f"{row['type']} (pseudo) ({row['codon']})", axis=1)
 
         # Construct other columns as before
         df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
@@ -55,6 +55,7 @@ process TRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
     """
 }
