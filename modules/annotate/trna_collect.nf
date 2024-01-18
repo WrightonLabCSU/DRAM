@@ -54,10 +54,11 @@ process TRNA_COLLECT {
 
     # Count occurrences for each sample and fill the additional columns dynamically
     for sample in samples:
-        collected_data[sample] = collected_data['gene_id'].map(sample_counts[sample]).apply(lambda x: x.count() if isinstance(x, list) else 0)
+        collected_data[sample] = collected_data['gene_id'].map(lambda x: sample_counts[sample].count(x) if x in sample_counts[sample] else 0)
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
 
 
