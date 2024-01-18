@@ -30,8 +30,8 @@ process TRNA_SCAN {
 
         # Check if "Note" column is present
         if "Note" in trna_frame.columns:
-            # Process the "Note" column to update the "type" column
-            trna_frame["type"] = trna_frame.apply(lambda row: row["type"] + " (pseudo)" if str(row["Note"]).lower().startswith("pseudo") else row["type"], axis=1)
+            # Process the "Note" column to update the "Type" column
+            trna_frame["Type"] = trna_frame.apply(lambda row: row["Type"] + " (pseudo)" if str(row["Note"]).lower().startswith("pseudo") else row["Type"], axis=1)
 
             # Drop the processed "Note" column
             trna_frame = trna_frame.drop(columns=["Note"])
