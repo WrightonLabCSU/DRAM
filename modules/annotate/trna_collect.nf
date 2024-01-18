@@ -29,6 +29,9 @@ process TRNA_COLLECT {
         # Read the TSV file into a DataFrame
         df = pd.read_csv(file, sep='\t', skiprows=[1])
 
+        # Print the columns of the DataFrame to check its structure
+        print(f"Columns of DataFrame from {file}:\n{df.columns}")
+
         # Construct the gene_id column
         df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
 
