@@ -52,6 +52,9 @@ process TRNA_COLLECT {
         # Merge collected_data with the counts
         collected_data = pd.merge(collected_data, gene_id_counts, on='gene_id', how='outer').fillna(0)
 
+    # Reorder columns
+    collected_data = collected_data[["gene_description", "module", "header", "subheader"] + samples]
+
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
 
