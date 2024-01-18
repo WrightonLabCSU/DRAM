@@ -1,49 +1,65 @@
-#!/usr/bin/env python
+process TRNA_COLLECT {
 
-import os
-import pandas as pd
+    errorStrategy 'finish'
 
-# List all tsv files in the current directory
-tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
+    input:
+    file combined_trnas
 
-# Extract sample names from the file names
-samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
+    output:
+    path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
 
-# Create an empty DataFrame to store the collected data
-collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
+    script:
+    """
+    #!/usr/bin/env python
 
-# Iterate through each TSV file
-for file in tsv_files:
-    # Read the TSV file into a DataFrame
-    df = pd.read_csv(file, sep='\t', skiprows=[1])
+    import os
+    import pandas as pd
 
-    # Construct the gene_id column
-    df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
+    # List all tsv files in the current directory
+    tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
 
-    # Construct the gene_description column
-    df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
+    # Extract sample names from the file names
+    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
 
-    # Construct the module column
-    df['module'] = df['type'] + ' tRNA'
+    # Create an empty DataFrame to store the collected data
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
-    # Add constant values to header and subheader columns
-    df['header'] = 'tRNA'
-    df['subheader'] = ''
+    # Iterate through each TSV file
+    for file in tsv_files:
+        # Read the TSV file into a DataFrame
+        df = pd.read_csv(file, sep='\t', skiprows=[1])
 
-    # Extract sample name from the file name
-    sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
+        # Construct the gene_id column
+        df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
 
-    # Update the corresponding columns in the collected_data DataFrame
-    collected_data.loc[:, 'gene_id'] = df['gene_id']
-    collected_data.loc[:, 'gene_description'] = df['gene_description']
-    collected_data.loc[:, 'module'] = df['module']
-    collected_data.loc[:, 'header'] = df['header']
-    collected_data.loc[:, 'subheader'] = df['subheader']
-    # Leave sample-named columns empty for now
-    collected_data.loc[:, sample_name] = ''
+        # Construct the gene_description column
+        df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
 
-# Drop duplicate rows based on the gene_id column
-collected_data = collected_data.drop_duplicates(subset=['gene_id'])
+        # Construct the module column
+        df['module'] = df['type'] + ' tRNA'
 
-# Write the collected data to the output file
-collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+        # Add constant values to header and subheader columns
+        df['header'] = 'tRNA'
+        df['subheader'] = ''
+
+        # Extract sample name from the file name
+        sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
+
+        # Update the corresponding columns in the collected_data DataFrame
+        collected_data.loc[:, 'gene_id'] = df['gene_id']
+        collected_data.loc[:, 'gene_description'] = df['gene_description']
+        collected_data.loc[:, 'module'] = df['module']
+        collected_data.loc[:, 'header'] = df['header']
+        collected_data.loc[:, 'subheader'] = df['subheader']
+        # Leave sample-named columns empty for now
+        collected_data.loc[:, sample_name] = ''
+
+    # Drop duplicate rows based on the gene_id column
+    collected_data = collected_data.drop_duplicates(subset=['gene_id'])
+
+    # Write the collected data to the output file
+    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
+
+    """
+}
