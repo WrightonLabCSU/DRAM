@@ -27,6 +27,8 @@ process TRNA_COLLECT {
     # Iterate over each input file
     for file, sample in zip(tsv_files, samples):
         try:
+            print(f"Debug: Processing file {file} for sample {sample}")
+
             # Read the processed tRNAs file for the current sample
             trna_data = pd.read_csv(file, sep="\t")
 
