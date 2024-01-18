@@ -1042,7 +1042,7 @@ def annotate_orfs(
                           camper_hmm_cutoffs=db_handler.config['search_databases']['camper_hmm_cutoffs']))
     else:
         logger.warning(
-            "No KEGG source provided so distillation will be of limited use."
+            "One of your requested annotation databases is missing. If you did not specify KEGG database, distillate will be of limited use. If no CAMPER source was provided (as of DRAM v1.5.0, it is still not automatically included), and you want to annotate with CAMPER - see instructions on GitHub for downloading if you would like to run this tool as a standalone: https://github.com/WrightonLabCSU/CAMPER."
         )
 
     # Get uniref hits
@@ -1601,21 +1601,52 @@ def annotate_bins(
 
     logger.info("Completed annotations")
 
+def annotate_called_genes_cmd(
+    input_faa,
+    output_dir=".",
+    bit_score_threshold=60,
+    rbh_bit_score_threshold=350,
+    custom_db_name=(),
+    custom_fasta_loc=(),
+    custom_hmm_loc=(),
+    custom_hmm_name=(),
+    custom_hmm_cutoffs_loc=(),
+    use_uniref=False,
+    use_camper=False,
+    use_vogdb=False,
+    kofam_use_dbcan2_thresholds=False,
+    rename_genes=True,
+    keep_tmp_dir=True,
+    low_mem_mode=False,
+    threads=10,
+    verbose=True,
+    log_file_path: str = None,
+    config_loc: str = None,
+):
 
-def annotate_called_genes_cmd(input_faa, output_dir='.', bit_score_threshold=60, 
-                              rbh_bit_score_threshold=350,
-                              custom_db_name=(), custom_fasta_loc=(), custom_hmm_loc=(), custom_hmm_name=(),
-                              custom_hmm_cutoffs_loc=(), use_uniref=False, use_camper=False, use_fegenie=False, 
-                              use_sulphur=False, log_file_path:str=None,
-                              use_vogdb=False, kofam_use_dbcan2_thresholds=False, rename_genes=True, 
-                              keep_tmp_dir=True, low_mem_mode=False, threads=10, verbose=True):
     fasta_locs = glob(input_faa)
-    annotate_called_genes(fasta_locs, output_dir, bit_score_threshold, rbh_bit_score_threshold, 
-                          custom_db_name, custom_fasta_loc, custom_hmm_loc, custom_hmm_name, 
-                          custom_hmm_cutoffs_loc, use_uniref, use_camper, use_fegenie, 
-                          use_sulphur, use_vogdb, kofam_use_dbcan2_thresholds, 
-                          rename_genes, keep_tmp_dir, low_mem_mode, threads, verbose)
-
+    annotate_called_genes(
+        fasta_locs,
+        output_dir,
+        bit_score_threshold,
+        rbh_bit_score_threshold,
+        custom_db_name,
+        custom_fasta_loc,
+        custom_hmm_loc,
+        custom_hmm_name,
+        custom_hmm_cutoffs_loc,
+        use_uniref,
+        use_camper,
+        use_vogdb,
+        kofam_use_dbcan2_thresholds,
+        rename_genes,
+        keep_tmp_dir,
+        low_mem_mode,
+        threads,
+        verbose,
+        log_file_path,
+        config_loc,
+    )
 
 def perform_fasta_checks(fasta_locs, logger):
     """Perform all checks related to integrity of fastas"""

@@ -120,11 +120,11 @@ if __name__ == '__main__':
     set_db_locs_parser.add_argument('--vog_annotations_loc', default=None,
                                     help='vog annotations file') # add loc to vog_annotations to match the rest
 
-    set_db_locs_parser.add_argument('--viral_loc', default=None,
     set_db_locs_parser.add_argument('--camper_tar_gz_loc', default=None,
                                     help='The source for the CAMPER database files, this is a tar.gz file downloaded'
                                     ' from the release page https://github.com/WrightonLabCSU/CAMPER/releases')
-                                    help='mmseqs2 database file from ref seq viral gene collection')
+    set_db_locs_parser.add_argument('--viral_loc', default=None, help='mmseqs2 database file from ref seq viral gene collection')
+    
     set_db_locs_parser.add_argument('--peptidase_loc', default=None,
                                     help='mmseqs2 database file from MEROPS database')
     set_db_locs_parser.add_argument('--description_db_loc', default=None,
