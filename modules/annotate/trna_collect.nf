@@ -53,8 +53,9 @@ process TRNA_COLLECT {
     collected_data['module'] = collected_data['gene_id'] + " tRNA"
 
     # Remove parentheses and text in between from gene_description and module columns
-    collected_data['gene_description'] = collected_data['gene_description'].apply(lambda x: re.sub(r'\([^)]*\)', '', x))
-    collected_data['module'] = collected_data['module'].apply(lambda x: re.sub(r'\([^)]*\)', '', x))
+    collected_data['gene_description'] = collected_data['gene_id'].apply(lambda x: x.split('(')[0].strip() + " tRNA with " + collected_data['codon'] + " Codon")
+    collected_data['module'] = collected_data['gene_id'].apply(lambda x: x.split('(')[0].strip() + " tRNA")
+
 
     collected_data['header'] = "tRNA"
     collected_data['subheader'] = ""
