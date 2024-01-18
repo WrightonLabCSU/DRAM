@@ -49,7 +49,7 @@ process TRNA_COLLECT {
         gene_id_counts = df['gene_id'].value_counts().reset_index()
         gene_id_counts.columns = ['gene_id', sample_name]
 
-        # Update collected_data with the counts
+        # Merge collected_data with the counts
         collected_data = pd.merge(collected_data, gene_id_counts, on='gene_id', how='outer').fillna(0)
 
     # Write the collected data to the output file
