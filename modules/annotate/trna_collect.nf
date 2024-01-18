@@ -28,9 +28,9 @@ process TRNA_COLLECT {
     for file, sample in zip(tsv_files, samples):
         try:
             print(f"Debug: Processing {file} for sample {sample}")
-            
+
             # Read the processed tRNAs file for the current sample
-            trna_data = pd.read_csv(file, sep="\t")
+            trna_data = pd.read_csv(file, sep="	")
 
             # Debugging statement
             print(f"Debug: Data for {sample}:\n{trna_data}")
@@ -64,6 +64,7 @@ process TRNA_COLLECT {
     print(f"Debug: Final collected_data DataFrame:\n{collected_data}")
 
     # Write the collected data to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+    collected_data.to_csv("collected_trnas.tsv", sep="	", index=False)
+
     """
 }
