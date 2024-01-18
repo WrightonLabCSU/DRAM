@@ -29,10 +29,16 @@ process TRNA_COLLECT {
         try:
             # Read the processed tRNAs file for the current sample
             trna_data = pd.read_csv(file, sep="\t", skiprows=[0, 2])
-            
+
+            # Generate values for each column based on the clarified requirements
+            gene_id = f"{trna_data['type'].iloc[0]} ({trna_data['codon'].iloc[0]})"
+            gene_description = f"{trna_data['type'].iloc[0]} tRNA with {trna_data['codon'].iloc[0]} Codon"
+            module = f"{trna_data['type'].iloc[0]} tRNA"
+            header = "tRNA"
+            subheader = ""
+
             # Add data to the collected DataFrame
-            # Update the following line based on how you want to populate the values
-            # collected_data[sample] = ...
+            collected_data[sample] = 0  # Replace 0 with your logic for populating values based on the trna_data
 
         except FileNotFoundError:
             print(f"Debug: File {file} not found.")
@@ -43,6 +49,5 @@ process TRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
     """
 }
