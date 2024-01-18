@@ -32,6 +32,9 @@ process TRNA_COLLECT {
         # Construct the gene_id column
         df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
 
+        # Deduplicate the gene_id column
+        df = df.drop_duplicates(subset=['gene_id'])
+
         # Construct the gene_description column
         df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
 
