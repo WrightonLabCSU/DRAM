@@ -39,6 +39,10 @@ process TRNA_COLLECT {
         for sample in samples:
             sample_counts[sample].extend(input_data[input_data['sample'] == sample]['gene_id'])
 
+    # Add 'type' and 'codon' columns to collected_data
+    collected_data['type'] = ""
+    collected_data['codon'] = ""
+
     # Populate other columns based on the given rules
     collected_data['gene_description'] = collected_data['type'] + " tRNA with " + collected_data['codon'] + " Codon"
     collected_data['module'] = collected_data['type'] + " tRNA"
@@ -54,6 +58,7 @@ process TRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
 
     """
