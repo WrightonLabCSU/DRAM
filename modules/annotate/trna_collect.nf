@@ -31,6 +31,7 @@ process TRNA_COLLECT {
 
         # Construct the gene_id column
         df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
+        df.loc[df['type'] == 'Undet', 'gene_id'] = df['type'] + ' (pseudo) (' + df['codon'] + ')'
 
         # Construct the gene_description column
         df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
@@ -51,16 +52,10 @@ process TRNA_COLLECT {
         collected_data.loc[:, 'module'] = df['module']
         collected_data.loc[:, 'header'] = df['header']
         collected_data.loc[:, 'subheader'] = df['subheader']
-
-        # Count occurrences of each unique gene_id value
-        gene_id_counts = df['gene_id'].value_counts()
-
-        # Populate counts in the corresponding sample-named columns
-        for unique_gene_id, count in gene_id_counts.items():
-            collected_data.loc[collected_data['gene_id'] == unique_gene_id, sample_name] = count
+        # Leave sample-named columns empty for now
+        collected_data.loc[:, sample_name] = ''
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
     """
 }
