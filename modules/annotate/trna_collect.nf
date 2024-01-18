@@ -16,10 +16,13 @@ process TRNA_COLLECT {
     import pandas as pd
 
     # List all tsv files in the current directory
-    tsv_files = [f for f in os.listdir('.') if f.endswith('_processed_trnas.tsv')]
+    tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
+
+    # Extract sample names from the file names
+    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"])
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
     # Iterate through each TSV file
     for file in tsv_files:
@@ -51,9 +54,10 @@ process TRNA_COLLECT {
                 collected_data = pd.concat([collected_data, new_row], ignore_index=True)
 
     # Fill NaN values with 0 in the sample columns
-    collected_data[sample_name] = collected_data[sample_name].fillna(0).astype(int)
+    collected_data[samples] = collected_data[samples].fillna(0).astype(int)
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
     """
 }
