@@ -32,6 +32,10 @@ process TRNA_COLLECT {
         # Populate the gene_id column
         collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
 
+    # Ensure 'type' and 'codon' columns are present in collected_data
+    collected_data['type'] = ""
+    collected_data['codon'] = ""
+
     # Populate other columns based on the given rules
     collected_data['gene_description'] = collected_data['type'] + " tRNA with " + collected_data['codon'] + " Codon"
     collected_data['module'] = collected_data['type'] + " tRNA"
