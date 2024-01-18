@@ -9,7 +9,7 @@ process TRNA_COLLECT {
     path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
 
     script:
-    '''
+    """
     #!/usr/bin/env python
 
     import os
@@ -54,5 +54,7 @@ process TRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-    '''
+
+
+    """
 }
