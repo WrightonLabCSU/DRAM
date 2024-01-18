@@ -20,7 +20,7 @@ process TRNA_SCAN {
     # Function to process tRNAscan output
     def process_trnascan_output(input_file, output_file, sample_name):
         # Read the input file into a DataFrame
-        trna_frame = pd.read_csv(input_file, sep="\t", skiprows=[0, 2])
+        trna_frame = pd.read_csv(input_file, sep="\\t", skiprows=[0, 2])
 
         # Strip leading and trailing spaces from column names
         trna_frame.columns = trna_frame.columns.str.strip()
@@ -43,17 +43,16 @@ process TRNA_SCAN {
         # Rename specified columns
         trna_frame = trna_frame.rename(columns={"Name": "query_id", "Begin": "begin", "End": "end", "Type": "type", "Codon": "codon", "Score": "score"})
 
-        # Process "pseudo" in the "Note" column
-        trna_frame.loc[trna_frame["Note"].str.contains("pseudo", case=False, na=False), "type"] += " (pseudo)"
-
-        # Drop the "Note" column
-        trna_frame = trna_frame.drop(columns=["Note"], errors="ignore")
-
         # Check if DataFrame is empty
         if not trna_frame.empty:
-            # Write the processed DataFrame to the output file
-            trna_frame.to_csv(output_file, sep="\t", index=False)
+            # Process the "Note" column to update the "type" column
+            trna_frame["type"] = trna_frame.apply(lambda row: row["type"] + " (pseudo)" if str(row["Note"]).lower().startswith("pseudo") else row["type"], axis=1)
 
+            # Drop the processed "Note" column
+            trna_frame = trna_frame.drop(columns=["Note"])
+
+            # Write the processed DataFrame to the output file
+            trna_frame.to_csv(output_file, sep="\\t", index=False)
 
     # Run tRNAscan-SE with the necessary input to avoid prompts
     trna_out = "${sample}_trna_out.txt"
@@ -61,6 +60,5 @@ process TRNA_SCAN {
 
     # Process tRNAscan-SE output
     process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
-
     """
 }
