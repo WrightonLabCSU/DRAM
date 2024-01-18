@@ -18,11 +18,11 @@ process TRNA_COLLECT {
     # List all tsv files in the current directory
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
 
-    # Extract sample names from the file names
-    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
-
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files])
+
+    # Global counter for gene_id occurrences
+    gene_id_counter = {}
 
     # Iterate through each TSV file
     for file in tsv_files:
@@ -45,22 +45,20 @@ process TRNA_COLLECT {
         # Extract sample name from the file name
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
-        # Deduplicate the gene_id column
-        df_deduplicated = df.drop_duplicates(subset=['gene_id'])
-
         # Update the corresponding columns in the collected_data DataFrame
-        collected_data.loc[:, 'gene_id'] = df_deduplicated['gene_id']
-        collected_data.loc[:, 'gene_description'] = df_deduplicated['gene_description']
-        collected_data.loc[:, 'module'] = df_deduplicated['module']
-        collected_data.loc[:, 'header'] = df_deduplicated['header']
-        collected_data.loc[:, 'subheader'] = df_deduplicated['subheader']
-        
-        # Count occurrences of each unique gene_id value
-        gene_id_counts = df['gene_id'].value_counts()
-        
-        # Populate counts in the corresponding sample-named columns
-        for unique_gene_id, count in gene_id_counts.items():
-            collected_data.loc[collected_data['gene_id'] == unique_gene_id, sample_name] = count
+        collected_data.loc[:, 'gene_id'] = df['gene_id']
+        collected_data.loc[:, 'gene_description'] = df['gene_description']
+        collected_data.loc[:, 'module'] = df['module']
+        collected_data.loc[:, 'header'] = df['header']
+        collected_data.loc[:, 'subheader'] = df['subheader']
+
+        # Update the global gene_id_counter
+        for unique_gene_id in df['gene_id'].unique():
+            gene_id_counter[unique_gene_id] = gene_id_counter.get(unique_gene_id, 0) + 1
+
+    # Update the sample-named columns based on the global gene_id_counter
+    for unique_gene_id, count in gene_id_counter.items():
+        collected_data.loc[collected_data['gene_id'] == unique_gene_id, tsv_files] = count
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
