@@ -1,5 +1,3 @@
-#!/usr/bin/env nextflow
-
 process TRNA_COLLECT {
 
     errorStrategy 'finish'
@@ -60,6 +58,9 @@ process TRNA_COLLECT {
 
     # Remove 'type' and 'codon' columns
     collected_data.drop(['type', 'codon'], axis=1, inplace=True)
+
+    # Remove the first row that includes extra column names
+    collected_data = collected_data[collected_data['gene_id'] != 'gene_id']
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
