@@ -59,8 +59,9 @@ process TRNA_COLLECT {
     # Remove 'type' and 'codon' columns
     collected_data.drop(['type', 'codon'], axis=1, inplace=True)
 
-    # Write the collected data to the output file
-    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+    # Write the collected data to the output file without index and header
+    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False, header=False)
+
 
 
 
