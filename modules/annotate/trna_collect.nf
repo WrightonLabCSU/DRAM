@@ -57,13 +57,9 @@ process TRNA_COLLECT {
     # Drop duplicate rows based on the gene_id column
     collected_data = collected_data.drop_duplicates(subset=['gene_id'])
 
-    # Count occurrences of each gene_id for each sample separately
-    for sample in samples:
-        # Use the correct DataFrame 'collected_data' for counting
-        collected_data[sample] = collected_data['gene_id'].map(collected_data.groupby('gene_id')[sample].count().to_dict()).fillna(0).astype(int)
-
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
     """
 }
