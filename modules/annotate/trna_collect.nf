@@ -24,8 +24,37 @@ process TRNA_COLLECT {
     # Create an empty DataFrame to store the collected data
     collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
+    # Iterate through each TSV file
+    for file in tsv_files:
+        # Read the TSV file into a DataFrame
+        df = pd.read_csv(file, sep='\t', skiprows=[1])
+
+        # Construct the gene_id column
+        df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
+
+        # Construct the gene_description column
+        df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
+
+        # Construct the module column
+        df['module'] = df['type'] + ' tRNA'
+
+        # Add constant values to header and subheader columns
+        df['header'] = 'tRNA'
+        df['subheader'] = ''
+
+        # Extract sample name from the file name
+        sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
+
+        # Update the corresponding columns in the collected_data DataFrame
+        collected_data.loc[:, 'gene_id'] = df['gene_id']
+        collected_data.loc[:, 'gene_description'] = df['gene_description']
+        collected_data.loc[:, 'module'] = df['module']
+        collected_data.loc[:, 'header'] = df['header']
+        collected_data.loc[:, 'subheader'] = df['subheader']
+        collected_data.loc[:, sample_name] = df['score']
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
     """
 }
