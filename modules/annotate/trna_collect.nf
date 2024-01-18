@@ -45,23 +45,23 @@ process TRNA_COLLECT {
         # Extract sample name from the file name
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
-        # Update the corresponding columns in the collected_data DataFrame
-        collected_data.loc[:, 'gene_id'] = df['gene_id']
-        collected_data.loc[:, 'gene_description'] = df['gene_description']
-        collected_data.loc[:, 'module'] = df['module']
-        collected_data.loc[:, 'header'] = df['header']
-        collected_data.loc[:, 'subheader'] = df['subheader']
-        
-        # Count occurrences of each unique gene_id value
+        # Count occurrences of each unique gene_id value in the current file
         gene_id_counts = df['gene_id'].value_counts()
-        
-        # Populate counts in the corresponding sample-named columns
+
+        # Iterate through unique gene_ids in the current file and update collected_data
         for unique_gene_id, count in gene_id_counts.items():
+            # Check if the gene_id already exists in collected_data
             mask = collected_data['gene_id'] == unique_gene_id
-            collected_data.loc[mask, sample_name] = count if sample_name not in collected_data.columns else count + collected_data.loc[mask, sample_name].fillna(0)
+
+            if not mask.any():
+                # If gene_id is not in collected_data, add a new row
+                new_row = pd.DataFrame([[unique_gene_id, df.loc[df['gene_id'] == unique_gene_id, 'gene_description'].values[0], df.loc[df['gene_id'] == unique_gene_id, 'module'].values[0], df.loc[df['gene_id'] == unique_gene_id, 'header'].values[0], df.loc[df['gene_id'] == unique_gene_id, 'subheader'].values[0]] + [0] * len(samples)], columns=collected_data.columns)
+                collected_data = pd.concat([collected_data, new_row], ignore_index=True)
+
+            # Update the count for the corresponding sample-named column
+            collected_data.loc[mask, sample_name] += count
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
     """
 }
