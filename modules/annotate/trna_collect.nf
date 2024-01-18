@@ -33,16 +33,16 @@ process TRNA_COLLECT {
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
         # Create a DataFrame to count occurrences of each unique gene_id
-        gene_counts = df.groupby(['type', 'codon']).size().reset_index(name='count')
+        gene_counts = df.groupby(['type', 'codon', 'gene_id']).size().reset_index(name='count')
 
         # Merge gene counts into the main collected_data DataFrame
-        collected_data = pd.merge(collected_data, gene_counts, how='left', left_on=['gene_id'], right_on=['type', 'codon'])
+        collected_data = pd.merge(collected_data, gene_counts, how='left', left_on=['gene_id'], right_on=['type', 'codon', 'gene_id'])
 
         # Rename the count column to the sample_name
         collected_data.rename(columns={'count': sample_name}, inplace=True)
 
         # Drop the unnecessary columns from the merged DataFrame
-        collected_data.drop(['type', 'codon'], axis=1, inplace=True)
+        collected_data.drop(['type', 'codon', 'gene_id'], axis=1, inplace=True)
 
     # Fill NaN values with 0 in the sample columns
     collected_data[samples] = collected_data[samples].fillna(0).astype(int)
