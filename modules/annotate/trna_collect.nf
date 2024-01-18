@@ -42,19 +42,23 @@ process TRNA_COLLECT {
         sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
 
         # Update the corresponding columns in the collected_data DataFrame
-        collected_data.loc[:, 'gene_id'] = df['gene_id']
-        collected_data.loc[:, 'gene_description'] = df['gene_description']
-        collected_data.loc[:, 'module'] = df['module']
-        collected_data.loc[:, 'header'] = df['header']
-        collected_data.loc[:, 'subheader'] = df['subheader']
-        # Leave sample-named columns empty for now
-        collected_data.loc[:, sample_name] = ''
+        for index, row in df.iterrows():
+            gene_id = row['gene_id']
+            # If gene_id is not in collected_data, add it
+            if gene_id not in collected_data['gene_id'].values:
+                collected_data = collected_data.append({'gene_id': gene_id, 'gene_description': row['gene_description'],
+                                                        'module': row['module'], 'header': row['header'],
+                                                        'subheader': row['subheader'], sample_name: 1}, ignore_index=True)
+            else:
+                # If gene_id is already in collected_data, update the count for the sample
+                collected_data.at[collected_data['gene_id'] == gene_id, sample_name] += 1
 
     # Extract unique variations of gene_id
     unique_gene_ids = collected_data['gene_id'].unique()
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
 
     """
