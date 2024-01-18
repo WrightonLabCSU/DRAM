@@ -56,8 +56,12 @@ process TRNA_COLLECT {
     for sample in samples:
         collected_data[sample] = collected_data['gene_id'].map(lambda x: sample_counts[sample].count(x) if x in sample_counts[sample] else 0)
 
+    # Remove 'type' and 'codon' columns
+    collected_data.drop(['type', 'codon'], axis=1, inplace=True)
+
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
 
 
