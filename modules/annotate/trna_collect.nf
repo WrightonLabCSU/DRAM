@@ -38,11 +38,12 @@ process TRNA_COLLECT {
             gene_id_to_match = f"{row['type']} ({row['codon']})"
             
             # Check if the gene_id is already present in collected_data
-            gene_id_match_condition = collected_data['gene_id'].str.lower() == gene_id_to_match.lower()
-            
-            if gene_id_match_condition.any():
+            if gene_id_to_match in collected_data['gene_id'].values:
+                # Get the index of the matching gene_id
+                gene_index = collected_data.index[collected_data['gene_id'] == gene_id_to_match].tolist()[0]
+                
                 # Update the count for the corresponding sample
-                collected_data.loc[gene_id_match_condition, sample_name.lower()] += 1
+                collected_data.at[gene_index, sample_name] += 1
             else:
                 # Gene_id not present, add a new row to collected_data
                 new_row = pd.DataFrame({
@@ -51,10 +52,9 @@ process TRNA_COLLECT {
                     'module': [f"{row['type']} tRNA"],
                     'header': ['tRNA'],
                     'subheader': [''],
-                    sample_name.lower(): [1]
+                    sample_name: [1]
                 })
                 collected_data = pd.concat([collected_data, new_row], ignore_index=True)
-
 
     # Fill NaN values with 0 in the sample columns
     collected_data[samples] = collected_data[samples].fillna(0).astype(int)
