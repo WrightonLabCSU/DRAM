@@ -24,6 +24,10 @@ process TRNA_COLLECT {
     # Create an empty DataFrame to store the collected data
     collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
+    # Create additional columns for each sample
+    for sample in samples:
+        collected_data[sample] = 0  # Initialize with zeros
+
     # Iterate through each input file
     for file in tsv_files:
         # Read the input file into a DataFrame
@@ -31,6 +35,10 @@ process TRNA_COLLECT {
 
         # Populate the gene_id column
         collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
+
+        # Update the occurrence count in the additional columns
+        for sample in samples:
+            collected_data[sample] += input_data['gene_id'].eq(collected_data['gene_id']).astype(int)
 
     # Ensure 'type' and 'codon' columns are present in collected_data
     collected_data['type'] = ""
@@ -45,9 +53,12 @@ process TRNA_COLLECT {
     # Deduplicate the rows based on gene_id
     collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
 
+    # Reorder the columns to match the desired order
+    col_order = ["gene_id", "gene_description", "module", "header", "subheader"] + samples
+    collected_data = collected_data[col_order]
+
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
 
     """
 }
