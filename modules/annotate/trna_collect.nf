@@ -54,11 +54,9 @@ process TRNA_COLLECT {
         # Leave sample-named columns empty for now
         collected_data.loc[:, sample_name] = ''
 
-    # Drop duplicate rows based on the gene_id column
-    collected_data = collected_data.drop_duplicates(subset=['gene_id'])
-
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+
 
 
     """
