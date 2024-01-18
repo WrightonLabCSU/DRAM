@@ -1,3 +1,5 @@
+#!/usr/bin/env nextflow
+
 process TRNA_COLLECT {
 
     errorStrategy 'finish'
@@ -24,46 +26,42 @@ process TRNA_COLLECT {
     # Create an empty DataFrame to store the collected data
     collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
 
-    # Iterate through each TSV file
+    # Create a dictionary to store counts for each sample
+    sample_counts = {sample: [] for sample in samples}
+
+    # Iterate through each input file
     for file in tsv_files:
-        # Read the TSV file into a DataFrame
-        df = pd.read_csv(file, sep='\t', skiprows=[1])
+        # Read the input file into a DataFrame
+        input_data = pd.read_csv(file, sep='\t', header=None, names=["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
 
-        # Construct the gene_id column
-        df['gene_id'] = df['type'] + ' (' + df['codon'] + ')'
+        # Populate the gene_id column
+        collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
 
-        # Remove duplicates from gene_id column within each sample
-        unique_gene_ids = df.groupby('sample')['gene_id'].unique().apply(','.join).reset_index()
-        df = pd.merge(df, unique_gene_ids, on='sample', how='left', suffixes=('', '_unique'))
-        df['gene_id'] = df['gene_id_unique']
-        df = df.drop(['gene_id_unique'], axis=1)
+        # Count occurrences for each sample
+        for sample in samples:
+            sample_counts[sample].extend(input_data[input_data['sample'] == sample]['gene_id'])
 
+    # Add 'type' and 'codon' columns to collected_data
+    collected_data['type'] = ""
+    collected_data['codon'] = ""
 
-        # Construct the gene_description column
-        df['gene_description'] = df['type'] + ' tRNA with ' + df['codon'] + ' Codon'
+    # Populate other columns based on the given rules
+    collected_data['gene_description'] = collected_data['gene_id'] + " tRNA with " + collected_data['codon'] + " Codon"
+    collected_data['module'] = collected_data['gene_id'] + " tRNA"
+    collected_data['header'] = "tRNA"
+    collected_data['subheader'] = ""
 
-        # Construct the module column
-        df['module'] = df['type'] + ' tRNA'
+    # Deduplicate the rows based on gene_id
+    collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
 
-        # Add constant values to header and subheader columns
-        df['header'] = 'tRNA'
-        df['subheader'] = ''
+    # Count occurrences for each sample and fill the additional columns dynamically
+    for sample in samples:
+        collected_data[sample] = collected_data['gene_id'].map(lambda x: sample_counts[sample].count(x) if x in sample_counts[sample] else 0)
 
-        # Extract sample name from the file name
-        sample_name = os.path.basename(file).replace("_processed_trnas.tsv", "")
-
-        # Update the corresponding columns in the collected_data DataFrame
-        collected_data.loc[:, 'gene_id'] = df['gene_id']
-        collected_data.loc[:, 'gene_description'] = df['gene_description']
-        collected_data.loc[:, 'module'] = df['module']
-        collected_data.loc[:, 'header'] = df['header']
-        collected_data.loc[:, 'subheader'] = df['subheader']
-        # Leave sample-named columns empty for now
-        collected_data.loc[:, sample_name] = ''
+    # Remove 'type' and 'codon' columns
+    collected_data.drop(['type', 'codon'], axis=1, inplace=True)
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
-
-
     """
 }
