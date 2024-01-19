@@ -59,7 +59,7 @@ process RRNA_COLLECT {
 
     # Count occurrences for each sample and fill the additional columns dynamically
     for sample in samples:
-        collected_data[sample] = collected_data['gene_id'].apply(lambda x: sum(sample_counts[sample], key=lambda k: k == x))
+        collected_data[sample] = collected_data['gene_id'].apply(lambda x: sum(1 for k in sample_counts[sample] if k == x))
 
     # Remove the first row that includes extra column names
     collected_data = collected_data[collected_data['gene_id'] != 'gene_id']
