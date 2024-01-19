@@ -69,8 +69,12 @@ process RRNA_COLLECT {
     # Sort the whole table by the gene_id column
     collected_data.sort_values(by='gene_id', inplace=True)
 
+    # Drop the 'type' column
+    collected_data.drop(['type'], axis=1, inplace=True)
+
     # Write the collected data to the output file
     collected_data.to_csv("collected_rrnas.tsv", sep="\t", index=False)
+
 
 
     """
