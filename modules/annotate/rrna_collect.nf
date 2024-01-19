@@ -3,7 +3,7 @@ process RRNA_COLLECT {
     errorStrategy 'finish'
 
     input:
-    val combined_rrnas
+    file combined_rrnas
 
     output:
     path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true
