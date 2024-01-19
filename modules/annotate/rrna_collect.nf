@@ -6,7 +6,7 @@ process RRNA_COLLECT {
     val combined_rrnas
 
     output:
-    tuple val(sample), path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true
+    path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true
 
     script:
     """
