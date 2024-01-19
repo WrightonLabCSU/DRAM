@@ -59,7 +59,6 @@ From: ubuntu:22.04
     conda install scikit-bio=0.5.7
     conda install mmseqs2==14.7e284
     conda install hmmer=3.3.2
-    conda install trnascan-se=2.0.11
     conda install scipy=1.8.1
     conda install sqlalchemy=1.4.46
     conda install barrnap=0.9
