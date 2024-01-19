@@ -35,19 +35,16 @@ process RRNA_COLLECT {
 
         # Populate gene_id column with collective values from the "type" column
         gene_ids = input_df['type'].tolist()
-        gene_counts = Counter(gene_ids)
+        unique_gene_ids = list(set(gene_ids))
 
         # Populate gene_description column
-        collected_data = pd.concat([collected_data, pd.DataFrame({'gene_id': gene_ids})], ignore_index=True)
+        collected_data = pd.concat([collected_data, pd.DataFrame({'gene_id': unique_gene_ids})], ignore_index=True)
 
         # Set module column values to "rRNA"
         collected_data['module'] = 'rRNA'
 
         # Count occurrences of each type value for each sample
-        sample_counts[sample_name] = [gene_counts[gene_id] for gene_id in gene_ids]
-
-    # Add 'type' column to collected_data
-    collected_data['type'] = ""
+        sample_counts[sample_name] = [gene_ids.count(gene_id) for gene_id in unique_gene_ids]
 
     # Populate other columns based on the given rules
     collected_data['gene_description'] = collected_data['gene_id'] + " gene"
