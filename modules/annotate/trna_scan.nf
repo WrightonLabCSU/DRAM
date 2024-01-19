@@ -61,6 +61,6 @@ process TRNA_SCAN {
     subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"], input=b'O\\n', check=True)
 
     # Process tRNAscan-SE output
-    process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
+    #process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
     """
 }
