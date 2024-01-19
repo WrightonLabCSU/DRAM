@@ -1,59 +1,82 @@
-process RRNA_COLLECT {
+process RRNA_SCAN {
 
     errorStrategy 'finish'
 
+    tag { sample }
+
     input:
-    file combined_rrnas
+    tuple val(sample), path(fasta)
 
     output:
-    path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true
+    tuple val(sample), path("${sample}_processed_rrnas.tsv"), emit: rrna_scan_out, optional: true
 
     script:
     """
     #!/usr/bin/env python
 
-    import os
     import pandas as pd
-    from collections import Counter
+    import io
+    import subprocess
+    from sys import stderr
 
-    # List all tsv files in the current directory
-    tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
+    def run_barrnap(fasta, sample_name, threads=10, verbose=True):
+        barrnap_command = [
+            "barrnap",
+            "--threads", str(threads),
+            "--kingdom", "bacteria",  # Add any other necessary barrnap options
+            fasta
+        ]
+        raw_rrna_str = subprocess.run(barrnap_command, capture_output=True, text=True).stdout
+        raw_rrna_table = pd.read_csv(
+            io.StringIO(raw_rrna_str),
+            skiprows=1,
+            sep="\t",
+            header=None,
+            names=RAW_RRNA_COLUMNS,
+            index_col=0,
+        )
+        rrna_table_rows = list()
+        for gene, row in raw_rrna_table.iterrows():
+            rrna_row_dict = {
+                entry.split("=")[0]: entry.split("=")[1] for entry in row["note"].split(";")
+            }
+            rrna_table_rows.append(
+                [
+                    sample_name,
+                    row.begin,
+                    row.end,
+                    row.strand,
+                    rrna_row_dict["Name"].replace("_", " "),
+                    row["e-value"],
+                    rrna_row_dict.get("note", ""),
+                ]
+            )
+        if len(raw_rrna_table) > 0:
+            return pd.DataFrame(
+                rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS
+            ).reset_index()
+        else:
+            print(f"No rRNAs were detected for {sample_name}.", file=stderr)
+            return None
 
-    # Extract sample names from the file names
-    samples = [os.path.basename(file).replace("_processed_rrnas.tsv", "") for file in tsv_files]
+    RAW_RRNA_COLUMNS = [
+        "query_id",  # Changed from "scaffold" to "query_id"
+        "tool_name",
+        "type",
+        "begin",
+        "end",
+        "e-value",
+        "strand",
+        "empty",
+        "note",
+    ]
+    RRNA_COLUMNS = ["sample", "begin", "end", "strand", "type", "e-value", "note"]  # Changed from "fasta" to "sample"
 
-    # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
+    # Run barrnap
+    rrna_df = run_barrnap("${fasta}", "${sample}", threads=${params.threads}, verbose=True)
 
-    # Create a dictionary to store counts for each sample
-    sample_counts = {sample: [] for sample in samples}
-
-    # Iterate through each input file
-    for file in tsv_files:
-        sample_name = os.path.basename(file).replace("_processed_rrnas.tsv", "")
-        input_df = pd.read_csv(file, sep='\t')
-
-        # Populate gene_id column with collective values from the "type" column
-        gene_ids = input_df['type'].tolist()
-        unique_gene_ids = list(set(gene_ids))
-        collected_data = collected_data.append(pd.DataFrame({'gene_id': unique_gene_ids}), ignore_index=True)
-
-        # Populate gene_description column
-        collected_data['gene_description'] = [f"{gene} gene" for gene in collected_data['gene_id']]
-        
-        # Set module column values to "rRNA"
-        collected_data['module'] = 'rRNA'
-
-        # Count occurrences of each type value for each sample
-        for gene_id in unique_gene_ids:
-            count_dict = Counter(gene_ids)
-            sample_counts[sample_name].append(count_dict[gene_id])
-
-    # Add sample count values to the output DataFrame
-    for sample, counts in sample_counts.items():
-        collected_data[sample] = counts
-
-    # Save collected data to collected_rrnas.tsv
-    collected_data.to_csv("collected_rrnas.tsv", sep='\t', index=False)
+    if rrna_df is not None:
+        # Save rrna_df to ${sample}_processed_rrnas.tsv
+        rrna_df.to_csv("${sample}_processed_rrnas.tsv", sep="\t", index=False)
     """
 }

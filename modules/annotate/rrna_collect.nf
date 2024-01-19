@@ -36,7 +36,7 @@ process RRNA_COLLECT {
         # Populate gene_id column with collective values from the "type" column
         gene_ids = input_df['type'].tolist()
         unique_gene_ids = list(set(gene_ids))
-        collected_data = pd.concat([collected_data, pd.DataFrame({'gene_id': unique_gene_ids})], ignore_index=True)
+        collected_data = collected_data.append(pd.DataFrame({'gene_id': unique_gene_ids}), ignore_index=True)
 
         # Populate gene_description column
         collected_data['gene_description'] = [f"{gene} gene" for gene in collected_data['gene_id']]
