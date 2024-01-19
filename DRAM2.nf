@@ -539,7 +539,6 @@ workflow {
         */
 
         /* Combine formatted annotations */
-        /*
         // Collect all sample formatted_hits in prep for distill_summary
         Channel.empty()
             .mix( ch_kofam_formatted )
@@ -554,7 +553,7 @@ workflow {
 
         COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
         ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
-        */
+
 
     }
 
