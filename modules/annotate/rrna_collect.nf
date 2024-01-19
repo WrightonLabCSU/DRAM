@@ -39,7 +39,7 @@ process RRNA_COLLECT {
         gene_counts = Counter(gene_ids)
 
         # Populate gene_description column
-        collected_data = pd.concat([collected_data, pd.DataFrame({'gene_id': unique_gene_ids}), ignore_index=True])
+        collected_data = pd.concat([collected_data, pd.DataFrame({'gene_id': unique_gene_ids})], ignore_index=True)
 
         # Set module column values to "rRNA"
         collected_data['module'] = 'rRNA'
@@ -76,5 +76,6 @@ process RRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_rrnas.tsv", sep="\t", index=False)
+
     """
 }
