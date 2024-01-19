@@ -472,9 +472,7 @@ workflow {
             .mix( ch_rrna_scan )
             .collect()
             .set { ch_collected_rRNAs }
-        ch_collected_rRNAs.view()
         RRNA_COLLECT( ch_collected_rRNAs )
-
 
         if( annotate_kegg == 1 ){
             //KEGG_INDEX ( params.kegg_mmseq_loc )
