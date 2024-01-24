@@ -21,27 +21,32 @@ process ADD_BIN_QUALITY {
 
     # Load checkm TSV
     checkm_path = "${ch_bin_quality}"
-    checkm_columns = ["Name", "Completeness", "Contamination"]
-    checkm_data = pd.read_csv(checkm_path, sep='\t', usecols=checkm_columns)
+    checkm_data = pd.read_csv(checkm_path, sep='\t')
+
+    # Identify the first column name dynamically
+    first_column_name = checkm_data.columns[0]
+
+    # Extract relevant columns from checkm_data
+    checkm_columns = [first_column_name, "Completeness", "Contamination"]
+    checkm_data = checkm_data[checkm_columns]
 
     # Replace "." with "-" in the sample column for comparison
     combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
 
-    # Replace "." with "-" in the "Name" column of checkm TSV
-    checkm_data["Name"] = checkm_data["Name"].str.replace(".", "-")
+    # Replace "." with "-" in the first column of checkm TSV
+    checkm_data[first_column_name] = checkm_data[first_column_name].str.replace(".", "-")
 
     # Merge data based on the sample column
-    merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on="Name", how="left")
+    merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on=first_column_name, how="left")
 
-    # Drop the additional "Name" column
-    merged_data.drop(columns=["Name"], inplace=True)
+    # Drop the additional first column
+    merged_data.drop(columns=[first_column_name], inplace=True)
 
     # Save the updated data to annots_bin_quality.tsv
     output_path = "annots_bin_quality.tsv"
     merged_data.to_csv(output_path, sep='\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
-
 
     """
 }
