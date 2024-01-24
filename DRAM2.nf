@@ -553,8 +553,8 @@ workflow {
         /* Combine formatted annotations */
         // Collect all sample formatted_hits in prep for distill_summary
         Channel.empty()
-            .mix( ch_kofam_formatted )
-            .mix( ch_dbcan_formatted )
+            .mix( ch_kofam_formatted.ifEmpty { Channel.empty() } )
+            .mix( ch_dbcan_formatted.ifEmpty { Channel.empty() } )
             .collect()
             .set { collected_formatted_hits }
 
