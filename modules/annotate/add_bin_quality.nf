@@ -27,14 +27,17 @@ process ADD_BIN_QUALITY {
     # Replace "." with "-" in the sample column for comparison
     combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
 
+    # Replace "." with "-" in the "Name" column of checkm TSV
+    checkm_data["Name"] = checkm_data["Name"].str.replace(".", "-")
+
     # Merge data based on the sample column
     merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on="Name", how="left")
 
     # Drop the additional "Name" column
     merged_data.drop(columns=["Name"], inplace=True)
 
-    # Save the updated data to annots_bin_quality.tsv
-    output_path = "annots_bin_quality.tsv"
+    # Save the updated data to annots_taxa.tsv
+    output_path = "annots_taxa.tsv"
     merged_data.to_csv(output_path, sep='\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
