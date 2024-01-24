@@ -569,7 +569,7 @@ workflow {
 
         /* Add Bin Quality to annotations */
         if( params.bin_quality != "" ){
-            ADD_BIN_QUALITY(ch_combined_annotations)
+            ADD_BIN_QUALITY( ch_combined_annotations, ch_bin_quality )
             ch_updated_annots = ADD_BIN_QUALITY.out.annots_bin_quality_out
         }
         else{
