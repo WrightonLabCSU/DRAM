@@ -104,6 +104,11 @@ def main():
     hits_df['subfam-GenBank'] = hits_df['target_id'].apply(lambda x: extract_subfam_genbank(x, ch_dbcan_subfam))
     hits_df['subfam-EC'] = hits_df['target_id'].apply(lambda x: extract_subfam_ec(x, ch_dbcan_subfam))
     
+    # Extract start_position, end_position, and strandedness
+    hits_df['start_position'] = hits_df['query_start']
+    hits_df['end_position'] = hits_df['query_end']
+    hits_df['strandedness'] = hits_df['description'].str.extract(r'# (\d+) # (\d+) # (-?\d+) #')
+
     # Filter based on E-value
     hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
 
@@ -119,10 +124,9 @@ def main():
     # Extract "(EC *)" occurrences and create a new column dbcan_EC
     hits_df['dbcan_EC'] = hits_df.apply(lambda row: extract_dbcan_ec(row['target_id'], ch_dbcan_fam), axis=1)
 
-
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan_EC']
-    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_EC']
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'family', 'subfam-GenBank', 'subfam-EC', 'dbcan_EC', 'start_position', 'end_position', 'strandedness']
+    modified_columns = ['query_id', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_family', 'dbcan_subfam_GenBank', 'dbcan_subfam_EC', 'dbcan_EC', 'start_position', 'end_position', 'strandedness']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
