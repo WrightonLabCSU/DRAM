@@ -4,6 +4,7 @@ process ADD_TAXA {
 
     input:
     file( combined_annotations )
+    file( ch_taxa )
 
     output:
     path("annots_taxa.tsv"), emit: annots_taxa_out, optional: true
@@ -18,19 +19,24 @@ process ADD_TAXA {
     combined_annotations_path = "combined_annotations.tsv"
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
 
-    # Load checkm TSV
-    checkm_path = "\${params.taxa}"
-    checkm_columns = ["Name", "Completeness", "Contamination"]
-    checkm_data = pd.read_csv(checkm_path, sep='\t', usecols=checkm_columns)
+    # Load ch_taxa TSV
+    ch_taxa_path = "${ch_taxa}"
+    ch_taxa_data = pd.read_csv(ch_taxa_path, sep='\t')
 
     # Replace "." with "-" in the sample column for comparison
     combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
 
-    # Merge data based on the sample column
-    merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on="Name", how="left")
+    # Replace "." with "-" in the "user genome" column of ch_taxa for matching
+    ch_taxa_data["user genome"] = ch_taxa_data["user genome"].str.replace(".", "-")
 
-    # Drop the additional "Name" column
-    merged_data.drop(columns=["Name"], inplace=True)
+    # Merge data based on the sample column
+    merged_data = pd.merge(combined_annotations, ch_taxa_data[['user genome', 'classification']], left_on="sample", right_on="user genome", how="left")
+
+    # Drop the additional "user genome" column
+    merged_data.drop(columns=["user genome"], inplace=True)
+
+    # Rename the "classification" column to "Classification"
+    merged_data.rename(columns={"classification": "Classification"}, inplace=True)
 
     # Save the updated data to annots_taxa.tsv
     output_path = "annots_taxa.tsv"
@@ -38,7 +44,5 @@ process ADD_TAXA {
 
     print(f"Updated annotations saved to {output_path}")
 
-
-    
     """
 }
