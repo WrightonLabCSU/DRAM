@@ -552,6 +552,7 @@ workflow {
 
         /* Combine formatted annotations */
         // Collect all sample formatted_hits in prep for distill_summary
+        ch_dbcan_formatted.view()
         Channel.empty()
             .mix( hasProperty('ch_kofam_formatted') ? ch_kofam_formatted : Channel.empty() )
             .mix( hasProperty('ch_dbcan_formatted') ? ch_dbcan_formatted : Channel.empty() )
