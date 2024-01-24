@@ -558,7 +558,7 @@ workflow {
             .collect()
             .set { collected_formatted_hits }
 
-
+        collected_formatted_hits.view()
 
 
         //COMBINE_ANNOTATIONS will collect all of the sample annotations files across ALL databases
