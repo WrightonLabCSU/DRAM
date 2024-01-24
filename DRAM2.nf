@@ -502,6 +502,9 @@ workflow {
             KOFAM_HMM_FORMATTER ( ch_kofam_parsed, params.kofam_top_hit, ch_kofam_list, ch_kofam_formatter )
             ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
         }
+        else{
+            ch_kofam_formatted = []
+        }
         // DBCAN not finished - this needs editing!
         if( annotate_dbcan == 1 ){
             
@@ -514,6 +517,9 @@ workflow {
             DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, ch_dbcan_fam, ch_dbcan_subfam, ch_dbcan_formatter )
             ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
             
+        }
+        else{
+            ch_dbcan_formatted = []
         }
 
         if (annotate_camper == 1){
@@ -552,14 +558,12 @@ workflow {
 
         /* Combine formatted annotations */
         // Collect all sample formatted_hits in prep for distill_summary
-        ch_dbcan_formatted.view()
+        // Need to figure out how to handle when not all channels are here. 
         Channel.empty()
-            .mix( hasProperty('ch_kofam_formatted') ? ch_kofam_formatted : Channel.empty() )
-            .mix( hasProperty('ch_dbcan_formatted') ? ch_dbcan_formatted : Channel.empty() )
+            .mix( ch_kofam_formatted )
+            .mix( ch_dbcan_formatted )
             .collect()
             .set { collected_formatted_hits }
-
-        collected_formatted_hits.view()
 
 
         //COMBINE_ANNOTATIONS will collect all of the sample annotations files across ALL databases
