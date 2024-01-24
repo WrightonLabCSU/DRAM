@@ -503,7 +503,7 @@ workflow {
             ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
         }
         else{
-            ch_kofam_formatted = []
+            ch_kofam_formatted = ""
         }
         // DBCAN not finished - this needs editing!
         if( annotate_dbcan == 1 ){
@@ -519,7 +519,7 @@ workflow {
             
         }
         else{
-            ch_dbcan_formatted = []
+            ch_dbcan_formatted = ""
         }
 
         if (annotate_camper == 1){
