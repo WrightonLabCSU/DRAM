@@ -26,14 +26,14 @@ process ADD_TAXA {
     # Replace "." with "-" in the sample column for comparison
     combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
 
-    # Replace "." with "-" in the "user genome" column of ch_taxa for matching
-    ch_taxa_data["user genome"] = ch_taxa_data["user genome"].str.replace(".", "-")
+    # Replace "." with "-" in the "user_genome" column of ch_taxa for matching
+    ch_taxa_data["user_genome"] = ch_taxa_data["user_genome"].str.replace(".", "-")
 
     # Merge data based on the sample column
-    merged_data = pd.merge(combined_annotations, ch_taxa_data[['user genome', 'classification']], left_on="sample", right_on="user genome", how="left")
+    merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user genome", how="left")
 
-    # Drop the additional "user genome" column
-    merged_data.drop(columns=["user genome"], inplace=True)
+    # Drop the additional "user_genome" column
+    merged_data.drop(columns=["user_genome"], inplace=True)
 
     # Rename the "classification" column to "Classification"
     merged_data.rename(columns={"classification": "Classification"}, inplace=True)
