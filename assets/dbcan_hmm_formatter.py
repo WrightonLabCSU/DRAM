@@ -107,7 +107,7 @@ def main():
     # Extract start_position, end_position, and strandedness
     hits_df['start_position'] = hits_df['query_start']
     hits_df['end_position'] = hits_df['query_end']
-    hits_df['strandedness'] = hits_df['description'].str.extract(r'# (\d+) # (\d+) # (-?\d+) #')
+    hits_df['strandedness'] = hits_df['strandedness']
 
     # Filter based on E-value
     hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
