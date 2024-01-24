@@ -16,7 +16,7 @@ process ADD_TAXA {
     import pandas as pd
 
     # Load combined_annotations.tsv
-    combined_annotations_path = "combined_annotations.tsv"
+    combined_annotations_path = "${combined_annotations}"
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
 
     # Load ch_taxa TSV
