@@ -564,11 +564,9 @@ workflow {
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
         COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
-        //ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
-        ch_updated_annots = COUNT_ANNOTATIONS.out.target_id_counts
+        ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
 
         /* Add Bin Quality to annotations */
-        /*
         if( params.bin_quality != "" ){
             ADD_BIN_QUALITY(ch_combined_annotations)
             ch_updated_annots = ADD_BIN_QUALITY.out.annots_bin_quality_out
@@ -576,9 +574,8 @@ workflow {
         else{
             ch_updated_annots = ch_combined_annotations
         }
-        */
-
         /* Add Taxonomy to annotations */
+        /*
         if( params.taxa != "" ){
             ADD_TAXA(ch_updated_annots)
             ch_finaly_annots = ADD_TAXA.out.annots_taxa_out
@@ -586,6 +583,7 @@ workflow {
         else{
             ch_final_annots = ch_combined_annotations
         }
+        */
 
     }
 
