@@ -36,7 +36,7 @@ process ADD_TAXA {
     merged_data.drop(columns=["user_genome"], inplace=True)
 
     # Rename the "classification" column to "Classification"
-    merged_data.rename(columns={"classification": "Classification"}, inplace=True)
+    merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
 
     # Save the updated data to annots_taxa.tsv
     output_path = "annots_taxa.tsv"
