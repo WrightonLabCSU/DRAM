@@ -101,7 +101,8 @@ include { TRNA_SCAN                                     } from './modules/annota
 include { RRNA_SCAN                                     } from './modules/annotate/rrna_scan.nf'
 include { TRNA_COLLECT                                  } from './modules/annotate/trna_collect.nf'
 include { RRNA_COLLECT                                  } from './modules/annotate/rrna_collect.nf'
-
+include { ADD_TAXA                                      } from './modules/annotate/add_taxa.nf'
+include { ADD_BIN_QUALITY                               } from './modules/annotate/add_bin_quality.nf'
 
 include { MMSEQS2                                       } from './modules/mmseqs2.nf'
 
@@ -309,7 +310,7 @@ if( params.annotate ){
     }
 
     if (annotate_cant_hyd == 1) {
-        ch_cant_hyd_db = file(params.cant_hyd_db).exists() ? file(params.cant_hyd_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD database file not found at ${params.fegenie_db}")
+        ch_cant_hyd_db = file(params.cant_hyd_db).exists() ? file(params.cant_hyd_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD database file not found at ${params.cant_hyd_db}")
     } else {
         ch_cant_hyd_db = []
     }
@@ -319,6 +320,20 @@ if( params.annotate ){
     // Consider: hmm format, mmseqs2 format....
 
     // Continue for the rest of the databases
+
+    /* Check for input Bin Quality file */
+    if (params.bin_quality != "") {
+        ch_bin_quality = file(params.bin_quality).exists() ? file(params.bin_quality) : error("Error: If using --bin_quality, you must supply a formatted input file. Bin quality file not found at ${params.bin_quality}")
+    } else {
+        ch_bin_quality = []
+    }
+
+    /* Check for input Taxa file */
+    if (params.taxa != "") {
+        ch_taxa = file(params.taxa).exists() ? file(params.taxa) : error("Error: If using --taxa, you must supply a formatted input file. Taxonomy file not found at ${params.taxa}")
+    } else {
+        ch_taxa = []
+    }
 }
 
 /*
@@ -382,9 +397,6 @@ if( params.distill ){
     
 }
 
-if( params.blend ){
-    
-}
 */
 
 
@@ -453,7 +465,7 @@ workflow {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
     if( params.annotate ){
-
+        /* Skipping these until I figure out how to get tRNAscan-SE to not throw random errors
         // Not sure if we want these default or optional yet
         TRNA_SCAN( fasta )
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out
@@ -473,7 +485,7 @@ workflow {
             .collect()
             .set { ch_collected_rRNAs }
         RRNA_COLLECT( ch_collected_rRNAs )
-
+        */
         if( annotate_kegg == 1 ){
             //KEGG_INDEX ( params.kegg_mmseq_loc )
             //MMSEQS2 ( called_genes, params.kegg_mmseq_loc, params.kegg_index )
@@ -552,8 +564,28 @@ workflow {
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
         COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
-        ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+        //ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+        ch_updated_annots = COUNT_ANNOTATIONS.out.target_id_counts
 
+        /* Add Bin Quality to annotations */
+        /*
+        if( params.bin_quality != "" ){
+            ADD_BIN_QUALITY(ch_combined_annotations)
+            ch_updated_annots = ADD_BIN_QUALITY.out.annots_bin_quality_out
+        }
+        else{
+            ch_updated_annots = ch_combined_annotations
+        }
+        */
+
+        /* Add Taxonomy to annotations */
+        if( params.taxa != "" ){
+            ADD_TAXA(ch_updated_annots)
+            ch_finaly_annots = ADD_TAXA.out.annots_taxa_out
+        }
+        else{
+            ch_final_annots = ch_combined_annotations
+        }
 
     }
 
@@ -567,26 +599,18 @@ workflow {
     */   
     if( params.distill )
     {
-        
+        //Need to add in:
+        // 1) tRNA and rRNA summary files - these are formatted for the sheets 'tRNA' and 'rRNA'
+        // 2) tRNA and rRNA files need to be incorporated into the 'genome_stats' sheet (not sure about the approach yet)
+        // 3) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
+        // 4) REMOVE additional info I kept in from each database - only need the main distill headers
+
         DISTILL_SUMMARY( ch_combined_annotations, COUNT_ANNOTATIONS.out.target_id_counts, ch_distill_summary_script )
         ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
         DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
         //PRODUCT_HEATMAP( ch_annotation_counts )
     }
-
-    /*
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        Blend
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    */   
-    /*
-    if( params.blend ){
-    
-        
-
-    }
-    */
 
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
