@@ -30,7 +30,7 @@ process ADD_TAXA {
     ch_taxa_data["user_genome"] = ch_taxa_data["user_genome"].str.replace(".", "-")
 
     # Merge data based on the sample column
-    merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user genome", how="left")
+    merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left")
 
     # Drop the additional "user_genome" column
     merged_data.drop(columns=["user_genome"], inplace=True)
