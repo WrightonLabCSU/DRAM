@@ -576,7 +576,6 @@ workflow {
             ch_updated_annots = ch_combined_annotations
         }
         /* Add Taxonomy to annotations */
-        /*
         if( params.taxa != "" ){
             ADD_TAXA(ch_updated_annots)
             ch_finaly_annots = ADD_TAXA.out.annots_taxa_out
@@ -584,7 +583,6 @@ workflow {
         else{
             ch_final_annots = ch_combined_annotations
         }
-        */
 
     }
 
