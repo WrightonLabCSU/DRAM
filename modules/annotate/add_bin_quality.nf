@@ -36,8 +36,8 @@ process ADD_BIN_QUALITY {
     # Drop the additional "Name" column
     merged_data.drop(columns=["Name"], inplace=True)
 
-    # Save the updated data to annots_taxa.tsv
-    output_path = "annots_taxa.tsv"
+    # Save the updated data to annots_bin_quality.tsv
+    output_path = "annots_bin_quality.tsv"
     merged_data.to_csv(output_path, sep='\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
