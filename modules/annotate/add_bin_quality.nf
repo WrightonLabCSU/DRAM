@@ -19,7 +19,7 @@ process ADD_BIN_QUALITY {
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
 
     # Load checkm TSV
-    checkm_path = "\${params.bin_quality}"
+    checkm_path = ${params.bin_quality}
     checkm_columns = ["Name", "Completeness", "Contamination"]
     checkm_data = pd.read_csv(checkm_path, sep='\t', usecols=checkm_columns)
 
