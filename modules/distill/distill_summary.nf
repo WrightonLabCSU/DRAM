@@ -8,8 +8,6 @@ process DISTILL_SUMMARY {
     output:
     path("genome_summary.tsv"), emit: metab_summ_simple
 
-    distill_sheets.view()
-
     script:
     """
     # Create a log directory if it doesn't exist
@@ -17,6 +15,11 @@ process DISTILL_SUMMARY {
   
     # Define the log file path
     log_file="logs/distill.log"
+
+    python "${ch_distill_summary_script}" \
+        --combined_annotations "${combined_annotations}" \
+        --distill_sheets "${distill_sheets}" \
+        --output "genome_summary.tsv" >> "\$log_file" 2>&1
 
 
     """
