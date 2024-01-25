@@ -797,7 +797,7 @@ def parseDistillTopic(topicString) {
 /* distill ecosystem */
 def parseDistillEcoSys(ecosysString) {
     def validEcosys = ['eng_sys', 'ag']
-    def topics = topicString.split()
+    def validEcosys = validEcosys.split()
     
     // Iterate through ecosysList and set flags
     ecosysList.each { ecosysItem ->
