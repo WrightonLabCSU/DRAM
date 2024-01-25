@@ -498,8 +498,11 @@ if (params.distill_topic != "") {
     }
 
     // Combine all channels into a single channel
-    ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
+    def ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
+    
     ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_topic)
+    ch_combined_distill_channels.view()
+}
 }
 
 if (params.distill_ecosystem != "") {
