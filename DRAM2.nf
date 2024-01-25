@@ -532,7 +532,7 @@ if( params.distill_ecosystem != "" ){
 
 }
 */
-if (params.distill_ecosystem != "") {
+if( params.distill_ecosystem != "" ){
     distill_eng_sys = 0
     distill_ag = 0
 
@@ -561,12 +561,8 @@ if (params.distill_ecosystem != "") {
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
-    
-    // Debugging print statements
-    println("ch_distill_ecosys size: ${ch_distill_ecosys.size()}")
-    println("ch_distill_ecosys contents: ${ch_distill_ecosys.view()}")
+    ch_distill_ecosys.view()
 }
-
 
 
 if( params.distill_custom != ""){
