@@ -400,9 +400,14 @@ if( params.merge ){
     Create channel for optional topic or ecosystem distill sheets and custom sheets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+// Initialize channel variables
+def ch_distill_topic = Channel.empty()
+def ch_distill_ecosys = Channel.empty()
+def ch_distill_custom = Channel.empty()
+def ch_combined_distill_channels = Channel.empty()
+
 
 if (params.distill_topic != "") {
-    def ch_distill_topic = Channel.empty()
     distill_default = 0
     distill_carbon = 0
     distill_energy = 0
@@ -497,7 +502,6 @@ if (params.distill_topic != "") {
 }
 
 if (params.distill_ecosystem != "") {
-    def ch_distill_ecosys = Channel.empty()
     distill_eng_sys = 0
     distill_ag = 0
 
@@ -546,7 +550,6 @@ if (params.distill_ecosystem != "") {
 }
 
 if (params.distill_custom != "") {
-    def ch_distill_custom = Channel.empty()
     // Split the custom files using quotes and spaces
     def customFiles = params.distill_custom.replaceAll(/"/, '').split()
 
