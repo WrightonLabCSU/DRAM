@@ -466,11 +466,63 @@ if( params.distill_topic != "" ){
 
 }
 
+if (params.distill_ecosystem != "") {
+    distill_eng_sys = 0
+    distill_ag = 0
+
+    ch_distill_ecosystem_input = Channel.fromPath(params.distill_ecosystem)
+
+    // You can remove the parseDistillEcoSys function and directly process the channel
+    ch_distill_ecosystem_input.subscribe { ecosysItem ->
+        if (!['eng_sys', 'ag'].contains(ecosysItem)) {
+            error("Invalid distill ecosystem: $ecosysItem. Valid values are eng_sys, ag")
+        }
+
+        switch (ecosysItem) {
+            case "ag":
+                distill_ag = 1
+                println("distill_ag: $distill_ag")
+                break
+            case "eng_sys":
+                distill_eng_sys = 1
+                println("distill_eng_sys: $distill_eng_sys")
+                break
+        }
+    }
+
+    // Create a list to store the generated channels
+    def ecoSysChannels = []
+
+    if (distill_eng_sys == 1) {
+        def engSysFile = file(params.distill_eng_sys_sheet)
+        if (engSysFile.exists()) {
+            ecoSysChannels << engSysFile
+        } else {
+            error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        }
+    }
+
+    if (distill_ag == 1) {
+        def agFile = file(params.distill_ag_sheet)
+        if (agFile.exists()) {
+            ecoSysChannels << agFile
+        } else {
+            error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        }
+    }
+
+    // Combine all channels into a single channel
+    ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
+}
+
+/*
 if( params.distill_ecosystem != "" ){
     distill_eng_sys = 0
     distill_ag = 0
 
-    parseDistillEcoSys(params.distill_ecosystem)
+    ch_distill_ecosystem_input = Channel.fromPath(params.distill_ecosystem)
+
+    parseDistillEcoSys(ch_distill_ecosystem_input)
 
     // Create a list to store the generated channels
     def ecoSysChannels = []
@@ -498,7 +550,7 @@ if( params.distill_ecosystem != "" ){
 
 
 }
-
+*/
 
 
 if( params.distill_custom != ""){
