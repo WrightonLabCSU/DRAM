@@ -891,8 +891,6 @@ def parseDistillCustom(customPaths) {
             // Add the file to the list of channels
             customChannels << Channel.fromPath(customFile)
 
-            // Check channel content
-            Channel.fromPath(customFile).view()
         } else {
             // Throw an error if the file doesn't exist
             error("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
@@ -901,7 +899,6 @@ def parseDistillCustom(customPaths) {
 
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
-    ch_distill_custom.view()
 }
 
 
