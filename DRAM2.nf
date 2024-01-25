@@ -779,16 +779,27 @@ workflow {
         ch_distill_custom.view()
     
         ch_combined_distill_channels.view()
-        //Need to add in:
+
+        //Add in:
+        // 1) REMOVE additional info I kept in from each database - only need the main distill headers
+
+        DISTILL_SUMMARY( ch_final_annots,ch_combined_distill_channels, ch_distill_summary_script )
+        //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
+
+
+
+
+
+
+
+        //Need to add in distill final which make the multi-sheet xlsx:
         // 1) tRNA and rRNA summary files - these are formatted for the sheets 'tRNA' and 'rRNA'
         // 2) tRNA and rRNA files need to be incorporated into the 'genome_stats' sheet (not sure about the approach yet)
         // 3) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
-        // 4) REMOVE additional info I kept in from each database - only need the main distill headers
-
-        //DISTILL_SUMMARY( ch_final_annots, COUNT_ANNOTATIONS.out.target_id_counts, ch_distill_summary_script )
-        //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
-
         //DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
+
+
+
         //PRODUCT_HEATMAP( ch_annotation_counts )
     }
 
