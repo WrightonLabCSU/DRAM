@@ -554,7 +554,6 @@ if (params.distill_custom != "") {
 
     // Iterate through custom files and create channels or throw errors
     customFiles.each { customFile ->
-        println("Custom File Path: $customFile")
         // Check if the custom file exists
         if (file(customFile).exists()) {
             // Add the file to the list of channels
@@ -569,6 +568,7 @@ if (params.distill_custom != "") {
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
+
 
 
 
@@ -771,9 +771,7 @@ workflow {
     {
         //ch_distill_topic.view()
         //ch_distill_ecosys.view()
-        ch_distill_custom.each { customFile ->
-            println("Channel Item: $customFile")
-        }
+        ch_distill_custom.view()
         
         //combineDistillChannels()
         //ch_combined_distill_channels.view()
