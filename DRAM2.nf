@@ -783,12 +783,10 @@ def parseDistillCustom(customPaths) {
     customFiles.each { customFile ->
         def fileName = customFile.tokenize("/")[-1].tokenize(".")[0] // Extract filename without path and extension
         def ch_name = "ch_distill_custom_${fileName}"
-        def customChannel = file(customFile).exists() ? file(customFile) : error("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
+        def customChannel = file(customFile).exists() ? Channel.fromPath(customFile) : error("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
         
-        // Dynamically create channel based on file existence
-        script"""
-            ${ch_name} = file('${customFile}').exists() ? file('${customFile}') : error("Error: If using --distill_custom ${customFile}, you must provide the file. The path ${customFile} is not valid.")
-        """
+        // Assign the channel to a dynamically named variable
+        delegate."${ch_name}" = customChannel
     }
 }
 
