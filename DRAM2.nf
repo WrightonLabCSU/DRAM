@@ -554,6 +554,7 @@ if (params.distill_custom != "") {
 
     // Iterate through custom files and create channels or throw errors
     customFiles.each { customFile ->
+        println("Custom File Path: $customFile")
         // Check if the custom file exists
         if (file(customFile).exists()) {
             // Add the file to the list of channels
