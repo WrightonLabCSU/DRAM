@@ -437,10 +437,7 @@ if( params.distill_topic != "" ){
         ch_distill_transport = []
     }
 
-
-    parseDistillEcoSys(params.distill_ecosystem)
-
-
+    combineDistillChannels()
 
 }
 
@@ -461,6 +458,8 @@ if( params.distill_ecosystem != "" ){
         ch_distill_ag = []
     }
 
+    combineDistillChannels()
+
 }
 
 if( params.distill_custom != ""){
@@ -469,12 +468,7 @@ if( params.distill_custom != ""){
 
     parseDistillCustom(params.distill_custom)
 
-    if( distill_eng_sys == 1 ) {
-        ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-    } else {
-        ch_distill_eng_sys = []
-    }  
-
+    combineDistillChannels()
 }
 
 
@@ -559,7 +553,6 @@ workflow {
 
         RRNA_SCAN( fasta )
         ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
-        ch_rrna_scan.view()
         // Collect all sample formatted rRNA files
         Channel.empty()
             .mix( ch_rrna_scan )
@@ -782,22 +775,55 @@ def parseDistillEcoSys(ecosysString) {
 def parseDistillCustom(customPaths) {
     def customFiles = customPaths.split()
 
+    // Create a list to store the channels for custom files
+    def customChannels = []
+
     // Iterate through custom files and create channels or throw errors
     customFiles.each { customFile ->
         def fileName = customFile.tokenize("/")[-1].tokenize(".")[0] // Extract filename without path and extension
-        def ch_name = "ch_distill_custom_${fileName}"
-        def customChannel = file(customFile).exists() ? Channel.fromPath(customFile) : error("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
-        
-        // Assign the channel to a dynamically named variable
-        delegate."${ch_name}" = customChannel
 
-       // Print channel name
-        println("Channel Name: ${ch_name}")
+        // Check if the custom file exists
+        if (file(customFile).exists()) {
+            // Add the file to the list of channels
+            customChannels << Channel.fromPath(customFile)
+            
+            // Print channel name
+            println("Channel Name: ch_distill_custom_${fileName}")
 
-        // Check channel content
-        customChannel.view()
+            // Check channel content
+            Channel.fromPath(customFile).view()
+        } else {
+            // Throw an error if the file doesn't exist
+            error("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
+        }
     }
+
+    // Combine all custom channels into a single channel
+    ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
+
+
+/* Combine all distill channels into one */
+def combineDistillChannels() {
+    // Create a list to store the generated channels
+    def distillChannels = []
+
+    // Add each channel to the list
+    if (ch_distill_carbon) distillChannels << ch_distill_carbon
+    if (ch_distill_energy) distillChannels << ch_distill_energy
+    if (ch_distill_misc) distillChannels << ch_distill_misc
+    if (ch_distill_nitrogen) distillChannels << ch_distill_nitrogen
+    if (ch_distill_transport) distillChannels << ch_distill_transport
+    if (ch_distill_eng_sys) distillChannels << ch_distill_eng_sys
+    if (ch_distill_ag) distillChannels << ch_distill_ag
+
+    // Include the ch_distill_custom channel if it exists
+    if (ch_distill_custom) distillChannels << ch_distill_custom
+
+    // Combine all channels into a single channel
+    ch_combined_distill_channels = distillChannels.size() > 0 ? Channel.fromList(distillChannels) : Channel.empty()
+}
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
