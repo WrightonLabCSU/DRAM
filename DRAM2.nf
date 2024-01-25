@@ -559,6 +559,7 @@ workflow {
 
         RRNA_SCAN( fasta )
         ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
+        ch_rrna_scan.view()
         // Collect all sample formatted rRNA files
         Channel.empty()
             .mix( ch_rrna_scan )
@@ -674,7 +675,7 @@ workflow {
         Distill
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */   
-    if( params.distill )
+    if( params.distill_topic != "" || params.distill_ecosys != "" || params.distill_custom != "" )
     {
         //Need to add in:
         // 1) tRNA and rRNA summary files - these are formatted for the sheets 'tRNA' and 'rRNA'
