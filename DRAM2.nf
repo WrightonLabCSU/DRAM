@@ -890,9 +890,6 @@ def parseDistillCustom(customPaths) {
         if (file(customFile).exists()) {
             // Add the file to the list of channels
             customChannels << Channel.fromPath(customFile)
-            
-            // Print channel name
-            println("Channel Name: ch_distill_custom_${fileName}")
 
             // Check channel content
             Channel.fromPath(customFile).view()
