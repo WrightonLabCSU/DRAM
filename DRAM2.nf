@@ -559,6 +559,7 @@ if (params.distill_custom != "") {
         if (file(customFile).exists()) {
             // Add the file to the list of channels
             customChannels << Channel.fromPath(customFile)
+            println("Contents of customChannels: $customChannels")
 
         } else {
             // Throw an error if the file doesn't exist
