@@ -758,10 +758,10 @@ def parseDistillEcoSys(ecosysString) {
     def validEcosys = ['eng_sys', 'ag']
     def ecosys = ecosysString.split()
     
-    // Iterate through topics and set flags
+    // Iterate through ecosys and set flags
     ecosys.each { ecosys ->
         if (!validEcosys.contains(ecosys)) {
-            error("Invalid distill topic: $ecosys. Valid values are ${validEcosys.join(', ')}")
+            error("Invalid distill ecosystem: $ecosys. Valid values are ${validEcosys.join(', ')}")
         }
 
         switch (ecosys) {
