@@ -471,6 +471,7 @@ if (params.distill_ecosystem != "") {
     distill_ag = 0
 
     ch_distill_ecosystem_input = Channel.fromPath(params.distill_ecosystem)
+    println(params.distill_ecosystem)
 
     // You can remove the parseDistillEcoSys function and directly process the channel
     ch_distill_ecosystem_input.subscribe { ecosysItem ->
