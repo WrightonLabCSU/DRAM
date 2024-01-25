@@ -1,0 +1,650 @@
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	potential_amg
+K06073	ABC.VB12.P, btuC; vitamin B12 transport system permease protein	Cobalamin salvage	Transporters	Vitamin B12 transport system		TRUE
+K06074	ABC.VB12.A, btuD; vitamin B12 transport system ATP-binding protein [EC:3.6.3.33]	Cobalamin salvage	Transporters	Vitamin B12 transport system		TRUE
+K06858	ABC.VB12.S1, btuF; vitamin B12 transport system substrate-binding protein	Cobalamin salvage	Transporters	Vitamin B12 transport system		TRUE
+K16092	btuB; vitamin B12 transporter	Cobalamin salvage	Transporters	Vitamin B12 transport system		TRUE
+K02048	cysP; sulfate/thiosulfate transport system substrate-binding protein	Sulfate/thiosulfate transport system	Transporters			TRUE
+K23163	sbp; sulfate/thiosulfate transport system substrate-binding protein	Sulfate/thiosulfate transport system	Transporters			TRUE
+K02046	cysU; sulfate/thiosulfate transport system permease protein	Sulfate/thiosulfate transport system	Transporters			TRUE
+K02047	cysW; sulfate/thiosulfate transport system permease protein	Sulfate/thiosulfate transport system	Transporters			TRUE
+K02045	cysA; sulfate/thiosulfate transport system ATP-binding protein [EC:7.3.2.3]	Sulfate/thiosulfate transport system	Transporters			TRUE
+K10013	ABC.ARG.S; lysine/arginine/ornithine transport system substrate-binding protein	Lysine/arginine/ornithine transport system	Transporters			TRUE
+K10015	hisM; histidine transport system permease protein	Lysine/arginine/ornithine transport system	Transporters			TRUE
+K10016	hisQ; histidine transport system permease protein	Lysine/arginine/ornithine transport system	Transporters			TRUE
+K10017	hisP; histidine transport system ATP-binding protein [EC:7.4.2.1]	Lysine/arginine/ornithine transport system	Transporters			TRUE
+K10014	hisJ; histidine transport system substrate-binding protein	Histidine transport system	Transporters			TRUE
+K10015	hisM; histidine transport system permease protein	Histidine transport system	Transporters			TRUE
+K10016	hisQ; histidine transport system permease protein	Histidine transport system	Transporters			TRUE
+K10017	hisP; histidine transport system ATP-binding protein [EC:7.4.2.1]	Histidine transport system	Transporters			TRUE
+K10036	glnH; glutamine transport system substrate-binding protein	Glutamine transport system	Transporters			TRUE
+K10037	glnP; glutamine transport system permease protein	Glutamine transport system	Transporters			TRUE
+K10038	glnQ; glutamine transport system ATP-binding protein [EC:7.4.2.1]	Glutamine transport system	Transporters			TRUE
+K10039	peb1A, glnH; aspartate/glutamate/glutamine transport system substrate-binding protein	Aspartate/glutamate/glutamine transport system	Transporters			TRUE
+K10040	peb1B, glnP, glnM; aspartate/glutamate/glutamine transport system permease protein	Aspartate/glutamate/glutamine transport system	Transporters			TRUE
+K10041	peb1C, glnQ; aspartate/glutamate/glutamine transport system ATP-binding protein [EC:7.4.2.1]	Aspartate/glutamate/glutamine transport system	Transporters			TRUE
+K09996	artJ; arginine transport system substrate-binding protein	Arginine transport system	Transporters			TRUE
+K09997	artI; arginine transport system substrate-binding protein	Arginine transport system	Transporters			TRUE
+K09998	artM; arginine transport system permease protein	Arginine transport system	Transporters			TRUE
+K09999	artQ; arginine transport system permease protein	Arginine transport system	Transporters			TRUE
+K10000	artP; arginine transport system ATP-binding protein [EC:7.4.2.1]	Arginine transport system	Transporters			TRUE
+K10001	gltI; glutamate/aspartate transport system substrate-binding protein	Glutamate/aspartate transport system	Transporters			TRUE
+K10002	gltK; glutamate/aspartate transport system permease protein	Glutamate/aspartate transport system	Transporters			TRUE
+K10003	gltJ; glutamate/aspartate transport system permease protein	Glutamate/aspartate transport system	Transporters			TRUE
+K10004	gltL; glutamate/aspartate transport system ATP-binding protein [EC:7.4.2.1]	Glutamate/aspartate transport system	Transporters			TRUE
+K10018	occT; octopine/nopaline transport system substrate-binding protein	Octopine/nopaline transport system	Transporters			TRUE
+K10019	occM; octopine/nopaline transport system permease protein	Octopine/nopaline transport system	Transporters			TRUE
+K10020	occQ; octopine/nopaline transport system permease protein	Octopine/nopaline transport system	Transporters			TRUE
+K10021	occP; octopine/nopaline transport system ATP-binding protein [EC:7.4.2.1]	Octopine/nopaline transport system	Transporters			TRUE
+K09969	aapJ; general L-amino acid transport system substrate-binding protein	General L-amino acid transport system	Transporters			TRUE
+K09970	aapQ; general L-amino acid transport system permease protein	General L-amino acid transport system	Transporters			TRUE
+K09971	aapM; general L-amino acid transport system permease protein	General L-amino acid transport system	Transporters			TRUE
+K09972	aapP; general L-amino acid transport system ATP-binding protein [EC:3.6.3.-]	General L-amino acid transport system	Transporters			TRUE
+K10005	gluB; glutamate transport system substrate-binding protein	Glutamate transport system	Transporters			TRUE
+K10006	gluC; glutamate transport system permease protein	Glutamate transport system	Transporters			TRUE
+K10007	gluD; glutamate transport system permease protein	Glutamate transport system	Transporters			TRUE
+K10008	gluA; glutamate transport system ATP-binding protein [EC:7.4.2.1]	Glutamate transport system	Transporters			TRUE
+K02424	fliY, tcyA; L-cystine transport system substrate-binding protein	L-Cystine transport system	Transporters			TRUE
+K10009	tcyB, yecS; L-cystine transport system permease protein	L-Cystine transport system	Transporters			TRUE
+K10010	tcyC, yecC; L-cystine transport system ATP-binding protein [EC:7.4.2.1]	L-Cystine transport system	Transporters			TRUE
+K10022	aotJ; arginine/ornithine transport system substrate-binding protein	Arginine/ornithine transport system	Transporters			TRUE
+K10023	aotM; arginine/ornithine transport system permease protein	Arginine/ornithine transport system	Transporters			TRUE
+K10024	aotQ; arginine/ornithine transport system permease protein	Arginine/ornithine transport system	Transporters			TRUE
+K10025	aotP; arginine/ornithine transport system ATP-binding protein [EC:7.4.2.1]	Arginine/ornithine transport system	Transporters			TRUE
+K02030	ABC.PA.S; polar amino acid transport system substrate-binding protein	Putative polar amino acid transport system	Transporters			TRUE
+K02029	ABC.PA.P; polar amino acid transport system permease protein	Putative polar amino acid transport system	Transporters			TRUE
+K02028	ABC.PA.A; polar amino acid transport system ATP-binding protein [EC:7.4.2.1]	Putative polar amino acid transport system	Transporters			TRUE
+K01999	livK; branched-chain amino acid transport system substrate-binding protein	Branched-chain amino acid transport system	Transporters			TRUE
+K01997	livH; branched-chain amino acid transport system permease protein	Branched-chain amino acid transport system	Transporters			TRUE
+K01998	livM; branched-chain amino acid transport system permease protein	Branched-chain amino acid transport system	Transporters			TRUE
+K01995	livG; branched-chain amino acid transport system ATP-binding protein	Branched-chain amino acid transport system	Transporters			TRUE
+K01996	livF; branched-chain amino acid transport system ATP-binding protein	Branched-chain amino acid transport system	Transporters			TRUE
+K02073	ABC.MET.S; D-methionine transport system substrate-binding protein	D-Methionine transport system	Transporters			TRUE
+K02072	ABC.MET.P; D-methionine transport system permease protein	D-Methionine transport system	Transporters			TRUE
+K02071	ABC.MET.A; D-methionine transport system ATP-binding protein	D-Methionine transport system	Transporters			TRUE
+K02048	cysP; sulfate/thiosulfate transport system substrate-binding protein	Sulfate/thiosulfate transport system	Transporters			TRUE
+K23163	sbp; sulfate/thiosulfate transport system substrate-binding protein	Sulfate/thiosulfate transport system	Transporters			TRUE
+K02046	cysU; sulfate/thiosulfate transport system permease protein	Sulfate/thiosulfate transport system	Transporters			TRUE
+K02047	cysW; sulfate/thiosulfate transport system permease protein	Sulfate/thiosulfate transport system	Transporters			TRUE
+K02045	cysA; sulfate/thiosulfate transport system ATP-binding protein [EC:7.3.2.3]	Sulfate/thiosulfate transport system	Transporters			TRUE
+K05772	tupA; tungstate transport system substrate-binding protein	Tungstate transport system	Transporters			TRUE
+K05773	tupB; tungstate transport system permease protein	Tungstate transport system	Transporters			TRUE
+K06857	tupC; tungstate transport system ATP-binding protein	Tungstate transport system	Transporters			TRUE
+K02051	ABC.SN.S; sulfonate/nitrate/taurine transport system substrate-binding protein	NitT/TauT family transport system	Transporters			TRUE
+K02050	ABC.SN.P; sulfonate/nitrate/taurine transport system permease protein	NitT/TauT family transport system	Transporters			TRUE
+K02049	ABC.SN.A; sulfonate/nitrate/taurine transport system ATP-binding protein	NitT/TauT family transport system	Transporters			TRUE
+K02020	modA; molybdate transport system substrate-binding protein	Molybdate transport system	Transporters			TRUE
+K02018	modB; molybdate transport system permease protein	Molybdate transport system	Transporters			TRUE
+K02017	modC; molybdate transport system ATP-binding protein [EC:3.6.3.29]	Molybdate transport system	Transporters			TRUE
+K05776	modF; molybdate transport system ATP-binding protein	Molybdate transport system	Transporters			TRUE
+K02012	ABC.FE.S; iron(III) transport system substrate-binding protein	Iron(III) transport system	Transporters			TRUE
+K02011	ABC.FE.P; iron(III) transport system permease protein	Iron(III) transport system	Transporters			TRUE
+K02010	ABC.FE.A; iron(III) transport system ATP-binding protein [EC:3.6.3.30]	Iron(III) transport system	Transporters			TRUE
+K02064	ABC.VB1.S; thiamine transport system substrate-binding protein	Thiamine transport system	Transporters			TRUE
+K02063	ABC.VB1.P; thiamine transport system permease protein	Thiamine transport system	Transporters			TRUE
+K02062	ABC.VB1.A; thiamine transport system ATP-binding protein	Thiamine transport system	Transporters			TRUE
+K05777	ABC.VB1X.S; putative thiamine transport system substrate-binding protein	Putative thiamine transport system	Transporters			TRUE
+K05778	ABC.VB1X.P; putative thiamine transport system permease protein	Putative thiamine transport system	Transporters			TRUE
+K05779	ABC.VB1X.A; putative thiamine transport system ATP-binding protein	Putative thiamine transport system	Transporters			TRUE
+K02055	ABC.SP.S; putative spermidine/putrescine transport system substrate-binding protein	Putative spermidine/putrescine transport system	Transporters			TRUE
+K02053	ABC.SP.P; putative spermidine/putrescine transport system permease protein	Putative spermidine/putrescine transport system	Transporters			TRUE
+K02054	ABC.SP.P1; putative spermidine/putrescine transport system permease protein	Putative spermidine/putrescine transport system	Transporters			TRUE
+K02052	ABC.SP.A; putative spermidine/putrescine transport system ATP-binding protein	Putative spermidine/putrescine transport system	Transporters			TRUE
+K10108	malE; maltose/maltodextrin transport system substrate-binding protein	Maltose/maltodextrin transport system	Transporters			TRUE
+K10109	malF; maltose/maltodextrin transport system permease protein	Maltose/maltodextrin transport system	Transporters			TRUE
+K10110	malG; maltose/maltodextrin transport system permease protein	Maltose/maltodextrin transport system	Transporters			TRUE
+K10111	malK; maltose/maltodextrin transport system ATP-binding protein [EC:3.6.3.19]	Maltose/maltodextrin transport system	Transporters			TRUE
+K10112	msmX; maltose/maltodextrin transport system ATP-binding protein	Maltose/maltodextrin transport system	Transporters			TRUE
+K10117	msmE; raffinose/stachyose/melibiose transport system substrate-binding protein	Raffinose/stachyose/melibiose transport system	Transporters			TRUE
+K10118	msmF; raffinose/stachyose/melibiose transport system permease protein	Raffinose/stachyose/melibiose transport system	Transporters			TRUE
+K10119	msmG; raffinose/stachyose/melibiose transport system permease protein	Raffinose/stachyose/melibiose transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	Raffinose/stachyose/melibiose transport system	Transporters			TRUE
+K10120	K10120; fructooligosaccharide transport system substrate-binding protein	Putative fructooligosaccharide transport system	Transporters			TRUE
+K10121	K10121; fructooligosaccharide transport system permease protein	Putative fructooligosaccharide transport system	Transporters			TRUE
+K10122	K10122; fructooligosaccharide transport system permease protein	Putative fructooligosaccharide transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	Putative fructooligosaccharide transport system	Transporters			TRUE
+K05813	ugpB; sn-glycerol 3-phosphate transport system substrate-binding protein	Putative sn-glycerol-phosphate transport system	Transporters			TRUE
+K05814	ugpA; sn-glycerol 3-phosphate transport system permease protein	Putative sn-glycerol-phosphate transport system	Transporters			TRUE
+K05815	ugpE; sn-glycerol 3-phosphate transport system permease protein	Putative sn-glycerol-phosphate transport system	Transporters			TRUE
+K05816	ugpC; sn-glycerol 3-phosphate transport system ATP-binding protein [EC:3.6.3.20]	Putative sn-glycerol-phosphate transport system	Transporters			TRUE
+K10188	lacE; lactose/L-arabinose transport system substrate-binding protein	L-Arabinose/lactose transport system	Transporters			TRUE
+K10189	lacF; lactose/L-arabinose transport system permease protein	L-Arabinose/lactose transport system	Transporters			TRUE
+K10190	lacG; lactose/L-arabinose transport system permease protein	L-Arabinose/lactose transport system	Transporters			TRUE
+K10191	lacK; lactose/L-arabinose transport system ATP-binding protein	L-Arabinose/lactose transport system	Transporters			TRUE
+K10227	smoE; sorbitol/mannitol transport system substrate-binding protein	Putative sorbitol/mannitol transport system	Transporters			TRUE
+K10228	smoF; sorbitol/mannitol transport system permease protein	Putative sorbitol/mannitol transport system	Transporters			TRUE
+K10229	smoG; sorbitol/mannitol transport system permease protein	Putative sorbitol/mannitol transport system	Transporters			TRUE
+K10111	malK; multiple sugar transport system ATP-binding protein [EC:3.6.3.-]	Putative sorbitol/mannitol transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	Putative sorbitol/mannitol transport system	Transporters			TRUE
+K10232	aglE; alpha-glucoside transport system substrate-binding protein	alpha-Glucoside transport system	Transporters			TRUE
+K10233	aglF; alpha-glucoside transport system permease protein	alpha-Glucoside transport system	Transporters			TRUE
+K10234	aglG; alpha-glucoside transport system permease protein	alpha-Glucoside transport system	Transporters			TRUE
+K10235	aglK; alpha-glucoside transport system ATP-binding protein	alpha-Glucoside transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	alpha-Glucoside transport system	Transporters			TRUE
+K10192	togB; oligogalacturonide transport system substrate-binding protein	Oligogalacturonide transport system	Transporters			TRUE
+K10193	togM; oligogalacturonide transport system permease protein	Oligogalacturonide transport system	Transporters			TRUE
+K10194	togN; oligogalacturonide transport system permease protein	Oligogalacturonide transport system	Transporters			TRUE
+K10195	togA; oligogalacturonide transport system ATP-binding protein	Oligogalacturonide transport system	Transporters			TRUE
+K10196	ABC.GLC.S; glucose/arabinose transport system substrate-binding protein	Glucose/arabinose transport system	Transporters			TRUE
+K10197	ABC.GLC.P; glucose/arabinose transport system permease protein	Glucose/arabinose transport system	Transporters			TRUE
+K10198	ABC.GLC.P1; glucose/arabinose transport system permease protein	Glucose/arabinose transport system	Transporters			TRUE
+K10199	ABC.GLC.A; glucose/arabinose transport system ATP-binding protein	Glucose/arabinose transport system	Transporters			TRUE
+K10236	thuE; trehalose/maltose transport system substrate-binding protein	Trehalose/maltose transport system	Transporters			TRUE
+K10237	thuF; trehalose/maltose transport system permease protein	Trehalose/maltose transport system	Transporters			TRUE
+K10238	thuG; trehalose/maltose transport system permease protein	Trehalose/maltose transport system	Transporters			TRUE
+K10111	malK; multiple sugar transport system ATP-binding protein [EC:3.6.3.-]	Trehalose/maltose transport system	Transporters			TRUE
+K10200	ABC.NGC.S; N-acetylglucosamine transport system substrate-binding protein	N-Acetylglucosamine transport system	Transporters			TRUE
+K10201	ABC.NGC.P; N-acetylglucosamine transport system permease protein	N-Acetylglucosamine transport system	Transporters			TRUE
+K10202	ABC.NGC.P1; N-acetylglucosamine transport system permease protein	N-Acetylglucosamine transport system	Transporters			TRUE
+K10240	cebE; cellobiose transport system substrate-binding protein	Cellobiose transport system	Transporters			TRUE
+K10241	cebF; cellobiose transport system permease protein	Cellobiose transport system	Transporters			TRUE
+K10242	cebG; cellobiose transport system permease protein	Cellobiose transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	Cellobiose transport system	Transporters			TRUE
+K02027	ABC.MS.S; multiple sugar transport system substrate-binding protein	Putative multiple sugar transport system	Transporters			TRUE
+K02025	ABC.MS.P; multiple sugar transport system permease protein	Putative multiple sugar transport system	Transporters			TRUE
+K02026	ABC.MS.P1; multiple sugar transport system permease protein	Putative multiple sugar transport system	Transporters			TRUE
+K10111	malK; multiple sugar transport system ATP-binding protein [EC:3.6.3.-]	Putative multiple sugar transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	Putative multiple sugar transport system	Transporters			TRUE
+K02002	proX; glycine betaine/proline transport system substrate-binding protein	Glycine betaine/proline transport system	Transporters			TRUE
+K02001	proW; glycine betaine/proline transport system permease protein	Glycine betaine/proline transport system	Transporters			TRUE
+K02000	proV; glycine betaine/proline transport system ATP-binding protein [EC:3.6.3.32]	Glycine betaine/proline transport system	Transporters			TRUE
+K05845	ABC.BCP1.S; osmoprotectant transport system substrate-binding protein	Osmoprotectant transport system	Transporters			TRUE
+K05846	ABC.BCP1.P; osmoprotectant transport system permease protein	Osmoprotectant transport system	Transporters			TRUE
+K05847	ABC.BCP1.A; osmoprotectant transport system ATP-binding protein	Osmoprotectant transport system	Transporters			TRUE
+K07323	mlaC; phospholipid transport system substrate-binding protein	Phospholipid transport system	Transporters			TRUE
+K02067	mlaD, linM; phospholipid/cholesterol/gamma-HCH transport system substrate-binding protein	Phospholipid transport system	Transporters			TRUE
+K02066	mlaE, linK; phospholipid/cholesterol/gamma-HCH transport system permease protein	Phospholipid transport system	Transporters			TRUE
+K02065	mlaF, linL, mkl; phospholipid/cholesterol/gamma-HCH transport system ATP-binding protein	Phospholipid transport system	Transporters			TRUE
+K07122	mlaB; phospholipid transport system transporter-binding protein	Phospholipid transport system	Transporters			TRUE
+K02069	ABC.X2.P; putative ABC transport system permease protein	Putative ABC transport system	Transporters			TRUE
+K02068	ABC.X2.A; putative ABC transport system ATP-binding protein	Putative ABC transport system	Transporters			TRUE
+K10439	rbsB; ribose transport system substrate-binding protein	Ribose transport system	Transporters			TRUE
+K10440	rbsC; ribose transport system permease protein	Ribose transport system	Transporters			TRUE
+K10441	rbsA; ribose transport system ATP-binding protein [EC:3.6.3.17]	Ribose transport system	Transporters			TRUE
+K10537	araF; L-arabinose transport system substrate-binding protein	L-Arabinose transport system	Transporters			TRUE
+K10538	araH; L-arabinose transport system permease protein	L-Arabinose transport system	Transporters			TRUE
+K10539	araG; L-arabinose transport system ATP-binding protein [EC:3.6.3.17]	L-Arabinose transport system	Transporters			TRUE
+K10540	mglB; methyl-galactoside transport system substrate-binding protein	Methyl-galactoside transport system	Transporters			TRUE
+K10541	mglC; methyl-galactoside transport system permease protein	Methyl-galactoside transport system	Transporters			TRUE
+K10542	mglA; methyl-galactoside transport system ATP-binding protein [EC:3.6.3.17]	Methyl-galactoside transport system	Transporters			TRUE
+K10543	xylF; D-xylose transport system substrate-binding protein	D-Xylose transport system	Transporters			TRUE
+K10544	xylH; D-xylose transport system permease protein	D-Xylose transport system	Transporters			TRUE
+K10545	xylG; D-xylose transport system ATP-binding protein [EC:3.6.3.17]	D-Xylose transport system	Transporters			TRUE
+K10546	ABC.GGU.S; putative multiple sugar transport system substrate-binding protein	Multiple sugar transport system	Transporters			TRUE
+K10547	ABC.GGU.P; putative multiple sugar transport system permease protein	Multiple sugar transport system	Transporters			TRUE
+K10548	ABC.GGU.A; putative multiple sugar transport system ATP-binding protein	Multiple sugar transport system	Transporters			TRUE
+K10549	alsB; D-allose transport system substrate-binding protein	D-Allose transport system	Transporters			TRUE
+K10550	alsC; D-allose transport system permease protein	D-Allose transport system	Transporters			TRUE
+K10551	alsA; D-allose transport system ATP-binding protein [EC:3.6.3.17]	D-Allose transport system	Transporters			TRUE
+K10552	frcB; fructose transport system substrate-binding protein	Fructose transport system	Transporters			TRUE
+K10553	frcC; fructose transport system permease protein	Fructose transport system	Transporters			TRUE
+K10554	frcA; fructose transport system ATP-binding protein	Fructose transport system	Transporters			TRUE
+K10555	lsrB; AI-2 transport system substrate-binding protein	AI-2 transport system	Transporters			TRUE
+K10556	lsrC; AI-2 transport system permease protein	AI-2 transport system	Transporters			TRUE
+K10557	lsrD; AI-2 transport system permease protein	AI-2 transport system	Transporters			TRUE
+K10558	lsrA; AI-2 transport system ATP-binding protein	AI-2 transport system	Transporters			TRUE
+K10559	rhaS1; rhamnose transport system substrate-binding protein	Rhamnose transport system	Transporters			TRUE
+K10560	rhaP; rhamnose transport system permease protein	Rhamnose transport system	Transporters			TRUE
+K10561	rhaQ; rhamnose transport system permease protein	Rhamnose transport system	Transporters			TRUE
+K10562	rhaT; rhamnose transport system ATP-binding protein [EC:3.6.3.17]	Rhamnose transport system	Transporters			TRUE
+K02058	ABC.SS.S; simple sugar transport system substrate-binding protein	Putative simple sugar transport system	Transporters			TRUE
+K02057	ABC.SS.P; simple sugar transport system permease protein	Putative simple sugar transport system	Transporters			TRUE
+K02056	ABC.SS.A; simple sugar transport system ATP-binding protein [EC:3.6.3.17]	Putative simple sugar transport system	Transporters			TRUE
+K02040	pstS; phosphate transport system substrate-binding protein	Phosphate transport system	Transporters			TRUE
+K02037	pstC; phosphate transport system permease protein	Phosphate transport system	Transporters			TRUE
+K02038	pstA; phosphate transport system permease protein	Phosphate transport system	Transporters			TRUE
+K02036	pstB; phosphate transport system ATP-binding protein [EC:7.3.2.1]	Phosphate transport system	Transporters			TRUE
+K02044	phnD; phosphonate transport system substrate-binding protein	Phosphonate transport system	Transporters			TRUE
+K02042	phnE; phosphonate transport system permease protein	Phosphonate transport system	Transporters			TRUE
+K02041	phnC; phosphonate transport system ATP-binding protein [EC:7.3.2.2]	Phosphonate transport system	Transporters			TRUE
+K16905	K16905; fluoroquinolone transport system permease protein	Fluoroquinolone transport system	Transporters			TRUE
+K16906	K16906; fluoroquinolone transport system permease protein	Fluoroquinolone transport system	Transporters			TRUE
+K16907	K16907; fluoroquinolone transport system ATP-binding protein [EC:3.6.3.-]	Fluoroquinolone transport system	Transporters			TRUE
+K10013	ABC.ARG.S; lysine/arginine/ornithine transport system substrate-binding protein	Lysine/arginine/ornithine transport system	Transporters			TRUE
+K10015	hisM; histidine transport system permease protein	Lysine/arginine/ornithine transport system	Transporters			TRUE
+K10016	hisQ; histidine transport system permease protein	Lysine/arginine/ornithine transport system	Transporters			TRUE
+K10017	hisP; histidine transport system ATP-binding protein [EC:7.4.2.1]	Lysine/arginine/ornithine transport system	Transporters			TRUE
+K10014	hisJ; histidine transport system substrate-binding protein	Histidine transport system	Transporters			TRUE
+K10015	hisM; histidine transport system permease protein	Histidine transport system	Transporters			TRUE
+K10016	hisQ; histidine transport system permease protein	Histidine transport system	Transporters			TRUE
+K10017	hisP; histidine transport system ATP-binding protein [EC:7.4.2.1]	Histidine transport system	Transporters			TRUE
+K10036	glnH; glutamine transport system substrate-binding protein	Glutamine transport system	Transporters			TRUE
+K10037	glnP; glutamine transport system permease protein	Glutamine transport system	Transporters			TRUE
+K10038	glnQ; glutamine transport system ATP-binding protein [EC:7.4.2.1]	Glutamine transport system	Transporters			TRUE
+K10039	peb1A, glnH; aspartate/glutamate/glutamine transport system substrate-binding protein	Aspartate/glutamate/glutamine transport system	Transporters			TRUE
+K10040	peb1B, glnP, glnM; aspartate/glutamate/glutamine transport system permease protein	Aspartate/glutamate/glutamine transport system	Transporters			TRUE
+K10041	peb1C, glnQ; aspartate/glutamate/glutamine transport system ATP-binding protein [EC:7.4.2.1]	Aspartate/glutamate/glutamine transport system	Transporters			TRUE
+K09996	artJ; arginine transport system substrate-binding protein	Arginine transport system	Transporters			TRUE
+K09997	artI; arginine transport system substrate-binding protein	Arginine transport system	Transporters			TRUE
+K09998	artM; arginine transport system permease protein	Arginine transport system	Transporters			TRUE
+K09999	artQ; arginine transport system permease protein	Arginine transport system	Transporters			TRUE
+K10000	artP; arginine transport system ATP-binding protein [EC:7.4.2.1]	Arginine transport system	Transporters			TRUE
+K10001	gltI; glutamate/aspartate transport system substrate-binding protein	Glutamate/aspartate transport system	Transporters			TRUE
+K10002	gltK; glutamate/aspartate transport system permease protein	Glutamate/aspartate transport system	Transporters			TRUE
+K10003	gltJ; glutamate/aspartate transport system permease protein	Glutamate/aspartate transport system	Transporters			TRUE
+K10004	gltL; glutamate/aspartate transport system ATP-binding protein [EC:7.4.2.1]	Glutamate/aspartate transport system	Transporters			TRUE
+K10018	occT; octopine/nopaline transport system substrate-binding protein	Octopine/nopaline transport system	Transporters			TRUE
+K10019	occM; octopine/nopaline transport system permease protein	Octopine/nopaline transport system	Transporters			TRUE
+K10020	occQ; octopine/nopaline transport system permease protein	Octopine/nopaline transport system	Transporters			TRUE
+K10021	occP; octopine/nopaline transport system ATP-binding protein [EC:7.4.2.1]	Octopine/nopaline transport system	Transporters			TRUE
+K09969	aapJ; general L-amino acid transport system substrate-binding protein	General L-amino acid transport system	Transporters			TRUE
+K09970	aapQ; general L-amino acid transport system permease protein	General L-amino acid transport system	Transporters			TRUE
+K09971	aapM; general L-amino acid transport system permease protein	General L-amino acid transport system	Transporters			TRUE
+K09972	aapP; general L-amino acid transport system ATP-binding protein [EC:3.6.3.-]	General L-amino acid transport system	Transporters			TRUE
+K10005	gluB; glutamate transport system substrate-binding protein	Glutamate transport system	Transporters			TRUE
+K10006	gluC; glutamate transport system permease protein	Glutamate transport system	Transporters			TRUE
+K10007	gluD; glutamate transport system permease protein	Glutamate transport system	Transporters			TRUE
+K10008	gluA; glutamate transport system ATP-binding protein [EC:7.4.2.1]	Glutamate transport system	Transporters			TRUE
+K02424	fliY, tcyA; L-cystine transport system substrate-binding protein	L-Cystine transport system	Transporters			TRUE
+K10009	tcyB, yecS; L-cystine transport system permease protein	L-Cystine transport system	Transporters			TRUE
+K10010	tcyC, yecC; L-cystine transport system ATP-binding protein [EC:7.4.2.1]	L-Cystine transport system	Transporters			TRUE
+K10022	aotJ; arginine/ornithine transport system substrate-binding protein	Arginine/ornithine transport system	Transporters			TRUE
+K10023	aotM; arginine/ornithine transport system permease protein	Arginine/ornithine transport system	Transporters			TRUE
+K10024	aotQ; arginine/ornithine transport system permease protein	Arginine/ornithine transport system	Transporters			TRUE
+K10025	aotP; arginine/ornithine transport system ATP-binding protein [EC:7.4.2.1]	Arginine/ornithine transport system	Transporters			TRUE
+K02030	ABC.PA.S; polar amino acid transport system substrate-binding protein	Putative polar amino acid transport system	Transporters			TRUE
+K02029	ABC.PA.P; polar amino acid transport system permease protein	Putative polar amino acid transport system	Transporters			TRUE
+K02028	ABC.PA.A; polar amino acid transport system ATP-binding protein [EC:7.4.2.1]	Putative polar amino acid transport system	Transporters			TRUE
+K01999	livK; branched-chain amino acid transport system substrate-binding protein	Branched-chain amino acid transport system	Transporters			TRUE
+K01997	livH; branched-chain amino acid transport system permease protein	Branched-chain amino acid transport system	Transporters			TRUE
+K01998	livM; branched-chain amino acid transport system permease protein	Branched-chain amino acid transport system	Transporters			TRUE
+K01995	livG; branched-chain amino acid transport system ATP-binding protein	Branched-chain amino acid transport system	Transporters			TRUE
+K01996	livF; branched-chain amino acid transport system ATP-binding protein	Branched-chain amino acid transport system	Transporters			TRUE
+K02073	ABC.MET.S; D-methionine transport system substrate-binding protein	D-Methionine transport system	Transporters			TRUE
+K02072	ABC.MET.P; D-methionine transport system permease protein	D-Methionine transport system	Transporters			TRUE
+K02071	ABC.MET.A; D-methionine transport system ATP-binding protein	D-Methionine transport system	Transporters			TRUE
+K02035	ABC.PE.S; peptide/nickel transport system substrate-binding protein	Peptides/nickel transport system	Transporters			TRUE
+K02033	ABC.PE.P; peptide/nickel transport system permease protein	Peptides/nickel transport system	Transporters			TRUE
+K02034	ABC.PE.P1; peptide/nickel transport system permease protein	Peptides/nickel transport system	Transporters			TRUE
+K02031	ABC.PE.A; peptide/nickel transport system ATP-binding protein	Peptides/nickel transport system	Transporters			TRUE
+K02032	ABC.PE.A1; peptide/nickel transport system ATP-binding protein	Peptides/nickel transport system	Transporters			TRUE
+K02016	ABC.FEV.S; iron complex transport system substrate-binding protein	Iron complex transport system	Transporters			TRUE
+K02015	ABC.FEV.P; iron complex transport system permease protein	Iron complex transport system	Transporters			TRUE
+K02013	ABC.FEV.A; iron complex transport system ATP-binding protein [EC:3.6.3.34]	Iron complex transport system	Transporters			TRUE
+K06858	ABC.VB12.S1; vitamin B12 transport system substrate-binding protein	Vitamin B12 transport system	Transporters			TRUE
+K06073	ABC.VB12.P; vitamin B12 transport system permease protein	Vitamin B12 transport system	Transporters			TRUE
+K06074	ABC.VB12.A; vitamin B12 transport system ATP-binding protein [EC:3.6.3.33]	Vitamin B12 transport system	Transporters			TRUE
+K09815	znuA; zinc transport system substrate-binding protein	Zinc transport system	Transporters			TRUE
+K09816	znuB; zinc transport system permease protein	Zinc transport system	Transporters			TRUE
+K09817	znuC; zinc transport system ATP-binding protein [EC:3.6.3.-]	Zinc transport system	Transporters			TRUE
+K09818	ABC.MN.S; manganese/iron transport system substrate-binding protein	Manganese/iron transport system	Transporters			TRUE
+K09819	ABC.MN.P; manganese/iron transport system permease protein	Manganese/iron transport system	Transporters			TRUE
+K09820	ABC.MN.A; manganese/iron transport system ATP-binding protein	Manganese/iron transport system	Transporters			TRUE
+K02077	ABC.ZM.S; zinc/manganese transport system substrate-binding protein	Putative zinc/manganese transport system	Transporters			TRUE
+K02075	ABC.ZM.P; zinc/manganese transport system permease protein	Putative zinc/manganese transport system	Transporters			TRUE
+K02074	ABC.ZM.A; zinc/manganese transport system ATP-binding protein	Putative zinc/manganese transport system	Transporters			TRUE
+K02009	cbiN; cobalt transport protein	Cobalt/nickel transport system	Transporters			TRUE
+K02008	cbiQ; cobalt/nickel transport system permease protein	Cobalt/nickel transport system	Transporters			TRUE
+K02007	cbiM; cobalt/nickel transport system permease protein	Cobalt/nickel transport system	Transporters			TRUE
+K02006	cbiO; cobalt/nickel transport system ATP-binding protein	Cobalt/nickel transport system	Transporters			TRUE
+K16915	cbiL; nickel transport protein	Nickel transport system	Transporters			TRUE
+K02009	cbiN; cobalt transport protein	Nickel transport system	Transporters			TRUE
+K10094	cbiK; nickel transport system substrate-binding protein	Nickel transport system	Transporters			TRUE
+K02008	cbiQ; cobalt/nickel transport system permease protein	Nickel transport system	Transporters			TRUE
+K02007	cbiM; cobalt/nickel transport system permease protein	Nickel transport system	Transporters			TRUE
+K02006	cbiO; cobalt/nickel transport system ATP-binding protein	Nickel transport system	Transporters			TRUE
+K01989	ABC.X4.S; putative ABC transport system substrate-binding protein	Putative ABC transport system	Transporters			TRUE
+K05832	ABC.X4.P; putative ABC transport system permease protein	Putative ABC transport system	Transporters			TRUE
+K05833	ABC.X4.A; putative ABC transport system ATP-binding protein	Putative ABC transport system	Transporters			TRUE
+K09688	ABC-2.CPSE.P; capsular polysaccharide transport system permease protein	Capsular polysaccharide transport system	Transporters			TRUE
+K10107	ABC-2.CPSE.P1; capsular polysaccharide transport system permease protein	Capsular polysaccharide transport system	Transporters			TRUE
+K09689	ABC-2.CPSE.A; capsular polysaccharide transport system ATP-binding protein	Capsular polysaccharide transport system	Transporters			TRUE
+K09690	ABC-2.LPSE.P; lipopolysaccharide transport system permease protein	Lipopolysaccharide transport system	Transporters			TRUE
+K09691	ABC-2.LPSE.A; lipopolysaccharide transport system ATP-binding protein	Lipopolysaccharide transport system	Transporters			TRUE
+K09692	tagG; teichoic acid transport system permease protein	Teichoic acid transport system	Transporters			TRUE
+K09693	tagH; teichoic acid transport system ATP-binding protein [EC:3.6.3.40]	Teichoic acid transport system	Transporters			TRUE
+K09694	nodJ; lipooligosaccharide transport system permease protein	Lipooligosaccharide transport system	Transporters			TRUE
+K09695	nodI; lipooligosaccharide transport system ATP-binding protein	Lipooligosaccharide transport system	Transporters			TRUE
+K09696	natB; sodium transport system permease protein	Sodium transport system	Transporters			TRUE
+K09697	natA; sodium transport system ATP-binding protein	Sodium transport system	Transporters			TRUE
+K01992	ABC-2.P; ABC-2 type transport system permease protein	ABC-2 type transport system	Transporters			TRUE
+K01990	ABC-2.A; ABC-2 type transport system ATP-binding protein	ABC-2 type transport system	Transporters			TRUE
+K09808	ABC.LPT.P; lipoprotein-releasing system permease protein	Lipoprotein-releasing system	Transporters			TRUE
+K09810	ABC.LPT.A; lipoprotein-releasing system ATP-binding protein [EC:3.6.3.-]	Lipoprotein-releasing system	Transporters			TRUE
+K09811	ftsX; cell division transport system permease protein	Cell division transport system	Transporters			TRUE
+K09812	ftsE; cell division transport system ATP-binding protein	Cell division transport system	Transporters			TRUE
+K09813	hrtB; hemin transport system permease protein	Hemin transport system	Transporters			TRUE
+K09814	hrtA; hemin transport system ATP-binding protein [EC:3.6.3.-]	Hemin transport system	Transporters			TRUE
+K02004	ABC.CD.P;	Putative ABC transport system	Transporters			TRUE
+K02003	ABC.CD.A;	Putative ABC transport system	Transporters			TRUE
+K02195	ccmC; heme exporter membrane protein CcmC	Heme transport system	Transporters			TRUE
+K02194	ccmB; heme exporter membrane protein CcmB	Heme transport system	Transporters			TRUE
+K02193	ccmA; heme exporter ATP-binding protein CcmA [EC:3.6.3.41]	Heme transport system	Transporters			TRUE
+K02777	PTS-Glc-EIIA; PTS system, glucose-specific IIA component	PTS system, glucose-specific II component	Transporters			TRUE
+K02778	PTS-Glc-EIIB; PTS system, glucose-specific IIB component	PTS system, glucose-specific II component	Transporters			TRUE
+K02779	PTS-Glc-EIIC; PTS system, glucose-specific IIC component	PTS system, glucose-specific II component	Transporters			TRUE
+K02777	PTS-Glc-EIIA; PTS system, sugar-specific IIA component	PTS system, maltose/glucose-specific II component	Transporters			TRUE
+K02790	PTS-MalGlc-EIIB; PTS system, maltose/glucose-specific IIB component	PTS system, maltose/glucose-specific II component	Transporters			TRUE
+K02791	PTS-MalGlc-EIIC; PTS system, maltose/glucose-specific IIC component	PTS system, maltose/glucose-specific II component	Transporters			TRUE
+K02802	PTS-Nag-EIIA; PTS system, N-acetylglucosamine-specific IIA component	PTS system, N-acetylglucosamine-specific II component	Transporters			TRUE
+K02803	PTS-Nag-EIIB; PTS system, N-acetylglucosamine-specific IIB component	PTS system, N-acetylglucosamine-specific II component	Transporters			TRUE
+K02804	PTS-Nag-EIIC; PTS system, N-acetylglucosamine-specific IIC component	PTS system, N-acetylglucosamine-specific II component	Transporters			TRUE
+K02777	PTS-Glc-EIIA; PTS system, sugar-specific IIA component	PTS system, alpha-glucoside-specific II component	Transporters			TRUE
+K02749	PTS-Glv-EIIB; PTS system, alpha-glucoside-specific IIB component	PTS system, alpha-glucoside-specific II component	Transporters			TRUE
+K02750	PTS-Glv-EIIC; PTS system, alpha-glucoside-specific IIC component	PTS system, alpha-glucoside-specific II component	Transporters			TRUE
+K02808	PTS-Scr-EIIA; PTS system, sucrose-specific IIA component	PTS system, sucrose-specific II component	Transporters			TRUE
+K02809	PTS-Scr-EIIB; PTS system, sucrose-specific IIB component	PTS system, sucrose-specific II component	Transporters			TRUE
+K02810	PTS-Scr-EIIC; PTS system, sucrose-specific IIC component	PTS system, sucrose-specific II component	Transporters			TRUE
+K02777	PTS-Glc-EIIA; PTS system, glucose-specific IIA component	PTS system, trehalose-specific II component	Transporters			TRUE
+K02817	PTS-Tre-EIIA; PTS system, trehalose-specific IIA component	PTS system, trehalose-specific II component	Transporters			TRUE
+K02818	PTS-Tre-EIIB; PTS system, trehalose-specific IIB component	PTS system, trehalose-specific II component	Transporters			TRUE
+K02819	PTS-Tre-EIIC; PTS system, trehalose-specific IIC component	PTS system, trehalose-specific II component	Transporters			TRUE
+K02755	PTS-Bgl-EIIA; PTS system, beta-glucoside-specific IIA component	PTS system, beta-glucoside-specific II component	Transporters			TRUE
+K02756	PTS-Bgl-EIIB; PTS system, beta-glucoside-specific IIB component	PTS system, beta-glucoside-specific II component	Transporters			TRUE
+K02757	PTS-Bgl-EIIC; PTS system, beta-glucoside-specific IIC component	PTS system, beta-glucoside-specific II component	Transporters			TRUE
+K02777	PTS-Glc-EIIA; PTS system, sugar-specific IIA component	PTS system, beta-glucoside (arbutin/salicin/cellobiose)-specific II component	Transporters			TRUE
+K02752	PTS-Asc-EIIB; PTS system, beta-glucoside (arbutin/salicin/cellobiose)-specific IIB component	PTS system, beta-glucoside (arbutin/salicin/cellobiose)-specific II component	Transporters			TRUE
+K02753	PTS-Asc-EIIC; PTS system, beta-glucoside (arbutin/salicin/cellobiose)-specific IIC component	PTS system, beta-glucoside (arbutin/salicin/cellobiose)-specific II component	Transporters			TRUE
+K02768	PTS-Fru-EIIA; PTS system, fructose-specific IIA component	PTS system, fructose-specific II component	Transporters			TRUE
+K02769	PTS-Fru-EIIB; PTS system, fructose-specific IIB component	PTS system, fructose-specific II component	Transporters			TRUE
+K02770	PTS-Fru-EIIC; PTS system, fructose-specific IIC component	PTS system, fructose-specific II component	Transporters			TRUE
+K02798	PTS-Mtl-EIIA; PTS system, mannitol-specific IIA component	PTS system, mannitol-specific II component	Transporters			TRUE
+K02799	PTS-Mtl-EIIB; PTS system, mannitol-specific IIB component	PTS system, mannitol-specific II component	Transporters			TRUE
+K02800	PTS-Mtl-EIIC; PTS system, mannitol-specific IIC component	PTS system, mannitol-specific II component	Transporters			TRUE
+K02759	PTS-Cel-EIIA; PTS system, cellobiose-specific IIA component	PTS system, cellobiose-specific II component	Transporters			TRUE
+K02760	PTS-Cel-EIIB; PTS system, cellobiose-specific IIB component	PTS system, cellobiose-specific II component	Transporters			TRUE
+K02761	PTS-Cel-EIIC; PTS system, cellobiose-specific IIC component	PTS system, cellobiose-specific II component	Transporters			TRUE
+K02793	PTS-Man-EIIA; PTS system, mannose-specific IIA component	PTS system, mannose-specific II component	Transporters			TRUE
+K02794	PTS-Man-EIIB; PTS system, mannose-specific IIB component	PTS system, mannose-specific II component	Transporters			TRUE
+K02795	PTS-Man-EIIC; PTS system, mannose-specific IIC component	PTS system, mannose-specific II component	Transporters			TRUE
+K02796	PTS-Man-EIID; PTS system, mannose-specific IID component	PTS system, mannose-specific II component	Transporters			TRUE
+K02744	PTS-Aga-EIIA; PTS system, N-acetylgalactosamine-specific IIA component	PTS system, N-acetylgalactosamine-specific II component	Transporters			TRUE
+K02745	PTS-Aga-EIIB; PTS system, N-acetylgalactosamine-specific IIB component	PTS system, N-acetylgalactosamine-specific II component	Transporters			TRUE
+K02746	PTS-Aga-EIIC; PTS system, N-acetylgalactosamine-specific IIC component	PTS system, N-acetylgalactosamine-specific II component	Transporters			TRUE
+K02747	PTS-Aga-EIID; PTS system, N-acetylgalactosamine-specific IID component	PTS system, N-acetylgalactosamine-specific II component	Transporters			TRUE
+K02812	PTS-Sor-EIIA; PTS system, sorbose-specific IIA component	PTS system, sorbose-specific II component	Transporters			TRUE
+K02813	PTS-Sor-EIIB; PTS system, sorbose-specific IIB component	PTS system, sorbose-specific II component	Transporters			TRUE
+K02814	PTS-Sor-EIIC; PTS system, sorbose-specific IIC component	PTS system, sorbose-specific II component	Transporters			TRUE
+K02815	PTS-Sor-EIID; PTS system, sorbose-specific IID component	PTS system, sorbose-specific II component	Transporters			TRUE
+K02773	PTS-Gat-EIIA; PTS system, galactitol-specific IIA component	PTS system, galactitol-specific II component	Transporters			TRUE
+K02774	PTS-Gat-EIIB; PTS system, galactitol-specific IIB component	PTS system, galactitol-specific II component	Transporters			TRUE
+K02775	PTS-Gat-EIIC; PTS system, galactitol-specific IIC component	PTS system, galactitol-specific II component	Transporters			TRUE
+K02781	PTS-Gut-EIIA; PTS system, glucitol/sorbitol-specific IIA component	PTS system, glucitol/sorbitol-specific II component	Transporters			TRUE
+K02782	PTS-Gut-EIIB; PTS system, glucitol/sorbitol-specific IIB component	PTS system, glucitol/sorbitol-specific II component	Transporters			TRUE
+K02783	PTS-Gut-EIIC; PTS system, glucitol/sorbitol-specific IIC component	PTS system, glucitol/sorbitol-specific II component	Transporters			TRUE
+K02786	PTS-Lac-EIIA; PTS system, lactose-specific IIA component	PTS system, lactose-specific II component	Transporters			TRUE
+K02787	PTS-Lac-EIIB; PTS system, lactose-specific IIB component	PTS system, lactose-specific II component	Transporters			TRUE
+K02788	PTS-Lac-EIIC; PTS system, lactose-specific IIC component	PTS system, lactose-specific II component	Transporters			TRUE
+K02763	PTS-Dgl-EIIA; PTS system, D-glucosamine-specific IIA component	PTS system, D-glucosamine-specific II component	Transporters			TRUE
+K02764	PTS-Dgl-EIIB; PTS system, D-glucosamine-specific IIB component	PTS system, D-glucosamine-specific II component	Transporters			TRUE
+K02765	PTS-Dgl-EIIC; PTS system, D-glucosamine-specific IIC component	PTS system, D-glucosamine-specific II component	Transporters			TRUE
+K02821	PTS-Ula-EIIA; PTS system, ascorbate-specific IIA component	PTS system, ascorbate-specific II component	Transporters			TRUE
+K02822	PTS-Ula-EIIB; PTS system, ascorbate-specific IIB component	PTS system, ascorbate-specific II component	Transporters			TRUE
+K03475	PTS-Ula-EIIC; PTS system, ascorbate-specific IIC component	PTS system, ascorbate-specific II component	Transporters			TRUE
+K11051	ABC-2.CYL.P; multidrug/hemolysin transport system permease protein	Multidrug/hemolysin transport system	Transporters			TRUE
+K11050	ABC-2.CYL.A; multidrug/hemolysin transport system ATP-binding protein	Multidrug/hemolysin transport system	Transporters			TRUE
+K11069	potD; spermidine/putrescine transport system substrate-binding protein	Spermidine/putrescine transport system	Transporters			TRUE
+K11070	potC; spermidine/putrescine transport system permease protein	Spermidine/putrescine transport system	Transporters			TRUE
+K11071	potB; spermidine/putrescine transport system permease protein	Spermidine/putrescine transport system	Transporters			TRUE
+K11072	potA; spermidine/putrescine transport system ATP-binding protein	Spermidine/putrescine transport system	Transporters			TRUE
+K11073	potF; putrescine transport system substrate-binding protein	Putrescine transport system	Transporters			TRUE
+K11074	potI; putrescine transport system permease protein	Putrescine transport system	Transporters			TRUE
+K11075	potH; putrescine transport system permease protein	Putrescine transport system	Transporters			TRUE
+K11076	potG; putrescine transport system ATP-binding protein	Putrescine transport system	Transporters			TRUE
+K11077	attC; mannopine transport system substrate-binding protein	Mannopine transport system	Transporters			TRUE
+K11078	attB; mannopine transport system permease protein	Mannopine transport system	Transporters			TRUE
+K11079	attA2; mannopine transport system permease protein	Mannopine transport system	Transporters			TRUE
+K11080	attA1; mannopine transport system ATP-binding protein	Mannopine transport system	Transporters			TRUE
+K11081	phnS; 2-aminoethylphosphonate transport system substrate-binding protein	2-Aminoethylphosphonate transport system	Transporters			TRUE
+K11082	phnV; 2-aminoethylphosphonate transport system permease protein	2-Aminoethylphosphonate transport system	Transporters			TRUE
+K11083	phnU; 2-aminoethylphosphonate transport system permease protein	2-Aminoethylphosphonate transport system	Transporters			TRUE
+K11084	phnT; 2-aminoethylphosphonate transport system ATP-binding protein	2-Aminoethylphosphonate transport system	Transporters			TRUE
+K02777	PTS-Glc-EIIA; PTS system, glucose-specific IIA component	PTS system, N-acetylmuramic acid-specific II component	Transporters			TRUE
+K11191	PTS-Mur-EIIB; PTS system, N-acetylmuramic acid-specific IIB component	PTS system, N-acetylmuramic acid-specific II component	Transporters			TRUE
+K11192	PTS-Mur-EIIC; PTS system, N-acetylmuramic acid-specific IIC component	PTS system, N-acetylmuramic acid-specific II component	Transporters			TRUE
+K11194	PTS-Fru1-EIIA; PTS system, fructose-specific IIA component	PTS system, fructose-specific II component	Transporters			TRUE
+K11195	PTS-Fru1-EIIB; PTS system, fructose-specific IIB component	PTS system, fructose-specific II component	Transporters			TRUE
+K11196	PTS-Fru1-EIIC; PTS system, fructose-specific IIC component	PTS system, fructose-specific II component	Transporters			TRUE
+K02771	PTS-Fru1-EIID; PTS system, fructose-specific IID component	PTS system, fructose-specific II component	Transporters			TRUE
+K11198	PTS-Mng-EIIA; PTS system, 2-O-A-mannosyl-D-glycerate-specific IIA component	PTS system, 2-O-A-mannosyl-D-glycerate-specific II component	Transporters			TRUE
+K11199	PTS-Mng-EIIB; PTS system, 2-O-A-mannosyl-D-glycerate-specific IIB component	PTS system, 2-O-A-mannosyl-D-glycerate-specific II component	Transporters			TRUE
+K11200	PTS-Mng-EIIC; PTS system, 2-O-A-mannosyl-D-glycerate-specific IIC component	PTS system, 2-O-A-mannosyl-D-glycerate-specific II component	Transporters			TRUE
+K11201	PTS-Fru2-EIIA; PTS system, fructose-specific IIA-like component	PTS system, fructose-specific II-like component	Transporters			TRUE
+K11202	PTS-Fru2-EIIB; PTS system, fructose-specific IIB-like component	PTS system, fructose-specific II-like component	Transporters			TRUE
+K11203	PTS-Fru2-EIIC; PTS system, fructose-specific IIC-like component	PTS system, fructose-specific II-like component	Transporters			TRUE
+K11632	bceB; bacitracin transport system permease protein	Bacitracin transport system	Transporters			TRUE
+K11631	bceA; bacitracin transport system ATP-binding protein	Bacitracin transport system	Transporters			TRUE
+K11636	yxdM; putative ABC transport system permease protein	Uncharacterized ABC transport system	Transporters			TRUE
+K11635	yxdL; putative ABC transport system ATP-binding protein	Uncharacterized ABC transport system	Transporters			TRUE
+K11601	mntC; manganese transport system substrate-binding protein	Manganese transport system	Transporters			TRUE
+K11602	mntB; manganese transport system permease protein	Manganese transport system	Transporters			TRUE
+K11603	mntA; manganese transport system ATP-binding protein	Manganese transport system	Transporters			TRUE
+K11604	sitA; manganese/iron transport system substrate-binding protein	Manganese/iron transport system	Transporters			TRUE
+K11605	sitC; manganese/iron transport system permease protein	Manganese/iron transport system	Transporters			TRUE
+K11606	sitD; manganese/iron transport system permease protein	Manganese/iron transport system	Transporters			TRUE
+K11607	sitB; manganese/iron transport system ATP-binding protein	Manganese/iron transport system	Transporters			TRUE
+K11704	mtsA; iron/zinc/manganese/copper transport system substrate-binding protein	Iron/zinc/manganese/copper transport system	Transporters			TRUE
+K11705	mtsC; iron/zinc/manganese/copper transport system permease protein	Iron/zinc/manganese/copper transport system	Transporters			TRUE
+K11706	mtsB; iron/zinc/manganese/copper transport system ATP-binding protein	Iron/zinc/manganese/copper transport system	Transporters			TRUE
+K11707	troA; manganese/zinc/iron transport system substrate-binding protein	Manganese/zinc/iron transport system	Transporters			TRUE
+K11708	troC; manganese/zinc/iron transport system permease protein	Manganese/zinc/iron transport system	Transporters			TRUE
+K11709	troD; manganese/zinc/iron transport system permease protein	Manganese/zinc/iron transport system	Transporters			TRUE
+K11710	troB; manganese/zinc/iron transport system ATP-binding protein	Manganese/zinc/iron transport system	Transporters			TRUE
+K07091	lptF; lipopolysaccharide export system permease protein	Lipopolysaccharide export system	Transporters			TRUE
+K11720	lptG; lipopolysaccharide export system permease protein	Lipopolysaccharide export system	Transporters			TRUE
+K06861	lptB; lipopolysaccharide export system ATP-binding protein [EC:3.6.3.-]	Lipopolysaccharide export system	Transporters			TRUE
+K11950	cmpA; bicarbonate transport system substrate-binding protein	Bicarbonate transport system	Transporters			TRUE
+K11951	cmpB; bicarbonate transport system permease protein	Bicarbonate transport system	Transporters			TRUE
+K11952	cmpC; bicarbonate transport system ATP-binding protein [EC:3.6.3.-]	Bicarbonate transport system	Transporters			TRUE
+K11953	cmpD; bicarbonate transport system ATP-binding protein [EC:3.6.3.-]	Bicarbonate transport system	Transporters			TRUE
+K11954	K11954; neutral amino acid transport system substrate-binding protein	Neutral amino acid transport system	Transporters			TRUE
+K11955	natC; neutral amino acid transport system permease protein	Neutral amino acid transport system	Transporters			TRUE
+K11956	natD; neutral amino acid transport system permease protein	Neutral amino acid transport system	Transporters			TRUE
+K11957	K11957; neutral amino acid transport system ATP-binding protein	Neutral amino acid transport system	Transporters			TRUE
+K11958	natE; neutral amino acid transport system ATP-binding protein	Neutral amino acid transport system	Transporters			TRUE
+K11959	urtA; urea transport system substrate-binding protein	Urea transport system	Transporters			TRUE
+K11960	urtB; urea transport system permease protein	Urea transport system	Transporters			TRUE
+K11961	urtC; urea transport system permease protein	Urea transport system	Transporters			TRUE
+K11962	urtD; urea transport system ATP-binding protein	Urea transport system	Transporters			TRUE
+K11963	urtE; urea transport system ATP-binding protein	Urea transport system	Transporters			TRUE
+K12368	dppA; dipeptide transport system substrate-binding protein	Dipeptide transport system	Transporters			TRUE
+K12369	dppB; dipeptide transport system permease protein	Dipeptide transport system	Transporters			TRUE
+K12370	dppC; dipeptide transport system permease protein	Dipeptide transport system	Transporters			TRUE
+K12371	dppD; dipeptide transport system ATP-binding protein	Dipeptide transport system	Transporters			TRUE
+K12372	dppF; dipeptide transport system ATP-binding protein	Dipeptide transport system	Transporters			TRUE
+K11004	hlyB; ATP-binding cassette, subfamily B, bacterial HlyB/CyaB	alpha-Hemolysin/cyclolysin transport system	Transporters			TRUE
+K11003	hlyD; hemolysin D	alpha-Hemolysin/cyclolysin transport system	Transporters			TRUE
+K12340	tolC; outer membrane channel protein TolC	alpha-Hemolysin/cyclolysin transport system	Transporters			TRUE
+K12530	rtxB; ATP-binding cassette, subfamily B, bacterial RtxB	RTX toxin transport system	Transporters			TRUE
+K12531	rtxE; ATP-binding cassette, subfamily B, bacterial RtxE	RTX toxin transport system	Transporters			TRUE
+K12532	rtxD; RTX toxin transporter	RTX toxin transport system	Transporters			TRUE
+K12340	tolC; outer membrane channel protein TolC	RTX toxin transport system	Transporters			TRUE
+K12533	rsaD; ATP-binding cassette, subfamily C, bacterial RsaD	S-Layer protein transport system	Transporters			TRUE
+K12534	rsaE; membrane fusion protein RsaE	S-Layer protein transport system	Transporters			TRUE
+K12535	rsaF; outer membrane protein RsaF	S-Layer protein transport system	Transporters			TRUE
+K12536	hasD; ATP-binding cassette, subfamily C, bacterial HasD	Hemophore/metalloprotease transport system	Transporters			TRUE
+K12537	hasE; protease secretion protein HasE	Hemophore/metalloprotease transport system	Transporters			TRUE
+K12538	hasF; outer membrane protein HasF	Hemophore/metalloprotease transport system	Transporters			TRUE
+K12539	prsD; ATP-binding cassette, subfamily C, bacterial PrsD	Multiple protein transport system	Transporters			TRUE
+K12540	prsE; membrane fusion protein PrsE	Multiple protein transport system	Transporters			TRUE
+K12541	lapB; ATP-binding cassette, subfamily C, bacterial LapB	Adhesin protein transport system	Transporters			TRUE
+K12542	lapC; membrane fusion protein LapC	Adhesin protein transport system	Transporters			TRUE
+K12543	lapE; outer membrane protein LapE	Adhesin protein transport system	Transporters			TRUE
+K13889	gsiB; glutathione transport system substrate-binding protein	Glutathione transport system	Transporters			TRUE
+K13890	gsiC; glutathione transport system permease protein	Glutathione transport system	Transporters			TRUE
+K13891	gsiD; glutathione transport system permease protein	Glutathione transport system	Transporters			TRUE
+K13892	gsiA; glutathione transport system ATP-binding protein	Glutathione transport system	Transporters			TRUE
+K13893	yejA; microcin C transport system substrate-binding protein	Microcin C transport system	Transporters			TRUE
+K13894	yejB; microcin C transport system permease protein	Microcin C transport system	Transporters			TRUE
+K13895	yejE; microcin C transport system permease protein	Microcin C transport system	Transporters			TRUE
+K13896	yejF; microcin C transport system ATP-binding protein	Microcin C transport system	Transporters			TRUE
+K15551	tauA; taurine transport system substrate-binding protein	Taurine transport system	Transporters			TRUE
+K15552	tauC; taurine transport system permease protein	Taurine transport system	Transporters			TRUE
+K10831	tauB; taurine transport system ATP-binding protein [EC:3.6.3.36]	Taurine transport system	Transporters			TRUE
+K15553	ssuA; sulfonate transport system substrate-binding protein	Sulfonate transport system	Transporters			TRUE
+K15554	ssuC; sulfonate transport system permease protein	Sulfonate transport system	Transporters			TRUE
+K15555	ssuB; sulfonate transport system ATP-binding protein [EC:3.6.3.-]	Sulfonate transport system	Transporters			TRUE
+K15556	ophF; phthalate transport system substrate-binding protein	Phthalate transport system	Transporters			TRUE
+K15557	ophG; phthalate transport system permease protein	Phthalate transport system	Transporters			TRUE
+K15558	ophH; phthalate transport system ATP-binding protein	Phthalate transport system	Transporters			TRUE
+K15580	oppA; oligopeptide transport system substrate-binding protein	Oligopeptide transport system	Transporters			TRUE
+K15581	oppB; oligopeptide transport system permease protein	Oligopeptide transport system	Transporters			TRUE
+K15582	oppC; oligopeptide transport system permease protein	Oligopeptide transport system	Transporters			TRUE
+K15583	oppD; oligopeptide transport system ATP-binding protein	Oligopeptide transport system	Transporters			TRUE
+K10823	oppF; oligopeptide transport system ATP-binding protein	Oligopeptide transport system	Transporters			TRUE
+K15584	nikA; nickel transport system substrate-binding protein	Nickel transport system	Transporters			TRUE
+K15585	nikB; nickel transport system permease protein	Nickel transport system	Transporters			TRUE
+K15586	nikC; nickel transport system permease protein	Nickel transport system	Transporters			TRUE
+K15587	nikD; nickel transport system ATP-binding protein [EC:3.6.3.24]	Nickel transport system	Transporters			TRUE
+K10824	nikE; nickel transport system ATP-binding protein [EC:3.6.3.24]	Nickel transport system	Transporters			TRUE
+K15598	thiY; putative hydroxymethylpyrimidine transport system substrate-binding protein	Putative hydroxymethylpyrimidine transport system	Transporters			TRUE
+K15599	thiX; putative hydroxymethylpyrimidine transport system permease protein	Putative hydroxymethylpyrimidine transport system	Transporters			TRUE
+K15600	thiZ; putative hydroxymethylpyrimidine transport system ATP-binding protein	Putative hydroxymethylpyrimidine transport system	Transporters			TRUE
+K03523	bioY; biotin transport system substrate-specific component	Biotin transport system	Transporters			TRUE
+K16783	bioN; biotin transport system permease protein	Biotin transport system	Transporters			TRUE
+K16784	bioM; biotin transport system ATP-binding protein [EC:3.6.3.-]	Biotin transport system	Transporters			TRUE
+K03523	bioY; biotin transport system substrate-specific component	Energy-coupling factor transport system	Transporters			TRUE
+K16923	qrtT; energy-coupling factor transport system substrate-specific component	Energy-coupling factor transport system	Transporters			TRUE
+K16924	mtsT; energy-coupling factor transport system substrate-specific component	Energy-coupling factor transport system	Transporters			TRUE
+K16925	ykoE; energy-coupling factor transport system substrate-specific component	Energy-coupling factor transport system	Transporters			TRUE
+K16926	htsT; energy-coupling factor transport system substrate-specific component	Energy-coupling factor transport system	Transporters			TRUE
+K16927	cbrT; energy-coupling factor transport system substrate-specific component	Energy-coupling factor transport system	Transporters			TRUE
+K16928	mtaT; energy-coupling factor transport system substrate-specific component	Energy-coupling factor transport system	Transporters			TRUE
+K16929	K16929; energy-coupling factor transport system substrate-specific component	Energy-coupling factor transport system	Transporters			TRUE
+K16785	ecfT; energy-coupling factor transport system permease protein	Energy-coupling factor transport system	Transporters			TRUE
+K16786	ecfA1; energy-coupling factor transport system ATP-binding protein [EC:3.6.3.-]	Energy-coupling factor transport system	Transporters			TRUE
+K16787	ecfA2; energy-coupling factor transport system ATP-binding protein [EC:3.6.3.-]	Energy-coupling factor transport system	Transporters			TRUE
+K16916	yydJ; putative peptide transport system permease protein	Putative peptide transport system	Transporters			TRUE
+K16917	yydI; putative peptide transport system ATP-binding protein	Putative peptide transport system	Transporters			TRUE
+K16918	ytrF; acetoin utilization transport system permease protein	Acetoin utilization transport system	Transporters			TRUE
+K16919	ytrC_D; acetoin utilization transport system permease protein	Acetoin utilization transport system	Transporters			TRUE
+K16920	ytrE; acetoin utilization transport system ATP-binding protein	Acetoin utilization transport system	Transporters			TRUE
+K16921	ytrB; acetoin utilization transport system ATP-binding protein	Acetoin utilization transport system	Transporters			TRUE
+K16956	tcyJ; L-cystine transport system substrate-binding protein	L-Cystine transport system	Transporters			TRUE
+K16957	tcyK; L-cystine transport system substrate-binding protein	L-Cystine transport system	Transporters			TRUE
+K16958	tcyL; L-cystine transport system permease protein	L-Cystine transport system	Transporters			TRUE
+K16959	tcyM; L-cystine transport system permease protein	L-Cystine transport system	Transporters			TRUE
+K16960	tcyN; L-cystine transport system ATP-binding protein [EC:7.4.2.1]	L-Cystine transport system	Transporters			TRUE
+K16961	yxeM; putative S-methylcysteine transport system substrate-binding protein	Putative S-methylcysteine transport system	Transporters			TRUE
+K16962	yxeN; putative S-methylcysteine transport system permease protein	Putative S-methylcysteine transport system	Transporters			TRUE
+K16963	yxeO; putative S-methylcysteine transport system ATP-binding protein	Putative S-methylcysteine transport system	Transporters			TRUE
+K17062	bgtB; arginine/lysine/histidine/glutamine transport system substrate-binding and permease protein	Arginine/lysine/histidine/glutamine transport system	Transporters			TRUE
+K17063	bgtA; arginine/lysine/histidine/glutamine transport system ATP-binding protein	Arginine/lysine/histidine/glutamine transport system	Transporters			TRUE
+K17073	lysX1; putative lysine transport system substrate-binding protein	Putative lysine transport system	Transporters			TRUE
+K17074	lysX2; putative lysine transport system permease protein	Putative lysine transport system	Transporters			TRUE
+K17076	lysY; putative lysine transport system ATP-binding protein [EC:7.4.2.1]	Putative lysine transport system	Transporters			TRUE
+K17202	K17202; erythritol transport system substrate-binding protein	Erythritol transport system	Transporters			TRUE
+K17203	K17203; erythritol transport system permease protein	Erythritol transport system	Transporters			TRUE
+K17204	eryE; erythritol transport system ATP-binding protein [COGCOG1129]	Erythritol transport system	Transporters			TRUE
+K17205	xltC; putative xylitol transport system substrate-binding protein	Putative xylitol transport system	Transporters			TRUE
+K17206	xltB; putative xylitol transport system permease protein	Putative xylitol transport system	Transporters			TRUE
+K17207	xltA; putative xylitol transport system ATP-binding protein	Putative xylitol transport system	Transporters			TRUE
+K17208	K17208; inositol transport system substrate-binding protein	Inositol transport system	Transporters			TRUE
+K17209	iatP; inositol transport system permease protein	Inositol transport system	Transporters			TRUE
+K17210	iatA; inositol transport system ATP-binding protein	Inositol transport system	Transporters			TRUE
+K17213	K17213; inositol transport system substrate-binding protein	Inositol transport system	Transporters			TRUE
+K17214	K17214; inositol transport system permease protein	Inositol transport system	Transporters			TRUE
+K17215	K17215; inositol transport system ATP-binding protein	Inositol transport system	Transporters			TRUE
+K17237	inoE; inositol-phosphate transport system substrate-binding protein	Inositol-phosphate transport system	Transporters			TRUE
+K17238	inoF; inositol-phosphate transport system permease protein	Inositol-phosphate transport system	Transporters			TRUE
+K17239	inoG; inositol-phosphate transport system permease protein	Inositol-phosphate transport system	Transporters			TRUE
+K17240	inoK; inositol-phosphate transport system ATP-binding protein	Inositol-phosphate transport system	Transporters			TRUE
+K17241	aguE; alpha-1,4-digalacturonate transport system substrate-binding protein	alpha-1,4-Digalacturonate transport system	Transporters			TRUE
+K17242	aguF; alpha-1,4-digalacturonate transport system permease protein	alpha-1,4-Digalacturonate transport system	Transporters			TRUE
+K17243	aguG; alpha-1,4-digalacturonate transport system permease protein	alpha-1,4-Digalacturonate transport system	Transporters			TRUE
+K17244	chiE; putative chitobiose transport system substrate-binding protein	Putative chitobiose transport system	Transporters			TRUE
+K17245	chiF; putative chitobiose transport system permease protein	Putative chitobiose transport system	Transporters			TRUE
+K17246	chiG; putative chitobiose transport system permease protein	Putative chitobiose transport system	Transporters			TRUE
+K17234	araN; arabinosaccharide transport system substrate-binding protein	Arabinosaccharide transport system	Transporters			TRUE
+K17235	araP; arabinosaccharide transport system permease protein	Arabinosaccharide transport system	Transporters			TRUE
+K17236	araQ; arabinosaccharide transport system permease protein	Arabinosaccharide transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	Arabinosaccharide transport system	Transporters			TRUE
+K17318	lplA; putative aldouronate transport system substrate-binding protein	Putative aldouronate transport system	Transporters			TRUE
+K17319	lplB; putative aldouronate transport system permease protein	Putative aldouronate transport system	Transporters			TRUE
+K17320	lplC; putative aldouronate transport system permease protein	Putative aldouronate transport system	Transporters			TRUE
+K17311	K17311; trehalose transport system substrate-binding protein	Trehalose transport system	Transporters			TRUE
+K17312	K17312; trehalose transport system permease protein	Trehalose transport system	Transporters			TRUE
+K17313	treU; trehalose transport system permease protein	Trehalose transport system	Transporters			TRUE
+K17314	treV; trehalose transport system ATP-binding protein	Trehalose transport system	Transporters			TRUE
+K17315	gtsA; glucose/mannose transport system substrate-binding protein	Glucose/mannose transport system	Transporters			TRUE
+K17316	gtsB; glucose/mannose transport system permease protein	Glucose/mannose transport system	Transporters			TRUE
+K17317	gtsC; glucose/mannose transport system permease protein	Glucose/mannose transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	Glucose/mannose transport system	Transporters			TRUE
+K17329	dasA; N,N'-diacetylchitobiose transport system substrate-binding protein	N,N'-Diacetylchitobiose transport system	Transporters			TRUE
+K17330	dasB; N,N'-diacetylchitobiose transport system permease protein	N,N'-Diacetylchitobiose transport system	Transporters			TRUE
+K17331	dasC; N,N'-diacetylchitobiose transport system permease protein	N,N'-Diacetylchitobiose transport system	Transporters			TRUE
+K10112	msmX; multiple sugar transport system ATP-binding protein	N,N'-Diacetylchitobiose transport system	Transporters			TRUE
+K17321	glpV; glycerol transport system substrate-binding protein	Glycerol transport system	Transporters			TRUE
+K17322	glpP; glycerol transport system permease protein	Glycerol transport system	Transporters			TRUE
+K17323	glpQ; glycerol transport system permease protein	Glycerol transport system	Transporters			TRUE
+K17324	glpS; glycerol transport system ATP-binding protein	Glycerol transport system	Transporters			TRUE
+K17325	glpT; glycerol transport system ATP-binding protein	Glycerol transport system	Transporters			TRUE
+K17464	PTS-Dga-EIIA; PTS system, D-glucosaminate-specific IIA component	PTS system, D-glucosaminate-specific II component	Transporters			TRUE
+K17465	PTS-Dga-EIIB; PTS system, D-glucosaminate-specific IIB component	PTS system, D-glucosaminate-specific II component	Transporters			TRUE
+K17466	PTS-Dga-EIIC; PTS system, D-glucosaminate-specific IIC component	PTS system, D-glucosaminate-specific II component	Transporters			TRUE
+K17467	PTS-Dga-EIID; PTS system, D-glucosaminate-specific IID component	PTS system, D-glucosaminate-specific II component	Transporters			TRUE
+K17326	bxlE; xylobiose transport system substrate-binding protein	Xylobiose transport system	Transporters			TRUE
+K17327	bxlF; xylobiose transport system permease protein	Xylobiose transport system	Transporters			TRUE
+K17328	bxlG; xylobiose transport system permease protein	Xylobiose transport system	Transporters			TRUE
+K18233	oleC5; oleandomycin transport system permease protein	Oleandomycin transport system	Transporters			TRUE
+K18232	oleC4; oleandomycin transport system ATP-binding protein	Oleandomycin transport system	Transporters			TRUE
+K18216	steA; ATP-binding cassette, subfamily B, tetracycline resistant protein	Tetracycline resistance, TetAB(46) transporter	Transporters			TRUE
+K18217	steB; ATP-binding cassette, subfamily B, tetracycline resistant protein	Tetracycline resistance, TetAB(46) transporter	Transporters			TRUE
+K18476	tetR; TetR/AcrR family transcriptional regulator, tetracycline repressor protein	Tetracycline resistance, TetA transporter	Transporters			TRUE
+K08151	tetA; MFS transporter, DHA1 family, tetracycline resistance protein	Tetracycline resistance, TetA transporter	Transporters			TRUE
+K02067	mlaD, linM; phospholipid/cholesterol/gamma-HCH transport system substrate-binding protein	gamma-Hexachlorocyclohexane transport system	Transporters			TRUE
+K02066	mlaE, linK; phospholipid/cholesterol/gamma-HCH transport system permease protein	gamma-Hexachlorocyclohexane transport system	Transporters			TRUE
+K02065	mlaF, linL, mkl; phospholipid/cholesterol/gamma-HCH transport system ATP-binding protein	gamma-Hexachlorocyclohexane transport system	Transporters			TRUE
+K18480	linN; cholesterol transport system auxiliary component	gamma-Hexachlorocyclohexane transport system	Transporters			TRUE
+K02067	mlaD, linM; phospholipid/cholesterol/gamma-HCH transport system substrate-binding protein	Mce transport system	Transporters			TRUE
+K02066	mlaE, linK; phospholipid/cholesterol/gamma-HCH transport system permease protein	Mce transport system	Transporters			TRUE
+K02065	mlaF, linL, mkl; phospholipid/cholesterol/gamma-HCH transport system ATP-binding protein	Mce transport system	Transporters			TRUE
+K18481	mas; Mce-associated membrane protein	Mce transport system	Transporters			TRUE
+K19083	braD; bacitracin transport system ATP-binding protein	Bacitracin resistance, VraDE transporter	Transporters			TRUE
+K19084	braE; bacitracin transport system permease protein	Bacitracin resistance, VraDE transporter	Transporters			TRUE
+K19081	braS; two-component system, OmpR family, sensor histidine kinase BraS/BceS [EC:2.7.13.3]	Bacitracin resistance, VraDE transporter	Transporters			TRUE
+K19082	braR; two-component system, OmpR family, response regulator protein BraR/BceR	Bacitracin resistance, VraDE transporter	Transporters			TRUE
+K11631	bceA; bacitracin transport system ATP-binding protein	Bacitracin resistance, VraDE transporter	Transporters			TRUE
+K11632	bceB; bacitracin transport system permease protein	Bacitracin resistance, VraDE transporter	Transporters			TRUE
+K11629	bceS; two-component system, OmpR family, bacitracin resistance sensor histidine kinase BceS [EC:2.7.13.3]	Bacitracin resistance, BceAB transporter	Transporters			TRUE
+K11630	bceR; two-component system, OmpR family, bacitracin resistance response regulator BceR	Bacitracin resistance, BceAB transporter	Transporters			TRUE
+K11631	bceA; bacitracin transport system ATP-binding protein	Bacitracin resistance, BceAB transporter	Transporters			TRUE
+K11632	bceB; bacitracin transport system permease protein	Bacitracin resistance, BceAB transporter	Transporters			TRUE
+K19226	sapA; cationic peptide transport system substrate-binding protein	Cationic peptide transport system	Transporters			TRUE
+K19227	sapB; cationic peptide transport system permease protein	Cationic peptide transport system	Transporters			TRUE
+K19228	sapC; cationic peptide transport system permease protein	Cationic peptide transport system	Transporters			TRUE
+K19229	sapD; cationic peptide transport system ATP-binding protein	Cationic peptide transport system	Transporters			TRUE
+K19230	sapF; cationic peptide transport system ATP-binding protein	Cationic peptide transport system	Transporters			TRUE
+K19506	PTS-Gfr-EIIA; PTS system, fructoselysine/glucoselysine-specific IIA component	PTS system, fructoselysine/glucoselysine-specific II component	Transporters			TRUE
+K19507	PTS-Gfr-EIIB; PTS system, fructoselysine/glucoselysine-specific IIB component	PTS system, fructoselysine/glucoselysine-specific II component	Transporters			TRUE
+K19508	PTS-Gfr-EIIC; PTS system, fructoselysine/glucoselysine-specific IIC component	PTS system, fructoselysine/glucoselysine-specific II component	Transporters			TRUE
+K19509	PTS-Gfr-EIID; PTS system, fructoselysine/glucoselysine-specific IID component	PTS system, fructoselysine/glucoselysine-specific II component	Transporters			TRUE
+K19971	psaA; manganese/zinc transport system substrate-binding protein	Manganese/zinc transport system	Transporters			TRUE
+K19972	psaC; manganese/zinc transport system permease protein	Manganese/zinc transport system	Transporters			TRUE
+K10830	psaB; manganese/zinc transport system ATP-binding protein [EC:3.6.3.35]	Manganese/zinc transport system	Transporters			TRUE
+K19975	mntC; manganese/zinc transport system substrate-binding protein	Manganese/zinc transport system	Transporters			TRUE
+K19976	mntB; manganese/zinc transport system permease protein	Manganese/zinc transport system	Transporters			TRUE
+K19973	mntA; manganese/zinc transport system ATP-binding protein [EC:3.6.3.35]	Manganese/zinc transport system	Transporters			TRUE
+K02777	PTS-Glc-EIIA; PTS system, glucose-specific IIA component	PTS system, maltose-specific II component	Transporters			TRUE
+K20107	PTS-Mal-EIIB; PTS system, maltose-specific IIB component	PTS system, maltose-specific II component	Transporters			TRUE
+K20108	PTS-Mal-EIIC; PTS system, maltose-specific IIC component	PTS system, maltose-specific II component	Transporters			TRUE
+K20112	PTS-Gal-EIIA; PTS system, galactose-specific IIA component	PTS system, galactose-specific II component	Transporters			TRUE
+K20113	PTS-Gal-EIIB; PTS system, galactose-specific IIB component	PTS system, galactose-specific II component	Transporters			TRUE
+K20114	PTS-Gal-EIIC; PTS system, galactose-specific IIC component	PTS system, galactose-specific II component	Transporters			TRUE
+K20116	PTS-Glc1-EIIA; PTS system, glucose-specific IIA component	PTS system, glucose-specific II component	Transporters			TRUE
+K20117	PTS-Glc1-EIIB; PTS system, glucose-specific IIB component	PTS system, glucose-specific II component	Transporters			TRUE
+K20118	PTS-Glc1-EIIC; PTS system, glucose-specific IIC component	PTS system, glucose-specific II component	Transporters			TRUE
+K20459	nukF; lantibiotic transport system ATP-binding protein	Lantibiotic transport system	Transporters			TRUE
+K20460	nukE; lantibiotic transport system permease protein	Lantibiotic transport system	Transporters			TRUE
+K20461	nukG; lantibiotic transport system permease protein	Lantibiotic transport system	Transporters			TRUE
+K20491	nisE; lantibiotic transport system permease protein	Lantibiotic transport system	Transporters			TRUE
+K20492	nisG; lantibiotic transport system permease protein	Lantibiotic transport system	Transporters			TRUE
+K20494	epiG; lantibiotic transport system permease protein	Lantibiotic transport system	Transporters			TRUE
+K20490	nisF; lantibiotic transport system ATP-binding protein	Lantibiotic transport system	Transporters			TRUE
+K23055	putative lysine/arginine/ornithine/histidine/octopine transport system substrate-binding protein	Putative lysine/arginine/ornithine/histidine/octopine transport system	Transporters			TRUE
+K23056	putative lysine/arginine/ornithine/histidine/octopine transport system permease protein	Putative lysine/arginine/ornithine/histidine/octopine transport system	Transporters			TRUE
+K23057	putative lysine/arginine/ornithine/histidine/octopine transport system permease protein	Putative lysine/arginine/ornithine/histidine/octopine transport system	Transporters			TRUE
+K23058	putative lysine/arginine/ornithine/histidine/octopine transport system ATPase-binding protein [EC:7.4.2.1]	Putative lysine/arginine/ornithine/histidine/octopine transport system	Transporters			TRUE
+K23060	artR; arginine/lysine/histidine transport system ATP-binding protein [EC:7.4.2.1]	Arginine/lysine/histidine transport system	Transporters			TRUE
+K23059	artP; arginine/lysine/histidine transporter system substrate-binding protein	Arginine/lysine/histidine transport system	Transporters			TRUE
+K17077	artQ; arginine/lysine/histidine transport system permease protein	Arginine/lysine/histidine transport system	Transporters			TRUE
+K23061	lhpP; hydroxyproline transporter system substrate-binding protein	Hydroxyproline transporter system	Transporters			TRUE
+K23062	lhpM; hydroxyproline transport system permease protein	Hydroxyproline transporter system	Transporters			TRUE
+K23063	lhpN; hydroxyproline transport system permease protein	Hydroxyproline transporter system	Transporters			TRUE
+K23064	lhpO; hydroxyproline transport system ATP-binding protein [EC:7.4.2.1]	Hydroxyproline transporter system	Transporters			TRUE
+K15495	wtpC; molybdate/tungstate transport system substrate-binding protein	Molybdate/tungstate transport system	Transporters			TRUE
+K15496	wtpB; molybdate/tungstate transport system permease protein	Molybdate/tungstate transport system	Transporters			TRUE
+K15497	wtpA; molybdate/tungstate transport system ATP-binding protein [EC:3.6.3.-]	Molybdate/tungstate transport system	Transporters			TRUE
+K16199	dppE; dipeptide transport system substrate-binding protein	Dipeptide transport system, Firmicutes	Transporters			TRUE
+K16200	dppB1; dipeptide transport system permease protein	Dipeptide transport system, Firmicutes	Transporters			TRUE
+K16201	dppC1; dipeptide transport system permease protein	Dipeptide transport system, Firmicutes	Transporters			TRUE
+K16202	dppD1; dipeptide transport system ATP-binding protein	Dipeptide transport system, Firmicutes	Transporters			TRUE

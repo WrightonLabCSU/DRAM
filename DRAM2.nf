@@ -392,12 +392,89 @@ if( params.annotate ){
 if( params.merge ){
     
 }
+*/
 
-if( params.distill ){
-    
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Create channel for optional topic or ecosystem distill sheets and custom sheets
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+if( params.distill_topic != "" ){
+    distill_default = 0
+    distill_carbon = 0
+    distill_enegry = 0
+    distill_misc = 0
+    distill_nitrogen = 0
+    distill_transport = 0
+
+    parseDistillTopic(params.distill_topic)
+
+    /* Check for input --distill_topic files and create channel */
+    if( distill_carbon == 1 ) {
+        ch_distill_carbon = file(params.distill_carbon_sheet).exists() ? file(params.distill_carbon_sheet) : error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+    } else {
+        ch_distill_carbon = []
+    }
+    if( distill_energy == 1 ) {
+        ch_distill_energy = file(params.distill_energy_sheet).exists() ? file(params.distill_energy_sheet) : error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+    } else {
+        ch_distill_energy = []
+    }
+    if( distill_misc == 1 ) {
+        ch_distill_misc = file(params.distill_misc_sheet).exists() ? file(params.distill_misc_sheet) : error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+    } else {
+        ch_distill_misc = []
+    }
+    if( distill_nitrogen == 1 ) {
+        ch_distill_nitrogen = file(params.distill_nitrogen_sheet).exists() ? file(params.distill_nitrogen_sheet) : error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+    } else {
+        ch_distill_nitrogen = []
+    }
+    if( distill_transport == 1 ) {
+        ch_distill_transport = file(params.distill_transport_sheet).exists() ? file(params.distill_transport_sheet) : error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+    } else {
+        ch_distill_transport = []
+    }
+
+
+    parseDistillEcoSys(params.distill_ecosystem)
+
+
+
 }
 
-*/
+if( params.distill_ecosystem != "" ){
+    distill_eng_sys = 0
+    distill_ag = 0
+
+    parseDistillEcoSys(params.distill_ecosystem)
+
+    if( distill_eng_sys == 1 ) {
+        ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+    } else {
+        ch_distill_eng_sys = []
+    }
+    if( distill_ag == 1 ) {
+        ch_distill_ag = file(params.distill_ag_sheet).exists() ? file(params.distill_ag_sheet) : error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+    } else {
+        ch_distill_ag = []
+    }
+
+}
+
+if( params.distill_custom != ""){
+
+    parseDistillCustom(params.distill_custom)
+
+    if( distill_eng_sys == 1 ) {
+        ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+    } else {
+        ch_distill_eng_sys = []
+    }  
+
+}
+
 
 
 /*
@@ -465,8 +542,9 @@ workflow {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
     if( params.annotate ){
-        /* Skipping these until I figure out how to get tRNAscan-SE to not throw random errors
+
         // Not sure if we want these default or optional yet
+        // tRNAscan-SE stil throws random errors
         TRNA_SCAN( fasta )
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out
         // Collect all sample formatted tRNA files
@@ -485,7 +563,7 @@ workflow {
             .collect()
             .set { ch_collected_rRNAs }
         RRNA_COLLECT( ch_collected_rRNAs )
-        */
+
         if( annotate_kegg == 1 ){
             //KEGG_INDEX ( params.kegg_mmseq_loc )
             //MMSEQS2 ( called_genes, params.kegg_mmseq_loc, params.kegg_index )
@@ -602,10 +680,10 @@ workflow {
         // 3) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
         // 4) REMOVE additional info I kept in from each database - only need the main distill headers
 
-        DISTILL_SUMMARY( ch_combined_annotations, COUNT_ANNOTATIONS.out.target_id_counts, ch_distill_summary_script )
-        ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
+        //DISTILL_SUMMARY( ch_final_annots, COUNT_ANNOTATIONS.out.target_id_counts, ch_distill_summary_script )
+        //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
-        DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
+        //DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
         //PRODUCT_HEATMAP( ch_annotation_counts )
     }
 
@@ -635,68 +713,84 @@ def validOptions = ["--call", "--annotate", "--distill"]
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Define a function to build additional parameters string for DRAM databases
+    Define a function to build additional parameters string for DRAM distill sheets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-def buildDRAMdb_list(params) {
-    def additionalParams = ""
+/* distill topic */
+def parseDistillTopic(topicString) {
+    def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport']
+    def topics = topicString.split()
     
-    // Check each flag and add it to the string if provided
-    if (params.use_camper) {
-        additionalParams += " --use_camper"
+    // Iterate through topics and set flags
+    topics.each { topic ->
+        if (!validTopics.contains(topic)) {
+            error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
+        }
+        
+        switch (topic) {
+            case "default":
+                distill_carbon = 1
+                distill_energy = 1
+                distill_misc = 1
+                distill_nitrogen = 1
+                distill_transport = 1
+                break
+            case "carbon":
+                distill_carbon = 1
+                break
+            case "energy":
+                distill_energy = 1
+                break
+            case "misc":
+                distill_misc = 1
+                break
+            case "nitrogen":
+                distill_nitrogen = 1
+                break
+            case "transport":
+                distill_transport = 1
+                break
+        }
     }
+}
+/* distill ecosystem */
+def parseDistillEcoSys(ecosysString) {
+    def validEcosys = ['eng_sys', 'ag']
+    def ecosys = ecosysString.split()
     
-    if (params.use_fegenie) {
-        additionalParams += " --use_fegenie"
-    }
-    
-    if (params.use_sulfur) {
-        additionalParams += " --use_sulfur"
-    }
-    
-    if (params.use_vogdb) {
-        additionalParams += " --use_vogdb"
-    }
+    // Iterate through topics and set flags
+    ecosys.each { ecosys ->
+        if (!validEcosys.contains(ecosys)) {
+            error("Invalid distill topic: $ecosys. Valid values are ${validEcosys.join(', ')}")
+        }
 
-    if (params.low_mem_mode) {
-        additionalParams += " --low_mem_mode"
+        switch (ecosys) {
+            case "eng_sys":
+                distill_eng_sys = 1
+                break
+            case "ag":
+                distill_ag = 1
+                break
+        }
     }
-    
-    // Add other flags as needed
-    
-    return additionalParams.trim()
 }
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Define a function to build additional parameters string for DRAM DISTILL options
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-def buildDRAMdistill_list(params) {
-    def additionalParams = ""
-    
-    // Handle parameters with values
-    if (params.groupby_column) {
-        additionalParams += " --groupby_column ${params.groupby_column}"
-    }
+/* distill custom */
+def parseDistillCustom(customPaths) {
+    def customFiles = customPaths.split()
 
-    if (params.custom_distillate) {
-        additionalParams += " --custom_distillate ${params.custom_distillate}"
+    // Iterate through custom files and create channels or throw errors
+    customFiles.each { customFile ->
+        def fileName = customFile.tokenize("/")[-1].tokenize(".")[0] // Extract filename without path and extension
+        def ch_name = "ch_distill_custom_${fileName}"
+        def customChannel = file(customFile).exists() ? file(customFile) : error("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
+        
+        // Dynamically create channel based on file existence
+        script"""
+            ${ch_name} = file('${customFile}').exists() ? file('${customFile}') : error("Error: If using --distill_custom ${customFile}, you must provide the file. The path ${customFile} is not valid.")
+        """
     }
-
-    if (params.distillate_gene_names) {
-        additionalParams += " --distillate_gene_names"
-    }
-
-    if (params.config_loc) {
-        additionalParams += " --config_loc ${params.config_loc}"
-    }   
-    
-    // Add other flags as needed
-    
-    return additionalParams.trim()
 }
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,0 +1,759 @@
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	potential_amg
+A01B	Catlytic type: Aspartate; residues with large hydrophobic sidechains on either side of the scissile bond, but several members have more restricted specificities that allow protein-processing functions (see additional Info); The amino acid sequences show signal peptides and propeptides except for bacterial homologues which also lack disulfide bridges and are probably cytoplasmic (Rawlings & Bateman, 2009). Many three-dimensional structures have been described. The catalytic site is located between the two lobes of the molecules, and a 'flap' structure containing a conserved Tyr residue controls specificity (James, 2004; Hong & Tang, 2004). Several of the peptidases are glycosylated (e.g. cathepsin D, A01.009) and a few are membrane-bound (memapsin-1 and memapsin-2, A01.041 and A01.004, respectively). Some family A1 peptidases from plants (e.g. phytepsin, A01.020) contain inserted saposin-like sequences, and the effects of these on enzymatic activity have been investigated (Payie et al., 2003). The secreted proteins in subfamily A usually have three conserved disulfide bridges, whereas in subfamily B there are six, and the unusual stability of nepenthesin (A01.040) to a wide pH range has been attributed to these disulfide bridges (Takahashi et al., 2005).	Endopeptidases (most of which are most active at acidic pH)	Organic Nitrogen	Peptidase		TRUE
+A01A	Catlytic type: Aspartate; residues with large hydrophobic sidechains on either side of the scissile bond, but several members have more restricted specificities that allow protein-processing functions (see additional Info); The amino acid sequences show signal peptides and propeptides except for bacterial homologues which also lack disulfide bridges and are probably cytoplasmic (Rawlings & Bateman, 2009). Many three-dimensional structures have been described. The catalytic site is located between the two lobes of the molecules, and a 'flap' structure containing a conserved Tyr residue controls specificity (James, 2004; Hong & Tang, 2004). Several of the peptidases are glycosylated (e.g. cathepsin D, A01.009) and a few are membrane-bound (memapsin-1 and memapsin-2, A01.041 and A01.004, respectively). Some family A1 peptidases from plants (e.g. phytepsin, A01.020) contain inserted saposin-like sequences, and the effects of these on enzymatic activity have been investigated (Payie et al., 2003). The secreted proteins in subfamily A usually have three conserved disulfide bridges, whereas in subfamily B there are six, and the unusual stability of nepenthesin (A01.040) to a wide pH range has been attributed to these disulfide bridges (Takahashi et al., 2005).	Endopeptidases (most of which are most active at acidic pH)	Organic Nitrogen	Peptidase		TRUE
+A05	Catlytic type: Aspartate; preference for hydrophobic residues in P1 and P1; pH optimum of 2.0 and is mainly active from pH 1-5	Endopeptidase	Organic Nitrogen	Peptidase		TRUE
+A08	Catlytic type: Aspartate; cleavage site is known as the 'lipobox sequence' and is Leu-Xaa-YaaCys in which Xaa is Ala or Ser and Yaa is Gly or Ala; essential step in the production of the bacterial cell wall	Endopeptidase, the bacterial signal peptidase II	Organic Nitrogen	Peptidase		TRUE
+A09	Catlytic type: Aspartate; processes Gag and Pol viral polyproteins in which four cleavages are made, all except one being at asparaginyl bondsour cleavages are made	Endopeptidase, spumapepsin	Organic Nitrogen	Peptidase		TRUE
+A24B	Catlytic type: Aspartate; leader peptides are 5 - 8 residues long, rich in acidic amino acids, and immediately precede a 20-residue hydrophobic region; cleavage site is Gly-Phe; process type 4 pilin precursor proteins (prepilins) to their mature forms by removal of leader peptides	Membrane-inserted endopeptidases	Organic Nitrogen	Peptidase		TRUE
+A24A	Catlytic type: Aspartate; leader peptides are 5 - 8 residues long, rich in acidic amino acids, and immediately precede a 20-residue hydrophobic region; cleavage site is GlyPhe; process type 4 pilin precursor proteins (prepilins) to their mature forms by removal of leader peptides	Membrane-inserted endopeptidases	Organic Nitrogen	Peptidase		TRUE
+A25	Catlytic type: Aspartate; acidic residue at P1, hydrophobic at P1, Ala at P2 and an acidic residue at P4; during the germination of spores, proteins ('small acid-soluble proteins': SASP) are degraded in a process that is initiated by the 'germination protease'	A single endopeptidase	Organic Nitrogen	Peptidase		TRUE
+A26	Catlytic type: Aspartate; cleavage between consecutive basic amino acids, but is capable of cleavage when P1 is a non-basic residue	Membrane-inserted endopeptidases	Organic Nitrogen	Peptidase		TRUE
+A28B	Catlytic type: Aspartic; No peptidase activity has been shown for any member of the family	No peptidase activity has been shown for any member of the family	Organic Nitrogen	Peptidase		TRUE
+A28A	Catlytic type: Aspartic; No peptidase activity has been shown for any member of the family	No peptidase activity has been shown for any member of the family	Organic Nitrogen	Peptidase		TRUE
+A31	Catlytic type: Aspartate; HycI endopeptidase releases a 32-residue C-terminal peptide by cleavage of an -Arg-Met- bond;HybD cleaves following the equivalent -His-Met- bond in hydrogenase 2, removing 15 residues; HycI and HybD are in the processing of the precursors of bacterial hydrogenases to their active forms	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+A32	Catlytic type: Aspartate; Important for processing the polar factor PodJ, which recruits proteins to the correct cell pole during cell division	PerP peptidase	Organic Nitrogen	Peptidase		TRUE
+A36	Catlytic type: Aspartate; N-terminal propeptide is removed from the sigma factor E precursor	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+A37	Catlytic type: Aspartate	Pepstatin-insensitive aspartic endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C10	Catlytic type: Cysteine; broad specificity with a hydrophobic residue in the P2 position	Bacterial cysteine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C100	Catlytic type: Cysteine; a fungal lectin and a calcium-dependent cysteine endopeptidase that is toxic to the nematodes that feed on the fungus	Cysteine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C101	Catlytic type: Cysteine; cleaves linear ubiquitin linkages	Deubiquitinases	Organic Nitrogen	Peptidase		TRUE
+C102	Catlytic type: Cysteine; degrades the GTPase Rab proteins ; helps the pathogen to evade detection in the lysosome	Cysteine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C106	Catlytic type: Cysteine; member is archaeosortase A (Haloferax volcanii )	archaeosortase A	Organic Nitrogen	Peptidase		TRUE
+C11B	Catlytic type: Cysteine; Selective for hydrolysis of arginyl bonds; It requires calcium ions for activity, as well as a reducing environment; member is clostripain	Cysteine endopeptidase clostripain and its homologues	Organic Nitrogen	Peptidase		TRUE
+C11A	Catlytic type: Cysteine; Selective for hydrolysis of arginyl bonds; It requires calcium ions for activity, as well as a reducing environment; member is clostripain	Cysteine endopeptidase clostripain and its homologues	Organic Nitrogen	Peptidase		TRUE
+C110	Catlytic type: Cysteine	Cysteine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C111	Catlytic type: Cysteine	coagulation factor XIIIa	Organic Nitrogen	Peptidase		TRUE
+C115	Catlytic type: Cysteine; member is MINDY-1 protein (Homo sapiens)	MINDY-1 protein	Organic Nitrogen	Peptidase		TRUE
+C116	Catlytic type: Cysteine; member is dermonecrotic toxin (Pasteurella multocida)	dermonecrotic toxin	Organic Nitrogen	Peptidase		TRUE
+C117	Catlytic type: Cysteine; member is SpvD g.p. (Salmonella enterica)	SpvD gp	Organic Nitrogen	Peptidase		TRUE
+C118	Catlytic type: Cysteine; member is EspL g.p. (Escherichia coli)	EspL gp	Organic Nitrogen	Peptidase		TRUE
+C12	Catlytic type: Cysteine; hydrolysis of bonds formed by the C-terminal Gly of ubiquitin, which may be alpha-peptide, isopeptide, amide or ester bonds; remain intracellular	Ubiquitinyl hydrolases	Organic Nitrogen	Peptidase		TRUE
+C13	Catlytic type: Cysteine; restricted specificity for asparaginyl bonds	Asparaginyl endopeptidases and glycosylphosphatidylinositol:protein transamidase	Organic Nitrogen	Peptidase		TRUE
+C15	Catlytic type: Cysteine; removal of a pyroglutamate (pGlu) residue from the N-terminus of a peptide; intracellular and soluble	Omega peptidases that release an N-terminal pyroglutamate residue	Organic Nitrogen	Peptidase		TRUE
+C25	Catlytic type: Cysteine; gingipains R and K are endopeptidases with specificity for arginyl and lysyl bonds; often secreted by the bacterium Porphyromonas gingivalis involved in periodontal disease	Cysteine endopeptidases from bacteria, notably gingipain R (##C25001##) and gingipain K (##C25002##)	Organic Nitrogen	Peptidase		TRUE
+C45	Catlytic type: Cysteine; cleavage occurs at the Gly102-Cys bond; last enzyme in the penicillin biosynthetic pathway	Autolytic endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C47	Catlytic type: Cysteine; staphopains are suggested to be important for the survival of Staphylococcus sp. in vivo	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C50	Catlytic type: Cysteine; Arg in P1 and an acidic residue in P4; there is also a preference for an acidic residue in P6 ; required for the separation of sister chromatids during mitosis in a range of organisms from yeasts to man	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C54	Catlytic type: Cysteine; cleavage (Gly116-Arg) to release the C-terminal Arg of the protein Apg8/Aut7;it cleaves the same bond even if a peptide replaces the C-terminal Arg	Endopeptidases with specificity for glycyl bonds	Organic Nitrogen	Peptidase		TRUE
+C55	Catlytic type: Cysteine; no direct demonstration of peptidase activity of any member of family C55; responsible for certain pathogenic effects of bacteria that cause diseases in animals and plants	Bacterial endopeptidases with restricted specificity	Organic Nitrogen	Peptidase		TRUE
+C56	Catlytic type: Cysteine; acts only on peptides of less than 20 amino acids; a preference for bulky, hydrophobic P1 residues	PfpI endopeptidase of {Pyrococcus furiosus}	Organic Nitrogen	Peptidase		TRUE
+C58B	Catlytic type: Cysteine; activates itself by cleaving the Lys62|+|Gly bond, and the newly exposed N-terminal Gly is then lipid-modified.  Amongst other proteins, only those with a prenylated cysteine are substrates. Substrates include RhoA, the Rac and Cdc42 GTPases and host serine/threonine kinase PBS1 (which is cleaved at a single bond: <%Zhu, M. %etal, 2004[20040510A717]%>).; act as transamidases by attaching a lipid moiety to the newly exposed N-terminus of the substrate; RhoA, the Rac and Cdc42 GTPases and host serine/threonine kinase PBS1	Endopeptidases that also act as transamidases, attaching a lipid moiety to the newly exposed N-terminus of the substrate	Organic Nitrogen	Peptidase		TRUE
+C58A	Catlytic type: Cysteine; activates itself by cleaving the Lys62|+|Gly bond, and the newly exposed N-terminal Gly is then lipid-modified.  Amongst other proteins, only those with a prenylated cysteine are substrates. Substrates include RhoA, the Rac and Cdc42 GTPases and host serine/threonine kinase PBS1 (which is cleaved at a single bond: <%Zhu, M. %etal, 2004[20040510A717]%>).; act as transamidases by attaching a lipid moiety to the newly exposed N-terminus of the substrate; RhoA, the Rac and Cdc42 GTPases and host serine/threonine kinase PBS1	Endopeptidases that also act as transamidases, attaching a lipid moiety to the newly exposed N-terminus of the substrate	Organic Nitrogen	Peptidase		TRUE
+C64	Catlytic type: Cysteine; release ubiquitin from linear or branched synthetic ubiquitin chains and from ubiquitinated proteins	Endoisopeptidases that release ubiquitin from ubiquitinated proteins	Organic Nitrogen	Peptidase		TRUE
+C65	Catlytic type: Cysteine; No physiological substrates have been identified for any members of the family; No biological roles have been determined for any members of the family	Isopeptidases that release ubiquitin from polyubiquitin	Organic Nitrogen	Peptidase		TRUE
+C66	Catlytic type: Cysteine; cleaves both gamma chains of human IgG or its Fc fragment in the hinge region after Gly236	Bacterial endopeptidase	Organic Nitrogen	Peptidase		TRUE
+C67	Catlytic type: Cysteine; de-ubiquitinating activity that is directed towards non-Lys48-linked polyubiquitin chains; involved in formation of NF-kB, which is important to inflammation response	Endopeptidases that release ubiquitin from polyubiquitinated proteins	Organic Nitrogen	Peptidase		TRUE
+C69	Catlytic type: Cysteine; cleaves Leu-Leu and Phe-Leu dipeptides with free C-terminus	Dipeptidases and aminopeptidases	Organic Nitrogen	Peptidase		TRUE
+C70	Catlytic type: Cysteine; autolytic cleavage at Gly71Gly72 and also for the elimination of the host RIN4 protein ; could contribute to the pathogenic activity of Pseudomonas syringae	A putative bacterial peptidase	Organic Nitrogen	Peptidase		TRUE
+C75	Catlytic type: Cysteine; cleaves off the C-terminus, and the N-terminus is cleaved by the signal peptidase, SpsB; contribute to the synthesis of bacterial autoinducing peptides by cleavage of precursor proteins	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C79	Catlytic type: Cysteine; hydrolyse ubiquitinyl bonds	Deubiquitinylating activity	Organic Nitrogen	Peptidase		TRUE
+C80	Catlytic type: Cysteine; preference for Leu in P1;has been shown to be able to degrade the leucine-rich protein YopM; precursors of the cholera RTX toxin	Self-cleaving proteins that are precursors of bacterial toxins	Organic Nitrogen	Peptidase		TRUE
+C82B	Catlytic type: Cysteine; hydrolyse the L-Lys(3)-D-Ala(4) bonds of bacterial cell wall components; protein showed cell-wall cross-linking activity	Hydrolase (and transfer) bacterial cell wall peptides	Organic Nitrogen	Peptidase		TRUE
+C82A	Catlytic type: Cysteine; hydrolyse the L-Lys(3)-D-Ala(4) bonds of bacterial cell wall components; protein showed cell-wall cross-linking activity	Hydrolase (and transfer) bacterial cell wall peptides	Organic Nitrogen	Peptidase		TRUE
+C83	Catlytic type: Cysteine; glutathione is cleaved to gamma-Glu-Cys + Gly, either by hydrolysis or transpeptidation	Exopeptidases some of which also have transferase activity	Organic Nitrogen	Peptidase		TRUE
+C84	Catlytic type: Cysteine; hydrolyses Bz-Val-Gly-Arg-p-nitroanilide; association with periodontitis	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C86	Catlytic type: Cysteine; deubiquitinylating activity	Deubiquitinylating peptidases	Organic Nitrogen	Peptidase		TRUE
+C88	Catlytic type: Cysteine; cleaves longer polyubiquitin chains with Lys48 linkages	Deubiquitinylating enzymes	Organic Nitrogen	Peptidase		TRUE
+C93	Catlytic type: Cysteine; member is LapG peptidase (Pseudomonas fluorescens)	LapG peptidase	Organic Nitrogen	Peptidase		TRUE
+C95	Catlytic type: Cysteine; known proteolytic activity is a processing event that is assumed to be the result of autolytic activity	Self-cleaving proteins	Organic Nitrogen	Peptidase		TRUE
+C96	Catlytic type: Cysteine; removes the leader peptide of microcin J25	Cysteine type endopeptidases	Organic Nitrogen	Peptidase		TRUE
+C98	Catlytic type: Cysteine; release SUMO from its precursor	Isopeptidases that release SUMO from conjugated proteins	Organic Nitrogen	Peptidase		TRUE
+G01	Catlytic type: Glutamate; cleave (amongst others) the Tyr26-Thr27 bond in the B chain of oxidized insulin	Endopeptidases from fungi	Organic Nitrogen	Peptidase		TRUE
+I01	Inhibitors of serine endopeptidases	Inhibitors of serine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+I03B	Inhibit serine peptidases, particularly belonging to family S1; Members of family I3 inhibit serine peptidases by the Laskowski mechanism	Inhibitors of serine and some other peptidases	Organic Nitrogen	Peptidase		TRUE
+I03A	Inhibit serine peptidases, particularly belonging to family S1; Members of family I3 inhibit serine peptidases by the Laskowski mechanism	Inhibitors of serine and some other peptidases	Organic Nitrogen	Peptidase		TRUE
+I05	A single inhibitor of serine peptidases	A single inhibitor of serine peptidases	Organic Nitrogen	Peptidase		TRUE
+I06	Serine peptidase inhibitors	Serine peptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I07	Serine endopeptidase inhibitors	Serine endopeptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I09	Inhibitors of serine peptidases of the subtilisin family (S8)	Inhibitors of serine peptidases of the subtilisin family (S8)	Organic Nitrogen	Peptidase		TRUE
+I10	Serine endopeptidase inhibitors	Serine endopeptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I100	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I101	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I102	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I11	A single serine endopeptidase inhibitor, ecotin	A single serine endopeptidase inhibitor, ecotin	Organic Nitrogen	Peptidase		TRUE
+I12	Inhibitors of serine endopeptidases in clan PA	Inhibitors of serine endopeptidases in clan PA	Organic Nitrogen	Peptidase		TRUE
+I13	Inhibitors of serine peptidases	Inhibitors of serine peptidases	Organic Nitrogen	Peptidase		TRUE
+I14	Inhibitors of the serine endopeptidase thrombin	Inhibitors of the serine endopeptidase thrombin	Organic Nitrogen	Peptidase		TRUE
+I15	Inhibitors of serine endopeptidases in family S1	Inhibitors of serine endopeptidases in family S1	Organic Nitrogen	Peptidase		TRUE
+I16	Inhibitors of serine endopeptidases and at least one metallopeptidase	Inhibitors of serine endopeptidases and at least one metallopeptidase	Organic Nitrogen	Peptidase		TRUE
+I17	Serine endopeptidase inhibitors	Serine endopeptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I18	Inhibitors of trypsin and other endopeptidases in family S1	Inhibitors of trypsin and other endopeptidases in family S1	Organic Nitrogen	Peptidase		TRUE
+I19	Inhibitors of serine endopeptidases	Inhibitors of serine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+I20	Serine endopeptidase inhibitors	Serine endopeptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I21	Inhibitor of a serine endopeptidase from family S8	Inhibitor of a serine endopeptidase from family S8	Organic Nitrogen	Peptidase		TRUE
+I22	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I23	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I26	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I27	Inhibitors of calpains (in peptidase family C2); roles in nerve growth, muscle homeostasis, signal transduction and apoptosis	Inhibitors of calpains (in peptidase family C2)	Organic Nitrogen	Peptidase		TRUE
+I28	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I30	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I31	Inhibitors primarily of the papain-like cysteine peptidases in family C1 known as the thyropins	Inhibitors primarily of the papain-like cysteine peptidases	Organic Nitrogen	Peptidase		TRUE
+I33	Inhibitors of aspartic peptidases (all of which are endopeptidases) from family A1	Inhibitors of aspartic peptidases (all of which are endopeptidases)	Organic Nitrogen	Peptidase		TRUE
+I34	Inhibitor of saccharopepsin from Saccharomyces cerevisiae	Inhibitor of saccharopepsin from Saccharomyces cerevisiae	Organic Nitrogen	Peptidase		TRUE
+I35	Inhibitors of metalloendopeptidases (matrixins) in family M10A and M12B	Inhibitors of metalloendopeptidases (matrixins)	Organic Nitrogen	Peptidase		TRUE
+I37	a metallocarboxypeptidase inhibitor of family M14	metallocarboxypeptidase inhibitor	Organic Nitrogen	Peptidase		TRUE
+I38	Inhibitors of metalloendopeptidases in subfamily M10	Inhibitors of metalloendopeptidases in subfamily M10	Organic Nitrogen	Peptidase		TRUE
+I39	interact with endopeptidases regardless of catalytic type	Mammalian alpha-macroglobulin and other large homologous proteins that interact with endopeptidases regardless of catalytic type	Organic Nitrogen	Peptidase		TRUE
+I40	Bombyx subtilisin inhibitor, an inhibitor of serine peptidases from family S8	Bombyx subtilisin inhibitor, an inhibitor of serine peptidases from family S8	Organic Nitrogen	Peptidase		TRUE
+I41	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I42	Inhibitors of cysteine endopeptidases from family C1	Inhibitors of cysteine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+I44	inhibited is carboxypeptidase A, but does not affect other members of M14	Inhibitors of metallocarboxypeptidases in family M14	Organic Nitrogen	Peptidase		TRUE
+I45	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I46	Inhibitors of peptidases in family M14	Leech carboxypeptidase inhibitor (LCI)	Organic Nitrogen	Peptidase		TRUE
+I47	Inhibitors of metallocarboxypeptidases in family M14	Inhibitors of metallocarboxypeptidases in family M14	Organic Nitrogen	Peptidase		TRUE
+I48	Inhibitors of cysteine endopeptidases	Inhibitors of cysteine endopeptidases from family C1 including papain, cathepsin L, cathepsin B, stem bromelain, but not cathepsin H, trypsin, and pepsin	Organic Nitrogen	Peptidase		TRUE
+I49	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I52	strong inhibition of coagulation factor Xa and weak inhibition of other peptidases in family S1 such as trypsin	Inhibitors of coagulation factor Xa	Organic Nitrogen	Peptidase		TRUE
+I53	Inhibitors of the serine-type endopeptidase thrombin; prevent conversion of fibrinogen to fibrin	Inhibitors of the serine-type endopeptidase thrombin	Organic Nitrogen	Peptidase		TRUE
+I54	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I55	aspartic peptidase inhibitor	aspartic peptidase inhibitor	Organic Nitrogen	Peptidase		TRUE
+I56	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I57	Inhibitors of cysteine endopeptidases in family C47, the staphopains	Inhibitors of cysteine endopeptidases in family C47, the staphopains	Organic Nitrogen	Peptidase		TRUE
+I58	Inhibitor of the cysteine endopeptidase, specifically staphopain A	Inhibitor of the cysteine endopeptidase, specifically staphopain A	Organic Nitrogen	Peptidase		TRUE
+I59	shown to inhibit thrombin; facilitates the feeding of the organism by delaying the clotting of the blood of the host	Anticoagulant proteins from blood-feeding hemiptera	Organic Nitrogen	Peptidase		TRUE
+I60	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I61	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I62	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I64	Proteins that inhibit coagulation	Proteins that inhibit coagulation	Organic Nitrogen	Peptidase		TRUE
+I65	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I66	Inhibitors, specificity unknown; Members include Lentinus peptidase inhibitor	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I67	Inhibitors of cysteine endopeptidases, specifically stem bromelain as well as weak inhibition of trypsin	Inhibitors of cysteine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+I68	Carboxypeptidase inhibitor, specifically those from subfamily M14A; suggested to enhance endogenous fibrinolysis	Carboxypeptidase inhibitor	Organic Nitrogen	Peptidase		TRUE
+I69	Inhibitors, specificity unknown; has been shown prevoiouslt to inhibit streptopain	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I70	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I71	Cysteine peptidase inhibitors from family C1 and calpain from family C2	Cysteine peptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I72	Inhibitors of the serine peptidase thrombin	Inhibitors of the serine peptidase thrombin	Organic Nitrogen	Peptidase		TRUE
+I73	Inhibitors of serine-type endopeptidases	Inhibitors of serine-type endopeptidases, specifically trypsin	Organic Nitrogen	Peptidase		TRUE
+I74	Inhibitors of the serine-type endopeptidase thrombin; Thrombin is the final peptidase in the blood coagulation cascade in mammals	Inhibitors of the serine-type endopeptidase thrombin	Organic Nitrogen	Peptidase		TRUE
+I76	Inhibitors of the serine-type endopeptidase thrombin; Thrombin is the final peptidase in the blood coagulation cascade in mammals	Inhibitors of the serine-type endopeptidase thrombin	Organic Nitrogen	Peptidase		TRUE
+I77	Inhibitors of the serine-type endopeptidase thrombin; Thrombin is the final peptidase in the blood coagulation cascade in mammals	Inhibitors of the serine-type endopeptidase thrombin	Organic Nitrogen	Peptidase		TRUE
+I78	Inhibitors of serine-type endopeptidases	Inhibitors of serine-type endopeptidases	Organic Nitrogen	Peptidase		TRUE
+I79	Inhibitors of cysteine peptidases from family C1 (especially PIP1 and RCR3); host defensive protein that is secreted to the apoplast and initiates a hypersensitive response in the presence of the Avr2 inhibitor and the RCR3 peptidase	Inhibitors of cysteine peptidases	Organic Nitrogen	Peptidase		TRUE
+I80	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I81	Inhibitors of cysteine endopeptidases from family C1 (especially TgCPL peptidase)	Inhibitors of cysteine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+I82	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I83	Inhibitors of serine endopeptidases; Inlcude peptidases involved in Insect defence mechanisms against pathogenic attack	Inhibitors of serine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+I84	serine peptidases from family S8 (especially perkisin) and trypsin from S1	Serine peptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I85	inhibit cysteine peptidases from family C1 and trypsins; generally called macrocypins	Cysteine and serine peptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I86	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I88	Serine endopeptidase inhibitors	Serine endopeptidase inhibitors	Organic Nitrogen	Peptidase		TRUE
+I89	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I90	Inhibitors of trypsin	Inhibitors of trypsin	Organic Nitrogen	Peptidase		TRUE
+I92	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I93	Inhibitors of metallopeptidases	Inhibitors of metallopeptidases	Organic Nitrogen	Peptidase		TRUE
+I94	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I95	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I96	Inhibitors, specificity unknown; extracellular adherence protein	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I98	Inhibitors, specificity unknown; extracellular adherence protein	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+I99	Inhibitors, specificity unknown	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		TRUE
+M01	Catlytic type: Metallo; each is capable of releasing a variety of residues; none have been shown to hydrolyse Xaa-Pro-bonds	Aminopeptidases	Organic Nitrogen	Peptidase		TRUE
+M02	Catlytic type: Metallo; exopeptidases acting near the C-terminus of oligopeptides	Metallo-exopeptidases	Organic Nitrogen	Peptidase		TRUE
+M04	Catlytic type: Metallo; cleave of Xaa+Yaa, in which Xaa is a hydrophobic residue and Yaa is Leu, Phe, Ile, or Val; secreted enzymes that degrade extracellular proteins and peptides for bacterial nutrition; member is thermolysin	Metalloendopeptidases	Organic Nitrogen	Peptidase		TRUE
+M05	Catlytic type: Metallo; a member is mycolysin	Metalloendopeptidase	Organic Nitrogen	Peptidase		TRUE
+M06	Catlytic type: Metallo; digesting two classes of antibacterial humoral factors: cecropins and attacins, with no specific cleaving pattern; may contribute to the virulence of Bacillus thuringiensis	Metalloendopeptidases	Organic Nitrogen	Peptidase		TRUE
+M07	Catlytic type: Metallo; a member is snapalysin; only known activity is cleavage of proteins of skimmed milk	Metalloendopeptidase, snapalysin	Organic Nitrogen	Peptidase		TRUE
+M08	Catlytic type: Metallo; P1 residue at a site of cleavage is often Leu, Ile or Val, and Lys in P3 or P4 may be favourable; most abundant surface protein of leishmania promastigotes and contributes to its virulence	Metallo-endopeptidase leishmanolysin and its homologues	Organic Nitrogen	Peptidase		TRUE
+M09B	Catlytic type: Metallo; Vibrio collegenases cleave at XaaGly bond in the alpha-1 chain type of collagen; Clostridium collegenases cleave all three collagens at Yaa-Gly bonds in the repeating Gly-Xaa-Yaa collagen sequence	Bacterial collagenases from Vibrio and Clostridium	Organic Nitrogen	Peptidase		TRUE
+M09A	Catlytic type: Metallo; Vibrio collegenases cleave at XaaGly bond in the alpha-1 chain type of collagen; Clostridium collegenases cleave all three collagens at Yaa-Gly bonds in the repeating Gly-Xaa-Yaa collagen sequence	Bacterial collagenases from Vibrio and Clostridium	Organic Nitrogen	Peptidase		TRUE
+M100	Catlytic type: Metallo; a member is spartan peptidase (Homo sapiens)	spartan peptidase	Organic Nitrogen	Peptidase		TRUE
+M101	Catlytic type: Metallo; a member is flagellinolysin (Clostridium haemolyticum)	flagellinolysin	Organic Nitrogen	Peptidase		TRUE
+M102	Catlytic type: Metallo; a member is DA1 peptidase (Arabidopsis thaliana)	DA1 peptidase	Organic Nitrogen	Peptidase		TRUE
+M11	Catlytic type: Metallo; degrades the proline- and hydroxyproline-rich proteins of the algal cell wall; a member is Gametolysin; degradation of the cell wall allows the release of gametes	A metallo-endopeptidase, gametolysin	Organic Nitrogen	Peptidase		TRUE
+M17	Catlytic type: Metallo; any N-terminal amino acid can be released from dipeptides and polypeptides, although there is a preference for leucine; bonds with proline in P1 are not cleaved; maximally active between pH 9 and 9.5	Aminopeptidases	Organic Nitrogen	Peptidase		TRUE
+M18	Catlytic type: Metallo; acting on N-terminal leucine and most other amino acids	Metalloaminopeptidases	Organic Nitrogen	Peptidase		TRUE
+M19	Catlytic type: Metallo; cleaves dipeptides and beta-lactams; cleaves dipeptides with D-amino acids in the P1 position; often membrane localized	Dipeptidases	Organic Nitrogen	Peptidase		TRUE
+M22	Catlytic type: Metallo; cleaves only proteins that are {O}-sialoglycosylated; shown to cleave glycophorin A and the leukocyte surface antigens CD34, CD43, CD44 and CD45	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M24C	Catlytic type: Metallo	Exopeptidases that require co-catalytic ions of cobalt or manganese	Organic Nitrogen	Peptidase		TRUE
+M24B	Catlytic type: Metallo; cleave the bond XaaPro; found in eukaryotes associated with collagen recycling	Exopeptidases that require co-catalytic ions of cobalt or manganese	Organic Nitrogen	Peptidase		TRUE
+M24A	Catlytic type: Metallo; cleave the Met-Xaa (where Xaa is any amino acid) bond in the removal of the initiating N-terminal methionine from newly synthesized proteins; essential for the removal of the initiating methionine of many proteins, acting co-translationally in association with the ribosomes	Exopeptidases that require co-catalytic ions of cobalt or manganese	Organic Nitrogen	Peptidase		TRUE
+M26	Catlytic type: Metallo; cleaves the heavy chain of human IgA1 at the Pro227-Thr228 bond; tightly associated with the bacterial cell surface	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M28F	Catlytic type: Metallo; able to release a variety of N-terminal amino acids	Aminopeptidases and carboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+M28E	Catlytic type: Metallo; able to release a variety of N-terminal amino acids	Aminopeptidases and carboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+M28D	Catlytic type: Metallo; able to release a variety of N-terminal amino acids	Aminopeptidases and carboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+M28C	Catlytic type: Metallo; able to release a variety of N-terminal amino acids, with preference for basic amino acids	Aminopeptidases and carboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+M28B	Catlytic type: Metallo; able to release a variety of N-terminal amino acids, with preference for C-terminal glutamates	Aminopeptidases and carboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+M28A	Catlytic type: Metallo; able to release a variety of N-terminal amino acids	Aminopeptidases and carboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+M29	Catlytic type: Metallo; broad specificity, but preferentially releases Leu, Val, Phe or Tyr; can release Pro but is unable to cleave peptides with Pro in P1. Leu-NHPhNO2 is the usual synthetic substrate	Aminopeptidases	Organic Nitrogen	Peptidase		TRUE
+M30	Catlytic type: Metallo; cleaves azocasein and gelatin	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M32	Catlytic type: Metallo; hydrolyses amino acids with long side chains most readily	Metallocarboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+M34	Catlytic type: Metallo; cleaves at the  Xbb-Xbb-Xbb-Xbb-Xaa-Xcc-Xaa+Xcc bond, in which Xaa is any amino acid, Xbb is Lys or Arg, and Xcc is a hydrophobic amino acid	Highly-selective bacterial endopeptidase	Organic Nitrogen	Peptidase		TRUE
+M35	Catlytic type: Metallo; cleaves Xaa-Lys bonds, in which Xaa can even be Pro	Fungal metalloendopeptidases	Organic Nitrogen	Peptidase		TRUE
+M36	Catlytic type: Metallo; hydrolyses laminins, elastin and collagen, with a preference for cleavage on the amino side of hydrophobic residues with bulky side-chains; a member is funalysin	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M49	Catlytic type: Metallo; DPPIII releases N-terminal dipeptides sequentially from a peptide.  Angiotensins II and III, Leu-enkephalin, prolactin and alpha-melanocyte-stimulating hormone are readily cleaved, whereas tripeptides are poor substrates and angiotensin I and polypeptides of more than ten residues are not cleaved.  In addition, proline is not accepted in P1 or P1&rsquo; .  The recommended synthetic substrate is Arg-Arg|+|NHMec (<%Chen & Barrett, 2004[20040525A373]%>).; polypeptides of more than ten residues are not cleaved and proline in the P1 or P1 position will not cleave	Dipeptidylpeptidase	Organic Nitrogen	Peptidase		TRUE
+M50B	Catlytic type: Metallo; activates the factor sigmaK precursor by cleaving off a 20-residue propeptide; cleavage occurs within, or very close to, membranes	Metallo-endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M50A	Catlytic type: Metallo; cleaves a Leu-Cys bond in the first transmembrane helix of the substrate; cleavage occurs within, or very close to, membranes	Metallo-endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M54	Catlytic type: Metallo; eukaryote archelysin has a preference for arginine in P1; the AMZ1 protein cleaves alanyl bonds	Aminopeptidases, sometimes termed archaelysins or archaemetzincins	Organic Nitrogen	Peptidase		TRUE
+M55	Catlytic type: Metallo; cleaves D-Ala-D-Ala and D-Ala-Gly-Gly	Aminopeptidase and a number of uncharacterised putative peptidases	Organic Nitrogen	Peptidase		TRUE
+M57	Catlytic type: Metallo	Endopeptidase	Organic Nitrogen	Peptidase		TRUE
+M61	Catlytic type: Metallo; hydrolyses a broad range of N-terminal amino acids, but shows a preference for glycine or alanine; degradation of extracellular proteins for uptake of amino acids	Aminopeptidase	Organic Nitrogen	Peptidase		TRUE
+M64	Catlytic type: Metallo; cleaves both the alpha1 and alpha2 A2m(1) heavy chains at the Val-Pro-Cys-Pro221Val222 peptide bond located just before the hinge region; may help the organisms to exist as a commensal organism in the human intestine	Highly selective metalloendopeptidase	Organic Nitrogen	Peptidase		TRUE
+M66	Catlytic type: Metallo; cleavse C1 esterase inhibitor	A single metallopeptidase	Organic Nitrogen	Peptidase		TRUE
+M72	Catlytic type: Metallo; cleaves peptide bonds at the amino side of aspartate or cysteic acid	Metallo-endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M73	Catlytic type: Metallo; cleaves proteins such as caseins, actin and collagen type I, with preference for bonds with an aliphatic or hydrophilic residue in P1	Metallo-endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M74	Catlytic type: Metallo; hydrolyses the Ala-D-Glu-meso-diaminopimelateD-Ala bond in the crosslinking peptide and the Ala-D-Glu-meso-diaminopimelatemeso-diaminopimelate-D-Glu-Ala bond between crosslinking peptides	Murein endopeptidase MepA	Organic Nitrogen	Peptidase		TRUE
+M75	Catlytic type: Metallo; cleaves the oxidized insulin B chain with a preference for aromatic hydrophobic amino acids at P1	Metalloendopeptidases	Organic Nitrogen	Peptidase		TRUE
+M76	Catlytic type: Metallo; processes the mitochondrially-encoded, subunit Atp6 of the F1FO-ATP synthase	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M77	Catlytic type: Metallo	Aminopeptidases	Organic Nitrogen	Peptidase		TRUE
+M80	Catlytic type: Metallo	Isopeptidases	Organic Nitrogen	Peptidase		TRUE
+M81	Catlytic type: Metallo; degrades both microcystins LR and LA	Metallopeptidases	Organic Nitrogen	Peptidase		TRUE
+M82	Catlytic type: Metallo; inactivates the anti-sigma factor RsiW by performing the first of several cleavages	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M84	Catlytic type: Metallo; The only proteolytic activity reported is against azocasein	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M85	Catlytic type: Metallo; cleaves the p65 subunit of NF-kappaB, but cleavage positions have not been identified	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M87	Catlytic type: Metallo; Self-cleavage occurs at a well-conserved site, in which P1 is basic or Gly, P1 is small (predominantly Gly or Ala), P2 is hydrophobic, P3 is Tyr and P6 is Gl	Self-cleaving proteins	Organic Nitrogen	Peptidase		TRUE
+M88	Catlytic type: Metallo; protects the bacterium from immunological attack by impairing the extravasation of neutrophils	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M90	Catlytic type: Metallo; member is MtfA peptidase, involved in control of the glucose-phosphotransferase system	Aminopeptidases	Organic Nitrogen	Peptidase		TRUE
+M91	Catlytic type: Metallo; secreted by type III secretion systems in E. coli	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+M93	Catlytic type: Metallo		Organic Nitrogen	Peptidase		TRUE
+M95	Catlytic type: Metallo; member is abylysin (Pyrococcus abyssi)		Organic Nitrogen	Peptidase		TRUE
+M96	Catlytic type: Metallo; N-terminal octapeptide is removed from the Wnt-3a protein, with cleavage occurring at at Leu+Ala bond	signaling peptidase	Organic Nitrogen	Peptidase		TRUE
+M97	Catlytic type: Metallo; a member is EcxAB peptidase (Escherichia coli)		Organic Nitrogen	Peptidase		TRUE
+M98	Catlytic type: Metallo; a member is YghJ g.p. (Escherichia coli)		Organic Nitrogen	Peptidase		TRUE
+M99	Catlytic type: Metallo; a member is Csd4 peptidase (Helicobacter pylori)		Organic Nitrogen	Peptidase		TRUE
+N06	Catlytic type: Asparagine; cleaves  at the tetrapeptide Asn+Pro-Thr-His; essential for mediating the switch in the secretion of proteins in the type III secretion system	Autoprocessing endopeptidases	Organic Nitrogen	Peptidase		TRUE
+P01	Catlytic type: Mixed (C, S, T) catalytic type; releases amino acid residues in the L-configuration in its action on peptides; part of the general peptidase pool	Aminopeptidases and self-processing proteins	Organic Nitrogen	Peptidase		TRUE
+P02B	Catlytic type: Mixed (C, S, T) catalytic type; polycystin-1	mucin-like hormone receptor	Organic Nitrogen	Peptidase		TRUE
+P02A	Catlytic type: Mixed (C, S, T) catalytic type; EGF-like module containing mucin-like hormone receptor-like 2	mucin-like hormone receptor	Organic Nitrogen	Peptidase		TRUE
+S10	Catlytic type: Serine; preference for hydrophobic residues in positions P1 and P1 OR  preference for the basic amino acids either side of the scissile bond	Carboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+S13	Catlytic type: Serine; hydrolyses the D-Ala-D-Ala bond in the cross-linking peptide precursor OR degrades this D-Ala-meso-2,6-diaminopimelate bond	Peptidases that cleave D-Ala bonds, acting either as carboxypeptidases or as atypical 'endopeptidases'	Organic Nitrogen	Peptidase		TRUE
+S15	Catlytic type: Serine; cleaves Xaa-Pro from the N-terminus of peptides provided that there is not a Pro in the P2 or P1 positions; plays important role in degradation of casein	Xaa-Pro dipeptidyl peptidase and its homologues	Organic Nitrogen	Peptidase		TRUE
+S37	Catlytic type: Serine; activate the transglutaminase precursor by removal of a leading tri- or tetrapeptide	Tripeptidyl-peptidase from {Streptomyces}	Organic Nitrogen	Peptidase		TRUE
+S41B	Catlytic type: Serine; recognizes a C-terminal tripeptide, Xaa-Yaa-Zaa, in which Xaa is preferably Ala or Leu, Yaa is preferably Ala or Tyr and Zaa is preferably Ala and cleaves at a variable distance from the C-terminus; important for the degradation of incorrectly synthesized proteins	Serine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+S41A	Catlytic type: Serine; recognizes a C-terminal tripeptide, Xaa-Yaa-Zaa, in which Xaa is preferably Ala or Leu, Yaa is preferably Ala or Tyr and Zaa is preferably Ala and cleaves at a variable distance from the C-terminus; important for the degradation of incorrectly synthesized proteins	Serine endopeptidases	Organic Nitrogen	Peptidase		TRUE
+S45	Catlytic type: Serine; amino side of the catalytic serine is cleaved in an intramolecular reaction, and then there is an intermolecular cleavage of a bond further toward the N-terminus; a member is penicillin G acylase precursor (Escherichia coli)	Self-cleaving precursor proteins of N-terminal nucleophile acylases	Organic Nitrogen	Peptidase		TRUE
+S46	Catlytic type: Serine; long peptides and N-terminally blocked peptides are not cleaved	Dipeptidyl-peptidases from bacteria	Organic Nitrogen	Peptidase		TRUE
+S48	Catlytic type: Serine	the protein HetR that is reported to be an autolytic serine endopeptidase	Organic Nitrogen	Peptidase		TRUE
+S51	Catlytic type: Serine; hydrolyses Asp-Xaa dipeptides in which Xaa is not Glu, Asn or Gln; nutritional function in bacteria	Exopeptidases that hydrolyse alpha-aspartyl bonds	Organic Nitrogen	Peptidase		TRUE
+S55	Catlytic type: Serine	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+S59	Catlytic type: Serine; cleaves at the Phe-Ser bond within the active site motif	Autolytic endopeptidase	Organic Nitrogen	Peptidase		TRUE
+S60	Catlytic type: Serine; cleaves at arginyl and lysyl bonds	Endopeptidase	Organic Nitrogen	Peptidase		TRUE
+S63	Catlytic type: Serine	Autolytic endopeptidases	Organic Nitrogen	Peptidase		TRUE
+S64	Catlytic type: Serine; Ssy5 peptidase is believed to cleave both itself and the Stp1 protein within a motif that is conserved between the two proteins; this contains the sequence PISMS that is required for cleavage to take place; plays a key role in the adaptive response of Saccharomyces cerevisiae and likely other fungi	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+S66	Catlytic type: Serine; hydrolyses the bond to the C-terminal D-Ala in tetrapeptide peptidoglycan fragments that contain an L-configured residue (lysine or meso-diaminopimelic acid) that is attached a C-terminal D-alanine residue; produced when bacterial cell walls are degraded	Bacterial LD-carboxypeptidases	Organic Nitrogen	Peptidase		TRUE
+S68	Catlytic type: Serine; autolyses at two Ser-Trp bonds; proteolysis leads to activation of cell survival or apoptotic pathways	Autolytic endopeptidases	Organic Nitrogen	Peptidase		TRUE
+S70	Catlytic type: Serine; a member is LepA	Serine-type endopeptidases	Organic Nitrogen	Peptidase		TRUE
+S71	Catlytic type: Serine; autolytic cleavage at Gly-Ser bond; involved in the synthesis of Mucin 1	Self-cleaving precursor proteins	Organic Nitrogen	Peptidase		TRUE
+S72	Catlytic type: Serine; cleaves at arginyl and lysyl bonds	Autolytic serine-type endopeptidases	Organic Nitrogen	Peptidase		TRUE
+S79	Catlytic type: Serine; autoactivation	Self-processing proteins	Organic Nitrogen	Peptidase		TRUE
+S82	Catlytic type: Serine	autocrine proliferation repressor protein A	Organic Nitrogen	Peptidase		TRUE
+T02	Catlytic type: Threonine; hydrolyses the GlcNAc+Asn (the natural linkage structure between protein and carbohydrate in Asn-linked glycoproteins) and taspase-1 which cleaves aspartyl bonds D+GADD and D+GVDD	N-terminal nucleophile hydrolases	Organic Nitrogen	Peptidase		TRUE
+T05	Catlytic type: Threonine	Self-processing ornithine acetyltransferase precursor	Organic Nitrogen	Peptidase		TRUE
+T06	Catlytic type: Threonine; cleaves itself at the Leu3048|+|Thr bond; cleavage occurs in the endoplasmic reticulum or the Golgi	Threonine-type autoprocessing endopeptidases	Organic Nitrogen	Peptidase		TRUE
+T07	Catlytic type: Threonine	CwpV (Clostridium difficile) self-cleaving threonine peptidase	Organic Nitrogen	Peptidase		TRUE
+T08	Catlytic type: Threonine; member is HopB1 g.p. (Pseudomonas syringae)		Organic Nitrogen	Peptidase		TRUE
+U49	cleaves domain I of elongation factor Tu; important role in bacterial cell death	Lit peptidase from Escherischia coli	Organic Nitrogen	Peptidase		TRUE
+U56	hydrolyses substrates of chymotrypsin, trypsin, and casein	Endopeptidases	Organic Nitrogen	Peptidase		TRUE
+U57	SpoIVA and YrbA are degraded during stage IV of the sporulation process	Endopeptidases involved in bacterial sporulation	Organic Nitrogen	Peptidase		TRUE
+U62	Catlytic type: Metallo; cleaves the bacteriocin microcin B17 precursor at Gly26|+|Val27	Microcin-processing peptidases	Organic Nitrogen	Peptidase		TRUE
+U69	Self-processing occurs at the Ser846|+|Ala bond.	Self-processing peptidases	Organic Nitrogen	Peptidase		TRUE
+U72	Pup (prokaryotic ubiquitin-like protein) tags bacterial protiens for degradation. ; In releasing Pup from conjugates, Dop acts as an isopeptidase.  In degradation of Pup, Dop acts as an endopeptidase.	Isopeptidase and endopeptidases	Organic Nitrogen	Peptidase		TRUE
+U74	Catlytic type: Peptidase of unknown catalytic type	neprosin	Organic Nitrogen	Peptidase		TRUE
+U75	Catlytic type: Peptidase of unknown catalytic type	Ras/Rap1-specific peptidase	Organic Nitrogen	Peptidase		TRUE
+K01697	cystathionine beta-synthase [EC:4.2.1.22] [RN:R01290]	Cysteine biosynthesis, homocysteine + serine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K10150	cystathionine beta-synthase [EC:4.2.1.22] [RN:R01290]	Cysteine biosynthesis, homocysteine + serine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K01758	cystathionine gamma-lyase [EC:4.4.1.1] [RN:R01001]	Cysteine biosynthesis, homocysteine + serine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K00789	S-adenosylmethionine synthetase [EC:2.5.1.6] [RN:R00177]	Cysteine biosynthesis, methionine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K17462	putative AdoMet-dependent methyltransferase [EC:2.1.1.-] [RN:R10404]	Cysteine biosynthesis, methionine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K01243	S-adenosylhomocysteine/5'-methylthioadenosine nucleosidase [EC:3.2.2.9] [RN:R00194]	Cysteine biosynthesis, methionine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K18284	S-adenosylhomocysteine/5'-methylthioadenosine nucleosidase [EC:3.2.2.9] [RN:R00194]	Cysteine biosynthesis, methionine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K07173	S-ribosylhomocysteine lyase [EC:4.4.1.21] [RN:R01291]	Cysteine biosynthesis, methionine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K17216	cystathionine beta-synthase (O-acetyl-L-serine) [EC:2.5.1.134] [RN:R10305]	Cysteine biosynthesis, methionine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K17217	cystathionine gamma-lyase [EC:4.4.1.1] [RN:R01001]	Cysteine biosynthesis, methionine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K00931	glutamate 5-kinase [EC:2.7.2.11] [RN:R00239]	Proline biosynthesis, glutamate => proline	Organic Nitrogen	Amino Acid		TRUE
+K00147	glutamate-5-semialdehyde dehydrogenase [EC:1.2.1.41] [RN:R03313]	Proline biosynthesis, glutamate => proline	Organic Nitrogen	Amino Acid		TRUE
+K12657	delta-1-pyrroline-5-carboxylate synthetase [EC:2.7.2.11 1.2.1.41] [RN:R00239 R03313]	Proline biosynthesis, glutamate => proline	Organic Nitrogen	Amino Acid		TRUE
+K00286	pyrroline-5-carboxylate reductase [EC:1.5.1.2] [RN:R01251]	Proline biosynthesis, glutamate => proline	Organic Nitrogen	Amino Acid		TRUE
+K00928	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12524	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12525	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12526	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00133	aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01714	4-hydroxy-tetrahydrodipicolinate synthase [EC:4.3.3.7] [RN:R10147]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00215	4-hydroxy-tetrahydrodipicolinate reductase [EC:1.17.1.8] [RN:R04198 R04199]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00674	2,3,4,5-tetrahydropyridine-2-carboxylate N-succinyltransferase [EC:2.3.1.117] [RN:R04365]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00821	N-succinyldiaminopimelate aminotransferase [EC:2.6.1.17] [RN:R04475]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K14267	N-succinyldiaminopimelate aminotransferase [EC:2.6.1.17] [RN:R04475]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01439	succinyl-diaminopimelate desuccinylase [EC:3.5.1.18] [RN:R02734]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01778	diaminopimelate epimerase [EC:5.1.1.7] [RN:R02735]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01586	diaminopimelate decarboxylase [EC:4.1.1.20] [RN:R00451]	Lysine biosynthesis, succinyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00928	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K12524	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K12525	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K12526	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K00133	aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K00003	homoserine dehydrogenase [EC:1.1.1.3] [RN:R01773 R01775]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K00651	homoserine O-succinyltransferase [EC:2.3.1.46] [RN:R01777]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K01739	cystathionine gamma-synthase [EC:2.5.1.48] [RN:R03260]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K01760	cystathionine beta-lyase [EC:4.4.1.8] [RN:R01286]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K00548	methionine synthase [EC:2.1.1.13 2.1.1.14] [RN:R00946 R04405]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K00549	methionine synthase [EC:2.1.1.13 2.1.1.14] [RN:R00946 R04405]	Methionine biosynthesis, apartate => homoserine => methionine	Organic Nitrogen	Amino Acid		TRUE
+K00928	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K12524	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K12525	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K12526	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K00133	aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K00003	homoserine dehydrogenase [EC:1.1.1.3] [RN:R01773 R01775]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K00872	homoserine kinase [EC:2.7.1.39] [RN:R01771]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K02204	homoserine kinase [EC:2.7.1.39] [RN:R01771]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K02203	homoserine kinase [EC:2.7.1.39] [RN:R01771]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K01733	threonine synthase [EC:4.2.3.1] [RN:R01466]	Threonine biosynthesis, aspartate => homoserine => threonine	Organic Nitrogen	Amino Acid		TRUE
+K01652	acetolactate synthase [EC:2.2.1.6] [RN:R00226 R08648]	Valine/isoleucine biosynthesis, pyruvate => valine / 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K01653	acetolactate synthase [EC:2.2.1.6] [RN:R00226 R08648]	Valine/isoleucine biosynthesis, pyruvate => valine / 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K11258	acetolactate synthase [EC:2.2.1.6] [RN:R00226 R08648]	Valine/isoleucine biosynthesis, pyruvate => valine / 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K00053	ketol-acid reductoisomerase [EC:1.1.1.86] [RN:R05071 R04440 R04439 R05069 R05068]	Valine/isoleucine biosynthesis, pyruvate => valine / 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K01687	dihydroxy-acid dehydratase [EC:4.2.1.9] [RN:R04441 R05070]	Valine/isoleucine biosynthesis, pyruvate => valine / 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K00826	branched-chain amino acid aminotransferase [EC:2.6.1.42] [RN:R01214 R02199]	Valine/isoleucine biosynthesis, pyruvate => valine / 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K00058	D-3-phosphoglycerate dehydrogenase [EC:1.1.1.95] [RN:R01513]	Serine biosynthesis, glycerate-3P => serine	Organic Nitrogen	Amino Acid		TRUE
+K00831	phosphoserine aminotransferase [EC:2.6.1.52] [RN:R04173]	Serine biosynthesis, glycerate-3P => serine	Organic Nitrogen	Amino Acid		TRUE
+K01079	phosphoserine phosphatase [EC:3.1.3.3] [RN:R00582]	Serine biosynthesis, glycerate-3P => serine	Organic Nitrogen	Amino Acid		TRUE
+K00640	serine O-acetyltransferase [EC:2.3.1.30] [RN:R00586]	Cysteine biosynthesis, serine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K01738	cysteine synthase [EC:2.5.1.47] [RN:R00897]	Cysteine biosynthesis, serine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K13034	cysteine synthase [EC:2.5.1.47] [RN:R00897]	Cysteine biosynthesis, serine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K17069	cysteine synthase [EC:2.5.1.47] [RN:R00897]	Cysteine biosynthesis, serine => cysteine	Organic Nitrogen	Amino Acid		TRUE
+K01626	3-deoxy-7-phosphoheptulonate synthase [EC:2.5.1.54] [RN:R01826]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K03856	3-deoxy-7-phosphoheptulonate synthase [EC:2.5.1.54] [RN:R01826]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K13853	3-deoxy-7-phosphoheptulonate synthase [EC:2.5.1.54] [RN:R01826]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K01735	3-dehydroquinate synthase [EC:4.2.3.4] [RN:R03083]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K13829	3-dehydroquinate synthase [EC:4.2.3.4] [RN:R03083]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K03785	3-dehydroquinate dehydratase [EC:4.2.1.10] [RN:R03084]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K03786	3-dehydroquinate dehydratase [EC:4.2.1.10] [RN:R03084]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K00014	shikimate 5-dehydrogenase [EC:1.1.1.25] [RN:R02413]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K13832	3-dehydroquinate dehydratase [EC:4.2.1.10] [RN:R03084]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K13830	3-dehydroquinate synthase [EC:4.2.3.4] [RN:R03083]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K00891	shikimate kinase [EC:2.7.1.71] [RN:R02412]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K00800	3-phosphoshikimate 1-carboxyvinyltransferase [EC:2.5.1.19] [RN:R03460]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K01736	chorismate synthase [EC:4.2.3.5] [RN:R01714]	Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate	Organic Nitrogen	Amino Acid		TRUE
+K01657	anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K01658	anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K13503	anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K13501	anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K01656	anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K00766	anthranilate phosphoribosyltransferase [EC:2.4.2.18] [RN:R01073]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K13497	anthranilate synthase [EC:4.1.3.27] [RN:R00985 R00986]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K01817	phosphoribosylanthranilate isomerase [EC:5.3.1.24] [RN:R03509]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K01609	indole-3-glycerol phosphate synthase [EC:4.1.1.48] [RN:R03508]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K13498	phosphoribosylanthranilate isomerase [EC:5.3.1.24] [RN:R03509]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K01695	tryptophan synthase [EC:4.2.1.20] [RN:R02722]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K01696	tryptophan synthase [EC:4.2.1.20] [RN:R02722]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K06001	tryptophan synthase [EC:4.2.1.20] [RN:R02722]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K01694	tryptophan synthase [EC:4.2.1.20] [RN:R02722]	Tryptophan biosynthesis, chorismate => tryptophan	Organic Nitrogen	Amino Acid		TRUE
+K01850	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K04092	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K14187	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K04093	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K04516	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K06208	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K06209	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K13853	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K01713	prephenate dehydratase [EC:4.2.1.51] [RN:R01373]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K04518	prephenate dehydratase [EC:4.2.1.51] [RN:R01373]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K05359	prephenate dehydratase [EC:4.2.1.51] [RN:R01373]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K14170	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K00832	aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R00694]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K00838	aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R00694]	Phenylalanine biosynthesis, chorismate => phenylalanine	Organic Nitrogen	Amino Acid		TRUE
+K01850	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K04092	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K14170	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K04093	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K04516	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K06208	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K06209	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K13853	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K00210	prephenate dehydrogenase [EC:1.3.1.12] [RN:R01728]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K04517	prephenate dehydrogenase [EC:1.3.1.12] [RN:R01728]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K14187	chorismate mutase [EC:5.4.99.5] [RN:R01715]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K00815	tyrosine aminotransferase [EC:2.6.1.5] [RN:R00734]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K00832	aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R00734]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K00838	aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R00734]	Tyrosine biosynthesis, chorismate => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K00765	ATP phosphoribosyltransferase [EC:2.4.2.17] [RN:R01071]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K02502	ATP phosphoribosyltransferase [EC:2.4.2.17] [RN:R01071]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K01523	phosphoribosyl-ATP pyrophosphohydrolase [EC:3.6.1.31] [RN:R04035]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K01496	phosphoribosyl-AMP cyclohydrolase [EC:3.5.4.19] [RN:R04037]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K11755	phosphoribosyl-ATP pyrophosphohydrolase [EC:3.6.1.31] [RN:R04035]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K14152	phosphoribosyl-ATP pyrophosphohydrolase [EC:3.6.1.31] [RN:R04035]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K01814	phosphoribosylformimino-5-aminoimidazole carboxamide ribotide isomerase [EC:5.3.1.16] [RN:R04640]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K02501	imidazole glycerol-phosphate synthase [EC:4.3.2.10] [RN:R04558]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K02500	imidazole glycerol-phosphate synthase [EC:4.3.2.10] [RN:R04558]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K01663	imidazole glycerol-phosphate synthase [EC:4.3.2.10] [RN:R04558]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K01693	imidazoleglycerol-phosphate dehydratase [EC:4.2.1.19] [RN:R03457]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K00817	histidinol-phosphate aminotransferase [EC:2.6.1.9] [RN:R03243]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K04486	histidinol-phosphatase [EC:3.1.3.15] [RN:R03013]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K05602	histidinol-phosphatase [EC:3.1.3.15] [RN:R03013]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K18649	histidinol-phosphatase [EC:3.1.3.15] [RN:R03013]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K01089	imidazoleglycerol-phosphate dehydratase / histidinol-phosphatase [EC:4.2.1.19 3.1.3.15] [RN:R03457 R03013]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K00013	histidinol dehydrogenase [EC:1.1.1.23] [RN:R03012 R01163]	Histidine biosynthesis, PRPP => histidine	Organic Nitrogen	Amino Acid		TRUE
+K00618	amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K00619	amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K14681	amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K14682	amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K00620	glutamate N-acetyltransferase / amino-acid N-acetyltransferase [EC:2.3.1.35 2.3.1.1] [RN:R00259 R02282]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K22477	amino-acid N-acetyltransferase [EC:2.3.1.1] [RN:R00259]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K22478	bifunctional N-acetylglutamate synthase/kinase [EC:2.3.1.1 2.7.2.8] [RN:R00259 R02649]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K00930	acetylglutamate kinase [EC:2.7.2.8] [RN:R02649]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K00145	N-acetyl-gamma-glutamyl-phosphate reductase [EC:1.2.1.38] [RN:R03443]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K12659	N-acetyl-gamma-glutamyl-phosphate reductase / acetylglutamate kinase [EC:1.2.1.38 2.7.2.8] [RN:R02649 R03443]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K00818	acetylornithine aminotransferase [EC:2.6.1.11] [RN:R02283]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K00821	acetylornithine aminotransferase [EC:2.6.1.11] [RN:R02283]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K01438	acetylornithine deacetylase [EC:3.5.1.16] [RN:R00669]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K14677	aminoacylase [EC:3.5.1.14] [RN:R00669]	Ornithine biosynthesis, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K01948	carbamoyl-phosphate synthase (ammonia) [EC:6.3.4.16] [RN:R00149]	Urea cycle	Organic Nitrogen	Amino Acid		TRUE
+K00611	ornithine carbamoyltransferase [EC:2.1.3.3] [RN:R01398]	Urea cycle	Organic Nitrogen	Amino Acid		TRUE
+K01940	argininosuccinate synthase [EC:6.3.4.5] [RN:R01954]	Urea cycle	Organic Nitrogen	Amino Acid		TRUE
+K01755	argininosuccinate lyase [EC:4.3.2.1] [RN:R01086]	Urea cycle	Organic Nitrogen	Amino Acid		TRUE
+K14681	argininosuccinate lyase [EC:4.3.2.1] [RN:R01086]	Urea cycle	Organic Nitrogen	Amino Acid		TRUE
+K01476	arginase [EC:3.5.3.1] [RN:R00551]	Urea cycle	Organic Nitrogen	Amino Acid		TRUE
+K01655	homocitrate synthase [EC:2.3.3.14] [RN:R00271]	Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K17450	homoaconitase [EC:4.2.1.-] [RN:R03444]	Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01705	homoaconitate hydratase [EC:4.2.1.36] [RN:R04371]	Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K05824	homoisocitrate dehydrogenase [EC:1.1.1.87] [RN:R01934]	Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00838	2-aminoadipate transaminase [EC:2.6.1.39] [RN:R01939]	Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00143	L-2-aminoadipate reductase [EC:1.2.1.95] [RN:R03098 R04863 R04390]	Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00293	saccharopine dehydrogenase (NADP+, L-glutamate forming) [EC:1.5.1.10] [RN:R02315]	Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00290	saccharopine dehydrogenase, L-lysine forming [EC:1.5.1.7] [RN:R00715]	Lysine biosynthesis, AAA pathway, 2-oxoglutarate => 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K05827	[lysine-biosynthesis-protein LysW]---L-2-aminoadipate ligase [EC:6.3.2.43] [RN:R09775]	Lysine biosynthesis, mediated by LysW, 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K05828	LysW-gamma-L-alpha-aminoadipate kinase [EC:2.7.2.-] [RN:R09776]	Lysine biosynthesis, mediated by LysW, 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K05829	LysW-gamma-L-alpha-aminoadipyl-6-phosphate reductase [EC:1.2.1.-] [RN:R09777]	Lysine biosynthesis, mediated by LysW, 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K05830	LysW-gamma-L-lysine aminotransferase [EC:2.6.1.-] [RN:R09778]	Lysine biosynthesis, mediated by LysW, 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K05831	LysW-gamma-L-lysine carboxypeptidase [RN:R09779]	Lysine biosynthesis, mediated by LysW, 2-aminoadipate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00290	saccharopine dehydrogenase [EC:1.5.1.7] [RN:R00715]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00293	saccharopine dehydrogenase [EC:1.5.1.10] [RN:R02315]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K14157	alpha-aminoadipic semialdehyde synthase [EC:1.5.1.8 1.5.1.9] [RN:R00716 R02313]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K14085	aminoadipate-semialdehyde dehydrogenase [EC:1.2.1.31] [RN:R03102 R03103]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00825	2-aminoadipate transaminase [EC:2.6.1.39] [RN:R01939]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K15791	probable 2-oxoglutarate dehydrogenase E1 component DHKTD1 [EC:1.2.4.2] [RN:R01933]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00658	2-oxoglutarate dehydrogenase E2 component (dihydrolipoamide [EC:2.3.1.61] [RN:R01933]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00382	dihydrolipoamide dehydrogenase [EC:1.8.1.4] [RN:R01933]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00252	glutaryl-CoA dehydrogenase [EC:1.3.8.6] [RN:R02488]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K01825	enoyl-CoA hydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K01782	enoyl-CoA hydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K07514	enoyl-CoA hydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K01692	enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03026]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K07515	enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03026]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K07511	enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03026]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00022	3-hydroxyacyl-CoA dehydrogenase [EC:1.1.1.35] [RN:R01975]	Lysine degradation, lysine => saccharopine => acetoacetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00789	S-adenosylmethionine synthetase [EC:2.5.1.6] [RN:R00177]	Methionine degradation	Organic Nitrogen	Amino Acid		TRUE
+K00558	DNA (cytosine-5-)-methyltransferase [EC:2.1.1.37] [RN:R04858]	Methionine degradation	Organic Nitrogen	Amino Acid		TRUE
+K17398	DNA (cytosine-5-)-methyltransferase [EC:2.1.1.37] [RN:R04858]	Methionine degradation	Organic Nitrogen	Amino Acid		TRUE
+K17399	DNA (cytosine-5-)-methyltransferase [EC:2.1.1.37] [RN:R04858]	Methionine degradation	Organic Nitrogen	Amino Acid		TRUE
+K01251	adenosylhomocysteinase [EC:3.3.1.1] [RN:R00192]	Methionine degradation	Organic Nitrogen	Amino Acid		TRUE
+K01697	cystathionine beta-synthase [EC:4.2.1.22] [RN:R01290]	Methionine degradation	Organic Nitrogen	Amino Acid		TRUE
+K10150	cystathionine beta-synthase [EC:4.2.1.22] [RN:R01290]	Methionine degradation	Organic Nitrogen	Amino Acid		TRUE
+K00826	branched-chain amino acid aminotransferase [EC:2.6.1.42] [RN:R01090]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00166	2-oxoisovalerate dehydrogenase [EC:1.2.4.4] [RN:R07601 R07602]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00167	2-oxoisovalerate dehydrogenase [EC:1.2.4.4] [RN:R07601 R07602]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K11381	2-oxoisovalerate dehydrogenase [EC:1.2.4.4] [RN:R07601 R07602]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K09699	2-oxoisovalerate dehydrogenase [EC:2.3.1.168] [RN:R04097]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00382	dihydrolipoamide dehydrogenase [EC:1.8.1.4] [RN:R07618]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00253	isovaleryl-CoA dehydrogenase [EC:1.3.99.10] [RN:R04095]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00249	acyl-CoA dehydrogenase [EC:1.3.8.7] [RN:R04095]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K01968	3-methylcrotonyl-CoA carboxylase [EC:6.4.1.4] [RN:R04138]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K01969	3-methylcrotonyl-CoA carboxylase [EC:6.4.1.4] [RN:R04138]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K05607	methylglutaconyl-CoA hydratase [EC:4.2.1.18] [RN:R02085]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K13766	methylglutaconyl-CoA hydratase [EC:4.2.1.18] [RN:R02085]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K01640	hydroxymethylglutaryl-CoA lyase [EC:4.1.3.4] [RN:R01360]	Leucine degradation, leucine => acetoacetate + acetyl-CoA	Organic Nitrogen	Amino Acid		TRUE
+K00832	aromatic-amino-acid transaminase [EC:2.6.1.57] [RN:R01731]	Tyrosine biosynthesis, prephanate => pretyrosine => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K15849	aspartate-prephenate aminotransferase [EC:2.6.1.78] [RN:R01731]	Tyrosine biosynthesis, prephanate => pretyrosine => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K00220	cyclohexadienyl dehydrogenase [EC:1.3.1.43] [RN:R00732]	Tyrosine biosynthesis, prephanate => pretyrosine => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K15226	arogenate dehydrogenase (NADP+) [EC:1.3.1.78] [RN:R00733]	Tyrosine biosynthesis, prephanate => pretyrosine => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K15227	arogenate dehydrogenase (NADP+) [EC:1.3.1.78] [RN:R00733]	Tyrosine biosynthesis, prephanate => pretyrosine => tyrosine	Organic Nitrogen	Amino Acid		TRUE
+K03334	L-amino-acid oxidase [EC:1.4.3.2] [RN:R00729]	Tyrosine degradation, tyrosine => homogentisate	Organic Nitrogen	Amino Acid		TRUE
+K00457	4-hydroxyphenylpyruvate dioxygenase [EC:1.13.11.27] [RN:R02521]	Tyrosine degradation, tyrosine => homogentisate	Organic Nitrogen	Amino Acid		TRUE
+K00451	homogentisate 1,2-dioxygenase [EC:1.13.11.5] [RN:R02519]	Tyrosine degradation, tyrosine => homogentisate	Organic Nitrogen	Amino Acid		TRUE
+K01800	maleylacetoacetate isomerase [EC:5.2.1.2] [RN:R03181]	Tyrosine degradation, tyrosine => homogentisate	Organic Nitrogen	Amino Acid		TRUE
+K01555	fumarylacetoacetase [EC:3.7.1.2] [RN:R01364]	Tyrosine degradation, tyrosine => homogentisate	Organic Nitrogen	Amino Acid		TRUE
+K16171	fumarylacetoacetate (FAA) hydrolase [EC:3.7.1.2] [RN:R01364]	Tyrosine degradation, tyrosine => homogentisate	Organic Nitrogen	Amino Acid		TRUE
+K01745	histidine ammonia-lyase [EC:4.3.1.3] [RN:R01168]	Histidine degradation, histidine => N-formiminoglutamate => glutamate	Organic Nitrogen	Amino Acid		TRUE
+K01712	urocanate hydratase [EC:4.2.1.49] [RN:R02914]	Histidine degradation, histidine => N-formiminoglutamate => glutamate	Organic Nitrogen	Amino Acid		TRUE
+K01468	imidazolonepropionase [EC:3.5.2.7] [RN:R02288]	Histidine degradation, histidine => N-formiminoglutamate => glutamate	Organic Nitrogen	Amino Acid		TRUE
+K01479	formiminoglutamase [EC:3.5.3.8] [RN:R02285]	Histidine degradation, histidine => N-formiminoglutamate => glutamate	Organic Nitrogen	Amino Acid		TRUE
+K00603	glutamate formiminotransferase [EC:2.1.2.5] [RN:R02287]	Histidine degradation, histidine => N-formiminoglutamate => glutamate	Organic Nitrogen	Amino Acid		TRUE
+K13990	glutamate formiminotransferase [EC:2.1.2.5] [RN:R02287]	Histidine degradation, histidine => N-formiminoglutamate => glutamate	Organic Nitrogen	Amino Acid		TRUE
+K05603	formimidoylglutamate deiminase [EC:3.5.3.13] [RN:R02286]	Histidine degradation, histidine => N-formiminoglutamate => glutamate	Organic Nitrogen	Amino Acid		TRUE
+K01458	N-formylglutamate deformylase [EC:3.5.1.68] [RN:R00525]	Histidine degradation, histidine => N-formiminoglutamate => glutamate	Organic Nitrogen	Amino Acid		TRUE
+K00207	dihydropyrimidine dehydrogenase (NADP+) [EC:1.3.1.2] [RN:R00978 R01415]	Pyrimidine degradation, uracil => beta-alanine, thymine => 3-aminoisobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K17722	dihydropyrimidine dehydrogenase (NAD+) [EC:1.3.1.1] [RN:R00977 R11026]	Pyrimidine degradation, uracil => beta-alanine, thymine => 3-aminoisobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K17723	dihydropyrimidine dehydrogenase (NAD+) [EC:1.3.1.1] [RN:R00977 R11026]	Pyrimidine degradation, uracil => beta-alanine, thymine => 3-aminoisobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K01464	dihydropyrimidinase [EC:3.5.2.2] [RN:R02269 R03055]	Pyrimidine degradation, uracil => beta-alanine, thymine => 3-aminoisobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K01431	beta-ureidopropionase [EC:3.5.1.6] [RN:R00905 R04666]	Pyrimidine degradation, uracil => beta-alanine, thymine => 3-aminoisobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K06016	beta-ureidopropionase [EC:3.5.1.6] [RN:R00905 R04666]	Pyrimidine degradation, uracil => beta-alanine, thymine => 3-aminoisobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K01649	2-isopropylmalate synthase [EC:2.3.3.13] [RN:R01213]	Leucine biosynthesis, 2-oxoisovalerate => 2-oxoisocaproate	Organic Nitrogen	Amino Acid		TRUE
+K01702	3-isopropylmalate dehydratase [EC:4.2.1.33] [RN:R03968 R04001]	Leucine biosynthesis, 2-oxoisovalerate => 2-oxoisocaproate	Organic Nitrogen	Amino Acid		TRUE
+K01703	3-isopropylmalate dehydratase [EC:4.2.1.33] [RN:R03968 R04001]	Leucine biosynthesis, 2-oxoisovalerate => 2-oxoisocaproate	Organic Nitrogen	Amino Acid		TRUE
+K01704	3-isopropylmalate dehydratase [EC:4.2.1.33] [RN:R03968 R04001]	Leucine biosynthesis, 2-oxoisovalerate => 2-oxoisocaproate	Organic Nitrogen	Amino Acid		TRUE
+K00052	3-isopropylmalate dehydrogenase [EC:1.1.1.85] [RN:R04426]	Leucine biosynthesis, 2-oxoisovalerate => 2-oxoisocaproate	Organic Nitrogen	Amino Acid		TRUE
+K01655	homocitrate synthase [EC:2.3.3.14] [RN:R00271]	Lysine biosynthesis, 2-oxoglutarate => 2-oxoadipate	Organic Nitrogen	Amino Acid		TRUE
+K17450	homoaconitase [EC:4.2.1.- 4.2.1.36 4.2.1.114] [RN:R03444 R04371 R09720]	Lysine biosynthesis, 2-oxoglutarate => 2-oxoadipate	Organic Nitrogen	Amino Acid		TRUE
+K01705	homoaconitase [EC:4.2.1.- 4.2.1.36 4.2.1.114] [RN:R03444 R04371 R09720]	Lysine biosynthesis, 2-oxoglutarate => 2-oxoadipate	Organic Nitrogen	Amino Acid		TRUE
+K16792	homoaconitase [EC:4.2.1.- 4.2.1.36 4.2.1.114] [RN:R03444 R04371 R09720]	Lysine biosynthesis, 2-oxoglutarate => 2-oxoadipate	Organic Nitrogen	Amino Acid		TRUE
+K16793	homoaconitase [EC:4.2.1.- 4.2.1.36 4.2.1.114] [RN:R03444 R04371 R09720]	Lysine biosynthesis, 2-oxoglutarate => 2-oxoadipate	Organic Nitrogen	Amino Acid		TRUE
+K05824	homoisocitrate dehydrogenase [EC:1.1.1.87] [RN:R01934]	Lysine biosynthesis, 2-oxoglutarate => 2-oxoadipate	Organic Nitrogen	Amino Acid		TRUE
+K00928	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00133	aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01714	4-hydroxy-tetrahydrodipicolinate synthase [EC:4.3.3.7] [RN:R10147]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00215	4-hydroxy-tetrahydrodipicolinate reductase [EC:1.17.1.8] [RN:R04198 R04199]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K05822	tetrahydrodipicolinate N-acetyltransferase [EC:2.3.1.89] [RN:R04364]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00841	aminotransferase [EC:2.6.1.-] [RN:R04467]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K05823	N-acetyldiaminopimelate deacetylase [EC:3.5.1.47] [RN:R02733]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01778	diaminopimelate epimerase [EC:5.1.1.7] [RN:R02735]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01586	diaminopimelate decarboxylase [EC:4.1.1.20] [RN:R00451]	Lysine biosynthesis, acetyl-DAP pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00928	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12524	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12525	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12526	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00133	aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01714	4-hydroxy-tetrahydrodipicolinate synthase [EC:4.3.3.7] [RN:R10147]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00215	4-hydroxy-tetrahydrodipicolinate reductase [EC:1.17.1.8] [RN:R04198 R04199]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K03340	diaminopimelate dehydrogenase [EC:1.4.1.16] [RN:R02755]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01586	diaminopimelate decarboxylase [EC:4.1.1.20] [RN:R00451]	Lysine biosynthesis, DAP dehydrogenase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00928	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12524	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12525	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K12526	aspartate kinase [EC:2.7.2.4] [RN:R00480]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00133	aspartate-semialdehyde dehydrogenase [EC:1.2.1.11] [RN:R02291]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01714	4-hydroxy-tetrahydrodipicolinate synthase [EC:4.3.3.7] [RN:R10147]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K00215	4-hydroxy-tetrahydrodipicolinate reductase [EC:1.17.1.8] [RN:R04198 R04199]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K10206	LL-diaminopimelate aminotransferase [EC:2.6.1.83] [RN:R07613]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01778	diaminopimelate epimerase [EC:5.1.1.7] [RN:R02735]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K01586	diaminopimelate decarboxylase [EC:4.1.1.20] [RN:R00451]	Lysine biosynthesis, DAP aminotransferase pathway, aspartate => lysine	Organic Nitrogen	Amino Acid		TRUE
+K09011	cimA; D-citramalate synthase [EC:2.3.1.182] [RN:R07399]	Isoleucine biosynthesis, pyruvate => 2-oxobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K01703	leuCD; 3-isopropylmalate/(R)-2-methylmalate dehydratase [EC:4.2.1.33 4.2.1.35] [RN:R03896 R03898]	Isoleucine biosynthesis, pyruvate => 2-oxobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K01704	leuCD; 3-isopropylmalate/(R)-2-methylmalate dehydratase [EC:4.2.1.33 4.2.1.35] [RN:R03896 R03898]	Isoleucine biosynthesis, pyruvate => 2-oxobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K00052	leuB; 3-isopropylmalate dehydrogenase [EC:1.1.1.85] [RN:R00994]	Isoleucine biosynthesis, pyruvate => 2-oxobutanoate	Organic Nitrogen	Amino Acid		TRUE
+K17755	choline oxidase [EC:1.1.3.17] [R01022 R08211]	Betaine biosynthesis, choline => betaine	Organic Nitrogen	Amino Acid		TRUE
+K00108	choline dehydrogenase [EC:1.1.99.1] [RN:R01025 R08557 R08558]	Betaine biosynthesis, choline => betaine	Organic Nitrogen	Amino Acid		TRUE
+K11440	choline dehydrogenase [EC:1.1.99.1] [RN:R01025 R08557 R08558]	Betaine biosynthesis, choline => betaine	Organic Nitrogen	Amino Acid		TRUE
+K00130	betaine-aldehyde dehydrogenase [EC:1.2.1.8] [R02565 R02566]	Betaine biosynthesis, choline => betaine	Organic Nitrogen	Amino Acid		TRUE
+K17989	threonine dehydratase [EC:4.3.1.19] [RN:R00996]	Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K01754	threonine dehydratase [EC:4.3.1.19] [RN:R00996]	Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K01652	acetolactate synthase [EC:2.2.1.6] [RN:R08648]	Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K01653	acetolactate synthase [EC:2.2.1.6] [RN:R08648]	Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K11258	acetolactate synthase [EC:2.2.1.6] [RN:R08648]	Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K00053	ketol-acid reductoisomerase [EC:1.1.1.86] [RN:R05069 R05068]	Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K01687	dihydroxy-acid dehydratase [EC:4.2.1.9] [RN:R05070]	Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K00826	branched-chain amino acid aminotransferase [EC:2.6.1.42] [RN:R02199]	Isoleucine biosynthesis, threonine => 2-oxobutanoate => isoleucine	Organic Nitrogen	Amino Acid		TRUE
+K01647	citrate synthase [EC:2.3.3.1] [RN:R00351]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K01681	aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K00031	isocitrate dehydrogenase [EC:1.1.1.42] [RN:R01899 R00268]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K00261	glutamate dehydrogenase (NAD(P)+) [EC:1.4.1.3] [RN:R00248]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K19268	methylaspartate mutase epsilon subunit [EC:5.4.99.1] [RN:R00262]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K01846	methylaspartate mutase epsilon subunit [EC:5.4.99.1] [RN:R00262]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K04835	methylaspartate ammonia-lyase [EC:4.3.1.2] [RN:R03696]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K19280	succinyl-CoA:mesaconate CoA transferase [EC:2.8.3.-] [RN:R10904]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K14449	2-methylfumaryl-CoA hydratase [EC:4.2.1.148] [RN:R05076]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K19281	beta-methylmalyl-CoA/(S)-malyl-CoA lyase [EC:4.1.3.24] [RN:R00934]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K19282	bifunctional (S)-malyl-CoA lyase/thioesterase [EC:4.1.3.24 3.1.2.30] [RN:R00473 R10612]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K00024	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Methylaspartate cycle	Organic Nitrogen	Amino Acid		TRUE
+K19412	glutamate--LysW ligase ArgX [EC:6.3.2.-] [RN:R10929]	Ornithine biosynthesis, mediated by LysW, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K05828	LysW-L-glutamate kinase [EC:2.7.2.-] [RN:R10930]	Ornithine biosynthesis, mediated by LysW, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K05829	LysW-L-glutamyl-5-phosphate reductase [EC:1.2.1.-] [RN:R10931]	Ornithine biosynthesis, mediated by LysW, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K05830	LysW-L-ornithine aminotransferase [EC:2.6.1.-] [RN:R10932]	Ornithine biosynthesis, mediated by LysW, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+K05831	LysW-L-ornithine carboxypeptidase [RN:R10933]	Ornithine biosynthesis, mediated by LysW, glutamate => ornithine	Organic Nitrogen	Amino Acid		TRUE
+A02H	Catlytic type: Aspartate; maximally active in the range pH 4-6	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A02G	Catlytic type: Aspartate; maximally active in the range pH 4-6	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A02F	Catlytic type: Aspartate; maximally active in the range pH 4-6	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A02E	Catlytic type: Aspartate; maximally active in the range pH 4-6	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A02D	Catlytic type: Aspartate; maximally active in the range pH 4-6	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A02C	Catlytic type: Aspartate; maximally active in the range pH 4-6	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A02B	Catlytic type: Aspartate; maximally active in the range pH 4-6	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A02A	Catlytic type: Aspartate; maximally active in the range pH 4-6	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A03B	Catlytic type: Aspartate; Several cleavage sites are thought to exist; The peptidases in family A3 are the polyprotein-processing endopeptidases of the pararetroviruses; LeuAla cleavage site found within a highly hydrophobic region has been identified for one member	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A03A	Catlytic type: Aspartate; Several cleavage sites are thought to exist; The peptidases in family A3 are the polyprotein-processing endopeptidases of the pararetroviruses; LeuAla cleavage site found within a highly hydrophobic region has been identified for one member	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A11B	Catlytic type: Aspartate; performs all the cleavages that occur in the polyproteins; initial cleavage in the Gag-Pol polyprotein exposes the N-terminus of the endopeptidase and is an essential prerequisite for the other cleavages to occur	Endopeptidases involved in the processing of polyproteins encoded by retrotransposons	Organic Nitrogen	Peptidase		FALSE
+A11A	Catlytic type: Aspartate; performs all the cleavages that occur in the polyproteins; initial cleavage in the Gag-Pol polyprotein exposes the N-terminus of the endopeptidase and is an essential prerequisite for the other cleavages to occur	Endopeptidases involved in the processing of polyproteins encoded by retrotransposons	Organic Nitrogen	Peptidase		FALSE
+A22B	Catlytic type: Aspartate; See Additional Information; Functional in Alzheimer's disease; Beta peptides are derived from an internal segment (about 42 amino acids) of the large Alzheimers precursor protein that is excised by peptidase activities known as 'beta-secretase' (cleaving at the N-terminus of the beta-peptide) and 'gamma-secretase' (cleaving at the C-terminus). The gamma-secretase cleavage occurs in a transmembrane segment of the APP, and is mediated by presenilin in complex with nicastrin, APH-1 and PEN-2. A third activity termed 'alpha-secretase' degrades the beta-peptide, making it harmless. More than one individual peptidase may be responsible for each of the secretase activities.	Membrane-inserted endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A22A	Catlytic type: Aspartate; See Additional Information; Functional in Alzheimer's disease; Beta peptides are derived from an internal segment (about 42 amino acids) of the large Alzheimers precursor protein that is excised by peptidase activities known as 'beta-secretase' (cleaving at the N-terminus of the beta-peptide) and 'gamma-secretase' (cleaving at the C-terminus). The gamma-secretase cleavage occurs in a transmembrane segment of the APP, and is mediated by presenilin in complex with nicastrin, APH-1 and PEN-2. A third activity termed 'alpha-secretase' degrades the beta-peptide, making it harmless. More than one individual peptidase may be responsible for each of the secretase activities.	Membrane-inserted endopeptidases	Organic Nitrogen	Peptidase		FALSE
+A33	Catlytic type: Aspartate	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+C01B	Catlytic type: Cysteine; Dominant specificity subsite in most of the peptidases of subfamily C1A is S2; Family C1 peptidases contribute proteolytic activity to the digestive vacuoles of protozoa and to the lysosomal system of eukaryotic cells	Many endopeptidases and a few exopeptidases	Organic Nitrogen	Peptidase		FALSE
+C01A	Catlytic type: Cysteine; Dominant specificity subsite in most of the peptidases of subfamily C1A is S2; Family C1 peptidases contribute proteolytic activity to the digestive vacuoles of protozoa and to the lysosomal system of eukaryotic cells	Many endopeptidases and a few exopeptidases	Organic Nitrogen	Peptidase		FALSE
+C02B	Catlytic type: Cysteine; hydrophobic residues (Tyr, Met, Leu, Val) and also Arg tend to be found in the P2 position; dependent on neutral pH	Endopeptidases termed calpains	Organic Nitrogen	Peptidase		FALSE
+C02A	Catlytic type: Cysteine; hydrophobic residues (Tyr, Met, Leu, Val) and also Arg tend to be found in the P2 position; dependent on neutral pH	Endopeptidases termed calpains	Organic Nitrogen	Peptidase		FALSE
+C03H	Catlytic type: Cysteine; Bonds cleaved in processing the viral polyprotein are commonly -Gln-Gly-	Endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C03G	Catlytic type: Cysteine; Bonds cleaved in processing the viral polyprotein are commonly -Gln-Gly-	Endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C03F	Catlytic type: Cysteine; Bonds cleaved in processing the viral polyprotein are commonly -Gln-Gly-	Endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C03E	Catlytic type: Cysteine; Bonds cleaved in processing the viral polyprotein are commonly -Gln-Gly-	Endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C03D	Catlytic type: Cysteine; Bonds cleaved in processing the viral polyprotein are commonly -Gln-Gly-	Endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C03C	Catlytic type: Cysteine; Bonds cleaved in processing the viral polyprotein are commonly -Gln-Gly-	Endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C03B	Catlytic type: Cysteine; Bonds cleaved in processing the viral polyprotein are commonly -Gln-Gly-	Endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C03A	Catlytic type: Cysteine; Bonds cleaved in processing the viral polyprotein are commonly -Gln-Gly-	Endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C04	Catlytic type: Cysteine; cleavage of GlnGly bonds in the processing of the viral polyprotein	Cysteine endopeptidases of viruses	Organic Nitrogen	Peptidase		FALSE
+C05	Catlytic type: Cysteine; cleaves Xaa-Xbb-Gly-Xbb-Xbb type bonds, where Xaa is Met, Leu or Ile and Xbb is any amino acid ; processes the virus protein precursors by removing an N-terminal propeptide	Endopeptidase adenain	Organic Nitrogen	Peptidase		FALSE
+C06	Catlytic type: Cysteine; cleavage site is -Tyr-Xaa-GlyGly-; serves a function in viral infectivity	Cysteine endopeptidases of RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C07	Catlytic type: Cysteine; cleaves a single Gly|+|Gly bond; p29 peptidase is autocatylitically released during translation from the small polyprotein of the virus	Contains only the p29 peptidase from chestnut blight hypovirus	Organic Nitrogen	Peptidase		FALSE
+C08	Catlytic type: Cysteine; cleaves of a single Gly-Ala bond; p48 endopeptidase is autocatylitically released from the small polyprotein	Contains only the p48 proteinase of the chestnut blight hypovirus	Organic Nitrogen	Peptidase		FALSE
+C09	Catlytic type: Cysteine; cleaves at (Ala/Ile)-Gly-(Ala/Cys/Gly)(Ala/Tyr) site in the viral nonstructural polyproteins	Viral cysteine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+C104	Catlytic type: Cysteine; cleaves the cell wall cross-linking peptide between D-Ala and Ala ; can cross epithelial cell membranes	Cysteine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+C105	Catlytic type: Cysteine; Processing of polyprotein occurs at two glycyl bonds	Polyprotein-processing cysteine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+C107	Catlytic type: Cysteine; preference for Asn in P2 and cleaves the polyprotein at two sites	Polyprotein processing cysteine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+C108	Catlytic type: Cysteine; important for processing the N-terminal extension of ribosomal protein L27	Prp peptidase	Organic Nitrogen	Peptidase		FALSE
+C113	Catlytic type: Cysteine; member is IgdE peptidase	IgdE peptidase	Organic Nitrogen	Peptidase		FALSE
+C14B	Catlytic type: Cysteine; All the peptidases of family C14 have a strict requirement for the amino acid in P1 to be aspartate, however  the substrate specificities of the individual caspases are distinct and determined by the residues present in the pockets of P2, P3 and P4.; caspases that have strict specificity for the hydrolysis of aspartyl bonds	Cytosolic endopeptidases termed caspases that have strict specificity for the hydrolysis of aspartyl bonds	Organic Nitrogen	Peptidase		FALSE
+C14A	Catlytic type: Cysteine; All the peptidases of family C14 have a strict requirement for the amino acid in P1 to be aspartate, however  the substrate specificities of the individual caspases are distinct and determined by the residues present in the pockets of P2, P3 and P4.; caspases that have strict specificity for the hydrolysis of aspartyl bonds	Cytosolic endopeptidases termed caspases that have strict specificity for the hydrolysis of aspartyl bonds	Organic Nitrogen	Peptidase		FALSE
+C16B	Catlytic type: Cysteine; requirement for Phe in P6 in PLP2; Papain-like proteinase 1 and papain-like proteinase are both members of family C16	Polyprotein processing endopeptidases from coronaviruses	Organic Nitrogen	Peptidase		FALSE
+C16A	Catlytic type: Cysteine; a requirement for Arg or Lys in P5; Papain-like proteinase 1 and papain-like proteinase are both members of family C16	Polyprotein processing endopeptidases from coronaviruses	Organic Nitrogen	Peptidase		FALSE
+C18	Catlytic type: Cysteine; cleaves at the 2/3 site;  may be an essential step in the replication of hepatitis C virus	Viral cysteine endopeptidase	Organic Nitrogen	Peptidase		FALSE
+C19	Catlytic type: Cysteine; hydrolyse bonds involving the carboxyl group of the C-terminal Gly residue of ubiquitin; intracellular peptidases that remove ubiquitin molecules from polyubiquinated peptides by cleavage of isopeptide bonds	Ubiquitinyl hydrolases	Organic Nitrogen	Peptidase		FALSE
+C21	Catlytic type: Cysteine; cleavage of the 206-kDa polyprotein occurs in cis at a Ala-Thr bond; involved in the proteolytic maturation of turnip yellow mosaic virus (TYMV)	Polyprotein processing endopeptidases from the single-stranded RNA viruses related to turnip yellow mosaic virus (tymoviruses)	Organic Nitrogen	Peptidase		FALSE
+C23	Catlytic type: Cysteine; leave in cis but not in trans, and an Ala-Asp cleavage site; peptidases of the family are necessary for the processing of the carlavirus polyproteins	Cysteine endopeptidases of single-stranded RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C24	Catlytic type: Cysteine; substrate is the viral polyprotein with the majority of the identified cleavage sites being Glu in P1, and the remainder, Gln;  P1 residue is commonly Gly; refers to single-stranded RNA viruses	Cysteine endopeptidases of single-stranded RNA viruses	Organic Nitrogen	Peptidase		FALSE
+C26	Catlytic type: Cysteine; gamma-linked glutamate bonds	Omega peptidase gamma-glutamyl hydrolase	Organic Nitrogen	Peptidase		FALSE
+C27	Catlytic type: Cysteine; processes the non-structural polyprotein at Gly1300-Gly1301; non-structural polyprotein processing endopeptidase from the rubella virus	Non-structural polyprotein processing endopeptidase from the rubella virus	Organic Nitrogen	Peptidase		FALSE
+C28	Catlytic type: Cysteine; cleaves the host initiation factor eIF-4G firstly at Gly479-Arg480 and then at Lys318-Arg319; processing of viral polyprotein	Viral processing endopeptidases	Organic Nitrogen	Peptidase		FALSE
+C30	Catlytic type: Cysteine; requirement for Gln at position P1;P1 may be occupied by small aliphatic residues; P2 Leu is usually found, but may be Ile, Tyr, Val, Phe or Met; P4 may contain Val, Ala, Ser or Tyr; processing of viral polyprotein	Endopeptidases from coronaviruses	Organic Nitrogen	Peptidase		FALSE
+C31	Catlytic type: Cysteine; cleaves the polyprotein C-terminal to the catalytic His, producing a 20- to 22-kDa product	Polyprotein processing endopeptidases from viruses	Organic Nitrogen	Peptidase		FALSE
+C32	Catlytic type: Cysteine; cleaves a Gly-Gly bond just C-terminal to the active site His residue	Polyprotein-processing peptidase of arteriviruses, papain-like cysteine proteinase beta (PCP beta)	Organic Nitrogen	Peptidase		FALSE
+C33	Catlytic type: Cysteine; cleaves between two Gly residues	Viral polyprotein-processing endopeptidase	Organic Nitrogen	Peptidase		FALSE
+C36	Catlytic type: Cysteine; cleaves between the helicase and polymerase domains and is predicted to be 600 amino acids from the C-terminus of the protein	Putative papain-like peptidase	Organic Nitrogen	Peptidase		FALSE
+C37	Catlytic type: Cysteine; P1 residues in the cleavage sites are commonly Glu or Gln; responsible for all of the processing reactions in the ORF1 polyproteins of the caliciviruses	Calicivirin, a polyprotein-processing endopeptidases known from caliciviruses	Organic Nitrogen	Peptidase		FALSE
+C39	Catlytic type: Cysteine; cleave the 'double-glycine' leader peptides from the precursors of various bacteriocins	Bacteriocin-processing endopeptidases from bacteria	Organic Nitrogen	Peptidase		FALSE
+C40	Catlytic type: Cysteine; hydrolyses substrates of the general structure L-Ala-gamma-D-GluL-Zaa-Yaa, in which Zaa is a di-amino acid such as L-lysine or diaminopimelic acid, and Yaa is D-Ala or D-Ala-D-Ala; expressed during sporulation, and is responsible for the degradation of bacterial cell wall components	Bacterial cell-wall modifying enzymes	Organic Nitrogen	Peptidase		FALSE
+C42	Catlytic type: Cysteine; cleaves a single Gly-Gly bond, releasing the N-terminal 66 kDa leader protein, which includes the peptidase; peptidase releases the N-terminal protein from the viral polyprotein	Polyprotein processing endopeptidases from closteroviruses	Organic Nitrogen	Peptidase		FALSE
+C44	Catlytic type: Cysteine; the only known peptidase activity is the autolytic cleavage of the amidophosphoribosyltransferase precursor protein	Self-processing precursor of amidophosphoribosyltransferase	Organic Nitrogen	Peptidase		FALSE
+C46	Catlytic type: Cysteine; autolytic cleavage occurs at a conserved -Gly-Cys- bond, and is mediated by the C-terminal domain of the hedgehog protein	C-terminal, intein-like domains of the hedgehog proteins, which mediate autolytic cleavage of the proteins	Organic Nitrogen	Peptidase		FALSE
+C48	Catlytic type: Cysteine; demonstrates dual enzymic activity different  to most deubiquitinating enzymes	SUMO (small ubiquitin-like modifier) deconjugating enzymes	Organic Nitrogen	Peptidase		FALSE
+C49	Catlytic type: Cysteine	Strawberry mottle virus 3C-like peptidase	Organic Nitrogen	Peptidase		FALSE
+C51	Catlytic type: Cysteine; bacteriophage phi11 cleaves the crosslinking peptide of the host at the D-Ala-Gly bond	Endopeptidases that hydrolyse bacterial cell-wall crosslinking peptides	Organic Nitrogen	Peptidase		FALSE
+C53	Catlytic type: Cysteine; releases itself from the N-terminus of the p20 polyprotein by an autolytic cleavage of the Cys168-Gly bond in cys; processing of viral polyprotein	Endopeptidases that process the {Pestivirus} p20 polyprotein	Organic Nitrogen	Peptidase		FALSE
+C57	Catlytic type: Cysteine; P4b and P25K proteins are cleaved within an AlaGly-Ala motif, and AlaGly-Ser motif for P4a only; processing of smallpox viral protein	Endopeptidases that process the precursors of viral proteins	Organic Nitrogen	Peptidase		FALSE
+C59	Catlytic type: Cysteine; autolytic cleavage of the penicillin V acylase precursor protein	Cys-dependent Ntn-hydrolases	Organic Nitrogen	Peptidase		FALSE
+C60B	Catlytic type: Cysteine; consensus cleavage site is NPQT-N; catalyzes the formation of an amide bond between the new C-terminal Thr and a cell wall pentaglycine cross-bridge	Bacterial peptidases with strong transferase activity	Organic Nitrogen	Peptidase		FALSE
+C60A	Catlytic type: Cysteine; consensus cleavage site is LPXT-G; catalyzes the formation of an amide bond between the new C-terminal Thr and a cell wall pentaglycine cross-bridge	Bacterial peptidases with strong transferase activity	Organic Nitrogen	Peptidase		FALSE
+C62	Catlytic type: Cysteine; cleavage consensus site has been defined as -Val-Xaa-His-GluYaa, in which Yaa is Leu or Val; predicted to be the key enzyme in the processing of the GAV replicase polyprotein precursors, pp1a and pp1ab	Viral polyprotein-processing endopeptidase	Organic Nitrogen	Peptidase		FALSE
+C63	Catlytic type: Cysteine; cleaves at -GlyGly-Xaa- sites to produce six major structural components of mature virions; required for the maturation of the virus (e.g. African swine fever virus)	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+C71	Endopeptidases that cleave crosslinking peptides of the archaean cell wall	Endopeptidases that cleave crosslinking peptides of the archaean cell wall	Organic Nitrogen	Peptidase		FALSE
+C74	Catlytic type: Cysteine; cleavage between NS2 and NS3 of the viral polyprotein, a cleavage that is correlated with cytopathogenicity ; Contributes to maturation of the viral polyprotein	Viral self-processing peptidases	Organic Nitrogen	Peptidase		FALSE
+C76	Catlytic type: Cysteine; releases of ubiquitin from proteins ubiquitinylated via Lys48; enzymes from herpes simplex virus	Ubiquitinyl hydrolases	Organic Nitrogen	Peptidase		FALSE
+C85B	Catlytic type: Cysteine; cleaved the lysine-63-linked polyubiquitin chains on tumor necrosis factor receptor-associated factor 3	Deubiquitinylating peptidases	Organic Nitrogen	Peptidase		FALSE
+C85A	Catlytic type: Cysteine; cleaved the lysine-63-linked polyubiquitin chains on tumor necrosis factor receptor-associated factor 3	Deubiquitinylating peptidases	Organic Nitrogen	Peptidase		FALSE
+C87	Catlytic type: Cysteine; deubiquitinylase and deISGylase activities	Viral isopeptidases	Organic Nitrogen	Peptidase		FALSE
+C89	Catlytic type: Cysteine	Self-cleaving precursor protein	Organic Nitrogen	Peptidase		FALSE
+C97	Catlytic type: Cysteine; localize in the cytoplasm	SUMO (small ubiquitin-like modifier) deconjugating enzymes	Organic Nitrogen	Peptidase		FALSE
+C99	Catlytic type: Cysteine; releases itself from the viral polyprotein and cleavage occurs in trans; processes the viral polyprotein, releasing proteins that are essential for maturation of the virus	Endopeptidases from RNA viruses	Organic Nitrogen	Peptidase		FALSE
+G02	Catlytic type: Glutamate; Self-cleavage is important for correct assembly of the viral appendages	Self-cleaving endopeptidases	Organic Nitrogen	Peptidase		FALSE
+I02	Inhibitors of serine peptidases	Inhibitors of serine peptidases	Organic Nitrogen	Peptidase		FALSE
+I04	Inhibitors of serine and cysteine endopeptidases	Inhibitors of serine and cysteine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+I08	Inhibitors of serine and metallo endopeptidases	Inhibitors of serine and metallo endopeptidases	Organic Nitrogen	Peptidase		FALSE
+I24	Inhibitors of serine endopeptidases from family S16	Inhibitors of serine endopeptidases from family S16	Organic Nitrogen	Peptidase		FALSE
+I25C	inhibit peptidases of family S8 and M12, but not C1	Inhibitors primarily of the papain-like cysteine peptidases in family C1	Organic Nitrogen	Peptidase		FALSE
+I25B	inhibit peptidases of mostly C1 and also some legumain (family C13)	Inhibitors primarily of the papain-like cysteine peptidases in family C1	Organic Nitrogen	Peptidase		FALSE
+I25A	inhibit peptidases of family C1	Inhibitors primarily of the papain-like cysteine peptidases in family C1	Organic Nitrogen	Peptidase		FALSE
+I29	Inhibitors of cysteine peptidases from family C1	Inhibitors of cysteine peptidases from family C1	Organic Nitrogen	Peptidase		FALSE
+I32	Inhibitors of caspases, cysteine endopeptidases from family C14	Inhibitors of caspases, cysteine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+I36	Inhibitor of metalloendopeptidases in family M4	Inhibitor of metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+I43	Inhibitors of metallopeptidases from family M12	Inhibitors of metallopeptidases from family M12	Organic Nitrogen	Peptidase		FALSE
+I50B	inhibits human caspase; In general, I50 inhibitors facilitate the replication of baculoviruses in their hosts by blocking the apoptosis of the cells that would normally follow viral infection.	Capsases, peptidases in family C14	Organic Nitrogen	Peptidase		FALSE
+I50A	inhibits human caspase; In general, I50 inhibitors facilitate the replication of baculoviruses in their hosts by blocking the apoptosis of the cells that would normally follow viral infection.	Capsases, peptidases in family C14	Organic Nitrogen	Peptidase		FALSE
+I51	Inhibitor of serine carboxypeptidase Y and some members of the S1 family	Inhibitor of serine carboxypeptidase Y	Organic Nitrogen	Peptidase		FALSE
+I63	Inhibitor of the metallopeptidase pappalysin-1; Pappalysin-1 promotes cell growth by the cleavage of insulin-like growth factor binding proteins-4 and -5, causing the release of bound insulin-like growth factors	Inhibitor of the metallopeptidase pappalysin-1	Organic Nitrogen	Peptidase		FALSE
+I75	Inhibitors of metallo-endopeptidases; contains bacteriophage lambda CIII protein, which helps push the phage towards the lysogenic mode of phage development	Inhibitors of metallo-endopeptidases	Organic Nitrogen	Peptidase		FALSE
+I87	Inhibitors, specificity unknown; HflC (Escherichia coli); The factor that influences bacteriophage lambda to remain in the lysogenic stage or to lyse the host cell is transcription factor CII. Degradation of CII by the host FtsH peptidase promotes lysis	Inhibitors, specificity unknown	Organic Nitrogen	Peptidase		FALSE
+I91	Inhibitors of caspase-9; prevents activation of the executor caspases in the mitochondrial cell death pathway, thereby preventing apoptosis and destruction of the cell in which the virus is being propagated	Inhibitors of caspase-9	Organic Nitrogen	Peptidase		FALSE
+M03C	Catlytic type: Metallo; cleave near C-terminus of substrates with low molecule mass (generally less than 19 residues)	Metallopeptidases with varied activities	Organic Nitrogen	Peptidase		FALSE
+M03B	Catlytic type: Metallo; cleave near C-terminus of substrates with low molecule mass (generally less than 19 residues)	Metallopeptidases with varied activities	Organic Nitrogen	Peptidase		FALSE
+M03A	Catlytic type: Metallo; cleave near C-terminus of substrates with low molecule mass (generally less than 19 residues)	Metallopeptidases with varied activities	Organic Nitrogen	Peptidase		FALSE
+M10C	Catlytic type: Metallo; mostly secreted proteins that function extracellularly	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M10B	Catlytic type: Metallo; mostly secreted proteins that function extracellularly	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M10A	Catlytic type: Metallo; mostly secreted proteins that function extracellularly	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M12C	Catlytic type: Metallo; shown to have specificity for -Xaa-Asp- bond, but in general have much broader specificities; occur as proenzymes that require activation by limited proteolysis	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M12B	Catlytic type: Metallo; shown to have specificity for -Xaa-Asp- bond, but in general have much broader specificities; occur as proenzymes that require activation by limited proteolysis	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M12A	Catlytic type: Metallo; shown to have specificity for -Xaa-Asp- bond, but in general have much broader specificities; occur as proenzymes that require activation by limited proteolysis	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M13	Catlytic type: Metallo; cleaves Trp-Val/Ile bond in the 'big endothelin' precursors of endothelin 1	Metalloendopeptidases restricted to action on substrates smaller than proteins	Organic Nitrogen	Peptidase		FALSE
+M14C	Catlytic type: Metallo; hydrolyse single, C-terminal amino acids from polypeptide chains; shown to be involved in bacterial cell wall metabolism	Metallocarboxypeptidases	Organic Nitrogen	Peptidase		FALSE
+M14D	Catlytic type: Metallo; hydrolyse single, C-terminal amino acids from polypeptide chains	Metallocarboxypeptidases	Organic Nitrogen	Peptidase		FALSE
+M14B	Catlytic type: Metallo; hydrolyse single, C-terminal amino acids from polypeptide chains (prefers basic amino acids)	Metallocarboxypeptidases	Organic Nitrogen	Peptidase		FALSE
+M14A	Catlytic type: Metallo; hydrolyse single, C-terminal amino acids from polypeptide chains (prefers aromatic or branched side chains)	Metallocarboxypeptidases	Organic Nitrogen	Peptidase		FALSE
+M15D	Catlytic type: Metallo; substrates of the type Xaa-YaaZaa, with blocked amino terminus and free C-terminus ; involved in bacterial cell wall biosynthesis and metabolism	Metallopeptidases, mostly specialised carboxypeptidases and dipeptidases	Organic Nitrogen	Peptidase		FALSE
+M15C	Catlytic type: Metallo; substrates of the type Xaa-YaaZaa, with blocked amino terminus and free C-terminus ; involved in bacterial cell wall biosynthesis and metabolism	Metallopeptidases, mostly specialised carboxypeptidases and dipeptidases	Organic Nitrogen	Peptidase		FALSE
+M15B	Catlytic type: Metallo; substrates of the type Xaa-YaaZaa, with blocked amino terminus and free C-terminus ; involved in bacterial cell wall biosynthesis and metabolism	Metallopeptidases, mostly specialised carboxypeptidases and dipeptidases	Organic Nitrogen	Peptidase		FALSE
+M15A	Catlytic type: Metallo; substrates of the type Xaa-YaaZaa, with blocked amino terminus and free C-terminus ; involved in bacterial cell wall biosynthesis and metabolism	Metallopeptidases, mostly specialised carboxypeptidases and dipeptidases	Organic Nitrogen	Peptidase		FALSE
+M16C	Catlytic type: Metallo; specificities are varied, but the site of cleavage is seldom far from a terminus of the substrate molecule and often include cleavage of Xaa-Arg bonds; inhibited by chelating agents	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M16B	Catlytic type: Metallo; specificities are varied, but the site of cleavage is seldom far from a terminus of the substrate molecule and often include cleavage of Xaa-Arg bonds; inhibited by chelating agents	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M16A	Catlytic type: Metallo; specificities are varied, but the site of cleavage is seldom far from a terminus of the substrate molecule and often include cleavage of Xaa-Arg bonds; inhibited by chelating agents	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M20E	Catlytic type: Metallo	Exopeptidases: carboxypeptidases, dipeptidases and a specialised aminopeptidase	Organic Nitrogen	Peptidase		FALSE
+M20A	Catlytic type: Metallo; glutamate carboxypeptidase	Exopeptidases: carboxypeptidases, dipeptidases and a specialised aminopeptidase	Organic Nitrogen	Peptidase		FALSE
+M20D	Catlytic type: Metallo; broad specificity; generally found in archaea	Exopeptidases: carboxypeptidases, dipeptidases and a specialised aminopeptidase	Organic Nitrogen	Peptidase		FALSE
+M20F	Catlytic type: Metallo; non-specific dipeptidase ; eukaryotic	Exopeptidases: carboxypeptidases, dipeptidases and a specialised aminopeptidase	Organic Nitrogen	Peptidase		FALSE
+M20B	Catlytic type: Metallo; acts only on tripeptide substrates; also known as tripeptidases	Exopeptidases: carboxypeptidases, dipeptidases and a specialised aminopeptidase	Organic Nitrogen	Peptidase		FALSE
+M20C	Catlytic type: Metallo; Xaa-His dipeptidase; also known as carnosinases	Exopeptidases: carboxypeptidases, dipeptidases and a specialised aminopeptidase	Organic Nitrogen	Peptidase		FALSE
+M23B	Catlytic type: Metallo; cleaves either the N-acylmuramoyl-Ala bond between the cell wall peptidoglycan and the cross-linking peptideor a bond within the cross-linking peptide (e.g. stapholysin), with preference for Gly bonds; used by certain bacteria to lyse cell walls of other bacteria, either as a defensive or feeding mechanism	Endopeptidases that lyse bacterial cell wall peptidoglycans	Organic Nitrogen	Peptidase		FALSE
+M23A	Catlytic type: Metallo; cleaves either the N-acylmuramoyl-Ala bond between the cell wall peptidoglycan and the cross-linking peptideor a bond within the cross-linking peptide (e.g. stapholysin), with preference for Gly bonds; used by certain bacteria to lyse cell walls of other bacteria, either as a defensive or feeding mechanism	Endopeptidases that lyse bacterial cell wall peptidoglycans	Organic Nitrogen	Peptidase		FALSE
+M27	Catlytic type: Metallo; cleaves synaptobrevin 2 at the Gln76-Phe77 bond or at the Gln60-Lys61 bond; synaptobrevin is the only known substrate of this class	Highly selective metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M38	Catlytic type: Metallo; releases an N-terminal isoaspartate from select dipeptides, with  beta-Asp|+|Leu  being the best cleavage site	An omega peptidase	Organic Nitrogen	Peptidase		FALSE
+M41	Catlytic type: Metallo; degrades a given membrane bound substrate molecule progressively from either N-terminus or C-terminus ; a member is FtsH peptidase (Escherichia coli)	ATP-dependent metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M42	Catlytic type: Metallo; broad specificity	Metalloaminopeptidases some of which also have acylaminoacylpeptidase activity	Organic Nitrogen	Peptidase		FALSE
+M43B	Catlytic type: Metallo; cleave insulin-like growth factor binding-protein 5 (IGFBP-5) at Ser143-Lys144 or cleave IGFBP-1 at Met135-Lys136	Metallo-endopeptidases	Organic Nitrogen	Peptidase		FALSE
+M43A	Catlytic type: Metallo; cleaves beta-casein at Pro63-Gly64 and Met102-Ala103	Metallo-endopeptidases	Organic Nitrogen	Peptidase		FALSE
+M44	Catlytic type: Metallo; processes the viral polyprotein into multiple fragments at Ala-GlyXaa motifs where Xaa is Ala, Ser, Thr or Lys; essential for virus maturation	Metalloendopeptidase from the pox viruses	Organic Nitrogen	Peptidase		FALSE
+M48C	Catlytic type: Metallo; requirement for substrates that are prenylated at a C-terminal motif known as CAAX, in which A is an aliphatic residue, and the lipid is attached to the cysteine residue; Eukaryotic	Metallo-endopeptidases	Organic Nitrogen	Peptidase		FALSE
+M48B	Catlytic type: Metallo; requirement for substrates that are prenylated at a C-terminal motif known as CAAX, in which A is an aliphatic residue, and the lipid is attached to the cysteine residue; Eukaryotic	Metallo-endopeptidases	Organic Nitrogen	Peptidase		FALSE
+M48A	Catlytic type: Metallo; requirement for substrates that are prenylated at a C-terminal motif known as CAAX, in which A is an aliphatic residue, and the lipid is attached to the cysteine residue; Eukaryotic	Metallo-endopeptidases	Organic Nitrogen	Peptidase		FALSE
+M56	Catlytic type: Metallo; Autolysis of the BlaR1 precursor occurs at Arg293-Arg; allow bacteria to respond to the presence of beta-lactam antibiotics by the expression of beta-lactamases and penicillin-binding proteins	Membrane-bound bacterial endopeptidases	Organic Nitrogen	Peptidase		FALSE
+M60	Catlytic type: Metallo; degrades into a number of fragments with site specificity unknown; only currently identified substrate for enhancin is insect intestinal mucin	Metalloendopeptidases	Organic Nitrogen	Peptidase		FALSE
+M67C	Catlytic type: Metallo; cleaves Lys48-linked tetra-ubiquitin and Lys63-linked polyubiquitin chains	Isopeptidases that release ubiquitin from ubiquitinated proteins	Organic Nitrogen	Peptidase		FALSE
+M67B	Catlytic type: Metallo; cleaves Lys48-linked tetra-ubiquitin and Lys63-linked polyubiquitin chains	Isopeptidases that release ubiquitin from ubiquitinated proteins	Organic Nitrogen	Peptidase		FALSE
+M67A	Catlytic type: Metallo; cleaves Lys48-linked tetra-ubiquitin and Lys63-linked polyubiquitin chains	Isopeptidases that release ubiquitin from ubiquitinated proteins	Organic Nitrogen	Peptidase		FALSE
+M78	Catlytic type: Metallo; Cleaves of ImmR occurs at Phe95+Met, releasing the N-terminal DNA-binding domain	Metallo-endopeptidases	Organic Nitrogen	Peptidase		FALSE
+M79	Catlytic type: Metallo; cleaves at the -Cys(R)Xaa-Xaa-Xbb, in which Cys(R) is cysteine in which the thiol is substituted with a C15(farnesyl) or C20 (geranylgeranyl) side chain, Xaa is normally a small, aliphatic residue, and Xbb is any amino acid	Specialised endopeptidases that typically cleave a C-terminal tripeptide from an isoprenylated protein	Organic Nitrogen	Peptidase		FALSE
+M86	Catlytic type: Metallo; hydrolyse gamma-linked poly-DL-glutamic acid (gamma-DL-PGA), giving final products no smaller than trimers, even when subjected to prolonged incubation or the addition of more enzyme; phage encoded peptidase gamma-PGA	Poly-gamma-glutamyl hydrolases	Organic Nitrogen	Peptidase		FALSE
+N01	Catlytic type: Asparagine; autolytic cleavage of Asn363-Ala364 releasing a 44-residue C-terminal fragment; peptidases in family N1 are the coat proteins from nodaviruses, single-stranded RNA viruses; coat protein precursor undergoes slow, autolytic maturation in which cleavage of the coat protein helps stabilize the virion and is an important stage in maturation of the virus	An endopeptidase	Organic Nitrogen	Peptidase		FALSE
+N02	Catlytic type: Asparagine; autolytic cleavage of Asn570-Phe571 releasing a 74-residue fragment from the C-terminus of the coat protein	only the endopeptidase of tetraviruses	Organic Nitrogen	Peptidase		FALSE
+N04	Catlytic type: Asparagine; release of the passenger domain from the precursor; cleavage causes the virulence factor to be secreted (shown in E. coli)	Tsh-associated self-cleaving domain	Organic Nitrogen	Peptidase		FALSE
+N05	Catlytic type: Asparagine; release of an N-terminal 44-residue peptide from the N-terminus of the coat protein; important for virion stabilization	Self-cleaving endopeptidases	Organic Nitrogen	Peptidase		FALSE
+N07	Catlytic type: Asparagine; cleaves one of the capsid proteins at  at Asn42; important for virion stabilization	Self-cleaving endopeptidases	Organic Nitrogen	Peptidase		FALSE
+N08	Catlytic type: Asparagine; cleaves the VP0 viral capsid protein into VP2 and VP4 in the provirion	Self-cleaving endopeptidases	Organic Nitrogen	Peptidase		FALSE
+N09	Catlytic type: Asparagine; release of the intein from the extein; intein is a polypeptide insert into another protein (the extein) which is able to release itself from the host protein and splice the two portions of the extein together	Self-cleaving proteins	Organic Nitrogen	Peptidase		FALSE
+N10E	Catlytic type: Asparagine; first residue of the intein must by Cys, Ser or Thr and the last residue of the intein must be Asn or Gln; the first residue of the second portion of the extein must be Cys, Ser or Thr.; An intein is a polypeptide insert into another protein (the extein) which is able to release itself from the host protein and splice the two portions of the extein together.	self-cleaving proteins	Organic Nitrogen	Peptidase		FALSE
+N10D	Catlytic type: Asparagine; first residue of the intein must by Cys, Ser or Thr and the last residue of the intein must be Asn or Gln; the first residue of the second portion of the extein must be Cys, Ser or Thr.; An intein is a polypeptide insert into another protein (the extein) which is able to release itself from the host protein and splice the two portions of the extein together.	self-cleaving proteins	Organic Nitrogen	Peptidase		FALSE
+N10C	Catlytic type: Asparagine; first residue of the intein must by Cys, Ser or Thr and the last residue of the intein must be Asn or Gln; the first residue of the second portion of the extein must be Cys, Ser or Thr.; An intein is a polypeptide insert into another protein (the extein) which is able to release itself from the host protein and splice the two portions of the extein together.	self-cleaving proteins	Organic Nitrogen	Peptidase		FALSE
+N10B	Catlytic type: Asparagine; first residue of the intein must by Cys, Ser or Thr and the last residue of the intein must be Asn or Gln; the first residue of the second portion of the extein must be Cys, Ser or Thr.; An intein is a polypeptide insert into another protein (the extein) which is able to release itself from the host protein and splice the two portions of the extein together.	self-cleaving proteins	Organic Nitrogen	Peptidase		FALSE
+N11	Catlytic type: Asparagine; cleaves at the start and end of the intein, which is then released	Self-cleaving proteins	Organic Nitrogen	Peptidase		FALSE
+S01F	Catlytic type: Serine; 3 types:trypsin-like where there is cleavage of amide substrates following Arg or Lys at P1, chymotrypsin-like where cleavage occurs following one of the hydrophobic amino acids at P1, and elastase-like with cleavage following an Ala at P1	Serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S01E	Catlytic type: Serine; 3 types:trypsin-like where there is cleavage of amide substrates following Arg or Lys at P1, chymotrypsin-like where cleavage occurs following one of the hydrophobic amino acids at P1, and elastase-like with cleavage following an Ala at P1	Serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S01D	Catlytic type: Serine; 3 types:trypsin-like where there is cleavage of amide substrates following Arg or Lys at P1, chymotrypsin-like where cleavage occurs following one of the hydrophobic amino acids at P1, and elastase-like with cleavage following an Ala at P1	Serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S01C	Catlytic type: Serine; 3 types:trypsin-like where there is cleavage of amide substrates following Arg or Lys at P1, chymotrypsin-like where cleavage occurs following one of the hydrophobic amino acids at P1, and elastase-like with cleavage following an Ala at P1	Serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S01B	Catlytic type: Serine; 3 types:trypsin-like where there is cleavage of amide substrates following Arg or Lys at P1, chymotrypsin-like where cleavage occurs following one of the hydrophobic amino acids at P1, and elastase-like with cleavage following an Ala at P1	Serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S01A	Catlytic type: Serine; 3 types:trypsin-like where there is cleavage of amide substrates following Arg or Lys at P1, chymotrypsin-like where cleavage occurs following one of the hydrophobic amino acids at P1, and elastase-like with cleavage following an Ala at P1	Serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S03	Catlytic type: Serine; cis cleavage of the Trp264-Ser bond at its own C-terminus to release it from the polyprotein; RNA virus protein excised from the polyprotein that forms the viral coat	Viral endopeptidase togavirin	Organic Nitrogen	Peptidase		FALSE
+S06	Catlytic type: Serine; cleave human IgA1 in a part of the hinge region that is absent from IgA2	Serine endopeptidases of bacteria	Organic Nitrogen	Peptidase		FALSE
+S07	Catlytic type: Serine; cleaves at sites like -Xaa-XaaYaa-, where Xaa is normally an amino acid with a basic side chain, and Yaa has a short side chain	Serine endopeptidase	Organic Nitrogen	Peptidase		FALSE
+S08C	Catlytic type: Serine; nonspecific peptidases with a preference to cleave after hydrophobic residues; secreted or attached to the cell wall	Serine endopeptidase subtilisin and its homologues	Organic Nitrogen	Peptidase		FALSE
+S08B	Catlytic type: Serine; nonspecific peptidases with a preference to cleave after hydrophobic residues; secreted or attached to the cell wall	Serine endopeptidase subtilisin and its homologues	Organic Nitrogen	Peptidase		FALSE
+S08A	Catlytic type: Serine; nonspecific peptidases with a preference to cleave after hydrophobic residues; secreted or attached to the cell wall	Serine endopeptidase subtilisin and its homologues	Organic Nitrogen	Peptidase		FALSE
+S09D	Catlytic type: Serine; generally cleaves prolyl bonds, with some exceptions (see additional information); oligopeptidase B cleaves Arg and Lys bonds; acylaminoacyl-peptidase releases an N-acylated amino acid from an oligopeptide blocked by a acetyl, chloroacetyl, formyl or carbamyl group	Serine-dependent peptidases	Organic Nitrogen	Peptidase		FALSE
+S09C	Catlytic type: Serine; generally cleaves prolyl bonds, with some exceptions (see additional information); oligopeptidase B cleaves Arg and Lys bonds; acylaminoacyl-peptidase releases an N-acylated amino acid from an oligopeptide blocked by a acetyl, chloroacetyl, formyl or carbamyl group	Serine-dependent peptidases	Organic Nitrogen	Peptidase		FALSE
+S09B	Catlytic type: Serine; generally cleaves prolyl bonds, with some exceptions (see additional information); oligopeptidase B cleaves Arg and Lys bonds; acylaminoacyl-peptidase releases an N-acylated amino acid from an oligopeptide blocked by a acetyl, chloroacetyl, formyl or carbamyl group	Serine-dependent peptidases	Organic Nitrogen	Peptidase		FALSE
+S09A	Catlytic type: Serine; generally cleaves prolyl bonds, with some exceptions (see additional information); oligopeptidase B cleaves Arg and Lys bonds; acylaminoacyl-peptidase releases an N-acylated amino acid from an oligopeptide blocked by a acetyl, chloroacetyl, formyl or carbamyl group	Serine-dependent peptidases	Organic Nitrogen	Peptidase		FALSE
+S11	Catlytic type: Serine; transfer of the C-terminal D-Ala to water OR the peptidoglycan monomer is transferred to an exogenous receptor after removal of the C-terminal D-Ala (some have both activities); mainly involved in the synthesis of bacterial cell walls	Serine-type D-Ala-D-Ala carboxypeptidases	Organic Nitrogen	Peptidase		FALSE
+S12	Catlytic type: Serine; wide range of activities and specificities; involved in the synthesis and remodelling of bacterial cell walls	Serine-type D-Ala-D-Ala carboxypeptidases	Organic Nitrogen	Peptidase		FALSE
+S14	Catlytic type: Serine; cleaves preferentially after nonpolar residues; involved in quality control and the regulatory degradation of specific proteins	Endopeptidase Clp and its homologues	Organic Nitrogen	Peptidase		FALSE
+S16	Catlytic type: Serine; cleaves when P1 is Leu; ATP-dependent peptidase and a protein-activated ATPase	Endopeptidases, mostly ATP-dependent	Organic Nitrogen	Peptidase		FALSE
+S21	Catlytic type: Serine; cleaves at Val/Leu-Xaa-AlaSer, where Xaa is a polar residue; involved in the late stages of assembly of the viral prohead, breaking down the scaffold protein upon which the prohead is assembled	Assemblins, which are processing endopeptidases of the herpesviruses, one of the groups of DNA viruses	Organic Nitrogen	Peptidase		FALSE
+S24	Catlytic type: Serine; cleaves.at an Ala-Gly or a Cys-Gly bond	Two-domain proteins that undergo autolysis, separating the functional domains	Organic Nitrogen	Peptidase		FALSE
+S26C	Catlytic type: Serine; removes hydrophobic, N-terminal signal peptides as the proteins are translocated across membranes; 'Ala-Xaa-Ala' motif preceding the cleavage site; major enzymes that remove the signal peptides and facilitate secretion	Peptidase family S26 contains endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S26B	Catlytic type: Serine; removes hydrophobic, N-terminal signal peptides as the proteins are translocated across membranes; 'Ala-Xaa-Ala' motif preceding the cleavage site; major enzymes that remove the signal peptides and facilitate secretion	Peptidase family S26 contains endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S26A	Catlytic type: Serine; removes hydrophobic, N-terminal signal peptides as the proteins are translocated across membranes; 'Ala-Xaa-Ala' motif preceding the cleavage site; major enzymes that remove the signal peptides and facilitate secretion	Peptidase family S26 contains endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S28	Catlytic type: Serine; cleaves the -Pro-Xaa bond, in which Xaa is C-terminal	Exopeptidases that hydrolyse prolyl bonds, and are known only from eukaryotes	Organic Nitrogen	Peptidase		FALSE
+S29	Catlytic type: Serine; cleaves when P1 residue at each site is Cys or Thr; member is hepacivirin	Polyprotein-processing peptidases of hepatitis viruses	Organic Nitrogen	Peptidase		FALSE
+S30	Catlytic type: Serine; cleaves a bond at its own C-terminus where the the scissile bond is -Xaa-Ser-, in which Xaa is Phe or Tyr; essential for viral infectivity	Viral polyprotein-processing peptidases	Organic Nitrogen	Peptidase		FALSE
+S31	Catlytic type: Serine; cleaves each pestivirus polyprotein at four positions, between NS3 and NS4, NS4A and NS4B, NS4B and NS5A, and between NS5A and NS5B; essential for viral replication	Polyprotein processing endopeptidase from pestiviruses	Organic Nitrogen	Peptidase		FALSE
+S32	Catlytic type: Serine; cleaves at four Glu-Gly bonds and one Glu-Ser bond in the ORF1a polyprotein, and an additional two Glu-Gly and one Gln-Ser bond in the ORF1b polyprotein; Arteriviruses are RNA viruses with a genome that encodes two polyproteins, ORF1a and ORF1ab.	One of the arterivirus polyprotein processing endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S33	Catlytic type: Serine; releases an N-terminal residue from a peptide, preferably (but not exclusively) a proline; secreted or periplasmic enzymes;Prolyl aminopeptidase may confer a selective advantage allowing a bacterium to utilize proline-rich substrates	Exopeptidases that act at the N-terminus of peptides	Organic Nitrogen	Peptidase		FALSE
+S49C	Catlytic type: Serine; hydrolyzes the N-blocked p-nitrophenyl esters of Gly, Ala, Phe, Val, Leu and Trp; prefers hydrophobic amino acids on either side of the scissile bond and will not cleave a peptide containing fewer than six amino acids; destruction of cleaved signal pepides in the periplasmic space	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S49B	Catlytic type: Serine; hydrolyzes the N-blocked p-nitrophenyl esters of Gly, Ala, Phe, Val, Leu and Trp; prefers hydrophobic amino acids on either side of the scissile bond and will not cleave a peptide containing fewer than six amino acids; destruction of cleaved signal pepides in the periplasmic space	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S49A	Catlytic type: Serine; hydrolyzes the N-blocked p-nitrophenyl esters of Gly, Ala, Phe, Val, Leu and Trp; prefers hydrophobic amino acids on either side of the scissile bond and will not cleave a peptide containing fewer than six amino acids; destruction of cleaved signal pepides in the periplasmic space	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S50	Catlytic type: Serine; cleaves the polyprotein at two sites both containing Ala; processes the viral polyprotein and releases itself and the major capsid proteins	Polyprotein processing endopeptidases from double-stranded RNA viruses	Organic Nitrogen	Peptidase		FALSE
+S53	Catlytic type: Serine; preferences for hydrophobic residues in the P1 and P2 positions; secreted proteins	Acid-acting endopeptidases and a tripeptidyl-peptidase	Organic Nitrogen	Peptidase		FALSE
+S54	Catlytic type: Serine; membrane bound	Membrane-bound serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S62	Catlytic type: Serine; cleaves the chymotrypsin substrate Suc-Leu-Leu-Val-Tyr-NHMec and casein ; not essential but when absent, reduces viral growth	Viral endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S65	Catlytic type: Serine; processes of the polyprotein occurs at Phe-Xaa-Xaa-Gln+ consensus sequences	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S69	Catlytic type: Serine; cleaves alanyl bonds in the processing of a viral polyprotein	Viral endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S73	Catlytic type: Serine	Serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S74	Catlytic type: Serine; autoproteolysis releases the chaperone domains	Serine endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S75	Catlytic type: Serine; cleaves several sites in the polyprotein, with cleavage at Gln(Ala/Thr) ; processes the relicase polyprotein 1ab releasing individual proteins	Endopeptidases	Organic Nitrogen	Peptidase		FALSE
+S77	Catlytic type: Serine; cleaves P22, IPII, IPIII and P68 at selected GluAla bonds; cleaves P23 at a GluGly bond; processing of prohead protein	Prohead endopeptidase from bacteriophage T4	Organic Nitrogen	Peptidase		FALSE
+S78	Catlytic type: Serine; processes the coat protein at the lysyl bond; involved in the maturation of the phage prohead	Endopeptidases from bacteriophages	Organic Nitrogen	Peptidase		FALSE
+S80	Catlytic type: Serine; cleaves at Ser/Ala/Gly)-Xaa-Glu+; perform all the processing cleavages required for maturation of the viral prohead	prohead peptidase gp175	Organic Nitrogen	Peptidase		FALSE
+S81	Catlytic type: Serine; cleaves the beta-(1,4)-glycosidic bond between N-acetylmuramic acid and N-acetylglucosamine of the peptidoglycan of bacterial cell walls	Isopeptidases	Organic Nitrogen	Peptidase		FALSE
+T01B	Catlytic type: Threonine; eukaryotic proteasome has three different activities (trypsin-like, chymotrypsin-like and cleavage after glutamate); archaean and bacterial proteasomes have only chymotrypsin-like activity; involved in turnover of intracellular proteins	Component peptidases of the proteasome and related compound peptidases	Organic Nitrogen	Peptidase		FALSE
+T01A	Catlytic type: Threonine; eukaryotic proteasome has three different activities (trypsin-like, chymotrypsin-like and cleavage after glutamate); archaean and bacterial proteasomes have only chymotrypsin-like activity; involved in turnover of intracellular proteins	Component peptidases of the proteasome and related compound peptidases	Organic Nitrogen	Peptidase		FALSE
+T03	Catlytic type: Threonine; catalyzes the transfer of the gamma-glutamyl moiety of gamma-glutamyl-derived peptides such as glutathione (gammaGlu-Cys-Gly), and anilides such as gamma-glutamyl-7-amido-4-methylcoumarin (gammaGlu-AMC) to acceptor molecules including water and various dipeptides	Self-processing proteins that express aminopeptidase as well as aminotransferase activities in their mature forms	Organic Nitrogen	Peptidase		FALSE
+U32	degrades soluble and reconstituted fibrillar type I collagen	Endopeptidases from bacteria	Organic Nitrogen	Peptidase		FALSE
+U40	cleaves the cell wall peptide bridge formed by meso-2,6-diaminopimelic acid and D-Ala; component of the bacteriophage lysin	Protein P5 murein endopeptidase from bacteriophage phi-6	Organic Nitrogen	Peptidase		FALSE
