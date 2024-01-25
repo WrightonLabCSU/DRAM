@@ -438,6 +438,7 @@ if( params.distill_topic != "" ){
     }
 
     combineDistillChannels()
+    ch_combined_distill_channels.view()
 
 }
 
@@ -459,6 +460,7 @@ if( params.distill_ecosystem != "" ){
     }
 
     combineDistillChannels()
+    ch_combined_distill_channels.view()
 
 }
 
@@ -469,6 +471,7 @@ if( params.distill_custom != ""){
     parseDistillCustom(params.distill_custom)
 
     combineDistillChannels()
+    ch_combined_distill_channels.view()
 }
 
 
