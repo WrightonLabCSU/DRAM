@@ -776,6 +776,8 @@ workflow {
     {
         ch_distill_topic.view()
         ch_distill_ecosys.view()
+        ch_distill_custom.view()
+        
         //combineDistillChannels()
         //ch_combined_distill_channels.view()
 
