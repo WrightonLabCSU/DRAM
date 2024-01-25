@@ -471,7 +471,7 @@ if (params.distill_ecosystem != "") {
     distill_ag = 0
 
     def distillEcosystemList = params.distill_ecosystem.split()
-    println( ${distillEcosystemList} )
+    println( "${distillEcosystemList}")
     ch_distill_ecosystem_input = Channel.from(distillEcosystemList)
     ch_distill_ecosystem_input.view()
 
