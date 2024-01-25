@@ -559,7 +559,9 @@ if (params.distill_custom != "") {
         if (file(customFile).exists()) {
             // Add the file to the list of channels
             //customChannels << Channel.fromPath(customFile).view().toList()
-            customChannels << Channel.fromTextFile(customFile)
+            //customChannels << Channel.fromTextFile(customFile)
+            def customChannel = Channel.fromFile(customFile).view().toList()
+            customChannels << customChannel
 
         } else {
             // Throw an error if the file doesn't exist
@@ -772,8 +774,8 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosys != "" || params.distill_custom != "" )
     {
-        ch_distill_topic.view()
-        ch_distill_ecosys.view()
+        //ch_distill_topic.view()
+        //ch_distill_ecosys.view()
         ch_distill_custom.view()
         
         //combineDistillChannels()
