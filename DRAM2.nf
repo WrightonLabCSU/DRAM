@@ -470,8 +470,7 @@ if (params.distill_ecosystem != "") {
     distill_eng_sys = 0
     distill_ag = 0
 
-    ch_distill_ecosystem_input = params.distill_ecosystem.tokenize(' ')
-    println("${ch_distill_ecosystem_input}")
+    println("${params.distill_ecosystem}")
     //ch_distill_ecosystem_input = Channel.from(distillEcosystemList)
 
     // You can remove the parseDistillEcoSys function and directly process the channel
