@@ -446,56 +446,57 @@ if (params.distill_topic != "") {
                 distill_transport = 1
                 break
         }
+    }
 
-        if (distill_carbon == 1) {
-            def carbonFile = file(params.distill_carbon_sheet)
-            if (carbonFile.exists()) {
-                topicChannels << carbonFile
-            } else {
-                error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+    if (distill_carbon == 1) {
+        def carbonFile = file(params.distill_carbon_sheet)
+        if (carbonFile.exists()) {
+            topicChannels << carbonFile
+        } else {
+            error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
         }
+    }
 
-        if (distill_energy == 1) {
-            def energyFile = file(params.distill_energy_sheet)
-            if (energyFile.exists()) {
-                topicChannels << energyFile
-            } else {
-                error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+    if (distill_energy == 1) {
+        def energyFile = file(params.distill_energy_sheet)
+        if (energyFile.exists()) {
+            topicChannels << energyFile
+        } else {
+            error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
         }
+    }
 
-        if (distill_misc == 1) {
-            def miscFile = file(params.distill_misc_sheet)
-            if (miscFile.exists()) {
-                topicChannels << miscFile
-            } else {
-                error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+    if (distill_misc == 1) {
+        def miscFile = file(params.distill_misc_sheet)
+        if (miscFile.exists()) {
+            topicChannels << miscFile
+        } else {
+            error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
         }
+    }
 
-        if (distill_nitrogen == 1) {
-            def nitrogenFile = file(params.distill_nitrogen_sheet)
-            if (nitrogenFile.exists()) {
-                topicChannels << nitrogenFile
-            } else {
-                error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+    if (distill_nitrogen == 1) {
+        def nitrogenFile = file(params.distill_nitrogen_sheet)
+        if (nitrogenFile.exists()) {
+            topicChannels << nitrogenFile
+        } else {
+            error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
         }
+    }
 
-        if (distill_transport == 1) {
-            def transportFile = file(params.distill_transport_sheet)
-            if (transportFile.exists()) {
-                topicChannels << transportFile
-            } else {
-                error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+    if (distill_transport == 1) {
+        def transportFile = file(params.distill_transport_sheet)
+        if (transportFile.exists()) {
+            topicChannels << transportFile
+        } else {
+            error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
         }
     }
 
     // Combine all channels into a single channel
     ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
 }
+
 
 
 if (params.distill_ecosystem != "") {
