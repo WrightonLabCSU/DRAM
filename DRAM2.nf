@@ -470,11 +470,12 @@ if (params.distill_ecosystem != "") {
     distill_eng_sys = 0
     distill_ag = 0
 
-    println("${params.distill_ecosystem}")
-    //ch_distill_ecosystem_input = Channel.from(distillEcosystemList)
+    def distillEcosystemList = params.distill_ecosystem.split()
 
-    // You can remove the parseDistillEcoSys function and directly process the channel
-    ch_distill_ecosystem_input.subscribe { ecosysItem ->
+    // Create a list to store the generated channels
+    def ecoSysChannels = []
+
+    distillEcosystemList.each { ecosysItem ->
         if (!['eng_sys', 'ag'].contains(ecosysItem)) {
             error("Invalid distill ecosystem: $ecosysItem. Valid values are eng_sys, ag")
         }
@@ -489,32 +490,30 @@ if (params.distill_ecosystem != "") {
                 //println("distill_eng_sys: $distill_eng_sys")
                 break
         }
-    }
 
-    // Create a list to store the generated channels
-    def ecoSysChannels = []
-
-    if (distill_eng_sys == 1) {
-        def engSysFile = file(params.distill_eng_sys_sheet)
-        if (engSysFile.exists()) {
-            ecoSysChannels << engSysFile
-        } else {
-            error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        if (distill_eng_sys == 1) {
+            def engSysFile = file(params.distill_eng_sys_sheet)
+            if (engSysFile.exists()) {
+                ecoSysChannels << engSysFile
+            } else {
+                error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+            }
         }
-    }
 
-    if (distill_ag == 1) {
-        def agFile = file(params.distill_ag_sheet)
-        if (agFile.exists()) {
-            ecoSysChannels << agFile
-        } else {
-            error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        if (distill_ag == 1) {
+            def agFile = file(params.distill_ag_sheet)
+            if (agFile.exists()) {
+                ecoSysChannels << agFile
+            } else {
+                error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+            }
         }
     }
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
 }
+
 
 /*
 if( params.distill_ecosystem != "" ){
