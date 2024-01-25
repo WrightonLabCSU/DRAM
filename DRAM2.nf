@@ -555,21 +555,21 @@ if (params.distill_custom != "") {
     // Iterate through custom files and create channels or throw errors
     customFiles.each { customFile ->
         println("Custom File Path: $customFile")
+        
         // Check if the custom file exists
-        if (file(customFile).exists()) {
+        def fileObject = file(customFile)
+        if (fileObject.exists()) {
             // Add the file to the list of channels
-            //customChannels << Channel.fromPath(customFile).view().toList()
-            //customChannels << Channel.fromTextFile(customFile)
-            def customChannel = Channel.fromFile(customFile).view().toList()
-            customChannels << customChannel
-
+            customChannels << Channel.fromFile(customFile).view().toList()
         } else {
             // Throw an error if the file doesn't exist
-            error("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
+            println("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
         }
     }
+
     // Combine all custom channels into a single channel
-    ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
+    ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels.flatten()) : Channel.empty()
+
 }
 
 
