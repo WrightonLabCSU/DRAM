@@ -400,8 +400,10 @@ if( params.merge ){
     Create channel for optional topic or ecosystem distill sheets and custom sheets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+def ch_distill_topic = Channel.empty()
+def ch_distill_ecosys = Channel.empty()
+
 if( params.distill_topic != "" ){
-    def ch_distill_topic = Channel.empty()
     distill_default = 0
     distill_carbon = 0
     distill_energy = 0
@@ -531,7 +533,6 @@ if( params.distill_ecosystem != "" ){
 }
 */
 if( params.distill_ecosystem != "" ){
-    def ch_distill_ecosys = Channel.empty()
     distill_eng_sys = 0
     distill_ag = 0
 
