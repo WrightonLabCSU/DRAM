@@ -401,6 +401,7 @@ if( params.merge ){
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 if( params.distill_topic != "" ){
+    def ch_distill_topic = Channel.empty()
     distill_default = 0
     distill_carbon = 0
     distill_energy = 0
@@ -531,6 +532,7 @@ if( params.distill_ecosystem != "" ){
 }
 */
 if( params.distill_ecosystem != "" ){
+    def ch_distill_ecosys = Channel.empty()
     distill_eng_sys = 0
     distill_ag = 0
 
@@ -559,8 +561,6 @@ if( params.distill_ecosystem != "" ){
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
-    ch_distill_ecosys.view()
-
 }
 
 
