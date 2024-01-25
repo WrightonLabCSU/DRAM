@@ -546,15 +546,14 @@ if (params.distill_ecosystem != "") {
 }
 
 if (params.distill_custom != "") {
-    def customFiles = params.distill_custom.split()
+    // Split the custom files using quotes and spaces
+    def customFiles = params.distill_custom.replaceAll(/"/, '').split()
 
     // Create a list to store the channels for custom files
     def customChannels = []
 
     // Iterate through custom files and create channels or throw errors
     customFiles.each { customFile ->
-        def fileName = customFile.tokenize("/")[-1].tokenize(".")[0] // Extract filename without path and extension
-
         // Check if the custom file exists
         if (file(customFile).exists()) {
             // Add the file to the list of channels
@@ -569,6 +568,7 @@ if (params.distill_custom != "") {
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
+
 
 
 /*
