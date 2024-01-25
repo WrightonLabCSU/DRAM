@@ -804,6 +804,7 @@ def parseDistillEcoSys(ecosysString) {
         if (!validEcosys.contains(ecosysItem)) {
             error("Invalid distill ecosystem: $ecosysItem. Valid values are ${validEcosys.join(', ')}")
         }
+        println("Processing ecosysItem: $ecosysItem")
 
         switch (ecosysItem) {
             case "ag":
