@@ -561,6 +561,7 @@ if( params.distill_ecosystem != "" ){
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
+    ch_distill_ecosys.view()
 }
 
 
@@ -569,6 +570,8 @@ if( params.distill_custom != ""){
     distill_ag = 0
 
     parseDistillCustom(params.distill_custom)
+    ch_distill_custom.view()
+
 
 }
 
