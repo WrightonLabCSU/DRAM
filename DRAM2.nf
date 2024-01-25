@@ -771,8 +771,8 @@ workflow {
     {
         //ch_distill_topic.view()
         //ch_distill_ecosys.view()
-        ch_distill_custom.view().each { item ->
-            println("Channel Item: $item")
+        ch_distill_custom.each { customFile ->
+            println("Channel Item: $customFile")
         }
         
         //combineDistillChannels()
