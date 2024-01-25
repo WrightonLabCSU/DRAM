@@ -497,8 +497,6 @@ if (params.distill_topic != "") {
     ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
 }
 
-
-
 if (params.distill_ecosystem != "") {
     distill_eng_sys = 0
     distill_ag = 0
@@ -523,23 +521,23 @@ if (params.distill_ecosystem != "") {
                 //println("distill_eng_sys: $distill_eng_sys")
                 break
         }
+    }
 
-        if (distill_eng_sys == 1) {
-            def engSysFile = file(params.distill_eng_sys_sheet)
-            if (engSysFile.exists()) {
-                ecoSysChannels << engSysFile
-            } else {
-                error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+    if (distill_eng_sys == 1) {
+        def engSysFile = file(params.distill_eng_sys_sheet)
+        if (engSysFile.exists()) {
+            ecoSysChannels << engSysFile
+        } else {
+            error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
         }
+    }
 
-        if (distill_ag == 1) {
-            def agFile = file(params.distill_ag_sheet)
-            if (agFile.exists()) {
-                ecoSysChannels << agFile
-            } else {
-                error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+    if (distill_ag == 1) {
+        def agFile = file(params.distill_ag_sheet)
+        if (agFile.exists()) {
+            ecoSysChannels << agFile
+        } else {
+            error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
         }
     }
 
@@ -548,9 +546,6 @@ if (params.distill_ecosystem != "") {
 }
 
 if (params.distill_custom != "") {
-    distill_eng_sys = 0
-    distill_ag = 0
-
     def customFiles = params.distill_custom.split()
 
     // Create a list to store the channels for custom files
@@ -574,8 +569,6 @@ if (params.distill_custom != "") {
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
-
-
 
 
 /*
@@ -775,8 +768,8 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosys != "" || params.distill_custom != "" )
     {
-        ch_distill_topic.view()
-        //ch_distill_ecosys.view()
+        //ch_distill_topic.view()
+        ch_distill_ecosys.view()
         //ch_distill_custom.view()
         
         //combineDistillChannels()
