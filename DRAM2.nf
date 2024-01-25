@@ -533,9 +533,6 @@ if( params.distill_ecosystem != "" ){
 }
 */
 if( params.distill_ecosystem != "" ){
-    distill_eng_sys = 0
-    distill_ag = 0
-
     parseDistillEcoSys(params.distill_ecosystem)
 
     // Create a list to store the generated channels
@@ -562,6 +559,7 @@ if( params.distill_ecosystem != "" ){
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
 }
+
 
 
 if( params.distill_custom != ""){
