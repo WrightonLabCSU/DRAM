@@ -470,8 +470,10 @@ if (params.distill_ecosystem != "") {
     distill_eng_sys = 0
     distill_ag = 0
 
-    ch_distill_ecosystem_input = Channel.fromPath(params.distill_ecosystem)
-    println(params.distill_ecosystem)
+    def distillEcosystemList = params.distill_ecosystem.split()
+    println($distillEcosystemList)
+    ch_distill_ecosystem_input = Channel.from(distillEcosystemList)
+    ch_distill_ecosystem_input.view()
 
     // You can remove the parseDistillEcoSys function and directly process the channel
     ch_distill_ecosystem_input.subscribe { ecosysItem ->
