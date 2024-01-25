@@ -566,7 +566,7 @@ if (params.distill_custom != "") {
             error("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
         }
     }
-
+    println("Contents of customChannels: $customChannels")
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
