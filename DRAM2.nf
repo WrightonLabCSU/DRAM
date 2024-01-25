@@ -865,7 +865,7 @@ def parseDistillTopic(topicString) {
 /* distill ecosystem */
 def parseDistillEcoSys(ecosysString) {
     def validEcosys = ['eng_sys', 'ag']
-    def ecosysList = ecosysString.split()
+    def ecosysList = ecosysString.split(/\s+/)  // Explicitly split on space characters
     
     // Iterate through ecosysList and set flags
     ecosysList.each { ecosysItem ->
@@ -885,6 +885,7 @@ def parseDistillEcoSys(ecosysString) {
         }
     }
 }
+
 
 
 /* distill custom */
