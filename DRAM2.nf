@@ -499,8 +499,6 @@ if (params.distill_topic != "") {
 
     // Combine all channels into a single channel
     ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
-    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_topic)
-    ch_combined_distill_channels.view()
 }
 
 
@@ -550,7 +548,6 @@ if (params.distill_ecosystem != "") {
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
-    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_ecosys)
 }
 
 if (params.distill_custom != "") {
@@ -576,7 +573,14 @@ if (params.distill_custom != "") {
 
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
-    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_custom)
+}
+
+// Combine channels dynamically
+def channelsToCombine = [ch_distill_topic, ch_distill_ecosys, ch_distill_custom].findAll { it }
+
+// Combine all non-empty channels into a single channel
+if (channelsToCombine) {
+    ch_combined_distill_channels = channelsToCombine.reduce { acc, channel -> acc.combine(channel) }
 }
 
 /*
