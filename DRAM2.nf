@@ -482,11 +482,11 @@ if (params.distill_ecosystem != "") {
         switch (ecosysItem) {
             case "ag":
                 distill_ag = 1
-                println("distill_ag: $distill_ag")
+                //println("distill_ag: $distill_ag")
                 break
             case "eng_sys":
                 distill_eng_sys = 1
-                println("distill_eng_sys: $distill_eng_sys")
+                //println("distill_eng_sys: $distill_eng_sys")
                 break
         }
     }
@@ -764,7 +764,7 @@ workflow {
     if( params.distill_topic != "" || params.distill_ecosys != "" || params.distill_custom != "" )
     {
         //ch_distill_topic.view()
-        ch_distill_ecosys.view()
+        //ch_distill_ecosys.view()
         //combineDistillChannels()
         //ch_combined_distill_channels.view()
 
@@ -820,7 +820,7 @@ def parseDistillTopic(topicString) {
         if (!validTopics.contains(topic)) {
             error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
         }
-        println("Processing ecosysItem: $topic")
+        //println("Processing ecosysItem: $topic")
         
         switch (topic) {
             case "default":
