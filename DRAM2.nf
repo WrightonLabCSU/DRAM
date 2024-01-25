@@ -460,6 +460,7 @@ if( params.distill_topic != "" ){
 
     // Combine all channels into a single channel
     ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
+    ch_distill_topic.view()
 
 }
 
@@ -558,6 +559,7 @@ if( params.distill_ecosystem != "" ){
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
+    ch_distill_ecosys.view()
 
 }
 
@@ -769,8 +771,8 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosys != "" || params.distill_custom != "" )
     {
-        combineDistillChannels()
-        ch_combined_distill_channels.view()
+        //combineDistillChannels()
+        //ch_combined_distill_channels.view()
 
         //Need to add in:
         // 1) tRNA and rRNA summary files - these are formatted for the sheets 'tRNA' and 'rRNA'
@@ -902,6 +904,7 @@ def parseDistillCustom(customPaths) {
 
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
+    ch_distill_custom.view()
 }
 
 
