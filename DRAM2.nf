@@ -558,7 +558,7 @@ if (params.distill_custom != "") {
         // Check if the custom file exists
         if (file(customFile).exists()) {
             // Add the file to the list of channels
-            customChannels << Channel.fromFile(customFile)
+            customChannels << Channel.fromPath(customFile)
             println("Contents of customChannels: $customChannels")
 
         } else {
@@ -570,6 +570,7 @@ if (params.distill_custom != "") {
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
+
 
 
 
