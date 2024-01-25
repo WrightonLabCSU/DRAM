@@ -577,15 +577,6 @@ if (params.distill_custom != "") {
     ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_custom)
 }
 
-// Call combineDistillChannels only if at least one of the distill channels is defined
-if (ch_distill_topic || ch_distill_ecosys || ch_distill_custom) {
-    combineDistillChannels()
-    ch_combined_distill_channels.view()
-} else {
-    println("No distill channels specified.")
-}
-
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Print run info to command line
@@ -830,21 +821,6 @@ def validOptions = ["--call", "--annotate", "--distill"]
     Define a function to build additional parameters string for DRAM distill sheets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-
-/* Combine all distill channels into one */
-def combineDistillChannels() {
-    // Create a list to store the generated channels
-    def distillChannels = []
-
-    // Check if each channel is defined and add it to the list
-    if (ch_distill_topic) distillChannels << ch_distill_topic
-    if (ch_distill_ecosys) distillChannels << ch_distill_ecosys
-    if (ch_distill_custom) distillChannels << ch_distill_custom
-
-    // Combine all channels into a single channel
-    ch_combined_distill_channels = distillChannels.size() > 0 ? Channel.fromList(distillChannels) : Channel.empty()
-}
 
 
 
