@@ -547,7 +547,7 @@ if (params.distill_ecosystem != "") {
 
 if (params.distill_custom != "") {
     // Split the custom files using quotes and spaces
-    def customFiles = params.distill_custom.split()
+    def customFiles = params.distill_custom.replaceAll(/"/, '').split()
 
     // Create a list to store the channels for custom files
     def customChannels = []
@@ -569,6 +569,7 @@ if (params.distill_custom != "") {
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
+
 
 
 
