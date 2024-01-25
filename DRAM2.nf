@@ -767,7 +767,7 @@ def parseDistillTopic(topicString) {
         if (!validTopics.contains(topic)) {
             error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
         }
-        println("Processing ecosysItem: $ecosysItem")
+        println("Processing ecosysItem: $topic")
         
         switch (topic) {
             case "default":
