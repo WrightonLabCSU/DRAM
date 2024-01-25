@@ -774,6 +774,7 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosys != "" || params.distill_custom != "" )
     {
+        ch_distill_topic.view()
         //combineDistillChannels()
         //ch_combined_distill_channels.view()
 
