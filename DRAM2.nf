@@ -571,8 +571,13 @@ if (params.distill_custom != "") {
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
 
-combineDistillChannels()
-ch_combined_distill_channels.view()
+// Call combineDistillChannels only if at least one of the distill channels is defined
+if (ch_distill_topic || ch_distill_ecosys || ch_distill_custom) {
+    combineDistillChannels()
+    ch_combined_distill_channels.view()
+} else {
+    println("No distill channels specified.")
+}
 
 
 /*
@@ -826,7 +831,7 @@ def combineDistillChannels() {
     // Create a list to store the generated channels
     def distillChannels = []
 
-    // Add each channel to the list
+    // Check if each channel is defined and add it to the list
     if (ch_distill_topic) distillChannels << ch_distill_topic
     if (ch_distill_ecosys) distillChannels << ch_distill_ecosys
     if (ch_distill_custom) distillChannels << ch_distill_custom
