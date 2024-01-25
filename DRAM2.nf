@@ -789,6 +789,12 @@ def parseDistillCustom(customPaths) {
         
         // Assign the channel to a dynamically named variable
         delegate."${ch_name}" = customChannel
+        
+       // Print channel name
+        println("Channel Name: ${ch_name}")
+
+        // Check channel content
+        customChannel.view()
     }
 }
 
