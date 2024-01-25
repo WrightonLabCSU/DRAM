@@ -555,8 +555,7 @@ if (params.distill_custom != "") {
 
     // Iterate through custom files and create channels or throw errors
     customFiles.each { customFile ->
-        println("Custom File Path: $customFile")
-        
+    
         // Check if the custom file exists
         def fileObject = file(customFile)
         if (fileObject.exists()) {
@@ -580,7 +579,7 @@ if (params.distill_custom != "") {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 // This is just a catch-all for now - NEED to generate others for various options
-if( params.call || params.annotate || params.distill){
+if( params.call || params.annotate || params.distill_ecosystem || params.distill_topic){
     log.info """
             DRAM2 Nextflow
             ===================================
