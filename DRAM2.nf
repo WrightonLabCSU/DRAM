@@ -533,6 +533,9 @@ if( params.distill_ecosystem != "" ){
 }
 */
 if( params.distill_ecosystem != "" ){
+    distill_eng_sys = 0
+    distill_ag = 0
+    
     parseDistillEcoSys(params.distill_ecosystem)
 
     // Create a list to store the generated channels
