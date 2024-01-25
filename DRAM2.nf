@@ -499,6 +499,7 @@ if (params.distill_topic != "") {
 
     // Combine all channels into a single channel
     ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
+    ch_combined_distill_channels += ch_distill_topic
 }
 
 if (params.distill_ecosystem != "") {
@@ -547,6 +548,7 @@ if (params.distill_ecosystem != "") {
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
+    ch_combined_distill_channels += ch_distill_ecosys
 }
 
 if (params.distill_custom != "") {
@@ -572,6 +574,7 @@ if (params.distill_custom != "") {
 
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
+    ch_combined_distill_channels += ch_distill_custom
 }
 
 // Call combineDistillChannels only if at least one of the distill channels is defined
@@ -784,7 +787,7 @@ workflow {
         ch_distill_ecosys.view()
         ch_distill_custom.view()
     
-
+        ch_combined_distill_channels.view()
         //Need to add in:
         // 1) tRNA and rRNA summary files - these are formatted for the sheets 'tRNA' and 'rRNA'
         // 2) tRNA and rRNA files need to be incorporated into the 'genome_stats' sheet (not sure about the approach yet)
