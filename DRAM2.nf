@@ -571,6 +571,9 @@ if (params.distill_custom != "") {
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
 }
 
+combineDistillChannels()
+ch_combined_distill_channels.view()
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -772,9 +775,7 @@ workflow {
         ch_distill_topic.view()
         ch_distill_ecosys.view()
         ch_distill_custom.view()
-        
-        combineDistillChannels()
-        ch_combined_distill_channels.view()
+    
 
         //Need to add in:
         // 1) tRNA and rRNA summary files - these are formatted for the sheets 'tRNA' and 'rRNA'
