@@ -778,7 +778,7 @@ workflow {
         // 1) REMOVE additional info I kept in from each database - only need the main distill headers
         ch_final_annots.view()
         ch_combined_distill_channels.view()
-        ch_distill_summary_script.view()
+  
         DISTILL_SUMMARY( ch_final_annots, ch_combined_distill_channels, ch_distill_summary_script )
         //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
