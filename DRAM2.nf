@@ -464,6 +464,8 @@ if( params.distill_ecosystem != "" ){
 }
 
 if( params.distill_custom != ""){
+    distill_eng_sys = 0
+    distill_ag = 0
 
     parseDistillCustom(params.distill_custom)
 
