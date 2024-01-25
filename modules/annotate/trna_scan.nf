@@ -58,7 +58,7 @@ process TRNA_SCAN {
 
     # Run tRNAscan-SE with the necessary input to avoid prompts
     trna_out = "${sample}_trna_out.txt"
-    subprocess.run(["tRNAscan-SE", "-G", "-Q", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"], input=b'O\\n', check=True)
+    subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"], input=b'O\\n', check=True)
 
     # Process tRNAscan-SE output
     process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
