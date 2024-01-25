@@ -503,7 +503,7 @@ if (params.distill_topic != "") {
     ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_topic)
     ch_combined_distill_channels.view()
 }
-}
+
 
 if (params.distill_ecosystem != "") {
     distill_eng_sys = 0
