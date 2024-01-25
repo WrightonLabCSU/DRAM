@@ -561,6 +561,10 @@ if( params.distill_ecosystem != "" ){
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
+    println "distill_eng_sys: $distill_eng_sys"
+    println "distill_ag: $distill_ag"
+    println "ecoSysChannels: $ecoSysChannels"
+
 }
 
 
