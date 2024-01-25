@@ -866,7 +866,7 @@ def parseDistillTopic(topicString) {
 def parseDistillEcoSys(ecosysString) {
     def validEcosys = ['eng_sys', 'ag']
     def ecosysList = ecosysString.split()
-
+    
     // Iterate through ecosysList and set flags
     ecosysList.each { ecosysItem ->
         if (!validEcosys.contains(ecosysItem)) {
@@ -876,13 +876,16 @@ def parseDistillEcoSys(ecosysString) {
         switch (ecosysItem) {
             case "eng_sys":
                 distill_eng_sys = 1
+                println("distill_eng_sys: $distill_eng_sys")
                 break
             case "ag":
                 distill_ag = 1
+                println("distill_ag: $distill_ag")
                 break
         }
     }
 }
+
 
 /* distill custom */
 def parseDistillCustom(customPaths) {
