@@ -535,7 +535,7 @@ if( params.distill_ecosystem != "" ){
 if( params.distill_ecosystem != "" ){
     distill_eng_sys = 0
     distill_ag = 0
-    
+
     parseDistillEcoSys(params.distill_ecosystem)
 
     // Create a list to store the generated channels
@@ -861,7 +861,7 @@ def parseDistillTopic(topicString) {
 /* distill ecosystem */
 def parseDistillEcoSys(ecosysString) {
     def validEcosys = ['eng_sys', 'ag']
-    def ecosysList = ecosysString.split()
+    def ecosysList = ecosysString.split(' ')
     
     // Iterate through ecosysList and set flags
     ecosysList.each { ecosysItem ->
