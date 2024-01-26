@@ -2,7 +2,7 @@ process DISTILL_SUMMARY {
 
     input:
     file( combined_annotations )
-    path( distill_sheets )
+    path( distill_sheets_file )
     file( ch_distill_summary_script )
 
     output:
@@ -16,18 +16,13 @@ process DISTILL_SUMMARY {
     # Define the log file path
     log_file="logs/distill.log"
 
-    # Read the distill_sheets file to get the list of paths
-    distill_sheets_list=()
-    while IFS=, read -r path; do
-        distill_sheets_list+=("$path")
-    done < "${distill_sheets}"
-
     python "${ch_distill_summary_script}" \
         --combined_annotations "${combined_annotations}" \
-        --distill_sheets "${distill_sheets_list[@]}" \
+        --distill_sheets_file "${distill_sheets_file}" \
         --output "genome_summary.tsv" >> "\$log_file" 2>&1
     """
 }
+
 
 
 
