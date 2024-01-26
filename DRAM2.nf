@@ -589,11 +589,8 @@ channelsToCombine.each { channel ->
 }
 
 // Check if there are any channels to view
-if (ch_combined_distill_channels.size() > 0) {
-    ch_combined_distill_channels.view()
-} else {
-    println("No distill channels specified.")
-}
+ch_combined_distill_channels.view()
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
