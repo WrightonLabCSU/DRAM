@@ -796,16 +796,16 @@ workflow {
         channelsMap.distill_custom.view()
 
         // Create a queue channel in the broader scope
-        def queueChannel = Channel.create()
+        def myQueueChannel = Channel.create()
 
         // Combine all channels into a single channel
         ch_combined_distill_channels = Channel.from([channelsMap.distill_topic, channelsMap.distill_ecosys, channelsMap.distill_custom])
 
         // Dequeue the information from the queue channel
-        queueChannel.subscribe { ch_combined_distill_channels << it }
+        myQueueChannel.subscribe { ch_combined_distill_channels << it }
 
         COMBINE_DISTILL(ch_combined_distill_channels)
-        
+
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
         ch_combined_distill.view()
