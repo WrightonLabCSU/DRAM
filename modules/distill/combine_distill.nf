@@ -7,7 +7,7 @@ process COMBINE_DISTILL {
     val ch_distill_custom
 
     output:
-    val combinedChannel
+    path("combined.txt"), emit ch_combined_distill_out
 
     shell:
     '''
@@ -28,6 +28,6 @@ process COMBINE_DISTILL {
         combinedChannel="${combinedChannel}!{ch_distill_custom},"
     fi
 
-    echo $combinedChannel
+    echo $combinedChannel > combined.txt
     '''
 }
