@@ -577,19 +577,17 @@ if (params.distill_custom != "") {
 
 // Combine channels dynamically
 def channelsToCombine = [
-    ch_distill_topic.ifEmpty { -> null },
-    ch_distill_ecosys.ifEmpty { -> null },
-    ch_distill_custom_temp.ifEmpty { -> null }
-].findAll { it != null }
+    ch_distill_topic,
+    ch_distill_ecosys,
+    ch_distill_custom_temp
+].findAll { !it.isEmpty() }
 
 // Combine all non-empty channels into a single channel
-ch_combined_distill_channels = Channel.empty()
-channelsToCombine.each { channel ->
-    ch_combined_distill_channels = ch_combined_distill_channels.combine(channel)
-}
+ch_combined_distill_channels = channelsToCombine.isEmpty() ? Channel.empty() : channelsToCombine.reduce { acc, val -> acc.combine(val) }
 
 // Check if there are any channels to view
 ch_combined_distill_channels.view()
+
 
 
 /*
