@@ -43,11 +43,15 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
         # Merge the distill sheet with the combined_annotations on 'gene_id' and identified "_id" columns
         merged_df = pd.merge(combined_annotations_df, distill_df, left_on=id_columns, right_on='gene_id', how='inner')
 
+        # Keep only the specified columns in the output
+        output_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+        merged_df = merged_df[output_columns]
+
         # Append the merged DataFrame to the distill summary DataFrame
         distill_summary_df = pd.concat([distill_summary_df, merged_df])
 
     # Save the distill summary to the specified output path
-    distill_summary_df.to_csv(output_path, sep='\t', index=False)
+    distill_summary_df.to_csv(output_path, sep='\t', index=False, columns=output_columns)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
