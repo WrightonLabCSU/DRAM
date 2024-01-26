@@ -10,7 +10,7 @@ process COMBINE_DISTILL {
     // Define output channel
 
     shell:
-    """
+    '''
     echo "ch_distill_topic: ${ch_distill_topic}"
     echo "ch_distill_ecosys: ${ch_distill_ecosys}"
     echo "ch_distill_custom: ${ch_distill_custom}"
@@ -33,5 +33,5 @@ process COMBINE_DISTILL {
     fi
 
     echo $combinedChannel
-    """
+    '''
 }
