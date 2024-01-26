@@ -405,7 +405,8 @@ def ch_distill_topic = Channel.empty()
 def ch_distill_ecosys = Channel.empty()
 def ch_distill_custom = Channel.empty()
 def ch_combined_distill_channels = Channel.empty()
-
+default_channel = Channel.value("empty")
+default_channel.view()
 
 if (params.distill_topic != "") {
     distill_default = 0
@@ -572,7 +573,7 @@ if (params.distill_custom != "") {
     }
 
     // Combine all custom channels into a single channel
-    ch_distill_custom_temp = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty().ifEmpty { "0" }
+    ch_distill_custom_temp = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.value("0").ifEmpty { default_channel }
     ch_distill_custom_temp.view()
 
 }
