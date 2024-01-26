@@ -5,6 +5,7 @@ process COMBINE_DISTILL {
     val ch_distill_topic
     val ch_distill_ecosys
     val ch_distill_custom
+    file( ch_final_annots )
 
     output:
     path("combined.txt"), emit: ch_combined_distill_out
