@@ -28,5 +28,6 @@ process COMBINE_DISTILL {
         combinedChannel="${combinedChannel}!{ch_distill_custom},"
     fi
 
+    echo $combinedChannel > combined.txt
     '''
 }
