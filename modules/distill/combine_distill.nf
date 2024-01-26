@@ -16,7 +16,7 @@ process COMBINE_DISTILL {
     echo "ch_distill_custom: ${ch_distill_custom}"
 
     combined="banana"
-    echo $combinedChannel
+    echo $combined
 
 
 
