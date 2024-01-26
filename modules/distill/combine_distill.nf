@@ -15,7 +15,7 @@ process COMBINE_DISTILL {
     echo "ch_distill_ecosys: ${ch_distill_ecosys}"
     echo "ch_distill_custom: ${ch_distill_custom}"
 
-    combined = "banana"
+    combined="banana"
     echo \$combinedChannel
 
 
