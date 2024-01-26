@@ -406,7 +406,6 @@ def ch_distill_ecosys = Channel.empty()
 def ch_distill_custom = Channel.empty()
 def ch_combined_distill_channels = Channel.empty()
 default_channel = Channel.value("empty")
-default_channel.view()
 
 if (params.distill_topic != "") {
     distill_default = 0
