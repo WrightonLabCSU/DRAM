@@ -586,7 +586,7 @@ else{
 
 // Function to check if a channel is "empty"
 def isNotEmptyChannel(channel) {
-    return channel.view().first() != "empty"
+    return channel.view().toList()*.toString()*.trim().find { it != "empty" } != null
 }
 
 // Combine channels only if they are not "empty"
