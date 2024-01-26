@@ -8,7 +8,7 @@ process COMBINE_DISTILL {
 
     output:
     // Define output channel
-    val combinedChannel, emit ch_combined_distill
+    val combinedChannel
 
     script:
     """
