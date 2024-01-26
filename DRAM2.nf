@@ -789,13 +789,10 @@ workflow {
     {
         //Add in:
         // 1) REMOVE additional info I kept in from each database - only need the main distill headers
-        createDistillChannels()
+        def (ch_distill_topic, ch_distill_ecosys, ch_distill_custom) = createDistillChannels()
         // Print debug information about channels
-        println "ch_distill_topic: ${ch_distill_topic}"
         ch_distill_topic.view()
-        println "ch_distill_ecosys: ${ch_distill_ecosys}"
         ch_distill_ecosys.view()
-        println "ch_distill_custom: ${ch_distill_custom}"
         ch_distill_custom.view()
 
         COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom)
@@ -1044,6 +1041,8 @@ def createDistillChannels() {
     else{
         ch_distill_custom = default_channel
     }
+
+    return ch_distill_topic, ch_distill_ecosys, ch_distill_custom
 }
 
 
