@@ -13,6 +13,11 @@ process COMBINE_DISTILL {
     shell:
     '''
     combinedChannel=""
+
+    # Debug statements within COMBINE_DISTILL shell block
+    echo "Debug: ch_distill_topic = !{ch_distill_topic}"
+    echo "Debug: ch_distill_ecosys = !{ch_distill_ecosys}"
+    echo "Debug: ch_distill_custom = !{ch_distill_custom}"
     
     # Check and add to combined channel if ch_distill_ecosys is not "empty"
     if [[ "!{ch_distill_topic}" != "empty" ]]; then
@@ -30,5 +35,12 @@ process COMBINE_DISTILL {
     fi
 
     echo $combinedChannel > combined.txt
+
+    # Print debug information about the channels after concatenation
+    echo "Debug: combinedChannel = ${combinedChannel}"
+
+
+    # Print the contents of the resulting combined.txt file
+    cat combined.txt
     '''
 }
