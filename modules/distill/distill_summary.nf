@@ -3,7 +3,7 @@ process DISTILL_SUMMARY {
     input:
     file( combined_annotations )
     path( distill_sheets_file )
-    file( ch_annotation_counts )
+    file( target_id_counts )
     file( ch_distill_summary_script )
 
     output:
