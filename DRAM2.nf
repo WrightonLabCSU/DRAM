@@ -573,18 +573,27 @@ if (params.distill_custom != "") {
 
     // Combine all custom channels into a single channel
     ch_distill_custom_temp = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
-    ch_distill_custom = ch_distill_custom_temp.ifEmpty("Empty")
-    ch_distill_custom.view()
 }
-/*
-// Combine channels dynamically
-def channelsToCombine = [ch_distill_topic, ch_distill_ecosys, ch_distill_custom]
 
-// Combine all non-empty channels into a single channel using a loop
-for (channel in channelsToCombine) {
-    ch_combined_distill_channels = ch_combined_distill_channels.isEmpty() ? channel : ch_combined_distill_channels.combine(channel)
+// Combine channels dynamically
+def channelsToCombine = [
+    ch_distill_topic.ifEmpty { -> null },
+    ch_distill_ecosys.ifEmpty { -> null },
+    ch_distill_custom_temp.ifEmpty { -> null }
+].findAll { it != null }
+
+// Combine all non-empty channels into a single channel
+ch_combined_distill_channels = Channel.empty()
+channelsToCombine.each { channel ->
+    ch_combined_distill_channels = ch_combined_distill_channels.combine(channel)
 }
-*/
+
+// Check if there are any channels to view
+if (ch_combined_distill_channels.size() > 0) {
+    ch_combined_distill_channels.view()
+} else {
+    println("No distill channels specified.")
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
