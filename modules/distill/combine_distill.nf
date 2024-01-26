@@ -7,7 +7,7 @@ process COMBINE_DISTILL {
     val ch_distill_custom
 
     output:
-    val combinedChannel, emit: ch_distill_combined_out
+    val combinedChannel
 
     shell:
     '''
