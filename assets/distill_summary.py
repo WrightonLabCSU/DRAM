@@ -23,10 +23,9 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
 
         # If gene_id is not found in the columns, try to identify by checking for a column ending with "_id"
         if not common_gene_id_column:
-            for column in distill_df.columns:
-                if column.endswith('_id'):
-                    common_gene_id_column = column
-                    break
+            potential_gene_id_columns = [column for column in distill_df.columns if column.endswith('_id')]
+            if potential_gene_id_columns:
+                common_gene_id_column = potential_gene_id_columns[0]
 
         # If still not found, raise an error
         if not common_gene_id_column:
