@@ -8,7 +8,6 @@ process COMBINE_DISTILL {
 
     output:
     // Define output channel
-    val combinedChannel
 
     script:
     """
