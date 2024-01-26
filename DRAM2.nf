@@ -587,9 +587,10 @@ else{
 }
 
 // Combine channels only if their value is not "empty"
-ch_combined_distill_channels = [ch_distill_topic, ch_distill_ecosys, ch_distill_custom].findAll { it.view().size() > 0 && it.view().first() != "empty" }.inject { a, b -> a.combine(b) }
+ch_combined_distill_channels = [ch_distill_topic, ch_distill_ecosys, ch_distill_custom].findAll { !it.isEmpty() && it.view().first() != "empty" }.inject { a, b -> a.combine(b) }
 
 ch_combined_distill_channels.view()
+
 
 
 
