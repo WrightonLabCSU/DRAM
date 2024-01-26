@@ -594,7 +594,7 @@ ch_combined_distill_channels = [ch_distill_topic, ch_distill_ecosys, ch_distill_
     .findAll { isNotEmptyChannel(it) }
     .inject { a, b -> isNotEmptyChannel(a) && isNotEmptyChannel(b) ? a.combine(b) : a.isEmpty() ? b : a }
 
-ch_combined_distill_channels.view()
+//ch_combined_distill_channels.view()
 
 
 /*
