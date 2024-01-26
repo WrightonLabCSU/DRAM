@@ -503,7 +503,7 @@ if (params.distill_topic != "") {
     //ch_distill_topic.view()
 }
 else{
-    ch_distill_ecosys = default_channel
+    ch_distill_topic = default_channel
 }
 
 
