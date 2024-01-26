@@ -11,12 +11,13 @@ process COMBINE_DISTILL {
 
     script:
     """
+
     echo "ch_distill_topic: ${ch_distill_topic}"
     echo "ch_distill_ecosys: ${ch_distill_ecosys}"
     echo "ch_distill_custom: ${ch_distill_custom}"
 
-    combined="banana"
-    echo $combined
+    combinedChannel="banana"
+    echo $combinedChannel
 
 
 
