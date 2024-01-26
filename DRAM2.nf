@@ -587,19 +587,24 @@ else{
     ch_distill_custom = default_channel
 }
 
-// Function to check if a channel is "empty"
-def isNotEmptyChannel(channel) {
-    def nonEmptyItems = channel.toList().findAll { it != "empty" }
-    return nonEmptyItems.size() > 0
+// Combine channels only if they are not "empty"
+ch_combined_distill_channels = Channel.empty()
+
+if (isNotEmptyChannel(ch_distill_topic)) {
+    ch_combined_distill_channels = ch_combined_distill_channels.isEmpty() ? ch_distill_topic : ch_combined_distill_channels.combine(ch_distill_topic)
 }
 
-// Combine channels only if they are not "empty"
-ch_combined_distill_channels = [ch_distill_topic, ch_distill_ecosys, ch_distill_custom]
-    .findAll { isNotEmptyChannel(it) }
-    .inject { a, b -> isNotEmptyChannel(a) && isNotEmptyChannel(b) ? a.combine(b) : a.isEmpty() ? b : a }
+if (isNotEmptyChannel(ch_distill_ecosys)) {
+    ch_combined_distill_channels = ch_combined_distill_channels.isEmpty() ? ch_distill_ecosys : ch_combined_distill_channels.combine(ch_distill_ecosys)
+}
+
+if (isNotEmptyChannel(ch_distill_custom)) {
+    ch_combined_distill_channels = ch_combined_distill_channels.isEmpty() ? ch_distill_custom : ch_combined_distill_channels.combine(ch_distill_custom)
+}
 
 // Display the combined channels
 ch_combined_distill_channels.view()
+
 
 
 /*
