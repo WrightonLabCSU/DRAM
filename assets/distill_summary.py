@@ -6,39 +6,41 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
     # Read the combined_annotations file
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
 
-    # Initialize an empty DataFrame to store the distill summary
-    distill_summary_df = pd.DataFrame(columns=combined_annotations_df.columns)
-
-    # Read the paths to distill sheets from the text file
+    # Parse the distill_sheets_file and process each distill sheet
     with open(distill_sheets_file, 'r') as file:
-        distill_sheets = [line.strip() for line in file.readlines() if line.strip()]
+        distill_sheets = file.read().strip().split(',')
+    
+    # Initialize an empty DataFrame to store the distill summary
+    distill_summary_df = pd.DataFrame()
+
+    # Process the first distill sheet (for testing purposes)
+    distill_sheet = distill_sheets[0]
+    distill_df = pd.read_csv(distill_sheet, sep='\t')
 
     # Process each distill sheet
     for distill_sheet in distill_sheets:
-        # Split the comma-separated paths into individual paths
-        distill_sheet_paths = distill_sheet.split(',')
+        # Read the distill sheet
+        distill_df = pd.read_csv(distill_sheet, sep='\t')
 
-        for sheet_path in distill_sheet_paths:
-            # Read the distill sheet
-            distill_df = pd.read_csv(sheet_path, sep='\t')
+        # Extract the column name with "_id" (excluding query_id)
+        id_column = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != 'query_id'][0]
 
-            # Process each gene_id
-            for gene_id in distill_df['gene_id']:
-                # Filter rows with the current gene_id
-                gene_rows = distill_df[distill_df['gene_id'] == gene_id]
+        # Merge the distill sheet with the combined_annotations on the appropriate ID column
+        merged_df = pd.merge(combined_annotations_df, distill_df, left_on=id_column, right_on='gene_id', how='inner')
 
-                # Concatenate the rows to the distill summary DataFrame
-                distill_summary_df = pd.concat([distill_summary_df, gene_rows], ignore_index=True)
+        # Append the merged DataFrame to the distill summary DataFrame
+        distill_summary_df = pd.concat([distill_summary_df, merged_df])
 
-    # Save the distill summary to the specified output path
-    distill_summary_df.to_csv(output_path, sep='\t', index=False)
+    # Save the distill summary to the specified output path with only the required columns
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    distill_summary_df[required_columns].to_csv(output_path, sep='\t', index=False)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
     parser.add_argument('--combined_annotations', required=True, help='Path to the combined_annotations.tsv file.')
-    parser.add_argument('--distill_sheets', required=True, help='Path to the text file containing distill sheets.')
+    parser.add_argument('--distill_sheets_file', required=True, help='Path to the distill_sheets file containing paths to TSVs.')
     parser.add_argument('--output', required=True, help='Path to the output genome_summary.tsv file.')
 
     args = parser.parse_args()
 
-    distill_summary(args.combined_annotations, args.distill_sheets, args.output)
+    distill_summary(args.combined_annotations, args.distill_sheets_file, args.output)
