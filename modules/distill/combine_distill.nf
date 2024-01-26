@@ -15,10 +15,10 @@ process COMBINE_DISTILL {
     echo "ch_distill_ecosys: ${ch_distill_ecosys}"
     echo "ch_distill_custom: ${ch_distill_custom}"
 
-    def combinedChannel = "banana"
+    combinedChannel = "banana"
     echo \$combinedChannel
 
-    
+
 
     """
 }
