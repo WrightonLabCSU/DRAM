@@ -15,6 +15,10 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
 
     # Process each distill sheet
     for distill_sheet in distill_sheets:
+        # Skip empty paths
+        if not distill_sheet:
+            continue
+
         # Print the path to the distill sheet for debugging
         print(f"Processing distill sheet: {distill_sheet}")
 
