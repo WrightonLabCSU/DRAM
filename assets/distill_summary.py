@@ -18,11 +18,11 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
         # Read the distill sheet
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
-        # Identify the gene_id column in combined_annotations (excluding query_id)
-        gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != 'query_id']
+        # Identify the common gene_id column between combined_annotations_df and distill_df
+        common_gene_id_column = [col for col in distill_df.columns if col.endswith("_id")]
 
-        # Merge the distill sheet with the combined_annotations using gene_id_columns
-        merged_df = pd.merge(combined_annotations_df, distill_df, left_on=gene_id_columns, right_on=gene_id_columns, how='inner')
+        # Merge the distill sheet with the combined_annotations using the common_gene_id_column
+        merged_df = pd.merge(combined_annotations_df, distill_df, left_on=common_gene_id_column, right_on=common_gene_id_column, how='inner')
 
         # Append the merged DataFrame to the distill summary DataFrame
         distill_summary_df = pd.concat([distill_summary_df, merged_df])
