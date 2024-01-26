@@ -11,6 +11,7 @@ process COMBINE_DISTILL {
 
     script:
     """
+    #!/bin/bash
     echo "ch_distill_topic: ${ch_distill_topic}"
     echo "ch_distill_ecosys: ${ch_distill_ecosys}"
     echo "ch_distill_custom: ${ch_distill_custom}"
