@@ -578,12 +578,10 @@ if (params.distill_custom != "") {
 
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty().ifEmpty { "0" }
-    ch_distill_custom.view()
 
 }
 else{
     ch_distill_custom = default_channel
-    ch_distill_custom.view()
 }
 
 // Combine channels only if their value is not "empty"
