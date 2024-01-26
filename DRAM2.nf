@@ -589,18 +589,20 @@ else{
 
 // Check and add to combined channel if ch_distill_topic is not "empty"
 if (ch_distill_topic != "empty") {
-    ch_combined_distill_channels.combine(ch_distill_topic)
+    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_topic)
     ch_combined_distill_channels.view()
 }
 
 // Check and add to combined channel if ch_distill_ecosys is not "empty"
 if (ch_distill_ecosys != "empty") {
-    ch_combined_distill_channels.combine(ch_distill_ecosys)
+    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_ecosys)
+    ch_combined_distill_channels.view()
 }
 
 // Check and add to combined channel if ch_distill_custom is not "empty"
 if (ch_distill_custom != "empty") {
-    ch_combined_distill_channels.combine(ch_distill_custom)
+    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_custom)
+    ch_combined_distill_channels.view()
 }
 
 // Display the combined channels
