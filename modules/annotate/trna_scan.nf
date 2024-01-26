@@ -17,6 +17,9 @@ process TRNA_SCAN {
     import pandas as pd
     import subprocess
 
+    # Set TMPDIR to ./tmp
+    os.environ['TMPDIR'] = './tmp'
+
     # Function to process tRNAscan output
     def process_trnascan_output(input_file, output_file, sample_name):
         # Read the input file into a DataFrame
