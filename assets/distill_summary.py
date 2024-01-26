@@ -19,7 +19,18 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
         # Identify the common gene_id column between combined_annotations_df and distill_df
-        common_gene_id_column = [col for col in distill_df.columns if col.endswith("_id")]
+        common_gene_id_column = set(combined_annotations_df.columns) & set(distill_df.columns)
+
+        # If gene_id is not found in the columns, try to identify by checking for a column ending with "_id"
+        if not common_gene_id_column:
+            for column in distill_df.columns:
+                if column.endswith('_id'):
+                    common_gene_id_column = column
+                    break
+
+        # If still not found, raise an error
+        if not common_gene_id_column:
+            raise ValueError("No common gene_id column found between distill sheet and combined annotations.")
 
         # Merge the distill sheet with the combined_annotations using the common_gene_id_column
         merged_df = pd.merge(combined_annotations_df, distill_df, left_on=common_gene_id_column, right_on=common_gene_id_column, how='inner')
