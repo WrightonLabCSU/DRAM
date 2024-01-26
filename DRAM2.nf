@@ -587,25 +587,23 @@ else{
     ch_distill_custom = default_channel
 }
 
-// Combine channels only if they are not "empty"
-ch_combined_distill_channels = Channel.empty()
-
-if (isNotEmptyChannel(ch_distill_topic)) {
-    ch_combined_distill_channels = ch_combined_distill_channels.isEmpty() ? ch_distill_topic : ch_combined_distill_channels.combine(ch_distill_topic)
+// Check and add to combined channel if ch_distill_topic is not "empty"
+if (ch_distill_topic != "empty") {
+    ch_combined_distill_channels.combine(ch_distill_topic)
 }
 
-if (isNotEmptyChannel(ch_distill_ecosys)) {
-    ch_combined_distill_channels = ch_combined_distill_channels.isEmpty() ? ch_distill_ecosys : ch_combined_distill_channels.combine(ch_distill_ecosys)
+// Check and add to combined channel if ch_distill_ecosys is not "empty"
+if (ch_distill_ecosys != "empty") {
+    ch_combined_distill_channels.combine(ch_distill_ecosys)
 }
 
-if (isNotEmptyChannel(ch_distill_custom)) {
-    ch_combined_distill_channels = ch_combined_distill_channels.isEmpty() ? ch_distill_custom : ch_combined_distill_channels.combine(ch_distill_custom)
+// Check and add to combined channel if ch_distill_custom is not "empty"
+if (ch_distill_custom != "empty") {
+    ch_combined_distill_channels.combine(ch_distill_custom)
 }
 
 // Display the combined channels
 ch_combined_distill_channels.view()
-
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
