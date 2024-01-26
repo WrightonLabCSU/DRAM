@@ -795,8 +795,8 @@ workflow {
         channelsMap.distill_ecosys.view()
         channelsMap.distill_custom.view()
 
-        // Create a queue channel in the broader scope
-        def myQueueChannel = Channel.create()
+        // Create a queue channel using the `of` factory method
+        def myQueueChannel = Channel.of()
 
         // Combine all channels into a single channel
         ch_combined_distill_channels = Channel.from([channelsMap.distill_topic, channelsMap.distill_ecosys, channelsMap.distill_custom])
