@@ -796,16 +796,17 @@ workflow {
         channelsMap.distill_custom.view()
 
 
-        // Create a queue channel using the `of` factory method
-        def myQueueChannel = of()
+        // Create a queue channel
+        def myQueueChannel = Channel.create()
 
         // Combine all channels into a single channel
-        ch_combined_distill_channels = Channel.of(channelsMap.distill_topic, channelsMap.distill_ecosys, channelsMap.distill_custom)
+        ch_combined_distill_channels = Channel.from([channelsMap.distill_topic, channelsMap.distill_ecosys, channelsMap.distill_custom])
+
+        // Enqueue the information
+        myQueueChannel << ch_combined_distill_channels
 
         // Dequeue the information from the queue channel
-        myQueueChannel.subscribe { ch_combined_distill_channels << it }
-
-        COMBINE_DISTILL(ch_combined_distill_channels)
+        myQueueChannel.subscribe { combinedChannels -> COMBINE_DISTILL(combinedChannels) }
 
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
