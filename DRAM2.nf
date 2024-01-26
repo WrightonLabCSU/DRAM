@@ -795,14 +795,14 @@ workflow {
         channelsMap.distill_ecosys.view()
         channelsMap.distill_custom.view()
 
-            // Create a queue channel
-        queueChannel = Channel.create()
+        // Combine all channels into a single channel
+        ch_combined_distill_channels = Channel.from([ch_distill_topic, ch_distill_ecosys, ch_distill_custom])
 
-        // Enqueue the information
-        queueChannel << [channelsMap.distill_topic, channelsMap.distill_ecosys, channelsMap.distill_custom]
+        // Dequeue the information from the queue channel
+        queueChannel.subscribe { ch_combined_distill_channels << it }
 
 
-        COMBINE_DISTILL(channelsMap.distill_topic, channelsMap.distill_ecosys, channelsMap.distill_custom)
+        COMBINE_DISTILL(ch_combined_distill_channels)
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
         ch_combined_distill.view()
