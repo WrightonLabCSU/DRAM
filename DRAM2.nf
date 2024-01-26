@@ -549,6 +549,9 @@ if (params.distill_ecosystem != "") {
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
 }
+else{
+    ch_distill_ecosys = default_channel
+}
 
 if (params.distill_custom != "") {
     // Split the custom files using quotes and spaces
@@ -571,17 +574,13 @@ if (params.distill_custom != "") {
         }
     }
 
-// Check if customChannels is empty
-    if (customChannels == []) {
-        ch_distill_custom_temp = default_channel
-        println("Banana")
-    } else {
-        ch_distill_custom_temp = Channel.fromList(customChannels)
-    }
+    // Combine all custom channels into a single channel
+    ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty().ifEmpty { "0" }
+    ch_distill_custom.view()
 
-    ch_distill_custom_temp.view()
-
-
+}
+else{
+    ch_distill_custom = default_channel
 }
 
 
