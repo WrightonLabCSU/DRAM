@@ -49,8 +49,11 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
         # Append the merged DataFrame to the distill summary DataFrame
         distill_summary_df = pd.concat([distill_summary_df, merged_df])
 
-    # Save the distill summary to the specified output path
-    distill_summary_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
+    # Deduplicate based on specified columns
+    deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
+
+    # Save the deduplicated distill summary to the specified output path
+    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
