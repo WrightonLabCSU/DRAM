@@ -789,12 +789,6 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosys != "" || params.distill_custom != "" )
     {
-        //ch_distill_topic.view()
-        //ch_distill_ecosys.view()
-        //ch_distill_custom.view()
-    
-        ch_combined_distill_channels.view()
-
         //Add in:
         // 1) REMOVE additional info I kept in from each database - only need the main distill headers
 
