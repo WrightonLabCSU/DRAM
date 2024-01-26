@@ -572,7 +572,7 @@ if (params.distill_custom != "") {
     }
 
 // Check if customChannels is empty
-    if (customChannels.isEmpty()) {
+    if (customChannels == []) {
         ch_distill_custom_temp = default_channel
         println("Banana")
     } else {
