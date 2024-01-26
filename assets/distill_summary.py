@@ -2,13 +2,16 @@ import pandas as pd
 import os
 import argparse
 
-def distill_summary(combined_annotations_path, distill_sheets_file, output_path):
+def distill_summary(combined_annotations_path, distill_sheets_file, target_id_counts_file, output_path):
     # Read the combined_annotations file
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
 
     # Read the distill_sheets file and split paths
     with open(distill_sheets_file, 'r') as file:
         distill_sheets = [path.strip(',') for path in file.read().strip().split(',')]
+
+    # Read the target_id_counts file
+    target_id_counts_df = pd.read_csv(target_id_counts_file, sep='\t')
 
     # Initialize an empty DataFrame to store the distill summary
     distill_summary_df = pd.DataFrame()
@@ -46,6 +49,9 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
             how='inner'
         )
 
+        # Merge with target_id_counts based on 'gene_id' and 'target_id'
+        merged_df = pd.merge(merged_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
+
         # Append the merged DataFrame to the distill summary DataFrame
         distill_summary_df = pd.concat([distill_summary_df, merged_df])
 
@@ -53,14 +59,15 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
 
     # Save the deduplicated distill summary to the specified output path
-    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
+    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'potential_amg', 'bin-1', 'bin-115', 'bin-33', 'bin-42'])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
     parser.add_argument('--combined_annotations', required=True, help='Path to the combined_annotations.tsv file.')
     parser.add_argument('--distill_sheets_file', required=True, help='Path to the distill_sheets file.')
+    parser.add_argument('--target_id_counts', required=True, help='Path to the target_id_counts.tsv file.')
     parser.add_argument('--output', required=True, help='Path to the output genome_summary.tsv file.')
 
     args = parser.parse_args()
 
-    distill_summary(args.combined_annotations, args.distill_sheets_file, args.output)
+    distill_summary(args.combined_annotations, args.distill_sheets_file, args.target_id_counts, args.output)
