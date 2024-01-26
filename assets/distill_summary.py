@@ -30,11 +30,17 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
         # Exclude the "query_id" column from the common_gene_id_columns
         common_gene_id_columns = [col for col in common_gene_id_columns if col != "query_id"]
 
+        # Print the common gene ID columns for debugging
+        print(f"Common gene ID columns: {common_gene_id_columns}")
+
         # If gene_id is not found in the columns, try to identify by checking for a column ending with "_id"
         if not common_gene_id_columns:
             potential_gene_id_columns = [column for column in distill_df.columns if column.endswith('_id') and column != "query_id"]
             if potential_gene_id_columns:
                 common_gene_id_columns = potential_gene_id_columns
+
+        # Print the chosen gene ID columns for debugging
+        print(f"Chosen gene ID columns: {common_gene_id_columns}")
 
         # If still not found, raise an error
         if not common_gene_id_columns:
