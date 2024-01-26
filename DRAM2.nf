@@ -795,7 +795,7 @@ workflow {
         channelsMap.distill_ecosys.view()
         channelsMap.distill_custom.view()
 
-        COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom)
+        COMBINE_DISTILL(channelsMap.distill_topic, channelsMap.distill_ecosys, channelsMap.distill_custom)
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
         ch_combined_distill.view()
