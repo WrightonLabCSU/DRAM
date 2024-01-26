@@ -15,8 +15,14 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
 
     # Process each distill sheet
     for distill_sheet in distill_sheets:
+        # Print the path to the distill sheet for debugging
+        print(f"Processing distill sheet: {distill_sheet}")
+
         # Read the distill sheet
         distill_df = pd.read_csv(distill_sheet, sep='\t')
+
+        # Print the column names of the distill sheet for debugging
+        print(f"Column names of distill sheet: {distill_df.columns}")
 
         # Identify the common gene_id column between combined_annotations_df and distill_df
         common_gene_id_column = set(combined_annotations_df.columns) & set(distill_df.columns)
