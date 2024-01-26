@@ -499,6 +499,8 @@ if (params.distill_topic != "") {
 
     // Combine all channels into a single channel
     ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
+}else{
+    ch_distill_ecosys = default_channel
 }
 
 
@@ -581,6 +583,7 @@ if (params.distill_custom != "") {
 }
 else{
     ch_distill_custom = default_channel
+    ch_distill_custom.view()
 }
 
 
