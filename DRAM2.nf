@@ -797,7 +797,7 @@ workflow {
 
 
         // Create a queue channel using the `of` factory method
-        def myQueueChannel = Channel.of()
+        def myQueueChannel = of()
 
         // Combine all channels into a single channel
         ch_combined_distill_channels = Channel.of(channelsMap.distill_topic, channelsMap.distill_ecosys, channelsMap.distill_custom)
