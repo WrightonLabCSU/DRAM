@@ -1,45 +1,30 @@
 process COMBINE_DISTILL {
 
     input:
-    // Define input channels
-    val ch_distill_topic
-    val ch_distill_ecosys
-    val ch_distill_custom
+    val queueChannel
 
     output:
     path("combined.txt"), emit: ch_combined_distill_out
 
-    shell:
-    '''
-    combinedChannel=""
-
-    # Debug statements within COMBINE_DISTILL shell block
-    echo "Debug: ch_distill_topic = !{ch_distill_topic}"
-    echo "Debug: ch_distill_ecosys = !{ch_distill_ecosys}"
-    echo "Debug: ch_distill_custom = !{ch_distill_custom}"
+    script:
+    """
+    # Dequeue the information from the queue channel
+    info=($queueChannel)
+    ch_distill_topic=${info[0]}
+    ch_distill_ecosys=${info[1]}
+    ch_distill_custom=${info[2]}
     
-    # Check and add to combined channel if ch_distill_ecosys is not "empty"
-    if [[ "!{ch_distill_topic}" != "empty" ]]; then
-        combinedChannel="${combinedChannel}!{ch_distill_topic},"
+    # Your existing script for combining the channels
+    combinedChannel=""
+    if [[ "${ch_distill_topic}" != "empty" ]]; then
+        combinedChannel="${combinedChannel}${ch_distill_topic},"
     fi
-
-    # Check and add to combined channel if ch_distill_topic is not "empty"
-    if [[ "!{ch_distill_ecosys}" != "empty" ]]; then
-        combinedChannel="${combinedChannel}!{ch_distill_ecosys},"
+    if [[ "${ch_distill_ecosys}" != "empty" ]]; then
+        combinedChannel="${combinedChannel}${ch_distill_ecosys},"
     fi
-
-    # Check and add to combined channel if ch_distill_custom is not "empty"
-    if [[ "!{ch_distill_custom}" != "empty" ]]; then
-        combinedChannel="${combinedChannel}!{ch_distill_custom},"
+    if [[ "${ch_distill_custom}" != "empty" ]]; then
+        combinedChannel="${combinedChannel}${ch_distill_custom},"
     fi
-
     echo $combinedChannel > combined.txt
-
-    # Print debug information about the channels after concatenation
-    echo "Debug: combinedChannel = ${combinedChannel}"
-
-
-    # Print the contents of the resulting combined.txt file
-    cat combined.txt
-    '''
+    """
 }
