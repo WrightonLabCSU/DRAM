@@ -11,22 +11,27 @@ process COMBINE_DISTILL {
     val combinedChannel, emit ch_combined_distill
 
     script:
-    // Initialize combined channel
-    def combinedChannel = Channel.empty()
+    """
+    echo "ch_distill_topic: ${ch_distill_topic}"
+    echo "ch_distill_ecosys: ${ch_distill_ecosys}"
+    echo "ch_distill_custom: ${ch_distill_custom}"
 
-    // Check and add to combined channel if ch_distill_topic is not "empty"
-    if (ch_distill_topic != "empty") {
-        combinedChannel = combinedChannel.combine(ch_distill_topic)
-    }
+    combinedChannel=""
 
-    // Check and add to combined channel if ch_distill_ecosys is not "empty"
-    if (ch_distill_ecosys != "empty") {
-        combinedChannel = combinedChannel.combine(ch_distill_ecosys)
-    }
+    # Check and add to combined channel if ch_distill_topic is not "empty"
+    if [[ "${ch_distill_ecosys}" != "empty" ]]; then
+        combinedChannel="${combinedChannel}${ch_distill_ecosys}"
+    fi
 
-    // Check and add to combined channel if ch_distill_custom is not "empty"
-    if (ch_distill_custom != "empty") {
-        combinedChannel = combinedChannel.combine(ch_distill_custom)
-    }
+    # Check and add to combined channel if ch_distill_ecosys is not "empty"
+    if [[ "${ch_distill_topic}" != "empty" ]]; then
+        combinedChannel="${combinedChannel}${ch_distill_topic}"
+    fi
 
+    # Check and add to combined channel if ch_distill_custom is not "empty"
+    if [[ "${ch_distill_custom}" != "empty" ]]; then
+        combinedChannel="${combinedChannel}${ch_distill_custom}"
+    fi
+
+    """
 }
