@@ -590,6 +590,7 @@ else{
 // Check and add to combined channel if ch_distill_topic is not "empty"
 if (ch_distill_topic != "empty") {
     ch_combined_distill_channels.combine(ch_distill_topic)
+    ch_combined_distill_channels.view()
 }
 
 // Check and add to combined channel if ch_distill_ecosys is not "empty"
