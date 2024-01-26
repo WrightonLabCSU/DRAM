@@ -789,6 +789,7 @@ workflow {
         // 1) REMOVE additional info I kept in from each database - only need the main distill headers
 
         COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_topic)
+        ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
         DISTILL_SUMMARY( ch_final_annots,ch_combined_distill_channels, ch_distill_summary_script )
         //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
