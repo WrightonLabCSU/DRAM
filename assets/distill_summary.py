@@ -6,6 +6,18 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
     # Read the combined_annotations file
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
 
+    # Identify potential gene ID columns in combined_annotations_df
+    potential_gene_id_columns = [column for column in combined_annotations_df.columns if column.endswith('_id') and column != "query_id"]
+
+    # If there are potential gene ID columns, choose the first one
+    if potential_gene_id_columns:
+        common_gene_id_columns = [potential_gene_id_columns[0]]
+    else:
+        raise ValueError("No gene ID columns found in combined_annotations.")
+
+    # Print the chosen gene ID columns for debugging
+    print(f"Chosen gene ID columns: {common_gene_id_columns}")
+
     # Read the distill_sheets file and split paths
     with open(distill_sheets_file, 'r') as file:
         distill_sheets = [path.strip(',') for path in file.read().strip().split(',')]
@@ -23,28 +35,6 @@ def distill_summary(combined_annotations_path, distill_sheets_file, output_path)
 
         # Print the column names of the distill sheet for debugging
         print(f"Column names of distill sheet: {distill_df.columns}")
-
-        # Identify the common gene_id column between combined_annotations_df and distill_df
-        common_gene_id_columns = set(combined_annotations_df.columns) & set(distill_df.columns)
-
-        # Exclude the "query_id" column from the common_gene_id_columns
-        common_gene_id_columns = [col for col in common_gene_id_columns if col != "query_id"]
-
-        # Print the common gene ID columns for debugging
-        print(f"Common gene ID columns: {common_gene_id_columns}")
-
-        # If gene_id is not found in the columns, try to identify by checking for a column ending with "_id"
-        if not common_gene_id_columns:
-            potential_gene_id_columns = [column for column in distill_df.columns if column.endswith('_id') and column != "query_id"]
-            if potential_gene_id_columns:
-                common_gene_id_columns = potential_gene_id_columns
-
-        # Print the chosen gene ID columns for debugging
-        print(f"Chosen gene ID columns: {common_gene_id_columns}")
-
-        # If still not found, raise an error
-        if not common_gene_id_columns:
-            raise ValueError("No common gene_id column found between distill sheet and combined annotations.")
 
         # Merge the distill sheet with the combined_annotations using the common_gene_id_columns
         merged_df = pd.merge(combined_annotations_df, distill_df, left_on=common_gene_id_columns, right_on=common_gene_id_columns, how='inner')
