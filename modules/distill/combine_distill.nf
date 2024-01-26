@@ -7,7 +7,7 @@ process COMBINE_DISTILL {
     val ch_distill_custom
 
     output:
-    path("combined.txt"), emit ch_combined_distill_out
+    path("combined.txt"), emit: ch_combined_distill_out
 
     shell:
     '''
