@@ -2,9 +2,9 @@ import pandas as pd
 import os
 import argparse
 
-def distill_summary(combined_annotations_path, distill_sheets, output_path):
+def distill_summary(combined_annotations_path, distill_sheets_list, output_path):
     # Print the contents of distill_sheets
-    print("distill_sheets:", distill_sheets)
+    print("distill_sheets:", distill_sheets_list)
 
     # Read the combined_annotations file
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
@@ -13,7 +13,7 @@ def distill_summary(combined_annotations_path, distill_sheets, output_path):
     distill_summary_df = pd.DataFrame()
 
     # Process each distill sheet
-    for distill_sheet in distill_sheets:
+    for distill_sheet in distill_sheets_list:
         # Read the distill sheet
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
