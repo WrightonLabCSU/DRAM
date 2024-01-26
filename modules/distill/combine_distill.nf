@@ -7,14 +7,10 @@ process COMBINE_DISTILL {
     val ch_distill_custom
 
     output:
-    val($combinedChannel), emit: ch_distill_combined_out
+    val combinedChannel, emit: ch_distill_combined_out
 
     shell:
     '''
-    echo "ch_distill_topic: !{ch_distill_topic}"
-    echo "ch_distill_ecosys: !{ch_distill_ecosys}"
-    echo "ch_distill_custom: !{ch_distill_custom}"
-
     combinedChannel=""
     
     # Check and add to combined channel if ch_distill_topic is not "empty"
