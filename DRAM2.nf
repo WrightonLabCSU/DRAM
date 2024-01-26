@@ -572,15 +572,10 @@ if (params.distill_custom != "") {
     }
 
     // Combine all custom channels into a single channel
-    ch_distill_custom_temp = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty()
-}
+    ch_distill_custom_temp = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.of("0")
+    ch_distill_custom_temp.view()
 
-// Combine channels dynamically
-def channelsToCombine = [
-    ch_distill_topic,
-    ch_distill_ecosys,
-    ch_distill_custom_temp
-].findAll { !it.isEmpty() }
+}
 
 
 
