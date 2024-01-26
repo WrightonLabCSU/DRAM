@@ -15,7 +15,7 @@ process COMBINE_DISTILL {
     echo "ch_distill_ecosys: ${ch_distill_ecosys}"
     echo "ch_distill_custom: ${ch_distill_custom}"
 
-    def combinedChannel="banana"
+    combinedChannel=null
 
     # Check and add to combined channel if ch_distill_topic is not "empty"
     if [[ "${ch_distill_ecosys}" != "empty" ]]; then
