@@ -20,6 +20,9 @@ process TRNA_SCAN {
 
     # Set TMPDIR to ./tmp
     os.environ['TMPDIR'] = './tmp'
+    
+    # Create the temporary directory if it doesn't exist
+    os.makedirs(os.environ['TMPDIR'], exist_ok=True)
 
     # Function to process tRNAscan output
     def process_trnascan_output(input_file, output_file, sample_name):
