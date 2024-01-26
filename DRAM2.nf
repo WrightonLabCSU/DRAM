@@ -122,6 +122,7 @@ include { INDEX as KEGG_INDEX                           } from './modules/index.
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
 
+include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
 include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
 include { DISTILL_FINAL                                 } from './modules/distill/distill_final.nf'
 
@@ -587,28 +588,6 @@ else{
     ch_distill_custom = default_channel
 }
 
-// Check and add to combined channel if ch_distill_topic is not "empty"
-if (ch_distill_topic != default_channel) {
-    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_topic)
-    ch_combined_distill_channels.view()
-}
-
-// Check and add to combined channel if ch_distill_ecosys is not "empty"
-if (ch_distill_ecosys != default_channel) {
-    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_ecosys)
-    ch_combined_distill_channels.view()
-}
-
-// Check and add to combined channel if ch_distill_custom is not "empty"
-if (ch_distill_custom != default_channel) {
-    ch_combined_distill_channels = ch_combined_distill_channels.combine(ch_distill_custom)
-    ch_combined_distill_channels.view()
-}
-
-// Display the combined channels
-ch_combined_distill_channels.view()
-
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Print run info to command line
@@ -809,6 +788,7 @@ workflow {
         //Add in:
         // 1) REMOVE additional info I kept in from each database - only need the main distill headers
 
+        COMBINE_DISTILL( ch_distill_topic, ch_combined_ecosys, ch_combined_topic)
         DISTILL_SUMMARY( ch_final_annots,ch_combined_distill_channels, ch_distill_summary_script )
         //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
