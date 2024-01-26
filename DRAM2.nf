@@ -574,6 +574,7 @@ if (params.distill_custom != "") {
 // Check if customChannels is empty
     if (customChannels.isEmpty()) {
         ch_distill_custom_temp = default_channel
+        println("Banana")
     } else {
         ch_distill_custom_temp = Channel.fromList(customChannels)
     }
