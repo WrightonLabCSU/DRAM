@@ -790,8 +790,11 @@ workflow {
 
         // Print debug information about channels
         println "ch_distill_topic: ${ch_distill_topic}"
+        ch_distill_topic.view()
         println "ch_distill_ecosys: ${ch_distill_ecosys}"
+        ch_distill_ecosys.view()
         println "ch_distill_custom: ${ch_distill_custom}"
+        ch_distill_custom.view()
 
         COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, ch_final_annots)
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
