@@ -589,7 +589,8 @@ else{
 
 // Function to check if a channel is "empty"
 def isNotEmptyChannel(channel) {
-    return channel.toList()*.toString()*.trim().find { it != "empty" } != null
+    def nonEmptyItems = channel.toList().findAll { it != "empty" }
+    return nonEmptyItems.size() > 0
 }
 
 // Combine channels only if they are not "empty"
@@ -597,6 +598,7 @@ ch_combined_distill_channels = [ch_distill_topic, ch_distill_ecosys, ch_distill_
     .findAll { isNotEmptyChannel(it) }
     .inject { a, b -> isNotEmptyChannel(a) && isNotEmptyChannel(b) ? a.combine(b) : a.isEmpty() ? b : a }
 
+// Display the combined channels
 ch_combined_distill_channels.view()
 
 
