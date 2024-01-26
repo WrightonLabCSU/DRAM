@@ -586,6 +586,10 @@ else{
     ch_distill_custom.view()
 }
 
+// Combine channels only if their value is not "empty"
+ch_combined_distill_channels = ch_distill_topic.ifEmpty(default_channel).combine(ch_distill_ecosys.ifEmpty(default_channel)).combine(ch_distill_custom.ifEmpty(default_channel))
+
+ch_combined_distill_channels.view()
 
 
 /*
