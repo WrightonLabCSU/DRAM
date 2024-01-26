@@ -14,14 +14,14 @@ process COMBINE_DISTILL {
     '''
     combinedChannel=""
     
-    # Check and add to combined channel if ch_distill_topic is not "empty"
-    if [[ "!{ch_distill_ecosys}" != "empty" ]]; then
-        combinedChannel="${combinedChannel}!{ch_distill_ecosys},"
-    fi
-
     # Check and add to combined channel if ch_distill_ecosys is not "empty"
     if [[ "!{ch_distill_topic}" != "empty" ]]; then
         combinedChannel="${combinedChannel}!{ch_distill_topic},"
+    fi
+
+    # Check and add to combined channel if ch_distill_topic is not "empty"
+    if [[ "!{ch_distill_ecosys}" != "empty" ]]; then
+        combinedChannel="${combinedChannel}!{ch_distill_ecosys},"
     fi
 
     # Check and add to combined channel if ch_distill_custom is not "empty"

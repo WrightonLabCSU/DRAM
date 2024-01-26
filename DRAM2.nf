@@ -788,11 +788,16 @@ workflow {
         //Add in:
         // 1) REMOVE additional info I kept in from each database - only need the main distill headers
 
+        // Print debug information about channels
+        println "ch_distill_topic: ${ch_distill_topic}"
+        println "ch_distill_ecosys: ${ch_distill_ecosys}"
+        println "ch_distill_custom: ${ch_distill_custom}"
+
         COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, ch_final_annots)
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
         ch_combined_distill.view()
-        
+
         //DISTILL_SUMMARY( ch_final_annots, ch_combined_distill, ch_annotation_counts, ch_distill_summary_script )
         //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
 
