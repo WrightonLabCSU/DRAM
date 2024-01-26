@@ -17,7 +17,7 @@ process DISTILL_SUMMARY {
     log_file="logs/distill.log"
 
     # Read the distill_sheets file to get the list of paths
-    distill_sheets_list=($(cat "${distill_sheets}" | tr ',' '\n'))
+    IFS=',' read -ra distill_sheets_list <<< "$(cat "${distill_sheets}")"
 
     python "${ch_distill_summary_script}" \
         --combined_annotations "${combined_annotations}" \
@@ -25,6 +25,7 @@ process DISTILL_SUMMARY {
         --output "genome_summary.tsv" >> "\$log_file" 2>&1
     """
 }
+
 
 
 
