@@ -20,7 +20,7 @@ process DISTILL_SUMMARY {
     python "${ch_distill_summary_script}" \
         --combined_annotations "${combined_annotations}" \
         --distill_sheets "${distill_sheets_file}" \
-        --counts "${target_id_counts}" \
+        --target_id_counts "${target_id_counts}" \
         --output "genome_summary.tsv" >> "\$log_file" 2>&1
     """
 }
