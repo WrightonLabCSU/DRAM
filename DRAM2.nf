@@ -582,12 +582,6 @@ def channelsToCombine = [
     ch_distill_custom_temp
 ].findAll { !it.isEmpty() }
 
-// Combine all non-empty channels into a single channel
-ch_combined_distill_channels = channelsToCombine.isEmpty() ? Channel.empty() : channelsToCombine.reduce { acc, val -> acc.combine(val) }
-
-// Check if there are any channels to view
-ch_combined_distill_channels.view()
-
 
 
 /*
