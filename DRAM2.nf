@@ -572,7 +572,8 @@ if (params.distill_custom != "") {
     }
 
     // Combine all custom channels into a single channel
-    ch_distill_custom_temp = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.from(default_channel).ifEmpty(default_channel)
+    ch_distill_custom_temp = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.from(default_channel)
+
     ch_distill_custom_temp.view()
 
 
