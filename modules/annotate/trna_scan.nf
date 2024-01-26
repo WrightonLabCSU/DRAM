@@ -16,6 +16,7 @@ process TRNA_SCAN {
 
     import pandas as pd
     import subprocess
+    import os
 
     # Set TMPDIR to ./tmp
     os.environ['TMPDIR'] = './tmp'
