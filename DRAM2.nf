@@ -499,7 +499,7 @@ if (params.distill_topic != "") {
 
     // Combine all channels into a single channel
     ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
-    ch_distill_topic.view()
+    //ch_distill_topic.view()
 }
 else{
     ch_distill_ecosys = default_channel
@@ -552,7 +552,7 @@ if (params.distill_ecosystem != "") {
 
     // Combine all channels into a single channel
     ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
-    ch_distill_ecosys.view()
+    //ch_distill_ecosys.view()
 }
 else{
     ch_distill_ecosys = default_channel
@@ -581,7 +581,7 @@ if (params.distill_custom != "") {
 
     // Combine all custom channels into a single channel
     ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty().ifEmpty { "0" }
-    ch_distill_custom.view()
+    //ch_distill_custom.view()
 }
 else{
     ch_distill_custom = default_channel
@@ -597,7 +597,7 @@ ch_combined_distill_channels = [ch_distill_topic, ch_distill_ecosys, ch_distill_
     .findAll { isNotEmptyChannel(it) }
     .inject { a, b -> isNotEmptyChannel(a) && isNotEmptyChannel(b) ? a.combine(b) : a.isEmpty() ? b : a }
 
-//ch_combined_distill_channels.view()
+ch_combined_distill_channels.view()
 
 
 /*
