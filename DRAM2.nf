@@ -401,7 +401,7 @@ if( params.merge ){
     Create channel for optional topic or ecosystem distill sheets and custom sheets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
+//if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
 
     // Initialize channel variables
     def ch_distill_topic = Channel.empty()
@@ -589,7 +589,7 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     else{
         ch_distill_custom = default_channel
     }
-}
+//}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
