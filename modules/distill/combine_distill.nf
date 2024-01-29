@@ -13,6 +13,7 @@ process COMBINE_DISTILL {
     #!/usr/bin/env python
 
     import os
+    import shlex
 
     combinedChannel = []
 
@@ -108,7 +109,7 @@ process COMBINE_DISTILL {
 
         for customFile in customFiles:
             # Ensure customFile is declared outside of the loop
-            fileObject = f"${customFile}"
+            fileObject = f"{customFile}"
             if os.path.exists(fileObject):
                 combinedChannel.append(fileObject)
             else:
