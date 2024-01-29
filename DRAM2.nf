@@ -411,6 +411,7 @@ default_channel = Channel.value("empty")
 
 if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
     params.distill_flag = 1
+    println"${params.distill_flag}"
     if (params.distill_topic != "") {
         distill_default = 0
         distill_carbon = 0
