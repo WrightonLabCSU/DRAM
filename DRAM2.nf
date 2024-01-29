@@ -797,7 +797,7 @@ workflow {
         ch_distill_ecosys.view()
         ch_distill_custom.view()
 
-        ch_distill_flag = Channe.from(params.distill_flag)
+        ch_distill_flag = Channel.from(params.distill_flag)
 
         COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, ch_distill_flag )
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
