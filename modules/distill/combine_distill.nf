@@ -53,7 +53,7 @@ process COMBINE_DISTILL {
             if os.path.exists(carbonFile):
                 combinedChannel.append(carbonFile)
             else:
-                print("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+                print(f"Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
                 exit(1)
 
         if distill_energy == 1:
@@ -61,7 +61,7 @@ process COMBINE_DISTILL {
             if os.path.exists(energyFile):
                 combinedChannel.append(energyFile)
             else:
-                print("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+                print(f"Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
                 exit(1)
 
         # Add similar conditions for distill_misc, distill_nitrogen, distill_transport...
@@ -87,7 +87,7 @@ process COMBINE_DISTILL {
             if os.path.exists(engSysFile):
                 combinedChannel.append(engSysFile)
             else:
-                print("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+                print(f"Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
                 exit(1)
 
         if distill_ag == 1:
@@ -95,7 +95,7 @@ process COMBINE_DISTILL {
             if os.path.exists(agFile):
                 combinedChannel.append(agFile)
             else:
-                print("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+                print(f"Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
                 exit(1)
 
     if "!{params.distill_custom}" != "":
