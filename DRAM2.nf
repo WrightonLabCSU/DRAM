@@ -410,6 +410,7 @@ def ch_combined_distill_channels = Channel.empty()
 default_channel = Channel.value("empty")
 
 if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
+    params.distill_flag = 1
     if (params.distill_topic != "") {
         distill_default = 0
         distill_carbon = 0
@@ -589,8 +590,7 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     else{
         ch_distill_custom = default_channel
     }
-    
-    params.distill_flag = 1
+
 }
 
 
