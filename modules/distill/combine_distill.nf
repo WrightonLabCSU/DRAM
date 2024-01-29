@@ -64,9 +64,9 @@ process COMBINE_DISTILL {
             print("Carbon File:", carbonFile)
             print(f"Checking if {carbonFile} exists...")
             print(f"Exists: {os.path.exists(carbonFile)}")
-            print(f"Is a file: {os.path.isfile(carbonFile)}")
-            print(f"Is a directory: {os.path.isdir(carbonFile)}")
-            if os.path.exists(carbonFile):
+            print(f"Is a file: {os.path.exists(os.path.abspath(carbonFile))}")
+            print(f"Is a directory: {os.path.exists(os.path.abspath(carbonFile))}")
+            if os.path.exists(os.path.abspath(carbonFile)):
                 combinedChannel.append(carbonFile)
             else:
                 print(f"Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
