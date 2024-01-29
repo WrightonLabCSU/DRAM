@@ -403,7 +403,6 @@ if( params.merge ){
 */
 
     // Initialize channel variables
-    distill_flag = 0
     def ch_distill_topic = Channel.empty()
     def ch_distill_ecosys = Channel.empty()
     def ch_distill_custom = Channel.empty()
@@ -590,7 +589,7 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     else{
         ch_distill_custom = default_channel
     }
-    distill_flag = 1
+    params.distill_flag = 1
 }
 
 
@@ -797,7 +796,7 @@ workflow {
         ch_distill_ecosys.view()
         ch_distill_custom.view()
 
-        COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom)
+        COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom )
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
         ch_combined_distill.view()
