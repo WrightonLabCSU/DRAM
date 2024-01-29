@@ -589,7 +589,7 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     else{
         ch_distill_custom = default_channel
     }
-    params.distill_flag = 1
+params.distill_flag = 1
 }
 
 
