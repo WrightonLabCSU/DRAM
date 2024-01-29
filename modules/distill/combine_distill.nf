@@ -102,16 +102,17 @@ process COMBINE_DISTILL {
                 print(f"Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
                 exit(1)
 
-    if "${params.distill_custom}" != "":
-        customFiles = "${params.distill_custom}".replace('"', '').split()
+        if "${params.distill_custom}" != "":
+            # Use shlex to properly split paths considering quotes
+            customFiles = shlex.split("${params.distill_custom}")
 
-        for customFile in customFiles:
-            fileObject = f"${customFile}"
-            if os.path.exists(fileObject):
-                combinedChannel.append(fileObject)
-            else:
-                print(f"Error: If using --distill_custom {customFile}, you must provide the file. The path {customFile} is not valid.")
-                exit(1)
+            for customFile in customFiles:
+                fileObject = f"${customFile}"
+                if os.path.exists(fileObject):
+                    combinedChannel.append(fileObject)
+                else:
+                    print(f"Error: If using --distill_custom {customFile}, you must provide the file. The path {customFile} is not valid.")
+                    exit(1)
 
     # Combine all channels into a single string
     combinedChannelStr = ','.join(combinedChannel)
