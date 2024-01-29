@@ -68,8 +68,27 @@ process COMBINE_DISTILL {
             else:
                 print(f"Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
                 exit(1)
-
-        # Add similar conditions for distill_misc, distill_nitrogen, distill_transport...
+        if distill_misc == 1:
+            miscFile = "${params.distill_misc_sheet}"
+            if os.path.exists(miscFile):
+                combinedChannel.append(miscFile)
+            else:
+                print(f"Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+                exit(1)
+        if distill_nitrogen == 1:
+            nitrogenFile = "${params.distill_nitrogen_sheet}"
+            if os.path.exists(nitrogenFile):
+                combinedChannel.append(nitrogenFile)
+            else:
+                print(f"Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+                exit(1)
+        if distill_transport == 1:
+            transportFile = "${params.distill_transport_sheet}"
+            if os.path.exists(transportFile):
+                combinedChannel.append(transportFile)
+            else:
+                print(f"Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+                exit(1)
 
     if "${params.distill_ecosystem}" != "":
         distill_eng_sys = 0
