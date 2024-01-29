@@ -31,10 +31,14 @@ process COMBINE_DISTILL {
         validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport']
         topics = "${params.distill_topic}".split()
 
+        print("Topics:", topics)
+
         for topic in topics:
             if topic not in validTopics:
                 print(f"Invalid distill topic: {topic}. Valid values are {', '.join(validTopics)}")
                 exit(1)
+
+            print("Processing topic:", topic)
 
             if topic == 'default':
                 distill_carbon = 1
@@ -53,8 +57,11 @@ process COMBINE_DISTILL {
             elif topic == 'transport':
                 distill_transport = 1
 
+        print("Distill Flags - Carbon:", distill_carbon, "Energy:", distill_energy, "Misc:", distill_misc, "Nitrogen:", distill_nitrogen, "Transport:", distill_transport)
+
         if distill_carbon == 1:
             carbonFile = "${params.distill_carbon_sheet}"
+            print("Carbon File:", carbonFile)
             if os.path.exists(carbonFile):
                 combinedChannel.append(carbonFile)
             else:
