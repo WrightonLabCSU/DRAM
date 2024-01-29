@@ -6,7 +6,7 @@ process COMBINE_DISTILL {
     // No inputs for now
 
     output:
-    path("combined.txt") into ch_combined_distill_out, optional: true
+    path("combined.txt"), emit: ch_combined_distill_out, optional: true
 
     script:
     """
