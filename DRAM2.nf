@@ -402,12 +402,12 @@ if( params.merge ){
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-    // Initialize channel variables
-    def ch_distill_topic = Channel.empty()
-    def ch_distill_ecosys = Channel.empty()
-    def ch_distill_custom = Channel.empty()
-    def ch_combined_distill_channels = Channel.empty()
-    default_channel = Channel.value("empty")
+// Initialize channel variables
+def ch_distill_topic = Channel.empty()
+def ch_distill_ecosys = Channel.empty()
+def ch_distill_custom = Channel.empty()
+def ch_combined_distill_channels = Channel.empty()
+default_channel = Channel.value("empty")
 
 if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
     if (params.distill_topic != "") {
@@ -589,7 +589,8 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     else{
         ch_distill_custom = default_channel
     }
-params.distill_flag = 1
+    
+    params.distill_flag = 1
 }
 
 
