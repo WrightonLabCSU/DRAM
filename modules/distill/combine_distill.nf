@@ -5,10 +5,13 @@ process COMBINE_DISTILL {
     val ch_distill_topic
     val ch_distill_ecosys
     val ch_distill_custom
-
+    va distill_flag
 
     output:
     path("combined.txt"), emit: ch_combined_distill_out
+
+    when:
+    distill_flag = 1
 
     shell:
     '''
