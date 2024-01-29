@@ -16,10 +16,10 @@ process COMBINE_DISTILL {
 
     combinedChannel = []
 
-    print("Distill Topic:", "!{params.distill_topic}")
-    print("Distill Ecosystem:", "!{params.distill_ecosystem}")
-    print("Distill Custom:", "!{params.distill_custom}")
-    
+    print("Distill Topic:", "${params.distill_topic}")
+    print("Distill Ecosystem:", "${params.distill_ecosystem}")
+    print("Distill Custom:", "${params.distill_custom}")
+
     if "!{params.distill_topic}" != "":
         distill_carbon = 0
         distill_energy = 0
