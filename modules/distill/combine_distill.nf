@@ -10,7 +10,7 @@ process COMBINE_DISTILL {
     path("combined.txt"), emit: ch_combined_distill_out
 
     when:
-    params.distill_flag = 1
+    params.distill_flag == 1
 
     shell:
     '''
