@@ -632,12 +632,14 @@ workflow {
     /* Rename fasta headers
         Process 1-by-1 
     */
-    if( params.rename ) {
-        RENAME_FASTA( fastas )
-        fasta = RENAME_FASTA.out.renamed_fasta
-    }
-    else {
-        fasta = fastas
+    if( params.annotate || params.call ){
+        if( params.rename ) {
+            RENAME_FASTA( fastas )
+            fasta = RENAME_FASTA.out.renamed_fasta
+        }
+        else {
+            fasta = fastas
+        }
     }
 
     /* Call genes using prodigal */
