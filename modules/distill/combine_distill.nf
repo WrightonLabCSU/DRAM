@@ -17,6 +17,9 @@ process COMBINE_DISTILL {
 
     combinedChannel = []
 
+    print(f"Current Working Directory: {os.getcwd()}")
+    print(f"Environment Variables: {os.environ}")
+
     print("Distill Topic:", "${params.distill_topic}")
     print("Distill Ecosystem:", "${params.distill_ecosystem}")
     print("Distill Custom:", "${params.distill_custom}")
