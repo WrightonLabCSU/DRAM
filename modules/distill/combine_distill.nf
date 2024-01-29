@@ -22,13 +22,13 @@ process COMBINE_DISTILL {
         validTopics=('default' 'carbon' 'energy' 'misc' 'nitrogen' 'transport')
         topics=(!{params.distill_topic.split()})
 
-        for topic in "\${topics[@]}"; do
-            if [[ ! "\${validTopics[@]}" =~ \$topic ]]; then
-                echo "Invalid distill topic: \$topic. Valid values are \${validTopics[@]}"
+        for topic in "${topics[@]}"; do
+            if [[ ! " ${validTopics[@]} " =~ " $topic " ]]; then
+                echo "Invalid distill topic: $topic. Valid values are ${validTopics[@]}"
                 exit 1
             fi
 
-            case "\$topic" in
+            case "$topic" in
                 "default")
                     distill_carbon=1
                     distill_energy=1
@@ -54,20 +54,20 @@ process COMBINE_DISTILL {
             esac
         done
 
-        if [ "\$distill_carbon" -eq 1 ]; then
+        if [ "$distill_carbon" -eq 1 ]; then
             carbonFile="!{params.distill_carbon_sheet}"
-            if [ -e "\$carbonFile" ]; then
-                combinedChannel+="\$carbonFile,"
+            if [ -e "$carbonFile" ]; then
+                combinedChannel+="$carbonFile,"
             else
                 echo "Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets."
                 exit 1
             fi
         fi
 
-        if [ "\$distill_energy" -eq 1 ]; then
+        if [ "$distill_energy" -eq 1 ]; then
             energyFile="!{params.distill_energy_sheet}"
-            if [ -e "\$energyFile" ]; then
-                combinedChannel+="\$energyFile,"
+            if [ -e "$energyFile" ]; then
+                combinedChannel+="$energyFile,"
             else
                 echo "Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets."
                 exit 1
@@ -75,7 +75,6 @@ process COMBINE_DISTILL {
         fi
 
         # Add similar conditions for distill_misc, distill_nitrogen, distill_transport...
-
     fi
 
     if [ "!{params.distill_ecosystem}" != "" ]; then
@@ -84,13 +83,13 @@ process COMBINE_DISTILL {
 
         ecosystemList=(!{params.distill_ecosystem.split()})
 
-        for ecosysItem in "\${ecosystemList[@]}"; do
-            if [[ ! ("eng_sys" "ag") =~ \$ecosysItem ]]; then
-                echo "Invalid distill ecosystem: \$ecosysItem. Valid values are eng_sys, ag"
+        for ecosysItem in "${ecosystemList[@]}"; do
+            if [[ ! " eng_sys ag " =~ " $ecosysItem " ]]; then
+                echo "Invalid distill ecosystem: $ecosysItem. Valid values are eng_sys, ag"
                 exit 1
             fi
 
-            case "\$ecosysItem" in
+            case "$ecosysItem" in
                 "ag")
                     distill_ag=1
                     ;;
@@ -100,45 +99,45 @@ process COMBINE_DISTILL {
             esac
         done
 
-        if [ "\$distill_eng_sys" -eq 1 ]; then
+        if [ "$distill_eng_sys" -eq 1 ]; then
             engSysFile="!{params.distill_eng_sys_sheet}"
-            if [ -e "\$engSysFile" ]; then
-                combinedChannel+="\$engSysFile,"
+            if [ -e "$engSysFile" ]; then
+                combinedChannel+="$engSysFile,"
             else
                 echo "Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets."
                 exit 1
             fi
         fi
 
-        if [ "\$distill_ag" -eq 1 ]; then
+        if [ "$distill_ag" -eq 1 ]; then
             agFile="!{params.distill_ag_sheet}"
-            if [ -e "\$agFile" ]; then
-                combinedChannel+="\$agFile,"
+            if [ -e "$agFile" ]; then
+                combinedChannel+="$agFile,"
             else
                 echo "Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets."
                 exit 1
             fi
         fi
-
     fi
 
     if [ "!{params.distill_custom}" != "" ]; then
         customFiles=(!{params.distill_custom.replaceAll(/"/, '').split()})
 
-        for customFile in "\${customFiles[@]}"; do
+        for customFile in "${customFiles[@]}"; do
             fileObject="!{customFile}"
-            if [ -e "\$fileObject" ]; then
-                combinedChannel+="\$fileObject,"
+            if [ -e "$fileObject" ]; then
+                combinedChannel+="$fileObject,"
             else
-                echo "Error: If using --distill_custom \$customFile, you must provide the file. The path \$customFile is not valid."
+                echo "Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid."
                 exit 1
             fi
         done
     fi
 
     # Remove the trailing comma
-    combinedChannel=\${combinedChannel%,}
+    combinedChannel=${combinedChannel%,}
 
-    echo \${combinedChannel} > combined.txt
+    echo ${combinedChannel} > combined.txt
+
     """
 }
