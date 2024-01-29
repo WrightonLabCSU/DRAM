@@ -589,7 +589,7 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     else{
         ch_distill_custom = default_channel
     }
-
+    
     params.distill_flag = 1
 }
 
@@ -797,11 +797,9 @@ workflow {
         ch_distill_ecosys.view()
         ch_distill_custom.view()
 
-        ch_distill_flag = Channel.from(params.distill_flag)
+        println"${params.distill_flag}"
 
-        ch_distill_flag.view()
-
-        COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, ch_distill_flag )
+        COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom )
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
         ch_combined_distill.view()
