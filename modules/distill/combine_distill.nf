@@ -62,6 +62,10 @@ process COMBINE_DISTILL {
         if distill_carbon == 1:
             carbonFile = "${params.distill_carbon_sheet}"
             print("Carbon File:", carbonFile)
+            print(f"Checking if {carbonFile} exists...")
+            print(f"Exists: {os.path.exists(carbonFile)}")
+            print(f"Is a file: {os.path.isfile(carbonFile)}")
+            print(f"Is a directory: {os.path.isdir(carbonFile)}")
             if os.path.exists(carbonFile):
                 combinedChannel.append(carbonFile)
             else:
