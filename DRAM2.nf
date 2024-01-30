@@ -406,6 +406,7 @@ if( params.merge ){
 def ch_distill_custom = Channel.empty()
 def ch_combined_distill_channels = Channel.empty()
 default_channel = Channel.value("empty")
+def customChannels = []
 
 /* Create the default distill topic and ecosystem channels */
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
@@ -531,8 +532,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         ch_distill_ecosys = default_channel
     }
     
-    def customChannels = []
-
     if (params.distill_custom != "") {
         // Split the custom files using quotes and spaces
         def customFiles = params.distill_custom.replaceAll(/"/, '').split()
@@ -755,7 +754,7 @@ workflow {
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
 
-        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, distillChannels )
+        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, customChannels )
 
         //ch_combine_test.view()
         //ch_distill_topic.view()
