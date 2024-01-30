@@ -10,7 +10,7 @@ process COMBINE_DISTILL {
     path( ch_distill_transport )
     path( ch_distill_ag )
     path( ch_distill_eng_sys)
-    path customChannels
+    val customChannels
 
 
     //val ch_distill_topic
