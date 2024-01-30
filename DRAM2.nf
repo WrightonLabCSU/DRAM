@@ -464,6 +464,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_carbon == 1) {
             if (file(params.distill_carbon_sheet).exists()) {
                 topicChannels << Channel.fromPath(params.distill_carbon_sheet)
+                topicChannels.view()
             } else {
                 error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -472,6 +473,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_energy == 1) {
             if (file(params.distill_energy_sheet).exists()) {
                 topicChannels << Channel.fromPath(params.distill_energy_sheet)
+                topicChannels.view()
             } else {
                 error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -480,6 +482,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_misc == 1) {
             if (file(params.distill_misc_sheet).exists()) {
                 topicChannels << Channel.fromPath(params.distill_misc_sheet)
+                topicChannels.view()
             } else {
                 error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -488,6 +491,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_nitrogen == 1) {
             if (file(params.distill_nitrogen_sheet).exists()) {
                 topicChannels << Channel.fromPath(params.distill_nitrogen_sheet)
+                topicChannels.view()
             } else {
                 error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -496,6 +500,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_transport == 1) {
             if (file(params.distill_transport_sheet).exists()) {
                 topicChannels << Channel.fromPath(params.distill_transport_sheet)
+                topicChannels.view()
             } else {
                 error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -801,7 +806,7 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
-        ch_distill_topic.view()
+        //ch_distill_topic.view()
         //ch_distill_ecosys.view()
         //ch_distill_custom.view()
 
