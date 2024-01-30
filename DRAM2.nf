@@ -514,7 +514,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         distill_topic_flag = "1"
     }
 
-
+    /*
     if (params.distill_ecosystem != "") {
         distill_eng_sys = 0
         distill_ag = 0
@@ -602,6 +602,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         distill_flag_real = "1"
         println"${params.distill_flag}"
     }
+    */
 
 }
 
