@@ -17,9 +17,9 @@ process COMBINE_DISTILL {
     //distill_flag_real == "1"
 
     script:
-
+    """
     echo ${ch_combine_test}
-
+    """
 }
 
 /*
