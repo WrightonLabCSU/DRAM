@@ -13,8 +13,8 @@ process COMBINE_DISTILL {
     output:
     //path("combined.txt"), emit: ch_combined_distill_out
 
-    when:
-    distill_flag_real == "1"
+    //when:
+    //distill_flag_real == "1"
 
     shell:
     '''
