@@ -26,7 +26,7 @@ process COMBINE_DISTILL {
 
     script:
     """
-    echo ${customChannels}
+
 
     """
 }
