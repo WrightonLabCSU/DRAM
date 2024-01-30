@@ -543,20 +543,21 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             // Check if the custom file exists
             def fileObject = file(customFile)
             if (fileObject.exists()) {
-                // Add the file path to the list of channels
-                customChannels << file(customFile)
+                // Add the channel for the file to the list of channels
+                customChannels << Channel.fromPath(customFile)
             } else {
                 // Throw an error if the file doesn't exist
                 println("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
             }
         }
 
-        // Combine all custom paths into a single channel
-        ch_distill_custom = customChannels.size() > 0 ? Channel.fromFilePairs(customChannels.collect { [it, it.getName()] }) : Channel.empty().ifEmpty { "0" }
+        // Combine all custom channels into a single channel
+        ch_distill_custom = customChannels.size() > 0 ? Channel.fromPath(customChannels.join(',')) : Channel.empty().ifEmpty { "0" }
     }
     else {
         ch_distill_custom = default_channel
     }
+
 }
 
 
