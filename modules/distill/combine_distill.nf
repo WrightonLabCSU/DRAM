@@ -23,7 +23,7 @@ process COMBINE_DISTILL {
 
     script:
     """
-    echo ${ch_combine_carbon}
+    echo ${ch_distill_carbon}
     """
 }
 
