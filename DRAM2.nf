@@ -464,6 +464,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_carbon == 1) {
             if (file(params.distill_carbon_sheet).exists()) {
                 ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_carbon_sheet))
+                ch_distill_topic.view()
             } else {
                 error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
