@@ -531,31 +531,25 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         ch_distill_ecosys = default_channel
     }
     
-    def customTuples = []
+    def customChannels = []
 
     if (params.distill_custom != "") {
         // Split the custom files using quotes and spaces
         def customFiles = params.distill_custom.replaceAll(/"/, '').split()
 
-        // Iterate through custom files and create tuples or throw errors
+        // Iterate through custom files and create channels
         customFiles.each { customFile ->
             // Check if the custom file exists
-            def fileObject = file(customFile)
-            if (fileObject.exists()) {
-                // Create a tuple with the path
-                def tuple = [Channel.fromPath(customFile)]
-                
-                // Add the tuple to the list
-                customTuples << tuple
+            if (file(customFile).exists()) {
+                // Create a channel directly from the path
+                def channel = Channel.fromPath(customFile)
+                customChannels << channel
             } else {
                 // Throw an error if the file doesn't exist
-                println("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
+                error("Error: Custom file not found: $customFile")
             }
         }
     }
-
-    // Create a channel with the accumulated tuples of paths
-    ch_distill_custom_tuples = customTuples.size() > 0 ? Channel.fromList(customTuples) : Channel.empty()
 
 
 }
@@ -760,8 +754,8 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
-        ch_distill_custom_tuples.view()
-        //COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom_tuples )
+
+        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, distillChannels )
 
         //ch_combine_test.view()
         //ch_distill_topic.view()
