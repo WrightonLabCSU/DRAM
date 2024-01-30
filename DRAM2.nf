@@ -403,19 +403,12 @@ if( params.merge ){
 */
 
 // Initialize channel variables
-def ch_distill_topic = Channel.empty()
-def ch_distill_ecosys = Channel.empty()
 def ch_distill_custom = Channel.empty()
 def ch_combined_distill_channels = Channel.empty()
 default_channel = Channel.value("empty")
-distill_topic_flag = "0"
-distill_ecosystem_flag = "0"
-distill_custom_flag = "0"
-distill_flag_real = "0"
 
-
-if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {
-
+/* Create the default distill topic and ecosystem channels */
+if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
         distill_default = 0
         distill_carbon = 0
@@ -462,54 +455,41 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         }
 
         if (distill_carbon == 1) {
-            if (file(params.distill_carbon_sheet).exists()) {
-                ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_carbon_sheet))
-                println("Added distill_carbon_sheet to ch_distill_topic")
-            } else {
-                error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+            ch_distill_carbon = file(params.distill_carbon_sheet).exists() ? file(params.distill_carbon_sheet) : error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+
+        } else{
+            ch_distill_carbon = default_channel
         }
         if (distill_energy == 1) {
-            if (file(params.distill_energy_sheet).exists()) {
-                ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_energy_sheet))
-            } else {
-                error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+            ch_distill_energy = file(params.distill_energy_sheet).exists() ? file(params.distill_energy_sheet) : error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+
+        } else{
+            ch_distill_energy = default_channel
         }
 
         if (distill_misc == 1) {
-            if (file(params.distill_misc_sheet).exists()) {
-                ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_misc_sheet))
-            } else {
-                error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+            ch_distill_misc = file(params.distill_misc_sheet).exists() ? file(params.distill_misc_sheet) : error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+
+        } else{
+            ch_distill_misc = default_channel
         }
 
         if (distill_nitrogen == 1) {
-            if (file(params.distill_nitrogen_sheet).exists()) {
-                ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_nitrogen_sheet))
-            } else {
-                error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+            ch_distill_nitrogen = file(params.distill_nitrogen_sheet).exists() ? file(params.distill_nitrogen_sheet) : error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+
+        } else{
+            ch_distill_nitrogen = default_channel
         }
 
         if (distill_transport == 1) {
-            if (file(params.distill_transport_sheet).exists()) {
-                ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_transport_sheet))
-            } else {
-                error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
-        }
+            ch_distill_transport = file(params.distill_transport_sheet).exists() ? file(params.distill_transport_sheet) : error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
-        // Combine all channels into a single channel
-        //ch_distill_topic = topicChannels.size() > 0 ? Channel.fromPath(topicChannels.join(',')) : Channel.empty()
-        distill_topic_flag = "1"
-        //ch_distill_topic.view()
+        } else{
+            ch_distill_transport = default_channel
+        }
     } else {
         ch_distill_topic = default_channel
-        distill_topic_flag = "1"
     }
-
     /*
     if (params.distill_ecosystem != "") {
         distill_eng_sys = 0
@@ -528,42 +508,32 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             switch (ecosysItem) {
                 case "ag":
                     distill_ag = 1
-                    //println("distill_ag: $distill_ag")
                     break
                 case "eng_sys":
                     distill_eng_sys = 1
-                    //println("distill_eng_sys: $distill_eng_sys")
                     break
             }
         }
 
         if (distill_eng_sys == 1) {
-            def engSysFile = file(params.distill_eng_sys_sheet)
-            if (engSysFile.exists()) {
-                ecoSysChannels << engSysFile
-            } else {
-                error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
+            ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+
+        } else{
+            ch_distill_eng_sys = default_channel
         }
 
         if (distill_ag == 1) {
-            def agFile = file(params.distill_ag_sheet)
-            if (agFile.exists()) {
-                ecoSysChannels << agFile
-            } else {
-                error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
-            }
-        }
+            ch_distill_ag = file(params.distill_ag_sheet).exists() ? file(params.distill_ag_sheet) : error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
-        // Combine all channels into a single channel
-        ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
-        distill_ecosystem_flag = 1
+        } else{
+            ch_distill_ag = default_channel
+        }
     }
     else{
         ch_distill_ecosys = default_channel
-        distill_ecosystem_flag = 1
     }
-
+    */
+    /*
     if (params.distill_custom != "") {
         // Split the custom files using quotes and spaces
         def customFiles = params.distill_custom.replaceAll(/"/, '').split()
@@ -573,12 +543,11 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
         // Iterate through custom files and create channels or throw errors
         customFiles.each { customFile ->
-        
             // Check if the custom file exists
             def fileObject = file(customFile)
             if (fileObject.exists()) {
-                // Add the file to the list of channels
-                customChannels << fileObject
+                // Add the channel for the file to the list of channels
+                customChannels << Channel.fromPath(customFile)
             } else {
                 // Throw an error if the file doesn't exist
                 println("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
@@ -586,17 +555,10 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         }
 
         // Combine all custom channels into a single channel
-        ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty().ifEmpty { "0" }
-        distill_custom_flag = "1"
+        ch_distill_custom = customChannels.size() > 0 ? customChannels[0] : Channel.empty().ifEmpty { "0" }
     }
     else{
         ch_distill_custom = default_channel
-        distill_custom_flag = "1"
-    }
-    if( distill_topic_flag == "1" || distill_ecosystem_flag == "1" ||distill_custom_flag == "1" ){
-        println"HERE2"
-        distill_flag_real = "1"
-        println"${params.distill_flag}"
     }
     */
 
