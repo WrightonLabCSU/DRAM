@@ -814,8 +814,6 @@ workflow {
             ch_combine_test = ch_distill_topic.concat( ch_distill_ecosys, ch_distill_custom ) 
             ch_combine_test.view()
 
-            println"ch_combine_test first"
-            ch_combine_test.first().view()
             COMBINE_DISTILL(ch_combine_test)
         
         }
