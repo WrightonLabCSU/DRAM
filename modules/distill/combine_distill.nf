@@ -18,7 +18,7 @@ process COMBINE_DISTILL {
 
     shell:
     '''
-    echo "\${ch_combine_test}""
+    echo "\${ch_combine_test}"
     '''
 }
 
