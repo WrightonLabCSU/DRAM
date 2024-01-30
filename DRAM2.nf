@@ -597,6 +597,7 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         distill_custom_flag = 1
     }
     if( distill_topic_flag == 1 || distill_ecosystem_flag == 1 ||distill_custom_flag == 1 ){
+        println"HERE2"
         params.distill_flag = 1
         println"${params.distill_flag}"
     }
