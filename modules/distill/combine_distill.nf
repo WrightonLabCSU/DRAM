@@ -26,7 +26,7 @@ process COMBINE_DISTILL {
 
     script:
     """
-    echo ${ch_distill_custom_tuples}
+    echo ${customChannels}
 
     """
 }
