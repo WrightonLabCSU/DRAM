@@ -413,6 +413,7 @@ distill_ecosystem_flag = 0
 distill_custom_flag = 0
 
 if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
+    println"HERE"
     if (params.distill_topic != "") {
         distill_default = 0
         distill_carbon = 0
