@@ -16,10 +16,10 @@ process COMBINE_DISTILL {
     //when:
     //distill_flag_real == "1"
 
-    shell:
-    '''
-    echo \${ch_combine_test}
-    '''
+    script:
+
+    echo ${ch_combine_test}
+
 }
 
 /*
