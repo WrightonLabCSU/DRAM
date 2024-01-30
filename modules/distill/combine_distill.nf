@@ -8,6 +8,8 @@ process COMBINE_DISTILL {
     path( ch_distill_misc )
     path( ch_distill_nitrogen )
     path( ch_distill_transport )
+    path( ch_distill_ag )
+    path( ch_distill_eng_sys)
 
 
     //val ch_distill_topic
