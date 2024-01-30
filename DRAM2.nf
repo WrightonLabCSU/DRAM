@@ -487,9 +487,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         } else{
             ch_distill_transport = default_channel
         }
-    } else {
-        ch_distill_topic = default_channel
-    }
+    } 
     /*
     if (params.distill_ecosystem != "") {
         distill_eng_sys = 0
@@ -764,19 +762,7 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
-        
-        
-        println("ch_distill_topic content: ${ch_distill_topic.view().collect()}")
-
-        //ch_distill_topic.view()
-        //ch_distill_ecosys.view()
-        //ch_distill_custom.view()
-
-        // I think this will be the way to go.. 
-        //ch_combine_test = ch_distill_topic.concat( ch_distill_ecosys, ch_distill_custom ) 
-        //ch_combine_test.view()
-
-        //COMBINE_DISTILL(ch_distill_topic)
+        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport)
 
         //ch_combine_test.view()
         //ch_distill_topic.view()

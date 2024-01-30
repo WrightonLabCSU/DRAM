@@ -3,7 +3,12 @@ process COMBINE_DISTILL {
     input:
     // Define input channels
 
-    val ch_combine_test
+    path( ch_distill_carbon )
+    path( ch_distill_energy )
+    path( ch_distill_misc )
+    path( ch_distill_nitrogen )
+    path( ch_distill_transport )
+
 
     //val ch_distill_topic
     //val ch_distill_ecosys
@@ -18,7 +23,7 @@ process COMBINE_DISTILL {
 
     script:
     """
-    echo ${ch_combine_test}
+    echo ${ch_combine_carbon}
     """
 }
 
