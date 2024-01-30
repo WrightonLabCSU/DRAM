@@ -462,45 +462,40 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         }
 
         if (distill_carbon == 1) {
-            def carbonFile = file(params.distill_carbon_sheet)
-            if (carbonFile.exists()) {
-                topicChannels << Channel.fromPath(carbonFile.path)
+            if (file(params.distill_carbon_sheet).exists()) {
+                topicChannels << Channel.fromPath(params.distill_carbon_sheet)
             } else {
                 error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
         }
 
         if (distill_energy == 1) {
-            def energyFile = file(params.distill_energy_sheet)
-            if (energyFile.exists()) {
-                topicChannels << Channel.fromPath(energyFile.path)
+            if (file(params.distill_energy_sheet).exists()) {
+                topicChannels << Channel.fromPath(params.distill_energy_sheet)
             } else {
                 error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
         }
 
         if (distill_misc == 1) {
-            def miscFile = file(params.distill_misc_sheet)
-            if (miscFile.exists()) {
-                topicChannels << Channel.fromPath(miscFile.path)
+            if (file(params.distill_misc_sheet).exists()) {
+                topicChannels << Channel.fromPath(params.distill_misc_sheet)
             } else {
                 error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
         }
 
         if (distill_nitrogen == 1) {
-            def nitrogenFile = file(params.distill_nitrogen_sheet)
-            if (nitrogenFile.exists()) {
-                topicChannels << Channel.fromPath(nitrogenFile.path)
+            if (file(params.distill_nitrogen_sheet).exists()) {
+                topicChannels << Channel.fromPath(params.distill_nitrogen_sheet)
             } else {
                 error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
         }
 
         if (distill_transport == 1) {
-            def transportFile = file(params.distill_transport_sheet)
-            if (transportFile.exists()) {
-                topicChannels << Channel.fromPath(transportFile.path)
+            if (file(params.distill_transport_sheet).exists()) {
+                topicChannels << Channel.fromPath(params.distill_transport_sheet)
             } else {
                 error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
