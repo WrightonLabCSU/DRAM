@@ -408,10 +408,11 @@ def ch_distill_ecosys = Channel.empty()
 def ch_distill_custom = Channel.empty()
 def ch_combined_distill_channels = Channel.empty()
 default_channel = Channel.value("empty")
+distill_topic_flag = 0
+distill_ecosystem_flag = 0
+distill_custom_flag = 0
 
 if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
-    params.distill_flag = 1
-    println"${params.distill_flag}"
     if (params.distill_topic != "") {
         distill_default = 0
         distill_carbon = 0
@@ -504,10 +505,11 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
         // Combine all channels into a single channel
         ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
-        //ch_distill_topic.view()
+        distill_topic_flag = 1
     }
     else{
         ch_distill_topic = default_channel
+        distill_topic_flag = 1
     }
 
 
@@ -557,10 +559,11 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
         // Combine all channels into a single channel
         ch_distill_ecosys = ecoSysChannels.size() > 0 ? Channel.fromList(ecoSysChannels) : Channel.empty()
-        //ch_distill_ecosys.view()
+        distill_ecosystem_flag = 1
     }
     else{
         ch_distill_ecosys = default_channel
+        distill_ecosystem_flag = 1
     }
 
     if (params.distill_custom != "") {
@@ -586,10 +589,15 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
         // Combine all custom channels into a single channel
         ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty().ifEmpty { "0" }
-        //ch_distill_custom.view()
+        distill_custom_flag = 1
     }
     else{
         ch_distill_custom = default_channel
+        distill_custom_flag = 1
+    }
+    if( distill_topic_flag == 1 || distill_ecosystem_flag == 1 ||distill_custom_flag == 1 ){
+        params.distill_flag = 1
+        println"${params.distill_flag}"
     }
 
 }
@@ -794,11 +802,9 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
-        ch_distill_topic.view()
-        ch_distill_ecosys.view()
-        ch_distill_custom.view()
-
-        println"${params.distill_flag}"
+        //ch_distill_topic.view()
+        //ch_distill_ecosys.view()
+        //ch_distill_custom.view()
 
         COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom )
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
