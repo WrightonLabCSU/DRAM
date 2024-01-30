@@ -808,11 +808,13 @@ workflow {
         //ch_distill_topic.view()
         //ch_distill_ecosys.view()
         //ch_distill_custom.view()
+        ch_combine_test = ch_distill_topic.concat( ch_distill_ecosys, ch_distill_custom )
+        ch_combine_test.view()
 
-        COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, distill_flag_real )
-        ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
+        //COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, distill_flag_real )
+        //ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
-        ch_combined_distill.view()
+        //ch_combined_distill.view()
 
         //DISTILL_SUMMARY( ch_final_annots, ch_combined_distill, ch_annotation_counts, ch_distill_summary_script )
         //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
