@@ -531,7 +531,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         ch_distill_ecosys = default_channel
     }
     
-    /*
+    
     if (params.distill_custom != "") {
         // Split the custom files using quotes and spaces
         def customFiles = params.distill_custom.replaceAll(/"/, '').split()
@@ -558,7 +558,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     else{
         ch_distill_custom = default_channel
     }
-    */
+    
 
 }
 
