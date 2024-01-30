@@ -503,7 +503,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
         // Combine all channels into a single channel
         //ch_distill_topic = topicChannels.size() > 0 ? Channel.fromPath(topicChannels.join(',')) : Channel.empty()
-        ch_distill_topic.view()
         distill_topic_flag = "1"
     } else {
         ch_distill_topic = default_channel
@@ -813,6 +812,7 @@ workflow {
         //COMBINE_DISTILL(ch_combine_test)
 
         //ch_combine_test.view()
+        ch_distill_topic.view()
 
        
         //COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, distill_flag_real )
