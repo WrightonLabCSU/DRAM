@@ -411,9 +411,10 @@ default_channel = Channel.value("empty")
 distill_topic_flag = 0
 distill_ecosystem_flag = 0
 distill_custom_flag = 0
+distill_flag_real = 0
 
 if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
-    println"HERE"
+
     if (params.distill_topic != "") {
         distill_default = 0
         distill_carbon = 0
@@ -598,7 +599,7 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     }
     if( distill_topic_flag == 1 || distill_ecosystem_flag == 1 ||distill_custom_flag == 1 ){
         println"HERE2"
-        params.distill_flag = 1
+        distill_flag_real = 1
         println"${params.distill_flag}"
     }
 
