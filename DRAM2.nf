@@ -808,9 +808,12 @@ workflow {
         //ch_distill_topic.view()
         //ch_distill_ecosys.view()
         //ch_distill_custom.view()
+
+        // I think this will eb the way to go.. 
         ch_combine_test = ch_distill_topic.concat( ch_distill_ecosys, ch_distill_custom )
         ch_combine_test.view()
 
+        COMBINE_DISTILL(ch_combine_test)
         //COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, distill_flag_real )
         //ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 

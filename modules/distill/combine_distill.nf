@@ -2,17 +2,27 @@ process COMBINE_DISTILL {
 
     input:
     // Define input channels
-    val ch_distill_topic
-    val ch_distill_ecosys
-    val ch_distill_custom
-    val distill_flag_real
+
+    val ch_combine_test
+
+    //val ch_distill_topic
+    //val ch_distill_ecosys
+    //val ch_distill_custom
+    //val distill_flag_real
 
     output:
-    path("combined.txt"), emit: ch_combined_distill_out
+    //path("combined.txt"), emit: ch_combined_distill_out
 
     when:
     distill_flag_real == "1"
 
+    shell:
+    '''
+    echo "\${ch_combine_test}""
+    '''
+}
+
+/*
     shell:
     '''
     combinedChannel=""
@@ -34,4 +44,5 @@ process COMBINE_DISTILL {
 
     echo $combinedChannel > combined.txt
     '''
-}
+
+    */
