@@ -801,7 +801,11 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
-        ch_distill_topic.view()
+        
+        
+        println("ch_distill_topic content: ${ch_distill_topic.view().collect()}")
+
+        //ch_distill_topic.view()
         //ch_distill_ecosys.view()
         //ch_distill_custom.view()
 
