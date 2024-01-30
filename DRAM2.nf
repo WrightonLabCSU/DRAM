@@ -461,37 +461,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             }
         }
 
-        topics.each { topic ->
-            if (!validTopics.contains(topic)) {
-                error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
-            }
-
-            switch (topic) {
-                case "default":
-                    distill_carbon = 1
-                    distill_energy = 1
-                    distill_misc = 1
-                    distill_nitrogen = 1
-                    distill_transport = 1
-                    break
-                case "carbon":
-                    distill_carbon = 1
-                    break
-                case "energy":
-                    distill_energy = 1
-                    break
-                case "misc":
-                    distill_misc = 1
-                    break
-                case "nitrogen":
-                    distill_nitrogen = 1
-                    break
-                case "transport":
-                    distill_transport = 1
-                    break
-            }
-        }
-
         if (distill_carbon == 1) {
             def carbonFile = file(params.distill_carbon_sheet)
             if (carbonFile.exists()) {
