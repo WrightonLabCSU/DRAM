@@ -502,7 +502,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         }
 
         // Combine all channels into a single channel
-        ch_distill_topic = topicChannels.size() > 0 ? Channel.fromPath(topicChannels) : Channel.empty()
+        cch_distill_topic = topicChannels.size() > 0 ? Channel.fromPath(topicChannels.join(',')) : Channel.empty()
         ch_distill_topic.view()
         distill_topic_flag = "1"
     } else {
