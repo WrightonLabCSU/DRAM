@@ -11,7 +11,7 @@ process COMBINE_DISTILL {
     path("combined.txt"), emit: ch_combined_distill_out
 
     when:
-    distill_flag_real == 1
+    distill_flag_real == "1"
 
     shell:
     '''

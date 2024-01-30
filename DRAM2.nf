@@ -408,10 +408,10 @@ def ch_distill_ecosys = Channel.empty()
 def ch_distill_custom = Channel.empty()
 def ch_combined_distill_channels = Channel.empty()
 default_channel = Channel.value("empty")
-distill_topic_flag = 0
-distill_ecosystem_flag = 0
-distill_custom_flag = 0
-distill_flag_real = 0
+distill_topic_flag = "0"
+distill_ecosystem_flag = "0"
+distill_custom_flag = "0"
+distill_flag_real = "0"
 
 if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
 
@@ -507,11 +507,11 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
         // Combine all channels into a single channel
         ch_distill_topic = topicChannels.size() > 0 ? Channel.fromList(topicChannels) : Channel.empty()
-        distill_topic_flag = 1
+        distill_topic_flag = "1"
     }
     else{
         ch_distill_topic = default_channel
-        distill_topic_flag = 1
+        distill_topic_flag = "1"
     }
 
 
@@ -591,15 +591,15 @@ if( params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
         // Combine all custom channels into a single channel
         ch_distill_custom = customChannels.size() > 0 ? Channel.fromList(customChannels) : Channel.empty().ifEmpty { "0" }
-        distill_custom_flag = 1
+        distill_custom_flag = "1"
     }
     else{
         ch_distill_custom = default_channel
-        distill_custom_flag = 1
+        distill_custom_flag = "1"
     }
-    if( distill_topic_flag == 1 || distill_ecosystem_flag == 1 ||distill_custom_flag == 1 ){
+    if( distill_topic_flag == "1" || distill_ecosystem_flag == "1" ||distill_custom_flag == "1" ){
         println"HERE2"
-        distill_flag_real = 1
+        distill_flag_real = "1"
         println"${params.distill_flag}"
     }
 
@@ -816,11 +816,6 @@ workflow {
 
         //DISTILL_SUMMARY( ch_final_annots, ch_combined_distill, ch_annotation_counts, ch_distill_summary_script )
         //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
-
-
-
-
-
 
 
         //Need to add in distill final which make the multi-sheet xlsx:
