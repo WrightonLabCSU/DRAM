@@ -531,33 +531,32 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         ch_distill_ecosys = default_channel
     }
     
+    def customTuples = []
+
     if (params.distill_custom != "") {
         // Split the custom files using quotes and spaces
         def customFiles = params.distill_custom.replaceAll(/"/, '').split()
 
-        // Create a list to store the channels for custom files
-        def customChannels = []
-
-        // Iterate through custom files and create channels or throw errors
+        // Iterate through custom files and create tuples or throw errors
         customFiles.each { customFile ->
             // Check if the custom file exists
             def fileObject = file(customFile)
             if (fileObject.exists()) {
-                // Add the channel for the file to the list of channels
-                customChannels << Channel.fromPath(customFile)
+                // Create a tuple with the path
+                def tuple = [Channel.fromPath(customFile)]
+                
+                // Add the tuple to the list
+                customTuples << tuple
             } else {
                 // Throw an error if the file doesn't exist
                 println("Error: If using --distill_custom $customFile, you must provide the file. The path $customFile is not valid.")
             }
         }
+    }
 
-        // Combine all custom channels into a single channel
-        ch_distill_custom = customChannels.size() > 0 ? Channel.fromPath(customChannels.join(',')) : Channel.empty().ifEmpty { "0" }
-    }
-    else {
-        ch_distill_custom = default_channel
-    }
-    ch_distill_custom.view()
+    // Create a channel with the accumulated tuples of paths
+    ch_distill_custom_tuples = customTuples.size() > 0 ? Channel.fromList(customTuples) : Channel.empty()
+
 
 }
 
@@ -761,7 +760,7 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
-        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
+        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom_tuples )
 
         //ch_combine_test.view()
         //ch_distill_topic.view()
