@@ -10,6 +10,7 @@ process COMBINE_DISTILL {
     path( ch_distill_transport )
     path( ch_distill_ag )
     path( ch_distill_eng_sys)
+    path( ch_distill_custom )
 
 
     //val ch_distill_topic
@@ -25,7 +26,8 @@ process COMBINE_DISTILL {
 
     script:
     """
-    echo ${ch_distill_carbon}
+    echo ${ch_distill_custom}
+
     """
 }
 
