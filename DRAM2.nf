@@ -492,9 +492,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             }
         }
 
-        // Create a list to store the generated channels
-        def topicChannels = []
-
         if (distill_carbon == 1) {
             def carbonFile = file(params.distill_carbon_sheet)
             if (carbonFile.exists()) {
