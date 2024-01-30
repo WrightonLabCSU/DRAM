@@ -809,7 +809,7 @@ workflow {
         //ch_distill_ecosys.view()
         //ch_distill_custom.view()
 
-        COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom )
+        COMBINE_DISTILL( ch_distill_topic, ch_distill_ecosys, ch_distill_custom, distill_flag_real )
         ch_combined_distill = COMBINE_DISTILL.out.ch_combined_distill_out
 
         ch_combined_distill.view()
