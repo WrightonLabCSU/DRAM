@@ -10,7 +10,7 @@ process COMBINE_DISTILL {
     path( ch_distill_transport )
     path( ch_distill_ag )
     path( ch_distill_eng_sys)
-    path( ch_distill_custom )
+    tuple path( ch_distill_custom_tuples )
 
 
     //val ch_distill_topic
@@ -26,7 +26,7 @@ process COMBINE_DISTILL {
 
     script:
     """
-    echo ${ch_distill_custom}
+    echo ${ch_distill_custom_tuples}
 
     """
 }
