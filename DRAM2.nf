@@ -464,7 +464,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_carbon == 1) {
             if (file(params.distill_carbon_sheet).exists()) {
                 ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_carbon_sheet))
-                ch_distill_topic.view()
             } else {
                 error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -472,7 +471,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_energy == 1) {
             if (file(params.distill_energy_sheet).exists()) {
                 ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_energy_sheet))
-                ch_distill_topic.view()
             } else {
                 error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -481,7 +479,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_misc == 1) {
             if (file(params.distill_misc_sheet).exists()) {
                 ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_misc_sheet))
-                ch_distill_topic.view()
             } else {
                 error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -490,7 +487,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_nitrogen == 1) {
             if (file(params.distill_nitrogen_sheet).exists()) {
                 ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_nitrogen_sheet))
-                ch_distill_topic.view()
             } else {
                 error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -499,7 +495,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (distill_transport == 1) {
             if (file(params.distill_transport_sheet).exists()) {
                 ch_distill_topic = ch_distill_topic.combine(Channel.fromPath(params.distill_transport_sheet))
-                ch_distill_topic.view()
             } else {
                 error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
             }
@@ -508,7 +503,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         // Combine all channels into a single channel
         //ch_distill_topic = topicChannels.size() > 0 ? Channel.fromPath(topicChannels.join(',')) : Channel.empty()
         distill_topic_flag = "1"
-        ch_distill_topic.view()
+        //ch_distill_topic.view()
     } else {
         ch_distill_topic = default_channel
         distill_topic_flag = "1"
@@ -806,7 +801,7 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
-        //ch_distill_topic.view()
+        ch_distill_topic.view()
         //ch_distill_ecosys.view()
         //ch_distill_custom.view()
 
@@ -814,7 +809,7 @@ workflow {
         //ch_combine_test = ch_distill_topic.concat( ch_distill_ecosys, ch_distill_custom ) 
         //ch_combine_test.view()
 
-        COMBINE_DISTILL(ch_distill_topic)
+        //COMBINE_DISTILL(ch_distill_topic)
 
         //ch_combine_test.view()
         //ch_distill_topic.view()
