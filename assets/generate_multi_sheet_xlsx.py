@@ -32,7 +32,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
                 # Convert 'potential_amg' values to "TRUE" or "FALSE"
                 row_data += ['TRUE' if row['potential_amg'] else 'FALSE']
 
-            # Append the rest of the columns
+            # Append the rest of the columns without 'potential_amg'
             row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
             # Append the modified row to the corresponding sheet
@@ -49,7 +49,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
         if 'potential_amg' in data.columns:
             column_names += ['potential_amg']
 
-        # Append the rest of the columns
+        # Append the rest of the columns without 'potential_amg'
         column_names += [col for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
         # Append column names as the first row
