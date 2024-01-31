@@ -2,7 +2,7 @@ process DISTILL_SUMMARY {
 
     input:
     file( combined_annotations )
-    tuple path( ch_combined_distill_sheets )
+    path( ch_combined_distill_sheets )
     file( target_id_counts )
     file( ch_distill_summary_script )
 
