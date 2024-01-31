@@ -751,7 +751,7 @@ workflow {
         // 1) tRNA and rRNA summary files - these are formatted for the sheets 'tRNA' and 'rRNA'
         // 2) tRNA and rRNA files need to be incorporated into the 'genome_stats' sheet (not sure about the approach yet)
         // 3) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
-        //DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
+        DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script )
 
 
 
