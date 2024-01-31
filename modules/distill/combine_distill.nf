@@ -17,8 +17,6 @@ process COMBINE_DISTILL {
 
     script:
     """
-
-
     """
 }
 
