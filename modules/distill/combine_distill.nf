@@ -13,7 +13,7 @@ process COMBINE_DISTILL {
     path( ch_distill_custom )
 
     output:
-    tuple path( ch_distill_carbon ), path( ch_distill_energy ), path( ch_distill_misc ), path( ch_distill_nitrogen ), path( ch_distill_transport ), path( ch_distill_ag ), path( ch_distill_eng_sys), path( ch_distill_custom ), emti: ch_combined_distill_sheets
+    tuple path( ch_distill_carbon ), path( ch_distill_energy ), path( ch_distill_misc ), path( ch_distill_nitrogen ), path( ch_distill_transport ), path( ch_distill_ag ), path( ch_distill_eng_sys), path( ch_distill_custom ), emit: ch_combined_distill_sheets
 
 
     script:
