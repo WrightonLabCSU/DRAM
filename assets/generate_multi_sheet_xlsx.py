@@ -27,11 +27,12 @@ def generate_multi_sheet_xlsx(input_file, output_file):
             # Exclude the "sheet" column and move "gene_id" as the second column
             # Include the count under the "sample" column
             row_data = [row[col] for col in fixed_columns]
-            row_data += [sheet_name] + [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
             
             # Include the 'potential_amg' column if it exists
             if 'potential_amg' in data.columns:
                 row_data.append(row['potential_amg'])
+                
+            row_data += [sheet_name] + [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
