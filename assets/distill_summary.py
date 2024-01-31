@@ -8,7 +8,7 @@ def is_null_content(file_path):
         content = file.read().strip()
     return content == "NULL"
 
-def distill_summary(combined_annotations_path, target_id_counts_file, output_path):
+def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     # Read the combined_annotations file
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
 
@@ -34,29 +34,32 @@ def distill_summary(combined_annotations_path, target_id_counts_file, output_pat
         # Print the column names of the distill sheet for debugging
         print(f"Column names of distill sheet: {distill_df.columns}")
 
-        # Identify the potential gene ID columns in combined_annotations_df
-        potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
+        # Initialize an empty DataFrame to store the merged data for the current distill sheet
+        merged_df_for_distill = pd.DataFrame()
 
-        # If there are potential gene ID columns, choose the first one
-        if potential_gene_id_columns:
-            common_gene_id_column = potential_gene_id_columns[0]
-        else:
-            raise ValueError("No potential gene ID columns found in combined annotations.")
+        # Process each potential gene ID column
+        for common_gene_id_column in combined_annotations_df.columns:
+            # Skip the 'query_id' column
+            if common_gene_id_column == 'query_id':
+                continue
 
-        # Merge the distill sheet with the combined_annotations using the common_gene_id_column
-        merged_df = pd.merge(
-            combined_annotations_df,
-            distill_df,
-            left_on=[common_gene_id_column],
-            right_on=['gene_id'],
-            how='inner'
-        )
+            # Merge the distill sheet with the combined_annotations using the current gene ID column
+            merged_df = pd.merge(
+                combined_annotations_df,
+                distill_df,
+                left_on=[common_gene_id_column],
+                right_on=['gene_id'],
+                how='inner'
+            )
+
+            # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
+            merged_df_for_distill = pd.concat([merged_df_for_distill, merged_df])
 
         # Merge with target_id_counts based on 'gene_id' and 'target_id'
-        merged_df = pd.merge(merged_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
+        merged_df_for_distill = pd.merge(merged_df_for_distill, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
 
-        # Append the merged DataFrame to the distill summary DataFrame
-        distill_summary_df = pd.concat([distill_summary_df, merged_df])
+        # Append the merged data for the current distill sheet to the overall distill summary DataFrame
+        distill_summary_df = pd.concat([distill_summary_df, merged_df_for_distill])
 
     # Deduplicate based on specified columns
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
