@@ -77,11 +77,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, output_file):
 
     for sheet, data in zip([rrna_sheet, trna_sheet], [rrna_data, trna_data]):
         # Append column names as the first row
-        sheet.append(data.columns)
+        sheet.append(list(data.columns))
 
         # Append data rows to the worksheet
         for _, row in data.iterrows():
             sheet.append(row)
+
 
     # Remove the default "Sheet" that was created
     default_sheet = wb['Sheet']
