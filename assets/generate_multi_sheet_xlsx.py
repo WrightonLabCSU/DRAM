@@ -31,7 +31,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
             if 'potential_amg' in data.columns:
                 row_data += [row['potential_amg']]
 
-            row_data += [sheet_name] + [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
+            row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
