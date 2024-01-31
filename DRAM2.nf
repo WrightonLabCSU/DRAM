@@ -529,7 +529,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     }
     
     if (params.distill_custom != "") {
-        ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_custom <path/to/TSV>, you must have the preformatted custom distill sheet in the provided file: ${params.distill_custom}.")
+        ch_distill_custom = file(params.distill_custom).exists() ? file(params.distill_custom) : error("Error: If using --distill_custom <path/to/TSV>, you must have the preformatted custom distill sheet in the provided file: ${params.distill_custom}.")
     }else{
         ch_distill_custom = default_channel
     }
