@@ -17,6 +17,9 @@ def generate_multi_sheet_xlsx(input_file, output_file):
     # Fixed columns
     fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
+    # Include 'potential_amg' column in the overall column names if it exists
+    overall_column_names = fixed_columns + (['potential_amg'] if 'potential_amg' in data.columns else [])
+
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
         for sheet_name in row['topic_ecosystem'].split('; '):  # Assuming 'topic_ecosystem' corresponds to 'sheet'
@@ -42,18 +45,8 @@ def generate_multi_sheet_xlsx(input_file, output_file):
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
-        # Extract column names from the original DataFrame
-        column_names = fixed_columns
-
-        # Include 'potential_amg' column if it exists
-        if 'potential_amg' in data.columns:
-            column_names += ['potential_amg']
-
-        # Append the rest of the columns without 'potential_amg'
-        column_names += [col for col in data.columns if col not in fixed_columns and col != 'potential_amg']
-
-        # Append column names as the first row
-        ws.append(column_names)
+        # Append overall column names as the first row
+        ws.append(overall_column_names)
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
