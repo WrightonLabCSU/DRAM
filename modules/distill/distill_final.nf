@@ -12,7 +12,7 @@ process DISTILL_FINAL {
     script:
     """
 
-    python ${ch_distill_final_script} --input-file ${metabolism_summary} --output-file distillate.xlsx
+    python ${ch_distill_final_script} --input-file ${metabolism_summary} --rrna-file ${ch_rrna_sheet} --trna-file ${ch_trna_sheet} --output-file distillate.xlsx
 
     """
 }
