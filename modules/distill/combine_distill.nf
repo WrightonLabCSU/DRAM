@@ -12,17 +12,9 @@ process COMBINE_DISTILL {
     path( ch_distill_eng_sys)
     path( ch_distill_custom )
 
-
-    //val ch_distill_topic
-    //val ch_distill_ecosys
-    //val ch_distill_custom
-    //val distill_flag_real
-
     output:
-    //path("combined.txt"), emit: ch_combined_distill_out
+    tuple path( ch_distill_carbon ), path( ch_distill_energy ), path( ch_distill_misc ), path( ch_distill_nitrogen ), path( ch_distill_transport ), path( ch_distill_ag ), path( ch_distill_eng_sys), path( ch_distill_custom ), emti: ch_combined_distill_sheets
 
-    //when:
-    //distill_flag_real == "1"
 
     script:
     """
