@@ -1,25 +1,28 @@
 import pandas as pd
 import os
 import argparse
+import glob
 
-def distill_summary(combined_annotations_path, distill_sheets_file, target_id_counts_file, output_path):
+def is_null_content(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read().strip()
+    return content == "NULL"
+
+def distill_summary(combined_annotations_path, target_id_counts_file, output_path):
     # Read the combined_annotations file
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
 
-    # Read the distill_sheets file and split paths
-    with open(distill_sheets_file, 'r') as file:
-        distill_sheets = [path.strip(',') for path in file.read().strip().split(',')]
-
-    # Read the target_id_counts file
-    target_id_counts_df = pd.read_csv(target_id_counts_file, sep='\t')
+    # Get a list of all _distill_sheet.tsv files in the current working directory
+    distill_sheets = glob.glob('*_distill_sheet.tsv')
 
     # Initialize an empty DataFrame to store the distill summary
     distill_summary_df = pd.DataFrame()
 
     # Process each distill sheet
     for distill_sheet in distill_sheets:
-        # Skip empty paths
-        if not distill_sheet:
+        # Check if the distill sheet content is "NULL"
+        if is_null_content(distill_sheet):
+            print(f"Skipping distill sheet '{distill_sheet}' as it contains 'NULL' content.")
             continue
 
         # Print the path to the distill sheet for debugging
@@ -64,10 +67,12 @@ def distill_summary(combined_annotations_path, distill_sheets_file, target_id_co
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
     parser.add_argument('--combined_annotations', required=True, help='Path to the combined_annotations.tsv file.')
-    parser.add_argument('--distill_sheets_file', required=True, help='Path to the distill_sheets file.')
     parser.add_argument('--target_id_counts', required=True, help='Path to the target_id_counts.tsv file.')
     parser.add_argument('--output', required=True, help='Path to the output genome_summary.tsv file.')
 
     args = parser.parse_args()
 
-    distill_summary(args.combined_annotations, args.distill_sheets_file, args.target_id_counts, args.output)
+    # Read the target_id_counts file
+    target_id_counts_df = pd.read_csv(args.target_id_counts, sep='\t')
+
+    distill_summary(args.combined_annotations, target_id_counts_df, args.output)

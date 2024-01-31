@@ -17,6 +17,10 @@ process DISTILL_SUMMARY {
     # Define the log file path
     log_file="logs/distill.log"
 
+    python "${ch_distill_summary_script}" \
+        --combined_annotations "${combined_annotations}" \
+        --target_id_counts "${target_id_counts}" \
+        --output "genome_summary.tsv" >> "\$log_file" 2>&1
 
     """
 }
