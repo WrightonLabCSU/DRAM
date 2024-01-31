@@ -744,7 +744,7 @@ workflow {
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         DISTILL_SUMMARY( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_distill_summary_script )
-        //ch_simple_matab_summ = DISTILL_SUMMARY.out.metab_summ_simple
+        ch_simple_matab_summ = DISTILL_SUMMARY.out.ch_genome_sum_simple
 
 
         //Need to add in distill final which make the multi-sheet xlsx:

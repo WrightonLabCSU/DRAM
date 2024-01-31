@@ -7,7 +7,7 @@ process DISTILL_SUMMARY {
     file( ch_distill_summary_script )
 
     output:
-    path("genome_summary.tsv"), emit: metab_summ_simple
+    path("genome_summary.tsv"), emit: ch_genome_sum_simple
 
     script:
     """
