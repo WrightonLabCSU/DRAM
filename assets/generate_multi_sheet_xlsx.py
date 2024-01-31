@@ -42,11 +42,14 @@ def generate_multi_sheet_xlsx(input_file, output_file):
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame
-        column_names = fixed_columns + [col for col in data.columns if col not in fixed_columns and col != 'potential_amg']
+        column_names = fixed_columns
 
         # Include 'potential_amg' column if it exists
         if 'potential_amg' in data.columns:
             column_names.append('potential_amg')
+
+        # Append other columns from the original DataFrame
+        column_names += [col for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
         # Append column names as the first row
         ws.append(column_names)
