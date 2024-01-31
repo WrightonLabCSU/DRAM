@@ -29,7 +29,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
 
             # Include the 'potential_amg' column if it exists
             if 'potential_amg' in data.columns:
-                row_data.append(row['potential_amg'])
+                row_data += [row['potential_amg']]
 
             row_data += [sheet_name] + [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
@@ -45,7 +45,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
 
         # Include 'potential_amg' column if it exists
         if 'potential_amg' in data.columns:
-            column_names.append('potential_amg')
+            column_names += ['potential_amg']
 
         # Append the rest of the columns
         column_names += [col for col in data.columns if col not in fixed_columns and col != 'potential_amg']
