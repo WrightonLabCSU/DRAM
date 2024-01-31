@@ -5,7 +5,9 @@ process DISTILL_SUMMARY {
     path( ch_combined_distill_sheets )
     file( target_id_counts )
     file( ch_distill_summary_script )
-
+    file( ch_rrna_sheet )
+    file( ch_trna_sheet )
+    
     output:
     path("genome_summary.tsv"), emit: ch_genome_sum_simple
 
