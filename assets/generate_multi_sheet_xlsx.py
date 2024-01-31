@@ -30,7 +30,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
             # Include the 'potential_amg' column if it exists
             if 'potential_amg' in data.columns:
                 # Convert 'potential_amg' values to "TRUE" or "FALSE"
-                row_data += ['TRUE' if row['potential_amg'] else 'FALSE']
+                row_data += ['TRUE' if row['potential_amg'] == 'TRUE' else 'FALSE']
 
             # Append the rest of the columns without 'potential_amg'
             row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
