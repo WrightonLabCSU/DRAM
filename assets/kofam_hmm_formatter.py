@@ -79,6 +79,9 @@ def main():
     # Keep only the relevant columns in the final output
     final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']]
 
+    # Rename the columns
+    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC']
+
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
 
