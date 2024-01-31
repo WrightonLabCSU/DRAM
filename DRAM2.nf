@@ -641,7 +641,7 @@ workflow {
             KOFAM_HMM_FORMATTER ( ch_kofam_parsed, params.kofam_top_hit, ch_kofam_list, ch_kofam_formatter )
             ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
         } else {
-            ch_kofam = []
+            ch_kofam_formatted = []
         }
         // DBCAN not finished - this needs editing!
         if( annotate_dbcan == 1 ){
@@ -656,7 +656,7 @@ workflow {
             ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
             
         } else {
-            ch_dbcan = []
+            ch_dbcan_formatted = []
         }
 
         if (annotate_camper == 1){
