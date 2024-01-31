@@ -81,7 +81,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, output_file):
 
         # Append data rows to the worksheet
         for _, row in data.iterrows():
-            sheet.append(row)
+            sheet.append(list(row))
+
 
 
     # Remove the default "Sheet" that was created
