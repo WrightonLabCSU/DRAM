@@ -15,7 +15,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
     sheet_data = {}
 
     # Fixed columns
-    fixed_columns = ['gene_id', 'query_id', 'sample', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
