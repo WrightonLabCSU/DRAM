@@ -8,6 +8,9 @@ def generate_multi_sheet_xlsx(input_file, output_file):
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
 
+    # Extract sample columns from the original data
+    sample_columns = [col for col in data.columns if col not in ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'potential_amg']]
+
     # Create a Workbook
     wb = Workbook()
 
@@ -18,7 +21,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
     fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
     # Include 'potential_amg' column in the overall column names if it exists
-    overall_column_names = fixed_columns + (['potential_amg'] if 'potential_amg' in data.columns else [])
+    overall_column_names = fixed_columns + (['potential_amg'] if 'potential_amg' in data.columns else []) + sample_columns
 
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
@@ -35,8 +38,8 @@ def generate_multi_sheet_xlsx(input_file, output_file):
                 # Convert 'potential_amg' values to "TRUE" or "FALSE"
                 row_data += ['TRUE' if row['potential_amg'] == 'TRUE' else 'FALSE']
 
-            # Append the rest of the columns without 'potential_amg'
-            row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
+            # Append the sample columns to the row data
+            row_data += [row[col] for col in sample_columns]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
