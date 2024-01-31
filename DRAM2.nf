@@ -403,7 +403,7 @@ if( params.merge ){
 */
 
 // Initialize channel variables
-default_channel = Channel.value("empty")
+default_channel = file(params.distill_carbon_sheet)
 /* Create the default distill topic and ecosystem channels */
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
