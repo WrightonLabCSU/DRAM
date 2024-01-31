@@ -26,7 +26,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
 
             # Exclude the "sheet" column and move "gene_id" as the second column
             row_data = [row[col] for col in fixed_columns]
-            
+
             # Include the 'potential_amg' column if it exists
             if 'potential_amg' in data.columns:
                 row_data.append(row['potential_amg'])
@@ -47,6 +47,7 @@ def generate_multi_sheet_xlsx(input_file, output_file):
         if 'potential_amg' in data.columns:
             column_names.append('potential_amg')
 
+        # Append the rest of the columns
         column_names += [col for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
         # Append column names as the first row
