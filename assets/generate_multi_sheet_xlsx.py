@@ -4,7 +4,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
-def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, output_file):
+def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, combined_rrna, output_file):
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
 
@@ -30,6 +30,35 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None), None, None, None, None])
+
+    # Read combined_rrna
+    rrna_data = pd.read_csv(combined_rrna, sep='\t')
+
+    for rna_type in ["5S rRNA", "16S rRNA", "23S rRNA"]:
+        # Filter rrna_data based on rna_type
+        filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
+
+        # Iterate over unique samples
+        for sample in unique_samples:
+            # Extract relevant data for the current sample and rna_type
+            sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
+
+            # Concatenate the values and format them as needed
+            values = [
+                f"{row['query_id']}, ({row['begin']}, {row['end']})"
+                for _, row in sample_rrna_data.iterrows()
+            ]
+
+            # Join multiple values with "; "
+            joined_values = "; ".join(values)
+
+            # Find the corresponding column index in the genome_stats sheet and update the value
+            for col_idx, col in enumerate(gs_sheet[1], start=1):
+                if col.value == rna_type:
+                    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
+                        if row[0].value == sample:
+                            row_idx = row[0].row
+                            gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
