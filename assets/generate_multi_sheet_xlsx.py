@@ -60,7 +60,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                             row_idx = row[0].row
                             gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
 
-    for sheet_name, sheet_rows in sheet_data.items():
+    for sheet_name in ["ExampleSheet1", "ExampleSheet2"]:
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
@@ -78,8 +78,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws.append(column_names)
 
         # Append data rows to the worksheet
-        for r_idx, row in enumerate(sheet_rows, 1):
-            ws.append(row)
+        for _, row in data.iterrows():
+            ws.append(list(row))
 
         # Create a table from the data for filtering
         tab = Table(displayName=f"{sheet_name}_Table", ref=ws.dimensions)
