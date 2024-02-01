@@ -79,11 +79,14 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Join multiple values with "; "
             joined_values = "; ".join(values)
 
-            # Find the corresponding row in the genome_stats sheet and update the value
-            for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=1, max_col=1):
-                if row[0].value == sample:
-                    row_idx = row[0].row
-                    gs_sheet[f"{rna_type}"][row_idx - 1].value = joined_values
+            # Find the corresponding column index in the genome_stats sheet and update the value
+            for col_idx, col in enumerate(gs_sheet[1], start=1):
+                if col.value == rna_type:
+                    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
+                        if row[0].value == sample:
+                            row_idx = row[0].row
+                            gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+
 
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
