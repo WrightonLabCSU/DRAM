@@ -722,7 +722,7 @@ workflow {
 
         //Need to add in distill final which make the multi-sheet xlsx:
         // 1) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
-        DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_trna_sheet, ch_final_annots )
+        DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_final_annots )
     }
 
     /*

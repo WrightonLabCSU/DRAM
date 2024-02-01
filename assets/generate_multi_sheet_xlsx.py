@@ -4,7 +4,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
-def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, output_file):
+def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, combined_rrna, output_file):
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
 
@@ -30,6 +30,30 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None), None, None, None, None])
+
+    # Read rrna_combined_file
+    rrna_combined_data = pd.read_csv(combined_rrna, sep='\t')
+
+    # Iterate over the unique types (5S rRNA, 16S rRNA, 23S rRNA)
+    for rna_type in ["5S rRNA", "16S rRNA", "23S rRNA"]:
+        # Extract relevant rows from rrna_combined_data for the current type
+        type_rows = rrna_combined_data[rrna_combined_data['type'] == rna_type]
+
+        # Iterate over the unique samples
+        for sample in unique_samples:
+            # Extract relevant rows for the current sample
+            sample_rows = type_rows[type_rows['sample'] == sample]
+
+            # If there are rows for the current sample and type, concatenate the values
+            if not sample_rows.empty:
+                concatenated_values = "; ".join(
+                    f"{row['query_id']}, ({row['begin']}, {row['end']})"
+                    for _, row in sample_rows.iterrows()
+                )
+                gs_sheet[f"{rna_type}"].append(concatenated_values)
+            else:
+                # If no rows, leave the value empty
+                gs_sheet[f"{rna_type}"].append(None)
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
@@ -116,7 +140,8 @@ if __name__ == '__main__':
     parser.add_argument('--rrna-file', required=True, help='Path to the rRNA TSV file')
     parser.add_argument('--trna-file', required=True, help='Path to the tRNA TSV file')
     parser.add_argument('--combined-annotations', required=True, help='Path to the combined_annotations TSV file')
+    parser.add_argument('--combined-rrna', required=True, help='Path to the combined_rrna TSV file')
     parser.add_argument('--output-file', required=True, help='Path to the output XLSX file')
 
     args = parser.parse_args()
-    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.output_file)
+    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.combined_rrna, args.output_file)
