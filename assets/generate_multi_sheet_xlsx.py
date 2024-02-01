@@ -68,7 +68,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                             if row[0].value == sample:
                                 row_idx = row[0].row
                                 gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-
+                                
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
