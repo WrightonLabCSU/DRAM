@@ -95,7 +95,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
-
     # Create a dictionary to store data for each sheet
     sheet_data = {}
 
