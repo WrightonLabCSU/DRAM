@@ -5,6 +5,7 @@ process DISTILL_FINAL {
     file( ch_distill_final_script )
     file( ch_rrna_sheet )
     file( ch_trna_sheet )
+    file( combined_annotations )
 
     output:
     path( "distillate.xlsx" ), emit: distillate
@@ -12,7 +13,7 @@ process DISTILL_FINAL {
     script:
     """
 
-    python ${ch_distill_final_script} --input-file ${metabolism_summary} --rrna-file ${ch_rrna_sheet} --trna-file ${ch_trna_sheet} --output-file distillate.xlsx
+    python ${ch_distill_final_script} --input-file ${metabolism_summary} --rrna-file ${ch_rrna_sheet} --trna-file ${ch_trna_sheet} --combined_annotations "${combined_annotations}" --output-file distillate.xlsx
 
     """
 }

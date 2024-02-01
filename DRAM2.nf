@@ -680,7 +680,6 @@ workflow {
             .collect()
             .set { collected_formatted_hits }
 
-
         /* COMBINE_ANNOTATIONS collects all annotations files across ALL databases */
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
@@ -722,7 +721,7 @@ workflow {
 
         //Need to add in distill final which make the multi-sheet xlsx:
         // 1) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
-        DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_trna_sheet  )
+        DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_trna_sheet, ch_final_annots )
     }
 
     /*

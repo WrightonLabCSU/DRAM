@@ -4,12 +4,28 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
-def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, output_file):
+def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, output_file):
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
 
+    # Read combined_annotations
+    combined_data = pd.read_csv(combined_annotations, sep='\t')
+
+    # Deduplicate and extract unique sample values
+    unique_samples = combined_data['sample'].unique()
+
     # Create a Workbook
     wb = Workbook()
+
+    # Create the genome_stats sheet
+    gs_sheet = wb.create_sheet(title="genome_stats")
+
+    # Append column names to genome_stats sheet
+    gs_sheet.append(["sample", "number of scaffolds", "taxonomy", "completeness", "contamination", "5S rRNA", "16S rRNA", "23S rRNA", "tRNA count"])
+
+    # Append unique sample values to genome_stats sheet
+    for sample in unique_samples:
+        gs_sheet.append([sample, None, None, None, None, None, None, None, None])  # Populate with None for now
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
@@ -83,8 +99,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, output_file):
         for _, row in data.iterrows():
             sheet.append(list(row))
 
-
-
     # Remove the default "Sheet" that was created
     default_sheet = wb['Sheet']
     wb.remove(default_sheet)
@@ -97,7 +111,8 @@ if __name__ == '__main__':
     parser.add_argument('--input-file', required=True, help='Path to the input TSV file')
     parser.add_argument('--rrna-file', required=True, help='Path to the rRNA TSV file')
     parser.add_argument('--trna-file', required=True, help='Path to the tRNA TSV file')
+    parser.add_argument('--combined-annotations', required=True, help='Path to the combined_annotations TSV file')
     parser.add_argument('--output-file', required=True, help='Path to the output XLSX file')
 
     args = parser.parse_args()
-    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.output_file)
+    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.output_file)
