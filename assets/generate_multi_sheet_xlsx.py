@@ -49,23 +49,24 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             print(f"Sample: {sample}")
             print(sample_rrna_data)
 
-            # Concatenate the values and format them as needed
-            values = [
-                f"{row['query_id']}, ({row['begin']}, {row['end']})"
-                for _, row in sample_rrna_data.iterrows()
-            ]
+            # Check if sample_rrna_data is not empty
+            if not sample_rrna_data.empty:
+                # Concatenate the values and format them as needed
+                values = [
+                    f"{row['query_id']}, ({row['begin']}, {row['end']})"
+                    for _, row in sample_rrna_data.iterrows()
+                ]
 
-            # Join multiple values with "; "
-            joined_values = "; ".join(values)
+                # Join multiple values with "; "
+                joined_values = "; ".join(values)
 
-            # Find the corresponding column index in the genome_stats sheet and update the value
-            for col_idx, col in enumerate(gs_sheet[1], start=1):
-                if col.value == rna_type:
-                    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
-                        if row[0].value == sample:
-                            row_idx = row[0].row
-                            gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-
+                # Find the corresponding column index in the genome_stats sheet and update the value
+                for col_idx, col in enumerate(gs_sheet[1], start=1):
+                    if col.value == rna_type:
+                        for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
+                            if row[0].value == sample:
+                                row_idx = row[0].row
+                                gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
