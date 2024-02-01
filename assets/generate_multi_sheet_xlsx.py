@@ -42,6 +42,10 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Filter rrna_data based on rna_type
         filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
 
+        # Print RNA type and corresponding values for debugging
+        print(f"\nDebugging for RNA type: {rna_type}")
+        print(f"RNA values: {filtered_rrna_data[['query_id', 'begin', 'end']]}")
+
         # Iterate over unique samples
         for sample in unique_samples:
             # Extract relevant data for the current sample and rna_type
@@ -54,6 +58,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                     f"{row['query_id']}, ({row['begin']}, {row['end']})"
                     for _, row in sample_rrna_data.iterrows()
                 ]
+
+                # Print joined values for debugging
+                print(f"Sample: {sample}, Joined values: {values}")
 
                 # Join multiple values with "; "
                 joined_values = "; ".join(values)
