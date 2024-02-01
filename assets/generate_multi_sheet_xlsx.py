@@ -31,33 +31,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None), None, None, None, None])
 
-    # Create a dictionary to store data for each sheet
-    sheet_data = {}
-
-    # Fixed columns
-    fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-
-    for _, row in data.iterrows():
-        # Split the "sheet" values by "; " and iterate over them
-        for sheet_name in row['topic_ecosystem'].split('; '):  # Assuming 'topic_ecosystem' corresponds to 'sheet'
-            sheet_name = sheet_name.replace(" ", "_")
-            if sheet_name not in sheet_data:
-                sheet_data[sheet_name] = []
-
-            # Exclude the "sheet" column and move "gene_id" as the second column
-            row_data = [row[col] for col in fixed_columns]
-
-            # Include the 'potential_amg' column if it exists
-            if 'potential_amg' in data.columns:
-                # Convert 'potential_amg' values to "TRUE" or "FALSE"
-                row_data += ['TRUE' if row['potential_amg'] == 'TRUE' else 'FALSE']
-
-            # Append the rest of the columns without 'potential_amg'
-            row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
-
-            # Append the modified row to the corresponding sheet
-            sheet_data[sheet_name].append(row_data)
-
     # Read combined_rrna
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
 
