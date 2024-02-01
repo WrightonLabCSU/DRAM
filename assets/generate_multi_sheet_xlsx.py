@@ -31,30 +31,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None), None, None, None, None])
 
-    # Read rrna_combined_file
-    rrna_combined_data = pd.read_csv(combined_rrna, sep='\t')
-
-    # Iterate over the unique types (5S rRNA, 16S rRNA, 23S rRNA)
-    for rna_type in ["5S rRNA", "16S rRNA", "23S rRNA"]:
-        # Extract relevant rows from rrna_combined_data for the current type
-        type_rows = rrna_combined_data[rrna_combined_data['type'] == rna_type]
-
-        # Iterate over the unique samples
-        for sample in unique_samples:
-            # Extract relevant rows for the current sample
-            sample_rows = type_rows[type_rows['sample'] == sample]
-
-            # If there are rows for the current sample and type, concatenate the values
-            if not sample_rows.empty:
-                concatenated_values = "; ".join(
-                    f"{row['query_id']}, ({row['begin']}, {row['end']})"
-                    for _, row in sample_rows.iterrows()
-                )
-                gs_sheet[f"{rna_type}"].append(concatenated_values)
-            else:
-                # If no rows, leave the value empty
-                gs_sheet[f"{rna_type}"].append(None)
-
     # Create a dictionary to store data for each sheet
     sheet_data = {}
 
@@ -81,6 +57,33 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
+
+    # Read combined_rrna
+    rrna_data = pd.read_csv(combined_rrna, sep='\t')
+
+    for rna_type in ["5S rRNA", "16S rRNA", "23S rRNA"]:
+        # Filter rrna_data based on rna_type
+        filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
+
+        # Iterate over unique samples
+        for sample in unique_samples:
+            # Extract relevant data for the current sample and rna_type
+            sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
+
+            # Concatenate the values and format them as needed
+            values = [
+                f"{row['query_id']}, ({row['begin']}, {row['end']})"
+                for _, row in sample_rrna_data.iterrows()
+            ]
+
+            # Join multiple values with "; "
+            joined_values = "; ".join(values)
+
+            # Find the corresponding row in the genome_stats sheet and update the value
+            for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=1, max_col=1):
+                if row[0].value == sample:
+                    row_idx = row[0].row
+                    gs_sheet[f"{rna_type}"][row_idx - 1].value = joined_values
 
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
