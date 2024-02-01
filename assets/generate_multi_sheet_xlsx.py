@@ -61,14 +61,18 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 # Find the corresponding column index in the genome_stats sheet and update the value
                 for col_idx, col in enumerate(column_names, start=1):
                     if col == rna_type:
+                        print(f"\nUpdating RNA column: {rna_type}")
+                        print(f"Values to be populated: {joined_values}")
                         for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
                             if row[0].value == sample:
                                 row_idx = row[0].row
                                 gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+                                print(f"Updated value at row {row_idx}, column {col_idx}")
 
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
+
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
