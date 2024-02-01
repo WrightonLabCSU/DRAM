@@ -24,7 +24,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(unique_rna_types)
+    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination", "5S rRNA", "23S rRNA", "16S rRNA"]
     gs_sheet.append(column_names)
 
     # Populate genome_stats sheet with data from combined_annotations
@@ -33,12 +33,15 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * len(unique_rna_types))
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
 
     # Read combined_rrna dynamically
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
 
-    for rna_type in unique_rna_types:
+    # Explicitly define RNA columns in a specific order
+    rna_columns = ["5S rRNA", "23S rRNA", "16S rRNA"]
+
+    for rna_type in rna_columns:
         # Filter rrna_data based on rna_type
         filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
 
@@ -63,16 +66,20 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                     if col == rna_type:
                         print(f"\nUpdating RNA column: {rna_type}")
                         print(f"Values to be populated: {joined_values}")
-                        for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
+                        for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=column_names.index(rna_type) + 1, max_col=column_names.index(rna_type) + 1):
                             if row[0].value == sample:
                                 row_idx = row[0].row
-                                gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-                                print(f"Updated value at row {row_idx}, column {col_idx}")
+                                gs_sheet.cell(row=row_idx, column=column_names.index(rna_type) + 1).value = joined_values
+                                print(f"Updated value at row {row_idx}, column {column_names.index(rna_type) + 1}")
+
+    # Print completeness and contamination values
+    print("\nCompleteness and Contamination values:")
+    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=4, max_col=5, values_only=True):
+        print(row)
 
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
-
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
