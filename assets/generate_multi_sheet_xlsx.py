@@ -1,7 +1,6 @@
 import argparse
 import pandas as pd
 from openpyxl import Workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
 def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, combined_rrna, output_file):
@@ -20,15 +19,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Create the genome_stats sheet
     gs_sheet = wb.create_sheet(title="genome_stats")
 
-    # Append column names to genome_stats sheet
-    gs_sheet.append(["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"])
-
     # Dynamically get unique RNA types from combined_rrna
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
     unique_rna_types = rrna_data['type'].unique()
 
-    # Append RNA type columns to genome_stats sheet
-    gs_sheet.append(list(unique_rna_types))
+    # Append column names to genome_stats sheet
+    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(unique_rna_types)
+    gs_sheet.append(column_names)
 
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
@@ -36,7 +33,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)])
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * len(unique_rna_types))
 
     # Read combined_rrna dynamically
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
@@ -62,13 +59,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 joined_values = "; ".join(values)
 
                 # Find the corresponding column index in the genome_stats sheet and update the value
-                for col_idx, col in enumerate(gs_sheet[1], start=1):
-                    if col.value == rna_type:
+                for col_idx, col in enumerate(column_names, start=1):
+                    if col == rna_type:
                         for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
                             if row[0].value == sample:
                                 row_idx = row[0].row
                                 gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-                                
+
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
