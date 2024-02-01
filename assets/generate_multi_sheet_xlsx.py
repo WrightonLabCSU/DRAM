@@ -25,7 +25,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(rna_columns)
+    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(rna_columns) + ["tRNA count"]
     gs_sheet.append(column_names)
 
     # Populate genome_stats sheet with data from combined_annotations
@@ -34,7 +34,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3 + [None])  # Add None for the new "tRNA count" column
     
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
@@ -73,9 +73,24 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
                 print(f"Updated value at row {row_idx}, column {col_idx}")
 
-    # Print completeness and contamination values
-    print("\nCompleteness and Contamination values:")
-    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=5, max_col=6, values_only=True):
+    # Step 2: Read the trna_sheet
+    trna_data = pd.read_csv(trna_file, sep='\t')
+
+    # Step 3: Sum the tRNA counts for each sample
+    tRNA_counts = trna_data.groupby('sample').sum()
+
+    # Step 4: Create a dictionary to store tRNA counts for each sample
+    tRNA_counts_dict = tRNA_counts.to_dict()
+
+    # Step 5: Update the "genome_stats" sheet with the "tRNA count" column
+    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=1, max_col=len(column_names) - 1):
+        sample = row[0].value  # Assuming the sample name is in the first column
+        tRNA_count = tRNA_counts_dict.get(sample, {}).get('tRNA', 0)  # Replace 'tRNA' with the actual column name that represents tRNA counts
+        row[-1].value = tRNA_count
+
+    # Print completeness, contamination, and tRNA count values
+    print("\nCompleteness, Contamination, and tRNA count values:")
+    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=5, max_col=len(column_names), values_only=True):
         print(row)
 
     print("\nUpdated Genome Stats Sheet:")
