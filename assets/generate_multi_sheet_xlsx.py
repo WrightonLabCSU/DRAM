@@ -36,6 +36,20 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
 
+    # Initialize a list for tRNA count values
+    tRNA_count_values = [0] * len(unique_samples)
+
+    # Calculate "tRNA count" and add the column to genome_stats sheet
+    trna_data = pd.read_csv(trna_file, sep='\t')
+    sample_names = trna_data.columns[5:]  # Assuming the relevant columns start from index 5
+
+    # Sum tRNA counts for each sample
+    for idx, sample in enumerate(unique_samples):
+        tRNA_count_values[idx] = trna_data[sample].sum()
+
+    # Add "tRNA count" column to genome_stats sheet
+    gs_sheet.append(['tRNA count'] + tRNA_count_values)
+
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
         # Filter rrna_data based on rna_type
@@ -73,20 +87,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
                 print(f"Updated value at row {row_idx}, column {col_idx}")
 
-    # Calculate "tRNA count" and add the column to genome_stats sheet
-    trna_data = pd.read_csv(trna_file, sep='\t')
-    sample_names = trna_data.columns[5:]  # Assuming the relevant columns start from index 5
-
-    gs_sheet['tRNA count'] = [None] + [0] * (len(gs_sheet) - 1)  # Initialize the column
-
-    for sample in sample_names:
-        tRNA_count_values = trna_data[sample].sum()
-        sample_index = gs_sheet.columns.get_loc(sample) - 5  # Adjust for the first 5 fixed columns
-        gs_sheet['tRNA count'][sample_index] = tRNA_count_values
-
-    # Print completeness, contamination, and tRNA count values
-    print("\nCompleteness, Contamination, and tRNA count values:")
-    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=5, max_col=7, values_only=True):
+    # Print completeness and contamination values
+    print("\nCompleteness and Contamination values:")
+    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=5, max_col=6, values_only=True):
         print(row)
 
     print("\nUpdated Genome Stats Sheet:")
