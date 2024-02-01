@@ -27,7 +27,7 @@ process ADD_BIN_QUALITY {
     first_column_name = checkm_data.columns[0]
 
     # Extract relevant columns from checkm_data
-    checkm_columns = [first_column_name, "Completeness", "Contamination"]
+    checkm_columns = [first_column_name, "completeness", "contamination"]
     checkm_data = checkm_data[checkm_columns]
 
     # Replace "." with "-" in the sample column for comparison
