@@ -4,7 +4,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
-def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, combined_rrna, output_file):
+def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, output_file):
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
 
@@ -31,36 +31,34 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None), None, None, None, None])
 
-    # Read combined_rrna
-    rrna_data = pd.read_csv(combined_rrna, sep='\t')
+    # Create a dictionary to store data for each sheet
+    sheet_data = {}
 
-    for rna_type in ["5S rRNA", "16S rRNA", "23S rRNA"]:
-        # Filter rrna_data based on rna_type
-        filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
+    # Fixed columns
+    fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
-        # Iterate over unique samples
-        for sample in unique_samples:
-            # Extract relevant data for the current sample and rna_type
-            sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
+    for _, row in data.iterrows():
+        # Split the "sheet" values by "; " and iterate over them
+        for sheet_name in row['topic_ecosystem'].split('; '):  # Assuming 'topic_ecosystem' corresponds to 'sheet'
+            sheet_name = sheet_name.replace(" ", "_")
+            if sheet_name not in sheet_data:
+                sheet_data[sheet_name] = []
 
-            # Concatenate the values and format them as needed
-            values = [
-                f"{row['query_id']}, ({row['begin']}, {row['end']})"
-                for _, row in sample_rrna_data.iterrows()
-            ]
+            # Exclude the "sheet" column and move "gene_id" as the second column
+            row_data = [row[col] for col in fixed_columns]
 
-            # Join multiple values with "; "
-            joined_values = "; ".join(values)
+            # Include the 'potential_amg' column if it exists
+            if 'potential_amg' in data.columns:
+                # Convert 'potential_amg' values to "TRUE" or "FALSE"
+                row_data += ['TRUE' if row['potential_amg'] == 'TRUE' else 'FALSE']
 
-            # Find the corresponding column index in the genome_stats sheet and update the value
-            for col_idx, col in enumerate(gs_sheet[1], start=1):
-                if col.value == rna_type:
-                    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
-                        if row[0].value == sample:
-                            row_idx = row[0].row
-                            gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+            # Append the rest of the columns without 'potential_amg'
+            row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
-    for sheet_name in ["ExampleSheet1", "ExampleSheet2"]:
+            # Append the modified row to the corresponding sheet
+            sheet_data[sheet_name].append(row_data)
+
+    for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
@@ -78,8 +76,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws.append(column_names)
 
         # Append data rows to the worksheet
-        for _, row in data.iterrows():
-            ws.append(list(row))
+        for r_idx, row in enumerate(sheet_rows, 1):
+            ws.append(row)
 
         # Create a table from the data for filtering
         tab = Table(displayName=f"{sheet_name}_Table", ref=ws.dimensions)
@@ -118,8 +116,7 @@ if __name__ == '__main__':
     parser.add_argument('--rrna-file', required=True, help='Path to the rRNA TSV file')
     parser.add_argument('--trna-file', required=True, help='Path to the tRNA TSV file')
     parser.add_argument('--combined-annotations', required=True, help='Path to the combined_annotations TSV file')
-    parser.add_argument('--combined-rrna', required=True, help='Path to the combined_rrna TSV file')
     parser.add_argument('--output-file', required=True, help='Path to the output XLSX file')
 
     args = parser.parse_args()
-    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.combined_rrna, args.output_file)
+    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.output_file)
