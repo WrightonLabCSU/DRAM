@@ -3,7 +3,6 @@ import pandas as pd
 from openpyxl import Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
-
 def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, combined_rrna, output_file):
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
@@ -26,7 +25,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination", "5S rRNA", "23S rRNA", "16S rRNA"]
+    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(rna_columns)
     gs_sheet.append(column_names)
 
     # Populate genome_stats sheet with data from combined_annotations
@@ -35,7 +34,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * len(rna_columns))
 
     # Iterate over unique samples
     for sample in unique_samples:
@@ -71,7 +70,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
     # Print completeness and contamination values
     print("\nCompleteness and Contamination values:")
-    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=4, max_col=5, values_only=True):
+    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=5, max_col=6, values_only=True):
         print(row)
 
     print("\nUpdated Genome Stats Sheet:")
