@@ -27,6 +27,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination", "5S rRNA", "23S rRNA", "16S rRNA"]
     gs_sheet.append(column_names)
 
+
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
         # Extract information for the current sample from combined_annotations
@@ -35,18 +36,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
 
-    # Read combined_rrna dynamically
-    rrna_data = pd.read_csv(combined_rrna, sep='\t')
+    # Iterate over unique samples
+    for sample in unique_samples:
+        # Iterate over RNA columns for each sample
+        for rna_type in rna_columns:
+            # Filter rrna_data based on rna_type
+            filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
 
-    # Explicitly define RNA columns in a specific order
-    rna_columns = ["5S rRNA", "23S rRNA", "16S rRNA"]
-
-    for rna_type in rna_columns:
-        # Filter rrna_data based on rna_type
-        filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
-
-        # Iterate over unique samples
-        for sample in unique_samples:
             # Extract relevant data for the current sample and rna_type
             sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
 
@@ -71,6 +67,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                                 row_idx = row[0].row
                                 gs_sheet.cell(row=row_idx, column=column_names.index(rna_type) + 1).value = joined_values
                                 print(f"Updated value at row {row_idx}, column {column_names.index(rna_type) + 1}")
+
 
     # Print completeness and contamination values
     print("\nCompleteness and Contamination values:")
