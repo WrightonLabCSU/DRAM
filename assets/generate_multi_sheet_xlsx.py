@@ -35,28 +35,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * len(unique_rna_types))
 
-    # Find the column indices for completeness and contamination
-    completeness_col_idx = column_names.index('completeness') + 1
-    contamination_col_idx = column_names.index('contamination') + 1
-
-    # Populate completeness and contamination values in genome_stats sheet
-    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=completeness_col_idx, max_col=contamination_col_idx):
-        for sample_row in row:
-            sample = sample_row.offset(column=-3).value  # Get the corresponding sample value
-            sample_info = combined_data[combined_data['sample'] == sample].iloc[0]
-            gs_sheet.cell(row=sample_row.row, column=completeness_col_idx).value = sample_info.get('Completeness', None)
-            gs_sheet.cell(row=sample_row.row, column=contamination_col_idx).value = sample_info.get('Contamination', None)
-
     # Read combined_rrna dynamically
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
 
     for rna_type in unique_rna_types:
         # Filter rrna_data based on rna_type
         filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
-
-        # Print RNA type and corresponding values for debugging
-        print(f"\nDebugging for RNA type: {rna_type}")
-        print(f"RNA values: {filtered_rrna_data[['query_id', 'begin', 'end']]}")
 
         # Iterate over unique samples
         for sample in unique_samples:
@@ -70,9 +54,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                     f"{row['query_id']}, ({row['begin']}, {row['end']})"
                     for _, row in sample_rrna_data.iterrows()
                 ]
-
-                # Print joined values for debugging
-                print(f"Sample: {sample}, Joined values: {values}")
 
                 # Join multiple values with "; "
                 joined_values = "; ".join(values)
