@@ -614,6 +614,7 @@ workflow {
         /* Run RRNA_COLLECT to generate a combined TSV for all fastas */
         RRNA_COLLECT( ch_collected_rRNAs )
         ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
+        ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
 
 
         /* Annotate according to the user-specified databases */

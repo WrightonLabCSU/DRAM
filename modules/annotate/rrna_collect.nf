@@ -7,6 +7,7 @@ process RRNA_COLLECT {
 
     output:
     path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true
+    path("combined_rrna_scan.tsv"), emit: rrna_combined_out, optional: true
 
     script:
     """
@@ -28,6 +29,9 @@ process RRNA_COLLECT {
     # Create a dictionary to store counts for each sample
     sample_counts = {sample: Counter() for sample in samples}
 
+    # Create a list to store individual input DataFrames
+    individual_dfs = []
+
     # Iterate through each input file
     for file in tsv_files:
         sample_name = os.path.basename(file).replace("_processed_rrnas.tsv", "")
@@ -47,6 +51,15 @@ process RRNA_COLLECT {
         # Update counts for each sample
         for gene_id, count in gene_counts.items():
             sample_counts[sample_name][gene_id] += count
+
+        # Append the individual input DataFrame to the list
+        individual_dfs.append(input_df)
+
+    # Combine all individual DataFrames into a single DataFrame
+    combined_df = pd.concat(individual_dfs, ignore_index=True)
+
+    # Write the combined DataFrame to the output file
+    combined_df.to_csv("combined_rrna_scan.tsv", sep="\t", index=False)
 
     # Add 'type' column to collected_data
     collected_data['type'] = ""
@@ -74,7 +87,6 @@ process RRNA_COLLECT {
 
     # Write the collected data to the output file
     collected_data.to_csv("collected_rrnas.tsv", sep="\t", index=False)
-
 
 
     """
