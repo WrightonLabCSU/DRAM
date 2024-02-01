@@ -37,12 +37,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
 
     # Update RNA columns dynamically
-    for sample in unique_samples:
-        # Iterate over RNA columns for each sample
-        for rna_type in unique_rna_types:
-            # Filter rrna_data based on rna_type
-            filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
+    for rna_type in unique_rna_types:
+        # Filter rrna_data based on rna_type
+        filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
 
+        # Iterate over samples
+        for sample in unique_samples:
             # Extract relevant data for the current sample and rna_type
             sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
 
@@ -58,16 +58,15 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 joined_values = "; ".join(values)
 
                 # Find the corresponding column index in the genome_stats sheet and update the value
-                for col_idx, col in enumerate(column_names, start=1):
-                    if col == rna_type:
-                        print(f"\nUpdating RNA column: {rna_type}")
-                        print(f"Values to be populated: {joined_values}")
-                        print(f"Column Index in genome_stats: {col_idx}")
-                        for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
-                            if row[0].value == sample:
-                                row_idx = row[0].row
-                                gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-                                print(f"Updated value at row {row_idx}, column {col_idx}")
+                col_idx = column_names.index(rna_type) + 1
+                print(f"\nUpdating RNA column: {rna_type}")
+                print(f"Values to be populated: {joined_values}")
+                print(f"Column Index in genome_stats: {col_idx}")
+                for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
+                    if row[0].value == sample:
+                        row_idx = row[0].row
+                        gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+                        print(f"Updated value at row {row_idx}, column {col_idx}")
 
     # Print completeness and contamination values
     print("\nCompleteness and Contamination values:")
