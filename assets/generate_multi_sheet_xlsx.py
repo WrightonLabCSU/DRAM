@@ -61,10 +61,10 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 # Find the corresponding column index in the genome_stats sheet and update the value
                 for col_idx, col in enumerate(column_names, start=1):
                     if col == rna_type:
-                        for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
+                        for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=column_names.index(col) + 1, max_col=column_names.index(col) + 1):
                             if row[0].value == sample:
                                 row_idx = row[0].row
-                                gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+                                gs_sheet.cell(row=row_idx, column=column_names.index(col) + 1).value = joined_values
 
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
