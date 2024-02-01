@@ -39,9 +39,10 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Initialize a list for tRNA count values
     tRNA_count_values = [0] * len(unique_samples)
 
+
     # Calculate "tRNA count" and add the column to genome_stats sheet
+    tRNA_count_values = [0] * len(unique_samples)
     trna_data = pd.read_csv(trna_file, sep='\t')
-    sample_names = trna_data.columns[5:]  # Assuming the relevant columns start from index 5
 
     # Sum tRNA counts for each sample
     for idx, sample in enumerate(unique_samples):
@@ -95,6 +96,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
+
     # Create a dictionary to store data for each sheet
     sheet_data = {}
 
