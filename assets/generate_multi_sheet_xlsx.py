@@ -35,7 +35,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
-
+    
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
         # Filter rrna_data based on rna_type
@@ -68,7 +68,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                     if row[0].value == sample:
                         row_idx = row[0].row
                         break
-                
+                    
                 # Update the value in the correct cell
                 gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
                 print(f"Updated value at row {row_idx}, column {col_idx}")
