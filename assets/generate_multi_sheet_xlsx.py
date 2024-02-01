@@ -21,7 +21,14 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     gs_sheet = wb.create_sheet(title="genome_stats")
 
     # Append column names to genome_stats sheet
-    gs_sheet.append(["sample", "number of scaffolds", "taxonomy", "completeness", "contamination", "5S rRNA", "16S rRNA", "23S rRNA", "tRNA count"])
+    gs_sheet.append(["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"])
+
+    # Dynamically get unique RNA types from combined_rrna
+    rrna_data = pd.read_csv(combined_rrna, sep='\t')
+    unique_rna_types = rrna_data['type'].unique()
+
+    # Append RNA type columns to genome_stats sheet
+    gs_sheet.append(list(unique_rna_types))
 
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
@@ -29,29 +36,19 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None), None, None, None, None])
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)])
 
-    print("Genome Stats Sheet:")
-    for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
-        print(row)
-
-    # Read combined_rrna
+    # Read combined_rrna dynamically
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
 
-    for rna_type in ["5S rRNA", "16S rRNA", "23S rRNA"]:
+    for rna_type in unique_rna_types:
         # Filter rrna_data based on rna_type
         filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
-
-        print(f"\nRNA Type: {rna_type}")
-        print(filtered_rrna_data)
 
         # Iterate over unique samples
         for sample in unique_samples:
             # Extract relevant data for the current sample and rna_type
             sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
-
-            print(f"\nSample: {sample}")
-            print(sample_rrna_data)
 
             # Check if sample_rrna_data is not empty
             if not sample_rrna_data.empty:
