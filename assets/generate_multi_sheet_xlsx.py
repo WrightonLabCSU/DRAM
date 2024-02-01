@@ -62,11 +62,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 print(f"\nUpdating RNA column: {rna_type}")
                 print(f"Values to be populated: {joined_values}")
                 print(f"Column Index in genome_stats: {col_idx}")
-                for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
+                
+                # Find the corresponding row index for the sample
+                for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=1, max_col=1):
                     if row[0].value == sample:
                         row_idx = row[0].row
-                        gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-                        print(f"Updated value at row {row_idx}, column {col_idx}")
+                        break
+                
+                # Update the value in the correct cell
+                gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+                print(f"Updated value at row {row_idx}, column {col_idx}")
 
     # Print completeness and contamination values
     print("\nCompleteness and Contamination values:")
