@@ -23,9 +23,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Append column names to genome_stats sheet
     gs_sheet.append(["sample", "number of scaffolds", "taxonomy", "completeness", "contamination", "5S rRNA", "16S rRNA", "23S rRNA", "tRNA count"])
 
-    # Append unique sample values to genome_stats sheet
+    # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
-        gs_sheet.append([sample, None, None, None, None, None, None, None, None])  # Populate with None for now
+        # Extract information for the current sample from combined_annotations
+        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
+
+        # Append data to genome_stats sheet
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None), None, None, None, None])
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
