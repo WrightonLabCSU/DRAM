@@ -38,10 +38,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Filter rrna_data based on rna_type
         filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
 
+        print(f"RNA Type: {rna_type}")
+        print(filtered_rrna_data)
+
         # Iterate over unique samples
         for sample in unique_samples:
             # Extract relevant data for the current sample and rna_type
             sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
+
+            print(f"Sample: {sample}")
+            print(sample_rrna_data)
 
             # Concatenate the values and format them as needed
             values = [
@@ -59,6 +65,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                         if row[0].value == sample:
                             row_idx = row[0].row
                             gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
