@@ -34,9 +34,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * len(rna_columns))
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
 
-    # Iterate over unique samples
+    # Update RNA columns dynamically
     for sample in unique_samples:
         # Iterate over RNA columns for each sample
         for rna_type in unique_rna_types:
@@ -63,11 +63,11 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                         print(f"\nUpdating RNA column: {rna_type}")
                         print(f"Values to be populated: {joined_values}")
                         print(f"Column Index in genome_stats: {col_idx}")
-                        for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=col_idx, max_col=col_idx):
+                        for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=column_names.index(col) + 1, max_col=column_names.index(col) + 1):
                             if row[0].value == sample:
                                 row_idx = row[0].row
-                                gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-                                print(f"Updated value at row {row_idx}, column {col_idx}")
+                                gs_sheet.cell(row=row_idx, column=column_names.index(col) + 1).value = joined_values
+                                print(f"Updated value at row {row_idx}, column {column_names.index(col) + 1}")
 
     # Print completeness and contamination values
     print("\nCompleteness and Contamination values:")
