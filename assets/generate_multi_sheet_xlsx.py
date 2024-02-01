@@ -145,7 +145,8 @@ if __name__ == '__main__':
     parser.add_argument('--rrna-file', required=True, help='Path to the rRNA TSV file')
     parser.add_argument('--trna-file', required=True, help='Path to the tRNA TSV file')
     parser.add_argument('--combined-annotations', required=True, help='Path to the combined_annotations TSV file')
+    parser.add_argument('--combined-rrna', required=True, help='Path to the combined_rrna TSV file')
     parser.add_argument('--output-file', required=True, help='Path to the output XLSX file')
 
     args = parser.parse_args()
-    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.output_file)
+    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.combined_rrna, args.output_file)
