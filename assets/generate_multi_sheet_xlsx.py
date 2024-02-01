@@ -60,7 +60,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                             row_idx = row[0].row
                             gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
 
-
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
