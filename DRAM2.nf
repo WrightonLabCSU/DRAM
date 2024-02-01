@@ -398,13 +398,12 @@ if( params.merge ){
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Create channel for optional topic or ecosystem distill sheets and custom sheets
+    Create channels for optional topic and/or ecosystem and/or custom sheets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-// Initialize channel variables
-default_channel = Channel.fromPath(params.distill_dummy_sheet)
 /* Create the default distill topic and ecosystem channels */
+default_channel = Channel.fromPath(params.distill_dummy_sheet)
+
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
         distill_default = 0
@@ -566,14 +565,6 @@ if( params.call || params.annotate || params.distill_ecosystem || params.distill
 
 workflow {
 
-    /*
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        Call
-        Input: <fastas> Fasta files (with optionally renamed headers)
-        Output: <called_proteins, called_genes> Prodigal called genes in protein format and in nucleotide format
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    */
-
     /* Rename fasta headers
         Process 1-by-1 
     */
@@ -581,31 +572,27 @@ workflow {
         if( params.rename ) {
             RENAME_FASTA( fastas )
             fasta = RENAME_FASTA.out.renamed_fasta
-        }
+        } 
         else {
             fasta = fastas
         }
     }
 
-    /* Call genes using prodigal */
+    /* Call genes using prodigal - only if the user did not provide input genes */
     if( params.call && params.input_genes == 0 ) {
         CALL_GENES ( fasta )
         called_genes = CALL_GENES.out.prodigal_fna
-
         called_proteins = CALL_GENES.out.prodigal_faa
     }
 
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         Annotation
-        Input:
-        Output:
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
     if( params.annotate ){
-
         // Not sure if we want these default or optional yet
-        // tRNAscan-SE stil throws random errors
+        /* Run tRNAscan-SE on each fasta to identify tRNAs */
         TRNA_SCAN( fasta )
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out
         // Collect all sample formatted tRNA files
@@ -613,26 +600,30 @@ workflow {
             .mix( ch_trna_scan )
             .collect()
             .set { ch_collected_tRNAs }
+        /* Run TRNA_COLLECT to generate a combined TSV for all fastas */
         TRNA_COLLECT( ch_collected_tRNAs )
         ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
 
-
+        /* Run barrnap on each fasta to identify rRNAs */
         RRNA_SCAN( fasta )
         ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
-        // Collect all sample formatted rRNA files
         Channel.empty()
             .mix( ch_rrna_scan )
             .collect()
             .set { ch_collected_rRNAs }
+        /* Run RRNA_COLLECT to generate a combined TSV for all fastas */
         RRNA_COLLECT( ch_collected_rRNAs )
         ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
 
+
+        /* Annotate according to the user-specified databases */
         if( annotate_kegg == 1 ){
             //KEGG_INDEX ( params.kegg_mmseq_loc )
             //MMSEQS2 ( called_genes, params.kegg_mmseq_loc, params.kegg_index )
             //MMSEQS2 ( called_genes, params.kegg_mmseq_loc )
+        } else {
+            ch_kegg_formatted = []
         }
-
         if( annotate_kofam == 1 ){
             HMM_SEARCH_KOFAM ( called_proteins, ch_kofam_db )
             ch_kofam_hmms = HMM_SEARCH_KOFAM.out.hmm_search_out
@@ -645,7 +636,6 @@ workflow {
         } else {
             ch_kofam_formatted = []
         }
-        // DBCAN not finished - this needs editing!
         if( annotate_dbcan == 1 ){
             
             HMM_SEARCH_DBCAN ( called_proteins, ch_dbcan_db )
@@ -660,35 +650,21 @@ workflow {
         } else {
             ch_dbcan_formatted = []
         }
-
         if (annotate_camper == 1){
-
         }
-
         if (annotate_fegenie == 1){
-
         }
-
         if (annotate_methyl == 1){
-
         }
-
         if (annotate_cant_hyd == 1){
-
         }
-
         if (annotate_heme == 1){
-
         }
-
         if (annotate_sulfur == 1){
-
         }
-
         if (annotate_methyl == 1){
 
         }
-
         /*
         if(user provided database){
 
@@ -696,7 +672,7 @@ workflow {
         */
 
         /* Combine formatted annotations */
-        // Collect all sample formatted_hits in prep for distill_summary
+        /* Collect all sample formatted_hits in prep for distill_summary */
         // Need to figure out how to handle when not all channels are here.
         Channel.empty()
             .mix( ch_kofam_formatted )
@@ -705,7 +681,7 @@ workflow {
             .set { collected_formatted_hits }
 
 
-        //COMBINE_ANNOTATIONS will collect all of the sample annotations files across ALL databases
+        /* COMBINE_ANNOTATIONS collects all annotations files across ALL databases */
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
@@ -730,10 +706,6 @@ workflow {
         }
 
     }
-
-    // Eventually, we will collect all of the formatted_hits.out
-    //  and pass them all together to the distill to create and intial metabolism_summary_simple.tsv
-    // From this, we will create the XLSX multi-sheet output file
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         Distill
@@ -741,23 +713,16 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
-        
+        /* Combine the individual user-specified distill sheets into a single channel */
         COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         DISTILL_SUMMARY( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_distill_summary_script )
         ch_simple_matab_summ = DISTILL_SUMMARY.out.ch_genome_sum_simple
 
-
         //Need to add in distill final which make the multi-sheet xlsx:
-        // 1) tRNA and rRNA summary files - these are formatted for the sheets 'tRNA' and 'rRNA'
-        // 2) tRNA and rRNA files need to be incorporated into the 'genome_stats' sheet (not sure about the approach yet)
-        // 3) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
+        // 1) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
         DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_trna_sheet  )
-
-
-
-        //PRODUCT_HEATMAP( ch_annotation_counts )
     }
 
     /*
@@ -767,8 +732,7 @@ workflow {
     */   
     /*
     if( params.product ){
-    
-        
+        PRODUCT_HEATMAP( ch_annotation_counts )
 
     }
     */
