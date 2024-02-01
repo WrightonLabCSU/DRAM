@@ -3,6 +3,7 @@ import pandas as pd
 from openpyxl import Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
+
 def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, combined_rrna, output_file):
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
@@ -21,12 +22,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
     # Dynamically get unique RNA types from combined_rrna
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
+    rna_columns = rrna_data['type'].unique()  # Define rna_columns here
     unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
     column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination", "5S rRNA", "23S rRNA", "16S rRNA"]
     gs_sheet.append(column_names)
-
 
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
@@ -67,7 +68,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                                 row_idx = row[0].row
                                 gs_sheet.cell(row=row_idx, column=column_names.index(rna_type) + 1).value = joined_values
                                 print(f"Updated value at row {row_idx}, column {column_names.index(rna_type) + 1}")
-
 
     # Print completeness and contamination values
     print("\nCompleteness and Contamination values:")
