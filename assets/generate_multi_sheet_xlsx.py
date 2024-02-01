@@ -31,6 +31,10 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None), None, None, None, None])
 
+    print("Genome Stats Sheet:")
+    for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
+        print(row)
+
     # Read combined_rrna
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
 
@@ -38,7 +42,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Filter rrna_data based on rna_type
         filtered_rrna_data = rrna_data[rrna_data['type'] == rna_type]
 
-        print(f"RNA Type: {rna_type}")
+        print(f"\nRNA Type: {rna_type}")
         print(filtered_rrna_data)
 
         # Iterate over unique samples
@@ -46,7 +50,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Extract relevant data for the current sample and rna_type
             sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
 
-            print(f"Sample: {sample}")
+            print(f"\nSample: {sample}")
             print(sample_rrna_data)
 
             # Check if sample_rrna_data is not empty
@@ -67,6 +71,10 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                             if row[0].value == sample:
                                 row_idx = row[0].row
                                 gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+
+    print("\nUpdated Genome Stats Sheet:")
+    for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
+        print(row)
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
