@@ -133,6 +133,8 @@ if( params.input_genes = "" && (params.distill_topic != "" || params.distill_eco
     error("If you want to distill, you must provide input fasta files via --input_genes <path/to/directory/> or you much provide called genes via --input_genes <path/to/directory>.")
 }
 
+
+
 //Add in other checks for adjectives,... etc.
 
 
@@ -586,7 +588,7 @@ workflow {
     }
 
     /* Call genes using prodigal - only if the user did not provide input genes */
-    if( params.call && params.input_genes == 0 ) {
+    if( params.call && params.input_genes == "" ) {
         CALL_GENES ( fasta )
         called_genes = CALL_GENES.out.prodigal_fna
         called_proteins = CALL_GENES.out.prodigal_faa
