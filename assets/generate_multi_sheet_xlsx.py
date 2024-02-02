@@ -95,11 +95,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             else:
                 print(f"Sample {sample} has no data for {rna_type}")
 
+    # Reorder columns to place "tRNA count" at the end
+    column_names.remove("tRNA count")
+    column_names.extend(["tRNA count"])
+
     # Print completeness, contamination, and RNA values
     print("\nCompleteness, Contamination, and RNA values:")
     for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=4, values_only=True):
         print(row)
 
+    # Print Updated Genome Stats Sheet
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
