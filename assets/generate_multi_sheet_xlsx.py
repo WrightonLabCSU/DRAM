@@ -104,14 +104,14 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             row_data = [row[col] for col in fixed_columns]
 
             # Include the 'potential_amg' column if it exists
-            if 'potential_amg' in row.index:
+            if 'potential_amg' in data.columns:
                 # Convert 'potential_amg' values to "TRUE" or "FALSE"
                 row_data += ['TRUE' if row['potential_amg'] == 'TRUE' else 'FALSE']
             else:
                 row_data += [None]  # Add None if 'potential_amg' doesn't exist
 
             # Append the rest of the columns without 'potential_amg'
-            row_data += [row[col] for col in row.index if col not in fixed_columns and col != 'potential_amg']
+            row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
