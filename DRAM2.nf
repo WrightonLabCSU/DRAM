@@ -621,7 +621,7 @@ workflow {
     /* Rename fasta headers
         Process 1-by-1 
     */
-    if( params.annotate || params.call ){
+    if( params.call ){
         if( params.rename ) {
             RENAME_FASTA( ch_input_fastas )
             ch_fasta = RENAME_FASTA.out.renamed_fasta
