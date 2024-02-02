@@ -31,11 +31,19 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
         # Extract information for the current sample from combined_annotations
-        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
+        sample_info = combined_data[combined_data['sample'] == sample]
 
-        # Extract completeness and contamination values
-        completeness = sample_info.get('Completeness', None)
-        contamination = sample_info.get('Contamination', None)
+        if not sample_info.empty:
+            # Get the first row of sample_info (assuming one row per sample)
+            sample_info = sample_info.iloc[0]
+
+            # Extract completeness and contamination values
+            completeness = sample_info.get('Completeness', None)
+            contamination = sample_info.get('Contamination', None)
+        else:
+            # Handle the case where sample_info is empty (no data for the sample)
+            completeness = None
+            contamination = None
 
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), completeness, contamination] + [None] * (len(rna_columns) + 1))
