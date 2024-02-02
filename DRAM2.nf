@@ -429,10 +429,10 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         //    ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
         //    ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
         ch_collected_rRNAs = Channel
-            .fromPath(params.rrnas)
+            .fromPath("${params.rrnas}/*.tsv", checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with barrnap. Cannot find any files at: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/directory" }
         ch_collected_tRNAs = Channel
-            .fromPath(params.trnas)
+            .fromPath("${params.trnas}/*.tsv", checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
 
     }
@@ -440,13 +440,13 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     // Ensure annotations, taxonomy and bin quality channels are set.
     if( params.annotate == 0 ){
         ch_final_annots = Channel
-            .fromPath(params.annotations)
+            .fromPath(params.annotations, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene fasta files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
         ch_bin_quality = Channel
-            .fromPath(params.bin_quality)
+            .fromPath(params.bin_quality, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide bin quality information (--bin_quality <path>). Cannot find any called gene fasta files matching: ${params.bin_quality}\nNB: Path needs to follow pattern: path/to/file" }
         ch_taxa = Channel
-            .fromPath(params.taxa)
+            .fromPath(params.taxa, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide bin taxonomy information (--taxa <path>). Cannot find any called gene fasta files matching: ${params.bin_quality}\nNB: Path needs to follow pattern: path/to/file" }
 
     }
