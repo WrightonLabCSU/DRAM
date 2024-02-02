@@ -93,6 +93,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Fixed columns
     fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
+    # Track whether 'potential_amg' column is already added
+    potential_amg_added = False
+
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
         for sheet_name in row['topic_ecosystem'].split('; '):  # Assuming 'topic_ecosystem' corresponds to 'sheet'
@@ -103,16 +106,20 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Exclude the "sheet" column and move "gene_id" as the second column
             row_data = [row[col] for col in fixed_columns]
 
-            # Include the 'potential_amg' column if it exists
-            if 'potential_amg' in data.columns:
-                # Convert 'potential_amg' values to "TRUE" or "FALSE"
-                row_data += ['TRUE' if row['potential_amg'] == 'TRUE' else 'FALSE']
+            # Include the 'potential_amg' column only once for each 'topic_ecosystem'
+            if 'potential_amg' in data.columns and not potential_amg_added:
+                row_data += ['potential_amg']
+                potential_amg_added = True
 
             # Append the rest of the columns without 'potential_amg'
             row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
+
+        # Reset 'potential_amg_added' for the next iteration
+        potential_amg_added = False
+
 
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
