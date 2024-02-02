@@ -99,7 +99,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
 
-    or sheet_name, sheet_rows in sheet_data.items():
+    for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
