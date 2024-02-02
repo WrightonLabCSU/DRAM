@@ -103,10 +103,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Exclude the "sheet" column and move "gene_id" as the second column
             row_data = [row[col] for col in fixed_columns]
 
-            # Include the 'potential_amg' column if it exists and has not been added
-            if 'potential_amg' in data.columns and 'potential_amg' not in column_names:
+            # Include the 'potential_amg' column if it exists
+            if 'potential_amg' in data.columns:
                 # Convert 'potential_amg' values to "TRUE" or "FALSE"
                 row_data += ['TRUE' if row['potential_amg'] == 'TRUE' else 'FALSE']
+            else:
+                row_data += [None]  # Add None if 'potential_amg' doesn't exist
 
             # Append the rest of the columns without 'potential_amg'
             row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
