@@ -96,8 +96,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 print(f"Sample {sample} has no data for {rna_type}")
 
     # Reorder columns to place "tRNA count" at the end
-    column_names.remove("tRNA count")
-    column_names.extend(["tRNA count"])
+    if "tRNA count" in column_names:
+        column_names.remove("tRNA count")
+        column_names.extend(["tRNA count"])
+    else:
+        # If "tRNA count" is not in column_names, add it at the end
+        column_names.append("tRNA count")
+
 
     # Print completeness, contamination, and RNA values
     print("\nCompleteness, Contamination, and RNA values:")
