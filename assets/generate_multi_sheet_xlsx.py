@@ -99,12 +99,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
 
-    for sheet_name, sheet_rows in sheet_data.items():
+    or sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
-        # Extract column names from the original DataFrame
-        column_names = fixed_columns
+        # Extract column names from the original DataFrame, including 'sample'
+        column_names = fixed_columns + unique_samples.tolist()
 
         # Append column names as the first row
         ws.append(column_names)
