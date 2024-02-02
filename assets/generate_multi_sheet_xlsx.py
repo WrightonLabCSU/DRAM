@@ -21,140 +21,74 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
     # Dynamically get unique RNA types from combined_rrna
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
-    rna_columns = rrna_data['type'].unique()  # Define rna_columns here
     unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(rna_columns) + ["tRNA count"]
+    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(unique_rna_types) + ["tRNA count"]
     gs_sheet.append(column_names)
 
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
-        # Extract information for the current sample from combined_annotations
-        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
-
-        # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None),
-                        sample_info.get('Contamination', None)] + [None] * (len(rna_columns) + 1))
+        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]
+        row_data = [
+            sample,
+            None,  # Placeholder for 'number of scaffolds'
+            sample_info['taxonomy'],
+            sample_info['Completeness'],
+            sample_info['Contamination']
+        ] + [None] * len(unique_rna_types) + [None]  # Placeholders for RNA counts and tRNA count
+        gs_sheet.append(row_data)
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
-        # Find the corresponding column index in the genome_stats sheet
         col_idx = column_names.index(rna_type) + 1
-        print(f"\nUpdating RNA column: {rna_type}")
-        print(f"Column Index in genome_stats: {col_idx}")
-
-        # Iterate over samples
         for idx, sample in enumerate(unique_samples, start=2):
-            # Extract relevant data for the current sample and rna_type
             sample_rrna_data = rrna_data[(rrna_data['sample'] == sample) & (rrna_data['type'] == rna_type)]
-
-            # Check if sample_rrna_data is not empty
             if not sample_rrna_data.empty:
-                # Concatenate the values and format them as needed
-                values = [
-                    f"{row['query_id']}, ({row['begin']}, {row['end']})"
-                    for _, row in sample_rrna_data.iterrows()
-                ]
-
-                # Join multiple values with "; "
+                values = [f"{row['query_id']}, ({row['begin']}, {row['end']})" for _, row in sample_rrna_data.iterrows()]
                 joined_values = "; ".join(values)
-
-                # Update the value in the correct cell
                 gs_sheet.cell(row=idx, column=col_idx).value = joined_values
-                print(f"Updated value at row {idx}, column {col_idx}")
-            else:
-                print(f"Sample {sample} has no data for {rna_type}")
 
     # Sum tRNA counts and update the 'tRNA count' column
     trna_data = pd.read_csv(trna_file, sep='\t')
-
     for idx, sample in enumerate(unique_samples, start=2):
-        # Extract relevant data for the current sample
-        sample_trna_count = trna_data[sample].sum(numeric_only=True)
-
-        # Update the 'tRNA count' column in the correct cell
-        gs_sheet.cell(row=idx, column=len(column_names)).value = sample_trna_count
-        print(f"Updated tRNA count value at row {idx}")
-
-    # Print completeness, contamination, and RNA values
-    print("\nCompleteness, Contamination, and RNA values:")
-    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=4, values_only=True):
-        print(row)
-
-    # Print Updated Genome Stats Sheet
-    print("\nUpdated Genome Stats Sheet:")
-    for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
-        print(row)
+        sample_trna_count = trna_data[trna_data['sample'] == sample]['count'].sum()
+        gs_sheet.cell(row=idx, column=column_names.index("tRNA count") + 1).value = sample_trna_count
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
 
     # Fixed columns
     fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    all_columns = fixed_columns.copy()
+    if 'potential_amg' in data.columns and 'potential_amg' not in all_columns:
+        all_columns.append('potential_amg')
+    all_columns.extend(col for col in data.columns if col not in all_columns)
 
     for _, row in data.iterrows():
-        # Split the "sheet" values by "; " and iterate over them
-        for sheet_name in row['topic_ecosystem'].split('; '):  # Assuming 'topic_ecosystem' corresponds to 'sheet'
+        for sheet_name in row['topic_ecosystem'].split('; '):
             sheet_name = sheet_name.replace(" ", "_")
             if sheet_name not in sheet_data:
                 sheet_data[sheet_name] = []
-
-            # Exclude the "sheet" column and move "gene_id" as the second column
-            row_data = [row[col] for col in fixed_columns]
-
-            # Include the 'potential_amg' column if it exists
-            if 'potential_amg' in data.columns:
-                # Convert 'potential_amg' values to "TRUE" or "FALSE"
-                row_data += ['TRUE' if row['potential_amg'] == 'TRUE' else 'FALSE']
-            else:
-                row_data += [None]  # Add None if 'potential_amg' doesn't exist
-
-            # Append the rest of the columns without 'potential_amg'
-            row_data += [row[col] for col in data.columns if col not in fixed_columns and col != 'potential_amg']
-
-            # Append the modified row to the corresponding sheet
+            row_data = [row[col] for col in all_columns]
             sheet_data[sheet_name].append(row_data)
 
     for sheet_name, sheet_rows in sheet_data.items():
-        # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
-
-        # Extract column names from the original DataFrame
-        column_names = fixed_columns
-
-        # Include 'potential_amg' column if it exists
-        if 'potential_amg' in data.columns:
-            column_names += ['potential_amg']
-        else:
-            # Ensure 'potential_amg' is not added again
-            column_names = [col for col in column_names if col != 'potential_amg']
-
-        # Append the rest of the columns without 'potential_amg' and fixed columns
-        column_names += [col for col in data.columns if col not in fixed_columns + ['potential_amg']]
-
-        # Append column names as the first row
-        ws.append(column_names)
-
-        # Append data rows to the worksheet
-        for r_idx, row in enumerate(sheet_rows, 1):
+        ws.append(all_columns)
+        for row in sheet_rows:
             ws.append(row)
 
-
     # Add rRNA sheet
-    rrna_data = pd.read_csv(rrna_file, sep='\t')
     rrna_sheet = wb.create_sheet(title="rRNA")
-
-    # Append column names as the first row
     rrna_sheet.append(list(rrna_data.columns))
-
-    # Append data rows to the worksheet
     for _, row in rrna_data.iterrows():
         rrna_sheet.append(list(row))
 
     # Remove the default "Sheet" that was created
-    default_sheet = wb['Sheet']
-    wb.remove(default_sheet)
+    if 'Sheet' in wb.sheetnames:
+        default_sheet = wb['Sheet']
+        wb.remove(default_sheet)
 
     # Save the workbook as the output file
     wb.save(output_file)
