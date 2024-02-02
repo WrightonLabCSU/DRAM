@@ -70,7 +70,30 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=4, values_only=True):
         print(row)
 
-    # Print Updated Genome Stats Sheet
+    # Add "tRNA count" column to genome_stats sheet as the last column
+    gs_sheet.insert_cols(len(gs_sheet[1]) + 1, amount=1)  # Insert a new column as the last column
+    gs_sheet.cell(row=1, column=len(gs_sheet[1]), value="tRNA count")  # Set the column header
+
+    # Initialize a list for tRNA count values
+    tRNA_count_values = [0] * len(unique_samples)
+
+    # Calculate "tRNA count" and other values for each sample
+    trna_data = pd.read_csv(trna_file, sep='\t')
+    sample_names = trna_data.columns[5:]  # Assuming the relevant columns start from index 5
+
+    for idx, sample in enumerate(unique_samples):
+        tRNA_count_values[idx] = trna_data[sample].sum()
+
+        # Extract completeness and contamination values from combined_annotations
+        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
+        completeness_values[idx] = sample_info.get('Completeness', None)
+        contamination_values[idx] = sample_info.get('Contamination', None)
+
+    # Populate "tRNA count" column with values for each sample
+    for idx, value in enumerate(tRNA_count_values, start=2):
+        gs_sheet.cell(row=idx, column=len(gs_sheet[1]), value=value)
+
+    # Print Updated Genome Stats Sheet with "tRNA count" column
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
@@ -142,6 +165,17 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Append data rows to the worksheet
     for _, row in rrna_data.iterrows():
         rrna_sheet.append(list(row))
+
+    # Add tRNA sheet
+    trna_data = pd.read_csv(trna_file, sep='\t')
+    trna_sheet = wb.create_sheet(title="tRNA")
+
+    # Append column names as the first row
+    trna_sheet.append(list(trna_data.columns))
+
+    # Append data rows to the worksheet
+    for _, row in trna_data.iterrows():
+        trna_sheet.append(list(row))
 
     # Remove the default "Sheet" that was created
     default_sheet = wb['Sheet']
