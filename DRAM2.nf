@@ -630,6 +630,10 @@ workflow {
             ch_fasta = ch_input_fastas
         }
 
+        CALL_GENES ( ch_fasta )
+        called_genes = CALL_GENES.out.prodigal_fna
+        ch_called_proteins = CALL_GENES.out.prodigal_faa
+
         // Not sure if we want these default or optional yet
         /* Run tRNAscan-SE on each fasta to identify tRNAs */
         TRNA_SCAN( ch_fasta )
@@ -655,13 +659,8 @@ workflow {
         ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
         ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
 
-    }
 
-    /* Call genes using prodigal - only if the user did not provide input genes */
-    if( params.call != 0 && params.input_genes == "" && params.input_proteins == "" ) {
-        CALL_GENES ( fasta )
-        called_genes = CALL_GENES.out.prodigal_fna
-        ch_called_proteins = CALL_GENES.out.prodigal_faa
+
     }
 
     /*
