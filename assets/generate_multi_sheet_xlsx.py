@@ -28,6 +28,11 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(rna_columns)
     gs_sheet.append(column_names)
 
+    # Initialize lists for completeness, contamination, and tRNA counts
+    completeness_values = [None] * len(unique_samples)
+    contamination_values = [None] * len(unique_samples)
+    tRNA_count_values = [0] * len(unique_samples)
+
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
         # Extract information for the current sample from combined_annotations
@@ -73,9 +78,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Add "tRNA count" column to genome_stats sheet as the last column
     gs_sheet.insert_cols(len(gs_sheet[1]) + 1, amount=1)  # Insert a new column as the last column
     gs_sheet.cell(row=1, column=len(gs_sheet[1]), value="tRNA count")  # Set the column header
-
-    # Initialize a list for tRNA count values
-    tRNA_count_values = [0] * len(unique_samples)
 
     # Calculate "tRNA count" and other values for each sample
     trna_data = pd.read_csv(trna_file, sep='\t')
