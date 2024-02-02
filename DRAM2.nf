@@ -47,7 +47,7 @@ else if (((params.help) || (params.h)) && params.annotate ){
 }
 
 /* Distill Help Menu */
-else if (((params.help) || (params.h)) && params.distill ){
+else if (((params.help) || (params.h)) && ((params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "")) ){
     distillHelpMessage()
     exit 0
 }
