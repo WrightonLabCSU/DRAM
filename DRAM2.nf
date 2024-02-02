@@ -384,25 +384,70 @@ if( params.call ){
 
 if( params.annotate ){
 
+    /* If the user did not specify --call, then set input called genes and proteins */
     if( params.call == 0 ){
-        ch_called_genes = Channel
+        // Set ch_input_genes
+        called_genes = Channel
             .fromPath(params.input_genes + params.genes_fmt, checkIfExists: true)
-            .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta files of called genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
-    }
-    // Convert the input_genes into a tuple: [samplename, file]
-    if( params.input_genes != "" ){
-        called_proteins = Channel.fromPath(ch_called_genes).map {
+            .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
+
+        ch_called_genes = Channel.fromPath(called_genes)
+        .map {
             sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
             tuple(sampleName, it)
         }
-        called_proteins = ch_called_genes
+
+        // Set ch_input_proteins
+        called_proteins = Channel
+            .fromPath(params.input_proteins + params.proteins_fmt, checkIfExists: true)
+            .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called proteins. Cannot find any called gene fasta files matching: ${params.input_proteins}\nNB: Path needs to follow pattern: path/to/directory/" }
+
+        ch_called_proteins = Channel.fromPath(called_proteins)
+        .map {
+            sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+            tuple(sampleName, it)
+        }
+    }    
+    
+    /* Check for input Bin Quality file */
+    if (params.bin_quality != "") {
+        ch_bin_quality = file(params.bin_quality).exists() ? file(params.bin_quality) : error("Error: If using --bin_quality, you must supply a formatted input file. Bin quality file not found at ${params.bin_quality}")
+    } else {
+        ch_bin_quality = []
+    }
+
+    /* Check for input Taxa file */
+    if (params.taxa != "") {
+        ch_taxa = file(params.taxa).exists() ? file(params.taxa) : error("Error: If using --taxa, you must supply a formatted input file. Taxonomy file not found at ${params.taxa}")
+    } else {
+        ch_taxa = []
+    } 
+
+
+}
+
+if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
+    // Ensure rRNA and tRNA channels are populated if the user is not calling genes
+    if( params.call == 0 ){
+        //set ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
+        //    ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
+        //    ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
+    }
+
+    // Ensure annotations, taxonomy and bin quality channels are set.
+    if( params.annotate == 0 ){
+        ch_final_annots = Channel
+            .fromPath(params.annotations)
+            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene fasta files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
+        ch_bin_quality = Channel
+            .fromPath(params.bin_quality)
+            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide bin quality information (--bin_quality <path>). Cannot find any called gene fasta files matching: ${params.bin_quality}\nNB: Path needs to follow pattern: path/to/directory/" }
+        ch_taxa = Channel
+            .fromPath(params.taxa)
+            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide bin taxonomy information (--taxa <path>). Cannot find any called gene fasta files matching: ${params.bin_quality}\nNB: Path needs to follow pattern: path/to/directory/" }
+
     }
 }
-/*
-if( params.merge ){
-    
-}
-*/
 
 
 /*
@@ -568,7 +613,11 @@ if( params.call || params.annotate || params.distill_ecosystem || params.distill
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     Main workflow for pipeline
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
@@ -580,29 +629,15 @@ workflow {
     if( params.annotate || params.call ){
         if( params.rename ) {
             RENAME_FASTA( fastas )
-            fasta = RENAME_FASTA.out.renamed_fasta
+            ch_fasta = RENAME_FASTA.out.renamed_fasta
         } 
         else {
-            fasta = fastas
+            ch_fasta = fastas
         }
-    }
 
-    /* Call genes using prodigal - only if the user did not provide input genes */
-    if( params.call && params.input_genes == "" ) {
-        CALL_GENES ( fasta )
-        called_genes = CALL_GENES.out.prodigal_fna
-        called_proteins = CALL_GENES.out.prodigal_faa
-    }
-
-    /*
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        Annotation
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    */
-    if( params.annotate ){
         // Not sure if we want these default or optional yet
         /* Run tRNAscan-SE on each fasta to identify tRNAs */
-        TRNA_SCAN( fasta )
+        TRNA_SCAN( ch_fasta )
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out
         // Collect all sample formatted tRNA files
         Channel.empty()
@@ -614,7 +649,7 @@ workflow {
         ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
 
         /* Run barrnap on each fasta to identify rRNAs */
-        RRNA_SCAN( fasta )
+        RRNA_SCAN( ch_fasta )
         ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
         Channel.empty()
             .mix( ch_rrna_scan )
@@ -625,17 +660,33 @@ workflow {
         ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
         ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
 
+    }
+
+    /* Call genes using prodigal - only if the user did not provide input genes */
+    if( params.call != 0 && params.input_genes == "" && params.input_proteins == "" ) {
+        CALL_GENES ( fasta )
+        called_genes = CALL_GENES.out.prodigal_fna
+        ch_called_proteins = CALL_GENES.out.prodigal_faa
+    }
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Annotation
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+    if( params.annotate ){
 
         /* Annotate according to the user-specified databases */
         if( annotate_kegg == 1 ){
             //KEGG_INDEX ( params.kegg_mmseq_loc )
-            //MMSEQS2 ( called_genes, params.kegg_mmseq_loc, params.kegg_index )
-            //MMSEQS2 ( called_genes, params.kegg_mmseq_loc )
+            //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc, params.kegg_index )
+            //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc )
         } else {
             ch_kegg_formatted = []
         }
+
         if( annotate_kofam == 1 ){
-            HMM_SEARCH_KOFAM ( called_proteins, ch_kofam_db )
+            HMM_SEARCH_KOFAM ( ch_called_proteins, ch_kofam_db )
             ch_kofam_hmms = HMM_SEARCH_KOFAM.out.hmm_search_out
 
             PARSE_HMM_KOFAM ( ch_kofam_hmms, ch_parse_hmmsearch )
@@ -646,9 +697,10 @@ workflow {
         } else {
             ch_kofam_formatted = []
         }
+
         if( annotate_dbcan == 1 ){
             
-            HMM_SEARCH_DBCAN ( called_proteins, ch_dbcan_db )
+            HMM_SEARCH_DBCAN ( ch_called_proteins, ch_dbcan_db )
             ch_dbcan_hmms = HMM_SEARCH_DBCAN.out.hmm_search_out
 
             PARSE_HMM_DBCAN ( ch_dbcan_hmms, ch_parse_hmmsearch )
@@ -660,18 +712,25 @@ workflow {
         } else {
             ch_dbcan_formatted = []
         }
+
         if (annotate_camper == 1){
         }
+
         if (annotate_fegenie == 1){
         }
+
         if (annotate_methyl == 1){
         }
+
         if (annotate_cant_hyd == 1){
         }
+
         if (annotate_heme == 1){
         }
+
         if (annotate_sulfur == 1){
         }
+
         if (annotate_methyl == 1){
 
         }
@@ -732,6 +791,8 @@ workflow {
 
         /* Separate the distill summary into separate sheets - add on genome_stats sheet, rRNA sheet and tRNA sheet */
         DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_final_annots )
+
+        
     }
 
     /*
