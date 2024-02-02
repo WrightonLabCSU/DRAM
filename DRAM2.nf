@@ -790,6 +790,15 @@ workflow {
         DISTILL_SUMMARY( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_distill_summary_script )
         ch_simple_matab_summ = DISTILL_SUMMARY.out.ch_genome_sum_simple
 
+        if( params.call == 0 ){
+            TRNA_COLLECT( ch_collected_tRNAs )
+            ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
+
+            RRNA_COLLECT( ch_collected_rRNAs )
+            ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
+            ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
+        }
+
         /* Separate the distill summary into separate sheets - add on genome_stats sheet, rRNA sheet and tRNA sheet */
         DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_final_annots )
 
