@@ -439,7 +439,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
             .collect()
             .set { ch_collected_tRNAs }
-        ch_collected_tRNAs.view()
     }
 
     // Ensure annotations, taxonomy and bin quality channels are set.
@@ -796,6 +795,7 @@ workflow {
         ch_simple_matab_summ = DISTILL_SUMMARY.out.ch_genome_sum_simple
 
         if( params.call == 0 ){
+            ch_collected_tRNAs.view()
             TRNA_COLLECT( ch_collected_tRNAs )
             ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
 
