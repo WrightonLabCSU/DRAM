@@ -99,6 +99,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
 
+    # Inside the loop for creating "topic_ecosystem" sheets
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
@@ -111,6 +112,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
+            # Replace 0/1 with "FALSE"/"TRUE" in the 'potential_amg' column
+            row[fixed_columns.index('potential_amg')] = "TRUE" if row[fixed_columns.index('potential_amg')] == 1 else "FALSE"
             ws.append(row)
 
         # Create a table from the data for filtering
