@@ -126,9 +126,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Include 'potential_amg' column if it exists
         if 'potential_amg' in data.columns:
             column_names += ['potential_amg']
+        else:
+            # Ensure 'potential_amg' is not added again
+            column_names = [col for col in column_names if col != 'potential_amg']
 
-        # Append the rest of the columns without 'potential_amg'
-        column_names += [col for col in data.columns if col not in fixed_columns and col != 'potential_amg']
+        # Append the rest of the columns without 'potential_amg' and fixed columns
+        column_names += [col for col in data.columns if col not in fixed_columns + ['potential_amg']]
 
         # Append column names as the first row
         ws.append(column_names)
@@ -137,14 +140,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         for r_idx, row in enumerate(sheet_rows, 1):
             ws.append(row)
 
-        # Create a table from the data for filtering
-        tab = Table(displayName=f"{sheet_name}_Table", ref=ws.dimensions)
-        style = TableStyleInfo(
-            name="TableStyleMedium9", showFirstColumn=False,
-            showLastColumn=False, showRowStripes=True, showColumnStripes=True
-        )
-        tab.tableStyleInfo = style
-        ws.add_table(tab)
 
     # Add rRNA sheet
     rrna_data = pd.read_csv(rrna_file, sep='\t')
