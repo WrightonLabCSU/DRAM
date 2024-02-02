@@ -33,9 +33,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Extract information for the current sample from combined_annotations
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
+        # Extract completeness and contamination values
+        completeness = sample_info.get('Completeness', None)
+        contamination = sample_info.get('Contamination', None)
+
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None),
-                        sample_info.get('Contamination', None)] + [None] * (len(rna_columns) + 1))
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), completeness, contamination] + [None] * (len(rna_columns) + 1))
+
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
@@ -53,7 +57,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             if not sample_rrna_data.empty:
                 # Concatenate the values and format them as needed
                 values = [
-                    f"{row['query_id']}, ({row['begin']}, {row['end']})"
+                    f"{row['query_id']} ({row['begin']}, {row['end']})"
                     for _, row in sample_rrna_data.iterrows()
                 ]
 
@@ -80,21 +84,22 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Create a dictionary to store data for each sheet
     sheet_data = {}
 
-    # Fixed columns
-    fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'potential_amg']
-
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
-        for sheet_name in row['topic_ecosystem'].split('; '):  # Assuming 'topic_ecosystem' corresponds to 'sheet'
+        for sheet_name in row['topic_ecosystem'].split('; '):
             sheet_name = sheet_name.replace(" ", "_")
             if sheet_name not in sheet_data:
                 sheet_data[sheet_name] = []
 
             # Exclude the "sheet" column and move "gene_id" as the second column
-            row_data = [row[col] for col in fixed_columns]
+            row_data = [row['gene_id'], row['gene_description']] + [row['pathway'], row['topic_ecosystem'],
+                                                                   row['category'], row['subcategory'],
+                                                                   "TRUE" if row['potential_amg'] == 1 else "FALSE"]
 
             # Append the rest of the columns without 'potential_amg'
-            row_data += [row[col] for col in data.columns if col not in fixed_columns]
+            row_data += [row[col] for col in data.columns if col not in ['gene_id', 'gene_description', 'pathway',
+                                                                         'topic_ecosystem', 'category', 'subcategory',
+                                                                         'potential_amg']]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -105,15 +110,14 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame, including 'sample'
-        column_names = fixed_columns + unique_samples.tolist()
+        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory',
+                        'potential_amg'] + unique_samples.tolist()
 
         # Append column names as the first row
         ws.append(column_names)
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
-            # Replace 0/1 with "FALSE"/"TRUE" in the 'potential_amg' column
-            row[fixed_columns.index('potential_amg')] = "TRUE" if row[fixed_columns.index('potential_amg')] == 1 else "FALSE"
             ws.append(row)
 
         # Create a table from the data for filtering
@@ -144,13 +148,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     wb.save(output_file)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate multi-sheet XLSX file')
-    parser.add_argument('--input-file', required=True, help='Path to the input TSV file')
-    parser.add_argument('--rrna-file', required=True, help='Path to the rRNA TSV file')
-    parser.add_argument('--trna-file', required=True, help='Path to the tRNA TSV file')
-    parser.add_argument('--combined-annotations', required=True, help='Path to the combined_annotations TSV file')
-    parser.add_argument('--combined-rrna', required=True, help='Path to the combined_rrna TSV file')
-    parser.add_argument('--output-file', required=True, help='Path to the output XLSX file')
-
+    parser = argparse.ArgumentParser(description='Generate multi-sheet XLSX file from TSV files')
+    parser.add_argument('input_file', help='Input TSV file containing gene data')
+    parser.add_argument('rrna_file', help='rRNA TSV file')
+    parser.add_argument('trna_file', help='tRNA TSV file')
+    parser.add_argument('combined_annotations', help='Combined annotations TSV file')
+    parser.add_argument('combined_rrna', help='Combined rRNA TSV file')
+    parser.add_argument('output_file', help='Output XLSX file')
     args = parser.parse_args()
+
     generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.combined_rrna, args.output_file)
