@@ -449,7 +449,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     }
 }
 
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Create channels for optional topic and/or ecosystem and/or custom sheets
