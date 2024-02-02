@@ -14,7 +14,7 @@ process DISTILL_FINAL {
     script:
     """
 
-    python ${ch_distill_final_script} --input-file ${metabolism_summary} --rrna-file ${ch_rrna_sheet} --combined-rrna ${combined_rrna} --trna-file ${ch_trna_sheet} --combined-annotations ${combined_annotations} --output-file distillate.xlsx
+    python ${ch_distill_final_script} --input_file ${metabolism_summary} --rrna_file ${ch_rrna_sheet} --combined_rrna ${combined_rrna} --trna_file ${ch_trna_sheet} --combined_annotations ${combined_annotations} --output_file distillate.xlsx
 
     """
 }
