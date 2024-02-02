@@ -102,6 +102,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 else:
                     gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
                     print(f"Updated value at row {row_idx}, column {col_idx}")
+            else:
+                print(f"Sample {sample} has no data for {rna_type}")
 
     # Print completeness, contamination, and RNA values
     print("\nCompleteness, Contamination, and RNA values:")
