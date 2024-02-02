@@ -150,12 +150,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate multi-sheet XLSX file from TSV files')
-    parser.add_argument('input_file', help='Input TSV file containing gene data')
-    parser.add_argument('rrna_file', help='rRNA TSV file')
-    parser.add_argument('trna_file', help='tRNA TSV file')
-    parser.add_argument('combined_annotations', help='Combined annotations TSV file')
-    parser.add_argument('combined_rrna', help='Combined rRNA TSV file')
-    parser.add_argument('output_file', help='Output XLSX file')
+    parser.add_argument('--input_file', help='Input TSV file containing gene data')
+    parser.add_argument('--rrna_file', help='rRNA TSV file')
+    parser.add_argument('--trna_file', help='tRNA TSV file')
+    parser.add_argument('--combined_annotations', help='Combined annotations TSV file')
+    parser.add_argument('--combined_rrna', help='Combined rRNA TSV file')
+    parser.add_argument('--output_file', help='Output XLSX file')
     args = parser.parse_args()
 
     generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.combined_rrna, args.output_file)
