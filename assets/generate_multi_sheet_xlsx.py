@@ -19,27 +19,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Create the genome_stats sheet
     gs_sheet = wb.create_sheet(title="genome_stats")
 
-    # Dynamically get unique RNA types from combined_rrna
+    # Dynamically get unique RNA types from combined_rrna and trna_data
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
-    rna_columns = rrna_data['type'].unique()  # Define rna_columns here
-    unique_rna_types = rrna_data['type'].unique()
+    trna_data = pd.read_csv(trna_file, sep='\t')
+    unique_rna_types_rrna = rrna_data['type'].unique()
+    unique_rna_types_trna = trna_data['type'].unique()
+    unique_rna_types = set(unique_rna_types_rrna) | set(unique_rna_types_trna)
 
     # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(rna_columns)
+    column_names = ["sample", "number of scaffolds", "taxonomy", "completeness", "contamination"] + list(unique_rna_types) + ["tRNA count"]
     gs_sheet.append(column_names)
-
-    # Initialize lists for completeness, contamination, and tRNA counts
-    completeness_values = [None] * len(unique_samples)
-    contamination_values = [None] * len(unique_samples)
-    tRNA_count_values = [0] * len(unique_samples)
-
-    # Populate genome_stats sheet with data from combined_annotations
-    for sample in unique_samples:
-        # Extract information for the current sample from combined_annotations
-        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
-
-        # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * len(rna_columns))
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
@@ -52,20 +41,26 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         for idx, sample in enumerate(unique_samples, start=2):
             # Extract relevant data for the current sample and rna_type
             sample_rrna_data = rrna_data[(rrna_data['sample'] == sample) & (rrna_data['type'] == rna_type)]
+            sample_trna_data = trna_data[(trna_data['sample'] == sample) & (trna_data['type'] == rna_type)]
 
-            # Check if sample_rrna_data is not empty
-            if not sample_rrna_data.empty:
+            # Check if sample_rrna_data or sample_trna_data is not empty
+            if not sample_rrna_data.empty or not sample_trna_data.empty:
                 # Concatenate the values and format them as needed
-                values = [
+                values_rrna = [
                     f"{row['query_id']}, ({row['begin']}, {row['end']})"
                     for _, row in sample_rrna_data.iterrows()
                 ]
+                values_trna = [
+                    f"{row['gene_id']}, ({row['start']}, {row['end']})"
+                    for _, row in sample_trna_data.iterrows()
+                ]
 
                 # Join multiple values with "; "
-                joined_values = "; ".join(values)
+                joined_values_rrna = "; ".join(values_rrna)
+                joined_values_trna = "; ".join(values_trna)
 
                 # Update the value in the correct cell
-                gs_sheet.cell(row=idx, column=col_idx).value = joined_values
+                gs_sheet.cell(row=idx, column=col_idx).value = joined_values_rrna + " " + joined_values_trna
                 print(f"Updated value at row {idx}, column {col_idx}")
             else:
                 print(f"Sample {sample} has no data for {rna_type}")
@@ -79,21 +74,30 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     gs_sheet.insert_cols(len(gs_sheet[1]) + 1, amount=1)  # Insert a new column as the last column
     gs_sheet.cell(row=1, column=len(gs_sheet[1]), value="tRNA count")  # Set the column header
 
-    # Calculate "tRNA count" and other values for each sample
-    trna_data = pd.read_csv(trna_file, sep='\t')
-    sample_names = trna_data.columns[5:]  # Assuming the relevant columns start from index 5
+    # Initialize lists for completeness, contamination, and tRNA counts
+    completeness_values = [None] * len(unique_samples)
+    contamination_values = [None] * len(unique_samples)
+    tRNA_count_values = [0] * len(unique_samples)
 
-    for idx, sample in enumerate(unique_samples):
-        tRNA_count_values[idx] = trna_data[sample].sum()
+    # Populate genome_stats sheet with data from combined_annotations
+    for sample in unique_samples:
+        # Extract information for the current sample from combined_annotations
+        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
+
+        # Append data to genome_stats sheet
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * (len(unique_rna_types) + 1))
+
+    # Update tRNA count and other values dynamically
+    for idx, sample in enumerate(unique_samples, start=2):
+        tRNA_count_values[idx - 2] = trna_data[sample].sum()
 
         # Extract completeness and contamination values from combined_annotations
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
-        completeness_values[idx] = sample_info.get('Completeness', None)
-        contamination_values[idx] = sample_info.get('Contamination', None)
+        completeness_values[idx - 2] = sample_info.get('Completeness', None)
+        contamination_values[idx - 2] = sample_info.get('Contamination', None)
 
-    # Populate "tRNA count" column with values for each sample
-    for idx, value in enumerate(tRNA_count_values, start=2):
-        gs_sheet.cell(row=idx, column=len(gs_sheet[1]), value=value)
+        # Populate "tRNA count" column with values for each sample
+        gs_sheet.cell(row=idx, column=len(gs_sheet[1]), value=tRNA_count_values[idx - 2])
 
     # Print Updated Genome Stats Sheet with "tRNA count" column
     print("\nUpdated Genome Stats Sheet:")
