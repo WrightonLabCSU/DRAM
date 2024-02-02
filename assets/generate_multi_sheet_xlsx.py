@@ -96,8 +96,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                         break
 
                 # Update the value in the correct cell
-                gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-                print(f"Updated value at row {row_idx}, column {col_idx}")
+                if rna_type == 'tRNA':
+                    gs_sheet.cell(row=row_idx, column=len(gs_sheet[1])).value = joined_values
+                    print(f"Updated tRNA count at row {row_idx}, column {len(gs_sheet[1])}")
+                else:
+                    gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
+                    print(f"Updated value at row {row_idx}, column {col_idx}")
 
     # Print completeness, contamination, and RNA values
     print("\nCompleteness, Contamination, and RNA values:")
