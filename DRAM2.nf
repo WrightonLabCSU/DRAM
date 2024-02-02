@@ -795,7 +795,6 @@ workflow {
         ch_simple_matab_summ = DISTILL_SUMMARY.out.ch_genome_sum_simple
 
         if( params.call == 0 ){
-            ch_collected_tRNAs.view()
             TRNA_COLLECT( ch_collected_tRNAs )
             ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
 
