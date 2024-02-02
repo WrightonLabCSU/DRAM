@@ -62,9 +62,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Populate "tRNA count" column with values for each sample
     for idx, value in enumerate(tRNA_count_values, start=2):
         gs_sheet.cell(row=idx, column=len(gs_sheet[1]), value=value)
-        
-    # Append "tRNA count" column to genome_stats sheet
-    column_names += ["tRNA count"]
+
+    # Add "tRNA count" column to genome_stats sheet as the last column
+    gs_sheet.append(["tRNA count"])
+
+    # Populate "tRNA count" column with values for each sample
+    for idx, value in enumerate(tRNA_count_values, start=2):
+        gs_sheet.cell(row=idx, column=len(gs_sheet[1]), value=value)
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
