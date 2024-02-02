@@ -35,7 +35,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data to genome_stats sheet
         gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None),
-                         sample_info.get('Contamination', None)] + [None] * (len(rna_columns) + 1))
+                        sample_info.get('Contamination', None)] + [None] * (len(rna_columns) + 1))
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
