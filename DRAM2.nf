@@ -29,6 +29,47 @@
 
 nextflow.enable.dsl = 2
 
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Load Modules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
+include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
+
+include { TRNA_SCAN                                     } from './modules/annotate/trna_scan.nf'
+include { RRNA_SCAN                                     } from './modules/annotate/rrna_scan.nf'
+include { TRNA_COLLECT                                  } from './modules/annotate/trna_collect.nf'
+include { RRNA_COLLECT                                  } from './modules/annotate/rrna_collect.nf'
+include { ADD_TAXA                                      } from './modules/annotate/add_taxa.nf'
+include { ADD_BIN_QUALITY                               } from './modules/annotate/add_bin_quality.nf'
+
+include { MMSEQS2                                       } from './modules/mmseqs2.nf'
+
+include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
+
+include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_DBCAN                  } from './modules/annotate/parse_hmmsearch.nf'
+
+include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
+include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
+include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
+include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
+
+include { INDEX as KEGG_INDEX                           } from './modules/index.nf'
+
+include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
+include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
+
+include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
+include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
+include { DISTILL_FINAL                                 } from './modules/distill/distill_final.nf'
+
+include { PRODUCT_HEATMAP                               } from './modules/product/product_heatmap.nf'
+
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Help menu and Version menu check
@@ -87,46 +128,12 @@ if( params.use_dbset){
     }
 }
 
-//Add in other checks
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Load Modules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
-include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
+if( (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ) && params.input_genes = "" ){
+    error("If you want to distill, you must provide input fasta files via --input_genes <path/to/directory/> or you much provide called genes via --input_genes <path/to/directory>.")
+}
 
-include { TRNA_SCAN                                     } from './modules/annotate/trna_scan.nf'
-include { RRNA_SCAN                                     } from './modules/annotate/rrna_scan.nf'
-include { TRNA_COLLECT                                  } from './modules/annotate/trna_collect.nf'
-include { RRNA_COLLECT                                  } from './modules/annotate/rrna_collect.nf'
-include { ADD_TAXA                                      } from './modules/annotate/add_taxa.nf'
-include { ADD_BIN_QUALITY                               } from './modules/annotate/add_bin_quality.nf'
-
-include { MMSEQS2                                       } from './modules/mmseqs2.nf'
-
-include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
-
-include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_DBCAN                  } from './modules/annotate/parse_hmmsearch.nf'
-
-include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
-include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
-include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
-include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
-
-include { INDEX as KEGG_INDEX                           } from './modules/index.nf'
-
-include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
-include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
-
-include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
-include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
-include { DISTILL_FINAL                                 } from './modules/distill/distill_final.nf'
-
-include { PRODUCT_HEATMAP                               } from './modules/product/product_heatmap.nf'
+//Add in other checks for adjectives,... etc.
 
 
 /*
@@ -381,7 +388,7 @@ if( params.annotate ){
             .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta files of called genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
     }
     // Convert the input_genes into a tuple: [samplename, file]
-    if( params.input_genes != 0 ){
+    if( params.input_genes != "" ){
         called_proteins = Channel.fromPath(ch_called_genes).map {
             sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
             tuple(sampleName, it)
@@ -745,14 +752,7 @@ workflow {
     Input helper-function definitions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-def validOptions = ["--call", "--annotate", "--distill"]
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Define a function to build additional parameters string for DRAM distill sheets
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom"]
 
 
 
