@@ -717,11 +717,11 @@ workflow {
         COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
+        /* Generate a single distillate sheet which will then be separated by DISTILL_FINAL */
         DISTILL_SUMMARY( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_distill_summary_script )
         ch_simple_matab_summ = DISTILL_SUMMARY.out.ch_genome_sum_simple
 
-        //Need to add in distill final which make the multi-sheet xlsx:
-        // 1) add in functionality to process Bin Quality and Taxonomy (if present on the ch_final_annots channel)
+        /* Separate the distill summary into separate sheets - add on genome_stats sheet, rRNA sheet and tRNA sheet */
         DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_final_annots )
     }
 
