@@ -129,7 +129,7 @@ if( params.use_dbset){
 }
 
 
-if( (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ) && params.input_genes = "" ){
+if( params.input_genes = "" && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
     error("If you want to distill, you must provide input fasta files via --input_genes <path/to/directory/> or you much provide called genes via --input_genes <path/to/directory>.")
 }
 
