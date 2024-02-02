@@ -356,13 +356,13 @@ if( params.annotate ){
 // For example, we will be able to ingest only metaT data and call genes on that
 // For example, users may use a csv or put a path to a directory
 if( params.call ){
-    // If calling genes, then create a channel called ch_fastas.
+    // If calling genes, then create a channel called ch_input_fastas.
     if ( params.input_fasta ) {
-        ch_fastas = Channel
+        ch_input_fastas = Channel
             .fromPath(params.input_fasta + params.fasta_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
     } else {
-        ch_fastas = Channel
+        ch_input_fastas = Channel
             .fromPath(params.fastas, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --input_fasta you must provide a path/to/directory containing fasta files or they must be in: ./raw_data/*.fa" }
     }    
@@ -375,8 +375,8 @@ if( params.call ){
         error("Invalid parameter '--prodigal_trans_table ${params.binning_map_mode}'. Valid values are '1','2',...,'25'.")
     }
 
-    // Convert ch_fastas into a tuple: [samplename, file]
-    ch_fastas.map {
+    // Convert ch_input_fastas into a tuple: [samplename, file]
+    ch_input_fastas.map {
         sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
         tuple(sampleName, it)
     }.set{fastas}
@@ -623,11 +623,11 @@ workflow {
     */
     if( params.annotate || params.call ){
         if( params.rename ) {
-            RENAME_FASTA( fastas )
+            RENAME_FASTA( ch_input_fastas )
             ch_fasta = RENAME_FASTA.out.renamed_fasta
         } 
         else {
-            ch_fasta = fastas
+            ch_fasta = ch_input_fastas
         }
 
         // Not sure if we want these default or optional yet
