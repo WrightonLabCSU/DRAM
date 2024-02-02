@@ -4,6 +4,7 @@ process HMM_SEARCH {
 
     input:
     tuple val( sample ), path( fasta )
+    val ( e_value )
     path( database_loc )
 
     output:
@@ -15,6 +16,7 @@ process HMM_SEARCH {
     ln -s ${database_loc}/* .
 
     hmmsearch \\
+    -E ${e_value} \\
     --domtblout ${sample}_hmmsearch.out \\
     --cpu 2 \\
     *.hmm \\

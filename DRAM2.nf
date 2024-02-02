@@ -689,7 +689,7 @@ workflow {
         }
 
         if( annotate_kofam == 1 ){
-            HMM_SEARCH_KOFAM ( ch_called_proteins, ch_kofam_db )
+            HMM_SEARCH_KOFAM ( ch_called_proteins, ch_kofam_db, params.kofam_e_value )
             ch_kofam_hmms = HMM_SEARCH_KOFAM.out.hmm_search_out
 
             PARSE_HMM_KOFAM ( ch_kofam_hmms, ch_parse_hmmsearch )
@@ -703,7 +703,7 @@ workflow {
 
         if( annotate_dbcan == 1 ){
             
-            HMM_SEARCH_DBCAN ( ch_called_proteins, ch_dbcan_db )
+            HMM_SEARCH_DBCAN ( ch_called_proteins, ch_dbcan_db, params.dbcan_e_value )
             ch_dbcan_hmms = HMM_SEARCH_DBCAN.out.hmm_search_out
 
             PARSE_HMM_DBCAN ( ch_dbcan_hmms, ch_parse_hmmsearch )
