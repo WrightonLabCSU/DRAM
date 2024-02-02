@@ -439,6 +439,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
             .toList()
             .set { ch_collected_tRNAs }
+        ch_collected_tRNAs.view()
     }
 
     // Ensure annotations, taxonomy and bin quality channels are set.
