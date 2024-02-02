@@ -428,12 +428,12 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         //set ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
         //    ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
         //    ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
-        ch_rrna_combined = Channel
+        ch_collected_rRNAs = Channel
             .fromPath(params.rrnas)
-            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide an rRNA TSV file (--rrnas <path>) with approprite formatting. Cannot find any called gene fasta files matching: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/file" }
-        ch_trna_combined = Channel
+            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with barrnap. Cannot find any files at: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/directory" }
+        ch_collected_tRNAs = Channel
             .fromPath(params.trnas)
-            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide an tRNA TSV file (--rrnas <path>) with approprite formatting. Cannot find any called gene fasta files matching: ${params.trnas}\nNB: Path needs to follow pattern: path/to/file" }
+            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
 
     }
 
