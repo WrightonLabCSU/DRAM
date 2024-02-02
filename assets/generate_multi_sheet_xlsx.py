@@ -33,9 +33,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Extract information for the current sample from combined_annotations
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
+        # Extract completeness and contamination values
+        completeness = sample_info.get('Completeness', None)
+        contamination = sample_info.get('Contamination', None)
+
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None),
-                        sample_info.get('Contamination', None)] + [None] * (len(rna_columns) + 1))
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), completeness, contamination] + [None] * (len(rna_columns) + 1))
+
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
