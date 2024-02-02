@@ -77,16 +77,11 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         gs_sheet.cell(row=idx, column=len(column_names)).value = sample_trna_count
         print(f"Updated tRNA count value at row {idx}")
 
-    # Print completeness, contamination, and RNA values
-    print("\nCompleteness, Contamination, and RNA values:")
-    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=4, values_only=True):
-        print(row)
-
     # Create a dictionary to store data for each sheet
     sheet_data = {}
 
     # Fixed columns
-    fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    fixed_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'potential_amg']
 
     for _, row in data.iterrows():
         # Split the "sheet" values by "; " and iterate over them
