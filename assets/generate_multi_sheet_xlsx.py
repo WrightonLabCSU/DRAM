@@ -34,37 +34,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
 
         # Append data to genome_stats sheet
-        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * 3)
-
-    # Initialize a list for tRNA count values
-    tRNA_count_values = [0] * len(unique_samples)
-
-    # Initialize lists for completeness and contamination values
-    completeness_values = [0] * len(unique_samples)
-    contamination_values = [0] * len(unique_samples)
-
-    # Calculate "tRNA count" and other values for each sample
-    trna_data = pd.read_csv(trna_file, sep='\t')
-    sample_names = trna_data.columns[5:]  # Assuming the relevant columns start from index 5
-
-    for idx, sample in enumerate(unique_samples):
-        tRNA_count_values[idx] = trna_data[sample].sum()
-
-        # Extract completeness and contamination values from combined_annotations
-        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
-        completeness_values[idx] = sample_info.get('Completeness', None)
-        contamination_values[idx] = sample_info.get('Contamination', None)
-
-    # Add "tRNA count" column to genome_stats sheet as the last column
-    gs_sheet.insert_cols(len(gs_sheet[1]) + 1, amount=1)  # Insert a new column as the last column
-    gs_sheet.cell(row=1, column=len(gs_sheet[1]), value="tRNA count")  # Set the column header
-
-    # Populate "tRNA count" column with values for each sample
-    for idx, value in enumerate(tRNA_count_values, start=2):
-        gs_sheet.cell(row=idx, column=len(gs_sheet[1]), value=value)
-
-    # Add "tRNA count" column to genome_stats sheet as the last column
-    gs_sheet.append(["tRNA count"])
+        gs_sheet.append([sample, None, sample_info.get('taxonomy', None), sample_info.get('Completeness', None), sample_info.get('Contamination', None)] + [None] * len(rna_columns))
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
@@ -94,15 +64,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 print(f"Updated value at row {idx}, column {col_idx}")
             else:
                 print(f"Sample {sample} has no data for {rna_type}")
-
-    # Reorder columns to place "tRNA count" at the end
-    if "tRNA count" in column_names:
-        column_names.remove("tRNA count")
-        column_names.extend(["tRNA count"])
-    else:
-        # If "tRNA count" is not in column_names, add it at the end
-        column_names.append("tRNA count")
-
 
     # Print completeness, contamination, and RNA values
     print("\nCompleteness, Contamination, and RNA values:")
@@ -171,20 +132,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         tab.tableStyleInfo = style
         ws.add_table(tab)
 
-    # Add rRNA and tRNA sheets
+    # Add rRNA sheet
     rrna_data = pd.read_csv(rrna_file, sep='\t')
-    trna_data = pd.read_csv(trna_file, sep='\t')
-
     rrna_sheet = wb.create_sheet(title="rRNA")
-    trna_sheet = wb.create_sheet(title="tRNA")
 
-    for sheet, data in zip([rrna_sheet, trna_sheet], [rrna_data, trna_data]):
-        # Append column names as the first row
-        sheet.append(list(data.columns))
+    # Append column names as the first row
+    rrna_sheet.append(list(rrna_data.columns))
 
-        # Append data rows to the worksheet
-        for _, row in data.iterrows():
-            sheet.append(list(row))
+    # Append data rows to the worksheet
+    for _, row in rrna_data.iterrows():
+        rrna_sheet.append(list(row))
 
     # Remove the default "Sheet" that was created
     default_sheet = wb['Sheet']
