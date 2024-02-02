@@ -70,9 +70,11 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Find the corresponding column index in the genome_stats sheet
         col_idx = column_names.index(rna_type) + 1
+        print(f"\nUpdating RNA column: {rna_type}")
+        print(f"Column Index in genome_stats: {col_idx}")
 
         # Iterate over samples
-        for sample in unique_samples:
+        for idx, sample in enumerate(unique_samples, start=2):
             # Extract relevant data for the current sample and rna_type
             sample_rrna_data = filtered_rrna_data[filtered_rrna_data['sample'] == sample]
 
@@ -87,28 +89,19 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 # Join multiple values with "; "
                 joined_values = "; ".join(values)
 
-                # Find the corresponding row index for the sample
-                for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=1, max_col=1):
-                    if row[0].value == sample:
-                        row_idx = row[0].row
-                        break
-
                 # Update the value in the correct cell
-                gs_sheet.cell(row=row_idx, column=col_idx).value = joined_values
-                print(f"\nUpdating RNA column: {rna_type}")
-                print(f"Values to be populated: {joined_values}")
-                print(f"Column Index in genome_stats: {col_idx}")
-                print(f"Updated value at row {row_idx}, column {col_idx}")
+                gs_sheet.cell(row=idx, column=col_idx).value = joined_values
+                print(f"Updated value at row {idx}, column {col_idx}")
 
-    # Print completeness, contamination, and tRNA count values
-    print("\nCompleteness, Contamination, and tRNA count values:")
-    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=4, max_col=10, values_only=True):
+    # Print completeness, contamination, and RNA values
+    print("\nCompleteness, Contamination, and RNA values:")
+    for row in gs_sheet.iter_rows(min_row=2, max_row=gs_sheet.max_row, min_col=4, values_only=True):
         print(row)
 
     print("\nUpdated Genome Stats Sheet:")
     for row in gs_sheet.iter_rows(min_row=1, max_row=gs_sheet.max_row, values_only=True):
         print(row)
-        
+
     # Create a dictionary to store data for each sheet
     sheet_data = {}
 
