@@ -155,6 +155,34 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Save the workbook as the output file
     wb.save(output_file)
 
+    # Add rRNA sheet
+    rrna_data = pd.read_csv(rrna_file, sep='\t')
+    rrna_sheet = wb.create_sheet(title="rRNA")
+
+    # Append column names as the first row
+    rrna_sheet.append(list(rrna_data.columns))
+
+    # Append data rows to the worksheet
+    for _, row in rrna_data.iterrows():
+        rrna_sheet.append(list(row))
+
+    # Add tRNA sheet
+    trna_data = pd.read_csv(args.trna_file, sep='\t')
+    trna_sheet = wb.create_sheet(title="tRNA")
+
+    # Append column names as the first row
+    trna_sheet.append(list(trna_data.columns))
+
+    # Append data rows to the worksheet
+    for _, row in trna_data.iterrows():
+        trna_sheet.append(list(row))
+
+    # Remove the default "Sheet" that was created
+    default_sheet = wb['Sheet']
+    wb.remove(default_sheet)
+
+    # Save the workbook as the output file
+    wb.save(args.output_file)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate multi-sheet XLSX file from TSV files')
