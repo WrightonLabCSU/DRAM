@@ -147,6 +147,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Save the workbook as the output file
     wb.save(output_file)
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate multi-sheet XLSX file from TSV files')
     parser.add_argument('input_file', help='Input TSV file containing gene data')
