@@ -39,13 +39,21 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Initialize a list for tRNA count values
     tRNA_count_values = [0] * len(unique_samples)
 
-    # Calculate "tRNA count" for each sample
+    # Initialize lists for completeness and contamination values
+    completeness_values = [0] * len(unique_samples)
+    contamination_values = [0] * len(unique_samples)
+
+    # Calculate "tRNA count" and other values for each sample
     trna_data = pd.read_csv(trna_file, sep='\t')
     sample_names = trna_data.columns[5:]  # Assuming the relevant columns start from index 5
 
-    # Sum tRNA counts for each sample
     for idx, sample in enumerate(unique_samples):
         tRNA_count_values[idx] = trna_data[sample].sum()
+
+        # Extract completeness and contamination values from combined_annotations
+        sample_info = combined_data[combined_data['sample'] == sample].iloc[0]  # Assuming one row per sample
+        completeness_values[idx] = sample_info.get('Completeness', None)
+        contamination_values[idx] = sample_info.get('Contamination', None)
 
     # Add "tRNA count" column to genome_stats sheet as the last column
     gs_sheet.insert_cols(len(gs_sheet[1]) + 1, amount=1)  # Insert a new column as the last column
