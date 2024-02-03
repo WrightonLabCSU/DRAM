@@ -45,6 +45,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
         # Process each potential gene ID column
         for common_gene_id_column in potential_gene_id_columns:
+            # Check if the distill sheet contains the 'potential_amg' column
+            if 'potential_amg' not in distill_df.columns:
+                logging.info(f"Skipping '{common_gene_id_column}' column for '{distill_sheet}' as 'potential_amg' column is missing.")
+                continue
+
             # Merge the distill sheet with the combined_annotations using the current gene ID column
             merged_df = pd.merge(
                 combined_annotations_df,
@@ -71,7 +76,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     sample_names = sample_columns.tolist()
 
     # Save the deduplicated distill summary to the specified output path
-    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'potential_amg'] + sample_names)
+    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + sample_names)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
