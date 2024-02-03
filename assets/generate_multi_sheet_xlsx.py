@@ -135,34 +135,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
 
-    # Inside the loop for creating "topic_ecosystem" sheets
-    for sheet_name, sheet_rows in sheet_data.items():
-        # Create a worksheet for each sheet
-        ws = wb.create_sheet(title=sheet_name)
-
-        # Extract column names from the original DataFrame, including 'sample'
-        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-
-        # Check if "potential_amg" column exists in the input data
-        if 'potential_amg' in data.columns:
-            # Include the "potential_amg" column if it exists
-            column_names.append('potential_amg')
-
-        column_names += unique_samples.tolist()
-
-        # Append column names as the first row
-        ws.append(column_names)
-
-        # Print whether the "potential_amg" column is included in this sheet
-        if 'potential_amg' in column_names:
-            print(f'"{sheet_name}" sheet: Includes "potential_amg" column')
-        else:
-            print(f'"{sheet_name}" sheet: Does not include "potential_amg" column')
-
-        # Print the final column names of this sheet
-        print(f'"{sheet_name}" sheet: Final column names: {column_names}')
-
-    # Inside the loop for creating "topic_ecosystem" sheets
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
@@ -217,8 +189,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
             # Append the modified row to the corresponding sheet
             ws.append(row_data)
-
-
 
         # Create a table from the data for filtering
         tab = Table(displayName=f"{sheet_name}_Table", ref=ws.dimensions)
