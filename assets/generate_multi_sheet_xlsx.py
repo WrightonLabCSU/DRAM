@@ -1,4 +1,3 @@
-
 import argparse
 import pandas as pd
 from openpyxl import Workbook
@@ -123,8 +122,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             row_data = [row['gene_id'], row['gene_description']] + [row['pathway'], row['topic_ecosystem'],
                                                                 row['category'], row['subcategory']]
 
-            # Check if the 'potential_amg' column exists in the input data frame
+            # Check if "potential_amg" column exists in the input data
             if 'potential_amg' in data.columns:
+                # Include the "potential_amg" column if it exists
                 row_data.append("TRUE" if row['potential_amg'] == 1 else "FALSE")
 
             # Append the rest of the columns without 'potential_amg'
@@ -135,7 +135,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
 
-
     # Inside the loop for creating "topic_ecosystem" sheets
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
@@ -144,8 +143,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Extract column names from the original DataFrame, including 'sample'
         column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
-        # Check if the "potential_amg" column exists in the current sheet
-        if 'potential_amg' in sheet_rows[0]:
+        # Check if "potential_amg" column exists in the input data
+        if 'potential_amg' in data.columns:
+            # Include the "potential_amg" column if it exists
             column_names.append('potential_amg')
 
         column_names += unique_samples.tolist()
@@ -155,12 +155,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
-            # Exclude the "potential_amg" column if it doesn't exist in the current sheet
-            if 'potential_amg' in sheet_rows[0]:
-                ws.append(row)
-            else:
-                # Exclude the "potential_amg" column from the row data
-                ws.append(row[:-1])  # Excludes the last column ("potential_amg")
+            ws.append(row)
 
         # Create a table from the data for filtering
         tab = Table(displayName=f"{sheet_name}_Table", ref=ws.dimensions)
