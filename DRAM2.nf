@@ -118,7 +118,7 @@ else if ((params.help) || (params.h)){
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-if (!params.call && !params.annotate && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
+if (params.call == 0 && params.annotate == 0 && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
 }
 
