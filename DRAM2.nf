@@ -476,9 +476,9 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 */
 /* Create the default distill topic and ecosystem channels */
 default_channel = Channel.fromPath(params.distill_dummy_sheet)
-def distill_topic_list = "none" 
-def distill_ecosystem_list = "none"
-def distill_custom_list = "none"
+def distill_topic_list = "" 
+def distill_ecosystem_list = ""
+def distill_custom_list = ""
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
