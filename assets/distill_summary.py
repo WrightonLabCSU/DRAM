@@ -78,6 +78,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
         sample_names = sample_columns.tolist()
 
+    # Append the sample-named columns to the columns_to_output
+    columns_to_output += sample_names
+
     # Save the deduplicated distill summary to the specified output path
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
     deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
