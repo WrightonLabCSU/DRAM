@@ -162,34 +162,62 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Print the final column names of this sheet
         print(f'"{sheet_name}" sheet: Final column names: {column_names}')
 
-    # Append data rows to the worksheet
-    for r_idx, row in enumerate(sheet_rows, 1):
-        # Check if "gene_id" column exists in data
-        if 'gene_id' not in data.columns:
-            print(f"Error: 'gene_id' column is missing in the data.")
-            break
+    # Inside the loop for creating "topic_ecosystem" sheets
+    for sheet_name, sheet_rows in sheet_data.items():
+        # Create a worksheet for each sheet
+        ws = wb.create_sheet(title=sheet_name)
 
-        # Check if "gene_id" exists in the current row and if it's in the data['gene_id'] column
-        if 'gene_id' in row and row['gene_id'] in data['gene_id'].values:
-            # Check if "potential_amg" column exists in data
-            if 'potential_amg' in data.columns:
-                potential_amg_value = data[data['gene_id'] == row['gene_id']]['potential_amg'].iloc[0]
-            else:
-                potential_amg_value = None
+        # Extract column names from the original DataFrame, including 'sample'
+        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
-            row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
-                        row['category'], row['subcategory'], potential_amg_value]
+        # Check if "potential_amg" column exists in the input data
+        if 'potential_amg' in data.columns:
+            # Include the "potential_amg" column if it exists
+            column_names.append('potential_amg')
+
+        column_names += unique_samples.tolist()
+
+        # Append column names as the first row
+        ws.append(column_names)
+
+        # Print whether the "potential_amg" column is included in this sheet
+        if 'potential_amg' in column_names:
+            print(f'"{sheet_name}" sheet: Includes "potential_amg" column')
         else:
-            row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
-                        row['category'], row['subcategory'], None]
+            print(f'"{sheet_name}" sheet: Does not include "potential_amg" column')
 
-        # Append the rest of the columns without 'potential_amg'
-        row_data += [row[col] for col in data.columns if col not in ['gene_id', 'gene_description', 'pathway',
-                                                                    'topic_ecosystem', 'category', 'subcategory',
-                                                                    'potential_amg']]
+        # Print the final column names of this sheet
+        print(f'"{sheet_name}" sheet: Final column names: {column_names}')
 
-        # Append the modified row to the corresponding sheet
-        ws.append(row_data)
+        # Append data rows to the worksheet
+        for r_idx, row in enumerate(sheet_rows, 1):
+            # Check if "gene_id" column exists in data
+            if 'gene_id' not in data.columns:
+                print(f"Error: 'gene_id' column is missing in the data.")
+                break
+
+            # Check if "gene_id" exists in the current row and if it's in the data['gene_id'] column
+            if 'gene_id' in row and row['gene_id'] in data['gene_id'].values:
+                # Check if "potential_amg" column exists in data
+                if 'potential_amg' in data.columns:
+                    potential_amg_value = data[data['gene_id'] == row['gene_id']]['potential_amg'].iloc[0]
+                else:
+                    potential_amg_value = None
+
+                row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
+                            row['category'], row['subcategory'], potential_amg_value]
+            else:
+                row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
+                            row['category'], row['subcategory'], None]
+
+            # Append the rest of the columns without 'potential_amg'
+            row_data += [row[col] for col in data.columns if col not in ['gene_id', 'gene_description', 'pathway',
+                                                                        'topic_ecosystem', 'category', 'subcategory',
+                                                                        'potential_amg']]
+
+            # Append the modified row to the corresponding sheet
+            ws.append(row_data)
+
 
 
         # Create a table from the data for filtering
