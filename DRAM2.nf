@@ -445,13 +445,20 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         ch_combined_annotations = Channel
             .fromPath(params.annotations, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene fasta files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
-        ch_bin_quality = Channel
-            .fromPath(params.bin_quality, checkIfExists: true)
-            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide bin quality information (--bin_quality <path>). Cannot find any called gene fasta files matching: ${params.bin_quality}\nNB: Path needs to follow pattern: path/to/file" }
-        ch_taxa = Channel
-            .fromPath(params.taxa, checkIfExists: true)
-            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide bin taxonomy information (--taxa <path>). Cannot find any called gene fasta files matching: ${params.bin_quality}\nNB: Path needs to follow pattern: path/to/file" }
+        
+        /* Check for input Bin Quality file */
+        if (params.bin_quality != "") {
+            ch_bin_quality = file(params.bin_quality).exists() ? file(params.bin_quality) : error("Error: If using --bin_quality, you must supply a formatted input file. Bin quality file not found at ${params.bin_quality}")
+        } else {
+            ch_bin_quality = params.distill_dummy_sheet
+        }
 
+        /* Check for input Taxa file */
+        if (params.taxa != "") {
+            ch_taxa = file(params.taxa).exists() ? file(params.taxa) : error("Error: If using --taxa, you must supply a formatted input file. Taxonomy file not found at ${params.taxa}")
+        } else {
+            ch_taxa = params.distill_dummy_sheet
+        }
     }
 }
 
