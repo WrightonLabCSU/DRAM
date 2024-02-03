@@ -39,28 +39,37 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
         # Check if the "potential_amg" column exists in the distill sheet
         if 'potential_amg' in distill_df.columns:
-            # Initialize an empty DataFrame to store the merged data for the current distill sheet
-            merged_data_for_current_gene_id = pd.DataFrame()
+            include_potential_amg = True
+        else:
+            include_potential_amg = False
 
-            # Process each potential gene ID column
-            for common_gene_id_column in potential_gene_id_columns:
-                # Merge the distill sheet with the combined_annotations using the current gene ID column
-                merged_df = pd.merge(
-                    combined_annotations_df,
-                    distill_df,
-                    left_on=[common_gene_id_column],
-                    right_on=['gene_id'],
-                    how='inner'
-                )
+        # Initialize an empty DataFrame to store the merged data for the current distill sheet
+        merged_data_for_current_gene_id = pd.DataFrame()
 
-                # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
-                merged_data_for_current_gene_id = pd.concat([merged_data_for_current_gene_id, merged_df])
+        # Process each potential gene ID column
+        for common_gene_id_column in potential_gene_id_columns:
+            # Merge the distill sheet with the combined_annotations using the current gene ID column
+            merged_df = pd.merge(
+                combined_annotations_df,
+                distill_df,
+                left_on=[common_gene_id_column],
+                right_on=['gene_id'],
+                how='inner'
+            )
 
-            # Merge with target_id_counts based on 'gene_id' and 'target_id'
-            merged_data_for_current_gene_id = pd.merge(merged_data_for_current_gene_id, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
+            # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
+            merged_data_for_current_gene_id = pd.concat([merged_data_for_current_gene_id, merged_df])
 
-            # Append the merged data for the current distill sheet to the overall distill summary DataFrame
-            distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
+        # Merge with target_id_counts based on 'gene_id' and 'target_id'
+        merged_data_for_current_gene_id = pd.merge(merged_data_for_current_gene_id, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
+
+        # Append the merged data for the current distill sheet to the overall distill summary DataFrame
+        distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
+
+        # Include "potential_amg" column in columns_to_output if it exists
+        columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + sample_names
+        if include_potential_amg:
+            columns_to_output.append('potential_amg')
 
     # Deduplicate based on specified columns
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
@@ -68,11 +77,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Extract the sample names from the target_id_counts columns (excluding non-numeric columns)
     sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
     sample_names = sample_columns.tolist()
-
-    # Ensure that the specified columns exist in the DataFrame
-    columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + sample_names
-    if 'potential_amg' in deduplicated_df.columns:
-        columns_to_output.append('potential_amg')
 
     # Save the deduplicated distill summary to the specified output path
     deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
