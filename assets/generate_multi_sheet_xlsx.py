@@ -153,6 +153,15 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append column names as the first row
         ws.append(column_names)
 
+        # Print whether the "potential_amg" column is included in this sheet
+        if 'potential_amg' in column_names:
+            print(f'"{sheet_name}" sheet: Includes "potential_amg" column')
+        else:
+            print(f'"{sheet_name}" sheet: Does not include "potential_amg" column')
+
+        # Print the final column names of this sheet
+        print(f'"{sheet_name}" sheet: Final column names: {column_names}')
+
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
             ws.append(row)
