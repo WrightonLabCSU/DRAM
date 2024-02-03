@@ -480,12 +480,12 @@ def distill_topic_list = ""
 def distill_ecosystem_list = ""
 def distill_custom_list = ""
 
-distill_default = 0
-distill_carbon = 0
-distill_energy = 0
-distill_misc = 0
-distill_nitrogen = 0
-distill_transport = 0
+distill_default = "1"
+distill_carbon = "1"
+distill_energy = "1"
+distill_misc = "1"
+distill_nitrogen = "1"
+distill_transport = "1"
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
@@ -503,73 +503,73 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
             switch (topic) {
                 case "default":
-                    distill_carbon = 1
-                    distill_energy = 1
-                    distill_misc = 1
-                    distill_nitrogen = 1
-                    distill_transport = 1
+                    distill_carbon = "1"
+                    distill_energy = "1"
+                    distill_misc = "1"
+                    distill_nitrogen = "1"
+                    distill_transport = "1"
                     distill_topic_list = "default (carbon, energy, misc, nitrogen, transport)"
                     break
                 case "carbon":
-                    distill_carbon = 1
+                    distill_carbon = "1"
                     distill_topic_list = "carbon "
                     break
                 case "energy":
-                    distill_energy = 1
+                    distill_energy = "1"
                     distill_topic_list += "energy "
                     break
                 case "misc":
-                    distill_misc = 1
+                    distill_misc = "1"
                     distill_topic_list += "misc "
                     break
                 case "nitrogen":
-                    distill_nitrogen = 1
+                    distill_nitrogen = "1"
                     distill_topic_list += "nitrogen "
                     break
                 case "transport":
-                    distill_transport = 1
+                    distill_transport = "1"
                     distill_topic_list += "transport "
                     break
             }
         }
     }
 
-    if (distill_carbon == 1) {
+    if (distill_carbon == "1") {
         ch_distill_carbon = file(params.distill_carbon_sheet).exists() ? file(params.distill_carbon_sheet) : error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
     } else{
         ch_distill_carbon = default_channel
     }
-    if (distill_energy == 1) {
+    if (distill_energy == "1") {
         ch_distill_energy = file(params.distill_energy_sheet).exists() ? file(params.distill_energy_sheet) : error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
     } else{
         ch_distill_energy = default_channel
     }
 
-    if (distill_misc == 1) {
+    if (distill_misc == "1") {
         ch_distill_misc = file(params.distill_misc_sheet).exists() ? file(params.distill_misc_sheet) : error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
     } else{
         ch_distill_misc = default_channel
     }
 
-    if (distill_nitrogen == 1) {
+    if (distill_nitrogen == "1") {
         ch_distill_nitrogen = file(params.distill_nitrogen_sheet).exists() ? file(params.distill_nitrogen_sheet) : error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
     } else{
         ch_distill_nitrogen = default_channel
     }
 
-    if (distill_transport == 1) {
+    if (distill_transport == "1") {
         ch_distill_transport = file(params.distill_transport_sheet).exists() ? file(params.distill_transport_sheet) : error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
     } else{
         ch_distill_transport = default_channel
     }
 
-    distill_eng_sys = 0
-    distill_ag = 0   
+    distill_eng_sys = "1"
+    distill_ag = "1"   
     if (params.distill_ecosystem != "") {
         def distillEcosystemList = params.distill_ecosystem.split()
 
@@ -583,25 +583,25 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
             switch (ecosysItem) {
                 case "ag":
-                    distill_ag = 1
+                    distill_ag = "1"
                     distill_ecosystem_list = "ag "
                     break
                 case "eng_sys":
-                    distill_eng_sys = 1
+                    distill_eng_sys = "1"
                     distill_ecosystem_list += "eng_sys "
                     break
             }
         }
     }
 
-    if (distill_eng_sys == 1) {
+    if (distill_eng_sys == "1") {
         ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
     } else{
         ch_distill_eng_sys = default_channel
     }
 
-    if (distill_ag == 1) {
+    if (distill_ag == "1") {
         ch_distill_ag = file(params.distill_ag_sheet).exists() ? file(params.distill_ag_sheet) : error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
     } else{
