@@ -651,6 +651,26 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             annotate     : ${params.annotate ? 'true' : 'false'}
             databases    : 
             distill      : ${params.distill ? 'true' : 'false'}
+              topic      : ${distill_topic_list}
+              ecosystem  : ${distill_ecosystem_list}
+              custom     : ${distill_custom_list}
+
+            """
+            .stripIndent()
+}else if( params.call == 0 && params.annotate == 0 && (params.distill_ecosystem !="" || params.distill_custom !="" || params.distill_topic !="" )){
+    log.info """
+            DRAM2 Nextflow
+            ===================================
+            annotations       : ${params.annotations}
+            outdir       : ${params.outdir}
+            threads      : ${params.threads}
+            tRNA         : ${params.trnas}
+            rRNA         : ${params.rrnas}
+            databases    : 
+            distill      : ${params.distill ? 'true' : 'false'}
+              topic      : ${distill_topic_list}
+              ecosystem  : ${distill_ecosystem_list}
+              custom     : ${distill_custom_list}
 
             """
             .stripIndent()
