@@ -588,7 +588,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
                     break
                 case "eng_sys":
                     distill_eng_sys = "1"
-                    distill_ecosystem_list += "eng_sys "
+                    distill_ecosystem_list = distill_ecosystem_list + "eng_sys "
                     break
             }
         }
