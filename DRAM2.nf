@@ -420,7 +420,8 @@ if( params.annotate ){
 
 }
 
-if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {  
+if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") { 
+    distill_flag = TRUE
     // Set channels for supporting python scripts - will be moved to container eventually
     ch_distill_summary_script = file(params.distill_summary_script)
     ch_distill_final_script = file(params.distill_final_script)  
@@ -634,7 +635,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             call genes   : ${params.call ? 'true' : 'false'}
             annotate     : ${params.annotate ? 'true' : 'false'}
             databases    : 
-            distill      : ${params.distill ? 'true' : 'false'}
+            distill      : ${distill_flag 'true' : 'false'}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
               custom     : ${distill_custom_list}
@@ -650,7 +651,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             threads      : ${params.threads}
             annotate     : ${params.annotate ? 'true' : 'false'}
             databases    : 
-            distill      : ${params.distill ? 'true' : 'false'}
+            distill      : ${distill_flag ? 'true' : 'false'}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
               custom     : ${distill_custom_list}
@@ -667,7 +668,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             tRNA         : ${params.trnas}
             rRNA         : ${params.rrnas}
             databases    : 
-            distill      : ${params.distill ? 'true' : 'false'}
+            distill      : ${distill_flag 'true' : 'false'}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
               custom     : ${distill_custom_list}
