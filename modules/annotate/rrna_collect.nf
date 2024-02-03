@@ -24,7 +24,7 @@ process RRNA_COLLECT {
     samples = [os.path.basename(file).replace("_processed_rrnas.tsv", "") for file in tsv_files]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "topic_ecosystem", "category", "subcategory"] + samples)
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "category", "topic_ecosystem", "subcategory"] + samples)
 
     # Create a dictionary to store counts for each sample
     sample_counts = {sample: Counter() for sample in samples}
@@ -45,8 +45,8 @@ process RRNA_COLLECT {
         # Populate gene_description column
         collected_data = pd.concat([collected_data, pd.DataFrame({'gene_id': unique_gene_ids})], ignore_index=True)
 
-        # Set topic_ecosystem column values to "rRNA"
-        collected_data['topic_ecosystem'] = 'rRNA'
+        # Set category column values to "rRNA"
+        collected_data['category'] = 'rRNA'
 
         # Update counts for each sample
         for gene_id, count in gene_counts.items():
@@ -66,7 +66,7 @@ process RRNA_COLLECT {
 
     # Populate other columns based on the given rules
     collected_data['gene_description'] = collected_data['gene_id'] + " gene"
-    collected_data['category'] = ""
+    collected_data['topic_ecosystem'] = ""
     collected_data['subcategory'] = ""
 
     # Deduplicate the rows based on gene_id
