@@ -17,7 +17,7 @@
     mainScript = DRAM2.nf
     
     version
-    v0.0.1
+    v2.0.1
 ----------------------------------------------------------------------------------------
 */
 
@@ -441,7 +441,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
     // Ensure annotations, taxonomy and bin quality channels are set.
     if( params.annotate == 0 ){
-        ch_final_annots = Channel
+        ch_combined_annotations = Channel
             .fromPath(params.annotations, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene fasta files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
         ch_bin_quality = Channel
@@ -814,6 +814,48 @@ workflow {
     */   
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
+        // If the user did not call genes, collect tRNA and rRNA individual files provided by --trnas and --rrnas
+        if( params.call == 0 ){\
+            if( params.trnas != "" ){
+                TRNA_COLLECT( ch_collected_tRNAs )
+                ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
+            }else{
+                ch_trna_sheet = params.distill_dummy_sheet
+            }
+            if( params.rrnas != "" ){
+            RRNA_COLLECT( ch_collected_rRNAs )
+                ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
+                ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
+            }else{
+                ch_rrna_sheet = params.distill_dummy_sheet
+                ch_rrna_combined = params.distill_dummy_sheet
+            }
+        }       
+        // If the user did not annotate and provided taxa and/or bin quality, add it to annotations.
+        if( params.annotate == 0 ){
+            COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
+            ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+
+            /* Add Bin Quality to annotations */
+            if( params.bin_quality != "" ){
+                ADD_BIN_QUALITY( ch_combined_annotations, ch_bin_quality )
+                ch_updated_annots = ADD_BIN_QUALITY.out.annots_bin_quality_out
+            }
+            else{
+                ch_updated_annots = ch_combined_annotations
+            }
+            /* Add Taxonomy to annotations */
+            if( params.taxa != "" ){
+                ADD_TAXA( ch_updated_annots, ch_taxa )
+                ch_final_annots = ADD_TAXA.out.annots_taxa_out
+            }
+            else{
+                ch_final_annots = ch_combined_annotations
+            }
+        } 
+        
+    
+        
         /* Combine the individual user-specified distill sheets into a single channel */
         COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
@@ -821,15 +863,6 @@ workflow {
         /* Generate a single distillate sheet which will then be separated by DISTILL_FINAL */
         DISTILL_SUMMARY( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_distill_summary_script )
         ch_simple_matab_summ = DISTILL_SUMMARY.out.ch_genome_sum_simple
-
-        if( params.call == 0 ){
-            TRNA_COLLECT( ch_collected_tRNAs )
-            ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
-
-            RRNA_COLLECT( ch_collected_rRNAs )
-            ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
-            ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
-        }
 
         /* Separate the distill summary into separate sheets - add on genome_stats sheet, rRNA sheet and tRNA sheet */
         DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_final_annots )

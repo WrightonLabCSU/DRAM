@@ -5,7 +5,7 @@ process COMBINE_ANNOTATIONS {
     file(ch_combine_annot_script)
 
     output:
-    path "combined_annotations.tsv", emit: combined_annotations_out
+    path "raw-annotations.tsv", emit: combined_annotations_out
 
     script:
     """
@@ -16,19 +16,7 @@ process COMBINE_ANNOTATIONS {
     touch logs/combine_annotations.log
     log_file="logs/combine_annotations.log"
 
-    python ${ch_combine_annot_script} --annotations ${all_annotations} --output "combined_annotations.tsv" >> \$log_file 2>&1
+    python ${ch_combine_annot_script} --annotations ${all_annotations} --output "raw-annotations.tsv" >> \$log_file 2>&1
 
     """
 }
-
-
-/*
-
-    # If the user provided additional annotations using --add_annotations,
-    # they want to add them to the current run - combine them.
-    if [[ "${params.add_annotations}" != "empty" ]]; then
-        python /home/rwoyda/Projects/DRAM2-Nextflow/DRAM2-NF/assets/combine_annotations.py --annotations ${all_annotations} ${params.add_annotations} --output "combined_annotations.tsv" >> \$log_file 2>&1
-    else
-        python /home/rwoyda/Projects/DRAM2-Nextflow/DRAM2-NF/assets/combine_annotations.py --annotations ${all_annotations} --output "combined_annotations.tsv" >> \$log_file 2>&1
-    fi
-*/

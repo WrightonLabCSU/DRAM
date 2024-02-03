@@ -3,9 +3,9 @@ process DISTILL_FINAL {
     input:
     path( metabolism_summary )
     file( ch_distill_final_script )
-    file( ch_rrna_sheet )
-    file( combined_rrna )
-    file( ch_trna_sheet )
+    file( ch_rrna_sheet, stageAs: "rrna_sheet.tsv" )
+    file( combined_rrna, stageAs: "rrna_combined.tsv" )
+    file( ch_trna_sheet, stageAs: "trna_sheet.tsv" )
     file( combined_annotations )
 
     output:
