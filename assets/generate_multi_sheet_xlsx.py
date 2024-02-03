@@ -167,14 +167,14 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Check if "potential_amg" column exists and if the value is available for this gene_id
             print(f"Checking row['gene_id']: {row['gene_id']} in data['gene_id']: {data['gene_id']}")
 
-            if 'potential_amg' in data.columns and any(data['gene_id'].str == row['gene_id']):
+            # Check if "potential_amg" column exists and if the value is available for this gene_id
+            if 'potential_amg' in data.columns and data['gene_id'].isin([row['gene_id']]).any():
                 potential_amg_value = data[data['gene_id'] == row['gene_id']]['potential_amg'].iloc[0]
                 row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
                             row['category'], row['subcategory'], potential_amg_value]
             else:
                 row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
                             row['category'], row['subcategory'], None]
-
             # Append the rest of the columns without 'potential_amg'
             row_data += [row[col] for col in data.columns if col not in ['gene_id', 'gene_description', 'pathway',
                                                                         'topic_ecosystem', 'category', 'subcategory',
