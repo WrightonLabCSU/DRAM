@@ -34,11 +34,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     if "Contamination" in combined_data.columns:
         column_names.append("contamination")
 
-    # Check if "potential_amg" is in the columns of the input genome_summary
-    if "potential_amg" in combined_data.columns:
-        column_names.remove("potential_amg")  # Remove it if it exists
-    else:
-        column_names.append("potential_amg")  # Append it as a placeholder if it doesn't exist
+    # Ensure "potential_amg" is not in the genome_stats column names
+    if "potential_amg" in column_names:
+        column_names.remove("potential_amg")
 
     column_names += list(unique_rna_types) + ["tRNA count"]
     gs_sheet.append(column_names)
@@ -97,14 +95,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             row_data = [row['gene_id'], row['gene_description']] + [row['pathway'], row['topic_ecosystem'],
                                                                 row['category'], row['subcategory']]
 
-            # Check if "potential_amg" is in the columns of the input data
-            try:
-                if "potential_amg" in data.columns and row['potential_amg'] == 1:
-                    row_data.append("TRUE")
-                else:
-                    row_data.append("FALSE")
-            except KeyError:
-                row_data.append("FALSE")  # Append it as "FALSE" in case of KeyError
+            # Append "TRUE" to the "potential_amg" column if it exists in data.columns
+            row_data.append("TRUE" if "potential_amg" in data.columns and row['potential_amg'] == 1 else "FALSE")
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -117,7 +109,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Extract column names from the original DataFrame, including 'sample'
         column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + unique_samples.tolist()
 
-        # Exclude the "potential_amg" column if it exists in the input data
+        # Exclude the "potential_amg" column if it exists in data.columns
         if "potential_amg" in data.columns:
             column_names.remove("potential_amg")
 
