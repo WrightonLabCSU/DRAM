@@ -461,6 +461,9 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 */
 /* Create the default distill topic and ecosystem channels */
 default_channel = Channel.fromPath(params.distill_dummy_sheet)
+def distill_topic_list = "" 
+def distill_ecosystem_list = ""
+def distill_custom_list = ""
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
@@ -489,21 +492,27 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
                     distill_misc = 1
                     distill_nitrogen = 1
                     distill_transport = 1
+                    databases_list = "default (carbon, energy, misc, nitrogen, transport)"
                     break
                 case "carbon":
                     distill_carbon = 1
+                    distill_topic_list = "carbon "
                     break
                 case "energy":
                     distill_energy = 1
+                    distill_topic_list += "energy "
                     break
                 case "misc":
                     distill_misc = 1
+                    distill_topic_list += "misc "
                     break
                 case "nitrogen":
                     distill_nitrogen = 1
+                    distill_topic_list += "nitrogen "
                     break
                 case "transport":
                     distill_transport = 1
+                    distill_topic_list += "transport "
                     break
             }
         }
@@ -560,9 +569,10 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             switch (ecosysItem) {
                 case "ag":
                     distill_ag = 1
+                    distill_ecosystem_list += "ag "
                     break
                 case "eng_sys":
-                    distill_eng_sys = 1
+                    distill_ecosystem_list += "ag "
                     break
             }
         }
@@ -587,6 +597,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     
     if (params.distill_custom != "") {
         ch_distill_custom = file(params.distill_custom).exists() ? file(params.distill_custom) : error("Error: If using --distill_custom <path/to/TSV>, you must have the preformatted custom distill sheet in the provided file: ${params.distill_custom}.")
+        distill_custom_list = "params.distill_custom"
     }else{
         ch_distill_custom = default_channel
     }
@@ -600,16 +611,35 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 // This is just a catch-all for now - NEED to generate others for various options
-if( params.call || params.annotate || params.distill_ecosystem || params.distill_topic){
+if( params.call && params.annotate && (params.distill_ecosystem !="" || params.distill_custom !="" || params.distill_topic !="" )){
     log.info """
             DRAM2 Nextflow
             ===================================
             fastas       : ${params.input_fasta}
             outdir       : ${params.outdir}
             threads      : ${params.threads}
+            rename       : ${params.rename ? 'true' : 'false'}
             call genes   : ${params.call ? 'true' : 'false'}
             annotate     : ${params.annotate ? 'true' : 'false'}
+            databases    : 
             distill      : ${params.distill ? 'true' : 'false'}
+              topic      : ${distill_topic_list}
+              ecosystem  : ${distill_ecosystem_list}
+              custom     : ${distill_custom_list}
+
+            """
+            .stripIndent()
+}else if( !params.call && params.annotate && (params.distill_ecosystem !="" || params.distill_custom !="" || params.distill_topic !="" )){
+    log.info """
+            DRAM2 Nextflow
+            ===================================
+            fastas       : ${params.input_fasta}
+            outdir       : ${params.outdir}
+            threads      : ${params.threads}
+            annotate     : ${params.annotate ? 'true' : 'false'}
+            databases    : 
+            distill      : ${params.distill ? 'true' : 'false'}
+
             """
             .stripIndent()
 }
