@@ -536,9 +536,9 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             ch_distill_carbon = file(params.distill_carbon_sheet).exists() ? file(params.distill_carbon_sheet) : error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
+            println"HERE"
             ch_distill_carbon = default_channel
         }
-        ch_distill_carbon.view()
         if (distill_energy == 1) {
             ch_distill_energy = file(params.distill_energy_sheet).exists() ? file(params.distill_energy_sheet) : error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
