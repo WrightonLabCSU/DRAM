@@ -119,7 +119,7 @@ else if ((params.help) || (params.h)){
 */
 def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom"]
 
-if (params.call == 0 && params.annotate == 0 && params.annotations == ""(params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
+if (params.call == 0 && params.annotate == 0 && params.annotations == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
 }
 
