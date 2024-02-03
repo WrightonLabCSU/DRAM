@@ -127,13 +127,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
             # Exclude the "sheet" column and move "gene_id" as the second column
             row_data = [row['gene_id'], row['gene_description']] + [row['pathway'], row['topic_ecosystem'],
-                                                                   row['category'], row['subcategory'],
-                                                                   "TRUE" if row['potential_amg'] == 1 else "FALSE"]
+                                                                row['category'], row['subcategory']]
 
-            # Append the rest of the columns without 'potential_amg'
-            row_data += [row[col] for col in data.columns if col not in ['gene_id', 'gene_description', 'pathway',
-                                                                         'topic_ecosystem', 'category', 'subcategory',
-                                                                         'potential_amg']]
+            # Check if "potential_amg" is in the columns of the input data
+            try:
+                if "potential_amg" in data.columns and row['potential_amg'] == 1:
+                    row_data.append("TRUE")
+                else:
+                    row_data.append("FALSE")
+            except KeyError:
+                row_data.append("FALSE")  # Append it as "FALSE" in case of KeyError
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
