@@ -1,3 +1,4 @@
+here si the latest versionof the code:
 import argparse
 import pandas as pd
 from openpyxl import Workbook
@@ -34,12 +35,39 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     if "Contamination" in combined_data.columns:
         column_names.append("contamination")
 
-    # Ensure "potential_amg" is not in the genome_stats column names
-    if "potential_amg" in column_names:
-        column_names.remove("potential_amg")
-
     column_names += list(unique_rna_types) + ["tRNA count"]
     gs_sheet.append(column_names)
+
+    # Populate genome_stats sheet with data from combined_annotations
+    for sample in unique_samples:
+        # Extract information for the current sample from combined_annotations
+        sample_info = combined_data[combined_data['sample'] == sample]
+
+        if not sample_info.empty:
+            # Get the first row of sample_info (assuming one row per sample)
+            sample_info = sample_info.iloc[0]
+
+            # Extract completeness and contamination values
+            completeness = sample_info.get('Completeness', None)
+            contamination = sample_info.get('Contamination', None)
+        else:
+            # Handle the case where sample_info is empty (no data for the sample)
+            completeness = None
+            contamination = None
+
+        # Append data to genome_stats sheet
+        gs_data = [sample, None]
+
+        # Check if the columns exist in combined_annotations_df and append them if they do
+        if "taxonomy" in combined_data.columns:
+            gs_data.append(sample_info.get('taxonomy', None))
+        if "Completeness" in combined_data.columns:
+            gs_data.append(completeness)
+        if "Contamination" in combined_data.columns:
+            gs_data.append(contamination)
+
+        gs_data += [None] * (len(unique_rna_types) + 1)
+        gs_sheet.append(gs_data)
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
@@ -93,10 +121,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
             # Exclude the "sheet" column and move "gene_id" as the second column
             row_data = [row['gene_id'], row['gene_description']] + [row['pathway'], row['topic_ecosystem'],
-                                                                row['category'], row['subcategory']]
+                                                                   row['category'], row['subcategory'],
+                                                                   "TRUE" if row['potential_amg'] == 1 else "FALSE"]
 
-            # Append "TRUE" to the "potential_amg" column if it exists in data.columns
-            row_data.append("TRUE" if "potential_amg" in data.columns and row['potential_amg'] == 1 else "FALSE")
+            # Append the rest of the columns without 'potential_amg'
+            row_data += [row[col] for col in data.columns if col not in ['gene_id', 'gene_description', 'pathway',
+                                                                         'topic_ecosystem', 'category', 'subcategory',
+                                                                         'potential_amg']]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -107,18 +138,25 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame, including 'sample'
-        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + unique_samples.tolist()
+        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
-        # Exclude the "potential_amg" column if it exists in data.columns
-        if "potential_amg" in data.columns:
-            column_names.remove("potential_amg")
+        # Check if the "potential_amg" column exists in the current sheet
+        if 'potential_amg' in sheet_rows[0]:
+            column_names.append('potential_amg')
+
+        column_names += unique_samples.tolist()
 
         # Append column names as the first row
         ws.append(column_names)
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
-            ws.append(row)
+            # Exclude the "potential_amg" column if it doesn't exist in the current sheet
+            if 'potential_amg' in sheet_rows[0]:
+                ws.append(row)
+            else:
+                # Exclude the "potential_amg" column from the row data
+                ws.append(row[:-1])  # Excludes the last column ("potential_amg")
 
         # Create a table from the data for filtering
         tab = Table(displayName=f"{sheet_name}_Table", ref=ws.dimensions)
