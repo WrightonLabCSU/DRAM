@@ -421,7 +421,7 @@ if( params.annotate ){
 }
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") { 
-    distill_flag = 1
+    def distill_flag = 1
     // Set channels for supporting python scripts - will be moved to container eventually
     ch_distill_summary_script = file(params.distill_summary_script)
     ch_distill_final_script = file(params.distill_final_script)  
