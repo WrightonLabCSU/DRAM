@@ -461,9 +461,9 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 */
 /* Create the default distill topic and ecosystem channels */
 default_channel = Channel.fromPath(params.distill_dummy_sheet)
-def distill_topic_list = "" 
-def distill_ecosystem_list = ""
-def distill_custom_list = ""
+def distill_topic_list = "none" 
+def distill_ecosystem_list = "none"
+def distill_custom_list = "none"
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
@@ -492,7 +492,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
                     distill_misc = 1
                     distill_nitrogen = 1
                     distill_transport = 1
-                    databases_list = "default (carbon, energy, misc, nitrogen, transport)"
+                    distill_topic_list = "default (carbon, energy, misc, nitrogen, transport)"
                     break
                 case "carbon":
                     distill_carbon = 1
@@ -569,10 +569,10 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             switch (ecosysItem) {
                 case "ag":
                     distill_ag = 1
-                    distill_ecosystem_list += "ag "
+                    distill_ecosystem_list = "ag "
                     break
                 case "eng_sys":
-                    distill_ecosystem_list += "ag "
+                    distill_ecosystem_list += "eng_sys "
                     break
             }
         }
