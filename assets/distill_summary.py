@@ -27,6 +27,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Initialize an empty list for sample names
     sample_names = []
 
+    # Flag to check if "potential_amg" exists in any input sheet
+    include_potential_amg = False
+
     # Process each distill sheet
     for distill_sheet in distill_sheets:
         # Check if the distill sheet content is "NULL"
@@ -43,8 +46,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         # Check if the "potential_amg" column exists in the distill sheet
         if 'potential_amg' in distill_df.columns:
             include_potential_amg = True
-        else:
-            include_potential_amg = False
 
         # Initialize an empty DataFrame to store the merged data for the current distill sheet
         merged_data_for_current_gene_id = pd.DataFrame()
@@ -69,14 +70,14 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         # Append the merged data for the current distill sheet to the overall distill summary DataFrame
         distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
 
-        # Include "potential_amg" column in columns_to_output if it exists
-        columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-        if include_potential_amg:
-            columns_to_output.append('potential_amg')
+    # Append "potential_amg" column to columns_to_output if it exists
+    columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    if include_potential_amg:
+        columns_to_output.append('potential_amg')
 
-        # Extract the sample names from the target_id_counts columns (excluding non-numeric columns)
-        sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
-        sample_names = sample_columns.tolist()
+    # Extract the sample names from the target_id_counts columns (excluding non-numeric columns)
+    sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
+    sample_names = sample_columns.tolist()
 
     # Append the sample-named columns to the columns_to_output
     columns_to_output += sample_names
