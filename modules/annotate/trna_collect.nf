@@ -27,7 +27,7 @@ process TRNA_COLLECT {
     samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
 
     # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "module", "header", "subheader"] + samples)
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "topic_ecosystem", "category", "subcategory"] + samples)
 
     # Create a dictionary to store counts for each sample
     sample_counts = {sample: [] for sample in samples}
@@ -50,14 +50,14 @@ process TRNA_COLLECT {
 
     # Populate other columns based on the given rules
     collected_data['gene_description'] = collected_data['gene_id'] + " tRNA with " + collected_data['codon'] + " Codon"
-    collected_data['module'] = collected_data['gene_id'] + " tRNA"
+    collected_data['topic_ecosystem'] = collected_data['gene_id'] + " tRNA"
 
-    # Remove parentheses and text in between from gene_description and module columns
+    # Remove parentheses and text in between from gene_description and topic_ecosystem columns
     collected_data['gene_description'] = collected_data['gene_id'].apply(lambda x: x.split('(')[0].strip() + " tRNA with " + collected_data.loc[collected_data['gene_id'] == x, 'codon'].values[0] + " Codon")
-    collected_data['module'] = collected_data['gene_id'].apply(lambda x: x.split('(')[0].strip() + " tRNA")
+    collected_data['topic_ecosystem'] = collected_data['gene_id'].apply(lambda x: x.split('(')[0].strip() + " tRNA")
 
-    collected_data['header'] = "tRNA"
-    collected_data['subheader'] = ""
+    collected_data['category'] = "tRNA"
+    collected_data['subcategory'] = ""
 
     # Deduplicate the rows based on gene_id
     collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
