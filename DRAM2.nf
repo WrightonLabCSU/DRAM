@@ -480,12 +480,12 @@ def distill_topic_list = ""
 def distill_ecosystem_list = ""
 def distill_custom_list = ""
 
-distill_default = "1"
-distill_carbon = "1"
-distill_energy = "1"
-distill_misc = "1"
-distill_nitrogen = "1"
-distill_transport = "1"
+distill_default = "0"
+distill_carbon = "0"
+distill_energy = "0"
+distill_misc = "0"
+distill_nitrogen = "0"
+distill_transport = "0"
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
@@ -568,8 +568,8 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         ch_distill_transport = default_channel
     }
 
-    distill_eng_sys = "1"
-    distill_ag = "1"   
+    distill_eng_sys = "0"
+    distill_ag = "0"   
     if (params.distill_ecosystem != "") {
         def distillEcosystemList = params.distill_ecosystem.split()
 
