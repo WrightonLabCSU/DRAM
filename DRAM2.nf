@@ -637,7 +637,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             call genes   : ${params.call ? 'true' : 'false'}
             annotate     : ${params.annotate ? 'true' : 'false'}
             databases    : 
-            distill      : ${distill_flag 'true' : 'false'}
+            distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
               custom     : ${distill_custom_list}
@@ -653,7 +653,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             threads      : ${params.threads}
             annotate     : ${params.annotate ? 'true' : 'false'}
             databases    : 
-            distill      : ${distill_flag ? 'true' : 'false'}
+            distill      : ${distill_flag
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
               custom     : ${distill_custom_list}
