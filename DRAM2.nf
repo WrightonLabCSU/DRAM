@@ -8,7 +8,7 @@
     
     Author of DRAM2 Nextflow pipeline
     author = Reed Woyda, Rory Flynn
-    institutioon = Colorado State University - Wrighton Lab
+    institution = Colorado State University - Wrighton Lab
 
     Description of project
     description = <Description>
@@ -129,7 +129,7 @@ if( params.use_dbset){
 }
 
 
-if( params.input_genes = "" && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
+if( params.input_genes == "" && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
     error("If you want to distill, you must provide input fasta files via --input_genes <path/to/directory/> or you much provide called genes via --input_genes <path/to/directory>.")
 }
 
