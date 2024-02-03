@@ -350,6 +350,8 @@ if( params.annotate ){
     Create channel for INGEST inputs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+def distill_flag = "off"
+
 // Here we will check for the various kinds of inputs
 // The structure of this will change
 // For example, we will be able to ingest only metaT data and call genes on that
@@ -421,7 +423,7 @@ if( params.annotate ){
 }
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") { 
-    def distill_flag = "1"
+    distill_flag = "on"
     // Set channels for supporting python scripts - will be moved to container eventually
     ch_distill_summary_script = file(params.distill_summary_script)
     ch_distill_final_script = file(params.distill_final_script)  
@@ -668,7 +670,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             tRNA         : ${params.trnas}
             rRNA         : ${params.rrnas}
             databases    : 
-            distill      : ${distill_flag 'true' : 'false'}
+            distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
               custom     : ${distill_custom_list}
