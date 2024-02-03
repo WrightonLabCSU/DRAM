@@ -252,8 +252,6 @@ if( params.annotate ){
     ch_kegg_formatter = file(params.kegg_formatter_script)
     ch_combine_annot_script = file(params.combine_annotations_script)
     ch_count_annots_script = file(params.count_annots_script)
-    ch_distill_summary_script = file(params.distill_summary_script)
-    ch_distill_final_script = file(params.distill_final_script)
     ch_kofam_formatter = file(params.kofam_hmm_formatter_script)
     ch_kofam_list = file(params.kofam_list)
     ch_dbcan_formatter = file(params.dbcan_hmm_formatter_script)
@@ -384,7 +382,6 @@ if( params.call ){
 }
 
 if( params.annotate ){
-
     /* If the user did not specify --call, then set input called genes and proteins */
     if( params.call == 0 ){
         // Set ch_input_genes
@@ -423,7 +420,11 @@ if( params.annotate ){
 
 }
 
-if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
+if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {  
+    // Set channels for supporting python scripts - will be moved to container eventually
+    ch_distill_summary_script = file(params.distill_summary_script)
+    ch_distill_final_script = file(params.distill_final_script)  
+
     // Ensure rRNA and tRNA channels are populated if the user is not calling genes
     if( params.call == 0 ){
         //set ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
@@ -442,6 +443,9 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
     // Ensure annotations, taxonomy and bin quality channels are set.
     if( params.annotate == 0 ){
+        // Set channels for of supporting python scripts - will be moved to container eventually
+        ch_count_annots_script = file(params.count_annots_script)
+
         ch_combined_annotations = Channel
             .fromPath(params.annotations, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene fasta files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
