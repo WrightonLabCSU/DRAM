@@ -653,7 +653,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             threads      : ${params.threads}
             annotate     : ${params.annotate ? 'true' : 'false'}
             databases    : 
-            distill      : ${distill_flag
+            distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
               custom     : ${distill_custom_list}
