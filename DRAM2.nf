@@ -379,7 +379,7 @@ if( params.call ){
     ch_input_fastas.map {
         sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
         tuple(sampleName, it)
-    }.set{fastas}
+    }.set{ch_input_fastas}
 }
 
 if( params.annotate ){
