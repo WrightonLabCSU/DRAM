@@ -72,7 +72,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         for sample_name in sample_names:
             merged_data_for_current_gene_id[sample_name] = 0
 
-        # Print the merged_data_for_current_gene_id DataFrame for debugging
+        # Print the merged data for debugging
         print(f"Merged data for '{distill_sheet}':")
         print(merged_data_for_current_gene_id)
 
@@ -89,12 +89,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             how='left'
         )
 
-    # Print the final distill_summary_df DataFrame for debugging
-    print("Final distill summary DataFrame:")
-    print(distill_summary_df)
-
     # Deduplicate based on specified columns
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
+
+    # Print the final distill summary for debugging
+    print("Final distill summary DataFrame:")
+    print(deduplicated_df)
 
     # Save the deduplicated distill summary to the specified output path
     deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + sample_names)
