@@ -12,48 +12,27 @@ def is_null_content(file_path):
     return content == "NULL"
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
-    # Read the combined_annotations file
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
-
-    # Identify the potential gene ID columns in combined_annotations_df
     potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
-
-    # Get a list of all _distill_sheet.tsv files in the current working directory
     distill_sheets = glob.glob('*_distill_sheet.tsv')
-
-    # Initialize an empty DataFrame to store the distill summary
     distill_summary_df = pd.DataFrame()
-
-    # Extract the sample names from the target_id_counts columns (excluding non-numeric columns)
     sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
     sample_names = sample_columns.tolist()
-    
-    # Add this before the processing step
+
     print("Columns in target_id_counts:", sample_names)
 
-    # Process each distill sheet
     for distill_sheet in distill_sheets:
-        # Check if the distill sheet content is "NULL"
         if is_null_content(distill_sheet):
             logging.info(f"Skipping distill sheet '{distill_sheet}' as it contains 'NULL' content.")
             continue
-
-        # Print the path to the distill sheet for debugging
         logging.info(f"Processing distill sheet: {distill_sheet}")
-
-        # Read the distill sheet
         distill_df = pd.read_csv(distill_sheet, sep='\t')
-
-        # Print the column names of the distill sheet for debugging
         logging.info(f"Column names of distill sheet: {distill_df.columns}")
 
-        # Initialize an empty DataFrame to store the merged data for the current distill sheet
         merged_data_for_current_gene_id = pd.DataFrame()
 
-        # Process each potential gene ID column
         for common_gene_id_column in potential_gene_id_columns:
             try:
-                # Merge the distill sheet with the combined_annotations using the current gene ID column
                 merged_df = pd.merge(
                     combined_annotations_df,
                     distill_df,
@@ -61,25 +40,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                     right_on=['gene_id'],
                     how='inner'
                 )
-
-                # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
                 merged_data_for_current_gene_id = pd.concat([merged_data_for_current_gene_id, merged_df])
-
             except KeyError:
                 logging.warning(f"'{common_gene_id_column}' column not found in '{distill_sheet}'. Skipping merge for this column.")
 
-        # Add the sample names as columns with default values (0) to merged_data_for_current_gene_id
-        for sample_name in sample_names:
-            merged_data_for_current_gene_id[sample_name] = 0
-
-        # Print the merged_data_for_current_gene_id DataFrame for debugging
-        print(f"Merged data for '{distill_sheet}':")
-        print(merged_data_for_current_gene_id)
-
-        # Append the merged data for the current distill sheet to the overall distill summary DataFrame
         distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
 
-    # Merge with target_id_counts based on 'gene_id' and 'target_id' for the entire summary
     if "potential_amg" in distill_df.columns:
         distill_summary_df = pd.merge(
             distill_summary_df,
@@ -89,15 +55,16 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             how='left'
         )
 
-    # Print the final distill_summary_df DataFrame for debugging
-    print("Final distill summary DataFrame:")
-    print(distill_summary_df)
+        # Update sample columns with actual counts after merge
+        for sample_name in sample_names:
+            distill_summary_df[sample_name] = distill_summary_df[sample_name].fillna(0)
 
-    # Deduplicate based on specified columns
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
+    deduplicated_df.to_csv(output_path, sep='\t', index=False)
 
-    # Save the deduplicated distill summary to the specified output path
-    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + sample_names)
+    # Debugging: Print final dataframe shape and sample columns
+    print("Final DataFrame shape:", deduplicated_df.shape)
+    print("Sample columns in final DataFrame:", deduplicated_df[sample_names].head())
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
