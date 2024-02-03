@@ -533,6 +533,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         }
 
         if (distill_carbon == 1) {
+            println"HERE1"
             ch_distill_carbon = file(params.distill_carbon_sheet).exists() ? file(params.distill_carbon_sheet) : error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
