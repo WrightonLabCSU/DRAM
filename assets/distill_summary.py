@@ -112,4 +112,4 @@ if __name__ == "__main__":
     # Read the target_id_counts file
     target_id_counts_df = pd.read_csv(args.target_id_counts, sep='\t')
 
-    distill_summary(args.combined_annotations, target_id_counts_df,
+    distill_summary(args.combined_annotations, target_id_counts_df, args.output)
