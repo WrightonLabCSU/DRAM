@@ -90,7 +90,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
 
     # Deduplicate based on specified columns
-    deduplicated_df = distill_summary_df.drop duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
+    deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
 
     # Print the final distill summary for debugging
     print("Final distill summary DataFrame:")
