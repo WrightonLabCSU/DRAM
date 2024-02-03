@@ -75,6 +75,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         for sample_name in sample_names:
             merged_data_for_current_gene_id[sample_name] = 0
 
+        # Reset the index of the merged data
+        merged_data_for_current_gene_id = merged_data_for_current_gene_id.reset_index(drop=True)
+
         # Print the merged data for debugging
         print(f"Merged data for '{distill_sheet}':")
         print(merged_data_for_current_gene_id)
