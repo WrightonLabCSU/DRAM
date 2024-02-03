@@ -36,44 +36,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
     # Check if "potential_amg" is in the columns of the input genome_summary
     if "potential_amg" in combined_data.columns:
-        column_names.append("potential_amg")
+        column_names.remove("potential_amg")  # Remove it if it exists
     else:
-        column_names.append("potential_amg")  # Append it as a placeholder even if it doesn't exist
+        column_names.append("potential_amg")  # Append it as a placeholder if it doesn't exist
 
     column_names += list(unique_rna_types) + ["tRNA count"]
     gs_sheet.append(column_names)
-
-
-    # Populate genome_stats sheet with data from combined_annotations
-    for sample in unique_samples:
-        # Extract information for the current sample from combined_annotations
-        sample_info = combined_data[combined_data['sample'] == sample]
-
-        if not sample_info.empty:
-            # Get the first row of sample_info (assuming one row per sample)
-            sample_info = sample_info.iloc[0]
-
-            # Extract completeness and contamination values
-            completeness = sample_info.get('Completeness', None)
-            contamination = sample_info.get('Contamination', None)
-        else:
-            # Handle the case where sample_info is empty (no data for the sample)
-            completeness = None
-            contamination = None
-
-        # Append data to genome_stats sheet
-        gs_data = [sample, None]
-
-        # Check if the columns exist in combined_annotations_df and append them if they do
-        if "taxonomy" in combined_data.columns:
-            gs_data.append(sample_info.get('taxonomy', None))
-        if "Completeness" in combined_data.columns:
-            gs_data.append(completeness)
-        if "Contamination" in combined_data.columns:
-            gs_data.append(contamination)
-
-        gs_data += [None] * (len(unique_rna_types) + 1)
-        gs_sheet.append(gs_data)
 
     # Update RNA columns dynamically
     for rna_type in unique_rna_types:
@@ -147,8 +115,11 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame, including 'sample'
-        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory',
-                        'potential_amg'] + unique_samples.tolist()
+        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + unique_samples.tolist()
+
+        # Exclude the "potential_amg" column if it exists in the input data
+        if "potential_amg" in data.columns:
+            column_names.remove("potential_amg")
 
         # Append column names as the first row
         ws.append(column_names)
