@@ -24,6 +24,13 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Initialize an empty DataFrame to store the distill summary
     distill_summary_df = pd.DataFrame()
 
+    # Extract the sample names from the target_id_counts columns (excluding non-numeric columns)
+    sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
+    sample_names = sample_columns.tolist()
+    
+    # Add this before the processing step
+    print("Columns in target_id_counts:", sample_names)
+
     # Process each distill sheet
     for distill_sheet in distill_sheets:
         # Check if the distill sheet content is "NULL"
@@ -61,28 +68,25 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             except KeyError:
                 logging.warning(f"'{common_gene_id_column}' column not found in '{distill_sheet}'. Skipping merge for this column.")
 
-        # Merge with target_id_counts based on 'gene_id' and 'target_id' for the current distill sheet
-        if "potential_amg" in distill_df.columns:
-            merged_data_for_current_gene_id = pd.merge(
-                merged_data_for_current_gene_id,
-                target_id_counts_df,
-                left_on=['gene_id'],
-                right_on=['target_id'],
-                how='left'
-            )
+        # Add the sample names as columns with default values (0) to merged_data_for_current_gene_id
+        for sample_name in sample_names:
+            merged_data_for_current_gene_id[sample_name] = 0
 
         # Append the merged data for the current distill sheet to the overall distill summary DataFrame
         distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
 
+    # Merge with target_id_counts based on 'gene_id' and 'target_id' for the entire summary
+    if "potential_amg" in distill_df.columns:
+        distill_summary_df = pd.merge(
+            distill_summary_df,
+            target_id_counts_df,
+            left_on=['gene_id'],
+            right_on=['target_id'],
+            how='left'
+        )
+
     # Deduplicate based on specified columns
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
-
-    # Extract the sample names from the target_id_counts columns (excluding non-numeric columns)
-    sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
-    sample_names = sample_columns.tolist()
-    
-    # Add this before the saving step
-    print("Columns in deduplicated_df:", deduplicated_df.columns)
 
     # Save the deduplicated distill summary to the specified output path
     deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + sample_names)
