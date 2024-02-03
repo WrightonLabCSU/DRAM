@@ -77,24 +77,24 @@ include { PRODUCT_HEATMAP                               } from './modules/produc
 */
 
 /* Call Help Menu */
-if (((params.help) || (params.h)) && params.call ){
+if ((params.help || params.h) && params.call ){
     callHelpMessage()
     exit 0
 }
 /* Annotate Help Menu */
-else if (((params.help) || (params.h)) && params.annotate ){
+else if ((params.help || params.h) && params.annotate ){
     annotateHelpMessage()
     exit 0
 }
 
 /* Distill Help Menu */
-else if (((params.help) || (params.h)) && ((params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "")) ){
+else if ((params.help || params.h) && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") ){
     distillHelpMessage()
     exit 0
 }
 
 /* Adjectives Help Menu */
-else if (((params.help) || (params.h)) && params.adjectives ){
+else if ((params.help || params.h) && params.adjectives ){
     adjectivesHelpMessage()
     exit 0
 }
