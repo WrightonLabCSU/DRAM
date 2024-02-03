@@ -68,15 +68,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             except KeyError:
                 logging.warning(f"'{common_gene_id_column}' column not found in '{distill_sheet}'. Skipping merge for this column.")
 
-        # Merge with target_id_counts based on 'gene_id' and 'target_id' for the current distill sheet
-        if "potential_amg" in distill_df.columns:
-            merged_data_for_current_gene_id = pd.merge(
-                merged_data_for_current_gene_id,
-                target_id_counts_df,
-                left_on=['gene_id'],
-                right_on=['target_id'],
-                how='left'
-            )
+        # Merge with target_id_counts based on 'gene_id' and 'target_id'
+        merged_data_for_current_gene_id = pd.merge(merged_data_for_current_gene_id, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
 
         # Add the sample names as columns with default values (0) to merged_data_for_current_gene_id
         for sample_name in sample_names:
@@ -91,6 +84,15 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
     # Deduplicate based on specified columns
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
+
+    # Merge with target_id_counts based on 'gene_id' and 'target_id' for the entire summary
+    deduplicated_df = pd.merge(
+        deduplicated_df,
+        target_id_counts_df,
+        left_on=['gene_id'],
+        right_on=['target_id'],
+        how='left'
+    )
 
     # Print the final distill summary for debugging
     print("Final distill summary DataFrame:")
@@ -110,4 +112,4 @@ if __name__ == "__main__":
     # Read the target_id_counts file
     target_id_counts_df = pd.read_csv(args.target_id_counts, sep='\t')
 
-    distill_summary(args.combined_annotations, target_id_counts_df, args.output)
+    distill_summary(args.combined_annotations, target_id_counts_df,
