@@ -892,7 +892,7 @@ workflow {
     
         
         /* Combine the individual user-specified distill sheets into a single channel */
-        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
+        COMBINE_DISTILL(ch_distill_energy, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         /* Generate a single distillate sheet which will then be separated by DISTILL_FINAL */
