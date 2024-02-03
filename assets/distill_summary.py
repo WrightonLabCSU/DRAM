@@ -55,29 +55,25 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                     how='inner'
                 )
 
-                # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
-                merged_data_for_current_gene_id = pd.concat([merged_data_for_current_gene_id, merged_df])
-
                 # Check if the "potential_amg" column exists in the distill_df
                 if "potential_amg" in distill_df.columns:
                     # If it exists, merge with target_id_counts based on 'gene_id' and 'target_id'
-                    merged_data_for_current_gene_id = pd.merge(
-                        merged_data_for_current_gene_id,
+                    merged_df = pd.merge(
+                        merged_df,
                         target_id_counts_df,
                         left_on=['gene_id'],
                         right_on=['target_id'],
                         how='left'
                     )
 
+                # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
+                merged_data_for_current_gene_id = pd.concat([merged_data_for_current_gene_id, merged_df])
+
             except KeyError:
                 logging.warning(f"'{common_gene_id_column}' column not found in '{distill_sheet}'. Skipping merge for this column.")
 
-
-            # Merge with target_id_counts based on 'gene_id' and 'target_id'
-            merged_data_for_current_gene_id = pd.merge(merged_data_for_current_gene_id, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
-
-            # Append the merged data for the current distill sheet to the overall distill summary DataFrame
-            distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
+        # Append the merged data for the current distill sheet to the overall distill summary DataFrame
+        distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
 
     # Deduplicate based on specified columns
     deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
