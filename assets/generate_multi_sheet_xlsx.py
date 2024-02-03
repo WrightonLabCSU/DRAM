@@ -140,18 +140,28 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame, including 'sample'
-        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + unique_samples.tolist()
+        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
         # Check if the "potential_amg" column exists in the current sheet
         if 'potential_amg' in sheet_rows[0]:
             column_names.append('potential_amg')
 
+        column_names += unique_samples.tolist()
+
         # Append column names as the first row
         ws.append(column_names)
 
+        # Determine the index of the "potential_amg" column if it exists
+        potential_amg_index = column_names.index('potential_amg') if 'potential_amg' in column_names else None
+
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
-            ws.append(row)
+            # Exclude the "potential_amg" column if it doesn't exist in the current sheet
+            if potential_amg_index is not None:
+                ws.append(row[:potential_amg_index] + row[potential_amg_index + 1:])  # Excludes the "potential_amg" column
+            else:
+                ws.append(row)
+
 
 
         # Append data rows to the worksheet
