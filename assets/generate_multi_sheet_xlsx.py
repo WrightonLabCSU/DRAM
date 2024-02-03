@@ -165,6 +165,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
             # Check if "potential_amg" column exists and if the value is available for this gene_id
+            print(f"Checking row['gene_id']: {row['gene_id']} in data['gene_id']: {data['gene_id']}")
+
             if 'potential_amg' in data.columns and any(data['gene_id'] == row['gene_id']):
                 potential_amg_value = data[data['gene_id'] == row['gene_id']]['potential_amg'].iloc[0]
                 row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
