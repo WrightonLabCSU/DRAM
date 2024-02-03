@@ -37,6 +37,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Check if "potential_amg" is in the columns of the input genome_summary
     if "potential_amg" in combined_data.columns:
         column_names.append("potential_amg")
+    else:
+        column_names.append("potential_amg")  # Append it as a placeholder even if it doesn't exist
 
     column_names += list(unique_rna_types) + ["tRNA count"]
     gs_sheet.append(column_names)
