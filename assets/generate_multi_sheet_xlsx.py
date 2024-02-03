@@ -124,17 +124,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                                                                 row['category'], row['subcategory']]
 
             # Check if the 'potential_amg' column exists in the input data frame for the specific sheet
-            if sheet_name in data.columns and 'potential_amg' in data.columns:
+            if sheet_name in data.columns and 'potential_amg' in data[sheet_name].columns:
                 row_data.append("TRUE" if row['potential_amg'] == 1 else "FALSE")
 
             # Append the rest of the columns without 'potential_amg'
             row_data += [row[col] for col in data.columns if col not in ['gene_id', 'gene_description', 'pathway',
-                                                                        'topic_ecosystem', 'category', 'subcategory',
-                                                                        'potential_amg']]
+                                                                        'topic_ecosystem', 'category', 'subcategory']]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
-            
+
     # Inside the loop for creating "topic_ecosystem" sheets
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
