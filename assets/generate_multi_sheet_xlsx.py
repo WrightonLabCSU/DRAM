@@ -116,20 +116,28 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         for sheet_name in row['topic_ecosystem'].split('; '):
             sheet_name = sheet_name.replace(" ", "_")
             if sheet_name not in sheet_data:
-                sheet_data[sheet_name] = []
+                sheet_data[sheet_name] = {
+                    'columns': [],  # Store column names for this sheet
+                    'data': []  # Store data rows for this sheet
+                }
 
             # Exclude the expected columns and move other columns
             row_data = [row[col] for col in row.index if col not in column_names]
 
-            # Append the modified row to the corresponding sheet
-            sheet_data[sheet_name].append(row_data)
+            # Append the modified row to the corresponding sheet's data
+            sheet_data[sheet_name]['data'].append(row_data)
 
-    for sheet_name, sheet_rows in sheet_data.items():
+            # Collect column names that are not in column_names
+            new_columns = [col for col in row.index if col not in column_names]
+            sheet_data[sheet_name]['columns'].extend(new_columns)
+
+    # Iterate through the sheet_data dictionary to create sheets
+    for sheet_name, sheet_info in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
-        # Extract column names dynamically from the original DataFrame, excluding expected columns
-        column_names = [col for col in data.columns if col not in column_names]
+        # Extract column names dynamically for this sheet
+        column_names = sheet_info['columns']
 
         # Append column names as the first row
         ws.append(column_names)
@@ -138,7 +146,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         print(f'"{sheet_name}" sheet: Final column names: {column_names}')
 
         # Append data rows to the worksheet
-        for r_idx, row in enumerate(sheet_rows, 1):
+        for r_idx, row in enumerate(sheet_info['data'], 1):
             ws.append(row)
 
         # Create a table from the data for filtering
