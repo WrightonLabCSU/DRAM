@@ -139,8 +139,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
-            # Insert a print statement to check the contents of row_data
-            print(f'Row {r_idx}: {row}')  # Check the contents of row for debugging
             ws.append(row)
 
         # Create a table from the data for filtering
