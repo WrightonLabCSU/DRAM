@@ -120,7 +120,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
             # Exclude the "sheet" column and move "gene_id" as the second column
             row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
-                        row['category'], row['subcategory']] + [row.get(col, None) for col in additional_columns]
+                        row['category'], row['subcategory']] + row[6:]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
