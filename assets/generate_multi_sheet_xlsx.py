@@ -103,7 +103,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
     for _, row in data.iterrows():
         # Extract additional column names dynamically
-        additional_columns = [col for col in row.index if col not in expected_column_names]
+        # Modify this line to correctly access the row data and exclude expected column names
+        additional_columns = [col for col in data.columns if col not in expected_column_names]
+
 
         # Split the "topic_ecosystem" values by "; " and iterate over them
         for sheet_name in row['topic_ecosystem'].split('; '):
