@@ -137,7 +137,18 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract unique column names for this sheet
-        column_names = list(set(sheet_info['columns']))
+        # Define the desired order of columns
+        desired_column_order = [
+            'gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category',
+            'subcategory', 'potential_amg', 'bin-1', 'bin-115', 'bin-33', 'bin-42'
+        ]
+
+        # Extract unique column names for this sheet
+        unique_column_names = list(set(sheet_info['columns']))
+
+        # Sort the unique column names based on their position in the desired order
+        column_names = sorted(unique_column_names, key=lambda x: desired_column_order.index(x))
+
 
         # Append column names as the first row
         ws.append(column_names)
