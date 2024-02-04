@@ -18,13 +18,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
     # Create the genome_stats sheet
     gs_sheet = wb.create_sheet(title="genome_stats")
-
-    # Dynamically get unique RNA types from combined_rrna
-    rrna_data = pd.read_csv(combined_rrna, sep='\t')
-    unique_rna_types = rrna_data['type'].unique()
-
+    
     # Append column names to genome_stats sheet
-    column_names = list(data.columns) + ["sample", "number of scaffolds"]
+    column_names = ["sample", "number of scaffolds"]
 
     # Check if the columns exist in combined_annotations_df and append them if they do
     if "taxonomy" in combined_data.columns:
@@ -34,7 +30,11 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     if "Contamination" in combined_data.columns:
         column_names.append("contamination")
 
+    # Append unique RNA types to genome_stats sheet
     column_names += list(unique_rna_types) + ["tRNA count"]
+
+    # Create the genome_stats sheet and append column names as the first row
+    gs_sheet = wb.create_sheet(title="genome_stats")
     gs_sheet.append(column_names)
 
     # Populate genome_stats sheet with data from combined_annotations
@@ -55,7 +55,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             contamination = None
 
         # Append data to genome_stats sheet
-        gs_data = [None] * len(data.columns) + [sample, None]
+        gs_data = [sample, None]
 
         # Check if the columns exist in combined_annotations_df and append them if they do
         if "taxonomy" in combined_data.columns:
