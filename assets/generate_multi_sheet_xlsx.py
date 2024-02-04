@@ -23,19 +23,9 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     rrna_data = pd.read_csv(combined_rrna, sep='\t')
     unique_rna_types = rrna_data['type'].unique()
 
-    # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds"]
-
-    # Check if the columns exist in combined_annotations_df and append them if they do
-    if "taxonomy" in combined_data.columns:
-        column_names.append("taxonomy")
-    if "Completeness" in combined_data.columns:
-        column_names.append("completeness")
-    if "Contamination" in combined_data.columns:
-        column_names.append("contamination")
-
-    column_names += list(unique_rna_types) + ["tRNA count"]
-    gs_sheet.append(column_names)
+    # Append only expected column names to genome_stats sheet
+    expected_column_names = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
+    gs_sheet.append(expected_column_names)
 
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
@@ -71,7 +61,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Update RNA columns dynamically in genome_stats sheet
     for rna_type in unique_rna_types:
         # Find the corresponding column index in the genome_stats sheet
-        col_idx = column_names.index(rna_type) + 1
+        col_idx = expected_column_names.index("subcategory") + 1  # Append to the subcategory column
         print(f"\nUpdating RNA column in genome_stats: {rna_type}")
         print(f"Column Index in genome_stats: {col_idx}")
 
@@ -105,7 +95,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         sample_trna_count = trna_data[sample].sum(numeric_only=True)
 
         # Update the 'tRNA count' column in the correct cell
-        gs_sheet.cell(row=idx, column=len(column_names)).value = sample_trna_count
+        gs_sheet.cell(row=idx, column=len(expected_column_names) + 1).value = sample_trna_count
         print(f"Updated tRNA count value at row {idx}")
 
     # Create a dictionary to store data for each additional sheet
@@ -113,17 +103,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
     for _, row in data.iterrows():
         # Extract additional column names dynamically
-        additional_columns = [col for col in row.index if col not in column_names]
+        additional_columns = [col for col in row.index if col not in expected_column_names]
 
-        # Split the "sheet" values by "; " and iterate over them
+        # Split the "topic_ecosystem" values by "; " and iterate over them
         for sheet_name in row['topic_ecosystem'].split('; '):
             sheet_name = sheet_name.replace(" ", "_")
             if sheet_name not in sheet_data:
                 sheet_data[sheet_name] = []
 
-            # Exclude the "sheet" column and move "gene_id" as the second column
-            row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
-                        row['category'], row['subcategory']] + [row[col] if col in additional_columns else "" for col in column_names]
+            # Exclude the expected columns and move "gene_id" as the first column
+            row_data = [row['gene_id']] + [row[col] if col in additional_columns else "" for col in row.index]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -133,13 +122,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names for the additional sheet
-        additional_columns = [col for col in column_names if col not in ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']]
+        additional_columns = [col for col in row.index if col not in expected_column_names]
 
         # Append column names as the first row for the additional sheet
-        ws.append(['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + additional_columns)
+        ws.append(['gene_id'] + additional_columns)
 
         # Print the final column names of this sheet for debugging
-        print(f'"{sheet_name}" sheet: Final column names: {["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"] + additional_columns}')
+        print(f'"{sheet_name}" sheet: Final column names: {["gene_id"] + additional_columns}')
 
         # Append data rows to the worksheet for the additional sheet
         for r_idx, row in enumerate(sheet_rows, 1):
