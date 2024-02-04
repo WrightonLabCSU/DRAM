@@ -130,17 +130,18 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame, including 'sample'
-        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + row_data[6:]
-
+        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + additional_columns
 
         # Append column names as the first row
         ws.append(column_names)
 
-        # Print the final column names of this sheet
+        # Print the final column names of this sheet for debugging
         print(f'"{sheet_name}" sheet: Final column names: {column_names}')
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
+            # Insert a print statement to check the contents of row_data
+            print(f'Row {r_idx}: {row_data}')  # Check the contents of row_data for debugging
             ws.append(row)
 
         # Create a table from the data for filtering
@@ -152,6 +153,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         tab.tableStyleInfo = style
         ws.add_table(tab)
 
+    # Before adding rRNA and tRNA sheets
+    print("Adding rRNA sheet")
     # Add rRNA sheet
     rrna_data = pd.read_csv(rrna_file, sep='\t')
     rrna_sheet = wb.create_sheet(title="rRNA")
@@ -163,6 +166,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     for _, row in rrna_data.iterrows():
         rrna_sheet.append(list(row))
 
+    # Before adding tRNA sheet
+    print("Adding tRNA sheet")
     # Add tRNA sheet
     trna_data = pd.read_csv(trna_file, sep='\t')
     trna_sheet = wb.create_sheet(title="tRNA")
@@ -174,11 +179,14 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     for _, row in trna_data.iterrows():
         trna_sheet.append(list(row))
 
+    # Before removing the default "Sheet" that was created
+    print("Removing default 'Sheet'")
     # Remove the default "Sheet" that was created
     default_sheet = wb['Sheet']
     wb.remove(default_sheet)
 
     # Save the workbook as the output file
+    print(f"Saving workbook to {output_file}")
     wb.save(output_file)
 
 if __name__ == '__main__':
