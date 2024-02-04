@@ -131,7 +131,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract column names from the original DataFrame, including 'sample'
-        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + additional_columns
+        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + row_data[6:]
+
 
         # Append column names as the first row
         ws.append(column_names)
