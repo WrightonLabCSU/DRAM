@@ -136,11 +136,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
-        # Extract column names dynamically for this sheet
-        column_names = sheet_info['columns']
+        # Extract unique column names for this sheet
+        column_names = list(set(sheet_info['columns']))
 
         # Append column names as the first row
         ws.append(column_names)
+
 
         # Print the final column names of this sheet for debugging
         print(f'"{sheet_name}" sheet: Final column names: {column_names}')
