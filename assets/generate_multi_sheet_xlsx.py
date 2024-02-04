@@ -118,9 +118,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             if sheet_name not in sheet_data:
                 sheet_data[sheet_name] = []
 
-            # Exclude the "sheet" column and move "gene_id" as the second column
-            row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
-                        row['category'], row['subcategory']] + [row[col] for col in row.index if col not in column_names]
+            # Exclude the expected columns and move other columns
+            row_data = [row[col] for col in row.index if col not in column_names]
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -129,8 +128,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
-        # Extract column names dynamically from the original DataFrame, including 'sample'
-        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + [col for col in data.columns if col not in column_names]
+        # Extract column names dynamically from the original DataFrame, excluding expected columns
+        column_names = [col for col in data.columns if col not in column_names]
 
         # Append column names as the first row
         ws.append(column_names)
