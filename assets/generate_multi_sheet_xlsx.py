@@ -4,7 +4,7 @@ from openpyxl import Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
 def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, combined_rrna, output_file):
-    # Read the data from the input file using pandas with tab as the separator
+    # Read all columns from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
 
     # Read combined_annotations
@@ -24,7 +24,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds"]
+    column_names = list(data.columns) + ["sample", "number of scaffolds"]
 
     # Check if the columns exist in combined_annotations_df and append them if they do
     if "taxonomy" in combined_data.columns:
@@ -55,7 +55,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             contamination = None
 
         # Append data to genome_stats sheet
-        gs_data = [sample, None]
+        gs_data = [None] * len(data.columns) + [sample, None]
 
         # Check if the columns exist in combined_annotations_df and append them if they do
         if "taxonomy" in combined_data.columns:
@@ -119,8 +119,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 sheet_data[sheet_name] = []
 
             # Exclude the "sheet" column and move "gene_id" as the second column
-            row_data = [row['gene_id'], row['gene_description'], row['pathway'], row['topic_ecosystem'],
-                        row['category'], row['subcategory']] + row[6:]
+            row_data = list(row.values) + [None, None]  # Add two None values for "sample" and "number of scaffolds"
 
             # Append the modified row to the corresponding sheet
             sheet_data[sheet_name].append(row_data)
@@ -128,10 +127,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     for sheet_name, sheet_rows in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
-
-        # Extract column names from the original DataFrame, including 'sample'
-        column_names = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'] + row_data[6:]
-
 
         # Append column names as the first row
         ws.append(column_names)
@@ -141,8 +136,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_rows, 1):
-            # Insert a print statement to check the contents of row_data
-            print(f'Row {r_idx}: {row_data}')  # Check the contents of row_data for debugging
             ws.append(row)
 
         # Create a table from the data for filtering
