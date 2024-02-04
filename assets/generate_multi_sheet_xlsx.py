@@ -18,9 +18,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
     # Create the genome_stats sheet
     gs_sheet = wb.create_sheet(title="genome_stats")
-    
+
+    # Read combined_rrna
+    rrna_data = pd.read_csv(combined_rrna, sep='\t')
+
+    # Dynamically get unique RNA types from combined_rrna
+    unique_rna_types = rrna_data['type'].unique()
+
     # Append column names to genome_stats sheet
     column_names = ["sample", "number of scaffolds"]
+
 
     # Check if the columns exist in combined_annotations_df and append them if they do
     if "taxonomy" in combined_data.columns:
