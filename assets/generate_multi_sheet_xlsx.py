@@ -24,8 +24,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
-    column_names = hardcoded_columns + ["sample", "number of scaffolds"]
+    column_names = ["sample", "number of scaffolds"]
 
     # Check if the columns exist in combined_annotations_df and append them if they do
     if "taxonomy" in combined_data.columns:
@@ -123,13 +122,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 }
 
             # Exclude the expected columns and move other columns
-            row_data = [str(row[col]) for col in row.index]  # Convert all values to strings
+            row_data = [row[col] for col in row.index if col not in column_names]
 
             # Append the modified row to the corresponding sheet's data
             sheet_data[sheet_name]['data'].append(row_data)
 
             # Collect column names that are not in column_names
-            new_columns = [col for col in row.index if col not in hardcoded_columns]
+            new_columns = [col for col in row.index if col not in column_names]
             sheet_data[sheet_name]['columns'].extend(new_columns)
 
     # Inside the loop that creates sheets for topic_ecosystem values
@@ -140,11 +139,14 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Extract unique column names for this sheet
         unique_column_names = list(set(sheet_info['columns']))
 
+        # Define the desired order of columns (excluding hardcoded columns)
+        hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
+
         # Ensure that sample names are not included in the column order
         additional_columns = [col for col in unique_column_names if col not in hardcoded_columns]
 
         # Append the unique column names while preserving the order of hardcoded columns
-        sorted_column_names = hardcoded_columns + additional_columns
+        sorted_column_names = [col for col in hardcoded_columns] + additional_columns
 
         # Append column names as the first row
         ws.append(sorted_column_names)
@@ -154,6 +156,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_info['data'], 1):
+            # Convert values in additional columns to strings
+            row = [str(value) if col in additional_columns else value for col, value in zip(sorted_column_names, row)]
             ws.append(row)
 
         # Create a table from the data for filtering
@@ -164,6 +168,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         )
         tab.tableStyleInfo = style
         ws.add_table(tab)
+
 
     # Before adding rRNA and tRNA sheets
     print("Adding rRNA sheet")
