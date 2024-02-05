@@ -584,7 +584,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
             switch (ecosysItem) {
                 case "ag":
                     distill_ag = "1"
-                    distill_ecosystem_list = "ag "
+                    distill_ecosystem_list = distill_ecosystem_list + "ag "
                     break
                 case "eng_sys":
                     distill_eng_sys = "1"
