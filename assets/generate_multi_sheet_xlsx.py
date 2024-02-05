@@ -137,16 +137,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         ws = wb.create_sheet(title=sheet_name)
 
         # Extract unique column names for this sheet
-        unique_column_names = list(set(sheet_info['columns']))
+        unique_column_names = []  # Start with an empty list to maintain order
+        for col in sheet_info['columns']:
+            if col not in unique_column_names and col not in hardcoded_columns:
+                unique_column_names.append(col)
 
-        # Define the desired order of columns (excluding hardcoded columns)
-        hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
-
-        # Ensure that sample names are not included in the column order
-        additional_columns = [col for col in unique_column_names if col not in hardcoded_columns]
-
-        # Append the unique column names while preserving the order of hardcoded columns
-        sorted_column_names = [col for col in hardcoded_columns] + additional_columns
+        # Define the desired order of columns (including hardcoded columns)
+        sorted_column_names = hardcoded_columns + unique_column_names
 
         # Append column names as the first row
         ws.append(sorted_column_names)
@@ -155,10 +152,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         print(f'"{sheet_name}" sheet: Final column names: {sorted_column_names}')
 
         # Append data rows to the worksheet
-        for r_idx, row in enumerate(sheet_info['data'], 1):
-            # Convert values in additional columns to strings
-            row = [str(value) if col in additional_columns else value for col, value in zip(sorted_column_names, row)]
-            ws.append(row)
+        for row in sheet_info['data']:
+            # Create a dict from column names to row data for sorting
+            row_dict = dict(zip(sheet_info['columns'], row))
+
+            # Sort the row data according to the sorted_column_names
+            sorted_row = [row_dict.get(col) for col in sorted_column_names]
+            ws.append(sorted_row)
 
         # Create a table from the data for filtering
         tab = Table(displayName=f"{sheet_name}_Table", ref=ws.dimensions)
