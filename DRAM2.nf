@@ -62,6 +62,7 @@ include { INDEX as KEGG_INDEX                           } from './modules/index.
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
+include { MERGE_ANNOTATIONS                             } from './modules/annotate/merge_annotations.nf'
 
 include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
 include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
@@ -419,6 +420,11 @@ if( params.annotate ){
         ch_taxa = []
     } 
 
+    // Ensure an add_annotations channel is generated if the user specifies --add_annotations
+    if( params.add_annotations != ""){
+        ch_add_annots = file(params.add_annotations).exists() ? file(params.add_annotations) : error("Error: If using --add_annotations, you must supply a DRAM-formatted annotations file. Taxonomy file not found at ${params.add_annotations}")
+    }
+
 
 }
 
@@ -469,7 +475,16 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         } else {
             ch_taxa = params.distill_dummy_sheet
         }
+
+        // Ensure an add_annotations channel is generated if the user specifies --add_annotations
+        if( params.add_annotations != ""){
+            ch_add_annots = file(params.add_annotations).exists() ? file(params.add_annotations) : error("Error: If using --add_annotations, you must supply a DRAM-formatted annotations file. Taxonomy file not found at ${params.add_annotations}")
+        }
+
     }
+
+
+
 }
 
 /*
@@ -833,10 +848,20 @@ workflow {
         else{
             ch_updated_annots = ch_combined_annotations
         }
+
         /* Add Taxonomy to annotations */
         if( params.taxa != "" ){
             ADD_TAXA( ch_updated_annots, ch_taxa )
-            ch_final_annots = ADD_TAXA.out.annots_taxa_out
+            ch_updated_taxa_annots = ADD_TAXA.out.annots_taxa_out
+        }
+        else{
+            ch_updated_taxa_annots = ch_combined_annotations
+        }
+
+        /* Check for additional user-provided annotations */
+        if( params.add_annotations != "" ){
+            MERGE_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
+            ch_final_annots = MERGE_ANNOTATIONS.out.merged_annots_out
         }
         else{
             ch_final_annots = ch_combined_annotations
@@ -883,7 +908,14 @@ workflow {
             /* Add Taxonomy to annotations */
             if( params.taxa != "" ){
                 ADD_TAXA( ch_updated_annots, ch_taxa )
-                ch_final_annots = ADD_TAXA.out.annots_taxa_out
+                ch_updated_taxa_annots = ADD_TAXA.out.annots_taxa_out
+            }
+            else{
+                ch_updated_taxa_annots = ch_combined_annotations
+            }
+            if( params.add_annotations != "" ){
+                MERGE_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
+                ch_final_annots = MERGE_ANNOTATIONS.out.merged_annots_out
             }
             else{
                 ch_final_annots = ch_combined_annotations
