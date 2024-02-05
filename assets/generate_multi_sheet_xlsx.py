@@ -191,6 +191,20 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         for _, row in rrna_data.iterrows():
             rrna_sheet.append(list(row))
 
+
+    print("Adding tRNA sheet")
+    if not is_null_content(trna_file):
+        # Add tRNA sheet
+        trna_data = pd.read_csv(trna_file, sep='\t')
+        trna_sheet = wb.create_sheet(title="tRNA")
+
+        # Append column names as the first row
+        trna_sheet.append(list(trna_data.columns))
+
+        # Append data rows to the worksheet
+        for _, row in trna_data.iterrows():
+            trna_sheet.append(list(row))
+
     # Before removing the default "Sheet" that was created
     print("Removing default 'Sheet'")
     # Remove the default "Sheet" that was created
