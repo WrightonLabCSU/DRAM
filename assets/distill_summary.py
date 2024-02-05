@@ -39,7 +39,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         # Read the distill sheet
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
-        # Process each potential gene ID column
+        # Initialize an empty DataFrame to store the merged data for the current distill sheet
+        merged_data_for_current_gene_id = pd.DataFrame()
+
+        # Process each potential gene ID column separately
         for common_gene_id_column in potential_gene_id_columns:
             # Merge the distill sheet with the combined_annotations using the current gene ID column
             merged_df = pd.merge(
@@ -57,10 +60,13 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                     merged_df.drop(col, axis=1, inplace=True)
 
             # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
-            distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
+            merged_data_for_current_gene_id = pd.concat([merged_data_for_current_gene_id, merged_df], ignore_index=True)
 
         # Update the set of additional columns with those not in combined_annotations_df
         additional_columns.update(set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'})
+
+        # Append the merged data for the current distill sheet to the overall distill summary DataFrame
+        distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id], ignore_index=True)
 
     # Merge with target_id_counts based on 'gene_id' and 'target_id', including the additional columns
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
