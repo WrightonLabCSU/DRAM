@@ -43,12 +43,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         # Read the distill sheet
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
-        # Include "potential_amg" column in columns_to_output if it exists
-        columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-
         # Check if additional columns exist in the distill sheet
         additional_cols = [col for col in distill_df.columns if col not in columns_to_output]
-        
+
         # Process each potential gene ID column
         for common_gene_id_column in potential_gene_id_columns:
             # Merge the distill sheet with the combined_annotations using the current gene ID column
@@ -71,7 +68,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
         # Merge with target_id_counts based on 'gene_id' and 'target_id'
         distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
-
 
     # Append additional columns and their values to columns_to_output
     for col, values in additional_columns.items():
