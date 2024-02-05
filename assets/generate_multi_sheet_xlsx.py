@@ -131,31 +131,25 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             new_columns = [col for col in row.index if col not in column_names]
             sheet_data[sheet_name]['columns'].extend(new_columns)
 
-    # Iterate through the sheet_data dictionary to create sheets
+    # Inside the loop that creates sheets for topic_ecosystem values
     for sheet_name, sheet_info in sheet_data.items():
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
-        # Extract unique column names for this sheet
-        # Define the desired order of columns
-        desired_column_order = [
-            'gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category',
-            'subcategory', 'potential_amg', 'bin-1', 'bin-115', 'bin-33', 'bin-42'
-        ]
-
-        # Extract unique column names for this sheet
+        # Extract column names dynamically for this sheet
         unique_column_names = list(set(sheet_info['columns']))
 
-        # Sort the unique column names based on their position in the desired order
-        column_names = sorted(unique_column_names, key=lambda x: desired_column_order.index(x))
+        # Define the desired order of columns (excluding hardcoded columns)
+        hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory", "potential_amg", "bin-1", "bin-115", "bin-33", "bin-42"]
 
+        # Sort the unique column names while preserving the order of hardcoded columns
+        sorted_column_names = sorted(unique_column_names, key=lambda x: (x not in hardcoded_columns, x))
 
         # Append column names as the first row
-        ws.append(column_names)
-
+        ws.append(sorted_column_names)
 
         # Print the final column names of this sheet for debugging
-        print(f'"{sheet_name}" sheet: Final column names: {column_names}')
+        print(f'"{sheet_name}" sheet: Final column names: {sorted_column_names}')
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_info['data'], 1):
@@ -169,6 +163,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         )
         tab.tableStyleInfo = style
         ws.add_table(tab)
+
 
     # Before adding rRNA and tRNA sheets
     print("Adding rRNA sheet")
