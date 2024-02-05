@@ -46,8 +46,12 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     if "Contamination" in combined_data.columns:
         column_names.append("contamination")
 
-    column_names += list(unique_rna_types) + ["tRNA count"]
+    if not is_null_content(trna_file):
+        column_names += list(unique_rna_types) + ["tRNA count"]
+    else:
+        column_names += list(unique_rna_types)
     gs_sheet.append(column_names)
+
 
     # Populate genome_stats sheet with data from combined_annotations
     for sample in unique_samples:
