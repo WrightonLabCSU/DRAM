@@ -7,6 +7,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
 
+    hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
+
     # Read combined_annotations
     combined_data = pd.read_csv(combined_annotations, sep='\t')
 
