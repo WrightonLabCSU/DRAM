@@ -24,7 +24,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds"]
+    hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
+    column_names = hardcoded_columns + ["sample", "number of scaffolds"]
 
     # Check if the columns exist in combined_annotations_df and append them if they do
     if "taxonomy" in combined_data.columns:
@@ -128,7 +129,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             sheet_data[sheet_name]['data'].append(row_data)
 
             # Collect column names that are not in column_names
-            new_columns = [col for col in row.index if col not in column_names]
+            new_columns = [col for col in row.index if col not in hardcoded_columns]
             sheet_data[sheet_name]['columns'].extend(new_columns)
 
     # Inside the loop that creates sheets for topic_ecosystem values
@@ -138,9 +139,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Extract unique column names for this sheet
         unique_column_names = list(set(sheet_info['columns']))
-
-        # Define the desired order of columns (excluding hardcoded columns)
-        hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
 
         # Ensure that sample names are not included in the column order
         additional_columns = [col for col in unique_column_names if col not in hardcoded_columns]
