@@ -3,6 +3,11 @@ import pandas as pd
 from openpyxl import Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
+def is_null_content(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read().strip()
+    return content == "NULL"
+
 def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotations, combined_rrna, output_file):
     # Read the data from the input file using pandas with tab as the separator
     data = pd.read_csv(input_file, sep='\t')
@@ -100,15 +105,16 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 print(f"Sample {sample} has no data for {rna_type}")
 
     # Sum tRNA counts and update the 'tRNA count' column
-    trna_data = pd.read_csv(trna_file, sep='\t')
+    if not is_null_content(trna_file):
+        trna_data = pd.read_csv(trna_file, sep='\t')
 
-    for idx, sample in enumerate(unique_samples, start=2):
-        # Extract relevant data for the current sample
-        sample_trna_count = trna_data[sample].sum(numeric_only=True)
+        for idx, sample in enumerate(unique_samples, start=2):
+            # Extract relevant data for the current sample
+            sample_trna_count = trna_data[sample].sum(numeric_only=True)
 
-        # Update the 'tRNA count' column in the correct cell
-        gs_sheet.cell(row=idx, column=len(column_names)).value = sample_trna_count
-        print(f"Updated tRNA count value at row {idx}")
+            # Update the 'tRNA count' column in the correct cell
+            gs_sheet.cell(row=idx, column=len(column_names)).value = sample_trna_count
+            print(f"Updated tRNA count value at row {idx}")
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
@@ -171,32 +177,19 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         tab.tableStyleInfo = style
         ws.add_table(tab)
 
-
-    # Before adding rRNA and tRNA sheets
+    # Before adding rRNA sheets
     print("Adding rRNA sheet")
-    # Add rRNA sheet
-    rrna_data = pd.read_csv(rrna_file, sep='\t')
-    rrna_sheet = wb.create_sheet(title="rRNA")
+    if not is_null_content(rrna_file):
+        # Add rRNA sheet
+        rrna_data = pd.read_csv(rrna_file, sep='\t')
+        rrna_sheet = wb.create_sheet(title="rRNA")
 
-    # Append column names as the first row
-    rrna_sheet.append(list(rrna_data.columns))
+        # Append column names as the first row
+        rrna_sheet.append(list(rrna_data.columns))
 
-    # Append data rows to the worksheet
-    for _, row in rrna_data.iterrows():
-        rrna_sheet.append(list(row))
-
-    # Before adding tRNA sheet
-    print("Adding tRNA sheet")
-    # Add tRNA sheet
-    trna_data = pd.read_csv(trna_file, sep='\t')
-    trna_sheet = wb.create_sheet(title="tRNA")
-
-    # Append column names as the first row
-    trna_sheet.append(list(trna_data.columns))
-
-    # Append data rows to the worksheet
-    for _, row in trna_data.iterrows():
-        trna_sheet.append(list(row))
+        # Append data rows to the worksheet
+        for _, row in rrna_data.iterrows():
+            rrna_sheet.append(list(row))
 
     # Before removing the default "Sheet" that was created
     print("Removing default 'Sheet'")
