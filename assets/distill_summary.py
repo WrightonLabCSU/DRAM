@@ -71,8 +71,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
     # Include "potential_amg" column in columns_to_output if it exists
     columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-    if 'potential_amg' in distill_summary_df.columns:
-        columns_to_output.append('potential_amg')
+
 
     # Append additional columns and their values to columns_to_output
     for col, values in additional_columns.items():
