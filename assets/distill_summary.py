@@ -18,9 +18,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Identify the potential gene ID columns in combined_annotations_df
     potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
 
-    # Get a list of all _distill_sheet.tsv files in the current working directory
-    distill_sheets = glob.glob('*_distill_sheet.tsv')
-
     # Initialize an empty DataFrame to store the distill summary
     distill_summary_df = pd.DataFrame()
 
@@ -29,6 +26,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
     # Initialize a dictionary to store additional columns dynamically
     additional_columns = {}
+
+    # Get a list of all _distill_sheet.tsv files in the current working directory
+    distill_sheets = glob.glob('*_distill_sheet.tsv')
+
+    # Define columns_to_output as an empty list
+    columns_to_output = []
 
     # Process each distill sheet
     for distill_sheet in distill_sheets:
