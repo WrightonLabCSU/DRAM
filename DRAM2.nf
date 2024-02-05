@@ -638,7 +638,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
-              custom     : ${distill_custom_list}
+              custom     : ${params.distill_custom}
 
             """
             .stripIndent()
@@ -654,7 +654,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
-              custom     : ${distill_custom_list}
+              custom     : ${params.distill_custom}
 
             """
             .stripIndent()
@@ -671,7 +671,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
-              custom     : ${distill_custom_list}
+              custom     : ${params.distill_custom}
 
             """
             .stripIndent()
