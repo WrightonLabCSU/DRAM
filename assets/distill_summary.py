@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 import argparse
 import glob
 import logging
@@ -24,11 +23,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Initialize an empty DataFrame to store the distill summary
     distill_summary_df = pd.DataFrame()
 
-    # Initialize an empty list for sample names
-    sample_names = []
-
-    # Initialize a dictionary to store additional columns dynamically
-    additional_columns = {}
+    # Initialize a set to store unique additional columns dynamically
+    additional_columns = set()
 
     # Process each distill sheet
     for distill_sheet in distill_sheets:
@@ -43,9 +39,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         # Read the distill sheet
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
-        # Check if additional columns exist in the distill sheet
-        additional_cols = [col for col in distill_df.columns if col not in distill_summary_df.columns]
-
         # Process each potential gene ID column
         for common_gene_id_column in potential_gene_id_columns:
             # Merge the distill sheet with the combined_annotations using the current gene ID column
@@ -54,37 +47,39 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                 distill_df,
                 left_on=[common_gene_id_column],
                 right_on=['gene_id'],
-                how='inner'
+                how='inner',
+                suffixes=('', '_dup')
             )
 
+            # Remove the duplicate columns resulted from merging
+            for col in merged_df.columns:
+                if col.endswith('_dup'):
+                    merged_df.drop(col, axis=1, inplace=True)
+
             # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
-            distill_summary_df = pd.concat([distill_summary_df, merged_df])
+            distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
 
-            # Update the additional columns dictionary with matching gene IDs
-            for col in additional_cols:
-                if col not in additional_columns:
-                    additional_columns[col] = {}
-                additional_columns[col].update(merged_df.set_index('gene_id')[col].to_dict())
+        # Update the set of additional columns with those not in combined_annotations_df
+        additional_columns.update(set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'})
 
-        # Merge with target_id_counts based on 'gene_id' and 'target_id'
-        distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
+    # Merge with target_id_counts based on 'gene_id' and 'target_id', including the additional columns
+    distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
 
-    # Append additional columns and their values to columns_to_output
-    columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-    for col, values in additional_columns.items():
-        distill_summary_df[col] = distill_summary_df['gene_id'].map(values)
-        columns_to_output.append(col)
+    # Define columns_to_output with the basic columns present
+    basic_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
 
-    # Extract the sample names from the target_id_counts columns (excluding non-numeric columns)
-    sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
-    sample_names = sample_columns.tolist()
+    # Deduplicate the basic columns
+    distill_summary_df.drop_duplicates(subset=basic_columns, inplace=True)
 
-    # Append the sample-named columns to columns_to_output
-    columns_to_output += sample_names
+    # Add the dynamically determined additional columns
+    columns_to_output = basic_columns + list(additional_columns)
+
+    # Add the dynamically determined bin columns from the target_id_counts_df
+    bin_columns = [col for col in target_id_counts_df.columns if col.startswith('bin-')]
+    columns_to_output.extend(bin_columns)
 
     # Save the deduplicated distill summary to the specified output path
-    deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory'])
-    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
+    distill_summary_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
