@@ -122,15 +122,15 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 }
 
             # Exclude the expected columns and move other columns
-            row_data = [row[col] for col in row.index if col not in column_names]
+            row_data = [str(row[col]) for col in row.index]  # Convert all values to strings
 
             # Append the modified row to the corresponding sheet's data
             sheet_data[sheet_name]['data'].append(row_data)
 
             # Collect column names that are not in column_names
-            new_columns = [col for col in row.index if col not in column_names]
+            new_columns = [col for col in row.index]
             sheet_data[sheet_name]['columns'].extend(new_columns)
-            
+
     # Inside the loop that creates sheets for topic_ecosystem values
     for sheet_name, sheet_info in sheet_data.items():
         # Create a worksheet for each sheet
@@ -156,8 +156,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_info['data'], 1):
-            # Convert values in additional columns to strings
-            row = [str(value) if col in additional_columns else value for col, value in zip(sorted_column_names, row)]
             ws.append(row)
 
         # Create a table from the data for filtering
@@ -168,7 +166,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         )
         tab.tableStyleInfo = style
         ws.add_table(tab)
-
 
     # Before adding rRNA and tRNA sheets
     print("Adding rRNA sheet")
