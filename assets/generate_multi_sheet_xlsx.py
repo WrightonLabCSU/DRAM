@@ -27,8 +27,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     gs_sheet = wb.create_sheet(title="genome_stats")
 
     # Dynamically get unique RNA types from combined_rrna
-    rrna_data = pd.read_csv(combined_rrna, sep='\t')
-    unique_rna_types = rrna_data['type'].unique()
+    rrna_data = None  # Initialize rrna_data to None
+    unique_rna_types = []
+
+    if not is_null_content(combined_rrna):
+        # Dynamically get unique RNA types from combined_rrna
+        rrna_data = pd.read_csv(combined_rrna, sep='\t')
+        unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
     column_names = ["sample", "number of scaffolds"]
@@ -75,34 +80,36 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         gs_data += [None] * (len(unique_rna_types) + 1)
         gs_sheet.append(gs_data)
 
+
     # Update RNA columns dynamically
-    for rna_type in unique_rna_types:
-        # Find the corresponding column index in the genome_stats sheet
-        col_idx = column_names.index(rna_type) + 1
-        print(f"\nUpdating RNA column: {rna_type}")
-        print(f"Column Index in genome_stats: {col_idx}")
+    if rrna_data is not None:
+        for rna_type in unique_rna_types:
+            # Find the corresponding column index in the genome_stats sheet
+            col_idx = column_names.index(rna_type) + 1
+            print(f"\nUpdating RNA column: {rna_type}")
+            print(f"Column Index in genome_stats: {col_idx}")
 
-        # Iterate over samples
-        for idx, sample in enumerate(unique_samples, start=2):
-            # Extract relevant data for the current sample and rna_type
-            sample_rrna_data = rrna_data[(rrna_data['sample'] == sample) & (rrna_data['type'] == rna_type)]
+            # Iterate over samples
+            for idx, sample in enumerate(unique_samples, start=2):
+                # Extract relevant data for the current sample and rna_type
+                sample_rrna_data = rrna_data[(rrna_data['sample'] == sample) & (rrna_data['type'] == rna_type)]
 
-            # Check if sample_rrna_data is not empty
-            if not sample_rrna_data.empty:
-                # Concatenate the values and format them as needed
-                values = [
-                    f"{row['query_id']} ({row['begin']}, {row['end']})"
-                    for _, row in sample_rrna_data.iterrows()
-                ]
+                # Check if sample_rrna_data is not empty
+                if not sample_rrna_data.empty:
+                    # Concatenate the values and format them as needed
+                    values = [
+                        f"{row['query_id']} ({row['begin']}, {row['end']})"
+                        for _, row in sample_rrna_data.iterrows()
+                    ]
 
-                # Join multiple values with "; "
-                joined_values = "; ".join(values)
+                    # Join multiple values with "; "
+                    joined_values = "; ".join(values)
 
-                # Update the value in the correct cell
-                gs_sheet.cell(row=idx, column=col_idx).value = joined_values
-                print(f"Updated value at row {idx}, column {col_idx}")
-            else:
-                print(f"Sample {sample} has no data for {rna_type}")
+                    # Update the value in the correct cell
+                    gs_sheet.cell(row=idx, column=col_idx).value = joined_values
+                    print(f"Updated value at row {idx}, column {col_idx}")
+                else:
+                    print(f"Sample {sample} has no data for {rna_type}")
 
     # Sum tRNA counts and update the 'tRNA count' column
     if not is_null_content(trna_file):
