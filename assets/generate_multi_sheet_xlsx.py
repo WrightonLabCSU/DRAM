@@ -130,7 +130,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Collect column names that are not in column_names
             new_columns = [col for col in row.index if col not in column_names]
             sheet_data[sheet_name]['columns'].extend(new_columns)
-
+            
     # Inside the loop that creates sheets for topic_ecosystem values
     for sheet_name, sheet_info in sheet_data.items():
         # Create a worksheet for each sheet
@@ -140,13 +140,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         unique_column_names = list(set(sheet_info['columns']))
 
         # Define the desired order of columns (excluding hardcoded columns)
-        hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory", "potential_amg", "bin-1", "bin-115", "bin-33", "bin-42"]
+        hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
 
         # Ensure that sample names are not included in the column order
-        sorted_column_names = [col for col in hardcoded_columns if col in unique_column_names]
+        additional_columns = [col for col in unique_column_names if col not in hardcoded_columns]
 
         # Append the unique column names while preserving the order of hardcoded columns
-        sorted_column_names += [col for col in unique_column_names if col not in hardcoded_columns]
+        sorted_column_names = [col for col in hardcoded_columns] + additional_columns
 
         # Append column names as the first row
         ws.append(sorted_column_names)
@@ -156,6 +156,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_info['data'], 1):
+            # Convert values in additional columns to strings
+            row = [str(value) if col in additional_columns else value for col, value in zip(sorted_column_names, row)]
             ws.append(row)
 
         # Create a table from the data for filtering
