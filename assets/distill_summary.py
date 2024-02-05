@@ -27,8 +27,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Initialize an empty list for sample names
     sample_names = []
 
-    # Flag to check if "potential_amg" exists in any input sheet
-    include_potential_amg = False
+    # Initialize a dictionary to store additional columns dynamically
+    additional_columns = {}
 
     # Process each distill sheet
     for distill_sheet in distill_sheets:
@@ -43,13 +43,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         # Read the distill sheet
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
-        # Check if the "potential_amg" column exists in the distill sheet
-        if 'potential_amg' in distill_df.columns:
-            include_potential_amg = True
-
-        # Initialize an empty DataFrame to store the merged data for the current distill sheet
-        merged_data_for_current_gene_id = pd.DataFrame()
-
+        # Check if additional columns exist in the distill sheet
+        additional_cols = [col for col in distill_df.columns if col not in columns_to_output]
+        
         # Process each potential gene ID column
         for common_gene_id_column in potential_gene_id_columns:
             # Merge the distill sheet with the combined_annotations using the current gene ID column
@@ -62,24 +58,32 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             )
 
             # Append the merged DataFrame to the distill summary DataFrame for the current distill sheet
-            merged_data_for_current_gene_id = pd.concat([merged_data_for_current_gene_id, merged_df])
+            distill_summary_df = pd.concat([distill_summary_df, merged_df])
+
+            # Update the additional columns dictionary with matching gene IDs
+            for col in additional_cols:
+                if col not in additional_columns:
+                    additional_columns[col] = {}
+                additional_columns[col].update(merged_df.set_index('gene_id')[col].to_dict())
 
         # Merge with target_id_counts based on 'gene_id' and 'target_id'
-        merged_data_for_current_gene_id = pd.merge(merged_data_for_current_gene_id, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
+        distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
 
-        # Append the merged data for the current distill sheet to the overall distill summary DataFrame
-        distill_summary_df = pd.concat([distill_summary_df, merged_data_for_current_gene_id])
-
-    # Append "potential_amg" column to columns_to_output if it exists
+    # Include "potential_amg" column in columns_to_output if it exists
     columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-    if include_potential_amg:
+    if 'potential_amg' in distill_summary_df.columns:
         columns_to_output.append('potential_amg')
+
+    # Append additional columns and their values to columns_to_output
+    for col, values in additional_columns.items():
+        distill_summary_df[col] = distill_summary_df['gene_id'].map(values)
+        columns_to_output.append(col)
 
     # Extract the sample names from the target_id_counts columns (excluding non-numeric columns)
     sample_columns = target_id_counts_df.columns[target_id_counts_df.dtypes == 'int64']
     sample_names = sample_columns.tolist()
 
-    # Append the sample-named columns to the columns_to_output
+    # Append the sample-named columns to columns_to_output
     columns_to_output += sample_names
 
     # Save the deduplicated distill summary to the specified output path
