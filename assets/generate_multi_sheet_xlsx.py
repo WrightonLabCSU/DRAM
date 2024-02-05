@@ -19,6 +19,10 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Create the genome_stats sheet
     gs_sheet = wb.create_sheet(title="genome_stats")
 
+    # Dynamically get unique RNA types from combined_rrna
+    rrna_data = pd.read_csv(combined_rrna, sep='\t')
+    unique_rna_types = rrna_data['type'].unique()
+
     # Append column names to genome_stats sheet
     column_names = ["sample", "number of scaffolds"]
 
@@ -30,7 +34,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     if "Contamination" in combined_data.columns:
         column_names.append("contamination")
 
-    column_names += ["tRNA count"]
+    column_names += list(unique_rna_types) + ["tRNA count"]
     gs_sheet.append(column_names)
 
     # Populate genome_stats sheet with data from combined_annotations
@@ -61,8 +65,37 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         if "Contamination" in combined_data.columns:
             gs_data.append(contamination)
 
-        gs_data += [None]  # Placeholder for tRNA count, will be filled later
+        gs_data += [None] * (len(unique_rna_types) + 1)
         gs_sheet.append(gs_data)
+
+    # Update RNA columns dynamically
+    for rna_type in unique_rna_types:
+        # Find the corresponding column index in the genome_stats sheet
+        col_idx = column_names.index(rna_type) + 1
+        print(f"\nUpdating RNA column: {rna_type}")
+        print(f"Column Index in genome_stats: {col_idx}")
+
+        # Iterate over samples
+        for idx, sample in enumerate(unique_samples, start=2):
+            # Extract relevant data for the current sample and rna_type
+            sample_rrna_data = rrna_data[(rrna_data['sample'] == sample) & (rrna_data['type'] == rna_type)]
+
+            # Check if sample_rrna_data is not empty
+            if not sample_rrna_data.empty:
+                # Concatenate the values and format them as needed
+                values = [
+                    f"{row['query_id']} ({row['begin']}, {row['end']})"
+                    for _, row in sample_rrna_data.iterrows()
+                ]
+
+                # Join multiple values with "; "
+                joined_values = "; ".join(values)
+
+                # Update the value in the correct cell
+                gs_sheet.cell(row=idx, column=col_idx).value = joined_values
+                print(f"Updated value at row {idx}, column {col_idx}")
+            else:
+                print(f"Sample {sample} has no data for {rna_type}")
 
     # Sum tRNA counts and update the 'tRNA count' column
     trna_data = pd.read_csv(trna_file, sep='\t')
@@ -73,6 +106,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
         # Update the 'tRNA count' column in the correct cell
         gs_sheet.cell(row=idx, column=len(column_names)).value = sample_trna_count
+        print(f"Updated tRNA count value at row {idx}")
 
     # Create a dictionary to store data for each sheet
     sheet_data = {}
@@ -102,16 +136,28 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
-        # Extract unique column names for this sheet based on the order of appearance
-        sorted_column_names = list(sheet_info['columns'])
+        # Extract unique column names for this sheet
+        unique_column_names = list(set(sheet_info['columns']))
+
+        # Define the desired order of columns (excluding hardcoded columns)
+        hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory"]
+
+        # Ensure that sample names are not included in the column order
+        additional_columns = [col for col in unique_column_names if col not in hardcoded_columns]
+
+        # Append the unique column names while preserving the order of hardcoded columns
+        sorted_column_names = [col for col in hardcoded_columns] + additional_columns
 
         # Append column names as the first row
         ws.append(sorted_column_names)
 
+        # Print the final column names of this sheet for debugging
+        print(f'"{sheet_name}" sheet: Final column names: {sorted_column_names}')
+
         # Append data rows to the worksheet
         for r_idx, row in enumerate(sheet_info['data'], 1):
             # Convert values in additional columns to strings
-            row = [str(value) if col in sheet_info['columns'] else value for col, value in zip(sorted_column_names, row)]
+            row = [str(value) if col in additional_columns else value for col, value in zip(sorted_column_names, row)]
             ws.append(row)
 
         # Create a table from the data for filtering
@@ -122,6 +168,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         )
         tab.tableStyleInfo = style
         ws.add_table(tab)
+
 
     # Before adding rRNA and tRNA sheets
     print("Adding rRNA sheet")
