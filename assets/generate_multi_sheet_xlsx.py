@@ -136,14 +136,17 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Create a worksheet for each sheet
         ws = wb.create_sheet(title=sheet_name)
 
-        # Extract column names dynamically for this sheet
+        # Extract unique column names for this sheet
         unique_column_names = list(set(sheet_info['columns']))
 
         # Define the desired order of columns (excluding hardcoded columns)
         hardcoded_columns = ["gene_id", "gene_description", "pathway", "topic_ecosystem", "category", "subcategory", "potential_amg", "bin-1", "bin-115", "bin-33", "bin-42"]
 
-        # Sort the unique column names while preserving the order of hardcoded columns
-        sorted_column_names = sorted(unique_column_names, key=lambda x: (x not in hardcoded_columns, x))
+        # Ensure that sample names are not included in the column order
+        sorted_column_names = [col for col in hardcoded_columns if col in unique_column_names]
+
+        # Append the unique column names while preserving the order of hardcoded columns
+        sorted_column_names += [col for col in unique_column_names if col not in hardcoded_columns]
 
         # Append column names as the first row
         ws.append(sorted_column_names)
