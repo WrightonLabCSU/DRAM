@@ -489,47 +489,47 @@ distill_transport = "0"
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
-
         def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport']
         def topics = params.distill_topic.split()
+        
+        // If 'default' is one of the topics, ignore other topics and set everything to "1"
+        if (topics.contains("default")) {
+            distill_default = "1"
+            distill_carbon = "1"
+            distill_energy = "1"
+            distill_misc = "1"
+            distill_nitrogen = "1"
+            distill_transport = "1"
+            distill_topic_list = "default (carbon, energy, misc, nitrogen, transport)"
+        } else {
+            // Process other topics only if 'default' is not selected
+            topics.each { topic ->
+                if (!validTopics.contains(topic)) {
+                    error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
+                }
 
-        // Create a list to store the generated channels
-        def topicChannels = []
-
-        topics.each { topic ->
-            if (!validTopics.contains(topic)) {
-                error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
-            }
-
-            switch (topic) {
-                case "default":
-                    distill_carbon = "1"
-                    distill_energy = "1"
-                    distill_misc = "1"
-                    distill_nitrogen = "1"
-                    distill_transport = "1"
-                    distill_topic_list = "default (carbon, energy, misc, nitrogen, transport)"
-                    break
-                case "carbon":
-                    distill_carbon = "1"
-                    distill_topic_list = "carbon "
-                    break
-                case "energy":
-                    distill_energy = "1"
-                    distill_topic_list += "energy "
-                    break
-                case "misc":
-                    distill_misc = "1"
-                    distill_topic_list += "misc "
-                    break
-                case "nitrogen":
-                    distill_nitrogen = "1"
-                    distill_topic_list += "nitrogen "
-                    break
-                case "transport":
-                    distill_transport = "1"
-                    distill_topic_list += "transport "
-                    break
+                switch (topic) {
+                    case "carbon":
+                        distill_carbon = "1"
+                        distill_topic_list += "carbon "
+                        break
+                    case "energy":
+                        distill_energy = "1"
+                        distill_topic_list += "energy "
+                        break
+                    case "misc":
+                        distill_misc = "1"
+                        distill_topic_list += "misc "
+                        break
+                    case "nitrogen":
+                        distill_nitrogen = "1"
+                        distill_topic_list += "nitrogen "
+                        break
+                    case "transport":
+                        distill_transport = "1"
+                        distill_topic_list += "transport "
+                        break
+                }
             }
         }
     }
