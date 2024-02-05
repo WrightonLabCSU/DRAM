@@ -128,7 +128,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             sheet_data[sheet_name]['data'].append(row_data)
 
             # Collect column names that are not in column_names
-            new_columns = [col for col in row.index]
+            new_columns = [col for col in row.index if col not in column_names]
             sheet_data[sheet_name]['columns'].extend(new_columns)
 
     # Inside the loop that creates sheets for topic_ecosystem values
@@ -146,7 +146,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         additional_columns = [col for col in unique_column_names if col not in hardcoded_columns]
 
         # Append the unique column names while preserving the order of hardcoded columns
-        sorted_column_names = [col for col in hardcoded_columns] + additional_columns
+        sorted_column_names = hardcoded_columns + additional_columns
 
         # Append column names as the first row
         ws.append(sorted_column_names)
