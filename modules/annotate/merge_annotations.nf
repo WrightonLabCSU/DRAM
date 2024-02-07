@@ -23,26 +23,17 @@ process MERGE_ANNOTATIONS {
     # Load the user-provided combined_annotations.tsv file into a DataFrame
     user_df = pd.read_csv(user_file_path, sep='\t')
 
-    # Print column names and data types for diagnostic purposes
-    print("Existing DataFrame columns:")
-    print(existing_df.columns)
-    print("User-provided DataFrame columns:")
-    print(user_df.columns)
-
-    # Check if the 'query_id' column exists in both DataFrames
-    if 'query_id' not in existing_df.columns:
-        raise ValueError("The 'query_id' column does not exist in the existing DataFrame.")
-    if 'query_id' not in user_df.columns:
-        raise ValueError("The 'query_id' column does not exist in the user-provided DataFrame.")
-
-    # Debug statements to check the contents of the 'query_id' column in each DataFrame
-    print("Existing DataFrame 'query_id' values:")
-    print(existing_df['query_id'])
-    print("User-provided DataFrame 'query_id' values:")
-    print(user_df['query_id'])
+    # Check for column conflicts and rename columns in the user-provided DataFrame if necessary
+    conflicting_columns = existing_df.columns.intersection(user_df.columns)
+    for col in conflicting_columns:
+        user_df.rename(columns={col: f'{col}_user'}, inplace=True)
 
     # Merge the two DataFrames based on the 'query_id' column
     merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer')
+
+    # Remove duplicate columns from the user-provided DataFrame that were not present in the existing DataFrame
+    columns_to_drop = [col for col in user_df.columns if col not in existing_df.columns]
+    merged_df.drop(columns_to_drop, axis=1, inplace=True)
 
     # Save the merged DataFrame to a new file
     merged_file_path = 'merged_combined_annotations.tsv'
