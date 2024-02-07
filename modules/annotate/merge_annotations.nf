@@ -35,20 +35,14 @@ process MERGE_ANNOTATIONS {
     if 'query_id' not in user_df.columns:
         raise ValueError("The 'query_id' column does not exist in the user-provided DataFrame.")
 
-    # Check for conflicting column names and rename them to avoid duplication
-    conflicting_cols = set(existing_df.columns) & set(user_df.columns)
-    for col in conflicting_cols:
-        existing_df.rename(columns={col: col + '_existing'}, inplace=True)
-        user_df.rename(columns={col: col + '_user'}, inplace=True)
+    # Debug statements to check the contents of the 'query_id' column in each DataFrame
+    print("Existing DataFrame 'query_id' values:")
+    print(existing_df['query_id'])
+    print("User-provided DataFrame 'query_id' values:")
+    print(user_df['query_id'])
 
     # Merge the two DataFrames based on the 'query_id' column
     merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer')
-
-    # Handle conflicts after merging
-    for col in conflicting_cols:
-        # If both '_existing' and '_user' versions exist, rename them explicitly
-        if col + '_existing' in merged_df.columns and col + '_user' in merged_df.columns:
-            merged_df.rename(columns={col + '_existing': col + '_existing', col + '_user': col + '_user'}, inplace=True)
 
     # Save the merged DataFrame to a new file
     merged_file_path = 'merged_combined_annotations.tsv'
