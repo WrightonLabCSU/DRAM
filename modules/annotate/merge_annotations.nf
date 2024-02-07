@@ -23,34 +23,20 @@ process MERGE_ANNOTATIONS {
     # Load the user-provided combined_annotations.tsv file into a DataFrame
     user_df = pd.read_csv(user_file_path, sep='	')
 
+    # Check for conflicting column names and rename them to avoid duplication
+    conflicting_cols = set(existing_df.columns) & set(user_df.columns)
+    for col in conflicting_cols:
+        existing_df.rename(columns={col: col + '_existing'}, inplace=True)
+        user_df.rename(columns={col: col + '_user'}, inplace=True)
+
     # Merge the two DataFrames based on the 'query_id' column
-    merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer', suffixes=('_existing', '_user'))
+    merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer')
 
-    # Initialize a list to keep track of columns processed
-    processed_cols = []
-
-    # Iterate over columns that exist in both files
-    for col in merged_df.columns:
-        # Check if the column is present in both files and if it's not 'query_id'
-        if col in existing_df.columns and col in user_df.columns and col != 'query_id':
-            merged_df[col] = merged_df.apply(
-                lambda row: f"{row[col + '_existing']}; {row[col + '_user']}" if row[col + '_existing'] != row[col + '_user'] else row[col + '_existing'],
-                axis=1
-            )
-            # Drop the intermediate columns '_existing' and '_user'
-            merged_df = merged_df.drop([col + '_existing', col + '_user'], axis=1)
-            processed_cols.extend([col + '_existing', col + '_user'])
-
-    # Remove the 'query_id' columns from the processed list
-    processed_cols = [col for col in processed_cols if col != 'query_id_existing' and col != 'query_id_user']
-
-    # Remove duplicate 'query_id' column if it exists
-    if 'query_id_user' in merged_df.columns and 'query_id_existing' in merged_df.columns:
-        merged_df = merged_df.drop('query_id_user', axis=1)
-
-    # Rename the 'query_id_existing' column to 'query_id'
-    if 'query_id_existing' in merged_df.columns:
-        merged_df = merged_df.rename(columns={'query_id_existing': 'query_id'})
+    # Handle conflicts after merging
+    for col in conflicting_cols:
+        # If both '_existing' and '_user' versions exist, rename them explicitly
+        if col + '_existing' in merged_df.columns and col + '_user' in merged_df.columns:
+            merged_df.rename(columns={col + '_existing': col + '_existing', col + '_user': col + '_user'}, inplace=True)
 
     # Save the merged DataFrame to a new file
     merged_file_path = 'merged_combined_annotations.tsv'
