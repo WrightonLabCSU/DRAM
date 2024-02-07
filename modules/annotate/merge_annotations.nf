@@ -24,8 +24,8 @@ process MERGE_ANNOTATIONS {
     # Load the user-provided combined_annotations.tsv file into a DataFrame
     user_df = pd.read_csv(user_file_path, sep='\t')
 
-    # Merge the two DataFrames based on the 'query_id' column
-    merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer')
+    # Merge the two DataFrames based on the 'query_id' column without adding suffixes
+    merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer', suffixes=('', ''))
 
     # Save the merged DataFrame to a new file
     merged_file_path = 'merged_combined_annotations.tsv'
