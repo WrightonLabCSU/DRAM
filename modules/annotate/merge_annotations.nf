@@ -1,8 +1,8 @@
 process MERGE_ANNOTATIONS {
 
     input:
-    file( old_annotations, stageAs: "old_annotations.tsv" )
-    file( new_annotations, stageAs: "new_annotations.tsv" )
+    path( old_annotations, stageAs: "old_annotations.tsv" )
+    path( new_annotations, stageAs: "new_annotations.tsv" )
 
 
     output:
