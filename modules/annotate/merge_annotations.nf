@@ -18,10 +18,22 @@ process MERGE_ANNOTATIONS {
     user_file_path = 'new_annotations.tsv'
 
     # Load the existing combined_annotations.tsv file into a DataFrame
-    existing_df = pd.read_csv(existing_file_path, sep='	')
+    existing_df = pd.read_csv(existing_file_path, sep='\t')
 
     # Load the user-provided combined_annotations.tsv file into a DataFrame
-    user_df = pd.read_csv(user_file_path, sep='	')
+    user_df = pd.read_csv(user_file_path, sep='\t')
+
+    # Print column names and data types for diagnostic purposes
+    print("Existing DataFrame columns:")
+    print(existing_df.columns)
+    print("User-provided DataFrame columns:")
+    print(user_df.columns)
+
+    # Check if the 'query_id' column exists in both DataFrames
+    if 'query_id' not in existing_df.columns:
+        raise ValueError("The 'query_id' column does not exist in the existing DataFrame.")
+    if 'query_id' not in user_df.columns:
+        raise ValueError("The 'query_id' column does not exist in the user-provided DataFrame.")
 
     # Check for conflicting column names and rename them to avoid duplication
     conflicting_cols = set(existing_df.columns) & set(user_df.columns)
@@ -40,7 +52,7 @@ process MERGE_ANNOTATIONS {
 
     # Save the merged DataFrame to a new file
     merged_file_path = 'merged_combined_annotations.tsv'
-    merged_df.to_csv(merged_file_path, sep='	', index=False)
+    merged_df.to_csv(merged_file_path, sep='\t', index=False)
 
     print(f"Merged annotations saved to {merged_file_path}")
 
