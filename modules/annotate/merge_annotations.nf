@@ -11,6 +11,7 @@ process MERGE_ANNOTATIONS {
     script:
     """
     #!/usr/bin/env python
+    
     import pandas as pd
 
     # Define the paths to the existing combined_annotations.tsv file and the user-provided file
