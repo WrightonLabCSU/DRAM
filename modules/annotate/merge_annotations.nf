@@ -24,19 +24,26 @@ process MERGE_ANNOTATIONS {
     # Load the user-provided combined_annotations.tsv file into a DataFrame
     user_df = pd.read_csv(user_file_path, sep='\t')
 
-    # Merge the two DataFrames based on the 'query_id' column, retaining all rows from both files
-    merged_df = pd.concat([existing_df, user_df], ignore_index=True, sort=False)
+    # Merge the two DataFrames based on the 'query_id' column, retaining all columns from both files
+    merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer')
 
-    # Iterate over columns that need special handling (e.g., 'dbcan_id')
-    columns_to_concatenate = ['dbcan_id']  # Add more columns as needed
-    for col in columns_to_concatenate:
-        merged_df[col] = merged_df.groupby('query_id')[col].transform(lambda x: '; '.join(x.unique()))
+    # Iterate over columns that need special handling (i.e., present in both files)
+    for col in merged_df.columns:
+        # Check if the column is present in both files and if the data differs for a given 'query_id'
+        if col in existing_df.columns and col in user_df.columns:
+            merged_df[col] = merged_df.apply(
+                lambda row: f"{row[col + '_x']}; {row[col + '_y']}" if row[col + '_x'] != row[col + '_y'] else row[col + '_x'],
+                axis=1
+            )
+            # Drop the intermediate columns '_x' and '_y'
+            merged_df = merged_df.drop([col + '_x', col + '_y'], axis=1)
 
     # Save the merged DataFrame to a new file
     merged_file_path = 'merged_combined_annotations.tsv'
     merged_df.to_csv(merged_file_path, sep='\t', index=False)
 
     print(f"Merged annotations saved to {merged_file_path}")
+
 
     """
 }
