@@ -23,8 +23,8 @@ process MERGE_ANNOTATIONS {
         return val1 if val1 == val2 else f"{val1}; {val2}"
 
     # Load the TSV files into DataFrames
-    old_df = pd.read_csv(old_annotations, sep='\t', dtype=str)
-    new_df = pd.read_csv(new_annotations, sep='\t', dtype=str)
+    old_df = pd.read_csv("old_annotations.tsv", sep='\t', dtype=str)
+    new_df = pd.read_csv("new_annotations.tsv", sep='\t', dtype=str)
 
     # Perform an outer join on the two DataFrames using 'query_id' and 'sample' as keys
     merged_df = pd.merge(old_df, new_df, on=['query_id', 'sample'], how='outer', suffixes=('_old', '_new'))
