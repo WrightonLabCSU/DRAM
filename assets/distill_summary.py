@@ -67,8 +67,13 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     bin_columns = [col for col in target_id_counts_df.columns if col.startswith('bin-')]
     columns_to_output.extend(bin_columns)
 
+    # Ensure all required columns are present
+    for col in columns_to_output:
+        if col not in distill_summary_df.columns:
+            distill_summary_df[col] = None
+
     # Drop duplicates based on subset of columns
-    deduplicated_df = distill_summary_df.drop_duplicates(subset=columns_to_output[:6]).copy()
+    deduplicated_df = distill_summary_df.drop_duplicates(subset=columns_to_output[:6], ignore_index=True).copy()
 
     # Write output to file
     deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
