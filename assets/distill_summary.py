@@ -47,18 +47,18 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             print(combined_annotations_df[common_gene_id_column])
             print("dbcan_subfam_EC:", combined_annotations_df['dbcan_subfam_EC'])
 
-            
             # Filter combined_annotations based on partial matching
             partial_match_indices = partial_match(distill_df['gene_id'], combined_annotations_df[common_gene_id_column])
             print(f"Partial match indices for {common_gene_id_column}: {partial_match_indices}")
 
+            # Print the gene_id, dbcan_subfam_EC, and kofam_EC values for debugging
+            if '2.4.1.18' in distill_df.loc[partial_match_indices, 'gene_id'].values:
+                print("Gene ID:", distill_df.loc[partial_match_indices, 'gene_id'])
+                print("dbcan_subfam_EC:", combined_annotations_df.loc[partial_match_indices, 'dbcan_subfam_EC'])
+                print("kofam_EC:", combined_annotations_df.loc[partial_match_indices, 'kofam_EC'])
+
             # Reset the index of the boolean Series to align with the DataFrame's index
             partial_matched_combined_annotations = combined_annotations_df[partial_match_indices.reset_index(drop=True)]
-
-            # Print the gene_id, dbcan_subfam_EC, and kofam_EC values for debugging
-            print("Gene ID:", distill_df.loc[partial_match_indices, 'gene_id'])
-            print("dbcan_subfam_EC:", combined_annotations_df.loc[partial_match_indices, 'dbcan_subfam_EC'])
-            print("kofam_EC:", combined_annotations_df.loc[partial_match_indices, 'kofam_EC'])
 
             # Merge the distill sheet with the filtered combined_annotations
             merged_df = pd.merge(
@@ -70,6 +70,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             )
             print(f"Merged DataFrame for {common_gene_id_column}:")
             print(merged_df.head())
+
+            distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
                                   how='left')
