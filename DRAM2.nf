@@ -894,9 +894,6 @@ workflow {
         }       
         // If the user did not annotate and provided taxa and/or bin quality, add it to annotations.
         if( params.annotate == 0 ){
-            COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
-            ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
-
             /* Add Bin Quality to annotations */
             if( params.bin_quality != "" ){
                 ADD_BIN_QUALITY( ch_combined_annotations, ch_bin_quality )
