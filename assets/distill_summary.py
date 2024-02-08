@@ -38,7 +38,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         # Collect additional columns that are not in the combined_annotations_df
         additional_columns.update(set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'})
 
-        for common_gene_id_column in potential_gene_id_columns + potential_ec_columns:
+        for common_gene_id_column in potential_gene_id_columns:
             # Filter combined_annotations based on partial matching
             partial_match_indices = partial_match(distill_df['gene_id'], combined_annotations_df[common_gene_id_column])
 
@@ -54,19 +54,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                 how='inner'
             )
             
-            # Concatenate the gene_id values if they matched to _id or _EC columns
-            merged_df['gene_description'] = merged_df.apply(lambda row: f"{row['gene_description']}; {row['gene_id']}", axis=1)
-            
-            # Remove the EC value from the gene_id column
-            merged_df['gene_id'] = ''
-            
-            # Get values from _id columns if the EC value matches
-            for col in merged_df.columns:
-                if col.endswith('_id'):
-                    merged_df['gene_id'] += merged_df[col] + '; '
-            
-            # Remove the trailing '; ' from the gene_id column
-            merged_df['gene_id'] = merged_df['gene_id'].str.rstrip('; ')
+            # Check if there's a corresponding _EC column and concatenate values from _id columns accordingly
+            for potential_ec_column in potential_ec_columns:
+                ec_indices = partial_match(merged_df['gene_id'], merged_df[potential_ec_column])
+                merged_df.loc[ec_indices, 'gene_id'] = merged_df.loc[ec_indices, potential_ec_column] + '; ' + merged_df[common_gene_id_column]
             
             distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
 
