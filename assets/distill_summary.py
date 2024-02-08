@@ -63,7 +63,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                 if gene_id in combined_annotations_df[col.replace('_EC', '_id')].values:
                                     gene_description += f'; {gene_id}'
                                 row_data = {'gene_id': combined_id,
-                                            'gene_description': gene_description,
+                                            'gene_description': gene_description + '; ' + gene_id,  # Append EC to gene_description
                                             'pathway': pathway,
                                             'topic_ecosystem': topic_ecosystem,
                                             'category': category,
