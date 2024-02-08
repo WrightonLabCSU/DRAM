@@ -41,6 +41,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         for common_gene_id_column in potential_gene_id_columns:
             # Filter combined_annotations based on partial matching
             partial_match_indices = partial_match(distill_df['gene_id'], combined_annotations_df[common_gene_id_column])
+            print(f"Partial match indices for {common_gene_id_column}: {partial_match_indices}")
 
             # Reset the index of the boolean Series to align with the DataFrame's index
             partial_matched_combined_annotations = combined_annotations_df[partial_match_indices.reset_index(drop=True)]
@@ -53,13 +54,20 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                 right_on=['gene_id'],
                 how='inner'
             )
+            print(f"Merged DataFrame for {common_gene_id_column}:")
+            print(merged_df.head())
             
             # Check if there's a corresponding _EC column and concatenate values from _id columns accordingly
             for potential_ec_column in potential_ec_columns:
                 ec_indices = partial_match(merged_df['gene_id'], merged_df[potential_ec_column])
+                print(f"EC indices for {potential_ec_column}: {ec_indices}")
                 merged_df.loc[ec_indices, 'gene_description'] += '; ' + merged_df[common_gene_id_column]
+                print(f"Merged DataFrame after updating gene_description for {potential_ec_column}:")
+                print(merged_df.head())
             
             distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
+            print(f"Distill summary DataFrame after processing {common_gene_id_column}:")
+            print(distill_summary_df.head())
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
                                   how='left')
