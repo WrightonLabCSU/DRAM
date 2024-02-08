@@ -14,6 +14,23 @@ process MERGE_ANNOTATIONS {
 
     import pandas as pd
 
+    # Function to print the first few lines of a file for debugging
+    def print_file_header(file_path, num_lines=5):
+        with open(file_path, 'r') as file:
+            for _ in range(num_lines):
+                print(file.readline())
+
+    # Paths to your files
+    old_annotations_path = "old_annotations.tsv"
+    new_annotations_path = "new_annotations.tsv"
+
+    # Print the headers of the files for debugging
+    print("Old annotations file header:")
+    print_file_header(old_annotations_path)
+
+    print("New annotations file header:")
+    print_file_header(new_annotations_path)
+
     # Function to merge or concatenate values based on conditions
     def merge_values(val1, val2):
         if pd.isnull(val1):
