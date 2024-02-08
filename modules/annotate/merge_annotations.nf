@@ -22,7 +22,7 @@ process MERGE_ANNOTATIONS {
 
 
     # Merge the two DataFrames based on the 'query_id' column
-    merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer', suffixes=('', ''))
+    merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer', suffixes=('_old', '_new'))
 
     # Save the merged DataFrame to a new file
     merged_file_path = "merged_combined_annotations.tsv"
