@@ -836,9 +836,6 @@ workflow {
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
-        COUNT_ANNOTATIONS ( ch_combined_annotations, ch_count_annots_script )
-        ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
-
         /* Add Bin Quality to annotations */
         if( params.bin_quality != "" ){
             ADD_BIN_QUALITY( ch_combined_annotations, ch_bin_quality )
@@ -861,9 +858,13 @@ workflow {
         if( params.add_annotations != "" ){
             MERGE_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
             ch_final_annots = MERGE_ANNOTATIONS.out.merged_annots_out
+            
+            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+            ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
         else{
             ch_final_annots = ch_combined_annotations
+            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
         }
 
     }
@@ -915,9 +916,13 @@ workflow {
             if( params.add_annotations != "" ){
                 MERGE_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
                 ch_final_annots = MERGE_ANNOTATIONS.out.merged_annots_out
+                
+                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+                ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
             }
             else{
                 ch_final_annots = ch_combined_annotations
+                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
             }
         } 
         
