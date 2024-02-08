@@ -5,28 +5,15 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-
 def is_null_content(file_path):
     with open(file_path, 'r') as file:
         content = file.read().strip()
     return content == "NULL"
 
-
-def partial_match(gene_id, combined_column):
-    if isinstance(gene_id, pd.Series):
-        return combined_column.astype(str).apply(lambda x: any(g_id.strip() + '.' in x.split(';') for g_id in gene_id))
-    else:
-        return combined_column.astype(str).apply(lambda x: gene_id.strip() + '.' in x.split(';'))
-
-
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
-    potential_gene_id_columns = [col for col in combined_annotations_df.columns if
-                                 col.endswith('_id') and col != "query_id"]
-    potential_ec_columns = [col for col in combined_annotations_df.columns if col.endswith('_EC')]
     distill_sheets = glob.glob('*_distill_sheet.tsv')
     distill_summary_df = pd.DataFrame()
-    additional_columns = set()
 
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
@@ -35,42 +22,33 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         logging.info(f"Processing distill sheet: {distill_sheet}")
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
-        # Collect additional columns that are not in the combined_annotations_df
-        additional_columns.update(set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'})
+        for index, row in distill_df.iterrows():
+            gene_id = row['gene_id']
+            gene_description = row['gene_description']
 
-        # Inside the loop for potential_gene_id_columns
-        for common_gene_id_column in potential_gene_id_columns:
-            # Print the contents of distill_df['gene_id'] and combined_annotations_df[potential_gene_id_column]
-            print(f"Contents of distill_df['gene_id']:")
-            print(distill_df['gene_id'])
-            print(f"Contents of combined_annotations_df['{common_gene_id_column}']:")
-            print(combined_annotations_df[common_gene_id_column])
-
-            # Filter combined_annotations based on partial matching
-            partial_match_indices = partial_match(distill_df['gene_id'], combined_annotations_df[common_gene_id_column])
-            print(f"Partial match indices for {common_gene_id_column}: {partial_match_indices}")
-
-            # Reset the index of the boolean Series to align with the DataFrame's index
-            partial_matched_combined_annotations = combined_annotations_df[partial_match_indices.reset_index(drop=True)]
-
-            # Print the gene_id, dbcan_subfam_EC, and kofam_EC values for debugging
-            print("Gene ID:", distill_df.loc[partial_match_indices, 'gene_id'])
-            print("dbcan_subfam_EC:", combined_annotations_df.loc[partial_match_indices, 'dbcan_subfam_EC'])
-            print("kofam_EC:", combined_annotations_df.loc[partial_match_indices, 'kofam_EC'])
-
-            # Merge the distill sheet with the filtered combined_annotations
-            merged_df = pd.merge(
-                partial_matched_combined_annotations,
-                distill_df,
-                left_on=[common_gene_id_column],
-                right_on=['gene_id'],
-                how='inner'
-            )
-            print(f"Merged DataFrame for {common_gene_id_column}:")
-            print(merged_df.head())
-            
-            # Append merged_df to distill_summary_df
-            distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
+            # Check potential_gene_id_columns first
+            for col in combined_annotations_df.columns:
+                if col.endswith('_id'):
+                    matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
+                    if matched_indices.any():
+                        combined_ids = '; '.join(combined_annotations_df.loc[matched_indices, col])
+                        distill_summary_df = distill_summary_df.append({'gene_id': combined_ids,
+                                                                        'gene_description': gene_description},
+                                                                       ignore_index=True)
+                        break
+            else:
+                # Check potential_ec_columns
+                for col in combined_annotations_df.columns:
+                    if col.endswith('_EC'):
+                        matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
+                        if matched_indices.any():
+                            combined_ids = '; '.join(combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')])
+                            distill_summary_df = distill_summary_df.append({'gene_id': combined_ids,
+                                                                            'gene_description': gene_description + '; ' + gene_id},
+                                                                           ignore_index=True)
+                            break
+                else:
+                    logging.info(f"No match found for gene ID {gene_id}.")
 
     # Merge distill_summary_df with target_id_counts_df
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
@@ -79,20 +57,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Remove the 'target_id' column to avoid duplicates
     distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
-    # Define columns to output
-    columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-    columns_to_output.extend(additional_columns)
-    columns_to_output = list(dict.fromkeys(columns_to_output))
-
-    # Add bin columns from target_id_counts_df
-    bin_columns = [col for col in target_id_counts_df.columns if col.startswith('bin-')]
-    columns_to_output.extend(bin_columns)
-
-    # Drop duplicates based on subset of columns
-    deduplicated_df = distill_summary_df.drop_duplicates(subset=columns_to_output[:6]).copy()
-
     # Write output to file
-    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
+    distill_summary_df.to_csv(output_path, sep='\t', index=False)
 
 
 if __name__ == "__main__":
