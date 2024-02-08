@@ -15,10 +15,10 @@ process MERGE_ANNOTATIONS {
     import pandas as pd
 
     # Load the existing annotations file into a DataFrame
-    existing_df = pd.read_csv(old_annotations, sep='\\t')
+    existing_df = pd.read_csv("old_annotations.tsv", sep='\\t')
 
     # Load the new annotations file into a DataFrame
-    user_df = pd.read_csv(new_annotations, sep='\\t')
+    user_df = pd.read_csv("old_annotations.tsv", sep='\\t')
 
     # Merge the two DataFrames based on the 'query_id' column
     merged_df = pd.merge(existing_df, user_df, on='query_id', how='outer')
