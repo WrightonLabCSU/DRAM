@@ -38,16 +38,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         for common_gene_id_column in potential_gene_id_columns + potential_ec_columns:
             # Filter combined_annotations based on partial matching
             partial_match_indices = distill_df['gene_id'].apply(lambda x: partial_match(x, combined_annotations_df[common_gene_id_column]))
-
-            print("Indices of boolean Series:")
-            print(partial_match_indices)
-            print("Indices of DataFrame:")
-            print(combined_annotations_df.index)
             
             # Reset the index of the boolean Series to align with the DataFrame's index
-            partial_match_indices = partial_match_indices.reset_index(drop=True)
-            
-            partial_matched_combined_annotations = combined_annotations_df[partial_match_indices]
+            partial_matched_combined_annotations = combined_annotations_df[partial_match_indices.reset_index(drop=True)]
 
             # Merge the distill sheet with the filtered combined_annotations
             merged_df = pd.merge(
