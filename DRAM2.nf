@@ -131,7 +131,7 @@ if( params.use_dbset){
 }
 
 
-if( params.annotations == "" && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
+if( params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
     error("If you want to distill, you must provide annotations via --annotations <path/to/file>.")
 }
 
