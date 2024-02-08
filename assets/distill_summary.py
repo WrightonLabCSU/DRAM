@@ -10,10 +10,6 @@ def is_null_content(file_path):
         content = file.read().strip()
     return content == "NULL"
 
-def preprocess_gene_id(gene_id):
-    # Preprocess gene ID to ensure consistent format for matching
-    return gene_id.strip()
-
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
     potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
@@ -30,7 +26,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
         for index, row in distill_df.iterrows():
-            gene_id = preprocess_gene_id(row['gene_id'])
+            gene_id = row['gene_id']
             gene_description = row['gene_description']
             pathway = row.get('pathway', None)
             topic_ecosystem = row.get('topic_ecosystem', None)
@@ -40,11 +36,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             # Check potential_gene_id_columns first
             for col in combined_annotations_df.columns:
                 if col.endswith('_id') and col != "query_id":  # Exclude query_id
-                    matched_indices = combined_annotations_df[col].apply(preprocess_gene_id).str.contains(gene_id, na=False)
+                    matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
                     if matched_indices.any():
                         combined_ids = gene_id  # Use the matched gene_id directly
-                        if gene_id not in gene_description:  # Check if gene_id is already in gene_description
-                            gene_description += f'; {gene_id}'
                         row_data = {'gene_id': combined_ids,
                                     'gene_description': gene_description,
                                     'pathway': pathway,
@@ -59,7 +53,30 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                         break
             else:
-                logging.info(f"No match found for gene ID {gene_id}.")
+                # Check potential_ec_columns
+                for col in combined_annotations_df.columns:
+                    if col.endswith('_EC'):
+                        matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
+                        if matched_indices.any():
+                            for combined_id in combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')]:
+                                if gene_id not in gene_description:
+                                    gene_description += f'; {gene_id}'
+                                row_data = {'gene_id': combined_id,
+                                            'gene_description': gene_description,
+                                            'pathway': pathway,
+                                            'topic_ecosystem': topic_ecosystem,
+                                            'category': category,
+                                            'subcategory': subcategory}
+                                # Add additional columns from distill sheet
+                                for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                                    if additional_col == 'target_id':
+                                        has_target_id_column = True
+                                    row_data[additional_col] = row.get(additional_col, None)
+                                distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
+                            break
+
+                else:
+                    logging.info(f"No match found for gene ID {gene_id}.")
 
     # Merge distill_summary_df with target_id_counts_df
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
