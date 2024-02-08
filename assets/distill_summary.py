@@ -12,8 +12,10 @@ def is_null_content(file_path):
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
+    potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
     distill_sheets = glob.glob('*_distill_sheet.tsv')
     distill_summary_df = pd.DataFrame()
+    additional_columns = set()
 
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
@@ -57,8 +59,19 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Remove the 'target_id' column to avoid duplicates
     distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
+    # Define columns to output
+    columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    columns_to_output.extend(additional_columns)
+
+    # Add bin columns from target_id_counts_df
+    bin_columns = [col for col in target_id_counts_df.columns if col.startswith('bin-')]
+    columns_to_output.extend(bin_columns)
+
+    # Drop duplicates based on subset of columns
+    deduplicated_df = distill_summary_df.drop_duplicates(subset=columns_to_output[:6]).copy()
+
     # Write output to file
-    distill_summary_df.to_csv(output_path, sep='\t', index=False)
+    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
 
 
 if __name__ == "__main__":
