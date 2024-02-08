@@ -53,6 +53,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                 right_on=['gene_id'],
                 how='inner'
             )
+            
+            # Concatenate the gene_id values if they matched to _id or _EC columns
+            merged_df['gene_description'] = merged_df.apply(lambda row: f"{row['gene_description']}; {row['gene_id']}", axis=1)
+            
             distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
