@@ -13,7 +13,7 @@ def is_null_content(file_path):
 
 
 def partial_match(gene_id, combined_column):
-    return combined_column.apply(lambda x: gene_id in x)
+    return combined_column.astype(str).apply(lambda x: gene_id in x)
 
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
