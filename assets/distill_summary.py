@@ -15,7 +15,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
     distill_sheets = glob.glob('*_distill_sheet.tsv')
     distill_summary_df = pd.DataFrame()
-    additional_columns = set()
 
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
@@ -33,7 +32,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                 if col.endswith('_id') and col != "query_id":  # Exclude query_id
                     matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
                     if matched_indices.any():
-                        combined_ids = '; '.join(combined_annotations_df.loc[matched_indices, col])
+                        combined_ids = gene_id  # Use the matched gene_id directly
                         distill_summary_df = distill_summary_df.append({'gene_id': combined_ids,
                                                                         'gene_description': gene_description},
                                                                        ignore_index=True)
@@ -61,7 +60,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
     # Define columns to output
     columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-    columns_to_output.extend(additional_columns)
 
     # Add bin columns from target_id_counts_df
     bin_columns = [col for col in target_id_counts_df.columns if col.startswith('bin-')]
