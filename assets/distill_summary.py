@@ -42,8 +42,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             # Print the contents of distill_df['gene_id'] and combined_annotations_df[potential_gene_id_column]
             print(f"Contents of distill_df['gene_id']:")
             print(distill_df['gene_id'])
-            print(f"Contents of combined_annotations_df['{potential_gene_id_column}']:")
-            print(combined_annotations_df[potential_gene_id_column])
+            print(f"Contents of combined_annotations_df['{common_gene_id_column}']:")
+            print(combined_annotations_df[common_gene_id_column])
 
             # Filter combined_annotations based on partial matching
             partial_match_indices = partial_match(distill_df['gene_id'], combined_annotations_df[common_gene_id_column])
@@ -74,6 +74,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
             print(f"Distill summary DataFrame after processing {common_gene_id_column}:")
             print(distill_summary_df.head())
+
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
                                   how='left')
