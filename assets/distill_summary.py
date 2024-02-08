@@ -78,15 +78,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
     # Define columns to output
-    columns_to_output = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
 
-    # Add bin columns from target_id_counts_df
-    bin_columns = [col for col in target_id_counts_df.columns if col.startswith('bin-')]
-    columns_to_output.extend(bin_columns)
-
-    # Add additional columns from distill sheet
-    additional_columns = set(distill_summary_df.columns) - set(columns_to_output)
-    columns_to_output.extend(additional_columns)
+    columns_to_output = required_columns + additional_columns + list(target_id_counts_df.columns)
 
     # Ensure all required columns are present
     for col in columns_to_output:
@@ -94,7 +89,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             distill_summary_df[col] = None
 
     # Drop duplicates based on subset of columns
-    deduplicated_df = distill_summary_df.drop_duplicates(subset=columns_to_output[:6], ignore_index=True).copy()
+    deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).copy()
 
     # Write output to file
     deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
