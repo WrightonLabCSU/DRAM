@@ -54,5 +54,6 @@ process MERGE_ANNOTATIONS {
 
     print(f"Merged annotations saved to {merged_file_path}")
 
+
     """
 }
