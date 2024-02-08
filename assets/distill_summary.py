@@ -57,7 +57,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             # Check if there's a corresponding _EC column and concatenate values from _id columns accordingly
             for potential_ec_column in potential_ec_columns:
                 ec_indices = partial_match(merged_df['gene_id'], merged_df[potential_ec_column])
-                merged_df.loc[ec_indices, 'gene_id'] = merged_df.loc[ec_indices, potential_ec_column] + '; ' + merged_df[common_gene_id_column]
+                merged_df.loc[ec_indices, 'gene_description'] += '; ' + merged_df[common_gene_id_column]
             
             distill_summary_df = pd.concat([distill_summary_df, merged_df], ignore_index=True)
 
