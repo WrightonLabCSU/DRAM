@@ -14,47 +14,37 @@ process MERGE_ANNOTATIONS {
 
     import pandas as pd
 
-    def merge_annotations(old_file, new_file, output_file):
-        # Load the TSV files into DataFrames
-        old_df = pd.read_csv(old_file, sep='\t', dtype=str)
-        new_df = pd.read_csv(new_file, sep='\t', dtype=str)
+    # Function to merge or concatenate values based on conditions
+    def merge_values(val1, val2):
+        if pd.isnull(val1):
+            return val2
+        if pd.isnull(val2):
+            return val1
+        return val1 if val1 == val2 else f"{val1}; {val2}"
 
-        # Merge the two DataFrames on 'query_id' and 'sample' with an outer join
-        merged_df = pd.merge(old_df, new_df, on=['query_id', 'sample'], how='outer', suffixes=('_old', '_new'))
+    # Load the TSV files into DataFrames
+    old_df = pd.read_csv("old_annotations.tsv", sep='\t', dtype=str)
+    new_df = pd.read_csv("new_annotations.tsv", sep='\t', dtype=str)
 
-        # Iterate through the columns and merge them as necessary
-        for column in merged_df.columns:
-            if '_old' in column or '_new' in column:
-                # Get the original column name without suffix
-                original_column = column.replace('_old', '').replace('_new', '')
-                # Check if the column exists in both DataFrames and merge if needed
-                if (original_column + '_old') in merged_df and (original_column + '_new') in merged_df:
-                    old_col = merged_df[original_column + '_old']
-                    new_col = merged_df[original_column + '_new']
-                    # Combine the columns if both non-null and different, otherwise take one value
-                    merged_df[original_column] = old_col.where(old_col == new_col, old_col + ';' + new_col)
-                    # Drop the temporary suffix columns
-                    merged_df.drop([original_column + '_old', original_column + '_new'], axis=1, inplace=True)
-                elif '_old' in column:
-                    # Rename the column to the original name if it only exists in the old DataFrame
-                    merged_df.rename(columns={column: original_column}, inplace=True)
-                elif '_new' in column:
-                    # Rename the column to the original name if it only exists in the new DataFrame
-                    merged_df.rename(columns={column: original_column}, inplace=True)
+    # Perform an outer join on the two DataFrames using 'query_id' and 'sample' as keys
+    merged_df = pd.merge(old_df, new_df, on=['query_id', 'sample'], how='outer', suffixes=('_old', '_new'))
 
-        # Remove any duplicate rows based on 'query_id' and 'sample'
-        merged_df.drop_duplicates(subset=['query_id', 'sample'], inplace=True)
+    # Process columns to merge or concatenate values
+    for col in old_df.columns:
+        if col in new_df.columns and col not in ['query_id', 'sample']:
+            merged_df[col] = merged_df.apply(lambda x: merge_values(x[col + '_old'], x[col + '_new']), axis=1)
+        elif col + '_old' in merged_df.columns:
+            merged_df[col] = merged_df[col + '_old']
+        elif col + '_new' in merged_df.columns:
+            merged_df[col] = merged_df[col + '_new']
 
-        # Save the merged DataFrame to the output file
-        merged_df.to_csv(output_file, sep='\t', index=False)
+    # Drop the _old and _new columns
+    columns_to_drop = [col for col in merged_df if '_old' in col or '_new' in col]
+    merged_df.drop(columns_to_drop, axis=1, inplace=True)
 
-    # Paths to your files
-    old_annotations_path = "old_annotations.tsv"
-    new_annotations_path = "new_annotations.tsv"
+    # Save the merged DataFrame to a new file
     merged_file_path = "merged_combined_annotations.tsv"
-
-    # Merge the annotations and save to file
-    merge_annotations(old_annotations_path, new_annotations_path, merged_file_path)
+    merged_df.to_csv(merged_file_path, sep='\t', index=False)
 
 
     """
