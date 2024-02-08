@@ -10,6 +10,10 @@ def is_null_content(file_path):
         content = file.read().strip()
     return content == "NULL"
 
+def preprocess_gene_id(gene_id):
+    # Preprocess gene ID to ensure consistent format for matching
+    return gene_id.strip()
+
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
     potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
@@ -26,7 +30,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
         for index, row in distill_df.iterrows():
-            gene_id = row['gene_id']
+            gene_id = preprocess_gene_id(row['gene_id'])
             gene_description = row['gene_description']
             pathway = row.get('pathway', None)
             topic_ecosystem = row.get('topic_ecosystem', None)
@@ -36,7 +40,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             # Check potential_gene_id_columns first
             for col in combined_annotations_df.columns:
                 if col.endswith('_id') and col != "query_id":  # Exclude query_id
-                    matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
+                    matched_indices = combined_annotations_df[col].apply(preprocess_gene_id).str.contains(gene_id, na=False)
                     if matched_indices.any():
                         combined_ids = gene_id  # Use the matched gene_id directly
                         if gene_id not in gene_description:  # Check if gene_id is already in gene_description
