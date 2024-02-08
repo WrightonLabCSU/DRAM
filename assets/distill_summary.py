@@ -28,7 +28,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
             # Check potential_gene_id_columns first
             for col in combined_annotations_df.columns:
-                if col.endswith('_id'):
+                if col.endswith('_id') and col != "query_id":  # Exclude query_id
                     matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
                     if matched_indices.any():
                         combined_ids = '; '.join(combined_annotations_df.loc[matched_indices, col])
