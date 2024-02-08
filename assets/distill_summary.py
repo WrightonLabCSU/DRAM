@@ -60,10 +60,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         if matched_indices.any():
                             # Create a new row for each unique gene_id found
                             for combined_id in combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')]:
-                                if gene_id in combined_annotations_df[col.replace('_EC', '_id')].values:
-                                    # Concatenate gene_id to gene_description
-                                    print(f"Concatenating gene_id: {gene_id} to gene_description: {gene_description}")
-                                    gene_description += f"; {combined_id}"
+                                print(f"Before concatenation - gene_description: {gene_description}, gene_id: {gene_id}")
+                                gene_description += f'; {gene_id}'
+                                print(f"After concatenation - gene_description: {gene_description}")
                                 row_data = {'gene_id': combined_id,
                                             'gene_description': gene_description,
                                             'pathway': pathway,
