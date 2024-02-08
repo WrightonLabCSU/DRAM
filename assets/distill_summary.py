@@ -39,6 +39,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         additional_columns.update(set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'})
 
         for common_gene_id_column in potential_gene_id_columns:
+            # Print the contents of distill_df['gene_id'] and combined_annotations_df[potential_gene_id_column]
+            print(f"Contents of distill_df['gene_id']:")
+            print(distill_df['gene_id'])
+            print(f"Contents of combined_annotations_df['{potential_gene_id_column}']:")
+            print(combined_annotations_df[potential_gene_id_column])
+
             # Filter combined_annotations based on partial matching
             partial_match_indices = partial_match(distill_df['gene_id'], combined_annotations_df[common_gene_id_column])
             print(f"Partial match indices for {common_gene_id_column}: {partial_match_indices}")
