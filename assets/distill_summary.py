@@ -16,6 +16,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     distill_sheets = glob.glob('*_distill_sheet.tsv')
     distill_summary_df = pd.DataFrame()
     additional_columns = set()
+    has_target_id_column = False
 
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
@@ -46,6 +47,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     'subcategory': subcategory}
                         # Add additional columns from distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                            if additional_col == 'target_id':
+                                has_target_id_column = True
                             row_data[additional_col] = row.get(additional_col, None)
                         distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                         break
@@ -64,6 +67,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                         'subcategory': subcategory}
                             # Add additional columns from distill sheet
                             for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                                if additional_col == 'target_id':
+                                    has_target_id_column = True
                                 row_data[additional_col] = row.get(additional_col, None)
                             distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                             break
@@ -74,8 +79,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
                                   how='left')
     
-    # Remove the 'target_id' column to avoid duplicates
-    distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
+    # Remove the 'target_id' column if it wasn't added as an additional column
+    if not has_target_id_column:
+        distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
     # Define columns to output
     required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
