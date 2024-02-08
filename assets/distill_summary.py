@@ -67,7 +67,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             for potential_ec_column in potential_ec_columns:
                 ec_indices = partial_match(merged_df['gene_id'], merged_df[potential_ec_column])
                 print(f"EC indices for {potential_ec_column}: {ec_indices}")
-                merged_df.loc[ec_indices, 'gene_description'] += '; ' + merged_df[common_gene_id_column]
+                merged_df.loc[ec_indices, 'gene_description'] += '; ' + merged_df[common_gene_id_column].astype(str)
                 print(f"Merged DataFrame after updating gene_description for {potential_ec_column}:")
                 print(merged_df.head())
             
