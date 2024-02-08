@@ -14,9 +14,9 @@ def is_null_content(file_path):
 
 def partial_match(gene_id, combined_column):
     if isinstance(gene_id, pd.Series):
-        return combined_column.astype(str).apply(lambda x: any(g_id.strip() in x.split(';') for g_id in gene_id))
+        return combined_column.astype(str).apply(lambda x: any(g_id.strip() + '.' in x.split(';') for g_id in gene_id))
     else:
-        return combined_column.astype(str).apply(lambda x: gene_id.strip() in x.split(';'))
+        return combined_column.astype(str).apply(lambda x: gene_id.strip() + '.' in x.split(';'))
 
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
