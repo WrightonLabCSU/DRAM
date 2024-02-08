@@ -39,6 +39,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                     matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
                     if matched_indices.any():
                         combined_ids = gene_id  # Use the matched gene_id directly
+                        if gene_id not in gene_description:  # Check if gene_id is already in gene_description
+                            gene_description += f'; {gene_id}'
                         row_data = {'gene_id': combined_ids,
                                     'gene_description': gene_description,
                                     'pathway': pathway,
@@ -53,31 +55,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                         break
             else:
-                # Check potential_ec_columns
-                for col in combined_annotations_df.columns:
-                    if col.endswith('_EC'):
-                        matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
-                        if matched_indices.any():
-                            # Create a new row for each unique gene_id found
-                            for combined_id in combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')]:
-                                print(f"Before concatenation - gene_description: {gene_description}, gene_id: {gene_id}")
-                                gene_description += f'; {gene_id}'
-                                print(f"After concatenation - gene_description: {gene_description}")
-                                row_data = {'gene_id': combined_id,
-                                            'gene_description': gene_description,
-                                            'pathway': pathway,
-                                            'topic_ecosystem': topic_ecosystem,
-                                            'category': category,
-                                            'subcategory': subcategory}
-                                # Add additional columns from distill sheet
-                                for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                    if additional_col == 'target_id':
-                                        has_target_id_column = True
-                                    row_data[additional_col] = row.get(additional_col, None)
-                                distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
-                            break
-                else:
-                    logging.info(f"No match found for gene ID {gene_id}.")
+                logging.info(f"No match found for gene ID {gene_id}.")
 
     # Merge distill_summary_df with target_id_counts_df
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
