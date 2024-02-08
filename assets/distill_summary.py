@@ -26,6 +26,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         for index, row in distill_df.iterrows():
             gene_id = row['gene_id']
             gene_description = row['gene_description']
+            pathway = row.get('pathway', None)
+            topic_ecosystem = row.get('topic_ecosystem', None)
+            category = row.get('category', None)
+            subcategory = row.get('subcategory', None)
 
             # Check potential_gene_id_columns first
             for col in combined_annotations_df.columns:
@@ -34,7 +38,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                     if matched_indices.any():
                         combined_ids = gene_id  # Use the matched gene_id directly
                         distill_summary_df = distill_summary_df.append({'gene_id': combined_ids,
-                                                                        'gene_description': gene_description},
+                                                                        'gene_description': gene_description,
+                                                                        'pathway': pathway,
+                                                                        'topic_ecosystem': topic_ecosystem,
+                                                                        'category': category,
+                                                                        'subcategory': subcategory},
                                                                        ignore_index=True)
                         break
             else:
@@ -45,7 +53,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         if matched_indices.any():
                             combined_ids = '; '.join(combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')])
                             distill_summary_df = distill_summary_df.append({'gene_id': combined_ids,
-                                                                            'gene_description': gene_description + '; ' + gene_id},
+                                                                            'gene_description': gene_description + '; ' + gene_id,
+                                                                            'pathway': pathway,
+                                                                            'topic_ecosystem': topic_ecosystem,
+                                                                            'category': category,
+                                                                            'subcategory': subcategory},
                                                                            ignore_index=True)
                             break
                 else:
