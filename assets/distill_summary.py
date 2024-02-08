@@ -44,7 +44,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             print("Indices of DataFrame:")
             print(combined_annotations_df.index)
             
-            partial_matched_combined_annotations = combined_annotations_df[partial_match_indices.reset_index(drop=True)]
+            # Reset the index of the boolean Series to align with the DataFrame's index
+            partial_match_indices = partial_match_indices.reset_index(drop=True)
+            
+            partial_matched_combined_annotations = combined_annotations_df[partial_match_indices]
 
             # Merge the distill sheet with the filtered combined_annotations
             merged_df = pd.merge(
