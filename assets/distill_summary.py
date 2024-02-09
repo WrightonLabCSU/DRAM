@@ -50,10 +50,17 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             category = row.get('category', None)
             subcategory = row.get('subcategory', None)
 
+            # Check if the current gene_id is 'K24459'
+            if gene_id == 'K24459':
+                print(f"Checking creation of row for gene_id: {gene_id}")
+
             # First, try matching gene_id against potential_gene_id_columns
             for col in potential_gene_id_columns:
                 matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
                 if matched_indices.any():
+                    print(f"gene_id {gene_id} matched in column {col} with values:")
+                    print(combined_annotations_df.loc[matched_indices, col])
+                    
                     for combined_id in combined_annotations_df.loc[matched_indices, col]:
                         row_data = {
                             'gene_id': combined_id,
@@ -74,7 +81,13 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             else:
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
-                        for index, ec_value in combined_annotations_df[col].iteritems():
+                        for idx, ec_value in combined_annotations_df[col].iteritems():
+                            if is_partial_match(ec_value, gene_id):
+                                print(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
+                                # ... (rest of the logic for handling the EC match)
+                            else:
+                                print(f"No EC match for gene_id {gene_id} in column {col} with value: {ec_value}")
+
                             # Check for partial matches within the cell and capture the full EC number
                             if gene_id in str(ec_value):
                                 # Split the cell by semicolon and look for the gene_id within each segment
