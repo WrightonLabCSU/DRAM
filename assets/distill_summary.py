@@ -83,8 +83,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
-
-
             else:
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
@@ -106,11 +104,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                         }
                                         for id_col in combined_annotations_df.filter(like='_id').columns:
                                             if id_col != 'query_id':
-                                                gene_id_value = combined_annotations_df.at[index, id_col]
+                                                gene_id_value = combined_annotations_df.at[idx, id_col]  # Updated from index to idx
                                                 if gene_id_value:
                                                     row_data['gene_id'] = gene_id_value
                                                     distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                         break
+
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
     
