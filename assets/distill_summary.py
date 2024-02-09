@@ -141,12 +141,21 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         if col not in distill_summary_df.columns:
             distill_summary_df[col] = None
 
-    # Deduplicate based on index
-    deduplicated_df = distill_summary_df[~distill_summary_df.duplicated(keep='first')].copy()
+    try:
+        # Deduplicate based on index
+        deduplicated_df = distill_summary_df[~distill_summary_df.duplicated(keep='first')].copy()
 
-    deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
+        deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
 
-    deduplicated_df.to_csv(output_path, sep='\t', index=False)
+        deduplicated_df.to_csv(output_path, sep='\t', index=False)
+    except TypeError as e:
+        print("TypeError occurred. Unhashable values:")
+        for col, vals in distill_summary_df.iteritems():
+            try:
+                pd.Series(vals).unique()
+            except TypeError:
+                print(f"Column '{col}' contains unhashable values.")
+        raise e
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
