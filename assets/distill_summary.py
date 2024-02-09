@@ -16,21 +16,28 @@ def is_null_content(file_path):
 
 def is_partial_match(ec_number, partial_ec):
     """
-    Check if the EC number partially matches the given pattern.
+    Check if the EC number partially matches the given pattern based on hierarchy.
 
     Args:
         ec_number (str): The EC number to check.
         partial_ec (str): The partial EC pattern to match against.
 
     Returns:
-        bool: True if there is a partial match, False otherwise.
+        bool: True if there is a partial match based on hierarchy, False otherwise.
     """
     if not isinstance(ec_number, str):
         return False
     
-    partial_ec_escaped = re.escape(partial_ec)
-    pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)*$')
-    return bool(pattern.match(ec_number))
+    ec_parts = ec_number.split('.')
+    partial_parts = partial_ec.split('.')
+    
+    if len(ec_parts) < len(partial_parts):
+        return False
+    
+    for i in range(len(partial_parts)):
+        if partial_parts[i] != ec_parts[i]:
+            return False
+    return True
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
