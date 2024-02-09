@@ -82,10 +82,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             'category': category,
                             'subcategory': subcategory
                         }
+                        # Add additional columns from distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
                             if additional_col == 'target_id':
                                 has_target_id_column = True
-                            row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
+                            row_data[additional_col] = row.get(additional_col, None)
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
@@ -122,12 +123,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     'subcategory': subcategory,
                                     'associated_EC': associated_ec  # This will be set if there's a partial match
                                 }
-                                for id_col in combined_annotations_df.filter(like='_id').columns:
-                                    if id_col != 'query_id':
-                                        gene_id_value = combined_annotations_df.at[idx, id_col]
-                                        if gene_id_value:
-                                            row_data['gene_id'] = gene_id_value
-                                            distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                                # Add additional columns from distill sheet
+                                for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                                    if additional_col == 'target_id':
+                                        has_target_id_column = True
+                                    row_data[additional_col] = row.get(additional_col, None)
+                                distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                 break  # Break if a match is found
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
@@ -151,6 +152,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
 
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
