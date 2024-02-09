@@ -146,13 +146,14 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         if col not in distill_summary_df.columns:
             distill_summary_df[col] = None
 
-    # Drop duplicates excluding float columns and convert series columns to strings
+    # Drop duplicates excluding non-hashable columns and convert series columns to strings
     deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns + ['bin-1', 'bin-115', 'bin-33', 'bin-42'], ignore_index=True)[columns_to_output].astype(str)
 
     # Remove rows without a gene_id
     deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
 
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
