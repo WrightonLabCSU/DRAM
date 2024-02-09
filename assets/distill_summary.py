@@ -55,7 +55,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             row_data[additional_col] = row.get(additional_col, None)
                         distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                     break  # Break after matching to avoid processing the same gene_id against multiple columns
-
             else:
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
@@ -80,10 +79,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                             'associated_EC': associated_ec  # Include the full EC number
                                         }
                                         for id_col in combined_annotations_df.filter(like='_id').columns:
-                                            gene_id_value = combined_annotations_df.at[index, id_col]
-                                            if gene_id_value:  # Ensure the value is not empty
-                                                row_data['gene_id'] = gene_id_value
-                                                distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                                            if id_col != 'query_id':  # Skip query_id column
+                                                gene_id_value = combined_annotations_df.at[index, id_col]
+                                                if gene_id_value:  # Ensure the value is not empty
+                                                    row_data['gene_id'] = gene_id_value
+                                                    distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                         break  # Stop searching for further matches in this cell
 
 
