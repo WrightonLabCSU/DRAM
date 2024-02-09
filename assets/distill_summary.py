@@ -145,7 +145,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     for col in columns_to_output:
         if col not in distill_summary_df.columns:
             distill_summary_df[col] = None
-
+    print(distill_summary_df.dtypes)
     # Drop duplicates while converting series columns to strings
     deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).astype(str)
 
