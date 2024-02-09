@@ -92,7 +92,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             if not gene_id_found:
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
-                        for idx, ec_value in combined_annotations_df[col].iteritems():
+                        for idx, ec_value in combined_annotations_df[col].items():  # Change iteritems() to items()
                             if is_partial_match(ec_value, gene_id):
                                 gene_id_found = True
                                 break
@@ -102,7 +102,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
             for col in combined_annotations_df.columns:
                 if col.endswith('_EC'):
-                    for idx, ec_value in combined_annotations_df[col].iteritems():
+                    for idx, ec_value in combined_annotations_df[col].items():  # Change iteritems() to items()
                         ec_segments = str(ec_value).split(';')
                         for segment in ec_segments:
                             segment = segment.strip()
