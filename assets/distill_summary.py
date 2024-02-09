@@ -70,7 +70,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             else:
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
-                        matched_indices = combined_annotations_df[col].apply(lambda x: is_partial_match(x, gene_id))
+                        # Convert the column values to strings
+                        ec_column = combined_annotations_df[col].astype(str)
+                        # Check for partial matches
+                        matched_indices = ec_column.apply(lambda x: is_partial_match(x, gene_id))
                         if matched_indices.any():
                             associated_ec = gene_id  # Extract the associated EC number
                             print(f"Match found for partial EC number {gene_id} in column {col}: {combined_annotations_df.loc[matched_indices, col].tolist()}")
