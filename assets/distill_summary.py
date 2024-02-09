@@ -85,7 +85,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             if additional_col == 'target_id':
                                 has_target_id_column = True
                             row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
-                        distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                        if row_data['gene_id']:  # Only add row if gene_id is found
+                            distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
             # If gene_id is not found in any potential gene ID column, check potential EC columns
@@ -111,7 +112,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             for segment in ec_segments:
                                 if gene_id in segment:
                                     associated_ec = segment.strip()
-                                    has_associated_ec_column = True
 
                                     row_data = {
                                         'gene_id': None,
@@ -127,8 +127,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                             gene_id_value = combined_annotations_df.at[idx, id_col]
                                             if gene_id_value:
                                                 row_data['gene_id'] = gene_id_value
-                                    if row_data['gene_id']:  # Only add row if gene_id is found
-                                        distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                                                if row_data['gene_id']:  # Only add row if gene_id is found
+                                                    distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                     break
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
