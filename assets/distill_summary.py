@@ -55,56 +55,71 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
         for gene_id, row in distill_df.groupby('gene_id'):
+            # Check if gene_id is not empty
+            if not gene_id:
+                continue
+
             gene_description = row['gene_description'].iloc[0]  # Get the first value of 'gene_description' (assuming it's the same for all rows with the same 'gene_id')
             pathway = row['pathway'].iloc[0] if 'pathway' in row else None
             topic_ecosystem = row['topic_ecosystem'].iloc[0] if 'topic_ecosystem' in row else None
             category = row['category'].iloc[0] if 'category' in row else None
             subcategory = row['subcategory'].iloc[0] if 'subcategory' in row else None
 
-            if gene_id:
-                for col in potential_gene_id_columns:
-                    matched_indices = combined_annotations_df[col].str.contains('^' + re.escape(gene_id) + '$', na=False)
-                    if matched_indices.any():
-                        print(f"gene_id {gene_id} matched in column {col} with values:")
-                        print(combined_annotations_df.loc[matched_indices, col].tolist())
-                        
-                        for combined_id in combined_annotations_df.loc[matched_indices, col]:
-                            row_data = {
-                                'gene_id': combined_id,
-                                'gene_description': gene_description,
-                                'pathway': pathway,
-                                'topic_ecosystem': topic_ecosystem,
-                                'category': category,
-                                'subcategory': subcategory
-                            }
-                            for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                if additional_col == 'target_id':
-                                    has_target_id_column = True
-                                row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
-                            distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
-                        break
+            gene_id_found = False  # Flag to check if gene_id is found in any potential column or potential EC column
 
-            else:
-                for col in combined_annotations_df.columns:
-                    if col.endswith('_EC'):
-                        for idx, ec_value in combined_annotations_df[col].iteritems():
-                            if gene_id in str(ec_value):
-                                ec_segments = str(ec_value).split(';')
-                                for segment in ec_segments:
-                                    if gene_id in segment:
-                                        associated_ec = segment.strip()
+            for col in potential_gene_id_columns:
+                matched_indices = combined_annotations_df[col].str.contains('^' + re.escape(gene_id) + '$', na=False)
+                if matched_indices.any():
+                    gene_id_found = True
+                    print(f"gene_id {gene_id} matched in column {col} with values:")
+                    print(combined_annotations_df.loc[matched_indices, col].tolist())
+                    
+                    for combined_id in combined_annotations_df.loc[matched_indices, col]:
+                        row_data = {
+                            'gene_id': combined_id,
+                            'gene_description': gene_description,
+                            'pathway': pathway,
+                            'topic_ecosystem': topic_ecosystem,
+                            'category': category,
+                            'subcategory': subcategory
+                        }
+                        for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                            if additional_col == 'target_id':
+                                has_target_id_column = True
+                            row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
+                        distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                    break
 
-                                        row_data = {
-                                            'gene_id': None,
-                                            'gene_description': None,  # Updated to None for EC values
-                                            'pathway': None,  # Updated to None for EC values
-                                            'topic_ecosystem': None,  # Updated to None for EC values
-                                            'category': None,  # Updated to None for EC values
-                                            'subcategory': None,  # Updated to None for EC values
-                                            'associated_EC': associated_ec
-                                        }
-                                        distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
-                                        break
+            if not gene_id_found:
+                # Skip processing this gene_id
+                continue
+
+            for col in combined_annotations_df.columns:
+                if col.endswith('_EC'):
+                    for idx, ec_value in combined_annotations_df[col].iteritems():
+                        if gene_id in str(ec_value):
+                            gene_id_found = True
+                            ec_segments = str(ec_value).split(';')
+                            for segment in ec_segments:
+                                if gene_id in segment:
+                                    associated_ec = segment.strip()
+
+                                    row_data = {
+                                        'gene_id': None,
+                                        'gene_description': gene_description,
+                                        'pathway': pathway,
+                                        'topic_ecosystem': topic_ecosystem,
+                                        'category': category,
+                                        'subcategory': subcategory,
+                                        'associated_EC': associated_ec
+                                    }
+                                    for id_col in combined_annotations_df.filter(like='_id').columns:
+                                        if id_col != 'query_id':
+                                            gene_id_value = combined_annotations_df.at[index, id_col]
+                                            if gene_id_value:
+                                                row_data['gene_id'] = gene_id_value
+                                                distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                                    break
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
     
