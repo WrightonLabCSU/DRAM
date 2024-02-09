@@ -28,10 +28,7 @@ def is_partial_match(gene_id, associated_ec):
     if not isinstance(gene_id, str) or not isinstance(associated_ec, str):
         return False
 
-    # Split the associated EC number by '.' and check if any part matches the gene_id
-    associated_parts = associated_ec.split('.')
-    return any(part.startswith(gene_id) for part in associated_parts)
-
+    return associated_ec.startswith(gene_id)
 
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
