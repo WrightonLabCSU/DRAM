@@ -34,30 +34,54 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             category = row.get('category', None)
             subcategory = row.get('subcategory', None)
 
-            for col in combined_annotations_df.columns:
-                if col.endswith('_EC'):
-                    matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
-                    if matched_indices.any():
-                        for combined_id in combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')]:
-                            associated_ec = col.rstrip('_EC')  # Extract the associated EC number
-                            if gene_id not in gene_description:
-                                gene_description += f'; {gene_id}'
-                            row_data = {
-                                'gene_id': combined_id,
-                                'gene_description': gene_description,
-                                'pathway': pathway,
-                                'topic_ecosystem': topic_ecosystem,
-                                'category': category,
-                                'subcategory': subcategory,
-                                'associated_EC': associated_ec  # Include the associated EC number
-                            }
-                            # Add additional columns from distill sheet
-                            for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                if additional_col == 'target_id':
-                                    has_target_id_column = True
-                                row_data[additional_col] = row.get(additional_col, None)
-                            distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
-                        break
+            # First, try matching gene_id against potential_gene_id_columns
+            for col in potential_gene_id_columns:
+                matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
+                if matched_indices.any():
+                    for combined_id in combined_annotations_df.loc[matched_indices, col]:
+                        row_data = {
+                            'gene_id': combined_id,
+                            'gene_description': gene_description,
+                            'pathway': pathway,
+                            'topic_ecosystem': topic_ecosystem,
+                            'category': category,
+                            'subcategory': subcategory
+                            # Note: 'associated_EC' not added here as it's specific to EC number associations
+                        }
+                        # Add additional columns from distill sheet
+                        for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                            if additional_col == 'target_id':
+                                has_target_id_column = True
+                            row_data[additional_col] = row.get(additional_col, None)
+                        distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
+                    break  # Break after matching to avoid processing the same gene_id against multiple columns
+
+            # Then, check against EC numbers if no match found in gene_id_columns
+            else:
+                for col in combined_annotations_df.columns:
+                    if col.endswith('_EC'):
+                        matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
+                        if matched_indices.any():
+                            associated_ec = gene_id  # Extract the associated EC number
+                            for combined_id in combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')]:
+                                if gene_id not in gene_description:
+                                    gene_description += f'; {gene_id}'
+                                row_data = {
+                                    'gene_id': combined_id,
+                                    'gene_description': gene_description,
+                                    'pathway': pathway,
+                                    'topic_ecosystem': topic_ecosystem,
+                                    'category': category,
+                                    'subcategory': subcategory,
+                                    'associated_EC': associated_ec  # Include the associated EC number
+                                }
+                                # Add additional columns from distill sheet
+                                for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                                    if additional_col == 'target_id':
+                                        has_target_id_column = True
+                                    row_data[additional_col] = row.get(additional_col, None)
+                                distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
+                            break
 
     # Merge distill_summary_df with target_id_counts_df
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
@@ -71,7 +95,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'associated_EC']
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
 
-    columns_to_output = required_columns + additional_columns + list(target_id_counts_df.columns)
+    columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'}) + list(target_id_counts_df.columns)
 
     # Ensure all required columns are present
     for col in columns_to_output:
