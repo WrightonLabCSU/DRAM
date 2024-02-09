@@ -16,14 +16,14 @@ def is_null_content(file_path):
 
 def is_partial_match(ec_number, partial_ec):
     """
-    Check if the EC number partially matches the given pattern at the beginning.
+    Check if the EC number partially matches the given pattern.
 
     Args:
         ec_number (str): The EC number to check.
         partial_ec (str): The partial EC pattern to match against.
 
     Returns:
-        bool: True if there is a partial match at the beginning, False otherwise.
+        bool: True if there is a partial match, False otherwise.
     """
     if not isinstance(ec_number, str):
         return False
@@ -117,9 +117,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                         'pathway': pathway,
                                         'topic_ecosystem': topic_ecosystem,
                                         'category': category,
-                                        'subcategory': subcategory,
-                                        'associated_EC': associated_ec
+                                        'subcategory': subcategory
                                     }
+                                    if associated_ec:
+                                        row_data['associated_EC'] = associated_ec
                                     for id_col in combined_annotations_df.filter(like='_id').columns:
                                         if id_col != 'query_id':
                                             gene_id_value = combined_annotations_df.at[idx, id_col]
@@ -133,7 +134,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if not has_target_id_column:
         distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
-    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'associated_EC']
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    if 'associated_EC' in distill_summary_df.columns:
+        required_columns.append('associated_EC')
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
     columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'}) + list(target_id_counts_df.columns)
 
