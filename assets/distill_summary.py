@@ -122,6 +122,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     'subcategory': subcategory,
                                     'associated_EC': associated_ec  # This will be set if there's a partial match
                                 }
+                                # Include additional columns from combined_annotations_df
+                                for additional_col in combined_annotations_df.columns:
+                                    if additional_col not in ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'associated_EC']:
+                                        row_data[additional_col] = combined_annotations_df.at[idx, additional_col]
+
                                 for id_col in combined_annotations_df.filter(like='_id').columns:
                                     if id_col != 'query_id':
                                         gene_id_value = combined_annotations_df.at[idx, id_col]
@@ -161,4 +166,3 @@ if __name__ == "__main__":
     
     target_id_counts_df = pd.read_csv(args.target_id_counts, sep='\t')
     distill_summary(args.combined_annotations, target_id_counts_df, args.output)
-
