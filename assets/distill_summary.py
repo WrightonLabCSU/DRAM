@@ -12,8 +12,11 @@ def is_null_content(file_path):
         content = file.read().strip()
     return content == "NULL"
 
-# Define a function to check if the given EC number is a partial match
 def is_partial_match(ec_number, partial_ec):
+    # Check if ec_number is a string or bytes-like object
+    if not isinstance(ec_number, (str, bytes)):
+        return False
+    
     # Escape the dots in the partial EC number to match them as literals
     partial_ec_escaped = re.escape(partial_ec)
     # Construct a regular expression pattern to match the partial EC number
