@@ -70,14 +70,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             else:
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
-                        # Convert the column values to strings
-                        ec_column = combined_annotations_df[col].astype(str)
-                        # Check for partial matches
-                        matched_indices = ec_column.apply(lambda x: is_partial_match(x, gene_id))
+                        matched_indices = combined_annotations_df[col].apply(lambda x: is_partial_match(x, gene_id))
                         if matched_indices.any():
                             associated_ec = gene_id  # Extract the associated EC number
                             print(f"Match found for partial EC number {gene_id} in column {col}: {combined_annotations_df.loc[matched_indices, col].tolist()}")
-                            for combined_id in combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')]:
+                            for index, row_data in combined_annotations_df[matched_indices].iterrows():
+                                combined_id = row_data['gene_id']  # Extract the gene_id value from the same row
                                 row_data = {
                                     'gene_id': combined_id,
                                     'gene_description': gene_description,
@@ -94,6 +92,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     row_data[additional_col] = row.get(additional_col, None)
                                 distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                             break
+
 
     # Merge distill_summary_df with target_id_counts_df
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
