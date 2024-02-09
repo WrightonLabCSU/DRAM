@@ -141,11 +141,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         if col not in distill_summary_df.columns:
             distill_summary_df[col] = None
 
-    # Select valid columns before calling first()
-    valid_columns = required_columns + list(target_id_counts_df.columns)
-    deduplicated_df = distill_summary_df[valid_columns].drop_duplicates(subset=required_columns, ignore_index=True)
+    # Deduplicate based on index
+    deduplicated_df = distill_summary_df[~distill_summary_df.duplicated(keep='first')].copy()
 
-    # Remove rows without a gene_id
     deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
 
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
