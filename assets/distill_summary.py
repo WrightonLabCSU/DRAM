@@ -16,21 +16,22 @@ def is_null_content(file_path):
 
 def is_partial_match(ec_number, partial_ec):
     """
-    Check if the EC number starts with the given partial EC number and optionally followed by more subdivisions.
+    Check if the EC number starts with the given partial EC number and optionally followed by more subdivisions
+    or a dash indicating unspecified subdivisions.
 
     Args:
         ec_number (str): The EC number to check.
         partial_ec (str): The partial EC number to match the start against.
 
     Returns:
-        bool: True if the EC number starts with the partial EC number and optionally followed by more subdivisions, False otherwise.
+        bool: True if the EC number starts with the partial EC number and optionally followed by more subdivisions or a dash, False otherwise.
     """
     if not isinstance(ec_number, str):
         return False
 
     # Build a regex pattern that starts with the partial_ec followed by any number of additional subdivisions
-    # The pattern assumes additional subdivisions are separated by dots and are numeric
-    pattern = re.compile(rf'^{re.escape(partial_ec)}(\.\d+)*$')
+    # or a dash, which may be at the end or followed by further subdivisions
+    pattern = re.compile(rf'^{re.escape(partial_ec)}(\.\d+)*(\.-)?$')
     return bool(pattern.match(ec_number))
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
