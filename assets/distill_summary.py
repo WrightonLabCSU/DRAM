@@ -146,7 +146,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
     deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).copy()
 
-    deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
+    # Remove rows without a gene_id
+    deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
+
+    deduplicated_df.to_csv(output_path, sep='\t', index=False)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
