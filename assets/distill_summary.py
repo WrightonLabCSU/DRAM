@@ -82,13 +82,13 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                 'topic_ecosystem': topic_ecosystem,
                                 'category': category,
                                 'subcategory': subcategory
-                                # Note: 'associated_EC' not added here as it's specific to EC number associations
                             }
-                            # Add additional columns from distill sheet
+                            # Check if additional columns exist in distill sheet and include their values
                             for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
                                 if additional_col == 'target_id':
                                     has_target_id_column = True
-                                row_data[additional_col] = row.get(additional_col, None)  # Include values from additional columns
+                                if additional_col in distill_df.columns:
+                                    row_data[additional_col] = row.get(additional_col, None)
                             distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                         break  # Break after matching to avoid processing the same gene_id against multiple columns
 
