@@ -2,6 +2,7 @@ import pandas as pd
 import argparse
 import glob
 import logging
+import re
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
@@ -10,6 +11,16 @@ def is_null_content(file_path):
     with open(file_path, 'r') as file:
         content = file.read().strip()
     return content == "NULL"
+
+# Define a function to check if the given EC number is a partial match
+def is_partial_match(ec_number, partial_ec):
+    # Escape the dots in the partial EC number to match them as literals
+    partial_ec_escaped = re.escape(partial_ec)
+    # Construct a regular expression pattern to match the partial EC number
+    pattern = re.compile(rf'^{partial_ec_escaped}\.?\d*$')
+    # Check if the EC number matches the pattern
+    return bool(pattern.match(ec_number))
+
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
@@ -55,13 +66,14 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             row_data[additional_col] = row.get(additional_col, None)
                         distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                     break  # Break after matching to avoid processing the same gene_id against multiple columns
+            # Then, within the loop where we search for matches in columns ending with _EC, we can use this function to check for partial matches
             else:
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
-                        matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
+                        matched_indices = combined_annotations_df[col].apply(lambda x: is_partial_match(x, gene_id))
                         if matched_indices.any():
                             associated_ec = gene_id  # Extract the associated EC number
-                            print(f"Match found for gene_id {gene_id} in column {col}: {combined_annotations_df.loc[matched_indices, col].tolist()}")
+                            print(f"Match found for partial EC number {gene_id} in column {col}: {combined_annotations_df.loc[matched_indices, col].tolist()}")
                             for combined_id in combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')]:
                                 row_data = {
                                     'gene_id': combined_id,
