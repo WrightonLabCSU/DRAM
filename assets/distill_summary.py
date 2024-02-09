@@ -114,6 +114,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             if is_partial_match(segment, gene_id):  # Here we use the matching function
                                 associated_ec = segment
 
+                                # Extract additional column values from distill_df corresponding to the identified EC
+                                additional_cols = distill_df[distill_df['gene_id'] == gene_id].iloc[0].drop(['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'level']) if gene_id in distill_df['gene_id'].values else None
+
                                 row_data = {
                                     'gene_id': None,
                                     'gene_description': gene_description,
