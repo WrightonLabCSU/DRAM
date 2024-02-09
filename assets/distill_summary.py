@@ -14,22 +14,23 @@ def is_null_content(file_path):
         content = file.read().strip()
     return content == "NULL"
 
-def is_partial_match(gene_id, associated_ec):
+def is_partial_match(ec_number, partial_ec):
     """
-    Check if the gene_id partially matches the associated EC number.
+    Check if the EC number partially matches the given pattern.
 
     Args:
-        gene_id (str): The gene_id to check.
-        associated_ec (str): The associated EC number to match against.
+        ec_number (str): The EC number to check.
+        partial_ec (str): The partial EC pattern to match against.
 
     Returns:
         bool: True if there is a partial match, False otherwise.
     """
-    if not isinstance(gene_id, str) or not isinstance(associated_ec, str):
+    if not isinstance(ec_number, str):
         return False
-
-    return associated_ec.startswith(gene_id)
-
+    
+    partial_ec_escaped = re.escape(partial_ec)
+    pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)*$')
+    return bool(pattern.match(ec_number))
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
