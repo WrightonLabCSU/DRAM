@@ -154,6 +154,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
     deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).copy()
 
+
     deduplicated_df.to_csv(output_path, sep='\t', index=False, columns=columns_to_output)
 
 if __name__ == "__main__":
