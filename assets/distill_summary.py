@@ -29,9 +29,8 @@ def is_partial_match(ec_number, partial_ec):
         return False
     
     partial_ec_escaped = re.escape(partial_ec)
-    pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)*$')  # Adjusted pattern to match the beginning of the EC number
+    pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)*$')
     return bool(pattern.match(ec_number))
-
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
@@ -47,7 +46,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     distill_sheets = glob.glob('*_distill_sheet.tsv')
     distill_summary_df = pd.DataFrame()
     has_target_id_column = False
-    has_associated_ec_column = False  # Flag to check if any associated EC values are found
 
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
@@ -112,7 +110,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             for segment in ec_segments:
                                 if gene_id in segment:
                                     associated_ec = segment.strip()
-                                    has_associated_ec_column = True
 
                                     row_data = {
                                         'gene_id': None,
@@ -128,8 +125,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                             gene_id_value = combined_annotations_df.at[idx, id_col]
                                             if gene_id_value:
                                                 row_data['gene_id'] = gene_id_value
-                                    if row_data['gene_id']:  # Only add row if gene_id is found
-                                        distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                                                distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                     break
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
@@ -137,9 +133,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if not has_target_id_column:
         distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
-    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-    if has_associated_ec_column:  # Only add associated_EC to required columns if any associated EC value is found
-        required_columns.append('associated_EC')
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'associated_EC']
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
     columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'}) + list(target_id_counts_df.columns)
 
