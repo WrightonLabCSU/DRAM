@@ -1,29 +1,47 @@
 import pandas as pd
 import argparse
+import glob
 import logging
 import re
-import glob
+from pandas import concat
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
 
-def is_partial_match(ec_number, partial_ec):
+def is_null_content(file_path):
+    """Check if the content of a file is NULL."""
+    with open(file_path, 'r') as file:
+        content = file.read().strip()
+    return content == "NULL"
+
+def is_partial_match(gene_id, associated_ec):
     """
-    Check if the EC number partially matches the given pattern.
+    Check if the gene_id partially matches the associated EC number.
 
     Args:
-        ec_number (str): The EC number to check.
-        partial_ec (str): The partial EC pattern to match against.
+        gene_id (str): The gene_id to check.
+        associated_ec (str): The associated EC number to match against.
 
     Returns:
         bool: True if there is a partial match, False otherwise.
     """
-    if not isinstance(ec_number, str):
+    if not isinstance(gene_id, str) or not isinstance(associated_ec, str):
+        return False
+
+    gene_id_segments = gene_id.split('.')
+    associated_ec_segments = associated_ec.split('.')
+    
+    # Check if gene_id is shorter than associated_EC, indicating it can't be a partial match
+    if len(gene_id_segments) < len(associated_ec_segments):
         return False
     
-    partial_ec_escaped = re.escape(partial_ec)
-    pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)*$')
-    return bool(pattern.match(ec_number))
+    # Check if each segment of the associated_EC matches the corresponding segment in gene_id
+    for i in range(len(associated_ec_segments)):
+        if gene_id_segments[i] != associated_ec_segments[i]:
+            return False
+    
+    return True
+
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
@@ -35,10 +53,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         output_path (str): Path to the output genome_summary.tsv file.
     """
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
+    potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
     distill_sheets = glob.glob('*_distill_sheet.tsv')
     distill_summary_df = pd.DataFrame()
-
-    potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
+    has_target_id_column = False
 
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
@@ -53,6 +71,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             topic_ecosystem = row['topic_ecosystem'].iloc[0] if 'topic_ecosystem' in row else None
             category = row['category'].iloc[0] if 'category' in row else None
             subcategory = row['subcategory'].iloc[0] if 'subcategory' in row else None
+
+            gene_id_found = False  # Flag to check if gene_id is found in any potential column or potential EC column
 
             # Check potential gene ID columns
             for col in potential_gene_id_columns:
@@ -75,7 +95,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             if additional_col == 'target_id':
                                 has_target_id_column = True
                             row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
-                        distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                        distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
             # If gene_id is not found in any potential gene ID column, check potential EC columns
@@ -121,7 +141,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     break
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
-
+    
     if not has_target_id_column:
         distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
