@@ -2,4 +2,3 @@ gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	level
 2.4.1.18	Imma real gene!	complete match	EC_test			med
 3.1.1.72	Imma real gene!	complete match	EC_test			low
 2.4	im lots of genes!	partial match	EC_test			high
-2	im a lot more genes	partial match				
