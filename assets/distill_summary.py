@@ -1,18 +1,11 @@
 import pandas as pd
 import argparse
-import glob
 import logging
 import re
-from pandas import concat
+import glob
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
-
-def is_null_content(file_path):
-    """Check if the content of a file is NULL."""
-    with open(file_path, 'r') as file:
-        content = file.read().strip()
-    return content == "NULL"
 
 def is_partial_match(ec_number, partial_ec):
     """
@@ -42,10 +35,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         output_path (str): Path to the output genome_summary.tsv file.
     """
     combined_annotations_df = pd.read_csv(combined_annotations_path, sep='\t')
-    potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
     distill_sheets = glob.glob('*_distill_sheet.tsv')
     distill_summary_df = pd.DataFrame()
-    has_target_id_column = False
+
+    potential_gene_id_columns = [col for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]
 
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
@@ -60,8 +53,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             topic_ecosystem = row['topic_ecosystem'].iloc[0] if 'topic_ecosystem' in row else None
             category = row['category'].iloc[0] if 'category' in row else None
             subcategory = row['subcategory'].iloc[0] if 'subcategory' in row else None
-
-            gene_id_found = False  # Flag to check if gene_id is found in any potential column or potential EC column
 
             # Check potential gene ID columns
             for col in potential_gene_id_columns:
@@ -84,7 +75,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             if additional_col == 'target_id':
                                 has_target_id_column = True
                             row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
-                        distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                        distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
             # If gene_id is not found in any potential gene ID column, check potential EC columns
@@ -130,7 +121,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     break
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
-    
+
     if not has_target_id_column:
         distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
