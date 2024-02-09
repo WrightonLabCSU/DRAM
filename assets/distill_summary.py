@@ -16,20 +16,20 @@ def is_null_content(file_path):
 
 def is_partial_match(ec_number, partial_ec):
     """
-    Check if the EC number partially matches the given pattern.
+    Check if the EC number partially matches the given pattern at the beginning.
 
     Args:
         ec_number (str): The EC number to check.
         partial_ec (str): The partial EC pattern to match against.
 
     Returns:
-        bool: True if there is a partial match, False otherwise.
+        bool: True if there is a partial match at the beginning, False otherwise.
     """
     if not isinstance(ec_number, str):
         return False
     
     partial_ec_escaped = re.escape(partial_ec)
-    pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)+$')
+    pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)*$')  # Adjusted pattern to match the beginning of the EC number
     return bool(pattern.match(ec_number))
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
