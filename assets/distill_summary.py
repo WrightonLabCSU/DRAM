@@ -127,7 +127,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                             gene_id_value = combined_annotations_df.at[idx, id_col]
                                             if gene_id_value:
                                                 row_data['gene_id'] = gene_id_value
-                                                distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                                    if row_data['gene_id']:  # Only add row if gene_id is found
+                                        distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                     break
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
