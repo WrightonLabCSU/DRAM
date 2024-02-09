@@ -32,6 +32,7 @@ def is_partial_match(ec_number, partial_ec):
     pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)*$')  # Adjusted pattern to match the beginning of the EC number
     return bool(pattern.match(ec_number))
 
+
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
     Generate a genome summary from distill sheets and combined annotations.
