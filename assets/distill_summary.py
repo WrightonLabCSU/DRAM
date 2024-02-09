@@ -46,6 +46,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     distill_sheets = glob.glob('*_distill_sheet.tsv')
     distill_summary_df = pd.DataFrame()
     has_target_id_column = False
+    has_associated_ec_column = False  # Flag to check if any associated EC values are found
 
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
@@ -68,8 +69,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                 matched_indices = combined_annotations_df[col].str.contains('^' + re.escape(gene_id) + '$', na=False)
                 if matched_indices.any():
                     gene_id_found = True
-                    print(f"gene_id {gene_id} matched in column {col} with values:")
-                    print(combined_annotations_df.loc[matched_indices, col].tolist())
+                    print(f"Placing gene_id {gene_id}")
                     
                     for combined_id in combined_annotations_df.loc[matched_indices, col]:
                         row_data = {
@@ -94,7 +94,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         for idx, ec_value in combined_annotations_df[col].iteritems():
                             if is_partial_match(ec_value, gene_id):
                                 gene_id_found = True
-                                print(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
+                                print(f"Placing gene_id {gene_id}")
+                                has_associated_ec_column = True  # Set flag to True if any associated EC value is found
                                 break
 
             # If gene_id is still not found, skip processing this gene_id
@@ -117,9 +118,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                         'pathway': pathway,
                                         'topic_ecosystem': topic_ecosystem,
                                         'category': category,
-                                        'subcategory': subcategory,
-                                        'associated_EC': associated_ec
+                                        'subcategory': subcategory
                                     }
+                                    if has_associated_ec_column:  # Only add associated_EC column if any associated EC value is found
+                                        row_data['associated_EC'] = associated_ec
                                     for id_col in combined_annotations_df.filter(like='_id').columns:
                                         if id_col != 'query_id':
                                             gene_id_value = combined_annotations_df.at[idx, id_col]
@@ -133,7 +135,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if not has_target_id_column:
         distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
-    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'associated_EC']
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    if has_associated_ec_column:  # Only add associated_EC to required columns if any associated EC value is found
+        required_columns.append('associated_EC')
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
     columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'}) + list(target_id_counts_df.columns)
 
