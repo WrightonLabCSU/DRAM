@@ -28,19 +28,7 @@ def is_partial_match(gene_id, associated_ec):
     if not isinstance(gene_id, str) or not isinstance(associated_ec, str):
         return False
 
-    gene_id_segments = gene_id.split('.')
-    associated_ec_segments = associated_ec.split('.')
-    
-    # Check if gene_id is shorter than associated_EC, indicating it can't be a partial match
-    if len(gene_id_segments) < len(associated_ec_segments):
-        return False
-    
-    # Check if each segment of the associated_EC matches the corresponding segment in gene_id
-    for i in range(len(associated_ec_segments)):
-        if gene_id_segments[i] != associated_ec_segments[i]:
-            return False
-    
-    return True
+    return associated_ec.startswith(gene_id)
 
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
