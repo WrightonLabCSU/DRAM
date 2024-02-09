@@ -127,8 +127,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     'category': category,
                                     'subcategory': subcategory,
                                     'associated_EC': associated_ec,  # This will be set if there's a partial match
-                                    **additional_cols.to_dict() if additional_cols is not None else {}
                                 }
+                                # Include additional cols from distill sheet
+                                if additional_cols is not None:
+                                    row_data.update(additional_cols.to_dict())
+
                                 for id_col in combined_annotations_df.filter(like='_id').columns:
                                     if id_col != 'query_id':
                                         gene_id_value = combined_annotations_df.at[idx, id_col]
@@ -136,6 +139,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                             row_data['gene_id'] = gene_id_value
                                             distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                 break  # Break if a match is found
+
 
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
