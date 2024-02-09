@@ -65,6 +65,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             topic_ecosystem = row['topic_ecosystem'].iloc[0] if 'topic_ecosystem' in row else None
             category = row['category'].iloc[0] if 'category' in row else None
             subcategory = row['subcategory'].iloc[0] if 'subcategory' in row else None
+            level = row['level'].iloc[0] if 'level' in row else None
 
             gene_id_found = False  # Flag to check if gene_id is found in any potential column or potential EC column
 
@@ -83,7 +84,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             'pathway': pathway,
                             'topic_ecosystem': topic_ecosystem,
                             'category': category,
-                            'subcategory': subcategory
+                            'subcategory': subcategory,
+                            'level': level
                         }
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
                             if additional_col == 'target_id':
@@ -122,7 +124,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                         'pathway': pathway,
                                         'topic_ecosystem': topic_ecosystem,
                                         'category': category,
-                                        'subcategory': subcategory
+                                        'subcategory': subcategory,
+                                        'level': level
                                     }
                                     if associated_ec:
                                         row_data['associated_EC'] = associated_ec
@@ -139,7 +142,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if not has_target_id_column:
         distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
-    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory', 'level']
     if 'associated_EC' in distill_summary_df.columns:
         required_columns.append('associated_EC')
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
