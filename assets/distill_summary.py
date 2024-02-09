@@ -56,13 +56,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                     break  # Break after matching to avoid processing the same gene_id against multiple columns
             else:
-                ec_found = False  # Flag to indicate if associated EC value is found
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
                         matched_indices = combined_annotations_df[col].str.contains(gene_id, na=False)
                         if matched_indices.any():
-                            ec_found = True
                             associated_ec = gene_id  # Extract the associated EC number
+                            print(f"Match found for gene_id {gene_id} in column {col}: {combined_annotations_df.loc[matched_indices, col].tolist()}")
                             for combined_id in combined_annotations_df.loc[matched_indices, col.replace('_EC', '_id')]:
                                 row_data = {
                                     'gene_id': combined_id,
@@ -80,11 +79,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     row_data[additional_col] = row.get(additional_col, None)
                                 distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                             break
-
-                # If no associated EC value is found and no corresponding gene_id is found in _id columns, skip processing
-                if not ec_found and not any(gene_id in combined_annotations_df[col] for col in potential_gene_id_columns):
-                    continue
-
 
     # Merge distill_summary_df with target_id_counts_df
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
