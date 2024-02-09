@@ -16,19 +16,24 @@ def is_null_content(file_path):
 
 def is_partial_match(gene_id, associated_ec):
     """
-    Check if the gene_id partially matches the associated EC number.
+    Check if the associated EC number starts with the gene_id, considering
+    cases where gene_id might be a prefix of a more specific associated_ec.
 
     Args:
         gene_id (str): The gene_id to check.
         associated_ec (str): The associated EC number to match against.
 
     Returns:
-        bool: True if there is a partial match, False otherwise.
+        bool: True if associated_ec starts with gene_id and is followed by
+              either the end of the string or a period for further specificity,
+              False otherwise.
     """
     if not isinstance(gene_id, str) or not isinstance(associated_ec, str):
         return False
 
-    return associated_ec.startswith(gene_id)
+    # Check if the associated EC number starts with the gene_id
+    # and is followed by either the end of the string or a period
+    return associated_ec == gene_id or associated_ec.startswith(gene_id + ".")
 
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
