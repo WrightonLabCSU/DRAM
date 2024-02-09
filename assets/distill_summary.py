@@ -31,14 +31,14 @@ def is_partial_match(ec_number, partial_ec):
     ec_parts = ec_number.split('.')
     partial_parts = partial_ec.split('.')
     
-    if len(ec_parts) < len(partial_parts):
-        return False
+    # Pad the partial EC with wildcard '*' to match the length of the EC number
+    partial_parts += ['*'] * (len(ec_parts) - len(partial_parts))
     
-    for i in range(len(partial_parts)):
-        if partial_parts[i] != ec_parts[i]:
-            if partial_parts[i] != '*' and ec_parts[i] != '*':
-                return False
+    for i in range(len(ec_parts)):
+        if partial_parts[i] != '*' and ec_parts[i] != partial_parts[i]:
+            return False
     return True
+
 
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
