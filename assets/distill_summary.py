@@ -14,32 +14,28 @@ def is_null_content(file_path):
         content = file.read().strip()
     return content == "NULL"
 
-def is_partial_match(ec_number, partial_ec):
+def is_partial_match(gene_id, ec_number):
     """
-    Check if the EC number partially matches the given pattern based on hierarchy.
+    Check if the gene ID partially matches the given EC number.
 
     Args:
-        ec_number (str): The EC number to check.
-        partial_ec (str): The partial EC pattern to match against.
+        gene_id (str): The gene ID to check.
+        ec_number (str): The EC number to match against.
 
     Returns:
-        bool: True if there is a partial match based on hierarchy, False otherwise.
+        bool: True if there is a partial match, False otherwise.
     """
-    if not isinstance(ec_number, str):
+    if not isinstance(gene_id, str) or not isinstance(ec_number, str):
         return False
     
-    ec_parts = ec_number.split('.')
-    partial_parts = partial_ec.split('.')
+    gene_id_segments = gene_id.split('.')
+    ec_number_segments = ec_number.split('.')
     
-    # Pad the partial EC with wildcard '*' to match the length of the EC number
-    partial_parts += ['*'] * (len(ec_parts) - len(partial_parts))
-    
-    for i in range(len(ec_parts)):
-        if partial_parts[i] != '*' and ec_parts[i] != partial_parts[i]:
+    for i in range(len(ec_number_segments)):
+        if i >= len(gene_id_segments) or gene_id_segments[i] != ec_number_segments[i]:
             return False
+    
     return True
-
-
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
@@ -96,14 +92,14 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
-            # If gene_id is not found in any potential gene ID column, check potential EC columns
+            # If gene_id is not found in any potential gene ID column, check partial matches with EC numbers
             if not gene_id_found:
-                for col in combined_annotations_df.columns:
-                    if col.endswith('_EC'):
-                        for idx, ec_value in combined_annotations_df[col].iteritems():
-                            if is_partial_match(ec_value, gene_id):
+                for ec_col in combined_annotations_df.columns:
+                    if ec_col.endswith('_EC'):
+                        for ec_value in combined_annotations_df[ec_col]:
+                            if is_partial_match(gene_id, ec_value):
                                 gene_id_found = True
-                                print(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
+                                print(f"Partial EC match found for gene_id {gene_id} in column {ec_col}: {ec_value}")
                                 break
 
             # If gene_id is still not found, skip processing this gene_id
