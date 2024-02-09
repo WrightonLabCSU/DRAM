@@ -66,7 +66,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             row_data[additional_col] = row.get(additional_col, None)
                         distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                     break  # Break after matching to avoid processing the same gene_id against multiple columns
-            # Then, within the loop where we search for matches in columns ending with _EC, we can use this function to check for partial matches
             else:
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
@@ -92,7 +91,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     row_data[additional_col] = row.get(additional_col, None)
                                 distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
                             break
-
 
     # Merge distill_summary_df with target_id_counts_df
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'],
