@@ -3,6 +3,7 @@ import argparse
 import glob
 import logging
 import re
+from pandas import concat
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
@@ -67,7 +68,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             if additional_col == 'target_id':
                                 has_target_id_column = True
                             row_data[additional_col] = row.get(additional_col, None)
-                        distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
+                        distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break  # Break after matching to avoid processing the same gene_id against multiple columns
             # Then, within the loop where we search for matches in columns ending with _EC, we can use this function to check for partial matches
             else:
@@ -78,22 +79,23 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             associated_ec = combined_annotations_df.loc[matched_indices, col].iloc[0]  # Extract the matched EC number
                             print(f"Match found for partial EC number {gene_id} in column {col}: {associated_ec}")
                             for index, row_data in combined_annotations_df[matched_indices].iterrows():
-                                combined_id = row_data['gene_id']  # Extract the gene_id value from the same row
-                                row_data = {
-                                    'gene_id': combined_id,
-                                    'gene_description': gene_description,
-                                    'pathway': pathway,
-                                    'topic_ecosystem': topic_ecosystem,
-                                    'category': category,
-                                    'subcategory': subcategory,
-                                    'associated_EC': associated_ec  # Include the associated EC number
-                                }
-                                # Add additional columns from distill sheet
-                                for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                    if additional_col == 'target_id':
-                                        has_target_id_column = True
-                                    row_data[additional_col] = row.get(additional_col, None)
-                                distill_summary_df = distill_summary_df.append(row_data, ignore_index=True)
+                                combined_id = row_data.get('gene_id', None)  # Extract the gene_id value from the same row
+                                if combined_id is not None:
+                                    row_data = {
+                                        'gene_id': combined_id,
+                                        'gene_description': gene_description,
+                                        'pathway': pathway,
+                                        'topic_ecosystem': topic_ecosystem,
+                                        'category': category,
+                                        'subcategory': subcategory,
+                                        'associated_EC': associated_ec  # Include the associated EC number
+                                    }
+                                    # Add additional columns from distill sheet
+                                    for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                                        if additional_col == 'target_id':
+                                            has_target_id_column = True
+                                        row_data[additional_col] = row.get(additional_col, None)
+                                    distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                             break
 
 
