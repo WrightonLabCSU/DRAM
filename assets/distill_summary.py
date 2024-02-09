@@ -20,8 +20,8 @@ def is_partial_match(ec_number, partial_ec):
     
     # Escape the dots in the partial EC number to match them as literals
     partial_ec_escaped = re.escape(partial_ec)
-    # Construct a regular expression pattern to match the partial EC number
-    pattern = re.compile(rf'^{partial_ec_escaped}\.?\d*$')
+    # Construct a regular expression pattern to match the partial EC number at the start followed by a dot and more digits
+    pattern = re.compile(rf'^{partial_ec_escaped}(\.\d+)+$')
     # Check if the EC number matches the pattern
     return bool(pattern.match(ec_number))
 
