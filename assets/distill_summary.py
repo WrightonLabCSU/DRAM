@@ -56,6 +56,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
         logging.info(f"Processing distill sheet: {distill_sheet}")
         distill_df = pd.read_csv(distill_sheet, sep='\t')
 
+        # Capture additional columns from the distill sheet
+        additional_cols_distill = set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}
+
         for gene_id, row in distill_df.groupby('gene_id'):
             gene_description = row['gene_description'].iloc[0]  # Get the first value of 'gene_description' (assuming it's the same for all rows with the same 'gene_id')
             pathway = row['pathway'].iloc[0] if 'pathway' in row else None
@@ -82,10 +85,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             'category': category,
                             'subcategory': subcategory
                         }
-                        for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                            if additional_col == 'target_id':
-                                has_target_id_column = True
+                        # Include additional columns from distill sheet
+                        for additional_col in additional_cols_distill:
                             row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
+                        
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
@@ -143,6 +146,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
     if 'associated_EC' in distill_summary_df.columns:
         required_columns.append('associated_EC')
+    # Include additional columns from distill sheet in required columns
+    required_columns += list(additional_cols_distill)
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
     columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'}) + list(target_id_counts_df.columns)
 
