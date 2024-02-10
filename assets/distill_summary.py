@@ -81,6 +81,7 @@ def process_gene_id(distill_df, gene_id, row, combined_annotations_df, distill_s
                 break
 
     # If gene_id is not found in any potential gene ID column, check potential EC columns
+    # If gene_id is not found in any potential gene ID column, check potential EC columns
     if not gene_id_found:
         for col in combined_annotations_df.columns:
             if col.endswith('_EC'):
@@ -88,10 +89,13 @@ def process_gene_id(distill_df, gene_id, row, combined_annotations_df, distill_s
                     if is_partial_match(ec_value, gene_id):
                         gene_id_found = True
                         print(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
-
-                        # Find associated gene_id values in the same row
-                        associated_gene_ids = combined_annotations_df.loc[idx, [col.replace('_EC', '_id') for col in combined_annotations_df.columns if col.endswith('_EC')]].tolist()
-
+                        
+                        # Find corresponding classical gene ID values in the same row
+                        associated_gene_ids = []
+                        for id_col in combined_annotations_df.columns:
+                            if id_col.endswith('_id'):
+                                associated_gene_ids.extend(combined_annotations_df.loc[idx, id_col].tolist())
+                        
                         for associated_id in associated_gene_ids:
                             row_data = {
                                 'gene_id': associated_id,
@@ -106,9 +110,10 @@ def process_gene_id(distill_df, gene_id, row, combined_annotations_df, distill_s
                             for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
                                 if additional_col == 'target_id':
                                     has_target_id_column = True
-                                row_data[additional_col] = row.get(additional_col)
+                                row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
                             distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                         break
+
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
