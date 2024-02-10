@@ -147,7 +147,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             sheet_data[sheet_name]['data'].append(row_data)
 
             # Collect column names that are not in column_names and contain the topic_ecosystem value
-            new_columns = [col for col in row.index if col not in column_names and sheet_name in col]
+            new_columns = [col for col in row.index if col not in column_names and sheet_name in col.split('-')]
             sheet_data[sheet_name]['columns'].extend(new_columns)
 
     # Inside the loop that creates sheets for topic_ecosystem values
