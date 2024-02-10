@@ -141,17 +141,14 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 }
 
             # Exclude the expected columns and move other columns
-            row_data = []
-            for col in row.index:
-                if col in column_names or sheet_name in col:
-                    row_data.append(row[col])
-
-                    # Collect column names that are not in column_names but contain the topic ecosystem value
-                    if col not in column_names and sheet_name in col:
-                        sheet_data[sheet_name]['columns'].append(col)
+            row_data = [row[col] for col in row.index if col not in column_names]
 
             # Append the modified row to the corresponding sheet's data
             sheet_data[sheet_name]['data'].append(row_data)
+
+            # Collect column names that are not in column_names
+            new_columns = [col for col in row.index if col not in column_names]
+            sheet_data[sheet_name]['columns'].extend(new_columns)
 
     # Inside the loop that creates sheets for topic_ecosystem values
     for sheet_name, sheet_info in sheet_data.items():
