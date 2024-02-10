@@ -86,7 +86,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
                             if additional_col == 'target_id':
                                 has_target_id_column = True
+                            print(f"Adding additional column: {additional_col}")
                             row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
+                            print(f"Value of {additional_col}: {row_data[additional_col]}")
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
