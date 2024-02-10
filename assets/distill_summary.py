@@ -85,7 +85,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         }
                         # Include additional columns from the distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                            row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
+                            new_col_name = f"{additional_col}-{topic_ecosystem}"
+                            row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
@@ -113,7 +114,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     }
                                     # Include additional columns from the distill sheet
                                     for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                        row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
+                                        new_col_name = f"{additional_col}-{topic_ecosystem}"
+                                        row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                                     distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                 break
 
@@ -134,10 +136,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
     deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).copy()
 
-    # Remove rows without a gene_id
+    # Remove rows with null gene_id
     deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
 
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
@@ -145,6 +148,6 @@ if __name__ == "__main__":
     parser.add_argument('--target_id_counts', required=True, help='Path to the target_id_counts.tsv file.')
     parser.add_argument('--output', required=True, help='Path to the output genome_summary.tsv file.')
     args = parser.parse_args()
-    
+
     target_id_counts_df = pd.read_csv(args.target_id_counts, sep='\t')
     distill_summary(args.combined_annotations, target_id_counts_df, args.output)
