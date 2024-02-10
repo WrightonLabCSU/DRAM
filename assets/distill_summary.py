@@ -92,32 +92,35 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
             # If gene_id is not found in any potential gene ID column, check potential EC columns
             if not gene_id_found:
+                # Process associated EC values
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
                         for idx, ec_value in combined_annotations_df[col].iteritems():
-                            if is_partial_match(ec_value, gene_id):
-                                gene_id_found = True
-                                print(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
-                                associated_ec_col = col.replace('_EC', '_associated_EC')
-                                associated_ec_values = combined_annotations_df[associated_ec_col].tolist()
-                                for associated_ec in associated_ec_values:
-                                    if pd.notnull(associated_ec):
-                                        row_data = {
-                                            'gene_id': None,
-                                            'gene_description': gene_description,
-                                            'pathway': pathway,
-                                            'topic_ecosystem': topic_ecosystem,
-                                            'category': category,
-                                            'subcategory': subcategory,
-                                            'associated_EC': associated_ec
-                                        }
-                                        # Include additional columns from the distill sheet
-                                        for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                            if additional_col == 'target_id':
-                                                has_target_id_column = True
-                                            row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
-                                        distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
-                                break
+                            ec_segments = str(ec_value).split(';')
+                            for segment in ec_segments:
+                                segment = segment.strip()
+                                if is_partial_match(segment, gene_id):  
+                                    associated_ec = segment
+
+                                    row_data = {
+                                        'gene_id': None,
+                                        'gene_description': gene_description,
+                                        'pathway': pathway,
+                                        'topic_ecosystem': topic_ecosystem,
+                                        'category': category,
+                                        'subcategory': subcategory,
+                                        'associated_EC': associated_ec  # This will be set if there's a partial match
+                                    }
+
+                                    # Find additional columns values from distill sheet based on associated EC value
+                                    distill_row = distill_df[distill_df['gene_id'] == associated_ec].iloc[0]
+                                    for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
+                                        if additional_col == 'target_id':
+                                            has_target_id_column = True
+                                        row_data[additional_col] = distill_row[additional_col] if additional_col in distill_row else None
+
+                                    distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                                    break  # Break if a match is found
 
             # If gene_id is still not found, skip processing this gene_id
             if not gene_id_found:
