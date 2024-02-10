@@ -88,7 +88,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         }
                         # Include additional columns from the distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                            new_col_name = f"{additional_col}-{topic_ecosystem}"
+                            new_col_name = f"{additional_col}-{topic_ecosystem}" if additional_col != 'topic_ecosystem' else additional_col
                             row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                             if new_col_name not in required_columns:
                                 additional_columns.append(new_col_name)
@@ -119,7 +119,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     }
                                     # Include additional columns from the distill sheet
                                     for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                        new_col_name = f"{additional_col}-{topic_ecosystem}"
+                                        new_col_name = f"{additional_col}-{topic_ecosystem}" if additional_col != 'topic_ecosystem' else additional_col
                                         row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                                         if new_col_name not in required_columns:
                                             additional_columns.append(new_col_name)
@@ -129,18 +129,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
     
     if not has_target_id_column:
-        distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
-
-    columns_to_output = required_columns + additional_columns
-
-    for col in columns_to_output:
-        if col not in distill_summary_df.columns:
-            distill_summary_df[col] = None
-
-    deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).copy()
+        distill_summary_df.drop('target_id', axis=1, inplace=True)
 
     # Drop rows with null gene_id
-    deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
+    deduplicated_df = distill_summary_df[~distill_summary_df['gene_id'].isnull()]
 
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
 
