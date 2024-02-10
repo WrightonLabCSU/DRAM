@@ -94,7 +94,11 @@ def process_gene_id(distill_df, gene_id, row, combined_annotations_df, distill_s
                         associated_gene_ids = []
                         for id_col in combined_annotations_df.columns:
                             if id_col.endswith('_id'):
-                                associated_gene_ids.extend(combined_annotations_df.loc[idx, id_col].tolist())
+                                value = combined_annotations_df.loc[idx, id_col]
+                                if isinstance(value, list):
+                                    associated_gene_ids.extend(value)
+                                else:
+                                    associated_gene_ids.append(value)
                         
                         for associated_id in associated_gene_ids:
                             row_data = {
@@ -113,6 +117,7 @@ def process_gene_id(distill_df, gene_id, row, combined_annotations_df, distill_s
                                 row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
                             distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                         break
+
 
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
