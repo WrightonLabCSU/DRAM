@@ -140,7 +140,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if 'associated_EC' in distill_summary_df.columns:
         required_columns.append('associated_EC')
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
-    columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'}) + list(target_id_counts_df.columns)
+    columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'})
 
     for col in columns_to_output:
         if col not in distill_summary_df.columns:
