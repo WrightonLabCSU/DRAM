@@ -101,7 +101,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                 print(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
                                 
                                 # Find associated gene_id values in the same row
-                                associated_gene_ids = combined_annotations_df.loc[idx, [col.replace('_EC', '_id') for col in combined_annotations_df.columns if col.endswith('_EC')]].tolist()
+                                associated_gene_ids = combined_annotations_df.loc[idx, [col.replace('_EC', '_id') for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]].tolist()
                                 
                                 for associated_id in associated_gene_ids:
                                     row_data = {
