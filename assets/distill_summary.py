@@ -1,39 +1,3 @@
-import pandas as pd
-import argparse
-import glob
-import logging
-import re
-from pandas import concat
-
-# Setup logging
-logging.basicConfig(level=logging.DEBUG)
-
-def is_null_content(file_path):
-    """Check if the content of a file is NULL."""
-    with open(file_path, 'r') as file:
-        content = file.read().strip()
-    return content == "NULL"
-
-def is_partial_match(ec_number, partial_ec):
-    """
-    Check if the EC number starts with the given partial EC number and optionally followed by more subdivisions
-    or a dash indicating unspecified subdivisions.
-
-    Args:
-        ec_number (str): The EC number to check.
-        partial_ec (str): The partial EC number to match the start against.
-
-    Returns:
-        bool: True if the EC number starts with the partial EC number and optionally followed by more subdivisions or a dash, False otherwise.
-    """
-    if not isinstance(ec_number, str):
-        return False
-
-    # Build a regex pattern that starts with the partial_ec followed by any number of additional subdivisions
-    # or a dash, which may be at the end or followed by further subdivisions
-    pattern = re.compile(rf'^{re.escape(partial_ec)}(\.\d+)*(\.-)?$')
-    return bool(pattern.match(ec_number))
-
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
     Generate a genome summary from distill sheets and combined annotations.
@@ -82,13 +46,11 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             'category': category,
                             'subcategory': subcategory
                         }
-                        # Include additional columns dynamically from the distill sheet
+                        # Include additional columns from the distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
                             if additional_col == 'target_id':
                                 has_target_id_column = True
-                            print(f"Adding additional column: {additional_col}")
                             row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
-                            print(f"Value of {additional_col}: {row_data[additional_col]}")
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
@@ -142,25 +104,15 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if 'associated_EC' in distill_summary_df.columns:
         required_columns.append('associated_EC')
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
-    columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'})
+    
+    # Include additional columns using associated_EC values
+    for col in additional_columns:
+        distill_summary_df[col] = distill_summary_df.apply(lambda row: get_additional_column_value(row['associated_EC'], col), axis=1)
 
-    for col in columns_to_output:
-        if col not in distill_summary_df.columns:
-            distill_summary_df[col] = None
-
+    # Drop duplicate rows
     deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).copy()
 
     # Remove rows without a gene_id
     deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
 
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
-    parser.add_argument('--combined_annotations', required=True, help='Path to the combined_annotations.tsv file.')
-    parser.add_argument('--target_id_counts', required=True, help='Path to the target_id_counts.tsv file.')
-    parser.add_argument('--output', required=True, help='Path to the output genome_summary.tsv file.')
-    args = parser.parse_args()
-    
-    target_id_counts_df = pd.read_csv(args.target_id_counts, sep='\t')
-    distill_summary(args.combined_annotations, target_id_counts_df, args.output)
