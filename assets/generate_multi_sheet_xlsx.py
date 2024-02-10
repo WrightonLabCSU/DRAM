@@ -158,7 +158,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Extract unique column names for this sheet
         unique_column_names = []  # Start with an empty list to maintain order
         for col in sheet_info['columns']:
-            if col not in unique_column_names and col not in hardcoded_columns:
+            if col.endswith(sheet_name) or col.endswith("topic_ecosystem"):
                 unique_column_names.append(col)
 
         # Define the desired order of columns (including hardcoded columns)
