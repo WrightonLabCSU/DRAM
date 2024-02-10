@@ -147,7 +147,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                     row_data.append(row[col])
 
                     # Collect column names that are not in column_names but contain the topic ecosystem value
-                    if col not in column_names:
+                    if col not in column_names and sheet_name in col:
                         sheet_data[sheet_name]['columns'].append(col)
 
             # Append the modified row to the corresponding sheet's data
