@@ -140,7 +140,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                     'data': []  # Store data rows for this sheet
                 }
 
-            # Only include additional columns if they contain the topic ecosystem value
+            # Exclude the expected columns and move other columns
             row_data = []
             for col in row.index:
                 if col in column_names or sheet_name in col:
