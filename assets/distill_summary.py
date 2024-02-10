@@ -82,6 +82,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             'category': category,
                             'subcategory': subcategory
                         }
+                        # Include additional columns from the distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
                             if additional_col == 'target_id':
                                 has_target_id_column = True
