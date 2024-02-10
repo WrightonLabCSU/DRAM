@@ -83,16 +83,14 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             'gene_id': combined_id,
                             'gene_description': gene_description,
                             'pathway': pathway,
-                            'topic_ecosystem': topic_ecosystem,
                             'category': category,
                             'subcategory': subcategory
                         }
                         # Include additional columns from the distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                            if additional_col != 'topic_ecosystem':
-                                new_col_name = f"{additional_col}-{topic_ecosystem}"
-                                if new_col_name not in required_columns:
-                                    additional_columns.append(new_col_name)
+                            new_col_name = f"{additional_col}-{topic_ecosystem}"
+                            if new_col_name not in required_columns:
+                                additional_columns.append(new_col_name)
                                 row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
@@ -114,20 +112,19 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                         'gene_id': associated_id,
                                         'gene_description': gene_description,
                                         'pathway': pathway,
-                                        'topic_ecosystem': topic_ecosystem,
                                         'category': category,
                                         'subcategory': subcategory,
                                         'associated_EC': gene_id  # Setting the associated_EC to the original gene_id
                                     }
                                     # Include additional columns from the distill sheet
                                     for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                        if additional_col != 'topic_ecosystem':
-                                            new_col_name = f"{additional_col}-{topic_ecosystem}"
-                                            if new_col_name not in required_columns:
-                                                additional_columns.append(new_col_name)
+                                        new_col_name = f"{additional_col}-{topic_ecosystem}"
+                                        if new_col_name not in required_columns:
+                                            additional_columns.append(new_col_name)
                                             row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                                     distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                 break
+
 
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
