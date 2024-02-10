@@ -34,6 +34,10 @@ def is_partial_match(ec_number, partial_ec):
     pattern = re.compile(rf'^{re.escape(partial_ec)}(\.\d+)*(\.-)?$')
     return bool(pattern.match(ec_number))
 
+import pandas as pd
+import glob
+import re
+
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
     Generate a genome summary from distill sheets and combined annotations.
@@ -92,39 +96,33 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
             # If gene_id is not found in any potential gene ID column, check potential EC columns
             if not gene_id_found:
-                # Process associated EC values
                 for col in combined_annotations_df.columns:
                     if col.endswith('_EC'):
                         for idx, ec_value in combined_annotations_df[col].iteritems():
-                            ec_segments = str(ec_value).split(';')
-                            for segment in ec_segments:
-                                segment = segment.strip()
-                                if is_partial_match(segment, gene_id):  
-                                    associated_ec = segment
-
+                            if is_partial_match(ec_value, gene_id):
+                                gene_id_found = True
+                                print(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
+                                
+                                # Find associated gene_id values in the same row
+                                associated_gene_ids = combined_annotations_df.loc[idx, [col.replace('_EC', '_id') for col in combined_annotations_df.columns if col.endswith('_EC')]].tolist()
+                                
+                                for associated_id in associated_gene_ids:
                                     row_data = {
-                                        'gene_id': None,
+                                        'gene_id': associated_id,
                                         'gene_description': gene_description,
                                         'pathway': pathway,
                                         'topic_ecosystem': topic_ecosystem,
                                         'category': category,
                                         'subcategory': subcategory,
-                                        'associated_EC': associated_ec  # This will be set if there's a partial match
+                                        'associated_EC': gene_id  # Setting the associated_EC to the original gene_id
                                     }
-
-                                    # Find additional columns values from distill sheet based on associated EC value
-                                    distill_row = distill_df[distill_df['gene_id'] == associated_ec].iloc[0]
+                                    # Include additional columns from the distill sheet
                                     for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
                                         if additional_col == 'target_id':
                                             has_target_id_column = True
-                                        row_data[additional_col] = distill_row[additional_col] if additional_col in distill_row else None
-
-                                    distill_summary_df = pd.concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
-                                    break  # Break if a match is found
-
-            # If gene_id is still not found, skip processing this gene_id
-            if not gene_id_found:
-                continue
+                                        row_data[additional_col] = row[additional_col].iloc[0] if additional_col in row else None
+                                    distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
+                                break
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
     
