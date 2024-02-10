@@ -50,6 +50,9 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     distill_summary_df = pd.DataFrame()
     has_target_id_column = False
 
+    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
+    additional_columns = []
+
     for distill_sheet in distill_sheets:
         if is_null_content(distill_sheet):
             logging.info(f"Skipping distill sheet '{distill_sheet}' as it contains 'NULL' content.")
@@ -85,8 +88,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         }
                         # Include additional columns from the distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                            new_col_name = f"{additional_col}-{topic_ecosystem}" if additional_col != 'gene_id' else additional_col
+                            new_col_name = f"{additional_col}-{topic_ecosystem}"
                             row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
+                            if new_col_name not in required_columns:
+                                additional_columns.append(new_col_name)
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
@@ -114,8 +119,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     }
                                     # Include additional columns from the distill sheet
                                     for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                        new_col_name = f"{additional_col}-{topic_ecosystem}" if additional_col != 'gene_id' else additional_col
+                                        new_col_name = f"{additional_col}-{topic_ecosystem}"
                                         row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
+                                        if new_col_name not in required_columns:
+                                            additional_columns.append(new_col_name)
                                     distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                 break
 
@@ -124,21 +131,18 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if not has_target_id_column:
         distill_summary_df.drop('target_id', axis=1, inplace=True, errors='ignore')
 
-    required_columns = ['gene_id', 'gene_description', 'pathway', 'topic_ecosystem', 'category', 'subcategory']
-    if 'associated_EC' in distill_summary_df.columns:
-        required_columns.append('associated_EC')
-    additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
-    columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'})
+    columns_to_output = required_columns + additional_columns
 
     for col in columns_to_output:
-        if col.endswith('_id'):
-            distill_summary_df.rename(columns={col: f'{col}-{topic_ecosystem}'}, inplace=True)
+        if col not in distill_summary_df.columns:
+            distill_summary_df[col] = None
 
-    deduplicated_df = distill_summary_df.drop_duplicates(subset=['gene_id'])
+    deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).copy()
+
+    # Drop rows with null gene_id
     deduplicated_df = deduplicated_df[~deduplicated_df['gene_id'].isnull()]
 
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate genome summary from distill sheets and combined annotations.')
