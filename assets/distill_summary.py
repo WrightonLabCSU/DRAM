@@ -140,12 +140,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if 'associated_EC' in distill_summary_df.columns:
         required_columns.append('associated_EC')
     additional_columns = [col for col in distill_summary_df.columns if col not in required_columns and col not in target_id_counts_df.columns]
-    
-    # Include additional columns using associated_EC values
-    for col in additional_columns:
-        distill_summary_df[col] = distill_summary_df.apply(lambda row: get_additional_column_value(row['associated_EC'], col), axis=1)
+    columns_to_output = required_columns + list(set(additional_columns) - {'associated_EC'}) + list(target_id_counts_df.columns)
 
-    # Drop duplicate rows
+    for col in columns_to_output:
+        if col not in distill_summary_df.columns:
+            distill_summary_df[col] = None
+
     deduplicated_df = distill_summary_df.drop_duplicates(subset=required_columns, ignore_index=True).copy()
 
     # Remove rows without a gene_id
