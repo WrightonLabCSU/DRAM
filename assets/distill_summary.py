@@ -88,10 +88,12 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         }
                         # Include additional columns from the distill sheet
                         for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                            new_col_name = f"{additional_col}-{topic_ecosystem}"
-                            if new_col_name not in required_columns:
+                            if additional_col in required_columns:
+                                new_col_name = additional_col
+                            else:
+                                new_col_name = f"{additional_col}-{topic_ecosystem}"
                                 additional_columns.append(new_col_name)
-                                row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
+                            row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
 
@@ -118,13 +120,14 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     }
                                     # Include additional columns from the distill sheet
                                     for additional_col in set(distill_df.columns) - set(combined_annotations_df.columns) - {'gene_id'}:
-                                        new_col_name = f"{additional_col}-{topic_ecosystem}"
-                                        if new_col_name not in required_columns:
+                                        if additional_col in required_columns:
+                                            new_col_name = additional_col
+                                        else:
+                                            new_col_name = f"{additional_col}-{topic_ecosystem}"
                                             additional_columns.append(new_col_name)
-                                            row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
+                                        row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                                     distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                 break
-
 
 
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
