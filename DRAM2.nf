@@ -269,6 +269,7 @@ if( params.annotate ){
     ch_kofam_formatter = file(params.kofam_hmm_formatter_script)
     ch_dbcan_formatter = file(params.dbcan_hmm_formatter_script)
     ch_vog_formatter = file(params.vog_hmm_formatter_script)
+    ch_camper_formatter = file(params.camper_hmm_formatter_script)
 
     ch_kofam_list = file(params.kofam_list)
     ch_dbcan_fam = file(params.dbcan_fam_activities)
