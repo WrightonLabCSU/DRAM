@@ -853,8 +853,10 @@ workflow {
         }
         */
 
-        /* Combine formatted annotations */
-        /* Collect all sample formatted_hits in prep for distill_summary */
+        /* COMMENTED OUT FOR VOGDB TESTING
+
+        // Combine formatted annotations 
+        // Collect all sample formatted_hits in prep for distill_summary 
         // Need to figure out how to handle when not all channels are here.
         Channel.empty()
             .mix( ch_vog_formatted )
@@ -862,11 +864,11 @@ workflow {
             .set { collected_formatted_hits }
             //.mix( ch_dbcan_formatted )
             //.mix( ch_kofam_formatted )
-        /* COMBINE_ANNOTATIONS collects all annotations files across ALL databases */
+        // COMBINE_ANNOTATIONS collects all annotations files across ALL databases 
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
-        /* Add Bin Quality to annotations */
+        // Add Bin Quality to annotations 
         if( params.bin_quality != "" ){
             ADD_BIN_QUALITY( ch_combined_annotations, ch_bin_quality )
             ch_updated_annots = ADD_BIN_QUALITY.out.annots_bin_quality_out
@@ -875,7 +877,7 @@ workflow {
             ch_updated_annots = ch_combined_annotations
         }
 
-        /* Add Taxonomy to annotations */
+        // Add Taxonomy to annotations 
         if( params.taxa != "" ){
             ADD_TAXA( ch_updated_annots, ch_taxa )
             ch_updated_taxa_annots = ADD_TAXA.out.annots_taxa_out
@@ -884,7 +886,7 @@ workflow {
             ch_updated_taxa_annots = ch_combined_annotations
         }
 
-        /* Check for additional user-provided annotations */
+        // Check for additional user-provided annotations 
         if( params.add_annotations != "" ){
             MERGE_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
             ch_final_annots = MERGE_ANNOTATIONS.out.merged_annots_out
@@ -896,6 +898,10 @@ workflow {
             ch_final_annots = ch_combined_annotations
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
         }
+
+
+         COMMENTED OUT FOR VOGDB TESTING */
+
 
     }
     /*
