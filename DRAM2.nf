@@ -53,10 +53,14 @@ include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annota
 include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_DBCAN                  } from './modules/annotate/parse_hmmsearch.nf'
 
+include { HMM_SEARCH as HMM_SEARCH_VOG                  } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_VOG                    } from './modules/annotate/parse_hmmsearch.nf'
+
 include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
 include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
 include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
 include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
+include { VOG_HMM_FORMATTER                             } from './modules/annotate/vogdb_hmm_formatter.nf'
 
 include { INDEX as KEGG_INDEX                           } from './modules/index.nf'
 
@@ -163,6 +167,7 @@ annotate_heme = 0
 annotate_sulfur = 0
 annotate_methyl = 0
 annotate_merops = 0
+annotate_vogdb = 0
 
 if( params.use_kegg ){
     annotate_kegg = 1
@@ -199,6 +204,9 @@ if( params.use_methyl ){
 }
 if( params.use_merops ){
     annotate_merops = 1
+}
+if( params.use_vog ){
+    annotate_vogdb = 1
 }
 
 /* Metabolism Database sets */
@@ -249,15 +257,19 @@ if( params.use_dbset == "adjectives_set" ){
 
 if( params.annotate ){
     //This is just temporary - want these in the containers eventually
-    ch_parse_hmmsearch = file(params.parse_hmmsearch_script)
-    ch_kegg_formatter = file(params.kegg_formatter_script)
     ch_combine_annot_script = file(params.combine_annotations_script)
     ch_count_annots_script = file(params.count_annots_script)
+    ch_parse_hmmsearch = file(params.parse_hmmsearch_script)
+
+    ch_kegg_formatter = file(params.kegg_formatter_script)
     ch_kofam_formatter = file(params.kofam_hmm_formatter_script)
-    ch_kofam_list = file(params.kofam_list)
     ch_dbcan_formatter = file(params.dbcan_hmm_formatter_script)
+    ch_vog_formatter = file(params.vog_hmm_formatter_script)
+
+    ch_kofam_list = file(params.kofam_list)
     ch_dbcan_fam = file(params.dbcan_fam_activities)
     ch_dbcan_subfam = file(params.dbcan_subfam_activities)
+    ch_vog_list = file(params.vog_list)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
@@ -323,6 +335,12 @@ if( params.annotate ){
         ch_cant_hyd_db = file(params.cant_hyd_db).exists() ? file(params.cant_hyd_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD database file not found at ${params.cant_hyd_db}")
     } else {
         ch_cant_hyd_db = []
+    }
+
+    if (annotate_vogdb == 1) {
+        ch_vogdb = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
+    } else {
+        ch_vogdb = []
     }
 
     /* Custom user databases */
@@ -817,6 +835,17 @@ workflow {
 
         if (annotate_methyl == 1){
 
+        }
+        if (annotate_vogdb == 1){
+            HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb )
+            ch_vog_hmms = HMM_SEARCH_VOG.out.hmm_search_out
+
+            PARSE_HMM_VOG ( ch_vog_hmms, ch_parse_hmmsearch )
+            ch_vog_parsed = PARSE_HMM_VOG.out.parsed_hmm
+
+            //VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, ch_vog_fam, ch_vog_subfam, ch_vog_formatter )
+            //ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
+            
         }
         /*
         if(user provided database){
