@@ -896,6 +896,7 @@ workflow {
         else{
             ch_final_annots = ch_combined_annotations
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+            ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
 
 
