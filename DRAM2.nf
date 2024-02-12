@@ -857,10 +857,11 @@ workflow {
         /* Collect all sample formatted_hits in prep for distill_summary */
         // Need to figure out how to handle when not all channels are here.
         Channel.empty()
-            .mix( ch_kofam_formatted )
+            .mix( ch_vog_formatted )
             .collect()
             .set { collected_formatted_hits }
-//.mix( ch_dbcan_formatted )
+            //.mix( ch_dbcan_formatted )
+            //.mix( ch_kofam_formatted )
         /* COMBINE_ANNOTATIONS collects all annotations files across ALL databases */
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
