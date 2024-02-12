@@ -60,7 +60,7 @@ include { GENERIC_HMM_FORMATTER                         } from './modules/annota
 include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
 include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
 include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
-include { VOG_HMM_FORMATTER                             } from './modules/annotate/vogdb_hmm_formatter.nf'
+include { VOG_HMM_FORMATTER                             } from './modules/annotate/vog_hmm_formatter.nf'
 
 include { INDEX as KEGG_INDEX                           } from './modules/index.nf'
 
