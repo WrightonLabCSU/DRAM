@@ -270,6 +270,7 @@ if( params.annotate ){
     ch_dbcan_fam = file(params.dbcan_fam_activities)
     ch_dbcan_subfam = file(params.dbcan_subfam_activities)
     ch_vog_list = file(params.vog_list)
+    ch_camper_hmm_list = file(params.camper_hmm_list)
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
@@ -816,6 +817,15 @@ workflow {
         }
 
         if (annotate_camper == 1){
+            HMM_SEARCH_CAMPER ( ch_called_proteins, params.camper_e_value , ch_camper_db)
+            ch_camper_hmms = HMM_SEARCH_CAMPER.out.hmm_search_out
+
+            PARSE_HMM_CAMPER ( ch_camper_hmms, ch_parse_hmmsearch )
+            ch_camper_parsed = PARSE_HMM_CAMPER.out.parsed_hmm
+
+            CAMPER_HMM_FORMATTER ( ch_camper_parsed, params.camper_top_hit, ch_camper_hmm_list, ch_camper_formatter )
+            ch_camper_formatted = CAMPER_HMM_FORMATTER.out.camper_formatted_hits
+            
         }
 
         if (annotate_fegenie == 1){
@@ -859,6 +869,7 @@ workflow {
         Channel.empty()
             .mix( ch_vog_formatted )
             .mix( ch_dbcan_formatted )
+            .mix( ch_camper_formatted )
             .collect()
             .set { collected_formatted_hits }
             //.mix( ch_dbcan_formatted )
