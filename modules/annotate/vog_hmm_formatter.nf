@@ -15,7 +15,7 @@ process VOG_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_vog_formatter} --hits_csv ${hits_file} --ch_vog_ko ${ch_vog_list} --output "${sample}_formatted_vog_hits.out"
+    python ${ch_vog_formatter} --hits_csv ${hits_file} --ch_vog_list ${ch_vog_list} --output "${sample}_formatted_vog_hits.out"
     
     """
 }
