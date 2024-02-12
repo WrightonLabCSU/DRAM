@@ -853,13 +853,12 @@ workflow {
         }
         */
 
-        /* COMMENTED OUT FOR VOGDB TESTING
-
         // Combine formatted annotations 
         // Collect all sample formatted_hits in prep for distill_summary 
         // Need to figure out how to handle when not all channels are here.
         Channel.empty()
             .mix( ch_vog_formatted )
+            .mix( ch_dbcan_formatted )
             .collect()
             .set { collected_formatted_hits }
             //.mix( ch_dbcan_formatted )
@@ -898,9 +897,6 @@ workflow {
             ch_final_annots = ch_combined_annotations
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
         }
-
-
-         COMMENTED OUT FOR VOGDB TESTING */
 
 
     }
