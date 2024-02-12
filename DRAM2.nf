@@ -843,8 +843,8 @@ workflow {
             PARSE_HMM_VOG ( ch_vog_hmms, ch_parse_hmmsearch )
             ch_vog_parsed = PARSE_HMM_VOG.out.parsed_hmm
 
-            //VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, ch_vog_fam, ch_vog_subfam, ch_vog_formatter )
-            //ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
+            VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, ch_vog_fam, ch_vog_subfam, ch_vog_formatter )
+            ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
             
         }
         /*
