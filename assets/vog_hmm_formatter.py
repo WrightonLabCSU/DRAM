@@ -50,7 +50,7 @@ def main():
     ch_vog_list_df = pd.read_csv(args.ch_vog_list, sep="\t")
 
     # Merge hits_df with ch_vog_list_df
-    merged_df = pd.merge(best_hits, ch_vog_list_df[['GroupName', 'ProteinCount', 'SpeciesCount', 'FunctionalCategory', 'ConsensusFunctionalDescription']], left_on='target_id', right_on='GroupName', how='left')
+    merged_df = pd.merge(best_hits, ch_vog_list_df[['#GroupName', 'ProteinCount', 'SpeciesCount', 'FunctionalCategory', 'ConsensusFunctionalDescription']], left_on='target_id', right_on='GroupName', how='left')
 
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
