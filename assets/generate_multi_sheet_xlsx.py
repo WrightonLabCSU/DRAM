@@ -141,13 +141,13 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                 }
 
             # Exclude the expected columns and move other columns
-            row_data = [row[col] for col in row.index if col not in column_names and not col.endswith(sheet_name)]
+            row_data = [row[col] for col in row.index if col not in column_names]
 
             # Append the modified row to the corresponding sheet's data
             sheet_data[sheet_name]['data'].append(row_data)
 
             # Collect column names that are not in column_names
-            new_columns = [col for col in row.index if col not in column_names and not col.endswith(sheet_name)]
+            new_columns = [col for col in row.index if col not in column_names]
             sheet_data[sheet_name]['columns'].extend(new_columns)
 
     # Inside the loop that creates sheets for topic_ecosystem values
@@ -158,7 +158,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         # Extract unique column names for this sheet
         unique_column_names = []  # Start with an empty list to maintain order
         for col in sheet_info['columns']:
-            if col not in hardcoded_columns and col.endswith(sheet_name):
+            if col not in unique_column_names and col not in hardcoded_columns:
                 unique_column_names.append(col)
 
         # Define the desired order of columns (including hardcoded columns)
@@ -187,7 +187,6 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         )
         tab.tableStyleInfo = style
         ws.add_table(tab)
-
 
     # Before adding rRNA sheets
     print("Adding rRNA sheet")
@@ -236,5 +235,3 @@ if __name__ == '__main__':
     parser.add_argument('--combined_rrna', help='Combined rRNA TSV file')
     parser.add_argument('--output_file', help='Output XLSX file')
     args = parser.parse_args()
-
-    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.combined_rrna, args.output_file)
