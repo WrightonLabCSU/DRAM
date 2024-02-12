@@ -235,3 +235,5 @@ if __name__ == '__main__':
     parser.add_argument('--combined_rrna', help='Combined rRNA TSV file')
     parser.add_argument('--output_file', help='Output XLSX file')
     args = parser.parse_args()
+
+    generate_multi_sheet_xlsx(args.input_file, args.rrna_file, args.trna_file, args.combined_annotations, args.combined_rrna, args.output_file)
