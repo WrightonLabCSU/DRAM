@@ -56,11 +56,15 @@ include { PARSE_HMM as PARSE_HMM_DBCAN                  } from './modules/annota
 include { HMM_SEARCH as HMM_SEARCH_VOG                  } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_VOG                    } from './modules/annotate/parse_hmmsearch.nf'
 
+include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_CAMPER                 } from './modules/annotate/parse_hmmsearch.nf'
+
 include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
 include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
 include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
 include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
 include { VOG_HMM_FORMATTER                             } from './modules/annotate/vog_hmm_formatter.nf'
+include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
 
 include { INDEX as KEGG_INDEX                           } from './modules/index.nf'
 
