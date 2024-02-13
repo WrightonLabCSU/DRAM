@@ -45,7 +45,7 @@ include { RRNA_COLLECT                                  } from './modules/annota
 include { ADD_TAXA                                      } from './modules/annotate/add_taxa.nf'
 include { ADD_BIN_QUALITY                               } from './modules/annotate/add_bin_quality.nf'
 
-include { MMSEQS2                                       } from './modules/mmseqs2.nf'
+include { MMSEQS2                                       } from './modules/annotate/mmseqs2.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
