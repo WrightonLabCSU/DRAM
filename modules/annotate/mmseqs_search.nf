@@ -43,8 +43,8 @@ process MMSEQS_SEARCH {
     awk -v db_name="${db_name}" 'BEGIN { OFS="\t"; print "query_id", "start_position", "end_position", db_name "_id", db_name "_bitScore" }
     {
         query_id=\$1
-        start_position=\$9
-        end_position=\$10
+        start_position=\$7
+        end_position=\$8
         target_id=\$2
         bitScore=\$12
         print query_id, start_position, end_position, target_id, bitScore
