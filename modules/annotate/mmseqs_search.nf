@@ -39,25 +39,25 @@ process MMSEQS_SEARCH {
     input_path="mmseqs_out/${sample}_mmseqs_${db_name}.tsv"
     output_path="mmseqs_out/${sample}_mmseqs_${db_name}_formatted.tsv"
 
-    # Use awk to process the file and reorder the columns
-    awk 'BEGIN { OFS="\t" }
+    # Use awk to process the file, include headers, and reorder the columns
+    awk 'BEGIN { OFS="\t"; print "query_id", "start_position", "end_position", "strandedness", "target_id", "score_rank", "bitScore" }
     {
-    query_id=\$1
-    sstart=\$9
-    send=\$10
-    target_id=\$2
-    bitscore=\$12
-    if (\$9 < \$10) {
-        strandedness="+"
-    } else {
-        strandedness="-"
-        temp=sstart
-        sstart=send
-        send=temp
-    }
-    score_rank=NR
-    print query_id, sstart, send, strandedness, target_id, score_rank, bitscore
-    }' "\$input_path" > "\$output_path"
-
+        query_id=\$1
+        sstart=\$9
+        send=\$10
+        target_id=\$2
+        bitscore=\$12
+        if (\$9 < \$10) {
+            strandedness="+"
+        } else {
+            strandedness="-"
+            # Swap start and end if necessary
+            temp=sstart
+            sstart=send
+            send=temp
+        }
+        score_rank=NR
+        print query_id, sstart, send, strandedness, target_id, score_rank, bitscore
+    }' "\${input_path}" > "\${output_path}"
     """
 }
