@@ -18,7 +18,7 @@ process MMSEQS_SEARCH {
     mkdir -p mmseqs_out/tmp
 
     # Perform search
-    mmseqs search mmseqs_database/${sample}.mmsdb mmseqs_database/${db_name}.mmsdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+    mmseqs search mmseqs_database/${sample} mmseqs_database/${db_name} mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
     # Filter to only best hit
     #mmseqs filterdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/${sample}_${db_name}_tophit.mmsdb --extract-lines 1
