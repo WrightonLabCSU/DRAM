@@ -66,7 +66,7 @@ include { DBCAN_HMM_FORMATTER                           } from './modules/annota
 include { VOG_HMM_FORMATTER                             } from './modules/annotate/vog_hmm_formatter.nf'
 include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
 
-include { INDEX as MMSEQS_INDEX                         } from './modules/mmseqs_index.nf'
+include { MMSEQS_INDEX                                  } from './modules/mmseqs_index.nf'
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
