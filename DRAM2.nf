@@ -171,6 +171,7 @@ annotate_sulfur = 0
 annotate_methyl = 0
 annotate_merops = 0
 annotate_vogdb = 0
+annotate_uniref = 0
 
 if( params.use_kegg ){
     annotate_kegg = 1
