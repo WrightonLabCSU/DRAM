@@ -46,6 +46,7 @@ include { ADD_TAXA                                      } from './modules/annota
 include { ADD_BIN_QUALITY                               } from './modules/annotate/add_bin_quality.nf'
 
 include { MMSEQS2                                       } from './modules/annotate/mmseqs2.nf'
+include { MMSEQS_INDEX                                  } from './modules/annotate/mmseqs_index.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
@@ -65,8 +66,6 @@ include { KOFAM_HMM_FORMATTER                           } from './modules/annota
 include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
 include { VOG_HMM_FORMATTER                             } from './modules/annotate/vog_hmm_formatter.nf'
 include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
-
-include { MMSEQS_INDEX                                  } from './modules/mmseqs_index.nf'
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
