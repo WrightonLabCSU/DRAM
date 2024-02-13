@@ -14,8 +14,8 @@ process MMSEQS_SEARCH {
 
     script:
     """
-    mkdir ${db_name}
-    ln -s ${mmseqs_database}/* ${db_name}/
+    mkdir ${db_name}_mmsdb
+    ln -s ${mmseqs_database}/* ${db_name}_mmsbd/
 
     # Create temporary directory
     mkdir -p mmseqs_out/tmp
@@ -25,7 +25,7 @@ process MMSEQS_SEARCH {
 
 
     # Perform search
-    mmseqs search query_database/${sample}.mmsdb ${db_name}/${db_name}.mmsdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+    mmseqs search query_database/${sample}.mmsdb ${db_name}_mmsbd/${db_name}.mmsdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
     # Filter to only best hit
     #mmseqs filterdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/${sample}_${db_name}_tophit.mmsdb --extract-lines 1
