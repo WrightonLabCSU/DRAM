@@ -66,7 +66,7 @@ include { DBCAN_HMM_FORMATTER                           } from './modules/annota
 include { VOG_HMM_FORMATTER                             } from './modules/annotate/vog_hmm_formatter.nf'
 include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
 
-include { INDEX as KEGG_INDEX                           } from './modules/index.nf'
+include { INDEX as MMSEQS_INDEX                         } from './modules/mmseqs_index.nf'
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
@@ -277,8 +277,11 @@ if( params.annotate ){
     ch_vog_list = file(params.vog_list)
     ch_camper_hmm_list = file(params.camper_hmm_list)
 
+    index_mmseqs = "0"
+
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
+        index_mmseqs = "1"
     } else {
         ch_kegg_db = []
     }
@@ -297,18 +300,21 @@ if( params.annotate ){
 
     if (annotate_camper == 1) {
         ch_camper_db = file(params.camper_db).exists() ? file(params.camper_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER database file not found at ${params.camper_db}")
+        index_mmseqs = "1"
     } else {
         ch_camper_db = []
     }
 
     if (annotate_merops == 1) {
         ch_merops_db = file(params.merops_db).exists() ? file(params.merops_db) : error("Error: If using --annotate, you must supply prebuilt databases. MEROPS database file not found at ${params.merops_db}")
+        index_mmseqs = "1"
     } else {
         ch_merops_db = []
     }
 
     if (annotate_pfam == 1) {
         ch_pfam_db = file(params.pfam_db).exists() ? file(params.pfam_db) : error("Error: If using --annotate, you must supply prebuilt databases. PFAM database file not found at ${params.pfam_db}")
+        index_mmseqs = "1"
     } else {
         ch_pfam_db = []
     }
@@ -320,9 +326,15 @@ if( params.annotate ){
     }
 
     if (annotate_sulfur == 1) {
-        ch_sulfur_db = file(params.sulfur_db).exists() ? file(params.sulfur_db) : error("Error: If using --annotate, you must supply prebuilt databases. SULFUR database file not found at ${params.sulfur_db}")
+        ch_sulfur_db = file(params.sulfur_db).exists() ? file(params.sulfur_db) : error("Error: If using --annotate, you must supply prebuilt databases. SULURR database file not found at ${params.sulfur_db}")
     } else {
         ch_sulfur_db = []
+    }
+
+    if (annotate_uniref == 1) {
+        ch_uniref_db = file(params.uniref_db).exists() ? file(params.unirefdb) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
+    } else {
+        ch_uniref_db = []
     }
 
     if (annotate_methyl == 1) {
@@ -774,7 +786,6 @@ workflow {
         ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
 
 
-
     }
 
     /*
@@ -784,7 +795,14 @@ workflow {
     */
     if( params.annotate ){
 
-        /* Annotate according to the user-specified databases */
+        // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
+        if( index_mmseqs == "1" ){
+            MMSEQS_INDEX( ch_called_proteins )
+            ch_mmseqs_query = MMSEQS_INDEX.out.mmseqs_index_out
+        }
+
+
+        // Annotate according to the user-specified databases 
         if( annotate_kegg == 1 ){
             //KEGG_INDEX ( params.kegg_mmseq_loc )
             //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc, params.kegg_index )
@@ -851,6 +869,12 @@ workflow {
         if (annotate_methyl == 1){
 
         }
+        if (annotate_merops == 1){
+        
+        }
+        if (annotate_uniref == 1){
+
+        }
         if (annotate_vogdb == 1){
             HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb )
             ch_vog_hmms = HMM_SEARCH_VOG.out.hmm_search_out
@@ -862,11 +886,8 @@ workflow {
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
             
         }
-        /*
-        if(user provided database){
 
-        }
-        */
+        /*
 
         // Combine formatted annotations 
         // Collect all sample formatted_hits in prep for distill_summary 
@@ -915,6 +936,7 @@ workflow {
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
 
+        */
 
     }
     /*
