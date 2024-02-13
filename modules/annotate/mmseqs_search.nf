@@ -4,7 +4,7 @@ process MMSEQS_SEARCH {
 
     input:
     tuple val( sample ), path( query_database, stageAs: "query_database/" )
-    path( mmseqs_database, stageAs: "mmseqs_database/"  )
+    path( mmseqs_database )
     val( bit_score_threshold)
     val( db_name )
 
@@ -14,6 +14,8 @@ process MMSEQS_SEARCH {
 
     script:
     """
+    ln -s ${mmseqs_database}/* .
+
     # Create temporary directory
     mkdir -p mmseqs_out/tmp
 
