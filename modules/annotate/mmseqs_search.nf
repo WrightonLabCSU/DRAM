@@ -14,7 +14,6 @@ process MMSEQS_SEARCH {
 
     script:
     """
-    mkdir ${db_name}_mmsdb
     ln -s ${mmseqs_database}/* ./
 
     # Create temporary directory
