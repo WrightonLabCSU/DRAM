@@ -1,4 +1,5 @@
-MMSEQS_INDEX{
+process MMSEQS_INDEX{
+    
     tag { sample }
 
     input:
@@ -11,7 +12,7 @@ MMSEQS_INDEX{
     """
 
     mmseqs createdb ${fasta} ${sample}.mmsdb
-    
+
     """
 
 
