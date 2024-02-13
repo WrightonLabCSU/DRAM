@@ -3,8 +3,8 @@ process MMSEQS_SEARCH {
     tag { sample }
 
     input:
-    tuple val( sample ), path( query_database, stageAs: "query_database/" )
-    path( mmseqs_database, stageAs: "mmseqs_database/" )
+    tuple val( sample ), path( query_database )
+    path( mmseqs_database )
     val( bit_score_threshold)
     val( db_name )
 
@@ -18,7 +18,7 @@ process MMSEQS_SEARCH {
     mkdir -p mmseqs_out/tmp
 
     # Perform search
-    mmseqs search ${query_database}/${sample}.mmsdb ${mmseqs_database}/${db_name}.mmsdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+    mmseqs search ${query_database} ${mmseqs_database} mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
     # Filter to only best hit
     #mmseqs filterdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/${sample}_${db_name}_tophit.mmsdb --extract-lines 1
