@@ -871,7 +871,7 @@ workflow {
         }
         if (annotate_merops == 1){
             MMSEQS_SEARCH( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
-            ch_mmseqs_merops = MMSEQS_SEARCH.out.mmseqs_search_out
+            ch_mmseqs_merops = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
         }
         if (annotate_uniref == 1){
 
