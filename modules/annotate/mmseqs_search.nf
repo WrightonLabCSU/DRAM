@@ -9,12 +9,12 @@ process MMSEQS_SEARCH {
     val( db_name )
 
     output:
-    tuple val( sample ),  path("mmseqs_out/${sample}_mmseqs_${db_name}.tsv"), emit: mmseqs_search_out
+    tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}.tsv"), emit: mmseqs_search_out
 
 
     script:
     """
-    ln -s ${mmseqs_database}/* .
+    ln -s ${mmseqs_database}/* ${db_name}/
 
     # Create temporary directory
     mkdir -p mmseqs_out/tmp
@@ -24,7 +24,7 @@ process MMSEQS_SEARCH {
 
 
     # Perform search
-    mmseqs search query_database/${sample}.mmsdb mmseqs_database mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+    mmseqs search query_database/${sample}.mmsdb ${db_name}/${db_name}.mmsdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
     # Filter to only best hit
     #mmseqs filterdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/${sample}_${db_name}_tophit.mmsdb --extract-lines 1
