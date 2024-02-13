@@ -45,7 +45,7 @@ include { RRNA_COLLECT                                  } from './modules/annota
 include { ADD_TAXA                                      } from './modules/annotate/add_taxa.nf'
 include { ADD_BIN_QUALITY                               } from './modules/annotate/add_bin_quality.nf'
 
-include { MMSEQS2                                       } from './modules/annotate/mmseqs2.nf'
+include { MMSEQS_SEARCH                                 } from './modules/annotate/mmseqs_search.nf'
 include { MMSEQS_INDEX                                  } from './modules/annotate/mmseqs_index.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
@@ -870,7 +870,8 @@ workflow {
 
         }
         if (annotate_merops == 1){
-        
+            MMSEQS_SEARCH( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
+            ch_mmseqs_merops = MMSEQS_SEARCH.out.mmseqs_search_out
         }
         if (annotate_uniref == 1){
 
