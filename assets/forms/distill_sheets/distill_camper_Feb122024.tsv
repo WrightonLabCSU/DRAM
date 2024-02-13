@@ -1,4 +1,4 @@
-gene_id	gene_description	module	sheet	header	subheader	specific_reaction	oxygen	EC	Notes
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	specific_reaction	oxygen	EC	Notes
 AA1	AA1 Laccase / p-diphenol:oxygen oxidoreductase / ferroxidase (EC 1.10.3.2); ; ferroxidase (EC 1.10.3.-); Laccase-like multicopper oxidase (EC 1.10.3.-)	polyphenol oxidase (non-specific)	CAMPER	non-specific;non-specific;non-specific	step 1	non-specific	oxic	EC 1.10.3.2,EC 1.10.3.-	extracellular
 AA2	AA2 manganese peroxidase (EC 1.11.1.13); versatile peroxidase (EC 1.11.1.16); lignin peroxidase (EC 1.11.1.14); peroxidase (EC 1.11.1.-)	peroxidase (non-specific)	CAMPER	non-specific;non-specific;non-specific	step 1	non-specific	oxic	EC 1.11.1.13,EC 1.11.1.16,EC 1.11.1.14,EC 1.11.1.-	extracellular
 AA4	AA4 vanillyl-alcohol oxidase (EC 1.1.3.38)	vanillyl-alcohol oxidase (non-specific)	CAMPER	polyphenols;other_polyphenols;hydroxybenzyl_alcohols;vanillyl_alcohol	step 1	non-specific	oxic	EC 1.1.3.38	
