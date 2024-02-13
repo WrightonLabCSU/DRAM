@@ -1,5 +1,5 @@
 process MMSEQS_SEARCH {
-   // not for use with PFAM
+
     tag { sample }
 
     input:
@@ -16,6 +16,10 @@ process MMSEQS_SEARCH {
     """
     # Create temporary directory
     mkdir -p mmseqs_out/tmp
+
+    echo "Query Database: ${query_database}"
+    echo "Target Database: ${mmseqs_database}"
+
 
     # Perform search
     mmseqs search ${query_database} ${mmseqs_database} mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
