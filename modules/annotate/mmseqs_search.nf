@@ -40,7 +40,7 @@ process MMSEQS_SEARCH {
     output_path="mmseqs_out/${sample}_mmseqs_${db_name}_formatted.tsv"
 
     # Use awk to process the file and reorder the columns
-    awk -v db_name="${db_name}" 'BEGIN { OFS="\t"; print "query_id", "start_position", "end_position", db_name "_id", db_name "_bitScore" }
+    awk -v db_name="${db_name}" 'BEGIN { OFS=","; print "query_id", "start_position", "end_position", db_name "_id", db_name "_bitScore" }
     {
         query_id=\$1
         start_position=\$7

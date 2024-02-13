@@ -898,7 +898,6 @@ workflow {
             .mix( ch_merops_formatted )
             .collect()
             .set { collected_formatted_hits }
-            //.mix( ch_dbcan_formatted )
             //.mix( ch_kofam_formatted )
         // COMBINE_ANNOTATIONS collects all annotations files across ALL databases 
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
