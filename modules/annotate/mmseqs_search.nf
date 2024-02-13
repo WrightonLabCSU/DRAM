@@ -42,12 +42,12 @@ process MMSEQS_SEARCH {
     # Use awk to process the file and reorder the columns
     awk 'BEGIN { OFS="\t" }
     {
-    query_id=$1
-    sstart=$9
-    send=$10
-    target_id=$2
-    bitscore=$12
-    if ($9 < $10) {
+    query_id=\$1
+    sstart=\$9
+    send=\$10
+    target_id=\$2
+    bitscore=\$12
+    if (\$9 < \$10) {
         strandedness="+"
     } else {
         strandedness="-"
@@ -57,7 +57,7 @@ process MMSEQS_SEARCH {
     }
     score_rank=NR
     print query_id, sstart, send, strandedness, target_id, score_rank, bitscore
-    }' "$input_path" > "$output_path"
+    }' "\$input_path" > "\$output_path"
 
     """
 }
