@@ -871,7 +871,7 @@ workflow {
         }
         if (annotate_merops == 1){
             MMSEQS_SEARCH( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
-            ch_mmseqs_merops = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+            ch_merops_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
         }
         if (annotate_uniref == 1){
 
@@ -885,10 +885,8 @@ workflow {
 
             VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, ch_vog_list, ch_vog_formatter )
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
-            
         }
 
-        /*
 
         // Combine formatted annotations 
         // Collect all sample formatted_hits in prep for distill_summary 
@@ -897,6 +895,7 @@ workflow {
             .mix( ch_vog_formatted )
             .mix( ch_dbcan_formatted )
             .mix( ch_camper_formatted )
+            .mix( ch_merops_formatted )
             .collect()
             .set { collected_formatted_hits }
             //.mix( ch_dbcan_formatted )
@@ -937,7 +936,7 @@ workflow {
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
 
-        */
+        
 
     }
     /*
