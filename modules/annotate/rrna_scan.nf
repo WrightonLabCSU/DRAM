@@ -19,7 +19,7 @@ process RRNA_SCAN {
     import subprocess
     from sys import stderr
 
-    def run_barrnap(fasta, sample_name, threads=10, verbose=True):
+    def run_barrnap(fasta, sample_name, threads, verbose=True):
         barrnap_command = [
             "barrnap",
             "--threads", str(threads),
