@@ -899,8 +899,6 @@ workflow {
         }
 
 
-        formattedOutputChannels.view()
-
 
         /*
         // Combine formatted annotations 
@@ -926,9 +924,15 @@ workflow {
             //.mix( ch_camper_formatted )
             //.mix( ch_merops_formatted )
         */
+
+        Channel.empty()
+            .mix( formattedOutputChannels )
+            .collect()
+            .set { collected_formatted_hits }
+
         // COMBINE_ANNOTATIONS collects all annotations files across ALL databases 
 
-        COMBINE_ANNOTATIONS( formattedOutputChannels, ch_combine_annot_script )
+        COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         //COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
