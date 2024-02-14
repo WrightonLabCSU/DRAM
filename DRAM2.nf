@@ -922,6 +922,9 @@ workflow {
         // Need to figure out how to handle when not all channels are here.
         Channel.empty()
             .mix( ch_viral_formatted )
+            .mix( ch_dbcan_formatted )
+            .mix( ch_camper_formatted )
+            .mix( ch_merops_formatted )
             .collect()
             .set { collected_formatted_hits }
             //.mix( ch_kofam_formatted )
