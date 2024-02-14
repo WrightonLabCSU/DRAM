@@ -855,7 +855,7 @@ workflow {
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_hmm_formatted)
 
             // MMseqs
-            MMSEQS_SEARCH_CAMPER( ch_mmseqs_query, ch_camper_mmseqs_db, params.bit_score_threshold, params.camper_name )
+            MMSEQS_SEARCH_CAMPER( ch_mmseqs_query, ch_camper_mmseqs_db, params.bit_score_threshold, params.camper_mmseqs_list, params.camper_name )
             ch_camper_mmseqs_formatted = MMSEQS_SEARCH_CAMPER.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
@@ -866,7 +866,7 @@ workflow {
         }
 
         if (annotate_methyl == 1){
-            MMSEQS_SEARCH_METHYL( ch_mmseqs_query, ch_methyl_db, params.bit_score_threshold, params.methyl_name )
+            MMSEQS_SEARCH_METHYL( ch_mmseqs_query, ch_methyl_db, params.bit_score_threshold, params.distill_dummy_sheet, params.methyl_name )
             ch_methyl_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_mmseqs_formatted)
@@ -874,7 +874,7 @@ workflow {
 
         if (annotate_canthyd == 1){
             // MMseqs
-            MMSEQS_SEARCH_CANTHYD( ch_mmseqs_query, ch_canthyd_mmseqs_db, params.bit_score_threshold, params.canthyd_name )
+            MMSEQS_SEARCH_CANTHYD( ch_mmseqs_query, ch_canthyd_mmseqs_db, params.bit_score_threshold, canthyd_mmseqs_list, params.canthyd_name )
             ch_canthyd_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_mmseqs_formatted)
@@ -891,7 +891,7 @@ workflow {
         }
 
         if (annotate_merops == 1){
-            MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
+            MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.distill_dummy_sheet, params.merops_name )
             ch_merops_formatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
@@ -915,7 +915,7 @@ workflow {
         }
 
         if (annotate_viral == 1){
-            MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
+            MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.distill_dummy_sheet, params.viral_name )
             ch_viral_formatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)

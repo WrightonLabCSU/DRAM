@@ -6,11 +6,12 @@ process MMSEQS_SEARCH {
     tuple val( sample ), path( query_database, stageAs: "query_database/" )
     path( mmseqs_database )
     val( bit_score_threshold)
+    file( additional_tsv )
     val( db_name )
 
     output:
     tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}.tsv"), emit: mmseqs_search_out
-    tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}_formatted.tsv"), emit: mmseqs_search_formatted_out
+    tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out
 
     script:
     """
@@ -37,7 +38,7 @@ process MMSEQS_SEARCH {
     
     # Define the input and output file paths
     input_path="mmseqs_out/${sample}_mmseqs_${db_name}.tsv"
-    output_path="mmseqs_out/${sample}_mmseqs_${db_name}_formatted.tsv"
+    output_path="mmseqs_out/${sample}_mmseqs_${db_name}_formatted.csv"
 
     # Use awk to process the file and reorder the columns
     awk -v db_name="${db_name}" 'BEGIN { OFS=","; print "query_id", "start_position", "end_position", db_name "_id", db_name "_bitScore" }
