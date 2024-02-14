@@ -52,7 +52,7 @@ process MMSEQS_SEARCH {
     }' "\${input_path}" > "\${output_path}"
 
     # Check if the annotations TSV content is not "NULL"
-    if ! grep -q "^NULL$" ${db_descriptions}; then
+    if ! grep -q "^NULL\$" ${db_descriptions}; then
         # Sort the MMseqs output and the additional descriptions file
         sort -k1,1 "\${output_path}" > "\${output_path}.sorted"
         sort -k1,1 "${db_descriptions}" > "${db_descriptions}.sorted"
