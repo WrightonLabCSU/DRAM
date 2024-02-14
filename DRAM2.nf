@@ -382,6 +382,7 @@ if( params.annotate ){
 
     if (annotate_viral == 1) {
         ch_viral = file(params.viral_db).exists() ? file(params.viral_db) : error("Error: If using --annotate, you must supply prebuilt databases. viral database file not found at ${params.viral_db}")
+        index_mmseqs = "1"
         annotate_list += "viral "
     } else {
         ch_viral = []
