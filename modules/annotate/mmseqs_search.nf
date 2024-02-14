@@ -53,29 +53,27 @@ process MMSEQS_SEARCH {
 
     # Check if the annotations TSV content is not "NULL"
     if ! grep -q "^NULL\$" ${db_descriptions}; then
-        # Sort the MMseqs output and the additional descriptions file
-        sort -k1,1 "\${output_path}" > "\${output_path}.sorted"
-        sort -k1,1 "${db_descriptions}" > "${db_descriptions}.sorted"
+        # Sort the MMseqs output by the column to join on (assuming it's the fourth column, which is `${db_name}_id`)
+        cut -d',' -f4 "\${output_path}" | grep -v "${db_name}_id" | sort > "\${output_path}.ids.sorted"
+        sort -t$'\t' -k1,1 "${db_descriptions}" > "${db_descriptions}.sorted"
 
-        # Join the sorted files on the first column, which is the target_id
-        # Then use awk to format the output with new header names and concatenate db_name
-        join -t, -1 4 -2 1 "\${output_path}.sorted" "${db_descriptions}.sorted" | \
-        awk -v db_name="${db_name}" 'BEGIN { OFS=","; print "query_id", "start_position", "end_position", db_name "_id", db_name "_bitScore", db_name "_A_rank", db_name "_B_rank", db_name "_score_type", db_name "_definition", db_name "_ID_for_distillate" }
+        # Perform the join operation
+        # The join field is the first field in db_descriptions and the sorted ids from the MMseqs output
+        join -1 1 -2 1 -t$'\t' "${db_descriptions}.sorted" "\${output_path}.ids.sorted" > "\${output_path}.tojoin"
+
+        # Combine the sorted original output with the join results and format it using awk
+        awk -v db_name="${db_name}" 'BEGIN { FS=","; OFS="," }
+        FNR==NR { a[\$1] = \$0; next }
         {
-            # Print the existing fields from MMseqs output
-            for (i=1; i<=5; i++) {
-                printf "%s,", \$i
-            }
-            # Print the new fields from db_descriptions file, skipping the first field which is the join field
-            for (i=2; i<=NF; i++) {
-                printf "%s", \$i (i==NF ? "\n" : ",")
-            }
-        }' > "\${output_path}.joined"
+            split(a[\$1], arr, ",")
+            print arr[1], arr[2], arr[3], arr[4], arr[5], \$2, \$3, \$4, \$5, \$6
+        }' "\${output_path}" "\${output_path}.tojoin" > "\${output_path}.joined"
+
+        # Move the final joined file to the intended output path
+        mv "\${output_path}.joined" "\${output_path}"
+    else
+        echo "Annotations file contains 'NULL', skipping join operation."
     fi
-
-    # Move the final joined file to the intended output path
-    mv "\${output_path}.joined" "\${output_path}"
-
-
+    
     """
 }
