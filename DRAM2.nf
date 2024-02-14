@@ -874,7 +874,7 @@ workflow {
             MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
             ch_merops_formatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
 
-            formattedOutputChannels.concat(ch_merops_formatted
+            formattedOutputChannels.concat(ch_merops_formatted)
         }
         if (annotate_uniref == 1){
             formattedOutputChannels.concat(ch_uniref_formatted)
