@@ -172,6 +172,7 @@ annotate_methyl = 0
 annotate_merops = 0
 annotate_vogdb = 0
 annotate_uniref = 0
+annotate_viral = 0
 
 if( params.use_kegg ){
     annotate_kegg = 1
@@ -211,6 +212,9 @@ if( params.use_merops ){
 }
 if( params.use_vog ){
     annotate_vogdb = 1
+}
+if( params.use_viral ){
+    annotate_viral = 1
 }
 
 /* Metabolism Database sets */
@@ -277,23 +281,28 @@ if( params.annotate ){
     ch_vog_list = file(params.vog_list)
     ch_camper_hmm_list = file(params.camper_hmm_list)
 
+    def annotate_list = "" 
+
     index_mmseqs = "0"
 
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
         index_mmseqs = "1"
+        annotate_list += "KEGG "
     } else {
         ch_kegg_db = []
     }
 
     if (annotate_kofam == 1) {
         ch_kofam_db = file(params.kofam_db).exists() ? file(params.kofam_db) : error("Error: If using --annotate, you must supply prebuilt databases. KOFAM database file not found at ${params.kofam_db}")
+        annotate_list += "Kofam "
     } else {
         ch_kofam_db = []
     }
 
     if (annotate_dbcan == 1) {
         ch_dbcan_db = file(params.dbcan_db).exists() ? file(params.dbcan_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN database file not found at ${params.dbcan_db}")
+        annotate_list += "dbCAN "
     } else {
         ch_dbcan_db = []
     }
@@ -301,6 +310,7 @@ if( params.annotate ){
     if (annotate_camper == 1) {
         ch_camper_db = file(params.camper_db).exists() ? file(params.camper_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER database file not found at ${params.camper_db}")
         index_mmseqs = "1"
+        annotate_list += "CAMPER "
     } else {
         ch_camper_db = []
     }
@@ -308,6 +318,7 @@ if( params.annotate ){
     if (annotate_merops == 1) {
         ch_merops_db = file(params.merops_db).exists() ? file(params.merops_db) : error("Error: If using --annotate, you must supply prebuilt databases. MEROPS database file not found at ${params.merops_db}")
         index_mmseqs = "1"
+        annotate_list += "MEROPS "
     } else {
         ch_merops_db = []
     }
@@ -315,52 +326,66 @@ if( params.annotate ){
     if (annotate_pfam == 1) {
         ch_pfam_db = file(params.pfam_db).exists() ? file(params.pfam_db) : error("Error: If using --annotate, you must supply prebuilt databases. PFAM database file not found at ${params.pfam_db}")
         index_mmseqs = "1"
+        annotate_list += "Pfam "
     } else {
         ch_pfam_db = []
     }
 
     if (annotate_heme == 1) {
         ch_heme_db = file(params.heme_db).exists() ? file(params.heme_db) : error("Error: If using --annotate, you must supply prebuilt databases. HEME database file not found at ${params.heme_db}")
+        annotate_list += "hene "
     } else {
         ch_heme_db = []
     }
 
     if (annotate_sulfur == 1) {
         ch_sulfur_db = file(params.sulfur_db).exists() ? file(params.sulfur_db) : error("Error: If using --annotate, you must supply prebuilt databases. SULURR database file not found at ${params.sulfur_db}")
+        annotate_list += "sulfur "
     } else {
         ch_sulfur_db = []
     }
 
     if (annotate_uniref == 1) {
         ch_uniref_db = file(params.uniref_db).exists() ? file(params.unirefdb) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
+        annotate_list += "UniRef "
     } else {
         ch_uniref_db = []
     }
 
     if (annotate_methyl == 1) {
         ch_methyl_db = file(params.methyl_db).exists() ? file(params.methyl_db) : error("Error: If using --annotate, you must supply prebuilt databases. METHYL database file not found at ${params.methyl_db}")
+        annotate_list += "methyl "
     } else {
         ch_methyl_db = []
     }
 
     if (annotate_fegenie == 1) {
         ch_fegenie_db = file(params.fegenie_db).exists() ? file(params.fegenie_db) : error("Error: If using --annotate, you must supply prebuilt databases. FEGENIE database file not found at ${params.fegenie_db}")
+        annotate_list += "FeGenie "
     } else {
         ch_fegenie_db = []
     }
 
     if (annotate_cant_hyd == 1) {
         ch_cant_hyd_db = file(params.cant_hyd_db).exists() ? file(params.cant_hyd_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD database file not found at ${params.cant_hyd_db}")
+        annotate_list += "CANT-HYD "
     } else {
         ch_cant_hyd_db = []
     }
 
     if (annotate_vogdb == 1) {
         ch_vogdb = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
+        annotate_list += "VOGDB "
     } else {
         ch_vogdb = []
     }
 
+    if (annotate_viral == 1) {
+        ch_viral = file(params.viral_db).exists() ? file(params.viral_db) : error("Error: If using --annotate, you must supply prebuilt databases. viral database file not found at ${params.viral_db}")
+        annotate_list += "viral "
+    } else {
+        ch_viral = []
+    }
     /* Custom user databases */
     //Not sure about this yet.
     // Consider: hmm format, mmseqs2 format....
@@ -688,7 +713,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             rename       : ${params.rename ? 'true' : 'false'}
             call genes   : ${params.call ? 'true' : 'false'}
             annotate     : ${params.annotate ? 'true' : 'false'}
-            databases    : 
+            databases    : ${annotate_list}
             distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
@@ -704,7 +729,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
             outdir       : ${params.outdir}
             threads      : ${params.threads}
             annotate     : ${params.annotate ? 'true' : 'false'}
-            databases    : 
+            databases    : ${annotate_list}
             distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
@@ -716,7 +741,7 @@ if( params.call && params.annotate && (params.distill_ecosystem !="" || params.d
     log.info """
             DRAM2 Nextflow
             ===================================
-            annotations       : ${params.annotations}
+            annotations  : ${params.annotations}
             outdir       : ${params.outdir}
             threads      : ${params.threads}
             tRNA         : ${params.trnas}
@@ -886,7 +911,10 @@ workflow {
             VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, ch_vog_list, ch_vog_formatter )
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
         }
-
+        if (annotate_viral == 1){
+            MMSEQS_SEARCH( ch_viral_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
+            ch_viral_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        }
 
         // Combine formatted annotations 
         // Collect all sample formatted_hits in prep for distill_summary 
@@ -896,6 +924,7 @@ workflow {
             .mix( ch_dbcan_formatted )
             .mix( ch_camper_formatted )
             .mix( ch_merops_formatted )
+            .mex( ch_viral_formatted )
             .collect()
             .set { collected_formatted_hits }
             //.mix( ch_kofam_formatted )
