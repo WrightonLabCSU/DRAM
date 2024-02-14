@@ -47,7 +47,10 @@ include { ADD_BIN_QUALITY                               } from './modules/annota
 
 include { MMSEQS_INDEX                                  } from './modules/annotate/mmseqs_index.nf'
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL         } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL          } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER         } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL         } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD        } from './modules/annotate/mmseqs_search.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
