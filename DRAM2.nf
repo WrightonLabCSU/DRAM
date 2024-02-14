@@ -166,7 +166,7 @@ annotate_dbcan = 0
 annotate_camper = 0
 annotate_fegenie = 0
 annotate_methyl = 0
-annotate_cant_hyd = 0
+annotate_canthyd = 0
 annotate_heme = 0
 annotate_sulfur = 0
 annotate_methyl = 0
@@ -197,7 +197,7 @@ if( params.use_methyl ){
     annotate_methyl = 1
 }
 if( params.use_cant_hyd ){
-    annotate_cant_hyd = 1
+    annotate_canthyd = 1
 }
 if( params.use_heme ){
     annotate_heme = 1
@@ -302,7 +302,8 @@ if( params.annotate ){
     }
 
     if (annotate_camper == 1) {
-        ch_camper_db = file(params.camper_db).exists() ? file(params.camper_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER database file not found at ${params.camper_db}")
+        ch_camper_hmm_db = file(params.camper_hmm_db).exists() ? file(params.camper_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER HMM database file not found at ${params.camper_hmm_db}")
+        ch_camper_mmseqs_db = file(params.camper_mmseqs_db).exists() ? file(params.camper__mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER MMseqs2 database file not found at ${params.camper_mmseqs_db}")
         index_mmseqs = "1"
         annotate_list += "CAMPER "
     }
@@ -344,8 +345,9 @@ if( params.annotate ){
         annotate_list += "FeGenie "
     }
 
-    if (annotate_cant_hyd == 1) {
-        ch_cant_hyd_db = file(params.cant_hyd_db).exists() ? file(params.cant_hyd_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD database file not found at ${params.cant_hyd_db}")
+    if (annotate_canthyd == 1) {
+        ch_canthyd_hmm_db = file(params.canthyd_hmm_db).exists() ? file(params.canthyd_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD HMM database file not found at ${params.canthyd_hmm_db}")
+        ch_canthyd_mmseqs_db = file(params.canthyd_mmseqs_db).exists() ? file(params.canthyd_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD MMseqs database file not found at ${params.canthyd_mmseqs_db}")
         annotate_list += "CANT-HYD "
     }
 
@@ -801,7 +803,6 @@ workflow {
             ch_mmseqs_query = MMSEQS_INDEX.out.mmseqs_index_out
         }
 
-
         // Annotate according to the user-specified databases 
         if( annotate_kegg == 1 ){
             //KEGG_INDEX ( params.kegg_mmseq_loc )
@@ -838,6 +839,7 @@ workflow {
         }
 
         if (annotate_camper == 1){
+            // HMM
             HMM_SEARCH_CAMPER ( ch_called_proteins, params.camper_e_value , ch_camper_db)
             ch_camper_hmms = HMM_SEARCH_CAMPER.out.hmm_search_out
 
@@ -845,9 +847,15 @@ workflow {
             ch_camper_parsed = PARSE_HMM_CAMPER.out.parsed_hmm
 
             CAMPER_HMM_FORMATTER ( ch_camper_parsed, params.camper_top_hit, ch_camper_hmm_list, ch_camper_formatter )
-            ch_camper_formatted = CAMPER_HMM_FORMATTER.out.camper_formatted_hits
+            ch_camper_hmm_formatted = CAMPER_HMM_FORMATTER.out.camper_formatted_hits
             
-            formattedOutputChannels = formattedOutputChannels.mix(ch_camper_formatted)
+            formattedOutputChannels = formattedOutputChannels.mix(ch_camper_hmm_formatted)
+
+            // MMseqs
+            MMSEQS_SEARCH_CAMPER( ch_mmseqs_query, ch_camper_mmseqs_db, params.bit_score_threshold, params.camper_name )
+            ch_camper_mmseqs_formatted = MMSEQS_SEARCH_CAMPER.out.mmseqs_search_formatted_out
+
+            formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
         }
 
         if (annotate_fegenie == 1){
@@ -855,11 +863,20 @@ workflow {
         }
 
         if (annotate_methyl == 1){
+            MMSEQS_SEARCH_METHYL( ch_mmseqs_query, ch_methyl_mmseqs_db, params.bit_score_threshold, params.methyl_name )
+            ch_methyl_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
+
             formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_formatted)
         }
 
-        if (annotate_cant_hyd == 1){
-            formattedOutputChannels = formattedOutputChannels.mix(ch_cant_hyd_formatted)
+        if (annotate_canthyd == 1){
+            // MMseqs
+            MMSEQS_SEARCH_CANTHYD( ch_mmseqs_query, ch_canthyd_mmseqs_db, params.bit_score_threshold, params.canthyd_name )
+            ch_canthyd_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD.out.mmseqs_search_formatted_out
+
+            formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_mmseqs_formatted)
+
+            //HMM
         }
 
         if (annotate_heme == 1){
@@ -876,9 +893,11 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
         }
+
         if (annotate_uniref == 1){
             formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
         }
+
         if (annotate_vogdb == 1){
             HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb_db )
             ch_vog_hmms = HMM_SEARCH_VOG.out.hmm_search_out
@@ -891,6 +910,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_vog_formatted)
         }
+
         if (annotate_viral == 1){
             MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
             ch_viral_formatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
@@ -898,42 +918,13 @@ workflow {
             formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)
         }
 
-
-
-        /*
-        // Combine formatted annotations 
-        Channel
-            .from(formattedOutputChannels)
-            .flatten()
-            .collect()
-            .set { collected_formatted_hits }
-        */
-
-
-        /*
-        Channel.empty()
-            .mix( ch_viral_formatted )
-            .mix( ch_dbcan_formatted )
-            .mix( ch_camper_formatted )
-            .mix( ch_merops_formatted )
-            .collect()
-            .set { collected_formatted_hits }
-            //.mix( ch_kofam_formatted )
-            //.mix( ch_vog_formatted )
-            //.mix( ch_dbcan_formatted )
-            //.mix( ch_camper_formatted )
-            //.mix( ch_merops_formatted )
-        */
-
         Channel.empty()
             .mix( formattedOutputChannels )
             .collect()
             .set { collected_formatted_hits }
 
         // COMBINE_ANNOTATIONS collects all annotations files across ALL databases 
-
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
-        //COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
         // Add Bin Quality to annotations 
