@@ -53,9 +53,10 @@ process MMSEQS_SEARCH {
 
     # Check if the annotations TSV content is not "NULL"
     if ! grep -q "^NULL\$" ${db_descriptions}; then
-        # Sort the MMseqs output by the column to join on (assuming it's the fourth column, which is `${db_name}_id`)
+        # Sort the MMseqs output by the column to join on
         cut -d',' -f4 "\${output_path}" | grep -v "${db_name}_id" | sort > "\${output_path}.ids.sorted"
-        sort -t\$'\t' -k1,1 "${db_descriptions}" > "${db_descriptions}.sorted"
+        # Sort the db_descriptions file by the first column, which is assumed to be separated by a tab
+        sort -t"$TAB" -k1,1 "${db_descriptions}" > "${db_descriptions}.sorted"
 
         # Perform the join operation
         # The join field is the first field in db_descriptions and the sorted ids from the MMseqs output
