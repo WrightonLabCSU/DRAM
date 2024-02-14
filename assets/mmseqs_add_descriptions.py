@@ -38,6 +38,15 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
             print("Descriptions file is NULL. Skipping processing.")
             df_mmseqs.to_csv(output_path, index=False)
 
+    # Load TSV file if needed
+    print("Loading TSV file...")
+    df_tsv = pd.read_csv(input_path, sep="\t")
+
+    # Further processing of TSV file...
+    # Example: print first few rows
+    print("First few rows of TSV file:")
+    print(df_tsv.head())
+
 if __name__ == "__main__":
     sample, db_name, descriptions_path, bit_score_threshold = sys.argv[1:]
     main(sample, db_name, descriptions_path, bit_score_threshold)
