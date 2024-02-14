@@ -15,66 +15,77 @@ process MMSEQS_SEARCH {
 
     script:
     """
-    ln -s ${mmseqs_database}/* ./
+    #!/usr/bin/env python
+    import os
+    import subprocess
+    import pandas as pd
+
+    # Create symbolic link to mmseqs database
+    os.symlink(str(mmseqs_database), './')
 
     # Create temporary directory
-    mkdir -p mmseqs_out/tmp
+    os.makedirs('mmseqs_out/tmp', exist_ok=True)
 
-    echo "Query Database: ${query_database}"
-    echo "Target Database: ${mmseqs_database}"
-
+    print(f"Query Database: {query_database}")
+    print(f"Target Database: {mmseqs_database}")
 
     # Perform search
-    mmseqs search query_database/${sample}.mmsdb ${db_name}.mmsdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+    subprocess.run([
+        'mmseqs', 'search', f'query_database/{sample}.mmsdb',
+        f'{db_name}.mmsdb', f'mmseqs_out/{sample}_{db_name}.mmsdb',
+        'mmseqs_out/tmp', '--threads', str(params.threads)
+    ])
 
     # Filter to only best hit
-    mmseqs filterdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/${sample}_${db_name}_tophit.mmsdb --extract-lines 1
+    subprocess.run([
+        'mmseqs', 'filterdb', f'mmseqs_out/{sample}_{db_name}.mmsdb',
+        f'mmseqs_out/{sample}_{db_name}_tophit.mmsdb', '--extract-lines', '1'
+    ])
 
     # Filter to only hits with minimum bit score
-    mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${bit_score_threshold} --threads ${params.threads} mmseqs_out/${sample}_${db_name}_tophit.mmsdb mmseqs_out/${sample}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb
+    subprocess.run([
+        'mmseqs', 'filterdb', '--filter-column', '2', '--comparison-operator', 'ge',
+        '--comparison-value', str(bit_score_threshold), '--threads', str(params.threads),
+        f'mmseqs_out/{sample}_{db_name}_tophit.mmsdb',
+        f'mmseqs_out/{sample}_{db_name}_tophit_minbitscore{bit_score_threshold}.mmsdb'
+    ])
 
     # Convert results to BLAST outformat 6
-    mmseqs convertalis query_database/${sample}.mmsdb ${db_name}.mmsdb  mmseqs_out/${sample}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
-    
+    subprocess.run([
+        'mmseqs', 'convertalis', f'query_database/{sample}.mmsdb',
+        f'{db_name}.mmsdb', f'mmseqs_out/{sample}_{db_name}_tophit_minbitscore{bit_score_threshold}.mmsdb',
+        f'mmseqs_out/{sample}_mmseqs_{db_name}.tsv', '--threads', str(params.threads)
+    ])
+
     # Define the input and output file paths
-    input_path="mmseqs_out/${sample}_mmseqs_${db_name}.tsv"
-    output_path="mmseqs_out/${sample}_mmseqs_${db_name}_formatted.csv"
+    input_path = f"mmseqs_out/{sample}_mmseqs_{db_name}.tsv"
+    output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
 
-    # Use awk to process the file and reorder the columns
-    awk -v db_name="${db_name}" 'BEGIN { OFS=","; print "query_id", "start_position", "end_position", db_name "_id", db_name "_bitScore" }
-    {
-        query_id=\$1
-        start_position=\$7
-        end_position=\$8
-        target_id=\$2
-        bitScore=\$12
-        print query_id, start_position, end_position, target_id, bitScore
-    }' "\${input_path}" > "\${output_path}"
+    # Process MMseqs output
+    df_mmseqs = pd.read_csv(input_path, sep='\t', header=None, names=['query_id', 'target_id', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore'])
+    df_mmseqs['start_position'] = df_mmseqs['qstart']
+    df_mmseqs['end_position'] = df_mmseqs['qend']
+    df_mmseqs[f"{db_name}_id"] = df_mmseqs['target_id']
+    df_mmseqs[f"{db_name}_bitScore"] = df_mmseqs['bitscore']
+    df_mmseqs_final = df_mmseqs[['query_id', 'start_position', 'end_position', f"{db_name}_id", f"{db_name}_bitScore"]]
 
-    # Check if the annotations TSV content is not "NULL"
-    if ! grep -q "^NULL\$" ${db_descriptions}; then
-        # Sort the MMseqs output by the column to join on
-        cut -d',' -f4 "\${output_path}" | grep -v "${db_name}_id" | sort > "\${output_path}.ids.sorted"
-        # Sort the db_descriptions file by the first column, which is assumed to be separated by a tab
-        sort -t"$TAB" -k1,1 "${db_descriptions}" > "${db_descriptions}.sorted"
-
-        # Perform the join operation
-        # The join field is the first field in db_descriptions and the sorted ids from the MMseqs output
-        join -1 1 -2 1 -t\$'\t' "${db_descriptions}.sorted" "\${output_path}.ids.sorted" > "\${output_path}.tojoin"
-
-        # Combine the sorted original output with the join results and format it using awk
-        awk -v db_name="${db_name}" 'BEGIN { FS=","; OFS="," }
-        FNR==NR { a[\$1] = \$0; next }
-        {
-            split(a[\$1], arr, ",")
-            print arr[1], arr[2], arr[3], arr[4], arr[5], \$2, \$3, \$4, \$5, \$6
-        }' "\${output_path}" "\${output_path}.tojoin" > "\${output_path}.joined"
-
-        # Move the final joined file to the intended output path
-        mv "\${output_path}.joined" "\${output_path}"
-    else
-        echo "Annotations file contains 'NULL', skipping join operation."
-    fi
+    # Check if db_descriptions contains 'NULL'
+    with open(str(db_descriptions), 'r') as file:
+        if file.read().strip() == 'NULL':
+            df_mmseqs_final.to_csv(output_path, index=False)
+        else:
+            # Reload db_descriptions to process it
+            file.seek(0)  # Reset file pointer to the beginning
+            df_descriptions = pd.read_csv(str(db_descriptions), sep='\t', header=None)
+            # Dynamically generate column names based on db_name and existing column indexes
+            desc_columns = [f"{db_name}_{i}" for i in range(1, len(df_descriptions.columns))]
+            df_descriptions.columns = ['target_id'] + desc_columns
+            
+            # Merge MMseqs output with descriptions based on the target_id
+            df_merged = pd.merge(df_mmseqs_final, df_descriptions, left_on=f"{db_name}_id", right_on='target_id', how='left')
+            # Drop the redundant 'target_id' column from the merge if needed
+            df_merged.drop(columns=['target_id'], inplace=True)
+            df_merged.to_csv(output_path, index=False)
 
     """
 }
