@@ -6,7 +6,7 @@ process MMSEQS_SEARCH {
     tuple val( sample ), path( query_database, stageAs: "query_database/" )
     path( mmseqs_database )
     val( bit_score_threshold)
-    file( additional_tsv )
+    file( db_descriptions )
     val( db_name )
 
     output:
@@ -50,6 +50,32 @@ process MMSEQS_SEARCH {
         bitScore=\$12
         print query_id, start_position, end_position, target_id, bitScore
     }' "\${input_path}" > "\${output_path}"
+
+    # Check if the annotations TSV content is not "NULL"
+    if ! grep -q "^NULL$" ${db_descriptions}; then
+        # Sort the MMseqs output and the additional descriptions file
+        sort -k1,1 "\${output_path}" > "\${output_path}.sorted"
+        sort -k1,1 "${db_descriptions}" > "${db_descriptions}.sorted"
+
+        # Join the sorted files on the first column, which is the target_id
+        # Then use awk to format the output with new header names and concatenate db_name
+        join -t, -1 4 -2 1 "\${output_path}.sorted" "${db_descriptions}.sorted" | \
+        awk -v db_name="${db_name}" 'BEGIN { OFS=","; print "query_id", "start_position", "end_position", db_name "_id", db_name "_bitScore", db_name "_A_rank", db_name "_B_rank", db_name "_score_type", db_name "_definition", db_name "_ID_for_distillate" }
+        {
+            # Print the existing fields from MMseqs output
+            for (i=1; i<=5; i++) {
+                printf "%s,", \$i
+            }
+            # Print the new fields from db_descriptions file, skipping the first field which is the join field
+            for (i=2; i<=NF; i++) {
+                printf "%s", \$i (i==NF ? "\n" : ",")
+            }
+        }' > "\${output_path}.joined"
+    fi
+
+    # Move the final joined file to the intended output path
+    mv "\${output_path}.joined" "\${output_path}"
+
 
     """
 }
