@@ -793,6 +793,8 @@ workflow {
     */
     if( params.annotate ){
 
+        def allFormattedHits = []
+
         // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
         if( index_mmseqs == "1" ){
             MMSEQS_INDEX( ch_called_proteins )
@@ -897,9 +899,6 @@ workflow {
         }
 
         // Combine formatted annotations 
-
-        def allFormattedHits = [ch_viral_formatted, ch_dbcan_formatted, ch_camper_formatted, ch_merops_formatted].findAll { it != null }
-
         Channel
             .from(formattedOutputChannels)
             .flatten()
