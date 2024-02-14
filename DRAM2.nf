@@ -45,8 +45,9 @@ include { RRNA_COLLECT                                  } from './modules/annota
 include { ADD_TAXA                                      } from './modules/annotate/add_taxa.nf'
 include { ADD_BIN_QUALITY                               } from './modules/annotate/add_bin_quality.nf'
 
-include { MMSEQS_SEARCH                                 } from './modules/annotate/mmseqs_search.nf'
 include { MMSEQS_INDEX                                  } from './modules/annotate/mmseqs_index.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from './modules/annotate/mmseqs_search.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
@@ -896,7 +897,7 @@ workflow {
 
         }
         if (annotate_merops == 1){
-            MMSEQS_SEARCH( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
+            MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
             ch_merops_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
         }
         if (annotate_uniref == 1){
@@ -913,7 +914,7 @@ workflow {
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
         }
         if (annotate_viral == 1){
-            MMSEQS_SEARCH( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
+            MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
             ch_viral_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
         }
 
