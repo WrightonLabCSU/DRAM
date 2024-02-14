@@ -289,103 +289,75 @@ if( params.annotate ){
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
         index_mmseqs = "1"
         annotate_list += "KEGG "
-    } else {
-        ch_kegg_db = []
     }
 
     if (annotate_kofam == 1) {
         ch_kofam_db = file(params.kofam_db).exists() ? file(params.kofam_db) : error("Error: If using --annotate, you must supply prebuilt databases. KOFAM database file not found at ${params.kofam_db}")
         annotate_list += "Kofam "
-    } else {
-        ch_kofam_db = []
     }
 
     if (annotate_dbcan == 1) {
         ch_dbcan_db = file(params.dbcan_db).exists() ? file(params.dbcan_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN database file not found at ${params.dbcan_db}")
         annotate_list += "dbCAN "
-    } else {
-        ch_dbcan_db = []
     }
 
     if (annotate_camper == 1) {
         ch_camper_db = file(params.camper_db).exists() ? file(params.camper_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER database file not found at ${params.camper_db}")
         index_mmseqs = "1"
         annotate_list += "CAMPER "
-    } else {
-        ch_camper_db = []
     }
 
     if (annotate_merops == 1) {
         ch_merops_db = file(params.merops_db).exists() ? file(params.merops_db) : error("Error: If using --annotate, you must supply prebuilt databases. MEROPS database file not found at ${params.merops_db}")
         index_mmseqs = "1"
         annotate_list += "MEROPS "
-    } else {
-        ch_merops_db = []
     }
 
     if (annotate_pfam == 1) {
         ch_pfam_db = file(params.pfam_db).exists() ? file(params.pfam_db) : error("Error: If using --annotate, you must supply prebuilt databases. PFAM database file not found at ${params.pfam_db}")
         index_mmseqs = "1"
         annotate_list += "Pfam "
-    } else {
-        ch_pfam_db = []
     }
 
     if (annotate_heme == 1) {
         ch_heme_db = file(params.heme_db).exists() ? file(params.heme_db) : error("Error: If using --annotate, you must supply prebuilt databases. HEME database file not found at ${params.heme_db}")
         annotate_list += "hene "
-    } else {
-        ch_heme_db = []
     }
 
     if (annotate_sulfur == 1) {
         ch_sulfur_db = file(params.sulfur_db).exists() ? file(params.sulfur_db) : error("Error: If using --annotate, you must supply prebuilt databases. SULURR database file not found at ${params.sulfur_db}")
         annotate_list += "sulfur "
-    } else {
-        ch_sulfur_db = []
     }
 
     if (annotate_uniref == 1) {
         ch_uniref_db = file(params.uniref_db).exists() ? file(params.unirefdb) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
         annotate_list += "UniRef "
-    } else {
-        ch_uniref_db = []
     }
 
     if (annotate_methyl == 1) {
         ch_methyl_db = file(params.methyl_db).exists() ? file(params.methyl_db) : error("Error: If using --annotate, you must supply prebuilt databases. METHYL database file not found at ${params.methyl_db}")
         annotate_list += "methyl "
-    } else {
-        ch_methyl_db = []
     }
 
     if (annotate_fegenie == 1) {
         ch_fegenie_db = file(params.fegenie_db).exists() ? file(params.fegenie_db) : error("Error: If using --annotate, you must supply prebuilt databases. FEGENIE database file not found at ${params.fegenie_db}")
         annotate_list += "FeGenie "
-    } else {
-        ch_fegenie_db = []
     }
 
     if (annotate_cant_hyd == 1) {
         ch_cant_hyd_db = file(params.cant_hyd_db).exists() ? file(params.cant_hyd_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD database file not found at ${params.cant_hyd_db}")
         annotate_list += "CANT-HYD "
-    } else {
-        ch_cant_hyd_db = []
     }
 
     if (annotate_vogdb == 1) {
         ch_vogdb_db = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
         annotate_list += "VOGDB "
-    } else {
-        ch_vogdb = []
     }
 
     if (annotate_viral == 1) {
         ch_viral_db = file(params.viral_db).exists() ? file(params.viral_db) : error("Error: If using --annotate, you must supply prebuilt databases. viral database file not found at ${params.viral_db}")
         index_mmseqs = "1"
         annotate_list += "viral "
-    } else {
-        ch_viral = []
     }
     /* Custom user databases */
     //Not sure about this yet.
@@ -833,8 +805,7 @@ workflow {
             //KEGG_INDEX ( params.kegg_mmseq_loc )
             //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc, params.kegg_index )
             //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc )
-        } else {
-            ch_kegg_formatted = []
+            formattedOutputChannels << ch_kegg_formatted
         }
 
         if( annotate_kofam == 1 ){
@@ -846,8 +817,8 @@ workflow {
 
             KOFAM_HMM_FORMATTER ( ch_kofam_parsed, params.kofam_top_hit, ch_kofam_list, ch_kofam_formatter )
             ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
-        } else {
-            ch_kofam_formatted = []
+
+            formattedOutputChannels << ch_kofam_formatted
         }
 
         if( annotate_dbcan == 1 ){
@@ -860,9 +831,8 @@ workflow {
 
             DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, ch_dbcan_fam, ch_dbcan_subfam, ch_dbcan_formatter )
             ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
-            
-        } else {
-            ch_dbcan_formatted = []
+
+            formattedOutputChannels << ch_dbcan_formatted
         }
 
         if (annotate_camper == 1){
@@ -875,32 +845,37 @@ workflow {
             CAMPER_HMM_FORMATTER ( ch_camper_parsed, params.camper_top_hit, ch_camper_hmm_list, ch_camper_formatter )
             ch_camper_formatted = CAMPER_HMM_FORMATTER.out.camper_formatted_hits
             
+            formattedOutputChannels << ch_camper_formatted
         }
 
         if (annotate_fegenie == 1){
+            formattedOutputChannels << ch_fegenie_formatted
         }
 
         if (annotate_methyl == 1){
+            formattedOutputChannels << ch_methyl_formatted
         }
 
         if (annotate_cant_hyd == 1){
+            formattedOutputChannels << ch_cant_hyd_formatted
         }
 
         if (annotate_heme == 1){
+            formattedOutputChannels << ch_heme_formatted
         }
 
         if (annotate_sulfur == 1){
+            formattedOutputChannels << ch_sulfur_formatted
         }
 
-        if (annotate_methyl == 1){
-
-        }
         if (annotate_merops == 1){
             MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
             ch_merops_formatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
+
+            formattedOutputChannels << ch_merops_formatted
         }
         if (annotate_uniref == 1){
-
+            formattedOutputChannels << ch_uniref_formatted
         }
         if (annotate_vogdb == 1){
             HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb_db )
@@ -911,15 +886,29 @@ workflow {
 
             VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, ch_vog_list, ch_vog_formatter )
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
+
+            formattedOutputChannels << ch_vog_formatted
         }
         if (annotate_viral == 1){
             MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
             ch_viral_formatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
+
+            formattedOutputChannels << ch_viral_formatted
         }
 
         // Combine formatted annotations 
-        // Collect all sample formatted_hits in prep for distill_summary 
-        // Need to figure out how to handle when not all channels are here.
+
+        def allFormattedHits = [ch_viral_formatted, ch_dbcan_formatted, ch_camper_formatted, ch_merops_formatted].findAll { it != null }
+
+        Channel
+            .from(formattedOutputChannels)
+            .flatten()
+            .collect()
+            .set { collected_formatted_hits }
+
+
+
+        /*
         Channel.empty()
             .mix( ch_viral_formatted )
             .mix( ch_dbcan_formatted )
@@ -932,7 +921,7 @@ workflow {
             //.mix( ch_dbcan_formatted )
             //.mix( ch_camper_formatted )
             //.mix( ch_merops_formatted )
-            
+        */
         // COMBINE_ANNOTATIONS collects all annotations files across ALL databases 
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
