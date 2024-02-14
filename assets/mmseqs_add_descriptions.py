@@ -49,4 +49,8 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
 
 if __name__ == "__main__":
     sample, db_name, descriptions_path, bit_score_threshold = sys.argv[1:]
+    print(f"Sample: {sample}")
+    print(f"Database Name: {db_name}")
+    print(f"Descriptions Path: {descriptions_path}")
+    print(f"Bit Score Threshold: {bit_score_threshold}")
     main(sample, db_name, descriptions_path, bit_score_threshold)
