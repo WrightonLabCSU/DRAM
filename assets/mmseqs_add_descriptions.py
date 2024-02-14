@@ -25,7 +25,7 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
     # Check if db_descriptions is not 'NULL'
     print("Checking descriptions...")
     with open(descriptions_path, 'r') as file:
-        first_line = file.readline().strip()
+        first_line = next(file).strip()
         print("First line of descriptions:", first_line)
         if first_line.upper() != 'NULL':
             print("Descriptions file is not NULL. Processing...")
