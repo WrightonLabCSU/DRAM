@@ -840,7 +840,7 @@ workflow {
 
         if (annotate_camper == 1){
             // HMM
-            HMM_SEARCH_CAMPER ( ch_called_proteins, params.camper_e_value , ch_camper_db)
+            HMM_SEARCH_CAMPER ( ch_called_proteins, params.camper_e_value , ch_camper_hmm_db)
             ch_camper_hmms = HMM_SEARCH_CAMPER.out.hmm_search_out
 
             PARSE_HMM_CAMPER ( ch_camper_hmms, ch_parse_hmmsearch )
