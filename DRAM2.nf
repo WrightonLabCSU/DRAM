@@ -912,7 +912,7 @@ workflow {
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
         }
         if (annotate_viral == 1){
-            MMSEQS_SEARCH( ch_viral_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
+            MMSEQS_SEARCH( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
             ch_viral_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
         }
 
