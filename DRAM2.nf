@@ -876,7 +876,7 @@ workflow {
 
         if (annotate_canthyd == 1){
             // MMseqs
-            MMSEQS_SEARCH_CANTHYD( ch_mmseqs_query, ch_canthyd_mmseqs_db, params.bit_score_threshold, canthyd_mmseqs_list, params.canthyd_name )
+            MMSEQS_SEARCH_CANTHYD( ch_mmseqs_query, ch_canthyd_mmseqs_db, params.bit_score_threshold, params.canthyd_mmseqs_list, params.canthyd_name )
             ch_canthyd_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_mmseqs_formatted)
