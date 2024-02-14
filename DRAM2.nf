@@ -340,6 +340,7 @@ if( params.annotate ){
 
     if (annotate_methyl == 1) {
         ch_methyl_db = file(params.methyl_db).exists() ? file(params.methyl_db) : error("Error: If using --annotate, you must supply prebuilt databases. METHYL database file not found at ${params.methyl_db}")
+        index_mmseqs = "1"
         annotate_list += "methyl "
     }
 
@@ -351,6 +352,7 @@ if( params.annotate ){
     if (annotate_canthyd == 1) {
         ch_canthyd_hmm_db = file(params.canthyd_hmm_db).exists() ? file(params.canthyd_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD HMM database file not found at ${params.canthyd_hmm_db}")
         ch_canthyd_mmseqs_db = file(params.canthyd_mmseqs_db).exists() ? file(params.canthyd_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD MMseqs database file not found at ${params.canthyd_mmseqs_db}")
+        index_mmseqs = "1"
         annotate_list += "CANT-HYD "
     }
 
