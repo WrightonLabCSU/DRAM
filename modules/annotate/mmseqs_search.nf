@@ -37,7 +37,7 @@ process MMSEQS_SEARCH {
     mmseqs convertalis query_database/${sample}.mmsdb ${db_name}.mmsdb  mmseqs_out/${sample}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
     
     # Call Python script for further processing
-    python process_mmseqs_output.py "${sample}" "${db_name}" "${db_descriptions}" "${bit_score_threshold}"
+    python ${ch_add_db_descriptions} "${sample}" "${db_name}" "${db_descriptions}" "${bit_score_threshold}"
     
     """
 }
