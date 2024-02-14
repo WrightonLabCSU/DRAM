@@ -31,14 +31,17 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
         print("Descriptions file headers:")
         headers = file.readline().strip().split('\t')
         print(headers)
-        if first_line.upper() != 'NULL':
+        if not headers or first_line.upper() != 'NULL':
             print("Descriptions file is not NULL. Processing...")
             file.seek(0)
             df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
+            print("Descriptions loaded successfully.")
+            print("Contents of descriptions file:")
+            print(df_descriptions)
             # Process descriptions and merge...
             # Rest of the processing as before...
         else:
-            print("Descriptions file is NULL. Skipping processing.")
+            print("Descriptions file is NULL or empty. Skipping processing.")
             df_mmseqs.to_csv(output_path, index=False)
 
     # Load TSV file if needed
