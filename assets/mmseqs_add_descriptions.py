@@ -28,10 +28,13 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
     with open(descriptions_path, 'r') as file:
         first_line = file.readline().strip()
         print(f"First line of descriptions: {first_line}")
+        print("Descriptions file headers:")
+        headers = file.readline().strip().split('\t')
+        print(headers)
         if first_line.upper() != 'NULL':
             print("Descriptions file is not NULL. Processing...")
+            file.seek(0)
             df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
-            print("Descriptions loaded successfully.")
             # Process descriptions and merge...
             # Rest of the processing as before...
         else:
