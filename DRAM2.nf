@@ -374,14 +374,14 @@ if( params.annotate ){
     }
 
     if (annotate_vogdb == 1) {
-        ch_vogdb = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
+        ch_vogdb_db = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
         annotate_list += "VOGDB "
     } else {
         ch_vogdb = []
     }
 
     if (annotate_viral == 1) {
-        ch_viral = file(params.viral_db).exists() ? file(params.viral_db) : error("Error: If using --annotate, you must supply prebuilt databases. viral database file not found at ${params.viral_db}")
+        ch_viral_db = file(params.viral_db).exists() ? file(params.viral_db) : error("Error: If using --annotate, you must supply prebuilt databases. viral database file not found at ${params.viral_db}")
         index_mmseqs = "1"
         annotate_list += "viral "
     } else {
@@ -903,7 +903,7 @@ workflow {
 
         }
         if (annotate_vogdb == 1){
-            HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb )
+            HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb_db )
             ch_vog_hmms = HMM_SEARCH_VOG.out.hmm_search_out
 
             PARSE_HMM_VOG ( ch_vog_hmms, ch_parse_hmmsearch )
