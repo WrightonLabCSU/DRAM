@@ -30,7 +30,6 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
         print(f"First line of descriptions: {first_line}")
         if first_line.upper() != 'NULL':
             print("Descriptions file is not NULL. Processing...")
-            file.seek(0)
             df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
             # Process descriptions and merge...
             # Rest of the processing as before...
@@ -49,8 +48,4 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
 
 if __name__ == "__main__":
     sample, db_name, descriptions_path, bit_score_threshold = sys.argv[1:]
-    print(f"Sample: {sample}")
-    print(f"Database Name: {db_name}")
-    print(f"Descriptions Path: {descriptions_path}")
-    print(f"Bit Score Threshold: {bit_score_threshold}")
     main(sample, db_name, descriptions_path, bit_score_threshold)
