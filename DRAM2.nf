@@ -898,13 +898,16 @@ workflow {
             formattedOutputChannels << ch_viral_formatted
         }
 
+
+        formattedOutputChannels.view()
+        /*
         // Combine formatted annotations 
         Channel
             .from(formattedOutputChannels)
             .flatten()
             .collect()
             .set { collected_formatted_hits }
-
+        */
 
 
         /*
