@@ -807,7 +807,7 @@ workflow {
             //KEGG_INDEX ( params.kegg_mmseq_loc )
             //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc, params.kegg_index )
             //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc )
-            formattedOutputChannels = formattedOutputChannels.concat(ch_kegg_formatted)
+            formattedOutputChannels << ch_kegg_formatted
         }
 
         if( annotate_kofam == 1 ){
@@ -818,9 +818,9 @@ workflow {
             ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
             KOFAM_HMM_FORMATTER ( ch_kofam_parsed, params.kofam_top_hit, ch_kofam_list, ch_kofam_formatter )
-            //ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
+            ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
 
-            formattedOutputChannels = formattedOutputChannels.concat(KOFAM_HMM_FORMATTER.out.kofam_formatted_hits)
+            formattedOutputChannels << ch_kofam_formatted
         }
 
         if( annotate_dbcan == 1 ){
@@ -832,9 +832,9 @@ workflow {
             ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
             DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, ch_dbcan_fam, ch_dbcan_subfam, ch_dbcan_formatter )
-            //ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
+            ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
 
-            formattedOutputChannels = formattedOutputChannels.concat(DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits)
+            formattedOutputChannels << ch_dbcan_formatted
         }
 
         if (annotate_camper == 1){
@@ -845,39 +845,39 @@ workflow {
             ch_camper_parsed = PARSE_HMM_CAMPER.out.parsed_hmm
 
             CAMPER_HMM_FORMATTER ( ch_camper_parsed, params.camper_top_hit, ch_camper_hmm_list, ch_camper_formatter )
-            //ch_camper_formatted = CAMPER_HMM_FORMATTER.out.camper_formatted_hits
+            ch_camper_formatted = CAMPER_HMM_FORMATTER.out.camper_formatted_hits
             
-            formattedOutputChannels = formattedOutputChannels.concat(CAMPER_HMM_FORMATTER.out.camper_formatted_hits)
+            formattedOutputChannels << ch_camper_formatted
         }
 
         if (annotate_fegenie == 1){
-            formattedOutputChannels = formattedOutputChannels.concat(ch_fegenie_formatted)
+            formattedOutputChannels << ch_fegenie_formatted
         }
 
         if (annotate_methyl == 1){
-            formattedOutputChannels = formattedOutputChannels.concat(ch_methyl_formatted)
+            formattedOutputChannels << ch_methyl_formatted
         }
 
         if (annotate_cant_hyd == 1){
-            formattedOutputChannels = formattedOutputChannels.concat(ch_cant_hyd_formatted)
+            formattedOutputChannels << ch_cant_hyd_formatted
         }
 
         if (annotate_heme == 1){
-            formattedOutputChannels = formattedOutputChannels.concat(ch_heme_formatted)
+            formattedOutputChannels << ch_heme_formatted
         }
 
         if (annotate_sulfur == 1){
-            formattedOutputChannels = formattedOutputChannels.concat(ch_sulfur_formatted)
+            formattedOutputChannels << ch_sulfur_formatted
         }
 
         if (annotate_merops == 1){
             MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
             ch_merops_formatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
 
-            formattedOutputChannels = formattedOutputChannels.concat(MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out)
+            formattedOutputChannels << ch_merops_formatted
         }
         if (annotate_uniref == 1){
-            formattedOutputChannels = formattedOutputChannels.concat(ch_uniref_formatted)
+            formattedOutputChannels << ch_uniref_formatted
         }
         if (annotate_vogdb == 1){
             HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb_db )
@@ -887,19 +887,29 @@ workflow {
             ch_vog_parsed = PARSE_HMM_VOG.out.parsed_hmm
 
             VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, ch_vog_list, ch_vog_formatter )
-            //ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
+            ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
 
-            formattedOutputChannels = formattedOutputChannels.concat(VOG_HMM_FORMATTER.out.vog_formatted_hits)
+            formattedOutputChannels << ch_vog_formatted
         }
         if (annotate_viral == 1){
             MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
-            //ch_viral_formatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
+            ch_viral_formatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
 
-            formattedOutputChannels = formattedOutputChannels.concat(MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out)
+            formattedOutputChannels << ch_viral_formatted
         }
 
 
         formattedOutputChannels.view()
+
+        if (formattedOutputChannels.size() > 0) {
+            def combinedFormattedOutputs = formattedOutputChannels[0]
+            formattedOutputChannels.drop(1).each { ch ->
+                combinedFormattedOutputs = combinedFormattedOutputs.concat(ch)
+            }
+            combinedFormattedOutputs.into { finalOutputChannel }
+        }
+        finalOutputChannel.view()
+
         /*
         // Combine formatted annotations 
         Channel
