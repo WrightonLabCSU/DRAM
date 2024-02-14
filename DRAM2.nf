@@ -793,7 +793,7 @@ workflow {
     */
     if( params.annotate ){
 
-        def formattedOutputChannels.empty()
+        def formattedOutputChannels
 
         // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
         if( index_mmseqs == "1" ){
