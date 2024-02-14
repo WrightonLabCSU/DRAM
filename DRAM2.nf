@@ -47,7 +47,7 @@ include { ADD_BIN_QUALITY                               } from './modules/annota
 
 include { MMSEQS_INDEX                                  } from './modules/annotate/mmseqs_index.nf'
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL         } from './modules/annotate/mmseqs_search.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
@@ -263,6 +263,7 @@ if( params.use_dbset == "adjectives_set" ){
 
 //This is where we will check, for example, if --annotate is provided and if it is, create 
 //  channels for the various annotation databases
+    def annotate_list = "" 
 
 if( params.annotate ){
     //This is just temporary - want these in the containers eventually
@@ -281,8 +282,6 @@ if( params.annotate ){
     ch_dbcan_subfam = file(params.dbcan_subfam_activities)
     ch_vog_list = file(params.vog_list)
     ch_camper_hmm_list = file(params.camper_hmm_list)
-
-    def annotate_list = "" 
 
     index_mmseqs = "0"
 
