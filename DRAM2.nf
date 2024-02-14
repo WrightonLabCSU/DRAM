@@ -897,7 +897,7 @@ workflow {
         }
         if (annotate_merops == 1){
             MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.merops_name )
-            ch_merops_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+            ch_merops_formatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
         }
         if (annotate_uniref == 1){
 
@@ -914,7 +914,7 @@ workflow {
         }
         if (annotate_viral == 1){
             MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.viral_name )
-            ch_viral_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+            ch_viral_formatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
         }
 
         // Combine formatted annotations 
