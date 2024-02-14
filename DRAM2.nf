@@ -928,8 +928,8 @@ workflow {
         */
         // COMBINE_ANNOTATIONS collects all annotations files across ALL databases 
 
-        /*
-        COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
+        COMBINE_ANNOTATIONS( formattedOutputChannels, ch_combine_annot_script )
+        //COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
         ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
         // Add Bin Quality to annotations 
@@ -964,7 +964,7 @@ workflow {
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
 
-        */
+        
 
     }
     /*
