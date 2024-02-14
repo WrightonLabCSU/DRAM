@@ -303,7 +303,7 @@ if( params.annotate ){
 
     if (annotate_camper == 1) {
         ch_camper_hmm_db = file(params.camper_hmm_db).exists() ? file(params.camper_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER HMM database file not found at ${params.camper_hmm_db}")
-        ch_camper_mmseqs_db = file(params.camper_mmseqs_db).exists() ? file(params.camper__mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER MMseqs2 database file not found at ${params.camper_mmseqs_db}")
+        ch_camper_mmseqs_db = file(params.camper_mmseqs_db).exists() ? file(params.camper_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER MMseqs2 database file not found at ${params.camper_mmseqs_db}")
         index_mmseqs = "1"
         annotate_list += "CAMPER "
     }
