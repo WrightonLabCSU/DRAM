@@ -899,7 +899,7 @@ workflow {
         }
 
 
-        formattedOutputChannels.view()
+        //formattedOutputChannels.view()
 
         if (formattedOutputChannels.size() > 0) {
             def combinedFormattedOutputs = formattedOutputChannels[0]
