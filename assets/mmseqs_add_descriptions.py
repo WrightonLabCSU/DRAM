@@ -31,6 +31,7 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
         if first_line.upper() != 'NULL':
             print("Descriptions file is not NULL. Processing...")
             df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
+            print("Descriptions loaded successfully.")
             # Process descriptions and merge...
             # Rest of the processing as before...
         else:
