@@ -24,14 +24,15 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
 
     # Load the descriptions file
     if descriptions_path != "NULL":
-        df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
+        df_descriptions = pd.read_csv(descriptions_path, sep='\t')
+        
+        # Print the original column names from db_descriptions.tsv
+        print("Original column names from db_descriptions.tsv:")
+        print(df_descriptions.columns)
+
         column_names = list(df_descriptions.columns)
         matching_column = column_names[0]
         df_descriptions.columns = [matching_column] + [f'{db_name}_{col}' for col in column_names[1:]]
-
-        # Print the original column names before renaming
-        print("Original column names from db_descriptions.tsv:")
-        print(column_names[1:])
 
         # Merge the DataFrames
         df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on=matching_column, how='left')
