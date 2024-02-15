@@ -29,6 +29,10 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
         matching_column = column_names[0]
         df_descriptions.columns = [matching_column] + [f'{db_name}_{col}' for col in column_names[1:]]
 
+        # Print the original column names before renaming
+        print("Original column names from db_descriptions.tsv:")
+        print(column_names[1:])
+
         # Merge the DataFrames
         df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on=matching_column, how='left')
         
