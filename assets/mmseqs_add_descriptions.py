@@ -7,6 +7,10 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
     df_mmseqs = pd.read_csv(mmseqs_path, sep='\t', header=None)
     df_mmseqs.columns = ['query_id', 'subject_id', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore']
 
+    # Rename and select columns
+    df_mmseqs = df_mmseqs[['query_id', 'qstart', 'qend', 'subject_id', 'bitscore']]
+    df_mmseqs.columns = ['query_id', 'start_position', 'end_position', 'merops_id', 'merops_bitScore']
+
     # Load the descriptions file
     if descriptions_path != "NULL":
         df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
