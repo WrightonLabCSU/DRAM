@@ -32,6 +32,15 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
         # Merge the DataFrames
         df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on='gene_id', how='left')
         
+        # Drop the gene_id column
+        df_merged.drop(columns=['gene_id'], inplace=True)
+
+        # Rename the additional columns with the correct prefix
+        additional_columns = list(df_descriptions.columns)[1:]
+        additional_columns_renamed = [f'{db_name}_{col}' for col in additional_columns]
+        rename_dict = dict(zip(additional_columns, additional_columns_renamed))
+        df_merged.rename(columns=rename_dict, inplace=True)
+        
         # Save the merged DataFrame to CSV
         output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
         df_merged.to_csv(output_path, index=False)
