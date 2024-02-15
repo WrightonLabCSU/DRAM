@@ -1,5 +1,7 @@
 process MMSEQS_SEARCH {
 
+    errorStrategy 'finish'
+
     tag { sample }
 
     input:
@@ -11,8 +13,7 @@ process MMSEQS_SEARCH {
     file( ch_add_db_descriptions )
 
     output:
-    tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}.tsv"), emit: mmseqs_search_out
-    tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out
+    tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
 
     script:
     """
