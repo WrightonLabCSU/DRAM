@@ -30,17 +30,20 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
         print(f"First line of descriptions: {first_line}")
         if first_line.upper() != 'NULL':
             print("Descriptions file is not NULL. Processing...")
-            # Read headers separately
-            headers = file.readline().strip().split('\t')
-            print("Descriptions file headers:")
-            print(headers)
-            file.seek(0)
-            df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None, skiprows=1)
-            print("Descriptions loaded successfully.")
-            print("Contents of descriptions file:")
-            print(df_descriptions)
-            # Process descriptions and merge...
-            # Rest of the processing as before...
+            # Read headers if the first line is not empty
+            if first_line:
+                headers = first_line.split('\t')
+                print("Descriptions file headers:")
+                print(headers)
+                df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None, skiprows=1)
+                print("Descriptions loaded successfully.")
+                print("Contents of descriptions file:")
+                print(df_descriptions)
+                # Process descriptions and merge...
+                # Rest of the processing as before...
+            else:
+                print("Descriptions file is empty. Skipping processing.")
+                df_mmseqs.to_csv(output_path, index=False)
         else:
             print("Descriptions file is NULL. Skipping processing.")
             df_mmseqs.to_csv(output_path, index=False)
