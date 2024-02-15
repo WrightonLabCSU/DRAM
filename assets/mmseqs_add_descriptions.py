@@ -24,6 +24,8 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
 
     print("Processing MMseqs output...")
 
+    print("Descriptions file path:", descriptions_path)
+
     # Check if db_descriptions is not 'NULL'
     with open(descriptions_path, 'r') as file:
         first_line = file.readline().strip()
