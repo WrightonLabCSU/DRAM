@@ -25,7 +25,9 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
     # Load the descriptions file
     if descriptions_path != "NULL":
         df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
-        df_descriptions.columns = ['gene_id'] + [f'{db_name}_{i}' for i in range(1, len(df_descriptions.columns))]
+        column_names = list(df_descriptions.columns)
+        column_names[0] = 'gene_id'
+        df_descriptions.columns = column_names
 
         # Merge the DataFrames
         df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on='gene_id', how='left')
