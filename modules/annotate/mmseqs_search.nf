@@ -6,7 +6,7 @@ process MMSEQS_SEARCH {
     tuple val( sample ), path( query_database, stageAs: "query_database/" )
     path( mmseqs_database )
     val( bit_score_threshold)
-    file( db_descriptions, stageAs: "db_descriptions.tsv" )
+    path( db_descriptions, stageAs: "db_descriptions.tsv" )
     val( db_name )
     file( ch_add_db_descriptions )
 
