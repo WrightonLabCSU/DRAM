@@ -11,15 +11,16 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
 
     # Determine the column positions
     query_id_index = 0
+    gene_id_index = 1
     start_position_index = 6
     end_position_index = 7
     bitscore_index = 11
 
     # Read the file with correct column positions
-    df_mmseqs = pd.read_csv(mmseqs_path, sep='\t', header=None, usecols=[query_id_index, start_position_index, end_position_index, bitscore_index])
+    df_mmseqs = pd.read_csv(mmseqs_path, sep='\t', header=None, usecols=[query_id_index, gene_id_index, start_position_index, end_position_index, bitscore_index])
     
     # Rename the columns accordingly
-    df_mmseqs.columns = ['query_id', 'start_position', 'end_position', f'{db_name}_bitScore']
+    df_mmseqs.columns = ['query_id', f'{db_name}_id', 'start_position', 'end_position', f'{db_name}_bitScore']
 
     # Load the descriptions file
     if descriptions_path != "NULL":
