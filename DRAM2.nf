@@ -287,6 +287,8 @@ if( params.annotate ){
     ch_vog_list = file(params.vog_list)
     ch_camper_hmm_list = file(params.camper_hmm_list)
 
+    ch_dummy_sheet = file(params.distill_dummy_sheet)
+
     index_mmseqs = "0"
 
     if (annotate_kegg == 1) {
@@ -355,6 +357,7 @@ if( params.annotate ){
         ch_canthyd_mmseqs_db = file(params.canthyd_mmseqs_db).exists() ? file(params.canthyd_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD MMseqs database file not found at ${params.canthyd_mmseqs_db}")
         index_mmseqs = "1"
         annotate_list += "CANT-HYD "
+        ch_canthyd_mmseqs_list = file(params.canthyd_mmseqs_list)
     }
 
     if (annotate_vogdb == 1) {
@@ -869,7 +872,7 @@ workflow {
         }
 
         if (annotate_methyl == 1){
-            MMSEQS_SEARCH_METHYL( ch_mmseqs_query, ch_methyl_db, params.bit_score_threshold, params.distill_dummy_sheet, params.methyl_name )
+            MMSEQS_SEARCH_METHYL( ch_mmseqs_query, ch_methyl_db, params.bit_score_threshold, ch_dummy_sheet, params.methyl_name )
             ch_methyl_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_mmseqs_formatted)
@@ -877,7 +880,7 @@ workflow {
 
         if (annotate_canthyd == 1){
             // MMseqs
-            MMSEQS_SEARCH_CANTHYD( ch_mmseqs_query, ch_canthyd_mmseqs_db, params.bit_score_threshold, params.canthyd_mmseqs_list, params.canthyd_name, ch_mmseqs_script )
+            MMSEQS_SEARCH_CANTHYD( ch_mmseqs_query, ch_canthyd_mmseqs_db, params.bit_score_threshold, ch_canthyd_mmseqs_list, params.canthyd_name, ch_mmseqs_script )
             ch_canthyd_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_mmseqs_formatted)
@@ -894,7 +897,7 @@ workflow {
         }
 
         if (annotate_merops == 1){
-            MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, params.distill_dummy_sheet, params.merops_name, ch_mmseqs_script )
+            MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, ch_dummy_sheet, params.merops_name, ch_mmseqs_script )
             ch_merops_formatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
