@@ -873,7 +873,7 @@ workflow {
         }
 
         if (annotate_methyl == 1){
-            MMSEQS_SEARCH_METHYL( ch_mmseqs_query, ch_methyl_db, params.bit_score_threshold, ch_dummy_sheet, params.methyl_name )
+            MMSEQS_SEARCH_METHYL( ch_mmseqs_query, ch_methyl_db, params.bit_score_threshold, ch_dummy_sheet, params.methyl_name, ch_mmseqs_script )
             ch_methyl_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_mmseqs_formatted)
