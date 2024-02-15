@@ -25,34 +25,33 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
     # Load the descriptions file
     if descriptions_path != "NULL":
         df_descriptions = pd.read_csv(descriptions_path, sep='\t')
-        
+
         # Print the original column names from db_descriptions.tsv
         print("Original column names from db_descriptions.tsv:")
         print(df_descriptions.columns)
 
-        column_names = list(df_descriptions.columns)
-        matching_column = column_names[0]
-        df_descriptions.columns = [matching_column] + [f'{db_name}_{col}' for col in column_names[1:]]
-
-        # Merge the DataFrames
-        df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on=matching_column, how='left')
-        
-        # Drop the matching column
-        df_merged.drop(columns=[matching_column], inplace=True)
+        matching_column = df_descriptions.columns[0]
+        additional_columns = list(df_descriptions.columns[1:])  # Exclude the first column (gene_id)
 
         # Rename the additional columns from db_descriptions.tsv
-        additional_columns = df_descriptions.columns[1:]  # Exclude the first column (gene_id)
         renamed_additional_columns = [f"{db_name}_{col}" for col in additional_columns]
 
         # Create a dictionary mapping original column names to renamed column names
         column_mapping = dict(zip(additional_columns, renamed_additional_columns))
 
-        # Rename the columns in the merged DataFrame
+        # Merge the DataFrames
+        df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on=matching_column, how='left')
+
+        # Drop the matching column and gene_id column
+        df_merged.drop(columns=[matching_column, 'gene_id'], inplace=True)
+
+        # Rename the additional columns in the merged DataFrame
         df_merged.rename(columns=column_mapping, inplace=True)
-                
+
         # Save the merged DataFrame to CSV
         output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
         df_merged.to_csv(output_path, index=False)
+
 
 if __name__ == "__main__":
     # Extract command-line arguments
