@@ -32,7 +32,7 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
 
         column_names = list(df_descriptions.columns)
         matching_column = column_names[0]
-        df_descriptions.columns = [matching_column] + [f'{db_name}_{col}' for col in column_names[1:]]
+        df_descriptions.columns = [matching_column] + [f'{col}' for col in column_names[1:]]
 
         # Merge the DataFrames
         df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on=matching_column, how='left')
