@@ -26,14 +26,14 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
     if descriptions_path != "NULL":
         df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
         column_names = list(df_descriptions.columns)
-        column_names[0] = 'gene_id'
-        df_descriptions.columns = column_names
+        matching_column = column_names[0]
+        df_descriptions.columns = [matching_column] + [f'{db_name}_{col}' for col in column_names[1:]]
 
         # Merge the DataFrames
-        df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on='gene_id', how='left')
+        df_merged = pd.merge(df_mmseqs, df_descriptions, left_on=f"{db_name}_id", right_on=matching_column, how='left')
         
-        # Drop the gene_id column
-        df_merged.drop(columns=['gene_id'], inplace=True)
+        # Drop the matching column
+        df_merged.drop(columns=[matching_column], inplace=True)
 
         # Rename the additional columns with the correct prefix
         additional_columns = list(df_descriptions.columns)[1:]
