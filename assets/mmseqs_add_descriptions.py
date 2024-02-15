@@ -1,58 +1,36 @@
-import sys
 import pandas as pd
 
 def main(sample, db_name, descriptions_path, bit_score_threshold):
-    # Define file paths
-    input_path = f"mmseqs_out/{sample}_mmseqs_{db_name}.tsv"
-    output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
+    # Read the output TSV file
+    tsv_path = f"mmseqs_out/{sample}_mmseqs_{db_name}.tsv"
+    df_mmseqs = pd.read_csv(tsv_path, sep='\t', header=None)
 
-    print(f"Input path: {input_path}")
-    print(f"Output path: {output_path}")
+    # Rename columns
+    df_mmseqs.columns = ['query_id', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore']
 
-    # Load MMseqs output into DataFrame
-    mmseqs_columns = ['query_id', 'target_id', 'pident', 'alnlen', 'mismatch', 'gapopen', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore']
-    df_mmseqs = pd.read_csv(input_path, sep='\t', names=mmseqs_columns)
+    # Select and rename desired columns
+    df_mmseqs = df_mmseqs[['query_id', 'qstart', 'qend', 'sseqid', 'bitscore']]
+    df_mmseqs.columns = ['query_id', 'start_position', 'end_position', 'merops_id', 'merops_bitScore']
 
-    print("Loading MMseqs output...")
-
-    # Add additional columns for start and end positions, and format target_id with db_name
-    df_mmseqs['start_position'] = df_mmseqs['qstart']
-    df_mmseqs['end_position'] = df_mmseqs['qend']
-    df_mmseqs[f"{db_name}_id"] = df_mmseqs['target_id']
-    df_mmseqs[f"{db_name}_bitScore"] = df_mmseqs['bitscore']
-    df_mmseqs_final = df_mmseqs[['query_id', 'start_position', 'end_position', f"{db_name}_id", f"{db_name}_bitScore"]]
-
-    print("Processing MMseqs output...")
-
-    # Check if db_descriptions is not 'NULL'
-    with open(descriptions_path, 'r') as file:
-        first_line = file.readline().strip()
-        print(f"First line of descriptions: {first_line}")
-        if first_line.upper() != 'NULL':
-            print("Descriptions file is not NULL. Processing...")
-            file.seek(0)
-            # Read the first few lines of the descriptions file
-            for i in range(5):
-                line = file.readline().strip()
-                print(f"Line {i + 1}: {line}")
-            
-            # Load the descriptions file into a DataFrame
-            df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
-            # Process descriptions and merge...
-            # Rest of the processing as before...
-        else:
-            print("Descriptions file is NULL. Skipping processing.")
-            df_mmseqs.to_csv(output_path, index=False)
-
-    # Load TSV file if needed
-    print("Loading TSV file...")
-    df_tsv = pd.read_csv(input_path, sep="\t")
-
-    # Further processing of TSV file...
-    # Example: print first few rows
-    print("First few rows of TSV file:")
-    print(df_tsv.head())
+    # Merge with database descriptions if available
+    if descriptions_path != "NULL":
+        df_descriptions = pd.read_csv(descriptions_path, sep='\t')
+        # Rename columns with db_name prefix
+        df_descriptions = df_descriptions.add_prefix(f"{db_name}_")
+        # Merge on query_id
+        df_merged = pd.merge(df_mmseqs, df_descriptions, on='query_id', how='left')
+        # Output merged dataframe to CSV
+        output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
+        df_merged.to_csv(output_path, index=False)
+    else:
+        # Output parsed dataframe to CSV
+        output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
+        df_mmseqs.to_csv(output_path, index=False)
 
 if __name__ == "__main__":
-    sample, db_name, descriptions_path, bit_score_threshold = sys.argv[1:]
+    import sys
+    sample = sys.argv[1]
+    db_name = sys.argv[2]
+    descriptions_path = sys.argv[3]
+    bit_score_threshold = float(sys.argv[4])
     main(sample, db_name, descriptions_path, bit_score_threshold)
