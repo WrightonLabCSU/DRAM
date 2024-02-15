@@ -25,23 +25,21 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
     print("Processing MMseqs output...")
 
     # Check if db_descriptions is not 'NULL'
-    if descriptions_path != 'NULL':
+    if descriptions_path.upper() != 'NULL':
         print("Descriptions file is not NULL. Processing...")
-        df_descriptions = pd.read_csv(descriptions_path, sep='\t', header=None)
-        # Process descriptions and merge...
-        # Rest of the processing as before...
+        df_descriptions = pd.read_csv(descriptions_path, sep='\t')
+        # Rename the columns in df_descriptions with prefix
+        df_descriptions = df_descriptions.add_prefix(f"{db_name}_")
+        # Merge df_mmseqs_final with df_descriptions on db_name_id
+        df_merged = pd.merge(df_mmseqs_final, df_descriptions, left_on=f"{db_name}_id", right_on=f"{db_name}_id", how='left')
+        # Save the merged DataFrame to the output path
+        df_merged.to_csv(output_path, index=False)
     else:
         print("Descriptions file is NULL. Skipping processing.")
-        df_mmseqs.to_csv(output_path, index=False)
+        # Save the formatted MMseqs output to the output path
+        df_mmseqs_final.to_csv(output_path, index=False)
 
-    # Load TSV file if needed
-    print("Loading TSV file...")
-    df_tsv = pd.read_csv(input_path, sep="\t")
-
-    # Further processing of TSV file...
-    # Example: print first few rows
-    print("First few rows of TSV file:")
-    print(df_tsv.head())
+    # Further processing if needed...
 
 if __name__ == "__main__":
     sample, db_name, descriptions_path, bit_score_threshold = sys.argv[1:]
