@@ -51,6 +51,9 @@ include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL          } from './modules/annota
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER         } from './modules/annotate/mmseqs_search.nf'
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL         } from './modules/annotate/mmseqs_search.nf'
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD        } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG           } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF         } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM           } from './modules/annotate/mmseqs_search.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
@@ -220,6 +223,9 @@ if( params.use_vog ){
 if( params.use_viral ){
     annotate_viral = 1
 }
+if( params.use_uniref ){
+    annotate_viral = 1
+}
 
 /* Metabolism Database sets */
 if( params.use_dbset == "metabolism_kegg_set" ){
@@ -339,6 +345,7 @@ if( params.annotate ){
 
     if (annotate_uniref == 1) {
         ch_uniref_db = file(params.uniref_db).exists() ? file(params.unirefdb) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
+        index_mmseqs = "1"
         annotate_list += "UniRef "
     }
 
@@ -815,9 +822,9 @@ workflow {
 
         // Annotate according to the user-specified databases 
         if( annotate_kegg == 1 ){
-            //KEGG_INDEX ( params.kegg_mmseq_loc )
-            //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc, params.kegg_index )
-            //MMSEQS2 ( ch_called_genes, params.kegg_mmseq_loc )
+            MMSEQS_SEARCH_KEGG( ch_mmseqs_query, ch_kegg_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script )
+            ch_kegg_formatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
+
             formattedOutputChannels = formattedOutputChannels.mix(ch_kegg_formatted)
         }
 
@@ -832,6 +839,12 @@ workflow {
             ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_kofam_formatted)
+        }
+        if( annotate_pfam == 1 ){
+            MMSEQS_SEARCH_PFAM( ch_mmseqs_query, ch_pfam_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.pfam_name, ch_mmseqs_script )
+            ch_uniref_formatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
+
+            formattedOutputChannels = formattedOutputChannels.mix(ch_pfam_formatted)
         }
 
         if( annotate_dbcan == 1 ){
@@ -905,6 +918,9 @@ workflow {
         }
 
         if (annotate_uniref == 1){
+            MMSEQS_SEARCH_UNIREF( ch_mmseqs_query, ch_uniref_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.uniref_name, ch_mmseqs_script )
+            ch_uniref_formatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
+
             formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
         }
 
