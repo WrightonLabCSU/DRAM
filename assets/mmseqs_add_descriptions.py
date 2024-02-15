@@ -40,12 +40,16 @@ def main(sample, db_name, descriptions_path, bit_score_threshold):
         # Drop the matching column
         df_merged.drop(columns=[matching_column], inplace=True)
 
-        # Rename the additional columns with the correct prefix
-        additional_columns = list(df_descriptions.columns)[1:]
-        additional_columns_renamed = [f'{db_name}_{col}' for col in additional_columns]
-        rename_dict = dict(zip(additional_columns, additional_columns_renamed))
-        df_merged.rename(columns=rename_dict, inplace=True)
-        
+        # Rename the additional columns from db_descriptions.tsv
+        additional_columns = df_descriptions.columns[1:]  # Exclude the first column (gene_id)
+        renamed_additional_columns = [f"{db_name}_{col}" for col in additional_columns]
+
+        # Create a dictionary mapping original column names to renamed column names
+        column_mapping = dict(zip(additional_columns, renamed_additional_columns))
+
+        # Rename the columns in the merged DataFrame
+        df_merged.rename(columns=column_mapping, inplace=True)
+                
         # Save the merged DataFrame to CSV
         output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
         df_merged.to_csv(output_path, index=False)
