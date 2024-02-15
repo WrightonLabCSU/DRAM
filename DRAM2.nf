@@ -328,7 +328,7 @@ if( params.annotate ){
     }
 
     if (annotate_pfam == 1) {
-        ch_pfam_db = file(params.pfam_db).exists() ? file(params.pfam_db) : error("Error: If using --annotate, you must supply prebuilt databases. PFAM database file not found at ${params.pfam_db}")
+        ch_pfam_mmseqs_db = file(params.pfam_mmseq_db).exists() ? file(params.pfam_mmseq_db) : error("Error: If using --annotate, you must supply prebuilt databases. PFAM database file not found at ${params.pfam_mmseq_db}")
         index_mmseqs = "1"
         annotate_list += "Pfam "
     }
@@ -822,7 +822,7 @@ workflow {
 
         // Annotate according to the user-specified databases 
         if( annotate_kegg == 1 ){
-            MMSEQS_SEARCH_KEGG( ch_mmseqs_query, ch_kegg_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script )
+            MMSEQS_SEARCH_KEGG( ch_mmseqs_query, ch_kegg_db, params.bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script )
             ch_kegg_formatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_kegg_formatted)
@@ -918,7 +918,7 @@ workflow {
         }
 
         if (annotate_uniref == 1){
-            MMSEQS_SEARCH_UNIREF( ch_mmseqs_query, ch_uniref_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.uniref_name, ch_mmseqs_script )
+            MMSEQS_SEARCH_UNIREF( ch_mmseqs_query, ch_uniref_db, params.bit_score_threshold, ch_dummy_sheet, params.uniref_name, ch_mmseqs_script )
             ch_uniref_formatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
