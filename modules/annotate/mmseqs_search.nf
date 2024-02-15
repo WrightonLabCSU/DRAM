@@ -37,8 +37,12 @@ process MMSEQS_SEARCH {
     # Convert results to BLAST outformat 6
     mmseqs convertalis query_database/${sample}.mmsdb ${db_name}.mmsdb  mmseqs_out/${sample}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
     
-    # Call Python script for further processing
-    python ${ch_add_db_descriptions} "${sample}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}"
-    
+    # Check if the mmseqs_out/${sample}_mmseqs_${db_name}.tsv file is empty
+    if [ ! -s "mmseqs_out/${sample}_mmseqs_${db_name}.tsv" ]; then
+        echo "The file mmseqs_out/${sample}_mmseqs_${db_name}.tsv is empty. Skipping further processing."
+    else
+        # Call Python script for further processing
+        python ${ch_add_db_descriptions} "${sample}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}"
+    fi
     """
 }
