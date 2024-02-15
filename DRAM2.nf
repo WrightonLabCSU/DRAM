@@ -312,6 +312,7 @@ if( params.annotate ){
         ch_camper_mmseqs_db = file(params.camper_mmseqs_db).exists() ? file(params.camper_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER MMseqs2 database file not found at ${params.camper_mmseqs_db}")
         index_mmseqs = "1"
         annotate_list += "CAMPER "
+        ch_camper_mmseqs_list = file(params.camper_mmseqs_list)
     }
 
     if (annotate_merops == 1) {
@@ -861,7 +862,7 @@ workflow {
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_hmm_formatted)
 
             // MMseqs
-            MMSEQS_SEARCH_CAMPER( ch_mmseqs_query, ch_camper_mmseqs_db, params.bit_score_threshold, params.camper_mmseqs_list, params.camper_name, ch_mmseqs_script )
+            MMSEQS_SEARCH_CAMPER( ch_mmseqs_query, ch_camper_mmseqs_db, params.bit_score_threshold, ch_camper_mmseqs_list, params.camper_name, ch_mmseqs_script )
             ch_camper_mmseqs_formatted = MMSEQS_SEARCH_CAMPER.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
