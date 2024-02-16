@@ -842,9 +842,9 @@ workflow {
         }
         if( annotate_pfam == 1 ){
             MMSEQS_SEARCH_PFAM( ch_mmseqs_query, ch_pfam_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.pfam_name, ch_mmseqs_script )
-            ch_uniref_formatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
+            ch_uniref_formatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
 
-            formattedOutputChannels = formattedOutputChannels.mix(ch_pfam_formatted)
+            formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
         }
 
         if( annotate_dbcan == 1 ){
