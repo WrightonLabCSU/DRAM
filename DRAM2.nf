@@ -344,7 +344,7 @@ if( params.annotate ){
     }
 
     if (annotate_uniref == 1) {
-        ch_uniref_db = file(params.uniref_db).exists() ? file(params.unirefdb) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
+        ch_uniref_db = file(params.uniref_db).exists() ? file(params.uniref_db) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
         index_mmseqs = "1"
         annotate_list += "UniRef "
     }
