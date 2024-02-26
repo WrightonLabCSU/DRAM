@@ -7,12 +7,12 @@ def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
     ids_column = "id"  # Use "id" here since it's the primary key column
-    descriptions_column = f"description"
+    descriptions_column = "description"  # Column containing descriptions
     
     # Establish connection to SQLite database
     conn = sqlite3.connect(db_file)
     
-    ids = chunk[ids_column].unique()
+    ids = chunk[f"{db_name}_id"].unique()  # Use ${db_name}_id column from the chunk
     query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
     cursor = conn.cursor()
@@ -20,7 +20,7 @@ def fetch_descriptions(chunk, db_name, db_file):
     results = cursor.fetchall()
     
     descriptions_dict = {row[0]: row[1] for row in results}
-    chunk[f"{db_name}_description"] = chunk[ids_column].map(descriptions_dict)
+    chunk[f"{db_name}_description"] = chunk[f"{db_name}_id"].map(descriptions_dict)  # Map descriptions to ${db_name}_description column
     
     # Close database connection
     conn.close()
@@ -46,19 +46,14 @@ def main():
     reader = pd.read_csv(args.hits_csv, delimiter=',', chunksize=chunksize)
 
     # Process chunks
-    for i, chunk in enumerate(reader):
-        print("Processing Chunk", i+1)
-        print("Column Names:", chunk.columns)  # Print column names
-        print(chunk.head())  # Print first few rows of the chunk
-        # Process chunks concurrently
-        with ThreadPoolExecutor() as executor:
-            processed_chunks = executor.map(lambda chunk: fetch_descriptions(chunk, args.db_name, args.db_file), [chunk])
+    with ThreadPoolExecutor() as executor:
+        processed_chunks = executor.map(lambda chunk: fetch_descriptions(chunk, args.db_name, args.db_file), reader)
 
-        # Concatenate processed chunks into a single DataFrame
-        df = pd.concat(processed_chunks, ignore_index=True)
+    # Concatenate processed chunks into a single DataFrame
+    df = pd.concat(processed_chunks, ignore_index=True)
 
-        # Write updated DataFrame to new CSV file
-        df.to_csv(args.output, index=False)
+    # Write updated DataFrame to new CSV file
+    df.to_csv(args.output, index=False)
 
 if __name__ == "__main__":
     main()
