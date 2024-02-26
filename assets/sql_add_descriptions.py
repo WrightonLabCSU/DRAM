@@ -6,7 +6,8 @@ import argparse
 def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
-    ids_column = "id"  # Use "id" here since it's the primary key column
+    # Adjust ids_column to match the column name in the hits CSV file
+    ids_column = f"{db_name}_id"
     descriptions_column = "description"
     
     # Establish connection to SQLite database
@@ -32,6 +33,7 @@ def fetch_descriptions(chunk, db_name, db_file):
     conn.close()
     
     return chunk
+
 
 
 def extract_kegg_orthology(description):
