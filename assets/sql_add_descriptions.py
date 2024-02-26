@@ -1,92 +1,82 @@
 import pandas as pd
-import sqlite3
-import re
-from concurrent.futures import ThreadPoolExecutor
 import argparse
+import sqlite3
 
-def fetch_descriptions(chunk, db_name, db_file):
-    # Function to fetch descriptions based on IDs from the specified table
-    table_name = f"{db_name}_description"
-    # Use "id" as the column name for fetching IDs from the hits CSV file
-    ids_column = "id"
-    descriptions_column = "description"
-    
-    # Establish connection to SQLite database
+def get_sig_row(row):
+    return row['full_evalue'] < 1e-18
+
+def calculate_bit_score(row):
+    return row['full_score'] / row['domain_number']
+
+def calculate_rank(row):
+    return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
+
+def calculate_coverage(row):
+    return (row['target_end'] - row['target_start']) / row['target_length']
+
+def fetch_descriptions_from_db(target_ids, db_file):
     conn = sqlite3.connect(db_file)
-    
-    # Adjust the column name to match the hits CSV file
-    hits_ids_column = f"{db_name}_id"
-    ids = chunk[hits_ids_column].unique()
-    query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
-    
-    cursor = conn.cursor()
-    cursor.execute(query, ids)
-    results = cursor.fetchall()
-    
-    descriptions_dict = {row[0]: row[1] for row in results}
-    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(descriptions_dict)
-    
-    # Special processing for "kegg" database
-    if db_name == "kegg":
-        # Add additional output columns
-        chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_orthology(x))
-        chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_EC(x))
-    
-    # Close database connection
+    descriptions = {}
+    for target_id in target_ids:
+        cursor = conn.execute("SELECT description, ec FROM dbcan_description WHERE id=?", (target_id,))
+        row = cursor.fetchone()
+        if row:
+            description, ec = row
+            descriptions[target_id] = {'description': description, 'ec': ec}
+        else:
+            descriptions[target_id] = {'description': "", 'ec': ""}  # Handle case where description is not found
     conn.close()
-    
-    return chunk
-
-
-def extract_kegg_orthology(description):
-    # Extract KO from the description
-    if "(K" in description:
-        ko_start = description.find("(K") + 1
-        ko_end = description.find(")", ko_start)
-        return description[ko_start:ko_end]
-    else:
-        return None
-
-
-def extract_kegg_EC(description):
-    # Extract EC numbers from the description
-    ec_start = description.find("[EC:")
-    if ec_start != -1:
-        ec_end = description.find("]", ec_start)
-        ec_text = description[ec_start + 4:ec_end]  # Skip the "[EC:" part
-        ec_numbers = re.findall(r'\b\d+\.\d+\.\d+\.\d+\b', ec_text)  # Extract EC numbers using regex
-        return ' '.join(ec_numbers)  # Join EC numbers with space separator
-    else:
-        return None
+    return descriptions
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Add descriptions from SQL database to hits file")
-    parser.add_argument("--hits_csv", type=str, help="Path to the hits CSV file")
-    parser.add_argument("--db_name", type=str, help="Name of the database table to fetch descriptions from")
-    parser.add_argument("--output", type=str, help="Path to the output formatted CSV file")
-    parser.add_argument("--db_file", type=str, help="Path to the SQLite database file")
+    parser = argparse.ArgumentParser(description="Format HMM search results.")
+    parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
+    parser.add_argument("--output", type=str, help="Path to the formatted output file.")
+    parser.add_argument("--db_file", type=str, help="Path to the SQLite database file.")
+
     args = parser.parse_args()
 
-    # Get the number of lines in the hits CSV file
-    num_lines = sum(1 for line in open(args.hits_csv))
+    print("Loading HMM search results CSV file...")
+    hits_df = pd.read_csv(args.hits_csv)
+    print(f"Loaded HMM search results from: {args.hits_csv}")
 
-    # Determine chunk size dynamically based on number of lines
-    chunksize = max(1, min(10000, num_lines // 10))  # Adjust as needed, minimum 1 chunk
+    print("Processing HMM search results...")
+    hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
-    # Read CSV file in chunks
-    reader = pd.read_csv(args.hits_csv, delimiter=',', chunksize=chunksize)
+    hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
+    hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
 
-    # Process chunks
-    with ThreadPoolExecutor() as executor:
-        # Convert reader to list before passing to executor.map
-        processed_chunks = executor.map(lambda chunk: fetch_descriptions(chunk, args.db_name, args.db_file), list(reader))
+    # Calculate coverage
+    hits_df['perc_cov'] = hits_df.apply(calculate_coverage, axis=1)
 
-    # Concatenate processed chunks into a single DataFrame
-    df = pd.concat(processed_chunks, ignore_index=True)
+    hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Write updated DataFrame to new CSV file
-    df.to_csv(args.output, index=False)
+    # Fetch descriptions from the database
+    target_ids = hits_df['target_id'].unique()
+    descriptions = fetch_descriptions_from_db(target_ids, args.db_file)
+
+    # Assign descriptions and ECs to hits
+    hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions[x]['description'])
+    hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
+
+    print("Saving the formatted output to CSV...")
+    selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
+    modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description']
+
+    # Ensure the columns exist in the DataFrame before renaming
+    if set(selected_columns).issubset(hits_df.columns):
+        # Rename the selected columns
+        hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
+
+        # Save the formatted output to CSV
+        try:
+            hits_df[modified_columns].to_csv(args.output, index=False)
+            print(f"Formatted output saved to: {args.output}")
+        except Exception as e:
+            print(f"Error occurred while saving the formatted output: {e}")
+
+    print("Process completed successfully!")
 
 if __name__ == "__main__":
     main()
