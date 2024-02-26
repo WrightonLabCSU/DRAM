@@ -1,6 +1,7 @@
 import pandas as pd
 import argparse
 import sqlite3
+import os
 
 def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
@@ -82,9 +83,15 @@ def main():
             hits_df[modified_columns].to_csv(args.output, index=False)
             print(f"Formatted output saved to: {args.output}")
 
-            # Print first few lines of the output file
-            print("First few lines of the output file:")
-            print(hits_df[modified_columns].head())
+            # Check if the output file exists
+            if os.path.isfile(args.output):
+                # Print first few lines of the output file
+                print("First few lines of the output file:")
+                with open(args.output, 'r') as file:
+                    for _ in range(5):
+                        print(file.readline().strip())
+            else:
+                print(f"Output file does not exist: {args.output}")
         except Exception as e:
             print(f"Error occurred while saving the formatted output: {e}")
 
