@@ -11,6 +11,10 @@ def get_sig_row(row):
 def calculate_bit_score(row):
     return row['full_score'] / row['domain_number']
 
+def calculate_coverage(row):
+    return (row['target_end'] - row['target_start']) / row['target_length']
+
+
 def fetch_descriptions_from_db(target_ids, db_file):
     conn = sqlite3.connect(db_file)
     descriptions = {}
