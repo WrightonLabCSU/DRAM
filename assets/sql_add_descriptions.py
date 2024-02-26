@@ -2,12 +2,11 @@ import pandas as pd
 import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 import argparse
-import os
 
 def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
-    ids_column = f"{db_name}_id"  # Use ${db_name}_id here
+    ids_column = f"{db_name}_id"  # Using ${db_name}_id
     descriptions_column = f"{db_name}_description"
     
     # Establish connection to SQLite database
@@ -28,8 +27,6 @@ def fetch_descriptions(chunk, db_name, db_file):
     
     return chunk
 
-
-
 def main():
     parser = argparse.ArgumentParser(description="Add descriptions from SQL database to hits file")
     parser.add_argument("--hits_csv", type=str, help="Path to the hits CSV file")
@@ -46,14 +43,6 @@ def main():
 
     # Read CSV file in chunks
     reader = pd.read_csv(args.hits_csv, delimiter=',', chunksize=chunksize)
-
-    # Process chunks
-    for i, chunk in enumerate(reader):
-        if i >= 5:  # Print only the first 5 chunks
-            break
-        print("Chunk", i+1)
-        print("Column Names:", chunk.columns)  # Print column names
-        print(chunk.head())  # Print first few rows of the chunk
 
     # Process chunks concurrently
     with ThreadPoolExecutor() as executor:
