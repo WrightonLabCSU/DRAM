@@ -7,7 +7,7 @@ import os
 def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
-    ids_column = f"{db_name}_id"
+    ids_column = "id"  # Use the correct column name
     descriptions_column = f"{db_name}_description"
     
     # Establish connection to SQLite database
@@ -27,6 +27,7 @@ def fetch_descriptions(chunk, db_name, db_file):
     conn.close()
     
     return chunk
+
 
 def main():
     parser = argparse.ArgumentParser(description="Add descriptions from SQL database to hits file")
