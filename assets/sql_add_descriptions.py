@@ -44,14 +44,14 @@ def main():
 
     # Read CSV file in chunks
     reader = pd.read_csv(args.hits_csv, delimiter=',', chunksize=chunksize)
-    print("Column Names:", reader.columns)  # Print column names
 
-    # Print first few rows of the DataFrame
+    # Process chunks
     for i, chunk in enumerate(reader):
         if i >= 5:  # Print only the first 5 chunks
             break
         print("Chunk", i+1)
-        print(chunk.head())
+        print("Column Names:", chunk.columns)  # Print column names
+        print(chunk.head())  # Print first few rows of the chunk
 
     # Process chunks concurrently
     with ThreadPoolExecutor() as executor:
