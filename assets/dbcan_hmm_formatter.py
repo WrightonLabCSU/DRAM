@@ -75,6 +75,8 @@ def main():
             print(f"Formatted output saved to: {args.output}")
         except Exception as e:
             print(f"Error occurred while saving the formatted output: {e}")
+    else:
+        print("Error: Columns missing in DataFrame.")
 
     print("Process completed successfully!")
 
