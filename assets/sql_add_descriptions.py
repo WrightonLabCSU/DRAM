@@ -52,9 +52,14 @@ def extract_kegg_EC(description):
     ec_start = description.find("[EC:")
     if ec_start != -1:
         ec_end = description.find("]", ec_start)
-        return description[ec_start + 5:ec_end]
+        ec_string = description[ec_start + 5:ec_end]  # Extract the string within []
+        # Split the string by whitespace and extract only the EC numbers
+        ec_numbers = [part for part in ec_string.split() if part.startswith("EC:")]
+        # Join the extracted EC numbers with whitespace
+        return " ".join(ec_numbers)
     else:
         return None
+
 
 
 def main():
