@@ -927,7 +927,7 @@ workflow {
             MMSEQS_SEARCH_UNIREF( ch_mmseqs_query, ch_uniref_db, params.bit_score_threshold, ch_dummy_sheet, params.uniref_name, ch_mmseqs_script )
             ch_uniref_unformatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
 
-            SQL_UNIREF(ch_uniref_unformatted, uniref_name, ch_sql_descriptions_db, ch_sql_parser)
+            SQL_UNIREF(ch_uniref_unformatted, params.uniref_name, ch_sql_descriptions_db, ch_sql_parser)
 
             ch_uniref_formatted = SQL_UNIREF.out.mmseqs_formatted_out
 
