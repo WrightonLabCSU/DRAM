@@ -54,7 +54,6 @@ def extract_kegg_EC(description):
         return None
 
 
-
 def main():
     parser = argparse.ArgumentParser(description="Add descriptions from SQL database to hits file")
     parser.add_argument("--hits_csv", type=str, help="Path to the hits CSV file")
@@ -74,7 +73,8 @@ def main():
 
     # Process chunks
     with ThreadPoolExecutor() as executor:
-        processed_chunks = executor.map(lambda chunk: fetch_descriptions(chunk, args.db_name, args.db_file), reader)
+        # Convert reader to list before passing to executor.map
+        processed_chunks = executor.map(lambda chunk: fetch_descriptions(chunk, args.db_name, args.db_file), list(reader))
 
     # Concatenate processed chunks into a single DataFrame
     df = pd.concat(processed_chunks, ignore_index=True)
