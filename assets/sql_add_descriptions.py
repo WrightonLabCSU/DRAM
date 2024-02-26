@@ -7,12 +7,12 @@ def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
     ids_column = "id"  # Use "id" here since it's the primary key column
-    descriptions_column = "description"  # Column containing descriptions
+    descriptions_column = "description"
     
     # Establish connection to SQLite database
     conn = sqlite3.connect(db_file)
     
-    ids = chunk[f"{db_name}_id"].unique()  # Use ${db_name}_id column from the chunk
+    ids = chunk[ids_column].unique()
     query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
     cursor = conn.cursor()
@@ -20,12 +20,39 @@ def fetch_descriptions(chunk, db_name, db_file):
     results = cursor.fetchall()
     
     descriptions_dict = {row[0]: row[1] for row in results}
-    chunk[f"{db_name}_description"] = chunk[f"{db_name}_id"].map(descriptions_dict)  # Map descriptions to ${db_name}_description column
+    chunk[f"{db_name}_description"] = chunk[ids_column].map(descriptions_dict)
+    
+    # Special processing for "kegg" database
+    if db_name == "kegg":
+        # Add additional output columns
+        chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_orthology(x))
+        chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_EC(x))
     
     # Close database connection
     conn.close()
     
     return chunk
+
+
+def extract_kegg_orthology(description):
+    # Extract KO from the description
+    if "(K" in description:
+        ko_start = description.find("(K") + 1
+        ko_end = description.find(")", ko_start)
+        return description[ko_start:ko_end]
+    else:
+        return None
+
+
+def extract_kegg_EC(description):
+    # Extract EC numbers from the description
+    ec_start = description.find("[EC:")
+    if ec_start != -1:
+        ec_end = description.find("]", ec_start)
+        return description[ec_start + 5:ec_end]
+    else:
+        return None
+
 
 
 def main():
