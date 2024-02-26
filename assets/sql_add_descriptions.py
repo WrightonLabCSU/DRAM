@@ -6,14 +6,16 @@ import argparse
 def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
-    # Adjust ids_column to match the column name in the hits CSV file
-    ids_column = f"{db_name}_id"
+    # Use "id" as the column name for fetching IDs from the hits CSV file
+    ids_column = "id"
     descriptions_column = "description"
     
     # Establish connection to SQLite database
     conn = sqlite3.connect(db_file)
     
-    ids = chunk[ids_column].unique()
+    # Adjust the column name to match the hits CSV file
+    hits_ids_column = f"{db_name}_id"
+    ids = chunk[hits_ids_column].unique()
     query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
     cursor = conn.cursor()
@@ -21,7 +23,7 @@ def fetch_descriptions(chunk, db_name, db_file):
     results = cursor.fetchall()
     
     descriptions_dict = {row[0]: row[1] for row in results}
-    chunk[f"{db_name}_description"] = chunk[ids_column].map(descriptions_dict)
+    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(descriptions_dict)
     
     # Special processing for "kegg" database
     if db_name == "kegg":
@@ -33,7 +35,6 @@ def fetch_descriptions(chunk, db_name, db_file):
     conn.close()
     
     return chunk
-
 
 
 def extract_kegg_orthology(description):
