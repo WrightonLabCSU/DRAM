@@ -18,16 +18,13 @@ def fetch_descriptions_from_db(target_ids, db_file):
     conn = sqlite3.connect(db_file)
     descriptions = {}
     for target_id in target_ids:
-        print(f"Fetching description for target ID: {target_id}...")
         cursor = conn.execute("SELECT description, ec FROM dbcan_description WHERE id=?", (target_id,))
         row = cursor.fetchone()
         if row:
             description, ec = row
             descriptions[target_id] = {'description': description, 'ec': ec}
-            print(f"Description for target ID {target_id}: {description}")
         else:
             descriptions[target_id] = {'description': "", 'ec': ""}  # Handle case where description is not found
-            print(f"No description found for target ID: {target_id}")
     conn.close()
     return descriptions
 
@@ -73,10 +70,13 @@ def main():
         hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
 
         # Save the formatted output to CSV
-        hits_df[modified_columns].to_csv(args.output, index=False)
-        print(f"Formatted output saved to: {args.output}")
+        try:
+            hits_df[modified_columns].to_csv(args.output, index=False)
+            print(f"Formatted output saved to: {args.output}")
+        except Exception as e:
+            print(f"Error occurred while saving the formatted output: {e}")
 
-        print("Process completed successfully!")
+    print("Process completed successfully!")
 
 if __name__ == "__main__":
     main()
