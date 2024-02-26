@@ -5,9 +5,6 @@ import sqlite3
 def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def get_sig_row(row):
-    return row['full_evalue'] < 1e-18
-
 def calculate_bit_score(row):
     return row['full_score'] / row['domain_number']
 
@@ -28,7 +25,6 @@ def fetch_descriptions_from_db(target_ids, db_file):
     conn.close()
     return descriptions
 
-
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -40,6 +36,9 @@ def main():
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
     print(f"Loaded HMM search results from: {args.hits_csv}")
+
+    print("First few lines of hits_df:")
+    print(hits_df.head())
 
     print("Processing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
@@ -67,15 +66,26 @@ def main():
     hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
     print("Descriptions and ECs assigned to hits.")
 
-    # Select only the desired columns
-    hits_df = hits_df[['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description', 'dbcan_ec']]
-
     print("Saving the formatted output to CSV...")
-    try:
-        hits_df.to_csv(args.output, index=False)
-        print(f"Formatted output saved to: {args.output}")
-    except Exception as e:
-        print(f"Error occurred while saving the formatted output: {e}")
+    selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description', 'dbcan_ec']
+    modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description']
+
+    # Ensure the columns exist in the DataFrame before renaming
+    if set(selected_columns).issubset(hits_df.columns):
+        # Select only the required columns
+        hits_df = hits_df[selected_columns]
+        print("Required columns selected.")
+
+        # Rename the selected columns
+        hits_df.columns = modified_columns
+        print("Columns renamed successfully.")
+
+        # Save the formatted output to CSV
+        try:
+            hits_df.to_csv(args.output, index=False)
+            print(f"Formatted output saved to: {args.output}")
+        except Exception as e:
+            print(f"Error occurred while saving the formatted output: {e}")
 
     print("Process completed successfully!")
 
