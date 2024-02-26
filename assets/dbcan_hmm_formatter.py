@@ -12,7 +12,7 @@ def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
 def calculate_coverage(row):
-    return (row['target_end'] - row['target_start']) / row['target_length']
+    return (row['target_end'] - row['target_start'])
 
 def fetch_descriptions_from_db(target_ids, db_file):
     conn = sqlite3.connect(db_file)
