@@ -52,6 +52,9 @@ def main():
 
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
+    print("DataFrame after processing:")
+    print(hits_df.head())  # Print the first few rows of the DataFrame
+
     # Fetch descriptions from the database
     target_ids = hits_df['target_id'].unique()
     descriptions = fetch_descriptions_from_db(target_ids, args.db_file)
