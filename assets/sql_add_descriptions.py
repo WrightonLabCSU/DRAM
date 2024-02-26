@@ -9,7 +9,7 @@ def fetch_descriptions(chunk, db_name, conn):
     ids_column = f"{db_name}_id"
     descriptions_column = f"{db_name}_description"
     
-    ids = chunk[f"{db_name}_id"].unique()
+    ids = chunk[ids_column].unique()
     query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
     cursor = conn.cursor()
@@ -17,7 +17,7 @@ def fetch_descriptions(chunk, db_name, conn):
     results = cursor.fetchall()
     
     descriptions_dict = {row[0]: row[1] for row in results}
-    chunk[f"{db_name}_description"] = chunk[f"{db_name}_id"].map(descriptions_dict)
+    chunk[f"{db_name}_description"] = chunk[ids_column].map(descriptions_dict)
     
     return chunk
 
@@ -34,7 +34,7 @@ def main():
 
     # Read CSV file in chunks
     chunksize = 10000  # Adjust as needed
-    reader = pd.read_csv(args.hits_csv, delimiter='\t', chunksize=chunksize)
+    reader = pd.read_csv(args.hits_csv, delimiter=',', chunksize=chunksize)
 
     # Process chunks concurrently
     with ThreadPoolExecutor() as executor:
@@ -44,7 +44,7 @@ def main():
     df = pd.concat(processed_chunks, ignore_index=True)
 
     # Write updated DataFrame to new CSV file
-    df.to_csv(args.output, index=False, sep='\t')
+    df.to_csv(args.output, index=False)
 
     # Close database connection
     conn.close()
