@@ -55,6 +55,8 @@ include { MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG           } from './modules/annota
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF         } from './modules/annotate/mmseqs_search.nf'
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM           } from './modules/annotate/mmseqs_search.nf'
 
+include { ADD_SQL_DESCRIPTIONS as SQL_UNIREF            } from './modules/annotate/add_sql_descriptions.nf'
+
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
 
@@ -294,6 +296,10 @@ if( params.annotate ){
     ch_camper_hmm_list = file(params.camper_hmm_list)
 
     ch_dummy_sheet = file(params.distill_dummy_sheet)
+
+    ch_sql_parser = file(sql_parser_script)
+
+    ch_sql_descriptions_db = file(params.sql_descriptions_db)
 
     index_mmseqs = "0"
 
@@ -919,7 +925,11 @@ workflow {
 
         if (annotate_uniref == 1){
             MMSEQS_SEARCH_UNIREF( ch_mmseqs_query, ch_uniref_db, params.bit_score_threshold, ch_dummy_sheet, params.uniref_name, ch_mmseqs_script )
-            ch_uniref_formatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
+            ch_uniref_unformatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
+
+            SQL_UNIREF(ch_uniref_unformatted, uniref_name, ch_sql_descriptions_db, ch_sql_parser)
+
+            ch_uniref_formatted = SQL_UNIREF.out.mmseqs_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
         }
