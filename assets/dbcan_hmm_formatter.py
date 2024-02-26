@@ -1,7 +1,6 @@
 import pandas as pd
 import argparse
 import sqlite3
-import os
 
 def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
@@ -68,6 +67,10 @@ def main():
     hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
     print("Descriptions and ECs assigned to hits.")
 
+    # Print first few lines of hits_df
+    print("First few lines of hits_df:")
+    print(hits_df.head())
+
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
     modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description']
@@ -83,15 +86,9 @@ def main():
             hits_df[modified_columns].to_csv(args.output, index=False)
             print(f"Formatted output saved to: {args.output}")
 
-            # Check if the output file exists
-            if os.path.isfile(args.output):
-                # Print first few lines of the output file
-                print("First few lines of the output file:")
-                with open(args.output, 'r') as file:
-                    for _ in range(5):
-                        print(file.readline().strip())
-            else:
-                print(f"Output file does not exist: {args.output}")
+            # Print the first few lines of the output file
+            print("First few lines of the output file:")
+            print(hits_df[modified_columns].head())
         except Exception as e:
             print(f"Error occurred while saving the formatted output: {e}")
 
