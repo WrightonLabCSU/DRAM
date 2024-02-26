@@ -41,7 +41,7 @@ def main():
     print(f"Loaded HMM search results from: {args.hits_csv}")
 
     # Extracting desired columns
-    hits_df = hits_df[['query_id', 'target_id', 'full_evalue', 'full_score', 'domain_number', 'target_start', 'target_end']]
+    hits_df = hits_df[['query_id', 'target_id', 'full_evalue', 'full_score', 'domain_number', 'target_start', 'target_end', 'strandedness']]
 
     print("Processing HMM search results...")
     # Calculate additional metrics
@@ -52,16 +52,20 @@ def main():
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Fetch descriptions from the database
-    target_ids = hits_df['target_id'].unique()
+    target_ids = hits_df['target_id'].str.replace(r'.hmm', '', regex=True).unique()
     descriptions = fetch_descriptions_from_db(target_ids, args.db_file)
 
     # Assign descriptions and ECs to hits
-    hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions.get(x, {}).get('description', ""))
-    hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions.get(x, {}).get('ec', ""))
+    hits_df['dbcan_description'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True).map(lambda x: descriptions.get(x, {}).get('description', ""))
+    hits_df['dbcan_EC'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True).map(lambda x: descriptions.get(x, {}).get('ec', ""))
 
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
-    modified_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'dbcan_description', 'dbcan_EC']
+    modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description', 'dbcan_EC']
+
+    # Extract start_position, end_position, and strandedness
+    hits_df['start_position'] = hits_df['target_start']
+    hits_df['end_position'] = hits_df['target_end']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
