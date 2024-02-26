@@ -13,6 +13,6 @@ process ADD_SQL_DESCRIPTIONS {
 
     script:
     """
-    python ${ch_sql_parser} --hits_csv ${hits_file} --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv"
+    python ${ch_sql_parser} --hits_csv ${hits_file} --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db}
     """
 }
