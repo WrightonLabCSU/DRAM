@@ -2,6 +2,9 @@ import pandas as pd
 import argparse
 import sqlite3
 
+def calculate_rank(row):
+    return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
+
 def get_sig_row(row):
     return row['full_evalue'] < 1e-18
 
