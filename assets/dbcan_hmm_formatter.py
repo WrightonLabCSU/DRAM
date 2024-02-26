@@ -67,30 +67,15 @@ def main():
     hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
     print("Descriptions and ECs assigned to hits.")
 
-    # Print first few lines of hits_df
-    print("First few lines of hits_df:")
-    print(hits_df.head())
+    # Select only the desired columns
+    hits_df = hits_df[['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description', 'dbcan_ec']]
 
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
-    modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description']
-
-    # Ensure the columns exist in the DataFrame before renaming
-    if set(selected_columns).issubset(hits_df.columns):
-        # Rename the selected columns
-        hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
-        print("Columns renamed successfully.")
-
-        # Save the formatted output to CSV
-        try:
-            hits_df[modified_columns].to_csv(args.output, index=False)
-            print(f"Formatted output saved to: {args.output}")
-
-            # Print the first few lines of the output file
-            print("First few lines of the output file:")
-            print(hits_df[modified_columns].head())
-        except Exception as e:
-            print(f"Error occurred while saving the formatted output: {e}")
+    try:
+        hits_df.to_csv(args.output, index=False)
+        print(f"Formatted output saved to: {args.output}")
+    except Exception as e:
+        print(f"Error occurred while saving the formatted output: {e}")
 
     print("Process completed successfully!")
 
