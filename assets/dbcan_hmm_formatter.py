@@ -18,13 +18,16 @@ def fetch_descriptions_from_db(target_ids, db_file):
     conn = sqlite3.connect(db_file)
     descriptions = {}
     for target_id in target_ids:
+        print(f"Fetching description for target ID: {target_id}...")
         cursor = conn.execute("SELECT description, ec FROM dbcan_description WHERE id=?", (target_id,))
         row = cursor.fetchone()
         if row:
             description, ec = row
             descriptions[target_id] = {'description': description, 'ec': ec}
+            print(f"Description for target ID {target_id}: {description}")
         else:
             descriptions[target_id] = {'description': "", 'ec': ""}  # Handle case where description is not found
+            print(f"No description found for target ID: {target_id}")
     conn.close()
     return descriptions
 
@@ -59,7 +62,6 @@ def main():
     # Assign descriptions and ECs to hits
     hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions[x]['description'])
     hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
-
 
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
