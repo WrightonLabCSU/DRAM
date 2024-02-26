@@ -224,7 +224,7 @@ if( params.use_viral ){
     annotate_viral = 1
 }
 if( params.use_uniref ){
-    annotate_viral = 1
+    annotate_uniref = 1
 }
 
 /* Metabolism Database sets */
