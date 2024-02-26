@@ -15,24 +15,19 @@ def calculate_coverage(row):
     return (row['target_end'] - row['target_start']) / row['target_length']
 
 def fetch_descriptions_from_db(target_ids, db_file):
-    print("Connecting to the database...")
     conn = sqlite3.connect(db_file)
-    print("Connected to the database.")
-    
     descriptions = {}
     for target_id in target_ids:
-        print(f"Fetching description for target ID: {target_id}...")
-        cursor = conn.execute("SELECT description FROM dbcan_description WHERE id=?", (target_id,))
-        description = cursor.fetchone()
-        if description:
-            descriptions[target_id] = description[0]
+        cursor = conn.execute("SELECT description, ec FROM dbcan_description WHERE id=?", (target_id,))
+        row = cursor.fetchone()
+        if row:
+            description, ec = row
+            descriptions[target_id] = {'description': description, 'ec': ec}
         else:
-            descriptions[target_id] = ""  # Handle case where description is not found
-        print(f"Description for target ID {target_id}: {descriptions[target_id]}")
-    
+            descriptions[target_id] = {'description': "", 'ec': ""}  # Handle case where description is not found
     conn.close()
-    print("Database connection closed.")
     return descriptions
+
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -61,11 +56,10 @@ def main():
     target_ids = hits_df['target_id'].unique()
     descriptions = fetch_descriptions_from_db(target_ids, args.db_file)
 
-    # Assign descriptions to hits
-    hits_df['dbcan_description'] = hits_df['target_id'].map(descriptions)
+    # Assign descriptions and ECs to hits
+    hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions[x]['description'])
+    hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
 
-    # Filter based on E-value
-    hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
 
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
