@@ -40,7 +40,7 @@ def main():
     print("First few lines of hits_df:")
     print(hits_df.head())
 
-    required_columns = ['query_id', 'query_start', 'query_end', 'strandedness', 'target_id', 'score_rank', 'full_score', 'domain_number', 'target_length', 'target_start', 'target_end']
+    required_columns = ['query_id', 'query_start', 'query_end', 'strandedness', 'target_id', 'full_score', 'domain_number', 'target_length', 'target_start', 'target_end']
     missing_columns = [col for col in required_columns if col not in hits_df.columns]
     
     if missing_columns:
