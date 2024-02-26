@@ -81,6 +81,10 @@ def main():
         try:
             hits_df[modified_columns].to_csv(args.output, index=False)
             print(f"Formatted output saved to: {args.output}")
+
+            # Print first few lines of the output file
+            print("First few lines of the output file:")
+            print(hits_df[modified_columns].head())
         except Exception as e:
             print(f"Error occurred while saving the formatted output: {e}")
 
