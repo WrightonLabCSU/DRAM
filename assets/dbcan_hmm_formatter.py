@@ -40,7 +40,7 @@ def main():
     print("First few lines of hits_df:")
     print(hits_df.head())
 
-    required_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'full_score', 'domain_number', 'target_length', 'target_start', 'target_end', 'query_ascession', 'target_ascession']
+    required_columns = ['query_id', 'query_start', 'query_end', 'strandedness', 'target_id', 'score_rank', 'full_score', 'domain_number', 'target_length', 'target_start', 'target_end']
     missing_columns = [col for col in required_columns if col not in hits_df.columns]
     
     if missing_columns:
@@ -64,7 +64,7 @@ def main():
     print("NaN values dropped.")
 
     # Save the intermediate DataFrame with required columns for step 1
-    intermediate_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'query_ascession', 'target_ascession']
+    intermediate_columns = ['query_id', 'query_start', 'query_end', 'strandedness', 'target_id', 'score_rank', 'bitScore']
     intermediate_df = hits_df[intermediate_columns].copy()
     print("Intermediate DataFrame created with required columns.")
 
@@ -90,7 +90,7 @@ def main():
     print("Descriptions and ECs assigned to hits.")
 
     # Save the final formatted output to CSV
-    selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description', 'dbcan_ec']
+    selected_columns = ['query_id', 'query_start', 'query_end', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description', 'dbcan_ec']
     final_output_df = intermediate_df[selected_columns].copy()
 
     try:
