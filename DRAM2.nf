@@ -867,7 +867,7 @@ workflow {
             PARSE_HMM_DBCAN ( ch_dbcan_hmms, ch_parse_hmmsearch )
             ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
-            DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, ch_dbcan_fam, ch_dbcan_subfam, ch_dbcan_formatter )
+            DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, ch_sql_descriptions_db, ch_dbcan_formatter )
             ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
