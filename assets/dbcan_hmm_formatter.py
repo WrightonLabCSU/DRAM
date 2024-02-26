@@ -39,6 +39,12 @@ def main():
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
+    hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
+
+    # Calculate coverage
+    hits_df['perc_cov'] = hits_df.apply(calculate_coverage, axis=1)
+
+    hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Fetch descriptions from the database
     target_ids = hits_df['target_id'].unique()
@@ -46,16 +52,17 @@ def main():
 
     # Assign descriptions and ECs to hits
     hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions[x]['description'])
-    hits_df['dbcan_EC'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
+    hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
 
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description', 'dbcan_EC']
-    modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description', 'dbcan_EC']
+    selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
+    modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
         # Rename the selected columns
         hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
+        print("Columns renamed successfully.")
 
         # Save the formatted output to CSV
         try:
@@ -65,6 +72,10 @@ def main():
             print(f"Error occurred while saving the formatted output: {e}")
 
     print("Process completed successfully!")
+
+if __name__ == "__main__":
+    main()
+
 
 if __name__ == "__main__":
     main()
