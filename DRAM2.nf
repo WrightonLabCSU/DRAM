@@ -56,6 +56,9 @@ include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF         } from './modules/annota
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM           } from './modules/annotate/mmseqs_search.nf'
 
 include { ADD_SQL_DESCRIPTIONS as SQL_UNIREF            } from './modules/annotate/add_sql_descriptions.nf'
+include { ADD_SQL_DESCRIPTIONS as SQL_VIRAL             } from './modules/annotate/add_sql_descriptions.nf'
+include { ADD_SQL_DESCRIPTIONS as SQL_MEROPS            } from './modules/annotate/add_sql_descriptions.nf'
+include { ADD_SQL_DESCRIPTIONS as SQL_KEGG              } from './modules/annotate/add_sql_descriptions.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
@@ -829,7 +832,10 @@ workflow {
         // Annotate according to the user-specified databases 
         if( annotate_kegg == 1 ){
             MMSEQS_SEARCH_KEGG( ch_mmseqs_query, ch_kegg_db, params.bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script )
-            ch_kegg_formatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
+            ch_kegg_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
+
+            SQL_KEGG(ch_kegg_unformatted, params.kegg_name, ch_sql_descriptions_db, ch_sql_parser)
+            ch_kegg_formatted = SQL_KEGG.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_kegg_formatted)
         }
@@ -918,7 +924,10 @@ workflow {
 
         if (annotate_merops == 1){
             MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_merops_db, params.bit_score_threshold, ch_dummy_sheet, params.merops_name, ch_mmseqs_script )
-            ch_merops_formatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
+            ch_merops_unformatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
+
+            SQL_MEROPS(ch_merops_unformatted, params.merops_name, ch_sql_descriptions_db, ch_sql_parser)
+            ch_merops_formatted = SQL_UNIREF.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
         }
@@ -928,7 +937,6 @@ workflow {
             ch_uniref_unformatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
 
             SQL_UNIREF(ch_uniref_unformatted, params.uniref_name, ch_sql_descriptions_db, ch_sql_parser)
-
             ch_uniref_formatted = SQL_UNIREF.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
@@ -948,8 +956,11 @@ workflow {
         }
 
         if (annotate_viral == 1){
-            MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, params.distill_dummy_sheet, params.viral_name, ch_mmseqs_script )
-            ch_viral_formatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
+            MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_viral_db, params.bit_score_threshold, ch_dummy_sheet, params.viral_name, ch_mmseqs_script )
+            ch_viral_unformatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
+
+            SQL_VIRAL(ch_viral_unformatted, params.viral_name, ch_sql_descriptions_db, ch_sql_parser)
+            ch_viral_formatted = SQL_UNIREF.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)
         }
