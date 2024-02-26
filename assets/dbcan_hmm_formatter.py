@@ -8,12 +8,6 @@ def get_sig_row(row):
 def calculate_bit_score(row):
     return row['full_score'] / row['domain_number']
 
-def calculate_rank(row):
-    return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
-
-def calculate_coverage(row):
-    return (row['target_end'] - row['target_start'])
-
 def fetch_descriptions_from_db(target_ids, db_file):
     conn = sqlite3.connect(db_file)
     descriptions = {}
@@ -28,6 +22,7 @@ def fetch_descriptions_from_db(target_ids, db_file):
     conn.close()
     return descriptions
 
+
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -37,35 +32,25 @@ def main():
     args = parser.parse_args()
 
     print("Loading HMM search results CSV file...")
-    hits_df = pd.read_csv(args.hits_csv, sep=",")  # Specify the separator as comma
+    hits_df = pd.read_csv(args.hits_csv)
     print(f"Loaded HMM search results from: {args.hits_csv}")
 
-    # Extracting desired columns
-    hits_df = hits_df[['query_id', 'target_id', 'full_evalue', 'full_score', 'domain_number', 'target_start', 'target_end', 'strandedness']]
-
     print("Processing HMM search results...")
-    # Calculate additional metrics
-    hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
-    hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
-    hits_df['perc_cov'] = hits_df.apply(calculate_coverage, axis=1)
+    hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
-    hits_df.dropna(subset=['score_rank'], inplace=True)
+    hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
 
     # Fetch descriptions from the database
-    target_ids = hits_df['target_id'].str.replace(r'.hmm', '', regex=True).unique()
+    target_ids = hits_df['target_id'].unique()
     descriptions = fetch_descriptions_from_db(target_ids, args.db_file)
 
     # Assign descriptions and ECs to hits
-    hits_df['dbcan_description'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True).map(lambda x: descriptions.get(x, {}).get('description', ""))
-    hits_df['dbcan_EC'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True).map(lambda x: descriptions.get(x, {}).get('ec', ""))
+    hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions[x]['description'])
+    hits_df['dbcan_EC'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
 
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'dbcan_description', 'dbcan_EC']
+    selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description', 'dbcan_EC']
     modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description', 'dbcan_EC']
-
-    # Extract start_position, end_position, and strandedness
-    hits_df['start_position'] = hits_df['target_start']
-    hits_df['end_position'] = hits_df['target_end']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
@@ -78,8 +63,6 @@ def main():
             print(f"Formatted output saved to: {args.output}")
         except Exception as e:
             print(f"Error occurred while saving the formatted output: {e}")
-    else:
-        print("Error: Columns missing in DataFrame.")
 
     print("Process completed successfully!")
 
