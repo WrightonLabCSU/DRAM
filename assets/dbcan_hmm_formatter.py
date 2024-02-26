@@ -15,16 +15,23 @@ def calculate_coverage(row):
     return (row['target_end'] - row['target_start']) / row['target_length']
 
 def fetch_descriptions_from_db(target_ids, db_file):
+    print("Connecting to the database...")
     conn = sqlite3.connect(db_file)
+    print("Connected to the database.")
+    
     descriptions = {}
     for target_id in target_ids:
+        print(f"Fetching description for target ID: {target_id}...")
         cursor = conn.execute("SELECT description FROM dbcan_description WHERE id=?", (target_id,))
         description = cursor.fetchone()
         if description:
             descriptions[target_id] = description[0]
         else:
             descriptions[target_id] = ""  # Handle case where description is not found
+        print(f"Description for target ID {target_id}: {descriptions[target_id]}")
+    
     conn.close()
+    print("Database connection closed.")
     return descriptions
 
 def main():
@@ -37,6 +44,7 @@ def main():
 
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
+    print(f"Loaded HMM search results from: {args.hits_csv}")
 
     print("Processing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
@@ -70,6 +78,7 @@ def main():
 
         # Save the formatted output to CSV
         hits_df[modified_columns].to_csv(args.output, index=False)
+        print(f"Formatted output saved to: {args.output}")
 
         print("Process completed successfully!")
 
