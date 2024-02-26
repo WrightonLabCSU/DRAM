@@ -1,5 +1,6 @@
 import pandas as pd
 import sqlite3
+import re
 from concurrent.futures import ThreadPoolExecutor
 import argparse
 
@@ -52,14 +53,11 @@ def extract_kegg_EC(description):
     ec_start = description.find("[EC:")
     if ec_start != -1:
         ec_end = description.find("]", ec_start)
-        ec_string = description[ec_start + 5:ec_end]  # Extract the string within []
-        # Split the string by whitespace and extract only the EC numbers
-        ec_numbers = [part for part in ec_string.split() if part.startswith("EC:")]
-        # Join the extracted EC numbers with whitespace
-        return " ".join(ec_numbers)
+        ec_text = description[ec_start + 4:ec_end]  # Skip the "[EC:" part
+        ec_numbers = re.findall(r'\b\d+\.\d+\.\d+\.\d+\b', ec_text)  # Extract EC numbers using regex
+        return ' '.join(ec_numbers)  # Join EC numbers with space separator
     else:
         return None
-
 
 
 def main():
