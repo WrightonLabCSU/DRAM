@@ -929,7 +929,7 @@ workflow {
 
             SQL_UNIREF(ch_uniref_unformatted, params.uniref_name, ch_sql_descriptions_db, ch_sql_parser)
 
-            ch_uniref_formatted = SQL_UNIREF.out.mmseqs_formatted_out
+            ch_uniref_formatted = SQL_UNIREF.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
         }
