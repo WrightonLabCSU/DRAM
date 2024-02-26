@@ -40,6 +40,13 @@ def main():
     print("First few lines of hits_df:")
     print(hits_df.head())
 
+    required_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'full_score', 'domain_number', 'target_length', 'target_start', 'target_end', 'query_ascession', 'target_ascession']
+    missing_columns = [col for col in required_columns if col not in hits_df.columns]
+    
+    if missing_columns:
+        print(f"Error: Missing columns in hits_df: {missing_columns}")
+        return
+
     print("Processing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
@@ -57,7 +64,7 @@ def main():
     print("NaN values dropped.")
 
     # Save the intermediate DataFrame with required columns for step 1
-    intermediate_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore']
+    intermediate_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'query_ascession', 'target_ascession']
     intermediate_df = hits_df[intermediate_columns].copy()
     print("Intermediate DataFrame created with required columns.")
 
