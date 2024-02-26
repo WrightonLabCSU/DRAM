@@ -297,7 +297,7 @@ if( params.annotate ){
 
     ch_dummy_sheet = file(params.distill_dummy_sheet)
 
-    ch_sql_parser = file(sql_parser_script)
+    ch_sql_parser = file(params.sql_parser_script)
 
     ch_sql_descriptions_db = file(params.sql_descriptions_db)
 
