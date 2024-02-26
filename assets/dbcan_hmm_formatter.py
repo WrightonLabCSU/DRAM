@@ -14,7 +14,6 @@ def calculate_bit_score(row):
 def calculate_coverage(row):
     return (row['target_end'] - row['target_start']) / row['target_length']
 
-
 def fetch_descriptions_from_db(target_ids, db_file):
     conn = sqlite3.connect(db_file)
     descriptions = {}
@@ -46,20 +45,27 @@ def main():
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
 
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
+    print("Bit scores calculated.")
+
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
+    print("Ranks calculated.")
 
     # Calculate coverage
     hits_df['perc_cov'] = hits_df.apply(calculate_coverage, axis=1)
+    print("Coverage calculated.")
 
     hits_df.dropna(subset=['score_rank'], inplace=True)
+    print("NaN values dropped.")
 
     # Fetch descriptions from the database
     target_ids = hits_df['target_id'].unique()
     descriptions = fetch_descriptions_from_db(target_ids, args.db_file)
+    print("Descriptions fetched from database.")
 
     # Assign descriptions and ECs to hits
     hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions[x]['description'])
     hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
+    print("Descriptions and ECs assigned to hits.")
 
     print("Saving the formatted output to CSV...")
     selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
@@ -79,10 +85,6 @@ def main():
             print(f"Error occurred while saving the formatted output: {e}")
 
     print("Process completed successfully!")
-
-if __name__ == "__main__":
-    main()
-
 
 if __name__ == "__main__":
     main()
