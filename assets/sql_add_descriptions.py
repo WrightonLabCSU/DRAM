@@ -45,15 +45,20 @@ def main():
     # Read CSV file in chunks
     reader = pd.read_csv(args.hits_csv, delimiter=',', chunksize=chunksize)
 
-    # Process chunks concurrently
-    with ThreadPoolExecutor() as executor:
-        processed_chunks = executor.map(lambda chunk: fetch_descriptions(chunk, args.db_name, args.db_file), reader)
+    # Process chunks
+    for i, chunk in enumerate(reader):
+        print("Processing Chunk", i+1)
+        print("Column Names:", chunk.columns)  # Print column names
+        print(chunk.head())  # Print first few rows of the chunk
+        # Process chunks concurrently
+        with ThreadPoolExecutor() as executor:
+            processed_chunks = executor.map(lambda chunk: fetch_descriptions(chunk, args.db_name, args.db_file), [chunk])
 
-    # Concatenate processed chunks into a single DataFrame
-    df = pd.concat(processed_chunks, ignore_index=True)
+        # Concatenate processed chunks into a single DataFrame
+        df = pd.concat(processed_chunks, ignore_index=True)
 
-    # Write updated DataFrame to new CSV file
-    df.to_csv(args.output, index=False)
+        # Write updated DataFrame to new CSV file
+        df.to_csv(args.output, index=False)
 
 if __name__ == "__main__":
     main()
