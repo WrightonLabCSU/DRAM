@@ -927,7 +927,7 @@ workflow {
             ch_merops_unformatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
 
             SQL_MEROPS(ch_merops_unformatted, params.merops_name, ch_sql_descriptions_db, ch_sql_parser)
-            ch_merops_formatted = SQL_UNIREF.out.sql_formatted_hits
+            ch_merops_formatted = SQL_MEROPS.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
         }
