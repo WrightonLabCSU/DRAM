@@ -7,7 +7,7 @@ import os
 def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
-    ids_column = "id"  # Use the correct column name
+    ids_column = f"{db_name}_id"  # Corrected to use the dynamic column name
     descriptions_column = f"{db_name}_description"
     
     # Establish connection to SQLite database
