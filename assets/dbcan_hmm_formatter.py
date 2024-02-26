@@ -28,7 +28,6 @@ def fetch_descriptions_from_db(target_ids, db_file):
     conn.close()
     return descriptions
 
-
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -38,34 +37,31 @@ def main():
     args = parser.parse_args()
 
     print("Loading HMM search results CSV file...")
-    hits_df = pd.read_csv(args.hits_csv)
+    hits_df = pd.read_csv(args.hits_csv, sep=",")  # Specify the separator as comma
     print(f"Loaded HMM search results from: {args.hits_csv}")
 
-    print("Processing HMM search results...")
-    hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
+    # Extracting desired columns
+    hits_df = hits_df[['query_id', 'target_id', 'full_evalue', 'full_score', 'domain_number', 'target_start', 'target_end']]
 
+    print("Processing HMM search results...")
+    # Calculate additional metrics
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
-
-    # Calculate coverage
     hits_df['perc_cov'] = hits_df.apply(calculate_coverage, axis=1)
 
     hits_df.dropna(subset=['score_rank'], inplace=True)
-
-    print("DataFrame after processing:")
-    print(hits_df.head())  # Print the first few rows of the DataFrame
 
     # Fetch descriptions from the database
     target_ids = hits_df['target_id'].unique()
     descriptions = fetch_descriptions_from_db(target_ids, args.db_file)
 
     # Assign descriptions and ECs to hits
-    hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions[x]['description'])
-    hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions[x]['ec'])
+    hits_df['dbcan_description'] = hits_df['target_id'].map(lambda x: descriptions.get(x, {}).get('description', ""))
+    hits_df['dbcan_ec'] = hits_df['target_id'].map(lambda x: descriptions.get(x, {}).get('ec', ""))
 
     print("Saving the formatted output to CSV...")
-    selected_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
-    modified_columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore', 'dbcan_description']
+    selected_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
+    modified_columns = ['query_id', 'target_id', 'score_rank', 'bitScore', 'dbcan_description']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
