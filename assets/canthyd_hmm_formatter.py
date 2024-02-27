@@ -52,7 +52,9 @@ def main():
 
     # Merge hits_df with ch_canthyd_ko_df
     merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
-
+    
+    print(merged_df.head())  # Add this line for debugging
+    
     # Extract values for canthyd_description
     merged_df['canthyd_description'] = merged_df['description'].fillna("")
 
