@@ -8,6 +8,7 @@ process DBCAN_HMM_FORMATTER {
     val( top_hit )
     val(db_name)
     file(ch_dbcan_formatter)
+    file(ch_sql_parser)
     file(ch_sql_descriptions_db)
 
     output:
