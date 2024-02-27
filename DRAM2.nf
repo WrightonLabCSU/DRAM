@@ -867,7 +867,7 @@ workflow {
             PARSE_HMM_DBCAN ( ch_dbcan_hmms, ch_parse_hmmsearch )
             ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
-            DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, params.dbcan_name, ch_dbcan_formatter, ch_sql_descriptions_db )
+            DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, params.dbcan_name, ch_dbcan_formatter, ch_sql_parser, ch_sql_descriptions_db )
             ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
@@ -949,7 +949,7 @@ workflow {
             PARSE_HMM_VOG ( ch_vog_hmms, ch_parse_hmmsearch )
             ch_vog_parsed = PARSE_HMM_VOG.out.parsed_hmm
 
-            VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, params.vogdb_name, params.dbcan_name, ch_vog_formatter, ch_sql_descriptions_db )
+            VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, params.vogdb_name, params.dbcan_name, ch_vog_formatter, ch_sql_parser, ch_sql_descriptions_db )
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_vog_formatted)
