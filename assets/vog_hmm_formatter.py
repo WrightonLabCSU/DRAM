@@ -24,7 +24,6 @@ def mark_best_hit_based_on_rank(df):
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
-    parser.add_argument("--ch_vog_list", type=str, help="Path to the ch_vog_list file.")
     parser.add_argument("--output", type=str, help="Path to the formatted output file.")
     args = parser.parse_args()
 
@@ -45,23 +44,16 @@ def main():
     # Mark the best hit for each unique query_id based on score_rank
     best_hits = best_hits.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-    # Load ch_vog_list file
-    print("Loading ch_vog_list file...")
-    ch_vog_list_df = pd.read_csv(args.ch_vog_list, sep="\t")
-
-    # Merge hits_df with ch_vog_list_df
-    merged_df = pd.merge(best_hits, ch_vog_list_df[['#GroupName', 'ProteinCount', 'SpeciesCount', 'FunctionalCategory', 'ConsensusFunctionalDescription']], left_on='target_id', right_on='#GroupName', how='left')
-
     # Add the additional columns to the output
-    merged_df['start_position'] = merged_df['query_start']
-    merged_df['end_position'] = merged_df['query_end']
-    merged_df['strandedness'] = merged_df['strandedness']
+    best_hits['start_position'] = best_hits['query_start']
+    best_hits['end_position'] = best_hits['query_end']
+    best_hits['strandedness'] = best_hits['strandedness']
 
     # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'ConsensusFunctionalDescription', 'ProteinCount', 'SpeciesCount', 'FunctionalCategory']]
+    final_output_df = best_hits[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore']]
 
     # Rename the columns
-    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'vog_id', 'vog_score_rank', 'vog_bitScore', 'vog_definition', 'vog_prot_count', 'vog_spec_count', 'vog_func_cat']
+    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'vog_id', 'vog_score_rank', 'vog_bitScore']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
