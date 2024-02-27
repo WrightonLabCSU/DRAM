@@ -17,6 +17,10 @@ def fetch_descriptions(chunk, db_name, db_file):
     
     # Adjust the column name to match the hits CSV file
     hits_ids_column = f"{db_name}_id"
+    
+    # Remove ".hmm" extension from dbcan_id values
+    chunk[hits_ids_column] = chunk[hits_ids_column].str.replace(".hmm", "")
+    
     ids = chunk[hits_ids_column].unique()
     query = f"SELECT {ids_column}, {descriptions_column}, {ec_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
@@ -44,6 +48,7 @@ def fetch_descriptions(chunk, db_name, db_file):
     conn.close()
     
     return chunk
+
 
 
 
