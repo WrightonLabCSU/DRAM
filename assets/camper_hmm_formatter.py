@@ -36,22 +36,14 @@ def clean_ec_numbers(ec_entry):
     result = '; '.join(cleaned_ec_numbers)
     return result
 
-import pandas as pd
-
-def rank_per_row(row):
-    r_a = row["A_rank"]
-    r_b = row["B_rank"]
-    score = row["bitScore"]
-    if score is None:
-        return None
-    if float(score) >= float(r_b):
-        return "C"
-    if pd.isnull(r_a):
-        return None
-    if float(score) >= float(r_a):
-        return "B"
-    return "A"
-
+def assign_camper_rank(row, a_rank, b_rank):
+    """Assign camper rank based on bit score and provided thresholds."""
+    if row['bitScore'] >= b_rank:
+        return 'C'
+    elif row['bitScore'] >= a_rank:
+        return 'B'
+    else:
+        return 'A'
 
 
 def main():
