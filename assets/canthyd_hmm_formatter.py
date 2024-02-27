@@ -11,9 +11,9 @@ def calculate_rank(row):
 
 def assign_canthyd_rank(row, a_rank, b_rank):
     """Assign canthyd_rank based on bit score and cutoffs."""
-    if row['canthyd_bitScore'] >= a_rank:
+    if row['bitScore'] >= a_rank:
         return 'A'
-    elif row['canthyd_bitScore'] >= b_rank:
+    elif row['bitScore'] >= b_rank:
         return 'B'
     else:
         return None
