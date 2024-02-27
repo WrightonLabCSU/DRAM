@@ -7,7 +7,7 @@ process ADD_BIN_QUALITY {
     file( ch_bin_quality )
 
     output:
-    path("combined_annotations.tsv"), emit: annots_bin_quality_out, optional: true
+    path("raw-annotations.tsv"), emit: annots_bin_quality_out, optional: true
 
     script:
     """
@@ -43,7 +43,7 @@ process ADD_BIN_QUALITY {
     merged_data.drop(columns=[first_column_name], inplace=True)
 
     # Save the updated data to annots_bin_quality.tsv
-    output_path = "raw_annotations.tsv"
+    output_path = "raw-annotations.tsv"
     merged_data.to_csv(output_path, sep='\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
