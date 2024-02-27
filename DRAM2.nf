@@ -918,7 +918,7 @@ workflow {
             PARSE_HMM_FEGENIE ( ch_fegenie_hmms, ch_parse_hmmsearch )
             ch_fegenie_parsed = PARSE_HMM_FEGENIE.out.parsed_hmm
 
-            FEGENIE_HMM_FORMATTER ( ch_fegenie_parsed, ch_fegenieformatter )
+            FEGENIE_HMM_FORMATTER ( ch_fegenie_parsed, ch_fegenie_formatter )
             ch_fegenie_formatted = FEGENIE_HMM_FORMATTER.out.fegenie_formatted_hits
             formattedOutputChannels = formattedOutputChannels.mix(ch_fegenie_formatted)
         }
