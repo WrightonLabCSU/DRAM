@@ -51,7 +51,7 @@ def main():
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
     # Merge hits_df with ch_canthyd_ko_df
-    merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['knum', 'definition']], left_on='target_id', right_on='knum', how='left')
+    merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'definition']], left_on='target_id', right_on='hmm_name', how='left')
 
     # Extract values for canthyd_definition and canthyd_EC
     merged_df['canthyd_definition'] = merged_df['definition'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
