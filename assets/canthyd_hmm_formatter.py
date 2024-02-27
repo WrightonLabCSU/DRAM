@@ -11,12 +11,13 @@ def calculate_rank(row):
 
 def assign_canthyd_rank(row, a_rank, b_rank):
     """Assign canthyd rank based on bit score and provided thresholds."""
-    if row['canthyd_bitScore'] <= a_rank:
+    if row['bitScore'] <= a_rank:
         return 'A'
-    elif row['canthyd_bitScore'] > a_rank and row['canthyd_bitScore'] <= b_rank:
+    elif row['bitScore'] > a_rank and row['bitScore'] <= b_rank:
         return 'B'
     else:
         return 'C'
+
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
