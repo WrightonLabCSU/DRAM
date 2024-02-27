@@ -18,7 +18,8 @@ def assign_canthyd_rank(row, a_rank, b_rank):
     elif row['bitScore'] >= b_rank:
         return 'B'
     else:
-        return 'C'
+        return None
+
 
 
 def main():
