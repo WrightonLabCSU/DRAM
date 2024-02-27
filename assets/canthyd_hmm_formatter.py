@@ -58,6 +58,9 @@ def main():
     # Extract values for canthyd_description
     merged_df['canthyd_description'] = merged_df['description']
 
+    print(merged_df.head())  # Print the first few rows of the merged DataFrame
+
+
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
     merged_df['end_position'] = merged_df['query_end']
