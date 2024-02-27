@@ -7,7 +7,6 @@ process DBCAN_HMM_FORMATTER {
     tuple val( sample ), path( hits_file )
     val( top_hit )
     val(db_name)
-    file(ch_sql_descriptions_db)
     file(ch_dbcan_formatter)
     file(ch_sql_descriptions_db)
 
