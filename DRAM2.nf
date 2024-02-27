@@ -905,7 +905,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
         }
-        // NOT DONE
+        // NOT DONE - HMM
         if (annotate_fegenie == 1){
             formattedOutputChannels = formattedOutputChannels.mix(ch_fegenie_formatted)
         }
@@ -941,7 +941,7 @@ workflow {
         if (annotate_heme == 1){
             formattedOutputChannels =  formattedOutputChannels.mix(ch_heme_formatted)
         }
-        // Not done - HMM
+
         if (annotate_sulfur == 1){
             HMM_SEARCH_SULFUR ( ch_called_proteins,  params.sulfur_e_value, ch_sulfur_db )
             ch_sulfur_hmms = HMM_SEARCH_SULFUR.out.hmm_search_out
