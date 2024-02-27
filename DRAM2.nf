@@ -305,7 +305,7 @@ if( params.annotate ){
     ch_camper_formatter = file(params.camper_hmm_formatter_script)
     ch_canthyd_formatter = file(params.canthyd_hmm_formatter_script)
     ch_sulfur_formatter = file(params.sulfur_hmm_formatter_script)
-    ch_fegenie_formatter = file(params.sulfur_hmm_formatter_script)
+    ch_fegenie_formatter = file(params.fegenie_hmm_formatter_script)
 
     ch_kofam_list = file(params.kofam_list)
     ch_canthyd_list = file(params.cant_hyd_hmm_list)
