@@ -51,11 +51,11 @@ def main():
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
     # Merge hits_df with ch_canthyd_ko_df
-    merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'definition']], left_on='target_id', right_on='hmm_name', how='left')
+    merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
-    # Extract values for canthyd_definition and canthyd_EC
-    merged_df['canthyd_definition'] = merged_df['definition'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
-    merged_df['canthyd_EC'] = merged_df['definition'].apply(lambda x: clean_ec_numbers(str(x)) if pd.notna(x) else '')
+    # Extract values for canthyd_description and canthyd_EC
+    merged_df['canthyd_description'] = merged_df['description'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
+    merged_df['canthyd_EC'] = merged_df['description'].apply(lambda x: clean_ec_numbers(str(x)) if pd.notna(x) else '')
 
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
@@ -63,10 +63,10 @@ def main():
     merged_df['strandedness'] = merged_df['strandedness']
 
     # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_definition']]
+    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description']]
 
     # Rename the columns
-    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'canthyd_id', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_definition']
+    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'canthyd_id', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
