@@ -10,39 +10,41 @@ def fetch_descriptions(chunk, db_name, db_file):
     # Use "id" as the column name for fetching IDs from the hits CSV file
     ids_column = "id"
     descriptions_column = "description"
+    ec_column = "ec"  # Added for fetching EC numbers
     
     # Establish connection to SQLite database
     conn = sqlite3.connect(db_file)
     
     # Adjust the column name to match the hits CSV file
     hits_ids_column = f"{db_name}_id"
-    # Remove ".hmm" extension from dbcan_id values
-    chunk[hits_ids_column] = chunk[hits_ids_column].str.replace(r'\.hmm$', '', regex=True)
     ids = chunk[hits_ids_column].unique()
-    query = f"SELECT {ids_column}, {descriptions_column}, ec FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
+    query = f"SELECT {ids_column}, {descriptions_column}, {ec_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
     cursor = conn.cursor()
     cursor.execute(query, ids)
     results = cursor.fetchall()
     
     descriptions_dict = {row[0]: (row[1], row[2]) for row in results}
-    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict[x][0])
+    
+    # Update chunk with descriptions
+    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[0])
     
     # Special processing for "kegg" database
     if db_name == "kegg":
-        # Add additional output columns
+        # Add additional output columns for KEGG orthology and EC numbers
         chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_orthology(x))
         chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_EC(x))
     
     # Special processing for "dbcan" database
     if db_name == "dbcan":
-        # Add additional output column
-        chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: descriptions_dict[x][1])
+        # Add additional output column for EC numbers
+        chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[1])
     
     # Close database connection
     conn.close()
     
     return chunk
+
 
 
 
