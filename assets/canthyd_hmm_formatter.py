@@ -9,6 +9,15 @@ def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
+def assign_canthyd_rank(row, a_rank, b_rank):
+    """Assign canthyd_rank based on bit score and cutoffs."""
+    if row['canthyd_bitScore'] >= a_rank:
+        return 'A'
+    elif row['canthyd_bitScore'] >= b_rank:
+        return 'B'
+    else:
+        return None
+
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -37,7 +46,7 @@ def main():
 
     # Merge hits_df with ch_canthyd_ko_df, selecting only necessary columns from ch_canthyd_ko_df
     print("Merging dataframes...")
-    merged_df = pd.merge(hits_df, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
+    merged_df = pd.merge(hits_df, ch_canthyd_ko_df[['hmm_name', 'A_rank', 'B_rank', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
     # Drop the redundant 'hmm_name' column after merging
     merged_df.drop(columns=['hmm_name'], inplace=True)
@@ -50,11 +59,14 @@ def main():
     merged_df['end_position'] = merged_df['query_end']
     merged_df['strandedness'] = merged_df['strandedness']
 
+    # Assign canthyd_rank based on bit score and cutoffs
+    merged_df['canthyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
+
     # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description']]
+    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description', 'canthyd_rank']]
 
     # Rename the columns
-    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'canthyd_id', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description']
+    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'canthyd_id', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description', 'canthyd_rank']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)

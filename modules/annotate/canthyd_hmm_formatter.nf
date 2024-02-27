@@ -10,12 +10,12 @@ process CANTHYD_HMM_FORMATTER {
     file( ch_canthyd_formatter )
 
     output:
-    tuple val( sample ), path ( "${sample}_formatted_canthyd_hits.out" ), emit: canthyd_formatted_hits
+    tuple val( sample ), path ( "${sample}_formatted_canthyd_hits.csv" ), emit: canthyd_formatted_hits
 
 
     script:
     """
-    python ${ch_canthyd_formatter} --hits_csv ${hits_file} --ch_canthyd_ko ${ch_canthyd_list} --output "${sample}_formatted_canthyd_hits.out"
+    python ${ch_canthyd_formatter} --hits_csv ${hits_file} --ch_canthyd_ko ${ch_canthyd_list} --output "${sample}_formatted_canthyd_hits.csv"
     
     """
 }
