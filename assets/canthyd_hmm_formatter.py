@@ -51,8 +51,13 @@ def main():
     # Load ch_canthyd_ko file
     print("Loading ch_canthyd_ko file...")
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
-    print(ch_canthyd_ko_df.columns)  # Print column names to verify if 'description' column is present
 
+    # Check if 'description' column exists
+    if 'description' not in ch_canthyd_ko_df.columns:
+        print("Error: 'description' column not found in ch_canthyd_ko file.")
+        return
+
+    # Proceed with merging
     print("Merging dataframes...")
     merged_df = pd.merge(best_hits, ch_canthyd_ko_df, left_on='target_id', right_on='hmm_name', how='left')
 
@@ -60,6 +65,7 @@ def main():
     merged_df['canthyd_description'] = merged_df['description']
 
     print(merged_df.head())  # Print the first few rows of the merged DataFrame
+
 
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
