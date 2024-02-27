@@ -10,12 +10,12 @@ process CAMPER_HMM_FORMATTER {
     file( ch_camper_formatter )
 
     output:
-    tuple val( sample ), path ( "${sample}_formatted_camper_hits.out" ), emit: camper_formatted_hits
+    tuple val( sample ), path ( "${sample}_formatted_camper_hits.csv" ), emit: camper_formatted_hits
 
 
     script:
     """
-    python ${ch_camper_formatter} --hits_csv ${hits_file} --ch_camper_list ${ch_camper_list} --output "${sample}_formatted_camper_hits.out"
+    python ${ch_camper_formatter} --hits_csv ${hits_file} --ch_camper_list ${ch_camper_list} --output "${sample}_formatted_camper_hits.csv"
     
     """
 }

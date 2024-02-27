@@ -75,6 +75,9 @@ include { PARSE_HMM as PARSE_HMM_CAMPER                 } from './modules/annota
 include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_CANTHYD                } from './modules/annotate/parse_hmmsearch.nf'
 
+include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_SULFUR                 } from './modules/annotate/parse_hmmsearch.nf'
+
 include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
 include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
 include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
@@ -82,6 +85,7 @@ include { DBCAN_HMM_FORMATTER                           } from './modules/annota
 include { VOG_HMM_FORMATTER                             } from './modules/annotate/vog_hmm_formatter.nf'
 include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
 include { CANTHYD_HMM_FORMATTER                         } from './modules/annotate/canthyd_hmm_formatter.nf'
+include { SULFUR_HMM_FORMATTER                          } from './modules/annotate/sulfur_hmm_formatter.nf'
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
@@ -296,7 +300,8 @@ if( params.annotate ){
     ch_vog_formatter = file(params.vog_hmm_formatter_script)
     ch_camper_formatter = file(params.camper_hmm_formatter_script)
     ch_canthyd_formatter = file(params.canthyd_hmm_formatter_script)
-
+    ch_sulfur_formatter = file(params.sulfur_hmm_formatter_script)
+    
     ch_kofam_list = file(params.kofam_list)
     ch_canthyd_list = file(params.cant_hyd_hmm_list)
     ch_dbcan_fam = file(params.dbcan_fam_activities)
@@ -932,12 +937,21 @@ workflow {
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_hmm_formatted)
 
         }
-
+        // Not done - not sure what this is?
         if (annotate_heme == 1){
             formattedOutputChannels =  formattedOutputChannels.mix(ch_heme_formatted)
         }
-
+        // Not done - HMM
         if (annotate_sulfur == 1){
+            HMM_SEARCH_SULFUR ( ch_called_proteins,  params.sulfur_e_value, ch_sulfurdb )
+            ch_sulfur_hmms = HMM_SEARCH_SULFUR.out.hmm_search_out
+
+            PARSE_HMM_SULFUR ( ch_sulfur_hmms, ch_parse_hmmsearch )
+            ch_sulfur_parsed = PARSE_HMM_SULFUR.out.parsed_hmm
+
+            SULFUR_HMM_FORMATTER ( ch_sulfur_parsed, ch_sulfur_formatter )
+            ch_sulfur_formatted = SULFUR_HMM_FORMATTER.out.sulfur_formatted_hits
+
             formattedOutputChannels = formattedOutputChannels.mix(ch_sulfur_formatted)
         }
 

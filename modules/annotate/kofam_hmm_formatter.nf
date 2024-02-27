@@ -10,12 +10,12 @@ process KOFAM_HMM_FORMATTER {
     file( ch_kofam_formatter )
 
     output:
-    tuple val( sample ), path ( "${sample}_formatted_kofam_hits.out" ), emit: kofam_formatted_hits
+    tuple val( sample ), path ( "${sample}_formatted_kofam_hits.csv" ), emit: kofam_formatted_hits
 
 
     script:
     """
-    python ${ch_kofam_formatter} --hits_csv ${hits_file} --ch_kofam_ko ${ch_kofam_list} --output "${sample}_formatted_kofam_hits.out"
+    python ${ch_kofam_formatter} --hits_csv ${hits_file} --ch_kofam_ko ${ch_kofam_list} --output "${sample}_formatted_kofam_hits.csv"
     
     """
 }
