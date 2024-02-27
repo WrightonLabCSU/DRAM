@@ -54,8 +54,8 @@ def main():
     merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
     # Extract values for canthyd_description and canthyd_EC
-    merged_df['canthyd_description'] = merged_df['description'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
-    merged_df['canthyd_EC'] = merged_df['description'].apply(lambda x: clean_ec_numbers(str(x)) if pd.notna(x) else '')
+    merged_df['canthyd_description'] = merged_df['description']
+
 
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
