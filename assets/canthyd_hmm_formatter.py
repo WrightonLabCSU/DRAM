@@ -52,13 +52,19 @@ def main():
     # Merge hits_df with ch_canthyd_ko_df
     merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
+    # Check for missing values after merge
+    if 'description' in merged_df.columns:
+        merged_df['canthyd_description'] = merged_df['description']
+    else:
+        merged_df['canthyd_description'] = ""
+
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
     merged_df['end_position'] = merged_df['query_end']
     merged_df['strandedness'] = merged_df['strandedness']
 
     # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'description']]
+    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description']]
 
     # Rename the columns
     final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'canthyd_id', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description']
