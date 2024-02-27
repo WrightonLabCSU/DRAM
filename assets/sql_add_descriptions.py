@@ -10,7 +10,6 @@ def fetch_descriptions(chunk, db_name, db_file):
     # Use "id" as the column name for fetching IDs from the hits CSV file
     ids_column = "id"
     descriptions_column = "description"
-    ec_column = "ec"  # Added for fetching EC numbers
     
     # Establish connection to SQLite database
     conn = sqlite3.connect(db_file)
@@ -19,16 +18,25 @@ def fetch_descriptions(chunk, db_name, db_file):
     hits_ids_column = f"{db_name}_id"
     
     # Remove ".hmm" extension from dbcan_id values
-    chunk[hits_ids_column] = chunk[hits_ids_column].str.replace(".hmm", "")
+    if db_name == "dbcan":
+        chunk[hits_ids_column] = chunk[hits_ids_column].str.replace(".hmm", "")
     
     ids = chunk[hits_ids_column].unique()
-    query = f"SELECT {ids_column}, {descriptions_column}, {ec_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
+    
+    # Construct the query based on the database name
+    if db_name == "dbcan":
+        query = f"SELECT {ids_column}, {descriptions_column}, ec FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
+    else:
+        query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
     cursor = conn.cursor()
     cursor.execute(query, ids)
     results = cursor.fetchall()
     
-    descriptions_dict = {row[0]: (row[1], row[2]) for row in results}
+    if db_name == "dbcan":
+        descriptions_dict = {row[0]: (row[1], row[2]) for row in results}
+    else:
+        descriptions_dict = {row[0]: (row[1], "") for row in results}  # For other databases, EC column is empty
     
     # Update chunk with descriptions
     chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[0])
@@ -48,6 +56,7 @@ def fetch_descriptions(chunk, db_name, db_file):
     conn.close()
     
     return chunk
+
 
 
 
