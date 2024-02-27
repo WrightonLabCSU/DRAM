@@ -17,14 +17,14 @@ def fetch_descriptions(chunk, db_name, db_file):
     # Adjust the column name to match the hits CSV file
     hits_ids_column = f"{db_name}_id"
     ids = chunk[hits_ids_column].unique()
-    query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
+    query = f"SELECT {ids_column}, {descriptions_column}, ec FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
     cursor = conn.cursor()
     cursor.execute(query, ids)
     results = cursor.fetchall()
     
-    descriptions_dict = {row[0]: row[1] for row in results}
-    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(descriptions_dict)
+    descriptions_dict = {row[0]: (row[1], row[2]) for row in results}
+    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict[x][0])
     
     # Special processing for "kegg" database
     if db_name == "kegg":
@@ -32,10 +32,16 @@ def fetch_descriptions(chunk, db_name, db_file):
         chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_orthology(x))
         chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_EC(x))
     
+    # Special processing for "dbcan" database
+    if db_name == "dbcan":
+        # Add additional output column
+        chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: descriptions_dict[x][1])
+    
     # Close database connection
     conn.close()
     
     return chunk
+
 
 
 def extract_kegg_orthology(description):

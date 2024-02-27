@@ -6,16 +6,22 @@ process DBCAN_HMM_FORMATTER {
     input:
     tuple val( sample ), path( hits_file )
     val( top_hit )
+    val(db_name)
     file(ch_sql_descriptions_db)
     file(ch_dbcan_formatter)
+    file(ch_sql_descriptions_db)
 
     output:
     tuple val( sample ), path ( "${sample}_formatted_dbcan_hits.csv" ), emit: dbcan_formatted_hits
+    tuple val(sample), path("${sample}_sql_formatted_${db_name}_hits.csv"), emit: sql_formatted_hits
 
 
     script:
     """
     python ${ch_dbcan_formatter} --hits_csv ${hits_file} --output "${sample}_formatted_dbcan_hits.csv" --db_file ${ch_sql_descriptions_db}
+
+    python ${ch_sql_parser} --hits_csv "${sample}_formatted_dbcan_hits.csv" --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db}
+
     
     """
 }
