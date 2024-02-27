@@ -6,7 +6,7 @@ process CANTHYD_HMM_FORMATTER {
     input:
     tuple val( sample ), path( hits_file )
     val( top_hit )
-    file( ch_canthd_list )
+    file( ch_canthyd_list )
     file( ch_canthyd_formatter )
 
     output:
