@@ -72,12 +72,16 @@ include { PARSE_HMM as PARSE_HMM_VOG                    } from './modules/annota
 include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_CAMPER                 } from './modules/annotate/parse_hmmsearch.nf'
 
+include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_CANTHYD                } from './modules/annotate/parse_hmmsearch.nf'
+
 include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
 include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
 include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
 include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
 include { VOG_HMM_FORMATTER                             } from './modules/annotate/vog_hmm_formatter.nf'
 include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
+include { CANTHYD_HMM_FORMATTER                         } from './modules/annotate/canthyd_hmm_formatter.nf'
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
@@ -207,7 +211,7 @@ if( params.use_fegenie){
 if( params.use_methyl ){
     annotate_methyl = 1
 }
-if( params.use_cant_hyd ){
+if( params.use_canthyd ){
     annotate_canthyd = 1
 }
 if( params.use_heme ){
@@ -291,8 +295,10 @@ if( params.annotate ){
     ch_dbcan_formatter = file(params.dbcan_hmm_formatter_script)
     ch_vog_formatter = file(params.vog_hmm_formatter_script)
     ch_camper_formatter = file(params.camper_hmm_formatter_script)
+    ch_canthyd_formatter = file(params.canthyd_hmm_formatter_script)
 
     ch_kofam_list = file(params.kofam_list)
+    ch_canthyd_list = file(params.cant_hyd_hmm_list)
     ch_dbcan_fam = file(params.dbcan_fam_activities)
     ch_dbcan_subfam = file(params.dbcan_subfam_activities)
     ch_vog_list = file(params.vog_list)
@@ -852,6 +858,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_kofam_formatted)
         }
+        //NOT DONE
         if( annotate_pfam == 1 ){
             MMSEQS_SEARCH_PFAM( ch_mmseqs_query, ch_pfam_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.pfam_name, ch_mmseqs_script )
             ch_uniref_formatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
@@ -892,7 +899,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
         }
-
+        // NOT DONE
         if (annotate_fegenie == 1){
             formattedOutputChannels = formattedOutputChannels.mix(ch_fegenie_formatted)
         }
@@ -912,6 +919,17 @@ workflow {
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_mmseqs_formatted)
 
             //HMM
+            HMM_SEARCH_CANTHYD ( ch_called_proteins, params.canthyd_e_value , ch_canthyd_hmm_db)
+            ch_camper_hmms = HMM_SEARCH_CANTHYD.out.hmm_search_out
+
+            PARSE_HMM_CANTHYD ( ch_canthyd_hmms, ch_parse_hmmsearch )
+            ch_canthyd_parsed = PARSE_HMM_CANTHYD.out.parsed_hmm
+
+            CANTHYD_HMM_FORMATTER ( ch_canthydparsed, params.canthyd_top_hit, ch_canthyd_hmm_list, ch_canthyd_formatter )
+            ch_canthyd_hmm_formatted = CANTHYD_HMM_FORMATTER.out.canthyd_formatted_hits
+            
+            formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_hmm_formatted)
+
         }
 
         if (annotate_heme == 1){
