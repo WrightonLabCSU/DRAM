@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import sys
 import pandas as pd
 
@@ -20,8 +19,8 @@ def parse_hmmsearch_domtblout(file):
 
     hmmsearch_frame = pd.DataFrame(column_data)
     
-    # Add the "strandedness" column
-    hmmsearch_frame['strandedness'] = hmmsearch_frame.apply(lambda row: 1 if row['description'].endswith('+') else -1, axis=1)
+    # Extract the sign part from the description column to determine strandedness
+    hmmsearch_frame['strandedness'] = hmmsearch_frame['description'].apply(lambda x: 1 if x.endswith('+') else -1)
 
     return hmmsearch_frame
 
