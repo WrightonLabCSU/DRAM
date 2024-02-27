@@ -925,7 +925,7 @@ workflow {
             PARSE_HMM_CANTHYD ( ch_canthyd_hmms, ch_parse_hmmsearch )
             ch_canthyd_parsed = PARSE_HMM_CANTHYD.out.parsed_hmm
 
-            CANTHYD_HMM_FORMATTER ( ch_canthydparsed, params.canthyd_top_hit, ch_canthyd_hmm_list, ch_canthyd_formatter )
+            CANTHYD_HMM_FORMATTER ( ch_canthyd_parsed, params.canthyd_top_hit, ch_canthyd_hmm_list, ch_canthyd_formatter )
             ch_canthyd_hmm_formatted = CANTHYD_HMM_FORMATTER.out.canthyd_formatted_hits
             
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_hmm_formatted)
