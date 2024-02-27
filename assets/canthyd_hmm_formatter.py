@@ -11,14 +11,13 @@ def calculate_rank(row):
 
 def assign_canthyd_rank(row, a_rank, b_rank):
     """Assign canthyd rank based on bit score and provided thresholds."""
-    if pd.isna(a_rank) or pd.isna(b_rank):
-        return ''
-    if row['bitScore'] <= a_rank:
-        return 'A'
-    elif row['bitScore'] > a_rank and row['bitScore'] <= b_rank:
+    if row['bitScore'] >= b_rank:
+        return 'C'
+    elif row['bitScore'] >= a_rank:
         return 'B'
     else:
-        return 'C'
+        return 'A'
+
 
 
 
