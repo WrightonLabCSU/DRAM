@@ -920,7 +920,7 @@ workflow {
 
             //HMM
             HMM_SEARCH_CANTHYD ( ch_called_proteins, params.canthyd_e_value , ch_canthyd_hmm_db)
-            ch_camper_hmms = HMM_SEARCH_CANTHYD.out.hmm_search_out
+            ch_canthyd_hmms = HMM_SEARCH_CANTHYD.out.hmm_search_out
 
             PARSE_HMM_CANTHYD ( ch_canthyd_hmms, ch_parse_hmmsearch )
             ch_canthyd_parsed = PARSE_HMM_CANTHYD.out.parsed_hmm
