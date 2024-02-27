@@ -303,6 +303,7 @@ if( params.annotate ){
     ch_dbcan_subfam = file(params.dbcan_subfam_activities)
     ch_vog_list = file(params.vog_list)
     ch_camper_hmm_list = file(params.camper_hmm_list)
+    ch_canthyd_hmm_list = file(params.cant_hyd_hmm_list)
 
     ch_dummy_sheet = file(params.distill_dummy_sheet)
 
