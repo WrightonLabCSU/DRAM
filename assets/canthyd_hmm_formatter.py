@@ -22,6 +22,20 @@ def mark_best_hit_based_on_rank(df):
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
+def clean_ec_numbers(ec_entry):
+    """Clean up EC numbers by removing '[EC:' and ']'. Replace spaces between EC numbers with ';'.
+
+    Args:
+        ec_entry (str): The input string containing EC numbers.
+
+    Returns:
+        str: The cleaned EC numbers.
+    """
+    ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
+    cleaned_ec_numbers = [re.sub(r'[^0-9.-]', '', ec) for match in ec_matches for ec in match.split()]
+    result = '; '.join(cleaned_ec_numbers)
+    return result
+
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -51,10 +65,8 @@ def main():
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
     # Merge hits_df with ch_canthyd_ko_df
-    merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
-    
-    print(merged_df.head())  # Add this line for debugging
-    
+    merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left', suffixes=('', '_right'))
+
     # Extract values for canthyd_description
     merged_df['canthyd_description'] = merged_df['description'].fillna("")
 
