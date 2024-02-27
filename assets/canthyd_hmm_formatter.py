@@ -31,16 +31,17 @@ def main():
     print("Loading ch_canthyd_ko file...")
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
+    # Check available columns in ch_canthyd_ko_df
+    print("Columns in ch_canthyd_ko_df:", ch_canthyd_ko_df.columns)
+
     # Check if 'description' column exists in ch_canthyd_ko_df
     if 'description' not in ch_canthyd_ko_df.columns:
         print("Error: 'description' column not found in ch_canthyd_ko file.")
-        print("Available columns:", ch_canthyd_ko_df.columns)
         return
 
     # Check if 'hmm_name' column exists in ch_canthyd_ko_df
     if 'hmm_name' not in ch_canthyd_ko_df.columns:
         print("Error: 'hmm_name' column not found in ch_canthyd_ko file.")
-        print("Available columns:", ch_canthyd_ko_df.columns)
         return
 
     # Merge hits_df with ch_canthyd_ko_df
