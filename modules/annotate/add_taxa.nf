@@ -39,7 +39,7 @@ process ADD_TAXA {
     merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
 
     # Save the updated data to annots_taxa.tsv
-    output_path = "combined_annotations.tsv"
+    output_path = "raw_annotations.tsv"
     merged_data.to_csv(output_path, sep='\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
