@@ -301,6 +301,7 @@ if( params.annotate ){
     ch_camper_formatter = file(params.camper_hmm_formatter_script)
     ch_canthyd_formatter = file(params.canthyd_hmm_formatter_script)
     ch_sulfur_formatter = file(params.sulfur_hmm_formatter_script)
+    ch_fegenie_formatter = file(params.sulfur_hmm_formatter_script)
 
     ch_kofam_list = file(params.kofam_list)
     ch_canthyd_list = file(params.cant_hyd_hmm_list)
@@ -907,6 +908,14 @@ workflow {
         }
         // NOT DONE - HMM
         if (annotate_fegenie == 1){
+            HMM_SEARCH_FEGENIE ( ch_called_proteins,  params.fegenie_e_value, ch_fegenie_db )
+            ch_fegenie_hmms = HMM_SEARCH_FEGENIE.out.hmm_search_out
+
+            PARSE_HMM_FEGENIE ( ch_fegenie_hmms, ch_parse_hmmsearch )
+            ch_fegenie_parsed = PARSE_HMM_FEGENIE.out.parsed_hmm
+
+            FEGENIE_HMM_FORMATTER ( ch_fegenie_parsed, ch_fegenieformatter )
+            ch_fegenie_formatted = FEGENIE_HMM_FORMATTER.out.fegenie_formatted_hits
             formattedOutputChannels = formattedOutputChannels.mix(ch_fegenie_formatted)
         }
 
