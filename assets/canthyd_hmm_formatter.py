@@ -18,8 +18,10 @@ def find_best_canthyd_hit(df):
 def mark_best_hit_based_on_rank(df):
     """Mark the best hit for each unique query_id based on score_rank."""
     best_hit_idx = df["score_rank"].idxmin()
-    df.at[best_hit_idx, "best_hit"] = True
-    return df
+    df_copy = df.copy()  # Make a copy to avoid modifying the original DataFrame
+    df_copy.at[best_hit_idx, "best_hit"] = True
+    return df_copy
+
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
