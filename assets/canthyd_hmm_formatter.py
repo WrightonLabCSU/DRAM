@@ -10,13 +10,13 @@ def calculate_rank(row):
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
 def assign_canthyd_rank(row, a_rank, b_rank):
-    """Assign canthyd_rank based on bit score and cutoffs."""
-    if row['bitScore'] >= a_rank:
+    """Assign canthyd rank based on bit score and provided thresholds."""
+    if row['canthyd_bitScore'] <= a_rank:
         return 'A'
-    elif row['bitScore'] >= b_rank:
+    elif row['canthyd_bitScore'] > a_rank and row['canthyd_bitScore'] <= b_rank:
         return 'B'
     else:
-        return None
+        return 'C'
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
@@ -54,13 +54,13 @@ def main():
     # Extract values for canthyd_description
     merged_df['canthyd_description'] = merged_df['description']
 
+    # Calculate canthyd_rank
+    merged_df['canthyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
+
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
     merged_df['end_position'] = merged_df['query_end']
     merged_df['strandedness'] = merged_df['strandedness']
-
-    # Assign canthyd_rank based on bit score and cutoffs
-    merged_df['canthyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
 
     # Keep only the relevant columns in the final output
     final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description', 'canthyd_rank']]
