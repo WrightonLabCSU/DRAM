@@ -48,6 +48,9 @@ def main():
     print("Merging dataframes...")
     merged_df = pd.merge(hits_df, ch_canthyd_ko_df, left_on='target_id', right_on='hmm_name', how='left')
 
+    # Print columns of the merged dataframe
+    print("Columns in merged_df:", merged_df.columns)
+
     # Extract values for canthyd_description
     merged_df['canthyd_description'] = merged_df['description']
 
