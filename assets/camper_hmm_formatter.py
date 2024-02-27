@@ -36,6 +36,15 @@ def clean_ec_numbers(ec_entry):
     result = '; '.join(cleaned_ec_numbers)
     return result
 
+def assign_camper_rank(row, a_rank, b_rank):
+    """Assign camper rank based on bit score and provided thresholds."""
+    if row['bitScore'] <= a_rank:
+        return 'A'
+    elif row['bitScore'] > a_rank and row['bitScore'] <= b_rank:
+        return 'B'
+    else:
+        return 'C'
+
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -70,16 +79,19 @@ def main():
     # Extract values for camper_definition
     merged_df['camper_definition'] = merged_df['definition']
 
+    # Calculate camper_rank
+    merged_df['camper_rank'] = merged_df.apply(lambda row: assign_camper_rank(row, row['A_rank'], row['B_rank']), axis=1)
+
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
     merged_df['end_position'] = merged_df['query_end']
     merged_df['strandedness'] = merged_df['strandedness']
 
     # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'camper_definition', 'A_rank', 'B_rank']]
+    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'camper_definition', 'camper_rank']]
 
     # Rename the columns
-    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'camper_id', 'camper_score_rank', 'camper_bitScore', 'camper_definition', 'camper_A_rank', 'camper_B_rank']
+    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'camper_id', 'camper_score_rank', 'camper_bitScore', 'camper_definition', 'camper_rank']
 
     # Perform EC cleaning
     final_output_df['camper_EC'] = final_output_df['camper_definition'].apply(clean_ec_numbers)
