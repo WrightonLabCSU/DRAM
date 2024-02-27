@@ -53,7 +53,7 @@ def main():
     final_output_df = best_hits[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore']]
 
     # Rename the columns
-    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'vog_id', 'vog_score_rank', 'vog_bitScore']
+    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'vogdb_id', 'vog_score_rank', 'vog_bitScore']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
