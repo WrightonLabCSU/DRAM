@@ -1,6 +1,5 @@
 import pandas as pd
 import argparse
-import re
 
 def calculate_bit_score(row):
     """Calculate bit score for each row."""
@@ -53,9 +52,11 @@ def main():
     # Merge hits_df with ch_canthyd_ko_df
     merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
-    # Extract values for canthyd_description and canthyd_EC
-    merged_df['canthyd_description'] = merged_df['description']
-
+    # Check for missing values after merge
+    if 'description' in merged_df.columns:
+        merged_df['canthyd_description'] = merged_df['description']
+    else:
+        merged_df['canthyd_description'] = ""
 
     # Add the additional columns to the output
     merged_df['start_position'] = merged_df['query_start']
