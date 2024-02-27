@@ -53,9 +53,8 @@ def main():
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
     print(ch_canthyd_ko_df.columns)  # Print column names to verify if 'description' column is present
 
-    # Merge hits_df with ch_canthyd_ko_df
     print("Merging dataframes...")
-    merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
+    merged_df = pd.merge(best_hits, ch_canthyd_ko_df, left_on='target_id', right_on='hmm_name', how='left')
 
     # Extract values for canthyd_description
     merged_df['canthyd_description'] = merged_df['description']
