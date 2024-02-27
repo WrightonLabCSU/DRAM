@@ -49,6 +49,9 @@ def main():
     print("Loading ch_canthyd_ko file...")
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
+    print(ch_canthyd_ko_df.columns)
+
+
     # Merge hits_df with ch_canthyd_ko_df
     merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
