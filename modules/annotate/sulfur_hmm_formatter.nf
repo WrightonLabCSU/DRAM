@@ -1,4 +1,4 @@
-process KOFAM_HMM_FORMATTER {
+process SULFUR_HMM_FORMATTER {
 
     input:
     tag { sample }
