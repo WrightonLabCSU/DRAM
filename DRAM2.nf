@@ -78,6 +78,9 @@ include { PARSE_HMM as PARSE_HMM_CANTHYD                } from './modules/annota
 include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_SULFUR                 } from './modules/annotate/parse_hmmsearch.nf'
 
+include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from './modules/annotate/hmmsearch.nf'
+include { PARSE_HMM as PARSE_HMM_FEGENIE                } from './modules/annotate/parse_hmmsearch.nf'
+
 include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
 include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
 include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
@@ -86,6 +89,7 @@ include { VOG_HMM_FORMATTER                             } from './modules/annota
 include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
 include { CANTHYD_HMM_FORMATTER                         } from './modules/annotate/canthyd_hmm_formatter.nf'
 include { SULFUR_HMM_FORMATTER                          } from './modules/annotate/sulfur_hmm_formatter.nf'
+include { FEGENIE_HMM_FORMATTER                          } from './modules/annotate/fegenie_hmm_formatter.nf'
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
