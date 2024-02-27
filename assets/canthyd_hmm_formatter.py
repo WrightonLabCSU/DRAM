@@ -31,16 +31,13 @@ def main():
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Find the best hit for each unique query_id
-    best_hits = hits_df.groupby('query_id').apply(find_best_canthyd_hit).reset_index(drop=True)
-
     # Load ch_canthyd_ko file
     print("Loading ch_canthyd_ko file...")
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
     # Merge hits_df with ch_canthyd_ko_df, selecting only necessary columns from ch_canthyd_ko_df
     print("Merging dataframes...")
-    merged_df = pd.merge(best_hits, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
+    merged_df = pd.merge(hits_df, ch_canthyd_ko_df[['hmm_name', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
     # Drop the redundant 'hmm_name' column after merging
     merged_df.drop(columns=['hmm_name'], inplace=True)
@@ -63,7 +60,6 @@ def main():
     final_output_df.to_csv(args.output, index=False)
 
     print("Process completed successfully!")
-
 
 if __name__ == "__main__":
     main()
