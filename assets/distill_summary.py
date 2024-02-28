@@ -70,9 +70,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
             gene_id_found = False  # Flag to check if gene_id is found in any potential column or potential EC column
 
-            # Check potential gene ID columns
+            # Inside the loop where potential gene ID columns are checked
             for col in potential_gene_id_columns:
                 logging.debug(f"Checking potential gene ID columns for gene_id: {gene_id}")
+                logging.debug(f"Current column: {col}")
                 matched_indices = combined_annotations_df[col].str.contains('^' + re.escape(gene_id) + '$', na=False)
                 if matched_indices.any():
                     gene_id_found = True
@@ -97,6 +98,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                             row_data[new_col_name] = row[additional_col].iloc[0] if additional_col in row else None
                         distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                     break
+
 
             # If gene_id is not found in any potential gene ID column, check potential EC columns
             if not gene_id_found:
