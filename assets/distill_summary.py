@@ -72,8 +72,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
             # Inside the loop where potential gene ID columns are checked
             for col in potential_gene_id_columns:
-                logging.debug(f"Checking potential gene ID columns for gene_id: {gene_id}")
-                logging.debug(f"Current column: {col}")
                 matched_indices = combined_annotations_df[col].str.contains('^' + re.escape(gene_id) + '$', na=False)
                 if matched_indices.any():
                     gene_id_found = True
