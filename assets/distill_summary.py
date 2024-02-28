@@ -151,6 +151,21 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     logging.debug("Deduplicated DataFrame:")
     logging.debug(deduplicated_df.head())
 
+
+    # Inside the distill_summary function after processing distill sheets
+
+    # Add this line after reading distill_df
+    logging.debug(f"DataFrame from {distill_sheet}:")
+    logging.debug(distill_df.head())
+
+    # Add this line inside the loop where potential gene ID columns are checked
+    logging.debug(f"Checking potential gene ID columns for gene_id: {gene_id}")
+
+    # Add this line after the loop where potential gene ID columns are checked
+    logging.debug("Summary DataFrame after processing distill sheet:")
+    logging.debug(distill_summary_df.head())
+
+
     # Write the resulting DataFrame to the output file
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
 
