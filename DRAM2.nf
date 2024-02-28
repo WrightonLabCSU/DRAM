@@ -1006,7 +1006,7 @@ workflow {
             ch_viral_unformatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
 
             SQL_VIRAL(ch_viral_unformatted, params.viral_name, ch_sql_descriptions_db, ch_sql_parser)
-            ch_viral_formatted = SQL_UNIREF.out.sql_formatted_hits
+            ch_viral_formatted = SQL_VIRAL.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)
         }
