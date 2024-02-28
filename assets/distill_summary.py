@@ -135,6 +135,16 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     logging.debug(distill_summary_df.head())
 
 
+    # Check if 'gene_id' column exists in distill_summary_df
+    if 'gene_id' not in distill_summary_df.columns:
+        logging.error("No 'gene_id' column found in distill_summary_df. Aborting merge.")
+        return
+
+    # Check if 'target_id' column exists in target_id_counts_df
+    if 'target_id' not in target_id_counts_df.columns:
+        logging.error("No 'target_id' column found in target_id_counts_df. Aborting merge.")
+        return
+
     # Merge with target_id_counts_df using 'target_id' column
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
 
