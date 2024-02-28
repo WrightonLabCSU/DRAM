@@ -129,15 +129,27 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                                     distill_summary_df = concat([distill_summary_df, pd.DataFrame([row_data])], ignore_index=True)
                                 break
 
+    # Inside the distill_summary function after the for loop for processing distill sheets
+
+    logging.debug("Distill summary DataFrame before merging:")
+    logging.debug(distill_summary_df.head())
+
+
     # Merge with target_id_counts_df using 'target_id' column
     distill_summary_df = pd.merge(distill_summary_df, target_id_counts_df, left_on=['gene_id'], right_on=['target_id'], how='left')
-    
+
+    logging.debug("Distill summary DataFrame after merging:")
+    logging.debug(distill_summary_df.head())
+
     # Drop the 'target_id' column if it was added from target_id_counts_df
     if 'target_id' in distill_summary_df.columns:
         distill_summary_df.drop('target_id', axis=1, inplace=True)
 
     # Drop rows with null gene_id
     deduplicated_df = distill_summary_df[~distill_summary_df['gene_id'].isnull()]
+
+    logging.debug("Deduplicated DataFrame:")
+    logging.debug(deduplicated_df.head())
 
     # Write the resulting DataFrame to the output file
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
