@@ -1047,7 +1047,7 @@ workflow {
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
         else{
-            ch_final_annots = ch_combined_annotations
+            ch_final_annots = ch_updated_taxa_annots
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
