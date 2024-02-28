@@ -72,6 +72,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
 
             # Check potential gene ID columns
             for col in potential_gene_id_columns:
+                logging.debug(f"Checking potential gene ID columns for gene_id: {gene_id}")
                 matched_indices = combined_annotations_df[col].str.contains('^' + re.escape(gene_id) + '$', na=False)
                 if matched_indices.any():
                     gene_id_found = True
@@ -138,6 +139,10 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     if 'gene_id' not in distill_summary_df.columns:
         logging.error("No 'gene_id' column found in distill_summary_df. Aborting merge.")
         return
+
+    # Inside the distill_summary function, before merging
+    logging.debug("Distill summary DataFrame before merging:")
+    logging.debug(distill_summary_df.head())
 
     # Check if 'target_id' column exists in target_id_counts_df
     if 'target_id' not in target_id_counts_df.columns:
