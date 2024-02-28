@@ -8,31 +8,7 @@ from pandas import concat
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
 
-def is_null_content(file_path):
-    """Check if the content of a file is NULL."""
-    with open(file_path, 'r') as file:
-        content = file.read().strip()
-    return content == "NULL"
-
-def is_partial_match(ec_number, partial_ec):
-    """
-    Check if the EC number starts with the given partial EC number and optionally followed by more subdivisions
-    or a dash indicating unspecified subdivisions.
-
-    Args:
-        ec_number (str): The EC number to check.
-        partial_ec (str): The partial EC number to match the start against.
-
-    Returns:
-        bool: True if the EC number starts with the partial EC number and optionally followed by more subdivisions or a dash, False otherwise.
-    """
-    if not isinstance(ec_number, str):
-        return False
-
-    # Build a regex pattern that starts with the partial_ec followed by any number of additional subdivisions
-    # or a dash, which may be at the end or followed by further subdivisions
-    pattern = re.compile(rf'^{re.escape(partial_ec)}(\.\d+)*(\.-)?$')
-    return bool(pattern.match(ec_number))
+# ... Existing functions and imports ...
 
 def distill_summary(combined_annotations_path, target_id_counts_df, output_path):
     """
@@ -59,6 +35,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
             continue
         logging.info(f"Processing distill sheet: {distill_sheet}")
         distill_df = pd.read_csv(distill_sheet, sep='\t')
+        logging.debug(f"DataFrame from {distill_sheet}:")
+        logging.debug(distill_df.head())
 
         for gene_id, row in distill_df.groupby('gene_id'):
             gene_description = row['gene_description'].iloc[0]  # Get the first value of 'gene_description' (assuming it's the same for all rows with the same 'gene_id')
@@ -133,7 +111,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     logging.debug("Distill summary DataFrame before merging:")
     logging.debug(distill_summary_df.head())
 
-
     # Check if 'gene_id' column exists in distill_summary_df
     if 'gene_id' not in distill_summary_df.columns:
         logging.error("No 'gene_id' column found in distill_summary_df. Aborting merge.")
@@ -160,7 +137,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     logging.debug("Deduplicated DataFrame:")
     logging.debug(deduplicated_df.head())
 
-
     # Inside the distill_summary function after processing distill sheets
 
     # Add this line after reading distill_df
@@ -173,7 +149,6 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
     # Add this line after the loop where potential gene ID columns are checked
     logging.debug("Summary DataFrame after processing distill sheet:")
     logging.debug(distill_summary_df.head())
-
 
     # Write the resulting DataFrame to the output file
     deduplicated_df.to_csv(output_path, sep='\t', index=False)
