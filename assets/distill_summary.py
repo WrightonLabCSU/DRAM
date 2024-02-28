@@ -75,8 +75,8 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                 matched_indices = combined_annotations_df[col].str.contains('^' + re.escape(gene_id) + '$', na=False)
                 if matched_indices.any():
                     gene_id_found = True
-                    print(f"gene_id {gene_id} matched in column {col} with values:")
-                    print(combined_annotations_df.loc[matched_indices, col].tolist())
+                    logging.debug(f"gene_id {gene_id} matched in column {col} with values:")
+                    logging.debug(combined_annotations_df.loc[matched_indices, col].tolist())
                     
                     for combined_id in combined_annotations_df.loc[matched_indices, col]:
                         row_data = {
@@ -104,7 +104,7 @@ def distill_summary(combined_annotations_path, target_id_counts_df, output_path)
                         for idx, ec_value in combined_annotations_df[col].iteritems():
                             if is_partial_match(ec_value, gene_id):
                                 gene_id_found = True
-                                print(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
+                                logging.debug(f"Partial EC match found for gene_id {gene_id} in column {col}: {ec_value}")
                                 
                                 # Find associated gene_id values in the same row
                                 associated_gene_ids = combined_annotations_df.loc[idx, [col.replace('_EC', '_id') for col in combined_annotations_df.columns if col.endswith('_id') and col != "query_id"]].tolist()
@@ -149,5 +149,8 @@ if __name__ == "__main__":
     parser.add_argument('--output', required=True, help='Path to the output genome_summary.tsv file.')
     args = parser.parse_args()
 
+    # Load target_id_counts DataFrame
     target_id_counts_df = pd.read_csv(args.target_id_counts, sep='\t')
+
+    # Call distill_summary function with provided arguments
     distill_summary(args.combined_annotations, target_id_counts_df, args.output)
