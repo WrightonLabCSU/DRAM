@@ -326,24 +326,24 @@ if( params.annotate ){
     if (annotate_kegg == 1) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
         index_mmseqs = "1"
-        annotate_list += "KEGG "
+        annotate_list += "${params.kegg_name} "
     }
 
     if (annotate_kofam == 1) {
         ch_kofam_db = file(params.kofam_db).exists() ? file(params.kofam_db) : error("Error: If using --annotate, you must supply prebuilt databases. KOFAM database file not found at ${params.kofam_db}")
-        annotate_list += "Kofam "
+        annotate_list += "${params.kofam_name} "
     }
 
     if (annotate_dbcan == 1) {
         ch_dbcan_db = file(params.dbcan_db).exists() ? file(params.dbcan_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN database file not found at ${params.dbcan_db}")
-        annotate_list += "dbCAN "
+        annotate_list += "${params.dbcan_name} "
     }
 
     if (annotate_camper == 1) {
         ch_camper_hmm_db = file(params.camper_hmm_db).exists() ? file(params.camper_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER HMM database file not found at ${params.camper_hmm_db}")
         ch_camper_mmseqs_db = file(params.camper_mmseqs_db).exists() ? file(params.camper_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER MMseqs2 database file not found at ${params.camper_mmseqs_db}")
         index_mmseqs = "1"
-        annotate_list += "CAMPER "
+        annotate_list += "${params.camper_name} "
         ch_camper_mmseqs_list = file(params.camper_mmseqs_list)
     }
 
@@ -356,53 +356,53 @@ if( params.annotate ){
     if (annotate_pfam == 1) {
         ch_pfam_mmseqs_db = file(params.pfam_mmseq_db).exists() ? file(params.pfam_mmseq_db) : error("Error: If using --annotate, you must supply prebuilt databases. PFAM database file not found at ${params.pfam_mmseq_db}")
         index_mmseqs = "1"
-        annotate_list += "Pfam "
+        annotate_list += "${params.pfam_name} "
     }
 
     if (annotate_heme == 1) {
         ch_heme_db = file(params.heme_db).exists() ? file(params.heme_db) : error("Error: If using --annotate, you must supply prebuilt databases. HEME database file not found at ${params.heme_db}")
-        annotate_list += "hene "
+        annotate_list += "${params.heme_name} "
     }
 
     if (annotate_sulfur == 1) {
         ch_sulfur_db = file(params.sulfur_db).exists() ? file(params.sulfur_db) : error("Error: If using --annotate, you must supply prebuilt databases. SULURR database file not found at ${params.sulfur_db}")
-        annotate_list += "sulfur "
+        annotate_list += "${params.sulfur_name} "
     }
 
     if (annotate_uniref == 1) {
         ch_uniref_db = file(params.uniref_db).exists() ? file(params.uniref_db) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
         index_mmseqs = "1"
-        annotate_list += "UniRef "
+        annotate_list += "${params.uniref_name} "
     }
 
     if (annotate_methyl == 1) {
         ch_methyl_db = file(params.methyl_db).exists() ? file(params.methyl_db) : error("Error: If using --annotate, you must supply prebuilt databases. METHYL database file not found at ${params.methyl_db}")
         index_mmseqs = "1"
-        annotate_list += "methyl "
+        annotate_list += "${params.methyl_name} "
     }
 
     if (annotate_fegenie == 1) {
         ch_fegenie_db = file(params.fegenie_db).exists() ? file(params.fegenie_db) : error("Error: If using --annotate, you must supply prebuilt databases. FEGENIE database file not found at ${params.fegenie_db}")
-        annotate_list += "FeGenie "
+        annotate_list += "${params.fegenie_name} "
     }
 
     if (annotate_canthyd == 1) {
         ch_canthyd_hmm_db = file(params.canthyd_hmm_db).exists() ? file(params.canthyd_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD HMM database file not found at ${params.canthyd_hmm_db}")
         ch_canthyd_mmseqs_db = file(params.canthyd_mmseqs_db).exists() ? file(params.canthyd_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD MMseqs database file not found at ${params.canthyd_mmseqs_db}")
         index_mmseqs = "1"
-        annotate_list += "CANT-HYD "
+        annotate_list += "${params.canthyd_name} "
         ch_canthyd_mmseqs_list = file(params.canthyd_mmseqs_list)
     }
 
     if (annotate_vogdb == 1) {
         ch_vogdb_db = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
-        annotate_list += "VOGDB "
+        annotate_list += "${params.vogdb_name} "
     }
 
     if (annotate_viral == 1) {
         ch_viral_db = file(params.viral_db).exists() ? file(params.viral_db) : error("Error: If using --annotate, you must supply prebuilt databases. viral database file not found at ${params.viral_db}")
         index_mmseqs = "1"
-        annotate_list += "viral "
+        annotate_list += "${params.viral_name} "
     }
     /* Custom user databases */
     //Not sure about this yet.
