@@ -14,6 +14,33 @@ def parse_arguments():
     parser.add_argument('--output_file', type=str, help='Path to the output XLSX file.')
     return parser.parse_args()
 
+def file_contains_data(file_path):
+    """Check if the file contains data other than 'NULL'."""
+    try:
+        with open(file_path, 'r') as f:
+            first_line = f.readline().strip()
+            if first_line == "NULL":
+                return False
+        return True
+    except Exception as e:
+        print(f"Error reading {file_path}: {e}")
+        return False
+
+def add_rrna_trna_sheets(wb, rrna_file, trna_file):
+    """Read and add rRNA and tRNA sheets to the workbook if they contain data."""
+    if rrna_file and file_contains_data(rrna_file):
+        df_rrna = pd.read_csv(rrna_file, sep='\t')
+        add_sheet_from_dataframe(wb, df_rrna, "rRNA")
+    else:
+        print(f"Skipping {rrna_file} as it contains 'NULL' or is not accessible.")
+
+    if trna_file and file_contains_data(trna_file):
+        df_trna = pd.read_csv(trna_file, sep='\t')
+        add_sheet_from_dataframe(wb, df_trna, "tRNA")
+    else:
+        print(f"Skipping {trna_file} as it contains 'NULL' or is not accessible.")
+
+
 def compile_target_id_counts(target_id_counts):
     return pd.read_csv(target_id_counts, sep='\t')
 
@@ -85,11 +112,12 @@ def main():
     wb = Workbook()
     wb.remove(wb.active)  # Remove the default sheet
 
+    # Add genome_stats sheet
     genome_stats_df = compile_genome_stats(args.db_name)
     add_sheet_from_dataframe(wb, genome_stats_df, "genome_stats")
 
+    # Process and add distill sheets
     target_id_counts_df = compile_target_id_counts(args.target_id_counts)
-
     distill_data = read_distill_sheets(args.distill_sheets)
     for sheet_path, info in distill_data.items():
         df_distill = info['dataframe']
@@ -97,19 +125,30 @@ def main():
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
             gene_ids = df_topic['gene_id'].unique().tolist()
             df_annotations = query_annotations_for_gene_ids(args.db_name, gene_ids)
-            
-            # Assuming 'target_id' is already correctly set in df_annotations
-            df_merged = pd.merge(df_topic, df_annotations, left_on='gene_id', right_on='target_id', how='left')
-            # Merge with target_id_counts, ensure to use the correct column name from target_id_counts_df
-            df_merged = pd.merge(df_merged, target_id_counts_df, left_on='gene_id', right_on='target_id', how='left')
-            
-            # Exclude 'query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination' from df_merged if present
+            df_annotations.rename(columns={'gene_id': 'target_id'}, inplace=True)
+            df_merged = pd.merge(df_topic, df_annotations, on="target_id", how="left")
+            df_merged = pd.merge(df_merged, target_id_counts_df, on="target_id", how="left")
             df_final = df_merged.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
-            
             sheet_name = topic[:31]  # Excel sheet name character limit
             add_sheet_from_dataframe(wb, df_final, sheet_name)
 
+    # Add rrna and trna sheets if not NULL
+    for tsv_file, sheet_name in [(args.rrna_file, 'rRNA'), (args.trna_file, 'tRNA')]:
+        if tsv_file:  # Check if file path is provided
+            with open(tsv_file, 'r') as f:
+                if f.readline().strip() != "NULL":  # File has content other than "NULL"
+                    f.seek(0)  # Reset file pointer to the beginning of the file
+                    df = pd.read_csv(f, sep='\t')
+                    add_sheet_from_dataframe(wb, df, sheet_name)
+                else:
+                    print(f"Skipping {tsv_file} as it contains 'NULL'.")
+
+    # Save the workbook
     wb.save(args.output_file)
+
+if __name__ == '__main__':
+    main()
+
 
 if __name__ == '__main__':
     main()
