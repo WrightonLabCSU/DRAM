@@ -75,21 +75,19 @@ def main():
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
             gene_ids = df_topic['gene_id'].unique().tolist()
             df_annotations = query_annotations_for_gene_ids(args.db_name, gene_ids)
+            # Rename 'gene_id' to 'target_id' in df_annotations for consistency
+            df_annotations.rename(columns={'gene_id': 'target_id'}, inplace=True)
 
-            # Rename 'gene_id' column to 'target_id' in df_topic to match the column name in target_id_counts_df
             df_topic_renamed = df_topic.rename(columns={'gene_id': 'target_id'})
-
-            # Merge with annotations and then with target_id_counts
+            # Now both DataFrames have the 'target_id' column for a consistent merge
             df_merged = pd.merge(df_topic_renamed, df_annotations, on="target_id", how="left")
             df_merged = pd.merge(df_merged, target_id_counts_df, on="target_id", how="left")
-            
+
             sheet_name = topic[:31]  # Excel sheet name character limit
             add_sheet_from_dataframe(wb, df_merged, sheet_name)
-
-    # Add tRNA and rRNA sheets if provided
-    # Implement as necessary based on your specific requirements
 
     wb.save(args.output_file)
 
 if __name__ == '__main__':
     main()
+
