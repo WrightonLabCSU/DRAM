@@ -85,28 +85,15 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
 
 def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
-    all_results = []
+    df_result = pd.DataFrame()
 
     for id_value in ids:
-        if column_type == 'ec_id':
-            # Adjust for EC number partial matching. 
-            # Use '%' as a wildcard for LIKE query to match any character(s) following the specified pattern
-            like_pattern = f"{id_value}%" if id_value.endswith('.') else f"{id_value}%"
-            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
-            params = (like_pattern,)
-        else:
-            # Handle exact matches for gene IDs
-            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
-            params = (id_value,)
+        like_pattern = id_value + '%' if column_type == 'ec_id' and not id_value.endswith('.') else id_value
+        query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?" if column_type == 'ec_id' else "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
+        df_partial = pd.read_sql_query(query, conn, params=(like_pattern,))
+        df_result = pd.concat([df_result, df_partial], ignore_index=True)
 
-        df_partial = pd.read_sql_query(query, conn, params=params)
-        all_results.append(df_partial)
-
-    if all_results:
-        df_result = pd.concat(all_results).drop_duplicates().reset_index(drop=True)
-    else:
-        df_result = pd.DataFrame(columns=['gene_id'])
-
+    df_result.drop_duplicates(inplace=True)
     conn.close()
     return df_result
 
@@ -134,19 +121,9 @@ def compile_rrna_data(rrna_file):
     return rrna_data
 
 def compile_trna_counts(trna_file):
-    """Compile tRNA counts from the given file, considering dynamic sample columns."""
     trna_data = pd.read_csv(trna_file, sep='\t')
     sample_columns = trna_data.columns[5:]  # Adjust based on actual structure
-
-    # Initialize an empty DataFrame for tRNA counts
-    trna_counts_list = []
-
-    # Iterate over sample columns to sum tRNA counts
-    for sample in sample_columns:
-        total_count = trna_data[sample].sum()
-        trna_counts_list.append({'sample': sample, 'tRNA count': total_count})
-
-    trna_counts = pd.DataFrame(trna_counts_list)
+    trna_counts = pd.DataFrame([{'sample': sample, 'tRNA count': trna_data[sample].sum()} for sample in sample_columns])
     return trna_counts
 
 def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
@@ -188,13 +165,14 @@ def main():
     distill_data = read_distill_sheets(args.distill_sheets)
     for sheet_path, info in distill_data.items():
         df_distill = info['dataframe']
+        column_type = info['column_type']  # Extract column_type here
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
-            gene_ids = df_topic['gene_id'].unique().tolist()
-            
-            # Query the database to get a list of gene_ids that exist in annotations.db
-            df_valid_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids)
-            
+            gene_ids = df_topic[column_type].unique().tolist()  # Use column_type to extract IDs
+
+            # Adjusted to pass column_type
+            df_valid_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids, column_type)
+
             # Filter the df_topic to keep only rows where gene_id exists in annotations.db
             df_topic_filtered = df_topic[df_topic['gene_id'].isin(df_valid_gene_ids['gene_id'])]
             
