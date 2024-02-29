@@ -22,6 +22,8 @@ def parse_arguments():
 def compile_target_id_counts(target_id_counts):
     return pd.read_csv(target_id_counts, sep='\t')
 
+import logging
+
 def read_distill_sheets(distill_sheets):
     sheets_data = {}
     for sheet_path in distill_sheets:
@@ -29,10 +31,12 @@ def read_distill_sheets(distill_sheets):
             df = pd.read_csv(sheet_path, sep='\t')
             topic = df['topic_ecosystem'].unique().tolist()
             column_type = 'ec_id' if 'ec_id' in df.columns else 'gene_id'
+            logging.debug(f"For sheet {sheet_path}, identified column type as: {column_type}")
             sheets_data.update({sheet_path: {'dataframe': df, 'topics': topic, 'column_type': column_type}})
         else:
             print(f"Skipping {sheet_path} as it contains 'NULL'.")
     return sheets_data
+
 
 def file_contains_data(file_path):
     try:
