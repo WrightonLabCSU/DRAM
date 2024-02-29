@@ -55,7 +55,12 @@ def import_annotations(conn, file_path):
         for col in db_columns:
             # Create a temporary DataFrame for each ID/EC column to insert
             temp_df = df_filtered[['query_id', 'sample', col]].rename(columns={col: 'gene_id'}).dropna()
+
+            # Drop duplicate rows based on 'query_id', 'sample', and 'gene_id' to avoid UNIQUE constraint violations
+            temp_df = temp_df.drop_duplicates(subset=['query_id', 'sample', 'gene_id'])
+
             temp_df.to_sql('annotations', conn, if_exists='append', index=False, method='multi')
+
 
 def main():
     args = parse_arguments()
