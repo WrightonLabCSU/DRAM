@@ -118,23 +118,22 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
         if column_type == 'ec_id':
             like_patterns = prepare_ec_like_patterns(id_value)
             for pattern in like_patterns:
-                query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ? ESCAPE '\\'"
+                query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ? ESCAPE '\\'"
                 logging.debug(f"Executing query with pattern: {pattern}")
                 df_partial = pd.read_sql_query(query, conn, params=(pattern,))
                 if not df_partial.empty:
                     logging.debug(f"Found matches for pattern {pattern}: {df_partial['gene_id'].tolist()}")
                 df_result = pd.concat([df_result, df_partial], ignore_index=True)
         else:
-            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
+            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
             logging.debug(f"Executing query for exact match: {id_value}")
             df_partial = pd.read_sql_query(query, conn, params=(id_value,))
             df_result = pd.concat([df_result, df_partial], ignore_index=True)
 
     df_result.drop_duplicates(inplace=True)
     conn.close()
+    logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
     return df_result
-
-
 
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
