@@ -217,8 +217,14 @@ def main():
             df_topic_filtered = df_topic[df_topic[info['column_type']].isin(df_valid_gene_ids['gene_id'])]
 
             
-            # Merge the filtered df_topic with target_id_counts data
-            df_merged = pd.merge(df_topic_filtered, target_id_counts_df, on=distill_data[sheet_path]['column_type'], how="left")
+            # Instead of accessing 'gene_id' directly, use the column_type attribute
+            column_type = distill_data[sheet_path]['column_type']
+            if column_type == 'ec_id':
+                # Rename the 'ec_id' column to 'gene_id' in df_topic_filtered
+                df_topic_filtered.rename(columns={'ec_id': 'gene_id'}, inplace=True)
+
+            df_merged = pd.merge(df_topic_filtered, target_id_counts_df, on='gene_id', how="left")
+
             df_final = df_merged.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
             
             sheet_name = topic[:31]  # Excel sheet name character limit
