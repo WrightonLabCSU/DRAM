@@ -39,9 +39,43 @@ def file_contains_data(file_path):
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
-    df_genome_stats = pd.read_sql_query("SELECT sample, AVG(Completeness) AS Completeness, AVG(Contamination) AS Contamination, GROUP_CONCAT(DISTINCT taxonomy) AS taxonomy FROM annotations GROUP BY sample", conn)
+    cursor = conn.cursor()
+    
+    # Check for the presence of optional columns in the database
+    cursor.execute("PRAGMA table_info(annotations)")
+    columns_info = cursor.fetchall()
+    column_names = [info[1] for info in columns_info]
+    
+    # Start with a query to select distinct samples
+    query_base = "SELECT DISTINCT sample FROM annotations"
+    df_samples = pd.read_sql_query(query_base, conn)
+    
+    # Initialize the genome_stats DataFrame with sample names
+    df_genome_stats = pd.DataFrame({"sample": df_samples['sample']})
+    
+    # Dynamically build a query to include optional columns if they are present
+    optional_columns = ['taxonomy', 'Completeness', 'Contamination']
+    select_clauses = []
+    for col in optional_columns:
+        if col in column_names:
+            # Prepare a SELECT clause to calculate average for numeric columns and group_concat for taxonomy
+            if col in ['Completeness', 'Contamination']:
+                select_clauses.append(f"AVG({col}) AS {col}")
+            else:  # Assuming 'taxonomy' is not a numeric column
+                select_clauses.append(f"GROUP_CONCAT(DISTINCT {col}) AS {col}")
+    
+    # If there are optional columns to include, modify the base query
+    if select_clauses:
+        query = f"SELECT sample, {', '.join(select_clauses)} FROM annotations GROUP BY sample"
+        df_stats = pd.read_sql_query(query, conn)
+        df_genome_stats = pd.merge(df_genome_stats, df_stats, on="sample", how="left")
+    else:
+        # If no optional columns, the genome_stats will only contain sample names at this point
+        pass
+    
     conn.close()
     return df_genome_stats
+
 
 def query_annotations_for_gene_ids(db_name, gene_ids):
     conn = sqlite3.connect(db_name)
