@@ -16,10 +16,22 @@ def parse_arguments():
 def read_distill_sheets(distill_sheets):
     sheets_data = {}
     for sheet_path in distill_sheets:
+        # Open the file and check if its contents are just "NULL"
+        with open(sheet_path, 'r') as f:
+            first_line = f.readline().strip()
+            if first_line == "NULL":
+                print(f"Skipping {sheet_path} as it contains 'NULL'.")
+                continue  # Skip this file and move to the next
+
+        # If the file is not skipped, proceed to read it into a DataFrame
         df = pd.read_csv(sheet_path, sep='\t')
+        if 'topic_ecosystem' not in df.columns:
+            print(f"Warning: 'topic_ecosystem' column not found in {sheet_path}. Skipping this file.")
+            continue  # Skip this file and move to the next
         topic = df['topic_ecosystem'].unique().tolist()
         sheets_data.update({sheet_path: {'dataframe': df, 'topics': topic}})
     return sheets_data
+
 
 def query_database_for_gene_ids(db_name, gene_ids):
     conn = sqlite3.connect(db_name)
