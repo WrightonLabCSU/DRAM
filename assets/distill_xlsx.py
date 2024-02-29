@@ -88,6 +88,23 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
         ws.append(r)
 
 
+def prepare_ec_like_patterns(ec_number):
+    """
+    Prepare SQL LIKE patterns for partial matching of EC numbers.
+    Handles cases where EC numbers are partial or contain multiple EC numbers separated by semicolons or spaces.
+    """
+    patterns = []
+    # Split multiple EC numbers and prepare patterns for each
+    parts = ec_number.replace(" ", ";").split(";")  # Split by semicolon and space
+    for part in parts:
+        clean_part = part.strip().rstrip('.')
+        if clean_part:  # Ensure the part is not empty after stripping
+            # Append '%' to match any characters following the specified EC number part
+            pattern = clean_part + "%"
+            patterns.append(pattern)
+    logging.debug(f"Generated patterns for EC number {ec_number}: {patterns}")
+    return patterns
+
 def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
     df_result = pd.DataFrame()
@@ -97,7 +114,7 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
         if column_type == 'ec_id':
             like_patterns = prepare_ec_like_patterns(id_value)
             for pattern in like_patterns:
-                query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+                query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ? ESCAPE '\\'"
                 logging.debug(f"Executing query with pattern: {pattern}")
                 df_partial = pd.read_sql_query(query, conn, params=(pattern,))
                 if not df_partial.empty:
@@ -113,21 +130,6 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn.close()
     return df_result
 
-def prepare_ec_like_patterns(ec_number):
-    """
-    Prepare SQL LIKE patterns for partial matching of EC numbers.
-    Handles cases where EC numbers are partial or contain multiple EC numbers separated by semicolons or spaces.
-    """
-    patterns = []
-    # Split multiple EC numbers and prepare patterns for each
-    parts = ec_number.replace(" ", ";").split(";")  # Split by semicolon and space
-    for part in parts:
-        clean_part = part.strip().rstrip('.')
-        if clean_part:  # Ensure the part is not empty after stripping
-            # Append '%' to match any characters following the specified EC number part
-            pattern = clean_part + "%"
-            patterns.append(pattern)
-    return patterns
 
 
 def compile_rrna_information(combined_rrna_file):
