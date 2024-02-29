@@ -405,9 +405,7 @@ if( params.annotate ){
         index_mmseqs = "1"
         annotate_list += "${params.viral_name} "
     }
-    Channel
-        .value(annotate_list)
-        .set(database_names_list)
+
     /* Custom user databases */
     //Not sure about this yet.
     // Consider: hmm format, mmseqs2 format....
@@ -1122,7 +1120,7 @@ workflow {
         COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
-        DISTILL( ch_final_annots, database_names_list, ch_combined_distill_sheets, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
+        DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
 
 
         /* Generate a single distillate sheet which will then be separated by DISTILL_FINAL */
