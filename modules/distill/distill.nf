@@ -17,7 +17,7 @@ process DISTILL {
     """
 
     python ${ch_distill_sql_script} --combined_annotations ${ch_combined_annotations} --db_name "annotations.db" 
-    python ${ch_distill_xlsx_script} --target_id_counts ${ch_target_id_counts} --db_name annotations.db --distill_sheets ${distill_sheets} --rrna_file ${rrna_sheet} --trna_file ${trna_sheet} --output_file "distillate.xlsx"
+    python ${ch_distill_xlsx_script} --target_id_counts ${ch_target_id_counts} --db_name "annotations.db" --distill_sheets ${ch_combined_distill_sheets} --rrna_file ${rrna_sheet} --trna_file ${trna_sheet} --output_file "distillate.xlsx"
 
     """
 }
