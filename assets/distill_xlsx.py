@@ -88,8 +88,14 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     df_result = pd.DataFrame()
 
     for id_value in ids:
-        like_pattern = id_value + '%' if column_type == 'ec_id' and not id_value.endswith('.') else id_value
-        query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?" if column_type == 'ec_id' else "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
+        # Normalize EC number format for partial matching (remove trailing dots and replace with SQL wildcard '%')
+        if column_type == 'ec_id':
+            like_pattern = id_value.replace('.', '_') + '%'  # Replace '.' with SQL single character wildcard '_' for more accurate partial matching
+            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+        else:
+            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
+            like_pattern = id_value
+
         df_partial = pd.read_sql_query(query, conn, params=(like_pattern,))
         df_result = pd.concat([df_result, df_partial], ignore_index=True)
 
