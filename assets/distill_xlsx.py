@@ -5,8 +5,8 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 import logging
 
-# Setup basic configuration for logging
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+# Setup logging to display messages to console
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Generate a multi-sheet XLSX document from distill sheets and a SQLite database.')
@@ -87,22 +87,25 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
     for r in dataframe_to_rows(df, index=False, header=True):
         ws.append(r)
 
+
 def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
     df_result = pd.DataFrame()
 
     for id_value in ids:
+        logging.debug(f"Processing ID: {id_value} as {column_type}")
         if column_type == 'ec_id':
-            like_pattern = prepare_ec_like_patterns(id_value)
-            for pattern in like_pattern:
+            like_patterns = prepare_ec_like_patterns(id_value)
+            for pattern in like_patterns:
                 query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
-                logging.info(f"Querying DB with pattern: {pattern}")
+                logging.debug(f"Executing query with pattern: {pattern}")
                 df_partial = pd.read_sql_query(query, conn, params=(pattern,))
                 if not df_partial.empty:
-                    logging.info(f"Matches found: {df_partial['gene_id'].tolist()}")
+                    logging.debug(f"Found matches for pattern {pattern}: {df_partial['gene_id'].tolist()}")
                 df_result = pd.concat([df_result, df_partial], ignore_index=True)
         else:
             query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
+            logging.debug(f"Executing query for exact match: {id_value}")
             df_partial = pd.read_sql_query(query, conn, params=(id_value,))
             df_result = pd.concat([df_result, df_partial], ignore_index=True)
 
