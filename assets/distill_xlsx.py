@@ -85,22 +85,28 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
 
 def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
-    df_result = pd.DataFrame()
-    
+    all_results = []
+
     for id_value in ids:
         if column_type == 'ec_id':
-            # Adjust for EC number partial matching. Replace trailing '.' with '%' for LIKE query
-            like_pattern = f"{id_value}%" if id_value.endswith('.') else f"{id_value}"
-            like_pattern = like_pattern.replace('.', '_')  # Ensure single '_' for single character wildcard
+            # Adjust for EC number partial matching. 
+            # Use '%' as a wildcard for LIKE query to match any character(s) following the specified pattern
+            like_pattern = f"{id_value}%" if id_value.endswith('.') else f"{id_value}%"
             query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+            params = (like_pattern,)
         else:
             # Handle exact matches for gene IDs
             query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
-        
-        df_partial = pd.read_sql_query(query, conn, params=(like_pattern,))
-        df_result = pd.concat([df_result, df_partial])
+            params = (id_value,)
 
-    df_result.drop_duplicates(inplace=True)
+        df_partial = pd.read_sql_query(query, conn, params=params)
+        all_results.append(df_partial)
+
+    if all_results:
+        df_result = pd.concat(all_results).drop_duplicates().reset_index(drop=True)
+    else:
+        df_result = pd.DataFrame(columns=['gene_id'])
+
     conn.close()
     return df_result
 
@@ -130,17 +136,17 @@ def compile_rrna_data(rrna_file):
 def compile_trna_counts(trna_file):
     """Compile tRNA counts from the given file, considering dynamic sample columns."""
     trna_data = pd.read_csv(trna_file, sep='\t')
-    # Assuming the first five columns are fixed and the rest are sample names
-    sample_columns = trna_data.columns[5:]  # Adjust index as needed based on actual structure
-    
+    sample_columns = trna_data.columns[5:]  # Adjust based on actual structure
+
     # Initialize an empty DataFrame for tRNA counts
-    trna_counts = pd.DataFrame(columns=['sample', 'tRNA count'])
-    
+    trna_counts_list = []
+
     # Iterate over sample columns to sum tRNA counts
     for sample in sample_columns:
         total_count = trna_data[sample].sum()
-        trna_counts = trna_counts.append({'sample': sample, 'tRNA count': total_count}, ignore_index=True)
-    
+        trna_counts_list.append({'sample': sample, 'tRNA count': total_count})
+
+    trna_counts = pd.DataFrame(trna_counts_list)
     return trna_counts
 
 def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
