@@ -98,6 +98,7 @@ include { MERGE_ANNOTATIONS                             } from './modules/annota
 include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
 include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
 include { DISTILL_FINAL                                 } from './modules/distill/distill_final.nf'
+include { DISTILL                                       } from './modules/distill/distill.nf'
 
 include { PRODUCT_HEATMAP                               } from './modules/product/product_heatmap.nf'
 
