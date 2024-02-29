@@ -124,10 +124,11 @@ def prepare_ec_like_patterns(ec_number):
     for part in parts:
         clean_part = part.strip().rstrip('.')
         if clean_part:  # Ensure the part is not empty after stripping
-            # Replace each level of the EC number with a wildcard for partial matching
-            pattern = clean_part.replace(".", "_") + "%"
+            # Append '%' to match any characters following the specified EC number part
+            pattern = clean_part + "%"
             patterns.append(pattern)
     return patterns
+
 
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
