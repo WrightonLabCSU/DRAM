@@ -65,11 +65,13 @@ def compile_genome_stats(db_name):
 
 def query_annotations_for_gene_ids(db_name, gene_ids):
     conn = sqlite3.connect(db_name)
-    placeholders = ', '.join('?' for gene_id in gene_ids)
-    query = f"SELECT * FROM annotations WHERE gene_id IN ({placeholders})"
+    placeholders = ', '.join('?' for _ in gene_ids)
+    # Select only the necessary columns for topic-specific sheets, exclude taxonomy, Completeness, and Contamination
+    query = f"SELECT gene_id, sample FROM annotations WHERE gene_id IN ({placeholders})"
     df = pd.read_sql_query(query, conn, params=gene_ids)
     conn.close()
     return df
+
 
 def add_sheet_from_dataframe(wb, df, sheet_name):
     ws = wb.create_sheet(title=sheet_name)
@@ -94,16 +96,17 @@ def main():
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
             gene_ids = df_topic['gene_id'].unique().tolist()
             df_annotations = query_annotations_for_gene_ids(args.db_name, gene_ids)
-            # Rename 'gene_id' to 'target_id' in df_annotations for consistency
-            df_annotations.rename(columns={'gene_id': 'target_id'}, inplace=True)
-
-            df_topic_renamed = df_topic.rename(columns={'gene_id': 'target_id'})
-            # Now both DataFrames have the 'target_id' column for a consistent merge
-            df_merged = pd.merge(df_topic_renamed, df_annotations, on="target_id", how="left")
-            df_merged = pd.merge(df_merged, target_id_counts_df, on="target_id", how="left")
-
+            
+            # Assuming 'target_id' is already correctly set in df_annotations
+            df_merged = pd.merge(df_topic, df_annotations, left_on='gene_id', right_on='target_id', how='left')
+            # Merge with target_id_counts, ensure to use the correct column name from target_id_counts_df
+            df_merged = pd.merge(df_merged, target_id_counts_df, left_on='gene_id', right_on='target_id', how='left')
+            
+            # Exclude 'query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination' from df_merged if present
+            df_final = df_merged.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
+            
             sheet_name = topic[:31]  # Excel sheet name character limit
-            add_sheet_from_dataframe(wb, df_merged, sheet_name)
+            add_sheet_from_dataframe(wb, df_final, sheet_name)
 
     wb.save(args.output_file)
 
