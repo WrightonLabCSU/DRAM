@@ -83,13 +83,27 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
         ws.append(r)
 
 def query_annotations_for_gene_ids(db_name, gene_ids):
-    """Fetch annotations for given gene IDs if they exist in the annotations database."""
+    """Fetch annotations for given gene IDs or partial EC numbers from the annotations database."""
     conn = sqlite3.connect(db_name)
-    placeholders = ', '.join('?' for _ in gene_ids)
-    query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id IN ({placeholders})"
-    df = pd.read_sql_query(query, conn, params=gene_ids)
+    df_result = pd.DataFrame()
+
+    for gene_id in gene_ids:
+        # Split the gene_id if it's an EC number that could have multiple parts (e.g., "3.1.2.-; 3.1.2.2")
+        if "." in gene_id and ";" in gene_id:
+            parts = gene_id.split("; ")
+            query_parts = " OR ".join([f"gene_id LIKE '{part.strip()}%'" for part in parts])
+            query = f"SELECT DISTINCT gene_id FROM annotations WHERE {query_parts}"
+        elif "." in gene_id:  # Handle as partial EC number
+            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE '{gene_id}%'"
+        else:  # Handle as exact gene ID
+            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id = '{gene_id}'"
+        
+        df_partial = pd.read_sql_query(query, conn)
+        df_result = pd.concat([df_result, df_partial])
+
+    df_result.drop_duplicates(inplace=True)
     conn.close()
-    return df
+    return df_result
 
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
