@@ -104,25 +104,36 @@ def compile_rrna_data(rrna_file):
     return rrna_data
 
 def compile_trna_counts(trna_file):
-    """Compile tRNA counts from the given file."""
+    """Compile tRNA counts from the given file, considering dynamic sample columns."""
     trna_data = pd.read_csv(trna_file, sep='\t')
-    # Summarize tRNA counts for each sample
-    trna_counts = trna_data.groupby('sample').size().reset_index(name='tRNA count')
+    # Assuming the first five columns are fixed and the rest are sample names
+    sample_columns = trna_data.columns[5:]  # Adjust index as needed based on actual structure
+    
+    # Initialize an empty DataFrame for tRNA counts
+    trna_counts = pd.DataFrame(columns=['sample', 'tRNA count'])
+    
+    # Iterate over sample columns to sum tRNA counts
+    for sample in sample_columns:
+        total_count = trna_data[sample].sum()
+        trna_counts = trna_counts.append({'sample': sample, 'tRNA count': total_count}, ignore_index=True)
+    
     return trna_counts
 
 def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
     """Update the genome_stats DataFrame with rRNA and tRNA information."""
+    # Process rRNA file if it contains data
     if file_contains_data(rrna_file):
         rrna_data = compile_rrna_data(rrna_file)
         # Integrate rrna_data into genome_stats_df as needed
-        # Example: Add columns for rRNA types and counts
 
+    # Process tRNA file if it contains data
     if file_contains_data(trna_file):
         trna_counts = compile_trna_counts(trna_file)
         # Merge tRNA counts into genome_stats_df
         genome_stats_df = pd.merge(genome_stats_df, trna_counts, on="sample", how="left")
 
     return genome_stats_df
+
 
 def main():
     args = parse_arguments()
