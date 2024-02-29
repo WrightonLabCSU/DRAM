@@ -82,21 +82,16 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
     ws = wb.create_sheet(title=sheet_name)
     for r in dataframe_to_rows(df, index=False, header=True):
         ws.append(r)
-
+        
 def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
-    df_result = pd.DataFrame()
+    all_results = []
 
     for id_value in ids:
-        # For EC numbers, adjust the query to handle both complete and partial matches.
         if column_type == 'ec_id':
-            # For partial EC numbers, ensure '%' is used to match any continuation.
-            like_pattern = f"{id_value}%" if '.' in id_value else f"{id_value}%"
-            
-            # If the EC number ends with a dot or is a broad category like '3.', remove the trailing dot for broader matching.
-            if like_pattern.endswith('.%'):
-                like_pattern = like_pattern[:-2] + '%'
-            
+            # Directly use '%' for LIKE query to ensure partial matching for EC numbers
+            like_pattern = id_value + '%' if not id_value.endswith('%') else id_value
+            # Adjust the query to match EC numbers partially
             query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
         else:
             # Handle exact matches for gene IDs
@@ -104,11 +99,16 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
             like_pattern = id_value
 
         df_partial = pd.read_sql_query(query, conn, params=(like_pattern,))
-        df_result = pd.concat([df_result, df_partial], ignore_index=True)
+        all_results.append(df_partial)
 
-    df_result.drop_duplicates(inplace=True)
+    if all_results:
+        df_result = pd.concat(all_results).drop_duplicates().reset_index(drop=True)
+    else:
+        df_result = pd.DataFrame(columns=['gene_id'])
+
     conn.close()
     return df_result
+
 
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
