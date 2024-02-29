@@ -88,17 +88,15 @@ def query_annotations_for_gene_ids(db_name, gene_ids):
     df_result = pd.DataFrame()
 
     for gene_id in gene_ids:
-        # Split the gene_id if it's an EC number that could have multiple parts (e.g., "3.1.2.-; 3.1.2.2")
-        if "." in gene_id and ";" in gene_id:
-            parts = gene_id.split("; ")
-            query_parts = " OR ".join([f"gene_id LIKE '{part.strip()}%'" for part in parts])
-            query = f"SELECT DISTINCT gene_id FROM annotations WHERE {query_parts}"
-        elif "." in gene_id:  # Handle as partial EC number
-            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE '{gene_id}%'"
-        else:  # Handle as exact gene ID
-            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id = '{gene_id}'"
+        # Handle gene IDs that could be EC numbers with partial matching
+        if "." in gene_id:  # This checks if gene_id is likely an EC number
+            like_pattern = f"{gene_id}%"  # Prepare pattern for SQL LIKE query
+            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+            df_partial = pd.read_sql_query(query, conn, params=(like_pattern,))
+        else:  # Handle exact matches for gene IDs
+            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
+            df_partial = pd.read_sql_query(query, conn, params=(gene_id,))
         
-        df_partial = pd.read_sql_query(query, conn)
         df_result = pd.concat([df_result, df_partial])
 
     df_result.drop_duplicates(inplace=True)
