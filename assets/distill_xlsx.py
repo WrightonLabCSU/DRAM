@@ -3,6 +3,10 @@ import sqlite3
 import argparse
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
+import logging
+
+# Setup basic configuration for logging
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Generate a multi-sheet XLSX document from distill sheets and a SQLite database.')
@@ -89,17 +93,18 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
 
     for id_value in ids:
         if column_type == 'ec_id':
-            # Adjust for EC number partial matching by preparing a LIKE pattern for each part of the EC number
-            like_patterns = prepare_ec_like_patterns(id_value)
-            # Construct a query that matches any of the LIKE patterns
-            query = f"SELECT DISTINCT gene_id FROM annotations WHERE " + \
-                    " OR ".join([f"gene_id LIKE '{pattern}'" for pattern in like_patterns])
+            like_pattern = prepare_ec_like_patterns(id_value)
+            for pattern in like_pattern:
+                query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+                logging.info(f"Querying DB with pattern: {pattern}")
+                df_partial = pd.read_sql_query(query, conn, params=(pattern,))
+                if not df_partial.empty:
+                    logging.info(f"Matches found: {df_partial['gene_id'].tolist()}")
+                df_result = pd.concat([df_result, df_partial], ignore_index=True)
         else:
-            # Handle exact matches for gene IDs
-            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id = '{id_value}'"
-        
-        df_partial = pd.read_sql_query(query, conn)
-        df_result = pd.concat([df_result, df_partial], ignore_index=True)
+            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
+            df_partial = pd.read_sql_query(query, conn, params=(id_value,))
+            df_result = pd.concat([df_result, df_partial], ignore_index=True)
 
     df_result.drop_duplicates(inplace=True)
     conn.close()
