@@ -82,33 +82,44 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
     ws = wb.create_sheet(title=sheet_name)
     for r in dataframe_to_rows(df, index=False, header=True):
         ws.append(r)
-        
+
 def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
-    all_results = []
+    df_result = pd.DataFrame()
 
     for id_value in ids:
         if column_type == 'ec_id':
-            # Directly use '%' for LIKE query to ensure partial matching for EC numbers
-            like_pattern = id_value + '%' if not id_value.endswith('%') else id_value
-            # Adjust the query to match EC numbers partially
-            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+            # Adjust for EC number partial matching by preparing a LIKE pattern for each part of the EC number
+            like_patterns = prepare_ec_like_patterns(id_value)
+            # Construct a query that matches any of the LIKE patterns
+            query = f"SELECT DISTINCT gene_id FROM annotations WHERE " + \
+                    " OR ".join([f"gene_id LIKE '{pattern}'" for pattern in like_patterns])
         else:
             # Handle exact matches for gene IDs
-            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
-            like_pattern = id_value
+            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id = '{id_value}'"
+        
+        df_partial = pd.read_sql_query(query, conn)
+        df_result = pd.concat([df_result, df_partial], ignore_index=True)
 
-        df_partial = pd.read_sql_query(query, conn, params=(like_pattern,))
-        all_results.append(df_partial)
-
-    if all_results:
-        df_result = pd.concat(all_results).drop_duplicates().reset_index(drop=True)
-    else:
-        df_result = pd.DataFrame(columns=['gene_id'])
-
+    df_result.drop_duplicates(inplace=True)
     conn.close()
     return df_result
 
+def prepare_ec_like_patterns(ec_number):
+    """
+    Prepare SQL LIKE patterns for partial matching of EC numbers.
+    Handles cases where EC numbers are partial or contain multiple EC numbers separated by semicolons or spaces.
+    """
+    patterns = []
+    # Split multiple EC numbers and prepare patterns for each
+    parts = ec_number.replace(" ", ";").split(";")  # Split by semicolon and space
+    for part in parts:
+        clean_part = part.strip().rstrip('.')
+        if clean_part:  # Ensure the part is not empty after stripping
+            # Replace each level of the EC number with a wildcard for partial matching
+            pattern = clean_part.replace(".", "_") + "%"
+            patterns.append(pattern)
+    return patterns
 
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
