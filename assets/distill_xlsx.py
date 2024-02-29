@@ -88,11 +88,15 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     df_result = pd.DataFrame()
 
     for id_value in ids:
-        # Handle EC numbers for partial matching by appending '%' directly for LIKE query
+        # For EC numbers, adjust the query to handle both complete and partial matches.
         if column_type == 'ec_id':
-            # Check if the id_value ends with a dot indicating a partial EC number
-            # If so, remove the trailing dot and replace it with the '%' wildcard for partial matching
-            like_pattern = id_value[:-1] + '%' if id_value.endswith('.') else id_value + '%'
+            # For partial EC numbers, ensure '%' is used to match any continuation.
+            like_pattern = f"{id_value}%" if '.' in id_value else f"{id_value}%"
+            
+            # If the EC number ends with a dot or is a broad category like '3.', remove the trailing dot for broader matching.
+            if like_pattern.endswith('.%'):
+                like_pattern = like_pattern[:-2] + '%'
+            
             query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
         else:
             # Handle exact matches for gene IDs
