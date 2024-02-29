@@ -76,19 +76,25 @@ def compile_genome_stats(db_name):
     conn.close()
     return df_genome_stats
 
-
-def query_annotations_for_gene_ids(db_name, gene_ids):
-    conn = sqlite3.connect(db_name)
-    placeholders = ', '.join('?' for _ in gene_ids)
-    query = f"SELECT gene_id, sample FROM annotations WHERE gene_id IN ({placeholders})"
-    df = pd.read_sql_query(query, conn, params=gene_ids)
-    conn.close()
-    return df
-
 def add_sheet_from_dataframe(wb, df, sheet_name):
     ws = wb.create_sheet(title=sheet_name)
     for r in dataframe_to_rows(df, index=False, header=True):
         ws.append(r)
+
+def query_annotations_for_gene_ids(db_name, gene_ids):
+    """Fetch annotations for given gene IDs if they exist in the annotations database."""
+    conn = sqlite3.connect(db_name)
+    placeholders = ', '.join('?' for _ in gene_ids)
+    query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id IN ({placeholders})"
+    df = pd.read_sql_query(query, conn, params=gene_ids)
+    conn.close()
+    return df
+
+def add_rrna_trna_sheets(wb, rrna_file, trna_file):
+    for tsv_file, sheet_name in [(rrna_file, 'rRNA'), (trna_file, 'tRNA')]:
+        if tsv_file and file_contains_data(tsv_file):
+            df = pd.read_csv(tsv_file, sep='\t')
+            add_sheet_from_dataframe(wb, df, sheet_name)
 
 def main():
     args = parse_arguments()
@@ -106,22 +112,24 @@ def main():
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
             gene_ids = df_topic['gene_id'].unique().tolist()
-            df_annotations = query_annotations_for_gene_ids(args.db_name, gene_ids)
-            # Merge directly with target_id_counts_df since the column names are consistent
-            df_merged = pd.merge(df_topic, target_id_counts_df, on="gene_id", how="left")
+            
+            # Query the database to get a list of gene_ids that exist in annotations.db
+            df_valid_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids)
+            
+            # Filter the df_topic to keep only rows where gene_id exists in annotations.db
+            df_topic_filtered = df_topic[df_topic['gene_id'].isin(df_valid_gene_ids['gene_id'])]
+            
+            # Merge the filtered df_topic with target_id_counts data
+            df_merged = pd.merge(df_topic_filtered, target_id_counts_df, on="gene_id", how="left")
+            df_final = df_merged.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
+            
             sheet_name = topic[:31]  # Excel sheet name character limit
-            add_sheet_from_dataframe(wb, df_merged, sheet_name)
+            add_sheet_from_dataframe(wb, df_final, sheet_name)
 
-    # Add rrna and trna sheets if they contain data
+    # Add rrna and trna sheets if not NULL
     add_rrna_trna_sheets(wb, args.rrna_file, args.trna_file)
 
     wb.save(args.output_file)
-
-def add_rrna_trna_sheets(wb, rrna_file, trna_file):
-    for tsv_file, sheet_name in [(rrna_file, 'rRNA'), (trna_file, 'tRNA')]:
-        if tsv_file and file_contains_data(tsv_file):
-            df = pd.read_csv(tsv_file, sep='\t')
-            add_sheet_from_dataframe(wb, df, sheet_name)
 
 if __name__ == '__main__':
     main()
