@@ -213,7 +213,9 @@ def main():
             df_valid_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids, column_type)
 
             # Filter the df_topic to keep only rows where gene_id exists in annotations.db
-            df_topic_filtered = df_topic[df_topic['gene_id'].isin(df_valid_gene_ids['gene_id'])]
+            # Instead of accessing 'gene_id' directly, use the column_type attribute
+            df_topic_filtered = df_topic[df_topic[info['column_type']].isin(df_valid_gene_ids['gene_id'])]
+
             
             # Merge the filtered df_topic with target_id_counts data
             df_merged = pd.merge(df_topic_filtered, target_id_counts_df, on="gene_id", how="left")
