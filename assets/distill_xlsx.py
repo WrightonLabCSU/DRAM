@@ -96,6 +96,34 @@ def add_rrna_trna_sheets(wb, rrna_file, trna_file):
             df = pd.read_csv(tsv_file, sep='\t')
             add_sheet_from_dataframe(wb, df, sheet_name)
 
+def compile_rrna_data(rrna_file):
+    """Compile rRNA data from the given file."""
+    rrna_data = pd.read_csv(rrna_file, sep='\t')
+    # Process rRNA data as required for your use case
+    # This might involve summarizing the rRNA types and locations for each sample
+    return rrna_data
+
+def compile_trna_counts(trna_file):
+    """Compile tRNA counts from the given file."""
+    trna_data = pd.read_csv(trna_file, sep='\t')
+    # Summarize tRNA counts for each sample
+    trna_counts = trna_data.groupby('sample').size().reset_index(name='tRNA count')
+    return trna_counts
+
+def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
+    """Update the genome_stats DataFrame with rRNA and tRNA information."""
+    if file_contains_data(rrna_file):
+        rrna_data = compile_rrna_data(rrna_file)
+        # Integrate rrna_data into genome_stats_df as needed
+        # Example: Add columns for rRNA types and counts
+
+    if file_contains_data(trna_file):
+        trna_counts = compile_trna_counts(trna_file)
+        # Merge tRNA counts into genome_stats_df
+        genome_stats_df = pd.merge(genome_stats_df, trna_counts, on="sample", how="left")
+
+    return genome_stats_df
+
 def main():
     args = parse_arguments()
 
@@ -103,6 +131,8 @@ def main():
     wb.remove(wb.active)  # Remove the default sheet
 
     genome_stats_df = compile_genome_stats(args.db_name)
+    # Update genome_stats with rRNA and tRNA data if available
+    genome_stats_df = update_genome_stats_with_rrna_trna(genome_stats_df, args.rrna_file, args.trna_file)
     add_sheet_from_dataframe(wb, genome_stats_df, "genome_stats")
 
     target_id_counts_df = compile_target_id_counts(args.target_id_counts)
