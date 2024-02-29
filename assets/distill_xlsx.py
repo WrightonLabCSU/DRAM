@@ -24,7 +24,8 @@ def read_distill_sheets(distill_sheets):
         if file_contains_data(sheet_path):
             df = pd.read_csv(sheet_path, sep='\t')
             topic = df['topic_ecosystem'].unique().tolist()
-            sheets_data.update({sheet_path: {'dataframe': df, 'topics': topic}})
+            column_type = 'ec_id' if 'ec_id' in df.columns else 'gene_id'
+            sheets_data.update({sheet_path: {'dataframe': df, 'topics': topic, 'column_type': column_type}})
         else:
             print(f"Skipping {sheet_path} as it contains 'NULL'.")
     return sheets_data
@@ -82,21 +83,21 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
     for r in dataframe_to_rows(df, index=False, header=True):
         ws.append(r)
 
-def query_annotations_for_gene_ids(db_name, gene_ids):
-    """Fetch annotations for given gene IDs or partial EC numbers from the annotations database."""
+def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
     df_result = pd.DataFrame()
-
-    for gene_id in gene_ids:
-        # Normalize gene_id for partial EC number matching
-        normalized_gene_id = gene_id.replace("..", "%").replace("…", "%")
-        if "%" in normalized_gene_id:  # This checks if gene_id is intended for partial matching
-            query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
-            df_partial = pd.read_sql_query(query, conn, params=(normalized_gene_id,))
-        else:  # Handle exact matches for gene IDs
+    
+    for id_value in ids:
+        if column_type == 'ec_id':
+            # Adjust for EC number partial matching. Replace trailing '.' with '%' for LIKE query
+            like_pattern = f"{id_value}%" if id_value.endswith('.') else f"{id_value}"
+            like_pattern = like_pattern.replace('.', '_')  # Ensure single '_' for single character wildcard
+            query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+        else:
+            # Handle exact matches for gene IDs
             query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
-            df_partial = pd.read_sql_query(query, conn, params=(gene_id,))
         
+        df_partial = pd.read_sql_query(query, conn, params=(like_pattern,))
         df_result = pd.concat([df_result, df_partial])
 
     df_result.drop_duplicates(inplace=True)
