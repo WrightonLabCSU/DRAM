@@ -2,7 +2,7 @@ process DISTILL {
 
     input:
     file( combined_annotations, stageAs: "raw-annotations.tsv" )
-    val( db_list )
+    val( database_names_list )
     path( ch_combined_distill_sheets )
     path( ch_rrna_sheet, stageAs: "rrna_sheet.tsv" )
     path( combined_rrna, stageAs: "rrna_combined.tsv" )
@@ -16,7 +16,7 @@ process DISTILL {
     script:
     """
 
-    python ${ch_distill_sql_script} --combined_annotations ${combined_annotations} --db_name a"nnotations.db" --db_list ${db_list}
+    python ${ch_distill_sql_script} --combined_annotations ${combined_annotations} --db_name "annotations.db" --db_list ${database_names_list}
     
    
     """
