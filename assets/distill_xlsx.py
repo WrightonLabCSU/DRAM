@@ -66,11 +66,12 @@ def compile_genome_stats(db_name):
 def query_annotations_for_gene_ids(db_name, gene_ids):
     conn = sqlite3.connect(db_name)
     placeholders = ', '.join('?' for _ in gene_ids)
-    # Select only the necessary columns for topic-specific sheets, exclude taxonomy, Completeness, and Contamination
-    query = f"SELECT gene_id, sample FROM annotations WHERE gene_id IN ({placeholders})"
+    # Alias gene_id as target_id in the query
+    query = f"SELECT gene_id AS target_id, sample FROM annotations WHERE gene_id IN ({placeholders})"
     df = pd.read_sql_query(query, conn, params=gene_ids)
     conn.close()
     return df
+
 
 
 def add_sheet_from_dataframe(wb, df, sheet_name):
