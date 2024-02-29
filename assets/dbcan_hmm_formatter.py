@@ -60,6 +60,9 @@ def main():
         # Rename the selected columns
         hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
 
+        # Insert the new line here to remove '.hmm' extension from 'dbcan_id' values if it exists
+        hits_df['dbcan_id'] = hits_df['dbcan_id'].str.replace('.hmm', '', regex=False)
+
         # Save the formatted output to CSV
         hits_df[modified_columns].to_csv(args.output, index=False)
 

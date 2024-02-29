@@ -3,6 +3,7 @@ process DISTILL {
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
     path( ch_combined_distill_sheets )
+    path( ch_annotation_counts, stageAs: "target_id_counts.tsv")
     path( ch_rrna_sheet, stageAs: "rrna_sheet.tsv" )
     path( ch_combined_rrna, stageAs: "rrna_combined.tsv" )
     path( ch_trna_sheet, stageAs: "trna_sheet.tsv" )
