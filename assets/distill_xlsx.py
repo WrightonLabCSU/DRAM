@@ -10,6 +10,7 @@ def parse_arguments():
     parser.add_argument('--db_name', type=str, help='Name of the SQLite database file.')
     parser.add_argument('--distill_sheets', nargs='+', help='List of paths to distill sheets.')
     parser.add_argument('--rrna_file', type=str, help='Path to the rrna_sheet.tsv file.', default=None)
+    parser.add_argument('--combined_rrna_file', type=str, help='Path to the combined rRNA TSV file.', default=None)
     parser.add_argument('--trna_file', type=str, help='Path to the trna_sheet.tsv file.', default=None)
     parser.add_argument('--output_file', type=str, help='Path to the output XLSX file.')
     return parser.parse_args()
@@ -90,6 +91,16 @@ def query_annotations_for_gene_ids(db_name, gene_ids):
     conn.close()
     return df
 
+def compile_rrna_information(combined_rrna_file):
+    """Compile rRNA information from the combined rRNA file."""
+    rrna_data = pd.read_csv(combined_rrna_file, sep='\t')
+    # Group by sample and type to concatenate query_id and positions
+    rrna_summary = rrna_data.groupby(['sample', 'type']).apply(
+        lambda x: '; '.join([f"{row['query_id']} ({row['begin']}, {row['end']})" for _, row in x.iterrows()])
+    ).unstack(fill_value='')
+    rrna_summary.reset_index(inplace=True)
+    return rrna_summary
+
 def add_rrna_trna_sheets(wb, rrna_file, trna_file):
     for tsv_file, sheet_name in [(rrna_file, 'rRNA'), (trna_file, 'tRNA')]:
         if tsv_file and file_contains_data(tsv_file):
@@ -134,6 +145,13 @@ def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
 
     return genome_stats_df
 
+def update_genome_stats_with_rrna(genome_stats_df, combined_rrna_file):
+    """Update the genome_stats DataFrame with rRNA information if available."""
+    if file_contains_data(combined_rrna_file):
+        rrna_summary = compile_rrna_information(combined_rrna_file)
+        genome_stats_df = pd.merge(genome_stats_df, rrna_summary, on="sample", how="left")
+    return genome_stats_df
+
 
 def main():
     args = parse_arguments()
@@ -144,6 +162,7 @@ def main():
     genome_stats_df = compile_genome_stats(args.db_name)
     # Update genome_stats with rRNA and tRNA data if available
     genome_stats_df = update_genome_stats_with_rrna_trna(genome_stats_df, args.rrna_file, args.trna_file)
+    genome_stats_df = update_genome_stats_with_rrna(genome_stats_df, args.combined_rrna_file)
     add_sheet_from_dataframe(wb, genome_stats_df, "genome_stats")
 
     target_id_counts_df = compile_target_id_counts(args.target_id_counts)
