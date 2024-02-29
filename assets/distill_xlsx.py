@@ -35,14 +35,33 @@ def read_distill_sheets(distill_sheets):
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    
+    # Check for the presence of optional columns in the database
+    cursor.execute("PRAGMA table_info(annotations)")
+    columns_info = cursor.fetchall()
+    column_names = [info[1] for info in columns_info]
+    
+    # Base query to select distinct samples
     query = "SELECT DISTINCT sample FROM annotations"
     df_samples = pd.read_sql_query(query, conn)
+    
+    # Initialize the genome_stats DataFrame
     df_genome_stats = pd.DataFrame({
-        "sample": df_samples['sample'],
-        "number_of_scaffolds": ['' for _ in range(df_samples.shape[0])]  # Placeholder values
+        "sample": df_samples['sample']
     })
+    
+    # If optional columns are present, aggregate and add them to df_genome_stats
+    optional_columns = ['taxonomy', 'Completeness', 'Contamination']
+    for col in optional_columns:
+        if col in column_names:
+            query = f"SELECT sample, AVG({col}) AS {col} FROM annotations GROUP BY sample"
+            df_col_stats = pd.read_sql_query(query, conn)
+            df_genome_stats = pd.merge(df_genome_stats, df_col_stats, on="sample", how="left")
+    
     conn.close()
     return df_genome_stats
+
 
 def query_annotations_for_gene_ids(db_name, gene_ids):
     conn = sqlite3.connect(db_name)
