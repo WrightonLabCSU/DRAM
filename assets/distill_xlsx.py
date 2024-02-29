@@ -88,11 +88,11 @@ def query_annotations_for_gene_ids(db_name, gene_ids):
     df_result = pd.DataFrame()
 
     for gene_id in gene_ids:
-        # Handle gene IDs that could be EC numbers with partial matching
-        if "." in gene_id:  # This checks if gene_id is likely an EC number
-            like_pattern = f"{gene_id}%"  # Prepare pattern for SQL LIKE query
+        # Normalize gene_id for partial EC number matching
+        normalized_gene_id = gene_id.replace("..", "%").replace("…", "%")
+        if "%" in normalized_gene_id:  # This checks if gene_id is intended for partial matching
             query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
-            df_partial = pd.read_sql_query(query, conn, params=(like_pattern,))
+            df_partial = pd.read_sql_query(query, conn, params=(normalized_gene_id,))
         else:  # Handle exact matches for gene IDs
             query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
             df_partial = pd.read_sql_query(query, conn, params=(gene_id,))
