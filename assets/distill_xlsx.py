@@ -213,14 +213,15 @@ def main():
 
             # Filter the df_topic to keep only rows where gene_id exists in annotations.db
             # Instead of accessing 'gene_id' directly, use the column_type attribute
-            df_topic_filtered = df_topic[df_topic[info['column_type']].isin(df_valid_gene_ids['gene_id'])]
+            df_topic_filtered = df_topic[df_topic[info['column_type']].isin(df_valid_gene_ids['gene_id'])].copy()
 
-            
             # Instead of accessing 'gene_id' directly, use the column_type attribute
             column_type = distill_data[sheet_path]['column_type']
             if column_type == 'ec_id':
                 # Rename the 'ec_id' column to 'gene_id' in df_topic_filtered
+                logging.debug(f"Columns before renaming: {df_topic_filtered.columns}")
                 df_topic_filtered.rename(columns={'ec_id': 'gene_id'}, inplace=True)
+                logging.debug(f"Columns after renaming: {df_topic_filtered.columns}")
 
             df_merged = pd.merge(df_topic_filtered, target_id_counts_df, on='gene_id', how="left")
 
