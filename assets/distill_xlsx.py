@@ -138,21 +138,20 @@ def prepare_ec_like_patterns(ec_number):
 def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
     df_result = pd.DataFrame()
-
     all_gene_ids = pd.read_sql_query("SELECT DISTINCT gene_id FROM annotations", conn)
 
     for id_value in ids:
         logging.debug(f"Processing ID: {id_value} as {column_type}")
-        # Handle EC numbers, including compound EC entries
         if column_type == 'ec_id':
-            # Match function for checking if any part of the compound EC number matches the input EC number
             def ec_match(gene_id):
-                # Split compound EC numbers by semicolon or space
-                parts = re.split('; | ', gene_id)
-                return any(id_value == part for part in parts)
-
+                parts = re.split('; | ', gene_id)  # Split by both semicolon and space
+                return any(id_value == part.strip() for part in parts)
+            # Apply matching function and keep only the matching EC part
             df_partial = all_gene_ids[all_gene_ids['gene_id'].apply(ec_match)]
-        else:  # Direct match for gene_id
+            # If there's a match, adjust df_partial to only include the matching part
+            if not df_partial.empty:
+                df_partial = pd.DataFrame({'gene_id': [id_value] * len(df_partial)})
+        else:
             df_partial = all_gene_ids[all_gene_ids['gene_id'] == id_value]
 
         if not df_partial.empty:
@@ -163,6 +162,7 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn.close()
     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
     return df_result
+
 
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
