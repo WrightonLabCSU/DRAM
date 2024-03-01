@@ -139,22 +139,21 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
     df_result = pd.DataFrame()
 
-    # Fetch all gene_id from annotations to filter in Python (for demonstration, may need optimization)
     all_gene_ids = pd.read_sql_query("SELECT DISTINCT gene_id FROM annotations", conn)
 
     for id_value in ids:
         logging.debug(f"Processing ID: {id_value} as {column_type}")
-        # Directly match for gene_id
-        if column_type == 'gene_id':
-            df_partial = all_gene_ids[all_gene_ids['gene_id'] == id_value]
-        elif column_type == 'ec_id':
-            # Filter function to match any EC number within entries
-            def match_ec(ec_entry):
-                # Split by both semicolon and space, then check if id_value matches any
-                split_ecs = re.split('; | ', ec_entry)  # Adjust regex as needed
-                return any(id_value == ec for ec in split_ecs)
+        # Handle EC numbers, including compound EC entries
+        if column_type == 'ec_id':
+            # Match function for checking if any part of the compound EC number matches the input EC number
+            def ec_match(gene_id):
+                # Split compound EC numbers by semicolon or space
+                parts = re.split('; | ', gene_id)
+                return any(id_value == part for part in parts)
 
-            df_partial = all_gene_ids[all_gene_ids['gene_id'].apply(match_ec)]
+            df_partial = all_gene_ids[all_gene_ids['gene_id'].apply(ec_match)]
+        else:  # Direct match for gene_id
+            df_partial = all_gene_ids[all_gene_ids['gene_id'] == id_value]
 
         if not df_partial.empty:
             logging.debug(f"Found matches for ID {id_value}: {df_partial['gene_id'].tolist()}")
