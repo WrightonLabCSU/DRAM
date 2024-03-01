@@ -23,8 +23,6 @@ def parse_arguments():
 def compile_target_id_counts(target_id_counts):
     return pd.read_csv(target_id_counts, sep='\t')
 
-import logging
-
 def read_distill_sheets(distill_sheets):
     sheets_data = {}
     for sheet_path in distill_sheets:
