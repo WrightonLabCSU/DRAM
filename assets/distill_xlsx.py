@@ -140,11 +140,25 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
     df_result = pd.DataFrame()
 
+    # Fetch all gene_id from annotations to filter in Python (for demonstration, may need optimization)
+    all_gene_ids = pd.read_sql_query("SELECT DISTINCT gene_id FROM annotations", conn)
+
     for id_value in ids:
         logging.debug(f"Processing ID: {id_value} as {column_type}")
-        query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
-        logging.debug(f"Executing query for exact match: {id_value}")
-        df_partial = pd.read_sql_query(query, conn, params=(id_value,))
+        # Directly match for gene_id
+        if column_type == 'gene_id':
+            df_partial = all_gene_ids[all_gene_ids['gene_id'] == id_value]
+        elif column_type == 'ec_id':
+            # Filter function to match any EC number within entries
+            def match_ec(ec_entry):
+                # Split by both semicolon and space, then check if id_value matches any
+                split_ecs = re.split('; | ', ec_entry)  # Adjust regex as needed
+                return any(id_value == ec for ec in split_ecs)
+
+            df_partial = all_gene_ids[all_gene_ids['gene_id'].apply(match_ec)]
+
+        if not df_partial.empty:
+            logging.debug(f"Found matches for ID {id_value}: {df_partial['gene_id'].tolist()}")
         df_result = pd.concat([df_result, df_partial], ignore_index=True)
 
     df_result.drop_duplicates(inplace=True)
@@ -211,6 +225,8 @@ def main():
 
     # Compile genome stats and add as a sheet
     genome_stats_df = compile_genome_stats(args.db_name)
+    genome_stats_df = update_genome_stats_with_rrna_trna(genome_stats_df, args.rrna_file, args.trna_file)
+    genome_stats_df = update_genome_stats_with_rrna(genome_stats_df, args.combined_rrna_file)
     add_sheet_from_dataframe(wb, genome_stats_df, "Genome_Stats")
 
     # Read target ID counts
