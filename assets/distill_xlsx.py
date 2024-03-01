@@ -186,6 +186,16 @@ def update_genome_stats_with_rrna(genome_stats_df, combined_rrna_file):
         genome_stats_df = pd.merge(genome_stats_df, rrna_summary, on="sample", how="left")
     return genome_stats_df
 
+def expand_df_with_matched_gene_ids(df, gene_ids, column_type, db_name):
+    expanded_rows = []
+    for gene_id in gene_ids:
+        matched_gene_ids = query_annotations_for_gene_ids(db_name, [gene_id], column_type)
+        for matched_gene_id in matched_gene_ids['gene_id'].tolist():
+            for _, row in df.iterrows():
+                new_row = row.copy()
+                new_row['gene_id'] = matched_gene_id  # Update gene_id with matched value
+                expanded_rows.append(new_row)
+    return pd.DataFrame(expanded_rows)
 
 def main():
     args = parse_arguments()
@@ -217,20 +227,24 @@ def main():
 
             # Instead of accessing 'gene_id' directly, use the column_type attribute
             column_type = distill_data[sheet_path]['column_type']
+            # Instead of directly renaming and merging df_topic_filtered
             if column_type == 'ec_id':
-                # Rename the 'ec_id' column to 'gene_id' in df_topic_filtered
                 logging.debug(f"Columns before renaming: {df_topic_filtered.columns}")
-                df_topic_filtered.rename(columns={'ec_id': 'gene_id'}, inplace=True)
+                # No need to rename here as it will be handled in the expand_df_with_matched_gene_ids function
                 logging.debug(f"Columns after renaming: {df_topic_filtered.columns}")
 
+            # Fetch the matched gene_ids for the entire set of EC numbers or gene_ids
+            matched_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids, column_type)
 
-            logging.debug(f"df_topic_filtered gene_id unique values: {df_topic_filtered['gene_id'].unique()}")
-            logging.debug(f"target_id_counts_df gene_id unique values: {target_id_counts_df['gene_id'].unique()}")
-            logging.debug(f"df_topic_filtered shape: {df_topic_filtered.shape}")
-            logging.debug(f"target_id_counts_df shape: {target_id_counts_df.shape}")
+            # Expand df_topic_filtered to include a row for each matched gene_id
+            df_topic_filtered_expanded = expand_df_with_matched_gene_ids(df_topic_filtered, gene_ids, column_type, args.db_name)
 
+            logging.debug(f"df_topic_filtered_expanded gene_id unique values: {df_topic_filtered_expanded['gene_id'].unique()}")
+            logging.debug(f"df_topic_filtered_expanded shape: {df_topic_filtered_expanded.shape}")
 
-            df_merged = pd.merge(df_topic_filtered, target_id_counts_df, on='gene_id', how="left")
+            # Proceed with the merge operation using the expanded dataframe
+            df_merged = pd.merge(df_topic_filtered_expanded, target_id_counts_df, on='gene_id', how="left")
+
             logging.debug(f"df_merged shape after merge: {df_merged.shape}")
 
             df_final = df_merged.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
