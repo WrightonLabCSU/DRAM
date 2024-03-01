@@ -223,7 +223,15 @@ def main():
                 df_topic_filtered.rename(columns={'ec_id': 'gene_id'}, inplace=True)
                 logging.debug(f"Columns after renaming: {df_topic_filtered.columns}")
 
+
+            logging.debug(f"df_topic_filtered gene_id unique values: {df_topic_filtered['gene_id'].unique()}")
+            logging.debug(f"target_id_counts_df gene_id unique values: {target_id_counts_df['gene_id'].unique()}")
+            logging.debug(f"df_topic_filtered shape: {df_topic_filtered.shape}")
+            logging.debug(f"target_id_counts_df shape: {target_id_counts_df.shape}")
+
+
             df_merged = pd.merge(df_topic_filtered, target_id_counts_df, on='gene_id', how="left")
+            logging.debug(f"df_merged shape after merge: {df_merged.shape}")
 
             df_final = df_merged.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
             
