@@ -4,6 +4,7 @@ import argparse
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 import logging
+import re
 
 # Setup logging to display messages to console
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
