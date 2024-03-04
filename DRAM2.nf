@@ -110,24 +110,24 @@ include { PRODUCT_HEATMAP                               } from './modules/produc
 */
 
 /* Call Help Menu */
-if ((params.help || params.h) && (params.call || params.help_call)){
+if (((params.help || params.h ) && params.call) || params.help_call ){
     callHelpMessage()
     exit 0
 }
 /* Annotate Help Menu */
-else if ((params.help || params.h) && (params.call || params.help_annotate) ){
+else if (((params.help || params.h) && params.call) || params.help_annotate ){
     annotateHelpMessage()
     exit 0
 }
 
 /* Distill Help Menu */
-else if ((params.help || params.h) && (params.distill || params.help-distill )){
+else if (((params.help || params.h) && params.distill) || params.help_distill ){
     distillHelpMessage()
     exit 0
 }
 
 /* Adjectives Help Menu */
-else if ((params.help || params.h) && params.adjectives ){
+else if (((params.help || params.h) && params.adjectives) || params.help_adjectives ){
     adjectivesHelpMessage()
     exit 0
 }
