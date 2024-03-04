@@ -110,18 +110,18 @@ include { PRODUCT_HEATMAP                               } from './modules/produc
 */
 
 /* Call Help Menu */
-if ((params.help || params.h) && params.call ){
+if ((params.help || params.h) && (params.call || params.help-call)){
     callHelpMessage()
     exit 0
 }
 /* Annotate Help Menu */
-else if ((params.help || params.h) && params.annotate ){
+else if ((params.help || params.h) && (params.call || params.help-annotate) ){
     annotateHelpMessage()
     exit 0
 }
 
 /* Distill Help Menu */
-else if ((params.help || params.h) && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") ){
+else if ((params.help || params.h) && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") || params.help-distill ){
     distillHelpMessage()
     exit 0
 }
@@ -1193,10 +1193,10 @@ def helpMessage() {
         Call, annotate and distill can be run together or, each can be run idependently. 
 
     Bring up help menu:
-        nextflow run DRAM2.nf --help (-h)
+        nextflow run DRAM2.nf --help (--h)
 
     Bring up versions menu:
-        nextflow run DRAM2.nf --version (-v)      
+        nextflow run DRAM2.nf --version (--v)      
 
     Usage:
         nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
@@ -1267,7 +1267,7 @@ def helpMessage() {
                                             Directory containing called genes (.fna) 
 
         --add_annotations       PATH    <path/to/old-annoations.tsv> 
-                                        Used to add in old annotations to the current run. (See example for format.)
+                                            Used to add in old annotations to the current run. (See example for format.)
 
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
