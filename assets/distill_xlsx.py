@@ -36,7 +36,6 @@ def read_distill_sheets(distill_sheets):
             print(f"Skipping {sheet_path} as it contains 'NULL'.")
     return sheets_data
 
-
 def file_contains_data(file_path):
     try:
         with open(file_path, 'r') as f:
@@ -162,7 +161,6 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn.close()
     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
     return df_result
-
 
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""

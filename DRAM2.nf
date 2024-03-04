@@ -1114,23 +1114,13 @@ workflow {
             }
         } 
         
-    
-        
         /* Combine the individual user-specified distill sheets into a single channel */
         COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
+        /* Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets */
         DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
 
-
-        /* Generate a single distillate sheet which will then be separated by DISTILL_FINAL */
-        //DISTILL_SUMMARY( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_distill_summary_script )
-        //ch_simple_matab_summ = DISTILL_SUMMARY.out.ch_genome_sum_simple
-
-        /* Separate the distill summary into separate sheets - add on genome_stats sheet, rRNA sheet and tRNA sheet */
-        //DISTILL_FINAL( ch_simple_matab_summ, ch_distill_final_script, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_final_annots )
-
-        
     }
 
     /*
@@ -1160,8 +1150,30 @@ def version() {
     DRAM2 
 
     Software versions used:
-    BBTools    v39.01
-    Bowtie2    v2.5.1
+    BBTools             v39.01
+    Bowtie2             v2.5.1
+    Prodigal            v2.6.3
+    Python              v3.10
+    Pandas              v1.5.2
+    Pytest              v7.2.0
+    Scikit-bio          v0.5.7
+    MMseqs2             v14.7e284
+    HMMER               v3.3.2
+    SciPy               v1.8.1
+    SQLAlchemy          v1.4.46
+    Barrnap             v0.9
+    Altair              v4.2.0
+    OpenPyXL            v3.0.10
+    NetworkX            v2.8.8
+    Ruby                v3.1.2
+    GNU Parallel        v20221122
+    tRNAscan-SE         v2.0.12
+    Samtools            v1.17
+    CD-HIT              v4.6
+    CoverM              v0.6.1
+    Subread             v2.0.6
+    XlsxWriter          v3.1.6
+    Numpy               v1.26.0
 
     """.stripIndent()
 }
@@ -1175,30 +1187,120 @@ def helpMessage() {
     log.info """
     DRAM2 Nextflow Pipeline
     ===================================
-    Description: The purpose of this pipeline is to automate building a gene database from (DRAM) nucleotide fasta files using DRAM2.
+    Description: 
+        The purpose of DRAM2 is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation. 
+        DRAM2 can be used to call, annotate and distill annotations from input FASTA files. 
+        Call, annotate and distill can be run together or, each can be run idependently. 
+
+    Bring up help menu:
+        nextflow run DRAM2.nf --help (-h)
+
+    Bring up versions menu:
+        nextflow run DRAM2.nf --version (-v)      
 
     Usage:
-    
-    Bring up help menu:
-        nextflow run DRAM2.nf --help
-    Call genes using input fastas
-        nextflow run DRAM2.nf --call --input_fasta_dir <input_fasta_dir> --outdir <outdir> --threads <threads>
+        nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
+        Call genes using input fastas (use --rename to rename FASTA headers):
+            nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>
+
+        Annotate called genes using input fastas:
+            nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory>
+
+        Distill using input annotations:
+            nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
+
+        (Combined): Call, annotate and distill input fasta files:
+            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s) 
+
+        (Real) example: (on multiple lines for clarity)
+        nextflow run DRAM2.nf --input_fasta ../test_data/ 
+            --outdir DRAM2-test-data-Feb012024/ 
+            --call --rename 
+            --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur 
+            --add_annotations ../test-data/old-DRAM-annotations.tsv
+            --distill_topic 'carbon transport energy' --distill_ecosystem 'eng_sys ag' 
+            --distill_custom assets/forms/distill_sheets/test.tsv -resume --slurm_node zenith 
+            --trnas ../test-data/trnas.tsv
+            --rrnas ../test-data/rrnas.tsv
+            --bin_quality ../test-data/checkM1-test-data.tsv
+            --taxa ../test-data/gtdbtk.bac120.summary.tsv
+            --threads 5
+            -with-report -with-trace -with-timeline
 
     Main DRAM2 Operations:
-    --call      : Call genes using prodigal 
-    --annotate  : Annotate called genes using user-provided databases
-    --distill   : Distill the annotations into an output distillate.xlsx and product.tsv and product.html
+        --call      : Call genes using prodigal 
+        --annotate  : Annotate called genes using downloaded databases
+        --distill   : Distill the annotations into a multi-sheet distillate.xlsx
 
-    Options:
-    --sequence_type     : Type of sequences (nuc or prot).
-    --data_type         : Data type of input fasta.
-    --input_fasta_dir   : Directory containing input fasta files.
-    --outdir            : Output directory path.
-    --threads           : Number of threads to use for processing.
+    Call options:
+        --call                  OPTION  Call genes on the input FASTA files using Prodigal.
 
-    Example:
-    nextflow run DRAM2.nf --call --sequence_type nuc --data_type genomic --input_fasta_dir data/input_fasta/ --outdir output --threads 4 
+        --input_fasta           PATH    <path/to/fasta/directory/>
+                                            Directory containing input fasta files.      
+                                            Default: <./input_fasta/*.fa*>
+
+        --rename                OPTION  Rename FASTA headers based on file name.    
+                                            Example: sample1.fa --> (fasta header renamed to) > sample1......
+                                            Why? DRAM2 output is focused on scaffolds/contigs with respect to each provided input sample.
+                                                Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable.
+                                                *If you have already renamed your FASTA headers, do not include '--call'.
+
+        --prodigal_mode         STRING  <single|meta>
+                                            Default: 'single'
+
+        --prodigal_tras_table   NUMBER  (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
+                                            Specify a translation table to use (default: '1').
+
+    Annotate options:
+        --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
+                                            Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
+        
+        --use_dbset             STRING  <metabolism_kegg_set|metabolism_set|adjectives_kegg_set|adjectivs set>
+                                            metabolism_kegg_set = kegg, dbcan, merops, pfam, heme
+                                            metabolism_set      = kofam, dbcan, merops, pfam, heme
+                                            adjectives_kegg_set = kegg, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
+                                            adjectives_set      = kofam, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
+                                            *Only one set can be used. Can be used in combination with --use_[db-name]
+        
+        --input_genes           PATH    <path/to/called/genes/directory/>
+                                            Directory containing called genes (.fna) 
+
+        --add_annotations       PATH    <path/to/old-annoations.tsv> 
+                                        Used to add in old annotations to the current run. (See example for format.)
+
+    Distill options:
+        --annotations           PATH     <path/to/annotations.tsv>
+                                            Required if you are running distill without --call and --annotate.
+
+        --rrnas                 PATH    <path/to/rRNA.tsv> (See example for format.)
+                                            rRNA information will be included in distill output.
+
+        --trnas                 PATH    <path/to/tRNA.tsv> (See example for format.)
+                                            tRNA information will be included in distill output.
+        
+        --bin_quality           PATH    <path/to/bin-quality.tsv> (See example for format.)
+                                            CheckM and CheckM2 compatible. 
+
+        --taxa                  PATH    <path/to/bin-taxonomy.tsv>
+                                            Compatible with GTDB. (See example for format.)
+
+        --distill_topic         STRING  <carbon|energy|misc|nitrogen|transport> OR <default = carbon, energy, misc, nitrogen, transport>
+                                            If more than one topic included, they must be enclosed in single quotes
+
+        --distill_ecosystem     STRING  <eng_sys|ag>
+                                            If more than one ecosystem included, they must be enclosed in single quotes
+
+        --distill_custom        STRING  <path/to/custom_distillate.tsv> (See example for format and options.)
+                                            As of now, only one custom distillate may be included.
+
+    General options:
+        --outdir                PATH    <path/to/output/directory>
+                                            Default: './DRAM2_output/'
+
+        --threads               NUMBER  Number of threads to use for processing.
+                                        Default: '10'
+
     """.stripIndent()
 }
 
@@ -1211,23 +1313,32 @@ def callHelpMessage() {
 
     Usage:
 
-    Call genes using input fastas:
-        nextflow run DRAM2.nf --call --input_fasta_dir <input_fasta_dir> --outdir <outdir> --threads <threads>
+        Call genes using input fastas:
+            nextflow run DRAM2.nf --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
 
     Call options:
-    --prodigal_mode         'single' or 'meta'
-                                Default: 'single'
-    --prodigal_tras_table   (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
-                            Specify a translation table to use (default: '1').
+        --rename                Rename FASTA headers based on file name.    
+                                    Example: sample1.fa --> (fasta header renamed to) > sample1......
+                                    Why? DRAM2 output is focused on scaffolds/contigs with respect to each provided input sample.
+                                        Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable.
+                                        *If you have already renamed your FASTA headers, do not include '--call'.
+
+        --prodigal_mode         STRING  <single|meta>
+                                    Default: 'single'
+
+        --prodigal_tras_table   (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
+                                    Specify a translation table to use (default: '1').
 
     Main options:
-    --input_fasta           'path/to/fasta/directory/''
-                                Directory containing input fasta files.      
-                                Default: 'input_fasta/''                  
-    --outdir                'path/to/output/directory/''
-                                Default: 'DRAM2_output/'
-                                Output directory path.
-    --threads               Number of threads to use for processing.
+        --input_fasta           PATH    <path/to/fasta/directory/>
+                                        Directory containing input fasta files.      
+                                        Default: './input_fasta/'
+
+        --outdir                PATH    <path/to/output/directory>
+                                            Default: './DRAM2_output/'
+
+        --threads               NUMBER  Number of threads to use for processing.
+                                        Default: '10'
 
     """.stripIndent()
 }
@@ -1237,49 +1348,45 @@ def annotateHelpMessage() {
     log.info """
     DRAM2 Nextflow Pipeline
     ===================================
-    Annotate description: The purpose of DRAM2 --annotate is to annotate called genes on input FASTA (faa) files.
+    Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
 
     Usage:
 
-    Annotate called genes using input fastas (faa):
-        nextflow run DRAM2.nf --annotate --input_fasta_dir <input_fasta_dir> --outdir <outdir> --threads <threads>
-    
-    Call and Annotate genes using input fastas and KOFAM database:
-        nextflow run DRAM2.nf --call --annotate --input_fasta_dir <input_fasta_dir> --outdir <outdir> --threads <threads> --use_kofam
+        Annotate called genes using input called genes and the KOFAM database:
+            nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam
+        
+        Annotate called genes using input fasta files and the KOFAM database:
+            nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
 
     Annotate options:
-    --use_dbset [metabolism_kegg_set|metabolism_set|adjectives|adjectives_kegg]
-
-
-    --use_[db-name]             [camper, cant_hyd, dbcan, fegenie, kegg, kofam, merops, methyl, heme, pfam, sulfur, uniref]
-                                    Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
+    --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
+                                        Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
     
-    --use_dbset                 [metabolism_kegg_set, metabolism_set, adjectives_kegg_set, adjectivs set]
-                                    metabolism_kegg_set = kegg, dbcan, merops, pfam, heme
-                                    metabolism_set      = kofam, dbcan, merops, pfam, heme
-                                    adjectives_kegg_set = kegg, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                    adjectives_set      = kofam, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                    Only one set can be used. Can be used in combination with --use_[db-name]
+    --use_dbset             STRING  <metabolism_kegg_set|metabolism_set|adjectives_kegg_set|adjectivs set>
+                                        metabolism_kegg_set = kegg, dbcan, merops, pfam, heme
+                                        metabolism_set      = kofam, dbcan, merops, pfam, heme
+                                        adjectives_kegg_set = kegg, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
+                                        adjectives_set      = kofam, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
+                                        *Only one set can be used. Can be used in combination with --use_[db-name]
     
-    --bit_score_threshold       INTEGER
-                                    The minimum bit score is calculated by a HMMER or MMseqs search to retain hits.
-    --rbh_bit_score_threshold   INTEGER
-                                    Minimum bit score of reverse best hits to retain hits.
-    --custom_fasta_db PATH      'path/to/fasta/db'
-                                    Location of fastas to annotate against, can be used multiple times.
-    --custom_hmm_db PATH        'path/to/hmm/db'
-                                    Location of HMMs to annotate against, can be used multiple times.
-    --custom_hmm_db_cutoffs     'path/to/hmm/cutoffs/db'
-                                    Location of file with custom HMM cutoffs and descriptions, can be used multiple times.
+    --add_annotations       PATH    <path/to/old-annoations.tsv> 
+                                        Used to add in old annotations to the current run. (See example for format.)
 
     Main options:
-    --input_fasta           'path/to/fasta/directory/''
-                                Directory containing input fasta files.      
-                                Default: 'input_fasta/''                  
-    --outdir                'path/to/output/directory/''
-                                Default: 'DRAM2_output/'
-                                Output directory path.
-    --threads               Number of threads to use for processing.
+    --input_fasta           PATH    <path/to/fasta/directory/>
+                                        Directory containing input fasta files.      
+                                        Default: './input_fasta/' 
+                                        Either '--input_fasta' or '--input_genes' may be used - not both.
+
+    --input_genes           PATH    <path/to/called/genes/directory/>
+                                        Directory containing called genes (.fna)
+                                        Either '--input_fasta' or '--input_genes' may be used - not both.
+
+    --outdir                PATH    <path/to/output/directory/>
+                                        Default: './DRAM2_output/'
+
+    --threads               NUMBER  Number of threads to use for processing.
+                                        Default '10'
 
     """.stripIndent()
 }
@@ -1289,36 +1396,48 @@ def distillHelpMessage() {
     log.info """
     DRAM2 Nextflow Pipeline
     ===================================
-    Distill description: The purpose of DRAM2 --distill is to distill down annotations based on a curated distillation summary form. User's may also provide additional --custom_distillate (TSV forms).
-
-    Usage:
-
-    Distill annotations using input TSV file:
-        nextflow run DRAM2.nf --distill --annotations <path/to/annotations.tsv> --outdir <outdir> --threads <threads>
+    Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
+                            Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided.
     
-    Call and Annotate and Distill genes using input fastas and KOFAM database:
-        nextflow run DRAM2.nf --call --annotate --distill --input_fasta_dir <input_fasta_dir> --outdir <outdir> --threads <threads> --use_kofam
+    Usage:
+        nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
+        *Important: if more than one topic or ecosystem is included, they must be enclosed in single quotes. Example: --distill_topic 'carbon transport'
+    
+    Example:
+        Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
+            nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
 
     Distill options:
-    --annotations_tsv_path PATH     'path/to/annotations.tsv'
-                                    This needs to be provided if you are not running distill with --call and --annotate.
+        --annotations           PATH     <path/to/annotations.tsv>
+                                            Required if you are running distill without --call and --annotate.
 
-    --rrna_path PATH                rRNA output from a dram2 RNA script.
-                                        <Description>
-    --trna_path PATH                tRNA output from a dram2 annotation.
-                                        <Description>
-    --show_gene_names               If present, give names of genes instead of counts in genome metabolism summary.
-    --custom_distillate             'path/to/custon/distillate.tsv'?
-                                        Custom distillate form to add your ownmodules to the metabolism summary. You willneed to read the docs to find the format that this tsv file must take.
+        --rrnas                 PATH    <path/to/rRNA.tsv> (See example for format.)
+                                            rRNA information will be included in distill output.
 
-    Main options:
-    --input_fasta           'path/to/fasta/directory/''
-                                Directory containing input fasta files.      
-                                Default: 'input_fasta/''                  
-    --outdir                'path/to/output/directory/''
-                                Default: 'DRAM2_output/'
-                                Output directory path.
-    --threads               Number of threads to use for processing.
+        --trnas                 PATH    <path/to/tRNA.tsv> (See example for format.)
+                                            tRNA information will be included in distill output.
+
+        --bin_quality           PATH    <path/to/bin-quality.tsv> (See example for format.)
+                                            CheckM and CheckM2 compatible. 
+
+        --taxa                  PATH    <path/to/bin-taxonomy.tsv>
+                                        Compatible with GTDB. (See example for format.)
+
+        --distill_topic         STRING  <carbon|energy|misc|nitrogen|transport> OR <default = carbon, energy, misc, nitrogen, transport>
+                                            If more than one topic included, they must be enclosed in single quotes
+
+        --distill_ecosystem     STRING  <eng_sys|ag>
+                                            If more than one ecosystem included, they must be enclosed in single quotes
+
+        --distill_custom        STRING  <path/to/custom_distillate.tsv> (See example for format and options.)
+                                            As of now, only one custom distillate may be included.
+
+    Main options:                
+        --outdir                PATH    <path/to/output/directory/>
+                                            Default: './DRAM2_output/'
+
+        --threads               NUMBER  Number of threads to use for processing.
+                                            Default '10'
 
     """.stripIndent()
 }
@@ -1328,12 +1447,10 @@ def adjectivesHelpMessage() {
     log.info """
     DRAM2 Nextflow Pipeline
     ===================================
-    Annotate description: The purpose of DRAM2 --adjectives is to evaluate genes and describe their features.
+    Annotate description: The purpose of DRAM2 '--adjectives' is to evaluate genes and describe their features.
 
     Usage:
-
-    Annotate called genes using input fastas (faa):
-        nextflow run DRAM2.nf --annotate --input_fasta_dir <input_fasta_dir> --outdir <outdir> --threads <threads>
+        
     
     THESE NEED TO BE RE_DONE
     Adjectives options:
