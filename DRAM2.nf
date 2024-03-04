@@ -121,7 +121,7 @@ else if ((params.help || params.h) && (params.call || params.help_annotate) ){
 }
 
 /* Distill Help Menu */
-else if ((params.help || params.h) && (params.distill || params.help-distill ){
+else if ((params.help || params.h) && (params.distill || params.help-distill )){
     distillHelpMessage()
     exit 0
 }
