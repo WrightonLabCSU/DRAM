@@ -110,12 +110,12 @@ include { PRODUCT_HEATMAP                               } from './modules/produc
 */
 
 /* Call Help Menu */
-if ((params.help || params.h) && (params.call || params.help-call)){
+if ((params.help || params.h) && (params.call || params.help_call)){
     callHelpMessage()
     exit 0
 }
 /* Annotate Help Menu */
-else if ((params.help || params.h) && (params.call || params.help-annotate) ){
+else if ((params.help || params.h) && (params.call || params.help_annotate) ){
     annotateHelpMessage()
     exit 0
 }
