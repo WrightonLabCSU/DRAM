@@ -10,6 +10,7 @@ process ADD_ANNOTATIONS {
 
     script:
     """
+    #!/usr/bin/env python
     import pandas as pd
 
     # Load the annotations into DataFrames
