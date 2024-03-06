@@ -5,8 +5,7 @@ process MMSEQS_SEARCH {
     tag { sample }
 
     input:
-    tuple val( sample ), path( query_database, stageAs: "query_database/" )
-    tuple val( sample ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
+    tuple val( sample ), path( query_database, stageAs: "query_database/" ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
     path( mmseqs_database )
     val( bit_score_threshold)
     path( db_descriptions, stageAs: "db_descriptions.tsv" )

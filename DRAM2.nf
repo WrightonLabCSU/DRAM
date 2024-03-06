@@ -876,13 +876,16 @@ workflow {
 
         // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
         if( index_mmseqs == "1" ){
+            //Also need to add in functionality when user provides either an fna or gff as input_genes
+            //For now I will jsut hard code assuming they user did both call and annotate:
             MMSEQS_INDEX( ch_called_proteins )
             ch_mmseqs_query = MMSEQS_INDEX.out.mmseqs_index_out
         }
 
         // Annotate according to the user-specified databases 
         if( annotate_kegg == 1 ){
-            MMSEQS_SEARCH_KEGG( ch_mmseqs_query, ch_gene_locs, ch_kegg_db, params.bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script )
+            ch_combined_query_locs = ch_mmseqs_query.join(ch_gene_locs)
+            MMSEQS_SEARCH_KEGG( ch_combined_query_locs, ch_kegg_db, params.bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script )
             ch_kegg_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
 
             SQL_KEGG(ch_kegg_unformatted, params.kegg_name, ch_sql_descriptions_db, ch_sql_parser)
@@ -905,7 +908,8 @@ workflow {
         }
         //NOT DONE
         if( annotate_pfam == 1 ){
-            MMSEQS_SEARCH_PFAM( ch_mmseqs_query, ch_gene_locs, ch_pfam_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.pfam_name, ch_mmseqs_script )
+            ch_combined_query_locs = ch_mmseqs_query.join(ch_gene_locs)
+            MMSEQS_SEARCH_PFAM( ch_combined_query_locs, ch_gene_locs, ch_pfam_mmseqs_db, params.bit_score_threshold, ch_dummy_sheet, params.pfam_name, ch_mmseqs_script )
             ch_uniref_formatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
@@ -958,7 +962,8 @@ workflow {
         }
 
         if (annotate_methyl == 1){
-            MMSEQS_SEARCH_METHYL( ch_mmseqs_query, ch_gene_locs, ch_methyl_db, params.bit_score_threshold, ch_dummy_sheet, params.methyl_name, ch_mmseqs_script )
+            ch_combined_query_locs = ch_mmseqs_query.join(ch_gene_locs)
+            MMSEQS_SEARCH_METHYL( ch_combined_query_locs, ch_gene_locs, ch_methyl_db, params.bit_score_threshold, ch_dummy_sheet, params.methyl_name, ch_mmseqs_script )
             ch_methyl_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_mmseqs_formatted)
@@ -966,7 +971,8 @@ workflow {
 
         if (annotate_canthyd == 1){
             // MMseqs
-            MMSEQS_SEARCH_CANTHYD( ch_mmseqs_query, ch_gene_locs, ch_canthyd_mmseqs_db, params.bit_score_threshold, ch_canthyd_mmseqs_list, params.canthyd_name, ch_mmseqs_script )
+            ch_combined_query_locs = ch_mmseqs_query.join(ch_gene_locs)
+            MMSEQS_SEARCH_CANTHYD( ch_combined_query_locs, ch_gene_locs, ch_canthyd_mmseqs_db, params.bit_score_threshold, ch_canthyd_mmseqs_list, params.canthyd_name, ch_mmseqs_script )
             ch_canthyd_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD.out.mmseqs_search_formatted_out
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_mmseqs_formatted)
@@ -1003,7 +1009,8 @@ workflow {
         }
 
         if (annotate_merops == 1){
-            MMSEQS_SEARCH_MEROPS( ch_mmseqs_query, ch_gene_locs, ch_merops_db, params.bit_score_threshold, ch_dummy_sheet, params.merops_name, ch_mmseqs_script )
+            ch_combined_query_locs = ch_mmseqs_query.join(ch_gene_locs)
+            MMSEQS_SEARCH_MEROPS( ch_combined_query_locs, ch_gene_locs, ch_merops_db, params.bit_score_threshold, ch_dummy_sheet, params.merops_name, ch_mmseqs_script )
             ch_merops_unformatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
 
             SQL_MEROPS(ch_merops_unformatted, params.merops_name, ch_sql_descriptions_db, ch_sql_parser)
@@ -1013,7 +1020,8 @@ workflow {
         }
 
         if (annotate_uniref == 1){
-            MMSEQS_SEARCH_UNIREF( ch_mmseqs_query, ch_gene_locs, ch_uniref_db, params.bit_score_threshold, ch_dummy_sheet, params.uniref_name, ch_mmseqs_script )
+            ch_combined_query_locs = ch_mmseqs_query.join(ch_gene_locs)
+            MMSEQS_SEARCH_UNIREF( ch_combined_query_locs, ch_gene_locs, ch_uniref_db, params.bit_score_threshold, ch_dummy_sheet, params.uniref_name, ch_mmseqs_script )
             ch_uniref_unformatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
 
             SQL_UNIREF(ch_uniref_unformatted, params.uniref_name, ch_sql_descriptions_db, ch_sql_parser)
@@ -1036,7 +1044,8 @@ workflow {
         }
 
         if (annotate_viral == 1){
-            MMSEQS_SEARCH_VIRAL( ch_mmseqs_query, ch_gene_locs, ch_viral_db, params.bit_score_threshold, ch_dummy_sheet, params.viral_name, ch_mmseqs_script )
+            ch_combined_query_locs = ch_mmseqs_query.join(ch_gene_locs)
+            MMSEQS_SEARCH_VIRAL( ch_combined_query_locs, ch_gene_locs, ch_viral_db, params.bit_score_threshold, ch_dummy_sheet, params.viral_name, ch_mmseqs_script )
             ch_viral_unformatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
 
             SQL_VIRAL(ch_viral_unformatted, params.viral_name, ch_sql_descriptions_db, ch_sql_parser)
