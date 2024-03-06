@@ -47,7 +47,7 @@ process ADD_ANNOTATIONS {
                 merged_df.drop(columns=[col], inplace=True) # If it exists, likely handled above, drop the column
 
     # Save the merged DataFrame
-    merged_df.to_csv("merged_annotations.tsv", sep='\t', index=False)
+    merged_df.to_csv("raw-combined-annotations.tsv", sep='\t', index=False)
     print("Merged annotations saved to merged_annotations.tsv")
 
     """
