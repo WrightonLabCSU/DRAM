@@ -6,7 +6,7 @@ process ADD_ANNOTATIONS {
 
 
     output:
-    path "merged_combined_annotations.tsv", emit: merged_annots_out
+    path "raw-combined-annotations.tsv", emit: merged_annots_out
 
     script:
     """
@@ -49,7 +49,7 @@ process ADD_ANNOTATIONS {
     merged_df = merged_df.reindex(columns=columns_order + sorted(set(merged_df.columns) - set(columns_order)))
 
     # Save the merged DataFrame to a new file
-    merged_file_path = "merged_combined_annotations.tsv"
+    merged_file_path = "raw-combined-annotations.tsv"
     merged_df.to_csv(merged_file_path, sep='\t', index=False)
 
     print(f"Merged annotations saved to {merged_file_path}")
