@@ -1,4 +1,4 @@
-process MERGE_ANNOTATIONS {
+process ADD_ANNOTATIONS {
 
     input:
     path( old_annotations, stageAs: "old_annotations.tsv" )

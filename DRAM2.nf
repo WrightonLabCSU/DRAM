@@ -93,7 +93,7 @@ include { FEGENIE_HMM_FORMATTER                          } from './modules/annot
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
-include { MERGE_ANNOTATIONS                             } from './modules/annotate/merge_annotations.nf'
+include { ADD_ANNOTATIONS                             } from './modules/annotate/add_annotations.nf'
 
 include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
 include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
@@ -914,7 +914,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
         }
-        // NOT DONE - HMM
+
         if (annotate_fegenie == 1){
             HMM_SEARCH_FEGENIE ( ch_called_proteins,  params.fegenie_e_value, ch_fegenie_db )
             ch_fegenie_hmms = HMM_SEARCH_FEGENIE.out.hmm_search_out
@@ -1044,8 +1044,8 @@ workflow {
 
         // Check for additional user-provided annotations 
         if( params.add_annotations != "" ){
-            MERGE_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
-            ch_final_annots = MERGE_ANNOTATIONS.out.merged_annots_out
+            ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
+            ch_final_annots = ADD_ANNOTATIONS.out.merged_annots_out
             
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
@@ -1055,8 +1055,6 @@ workflow {
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
-
-        
 
     }
     /*
@@ -1102,8 +1100,8 @@ workflow {
                 ch_updated_taxa_annots = ch_combined_annotations
             }
             if( params.add_annotations != "" ){
-                MERGE_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
-                ch_final_annots = MERGE_ANNOTATIONS.out.merged_annots_out
+                ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
+                ch_final_annots = ADD_ANNOTATIONS.out.merged_annots_out
                 
                 COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
                 ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
@@ -1326,7 +1324,7 @@ def callHelpMessage() {
         --prodigal_mode         STRING  <single|meta>
                                     Default: 'single'
 
-        --prodigal_tras_table   (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
+        --prodigal_tras_table   <1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25>
                                     Specify a translation table to use (default: '1').
 
     Main options:
@@ -1396,8 +1394,10 @@ def distillHelpMessage() {
     log.info """
     DRAM2 Nextflow Pipeline
     ===================================
-    Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
-                            Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided.
+    Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s). 
+                            User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
+                            Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). 
+                            Optional tRNA, rRNA and bin quality may also be provided.
     
     Usage:
         nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
