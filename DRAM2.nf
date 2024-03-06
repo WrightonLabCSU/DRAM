@@ -89,17 +89,15 @@ include { VOG_HMM_FORMATTER                             } from './modules/annota
 include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
 include { CANTHYD_HMM_FORMATTER                         } from './modules/annotate/canthyd_hmm_formatter.nf'
 include { SULFUR_HMM_FORMATTER                          } from './modules/annotate/sulfur_hmm_formatter.nf'
-include { FEGENIE_HMM_FORMATTER                          } from './modules/annotate/fegenie_hmm_formatter.nf'
+include { FEGENIE_HMM_FORMATTER                         } from './modules/annotate/fegenie_hmm_formatter.nf'
 
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
-include { ADD_ANNOTATIONS                             } from './modules/annotate/add_annotations.nf'
+include { ADD_ANNOTATIONS                               } from './modules/annotate/add_annotations.nf'
 include { MERGE_ANNOTATIONS                             } from './modules/annotate/merge_annotations.nf'
 
 
 include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
-include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
-include { DISTILL_FINAL                                 } from './modules/distill/distill_final.nf'
 include { DISTILL                                       } from './modules/distill/distill.nf'
 
 include { PRODUCT_HEATMAP                               } from './modules/product/product_heatmap.nf'

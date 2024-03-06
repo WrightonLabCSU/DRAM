@@ -10,46 +10,44 @@ process ADD_ANNOTATIONS {
 
     script:
     """
-    #!/usr/bin/env python
-
     import pandas as pd
-    import os
-    import glob
 
-    # Directory where the annotations TSV files are staged
-    annotations_dir = "annotations"
+    # Load the annotations into DataFrames
+    df_old = pd.read_csv("old_annotations.tsv", sep='\t')
+    df_new = pd.read_csv("new_annotations.tsv", sep='\t')
 
-    # Initialize an empty DataFrame for merging all annotations
-    merged_df = pd.DataFrame()
+    # Define key columns for merging
+    key_columns = ['query_id', 'sample', 'start_position', 'end_position', 'strandedness']
 
-    # Define the columns to use as keys for merging
-    merge_keys = ['query_id', 'sample', 'start_position', 'end_position']
+    # Perform an outer merge on the key columns
+    merged_df = pd.merge(df_old, df_new, on=key_columns, how='outer', suffixes=('_old', '_new'))
 
-    # Iterate over each TSV file in the directory
-    for file_path in glob.glob(os.path.join(annotations_dir, '*.tsv')):
-        # Load the current TSV file into a DataFrame
-        current_df = pd.read_csv(file_path, sep='\t')
-        
-        # If merged_df is empty, just copy the first file
-        if merged_df.empty:
-            merged_df = current_df
-        else:
-            # Perform an outer join merge with the new DataFrame using the defined keys
-            merged_df = pd.merge(merged_df, current_df, on=merge_keys, how='outer', suffixes=('', '_duplicate'))
+    # Handle duplicate non-key columns
+    non_key_columns_old = [col for col in df_old.columns if col not in key_columns]
+    non_key_columns_new = [col for col in df_new.columns if col not in key_columns]
+    duplicate_columns = set(non_key_columns_old) & set(non_key_columns_new) - set(key_columns)
 
-    # After merging, handle duplicate columns (if any) by merging their values
-    for col in [col for col in merged_df.columns if '_duplicate' in col]:
-        original_col = col.replace('_duplicate', '')
-        # Merge values of the original and duplicate columns, then drop the duplicate
-        merged_df[original_col] = merged_df.apply(lambda x: x[original_col] if pd.notnull(x[original_col]) else x[col], axis=1)
-        merged_df.drop(columns=[col], inplace=True)
+    for col in duplicate_columns:
+        # Create a new column that concatenates information from the old and new columns, if both are non-null
+        merged_df[col] = merged_df.apply(lambda x: str(x[col + '_old']) + "; " + str(x[col + '_new']) 
+                                        if pd.notnull(x[col + '_old']) and pd.notnull(x[col + '_new'])
+                                        else x[col + '_old'] if pd.notnull(x[col + '_old']) 
+                                        else x[col + '_new'], axis=1)
+        # Drop the old and new columns after merging their data
+        merged_df.drop(columns=[col + '_old', col + '_new'], inplace=True)
 
-    # Save the merged DataFrame to a new file
-    merged_file_path = "raw-combined-annotations.tsv"
-    merged_df.to_csv(merged_file_path, sep='\t', index=False)
+    # For columns not in duplicate_columns but existing with suffixes, remove the suffix and keep the value
+    for col in merged_df.columns:
+        if '_old' in col or '_new' in col:
+            clean_col_name = col.replace('_old', '').replace('_new', '')
+            if clean_col_name not in merged_df.columns: # If the clean name doesn't already exist
+                merged_df.rename(columns={col: clean_col_name}, inplace=True)
+            else:
+                merged_df.drop(columns=[col], inplace=True) # If it exists, likely handled above, drop the column
 
-    print(f"Merged annotations saved to {merged_file_path}")
-
+    # Save the merged DataFrame
+    merged_df.to_csv("merged_annotations.tsv", sep='\t', index=False)
+    print("Merged annotations saved to merged_annotations.tsv")
 
     """
 }
