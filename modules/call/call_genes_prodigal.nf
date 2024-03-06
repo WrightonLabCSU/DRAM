@@ -5,11 +5,11 @@ process CALL_GENES {
     input:
     tuple val( sample ), path( fasta )
     path( ch_called_genes_loc_script )
-    
+
     output:
     tuple val( sample ), path( "${sample}_called_genes.fna" ), emit: prodigal_fna
     tuple val( sample ), path( "${sample}_called_genes.faa" ), emit: prodigal_faa
-    tuple val( sample ), path( "${sample}_progigal_out.${params.prodigal_format}" ), emit: prodigal_output
+    tuple val( sample ), path( "${sample}_called_genes.${params.prodigal_format}" ), emit: prodigal_output
     tuple val( sample ), path( "${sample}_called_genes_table.tsv" ), emit: prodigal_locs_tsv
 
 
@@ -26,7 +26,7 @@ process CALL_GENES {
     -d "${sample}_called_genes.fna" \\
     -a "${sample}_called_genes.faa"
 
-    python ${ch_called_genes_loc_script} "${sample}_prodigal_out.${params.prodigal_format}" > "${sample}_called_genes_table.tsv"
+    python ${ch_called_genes_loc_script} "${sample}_called_genes.${params.prodigal_format}" > "${sample}_called_genes_table.tsv"
 
     """
 }
