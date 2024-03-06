@@ -9,7 +9,7 @@ process CALL_GENES {
     tuple val( sample ), path( "${sample}_called_genes.fna" ), emit: prodigal_fna
     tuple val( sample ), path( "${sample}_called_genes.faa" ), emit: prodigal_faa
     tuple val( sample ), path( "${sample}_progigal_out.${params.prodigal_format}" ), emit: prodigal_output
-    tuple val( sample ), path( "${sample}_called_genes_table.tsv" ), emit: prodigal_locs_tsv
+    //tuple val( sample ), path( "${sample}_called_genes_table.tsv" ), emit: prodigal_locs_tsv
 
     script:
 
