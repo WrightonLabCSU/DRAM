@@ -19,7 +19,7 @@ process CALL_GENES {
 
     prodigal \\
     -i ${fasta} \\
-    -o "${sample}_progigal_out.${params.prodigal_format}" \\
+    -o "${sample}_called_genes.${params.prodigal_format}" \\
     -p ${params.prodigal_mode} \\
     -g ${params.prodigal_trans_table} \\
     -f ${params.prodigal_format} \\
