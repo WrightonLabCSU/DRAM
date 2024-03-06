@@ -94,6 +94,8 @@ include { FEGENIE_HMM_FORMATTER                          } from './modules/annot
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
 include { ADD_ANNOTATIONS                             } from './modules/annotate/add_annotations.nf'
+include { MERGE_ANNOTATIONS                             } from './modules/annotate/merge_annotations.nf'
+
 
 include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
 include { DISTILL_SUMMARY                               } from './modules/distill/distill_summary.nf'
@@ -150,9 +152,9 @@ else if ((params.help) || (params.h)){
     Validate Input parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom"]
+def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "merge_distill"]
 
-if (params.call == 0 && params.annotate == 0 && params.annotations == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
+if (params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
 }
 
@@ -170,6 +172,24 @@ if( params.annotations == "" && params.annotate == 0 && (params.distill_topic !=
 
 
 //Add in other checks for adjectives,... etc.
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Check for merge_annotations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+if(params.merge_annotations != ""){
+    // Verify the directory exists
+    def annotations_dir = file(params.merge_annotations)
+    if (!annotations_dir.exists()) {
+        error("Error: The specified directory for merging annotations (--merge_annotations) does not exist: ${params.merge_annotations}")
+    }
+
+    // Verify the directory contains .tsv files
+    def tsv_files = annotations_dir.list().findAll { it.endsWith('.tsv') }
+    if (tsv_files.isEmpty()) {
+        error("Error: The specified directory for merging annotations (--merge_annotations) does not contain any .tsv files: ${params.merge_annotations}")
+    }
+}
 
 
 /*
@@ -834,6 +854,14 @@ workflow {
 
 
     }
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Merge Annotations
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+    if( params.merge_annotations != "" ){
+        MERGE_ANNOTATIONS(params.merge_annotations)
+    }
 
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1045,7 +1073,7 @@ workflow {
         // Check for additional user-provided annotations 
         if( params.add_annotations != "" ){
             ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
-            ch_final_annots = ADD_ANNOTATIONS.out.merged_annots_out
+            ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
             
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
@@ -1101,7 +1129,7 @@ workflow {
             }
             if( params.add_annotations != "" ){
                 ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
-                ch_final_annots = ADD_ANNOTATIONS.out.merged_annots_out
+                ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
                 
                 COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
                 ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
