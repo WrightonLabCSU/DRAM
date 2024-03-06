@@ -6,6 +6,7 @@ process MMSEQS_SEARCH {
 
     input:
     tuple val( sample ), path( query_database, stageAs: "query_database/" )
+    tuple val( sample ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
     path( mmseqs_database )
     val( bit_score_threshold)
     path( db_descriptions, stageAs: "db_descriptions.tsv" )
@@ -42,7 +43,9 @@ process MMSEQS_SEARCH {
         echo "The file mmseqs_out/${sample}_mmseqs_${db_name}.tsv is empty. Skipping further processing."
     else
         # Call Python script for further processing
-        python ${ch_add_db_descriptions} "${sample}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}"
+        python ${ch_add_db_descriptions} "${sample}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv"
     fi
+
+    
     """
 }
