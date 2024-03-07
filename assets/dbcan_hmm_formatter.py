@@ -24,9 +24,13 @@ def mark_best_hit_based_on_rank(df):
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
-def calculate_strandedness(strandedness):
-    """Calculate strandedness based on the strandedness information."""
-    return strandedness
+def calculate_strandedness(row):
+    """Calculate strandedness based on the 'strandedness' column."""
+    strandedness = row['strandedness']
+    if strandedness in ['+', '-']:
+        return strandedness
+    else:
+        return ''
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
@@ -47,11 +51,23 @@ def main():
 
     print("Calculating strandedness...")
     # Calculate strandedness based on the strandedness column
-    hits_df['strandedness'] = hits_df['strandedness'].apply(calculate_strandedness)
+    hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
 
-    # Other processing steps remain unchanged
+    # Calculate bit score
+    hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
 
-    print("Saving the formatted output to CSV including strandedness...")
+    # Calculate rank
+    hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
+
+    # Filter significant rows
+    hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
+
+    # Find the best DBCAN hit
+    hits_df = find_best_dbcan_hit(hits_df)
+
+    # Mark the best hit based on rank
+    hits_df = mark_best_hit_based_on_rank(hits_df)
+
     # Save the formatted output to CSV including strandedness
     selected_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore']
     modified_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore']
