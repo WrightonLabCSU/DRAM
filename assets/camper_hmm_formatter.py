@@ -23,14 +23,7 @@ def mark_best_hit_based_on_rank(df):
     return df
 
 def clean_ec_numbers(ec_entry):
-    """Clean up EC numbers by removing '[EC:' and ']'. Replace spaces between EC numbers with ';'.
-
-    Args:
-        ec_entry (str): The input string containing EC numbers.
-
-    Returns:
-        str: The cleaned EC numbers.
-    """
+    """Clean up EC numbers by removing '[EC:' and ']'. Replace spaces between EC numbers with ';'. """
     ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
     cleaned_ec_numbers = [re.sub(r'[^0-9.-]', '', ec) for match in ec_matches for ec in match.split()]
     result = '; '.join(cleaned_ec_numbers)
@@ -42,64 +35,52 @@ def assign_camper_rank(row, a_rank, b_rank):
         return None
     elif row['bitScore'] >= a_rank:
         return 'A'
-    elif row['bitScore'] >= b_rank:
+    elif row['bit_score'] >= b_rank:
         return 'B'
     else:
         return None
 
-
-
-
 def main():
-    parser = argparse.ArgumentParser(description="Format HMM search results.")
+    parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
     parser.add_argument("--ch_camper_list", type=str, help="Path to the ch_camper_list file.")
+    parser.add_argument("--gene_locs", type=str, help="Path to the gene locations TSV file.")
     parser.add_argument("--output", type=str, help="Path to the formatted output file.")
     args = parser.parse_args()
 
-    # Load HMM search results CSV file
+    # Load HMM search results and gene locations CSV files
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
 
-    # Preprocess HMM search results
+    print("Loading gene locations TSV file...")
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+
+    # Merge gene locations into the hits dataframe
+    hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
+
+    # Process HMM search results
     print("Processing HMM search results...")
     hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Find the best hit for each unique query_id
+    # Find and mark best hits
     best_hits = hits_df.groupby('query_id').apply(find_best_camper_hit).reset_index(drop=True)
-
-    # Mark the best hit for each unique query_id based on score_rank
     best_hits = best_hits.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-    # Load ch_camper_list file
+    # Load ch_camper_list file and merge
     print("Loading ch_camper_list file...")
     ch_camper_list_df = pd.read_csv(args.ch_camper_list, sep="\t")
-
-    # Merge hits_df with ch_camper_list_df
     merged_df = pd.merge(best_hits, ch_camper_list_df[['hmm_name', 'A_rank', 'B_rank', 'score_type', 'definition']], left_on='target_id', right_on='hmm_name', how='left')
 
-    # Extract values for camper_description
-    merged_df['camper_description'] = merged_df['definition']
-
-    # Calculate camper_rank
+    # Calculate camper_rank and clean EC numbers
     merged_df['camper_rank'] = merged_df.apply(lambda row: assign_camper_rank(row, row['A_rank'], row['B_rank']), axis=1)
+    merged_df['camper_EC'] = merged_df['definition'].apply(clean_ec_numbers)
 
-    # Add the additional columns to the output
-    merged_df['start_position'] = merged_df['query_start']
-    merged_df['end_position'] = merged_df['query_end']
-    merged_df['strandedness'] = merged_df['strandedness']
-
-    # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'camper_description', 'camper_rank']]
-
-    # Rename the columns
-    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'camper_id', 'camper_score_rank', 'camper_bitScore', 'camper_description', 'camper_rank']
-
-    # Perform EC cleaning
-    final_output_df['camper_EC'] = final_output_df['camper_description'].apply(clean_ec_numbers)
+    # Keep only relevant columns and rename them
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'definition', 'camper_rank', 'camper_EC']]
+    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'camper_id', 'camper_score_rank', 'camper_bitScore', 'camper_description', 'camper_rank', 'camper_EC']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)

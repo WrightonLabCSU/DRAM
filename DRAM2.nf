@@ -901,7 +901,8 @@ workflow {
             PARSE_HMM_KOFAM ( ch_kofam_hmms, ch_parse_hmmsearch )
             ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
-            KOFAM_HMM_FORMATTER ( ch_kofam_parsed, params.kofam_top_hit, ch_kofam_list, ch_kofam_formatter )
+            ch_combined_hits_locs_kofam = ch_kofam_parsed.join(ch_gene_locs)
+            KOFAM_HMM_FORMATTER ( ch_combined_hits_locs_kofam, params.kofam_top_hit, ch_kofam_list, ch_kofam_formatter )
             ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_kofam_formatted)
@@ -923,7 +924,8 @@ workflow {
             PARSE_HMM_DBCAN ( ch_dbcan_hmms, ch_parse_hmmsearch )
             ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
-            DBCAN_HMM_FORMATTER ( ch_dbcan_parsed, params.dbcan_top_hit, params.dbcan_name, ch_dbcan_formatter, ch_sql_parser, ch_sql_descriptions_db )
+            ch_combined_hits_locs_dbcan = ch_dbcan_parsed.join(ch_gene_locs)
+            DBCAN_HMM_FORMATTER ( ch_combined_hits_locs_dbcan, params.dbcan_top_hit, params.dbcan_name, ch_dbcan_formatter, ch_sql_parser, ch_sql_descriptions_db )
             ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
@@ -937,7 +939,8 @@ workflow {
             PARSE_HMM_CAMPER ( ch_camper_hmms, ch_parse_hmmsearch )
             ch_camper_parsed = PARSE_HMM_CAMPER.out.parsed_hmm
 
-            CAMPER_HMM_FORMATTER ( ch_camper_parsed, params.camper_top_hit, ch_camper_hmm_list, ch_camper_formatter )
+            ch_combined_hits_locs_camper = ch_camper_parsed.join(ch_gene_locs)
+            CAMPER_HMM_FORMATTER ( ch_combined_hits_locs_camper, params.camper_top_hit, ch_camper_hmm_list, ch_camper_formatter )
             ch_camper_hmm_formatted = CAMPER_HMM_FORMATTER.out.camper_formatted_hits
             
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_hmm_formatted)
@@ -957,7 +960,8 @@ workflow {
             PARSE_HMM_FEGENIE ( ch_fegenie_hmms, ch_parse_hmmsearch )
             ch_fegenie_parsed = PARSE_HMM_FEGENIE.out.parsed_hmm
 
-            FEGENIE_HMM_FORMATTER ( ch_fegenie_parsed, ch_fegenie_formatter )
+            ch_combined_hits_locs_fegenie = ch_fegenie_parsed.join(ch_gene_locs)
+            FEGENIE_HMM_FORMATTER ( ch_combined_hits_locs_fegenie, ch_fegenie_formatter )
             ch_fegenie_formatted = FEGENIE_HMM_FORMATTER.out.fegenie_formatted_hits
             formattedOutputChannels = formattedOutputChannels.mix(ch_fegenie_formatted)
         }
@@ -985,7 +989,8 @@ workflow {
             PARSE_HMM_CANTHYD ( ch_canthyd_hmms, ch_parse_hmmsearch )
             ch_canthyd_parsed = PARSE_HMM_CANTHYD.out.parsed_hmm
 
-            CANTHYD_HMM_FORMATTER ( ch_canthyd_parsed, params.canthyd_top_hit, ch_canthyd_hmm_list, ch_canthyd_formatter )
+            ch_combined_hits_locs_canthyd = ch_canthyd_parsed.join(ch_gene_locs)
+            CANTHYD_HMM_FORMATTER ( ch_combined_hits_locs_canthyd, params.canthyd_top_hit, ch_canthyd_hmm_list, ch_canthyd_formatter )
             ch_canthyd_hmm_formatted = CANTHYD_HMM_FORMATTER.out.canthyd_formatted_hits
             
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_hmm_formatted)
@@ -1003,7 +1008,8 @@ workflow {
             PARSE_HMM_SULFUR ( ch_sulfur_hmms, ch_parse_hmmsearch )
             ch_sulfur_parsed = PARSE_HMM_SULFUR.out.parsed_hmm
 
-            SULFUR_HMM_FORMATTER ( ch_sulfur_parsed, ch_sulfur_formatter )
+            ch_combined_hits_locs_sulfur = ch_sulfur_parsed.join(ch_gene_locs)
+            SULFUR_HMM_FORMATTER ( ch_combined_hits_locs_sulfur, ch_sulfur_formatter )
             ch_sulfur_formatted = SULFUR_HMM_FORMATTER.out.sulfur_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_sulfur_formatted)
@@ -1038,7 +1044,8 @@ workflow {
             PARSE_HMM_VOG ( ch_vog_hmms, ch_parse_hmmsearch )
             ch_vog_parsed = PARSE_HMM_VOG.out.parsed_hmm
 
-            VOG_HMM_FORMATTER ( ch_vog_parsed, params.vog_top_hit, params.vogdb_name, ch_vog_formatter, ch_sql_parser, ch_sql_descriptions_db )
+            ch_combined_hits_locs_vog = ch_vog_parsed.join(ch_gene_locs)
+            VOG_HMM_FORMATTER ( ch_combined_hits_locs_vog, params.vog_top_hit, params.vogdb_name, ch_vog_formatter, ch_sql_parser, ch_sql_descriptions_db )
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_vog_formatted)

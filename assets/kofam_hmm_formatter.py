@@ -24,12 +24,6 @@ def mark_best_hit_based_on_rank(df):
 
 def clean_ec_numbers(ec_entry):
     """Clean up EC numbers by removing '[EC:' and ']'. Replace spaces between EC numbers with ';'.
-
-    Args:
-        ec_entry (str): The input string containing EC numbers.
-
-    Returns:
-        str: The cleaned EC numbers.
     """
     ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
     cleaned_ec_numbers = [re.sub(r'[^0-9.-]', '', ec) for match in ec_matches for ec in match.split()]
@@ -40,12 +34,20 @@ def main():
     parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
     parser.add_argument("--ch_kofam_ko", type=str, help="Path to the ch_kofam_ko file.")
+    parser.add_argument("--gene_locs", type=str, help="Path to the gene locations TSV file.")
     parser.add_argument("--output", type=str, help="Path to the formatted output file.")
     args = parser.parse_args()
 
     # Load HMM search results CSV file
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
+
+    # Load gene locations TSV file
+    print("Loading gene locations TSV file...")
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+
+    # Merge hits_df with gene_locs_df
+    hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
 
     # Preprocess HMM search results
     print("Processing HMM search results...")
@@ -71,16 +73,11 @@ def main():
     merged_df['kofam_definition'] = merged_df['definition'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
     merged_df['kofam_EC'] = merged_df['definition'].apply(lambda x: clean_ec_numbers(str(x)) if pd.notna(x) else '')
 
-    # Add the additional columns to the output
-    merged_df['start_position'] = merged_df['query_start']
-    merged_df['end_position'] = merged_df['query_end']
-    merged_df['strandedness'] = merged_df['strandedness']
-
     # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'end_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']]
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']]
 
-    # Rename the columns
-    final_output_df.columns = ['query_id', 'start_position', 'end_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC']
+    # Rename the columns for clarity
+    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)

@@ -4,7 +4,7 @@ process SULFUR_HMM_FORMATTER {
     tag { sample }
 
     input:
-    tuple val( sample ), path( hits_file )
+    tuple val( sample ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
     file( ch_sulfur_formatter )
 
     output:
@@ -13,7 +13,7 @@ process SULFUR_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_sulfur_formatter} --hits_csv ${hits_file} --output "${sample}_formatted_sulfur_hits.csv"
+    python ${ch_sulfur_formatter} --hits_csv ${hits_file} --gene_locs ${prodigal_locs_tsv} --output "${sample}_formatted_sulfur_hits.csv"
     
     """
 }

@@ -4,7 +4,7 @@ process KOFAM_HMM_FORMATTER {
     tag { sample }
 
     input:
-    tuple val( sample ), path( hits_file )
+    tuple val( sample ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
     val( top_hit )
     file( ch_kofam_list )
     file( ch_kofam_formatter )
@@ -15,7 +15,7 @@ process KOFAM_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_kofam_formatter} --hits_csv ${hits_file} --ch_kofam_ko ${ch_kofam_list} --output "${sample}_formatted_kofam_hits.csv"
+    python ${ch_kofam_formatter} --hits_csv ${hits_file} --ch_kofam_ko ${ch_kofam_list} --gene_locs ${prodigal_locs_tsv} --output "${sample}_formatted_kofam_hits.csv"
     
     """
 }

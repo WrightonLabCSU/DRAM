@@ -4,7 +4,7 @@ process CANTHYD_HMM_FORMATTER {
     tag { sample }
 
     input:
-    tuple val( sample ), path( hits_file )
+    tuple val( sample ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
     val( top_hit )
     file( ch_canthyd_list )
     file( ch_canthyd_formatter )
@@ -15,7 +15,7 @@ process CANTHYD_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_canthyd_formatter} --hits_csv ${hits_file} --ch_canthyd_ko ${ch_canthyd_list} --output "${sample}_formatted_canthyd_hits.csv"
+    python ${ch_canthyd_formatter} --hits_csv ${hits_file} --ch_canthyd_ko ${ch_canthyd_list} --gene_locs ${prodigal_locs_tsv} --output "${sample}_formatted_canthyd_hits.csv"
     
     """
 }

@@ -4,7 +4,7 @@ process VOG_HMM_FORMATTER {
     tag { sample }
 
     input:
-    tuple val( sample ), path( hits_file )
+    tuple val( sample ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
     val( top_hit )
     val( db_name )
     file( ch_vog_formatter )
@@ -19,7 +19,7 @@ process VOG_HMM_FORMATTER {
     """
     python ${ch_vog_formatter} --hits_csv ${hits_file} --output "${sample}_formatted_vog_hits.out"
 
-    python ${ch_sql_parser} --hits_csv "${sample}_formatted_vog_hits.out" --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db}    
+    python ${ch_sql_parser} --hits_csv "${sample}_formatted_vog_hits.out" --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db} --gene_locs ${prodigal_locs_tsv}  
     """
 }
 
