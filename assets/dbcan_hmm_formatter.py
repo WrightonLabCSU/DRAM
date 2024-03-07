@@ -15,17 +15,20 @@ def calculate_rank(row):
 
 def find_best_dbcan_hit(df):
     """Find the best DBCAN hit based on E-value and coverage."""
+    print("Sorting DataFrame based on E-value and coverage...")
     df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
     return df.iloc[0]
 
 def mark_best_hit_based_on_rank(df):
     """Mark the best hit for each unique query_id based on score_rank."""
+    print("Marking the best hit for each unique query_id...")
     best_hit_idx = df["score_rank"].idxmin()
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
 def calculate_strandedness(alignment_start, alignment_end, query_start, query_end):
     """Calculate strandedness based on alignment and query start/end positions."""
+    print("Calculating strandedness...")
     if alignment_start < alignment_end:
         return '+'
     elif query_start < query_end:
