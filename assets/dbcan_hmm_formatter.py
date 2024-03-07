@@ -24,12 +24,9 @@ def mark_best_hit_based_on_rank(df):
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
-def calculate_strandedness(strand):
-    """Calculate strandedness based on the strand information."""
-    if strand < 0:
-        return "Reverse"
-    else:
-        return "Forward"
+def calculate_strandedness(strandedness):
+    """Calculate strandedness based on the strandedness information."""
+    return strandedness
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
@@ -48,9 +45,9 @@ def main():
     # Merge gene locations into the hits dataframe
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
 
-    print("Calculating strandedness based on strand information...")
-    # Calculate strandedness based on strand information
-    hits_df['strandedness'] = hits_df['strand'].apply(calculate_strandedness)
+    print("Calculating strandedness...")
+    # Calculate strandedness based on the strandedness column
+    hits_df['strandedness'] = hits_df['strandedness'].apply(calculate_strandedness)
 
     # Other processing steps remain unchanged
 
