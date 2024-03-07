@@ -3,9 +3,9 @@ import argparse
 
 def calculate_strandedness(strandedness):
     """Calculate strandedness based on the strandedness information."""
-    if strandedness == '+':
+    if strandedness == '1':
         return '1'
-    elif strandedness == '-':
+    elif strandedness == '-1':
         return '-1'
     else:
         return strandedness

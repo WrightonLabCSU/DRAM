@@ -2,6 +2,15 @@ import pandas as pd
 import argparse
 import re
 
+def calculate_strandedness(row):
+    """Calculate strandedness based on alignment_start and alignment_end."""
+    if row['alignment_start'] < row['alignment_end']:
+        return '1'
+    elif row['alignment_start'] > row['alignment_end']:
+        return '-1'
+    else:
+        return 'Unknown'
+
 def calculate_bit_score(row):
     """Calculate bit score for each row."""
     return row['full_score'] / row['domain_number']
@@ -9,6 +18,10 @@ def calculate_bit_score(row):
 def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
+
+def calculate_perc_cov(row):
+    """Calculate percent coverage for each row."""
+    return (row['target_end'] - row['target_start']) / row['target_length']
 
 def find_best_camper_hit(df):
     """Find the best hit based on E-value and coverage."""
@@ -57,6 +70,10 @@ def main():
 
     # Merge gene locations into the hits dataframe
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
+
+    # Calculate strandedness
+    print("Calculating strandedness...")
+    hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
 
     # Process HMM search results
     print("Processing HMM search results...")

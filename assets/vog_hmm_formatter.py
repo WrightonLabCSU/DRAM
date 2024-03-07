@@ -9,6 +9,10 @@ def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
+def calculate_strandedness(strandedness):
+    """Calculate strandedness based on the strandedness information."""
+    return strandedness
+
 def find_best_vog_hit(df):
     """Find the best hit based on E-value and coverage."""
     df['perc_cov'] = (df['target_end'] - df['target_start']) / df['target_length']
@@ -38,6 +42,10 @@ def main():
 
     # Merge hits_df with gene_locs_df on query_id
     merged_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
+
+    # Calculate strandedness
+    print("Calculating strandedness...")
+    merged_df['strandedness'] = merged_df['strandedness'].apply(calculate_strandedness)
 
     # Process HMM search results
     print("Processing HMM search results...")
