@@ -18,9 +18,9 @@ process DBCAN_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_dbcan_formatter} --hits_csv ${hits_file} --output "${sample}_formatted_dbcan_hits.csv"
+    python ${ch_dbcan_formatter} --hits_csv ${hits_file} --output "${sample}_formatted_dbcan_hits.csv" --gene_locs "gene_locs.tsv"
 
-    python ${ch_sql_parser} --hits_csv "${sample}_formatted_dbcan_hits.csv" --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db} --gene_locs "gene_locs.tsv"
+    python ${ch_sql_parser} --hits_csv "${sample}_formatted_dbcan_hits.csv" --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db}
 
     
     """

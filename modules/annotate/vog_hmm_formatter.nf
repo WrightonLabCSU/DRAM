@@ -17,9 +17,9 @@ process VOG_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_vog_formatter} --hits_csv ${hits_file} --output "${sample}_formatted_vog_hits.out"
+    python ${ch_vog_formatter} --hits_csv ${hits_file} --gene_locs ${prodigal_locs_tsv} --output "${sample}_formatted_vog_hits.out"
 
-    python ${ch_sql_parser} --hits_csv "${sample}_formatted_vog_hits.out" --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db} --gene_locs ${prodigal_locs_tsv}  
+    python ${ch_sql_parser} --hits_csv "${sample}_formatted_vog_hits.out" --db_name ${db_name} --output "${sample}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db}
     """
 }
 
