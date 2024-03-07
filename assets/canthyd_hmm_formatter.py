@@ -21,7 +21,6 @@ def assign_canthyd_rank(row, a_rank, b_rank):
         return None
 
 def main():
-def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
     parser.add_argument("--hits_csv", type=str, required=True, help="Path to the HMM search results CSV file.")
     parser.add_argument("--ch_canthyd_ko", type=str, required=True, help="Path to the ch_canthyd_ko file containing descriptions.")
