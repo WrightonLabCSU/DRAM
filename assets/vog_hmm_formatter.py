@@ -45,7 +45,7 @@ def main():
 
     # Calculate strandedness
     print("Calculating strandedness...")
-    merged_df['strandedness'] = merged_df['strandedness'].apply(calculate_strandedness)
+    hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
 
     # Process HMM search results
     print("Processing HMM search results...")
