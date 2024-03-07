@@ -39,8 +39,12 @@ def combine_annotations(annotation_files, output_file):
         # Concatenate the annotation DataFrame with the combined data
         combined_data = pd.concat([combined_data, annotation_df], ignore_index=True)
 
+    # Combine annotations based on 'query_id', 'start_position', and 'stop_position'
+    combined_data = combined_data.groupby(['query_id', 'start_position', 'stop_position'], as_index=False).first()
+
     # Save the combined DataFrame to the output file
     combined_data.to_csv(output_file, index=False, sep='\t')
+
 
 
 if __name__ == "__main__":
