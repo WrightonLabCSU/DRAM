@@ -4,7 +4,7 @@ process GENE_LOCS {
 
     input:
     tuple val( sample ), path( genes )
-    path( ch_called_genes_loc_script )
+    path( ch_called_genes_loc_script_faa )
 
     output:
     tuple val( sample ), path( "${sample}_called_genes_table.tsv" ), emit: prodigal_locs_tsv
@@ -15,7 +15,7 @@ process GENE_LOCS {
     """
 
 
-    python ${ch_called_genes_loc_script_fna} ${genes} > "${sample}_called_genes_table.tsv"
+    python ${ch_called_genes_loc_script_faa} ${genes} > "${sample}_called_genes_table.tsv"
 
     """
 }
