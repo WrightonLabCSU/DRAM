@@ -342,7 +342,7 @@ if( params.annotate ){
 
     ch_sql_descriptions_db = file(params.sql_descriptions_db)
 
-    ch_called_genes_loc_script_fna = file(called_genes_loc_script_fna)
+    ch_called_genes_loc_script_fna = file(params.called_genes_loc_script_fna)
 
     index_mmseqs = "0"
 
