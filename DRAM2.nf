@@ -884,7 +884,7 @@ workflow {
         // This will require rules about a user-provided .fna file
         // It MUST contain the gene locs as the 2nd and 3rd # entries
         if( params.call == 0){
-            GENE_LOCS( ch_called_genes, ch_called_genes_loc_script_fna )
+            GENE_LOCS( ch_called_proteins, ch_called_genes_loc_script_fna )
             ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
         }
 
