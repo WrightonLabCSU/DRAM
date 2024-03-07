@@ -15,7 +15,7 @@ process KOFAM_HMM_FORMATTER {
 
     script:
     """
-    python ${ch_kofam_formatter} --hits_csv ${hits_file} --ch_kofam_ko ${ch_kofam_list} --gene_locs ${prodigal_locs_tsv} --output "${sample}_formatted_kofam_hits.csv"
+    python ${ch_kofam_formatter} --hits_csv ${hits_file} --ch_kofam_ko ${ch_kofam_list} --gene_locs "gene_locs.tsv" --output "${sample}_formatted_kofam_hits.csv"
     
     """
 }
