@@ -39,15 +39,15 @@ def combine_annotations(annotation_files, output_file):
         # Combine data
         combined_data = pd.concat([combined_data, annotation_df], ignore_index=True, sort=False)
 
-    # Modify grouping to preserve unique combinations of 'query_id', 'start_position', and 'end_position'
-    combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'end_position'])
+    # Modify grouping to preserve unique combinations of 'query_id', 'start_position', and 'stop_position'
+    combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position'])
 
     # Save the combined DataFrame to the output file
     combined_data.to_csv(output_file, index=False, sep='\t')
 
 if __name__ == "__main__":
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', and 'end_position'.")
+    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', and 'stop_position'.")
     parser.add_argument("--annotations", nargs='+', help="List of annotation files and sample names.")
     parser.add_argument("--output", help="Output file path for the combined annotations.")
     args = parser.parse_args()
