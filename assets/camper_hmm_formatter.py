@@ -2,9 +2,9 @@ import pandas as pd
 import argparse
 import re
 
-def calculate_strandedness(strandedness):
+def calculate_strandedness(row):
     """Calculate strandedness based on the strandedness information."""
-    return strandedness
+    return row['strandedness']  # Assuming 'strandedness' is a column in the DataFrame
 
 def calculate_bit_score(row):
     """Calculate bit score for each row."""

@@ -9,9 +9,10 @@ def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def calculate_strandedness(strandedness):
+def calculate_strandedness(row):
     """Calculate strandedness based on the strandedness information."""
-    return strandedness
+    return row['strandedness']  # Assuming 'strandedness' is a column in the DataFrame
+
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
