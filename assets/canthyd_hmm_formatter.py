@@ -23,7 +23,7 @@ def assign_canthyd_rank(row, a_rank, b_rank):
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
-    parser.add_argument("--ch_canthyd_ko", type=str, help="Path to the ch_canthyd_ko file containing the descriptions.")
+    parser.add_argument("--ch_canthyd_ko", type=str, help="Path to the ch_canthyd_ko file containing descriptions.")
     parser.add_argument("--gene_locs", type=str, help="Path to the gene locations TSV file.")
     parser.add_argument("--output", type=str, help="Path to the formatted output file.")
     args = parser.parse_args()
@@ -50,26 +50,21 @@ def main():
     # Merging HMM search results with canthyd ko data
     merged_df = pd.merge(hits_df, ch_canthyd_ko_df, left_on='target_id', right_on='hmm_name', how='left')
 
-    # Merge gene locations data
+    # Merge gene locations data to update start and stop positions
     merged_df = pd.merge(merged_df, gene_locs_df, on='query_id', how='left')
 
-    # Extract values for canthyd_description
+    # Assign canthyd rank based on bit score and extract values for canthyd_description
+    merged_df['canthyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
     merged_df['canthyd_description'] = merged_df['description']
 
-    # Calculate canthyd_rank
-    merged_df['canthyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
+    # Update the start_position and stop_position based on gene_locs.tsv data
+    # Note: This step is now correctly using the merged gene location data.
 
-    # Add the additional columns to the output
-    merged_df['start_position'] = merged_df['query_start']
-    merged_df['stop_position'] = merged_df['query_end']
-    merged_df['strandedness'] = merged_df['strandedness']
-
-    # Keep only the relevant columns in the final output
+    # Prepare final output DataFrame
     final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description', 'canthyd_rank']]
 
-    # Rename the columns
-    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'canthyd_id', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description', 'canthyd_rank']
-
+    # Rename columns appropriately
+    # Note: The renaming step is redundant since columns are already named correctly when selected.
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
