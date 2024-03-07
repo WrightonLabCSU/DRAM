@@ -1,6 +1,3 @@
-import sys
-import pandas as pd
-
 def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path):
     # Load the MMseqs output
     mmseqs_path = f"mmseqs_out/{sample}_mmseqs_{db_name}.tsv"
@@ -24,6 +21,9 @@ def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path
         # Add database name prefix to added columns
         df_descriptions.columns = [f"{db_name}_{col}" if col not in ['query_id', f"{db_name}_id", f"{db_name}_bitScore"] else col for col in df_descriptions.columns]
         
+        print("Columns in df_merged:", df_merged.columns)
+        print("Columns in df_descriptions:", df_descriptions.columns)
+        
         # Merge the DataFrames on the database ID
         df_merged = pd.merge(df_merged, df_descriptions, left_on=f"{db_name}_id", right_on=f"{db_name}_id", how='left')
         
@@ -31,11 +31,4 @@ def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path
     output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
     df_merged.to_csv(output_path, index=False)
 
-if __name__ == "__main__":
-    sample = sys.argv[1]
-    db_name = sys.argv[2]
-    descriptions_path = sys.argv[3]
-    bit_score_threshold = float(sys.argv[4])  # Ensure threshold is a float
-    gene_locs_path = sys.argv[5]  # Path to the gene locations file
-
-    main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path)
+    print("Merged DataFrame saved to", output_path)
