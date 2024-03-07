@@ -2,14 +2,9 @@ import pandas as pd
 import argparse
 import re
 
-def calculate_strandedness(row):
-    """Calculate strandedness based on alignment_start and alignment_end."""
-    if row['alignment_start'] < row['alignment_end']:
-        return '1'
-    elif row['alignment_start'] > row['alignment_end']:
-        return '-1'
-    else:
-        return 'Unknown'
+def calculate_strandedness(strandedness):
+    """Calculate strandedness based on the strandedness information."""
+    return strandedness
 
 def calculate_bit_score(row):
     """Calculate bit score for each row."""
