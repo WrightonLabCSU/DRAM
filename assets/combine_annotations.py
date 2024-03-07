@@ -36,13 +36,30 @@ def combine_annotations(annotation_files, output_file):
         # Add the 'sample' column
         annotation_df.insert(1, 'sample', sample)
 
-        # Merge annotation DataFrame with the combined data
-        combined_data = pd.merge(combined_data, annotation_df, on='query_id', how='outer')
+        # Combine data
+        combined_data = pd.concat([combined_data, annotation_df], ignore_index=True, sort=False)
+
+    # Modify grouping to preserve unique combinations of 'query_id', 'start_position', and 'stop_position'
+    combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position'])
+
+    # Sort columns based on their prefixes
+    sorted_columns = sorted(combined_data.columns, key=lambda x: x.split('_')[0])
+    
+    # Ensure query_id is the first column
+    sorted_columns.remove('query_id')
+    sorted_columns.insert(0, 'query_id')
+
+    # Ensure other specified columns are in the desired order
+    specified_columns = ['sample', 'start_position', 'stop_position', 'strandedness']
+    for col in specified_columns[::-1]:
+        sorted_columns.remove(col)
+        sorted_columns.insert(1, col)
+
+    # Reorder the columns in the DataFrame
+    combined_data = combined_data[sorted_columns]
 
     # Save the combined DataFrame to the output file
     combined_data.to_csv(output_file, index=False, sep='\t')
-
-
 
 
 if __name__ == "__main__":
