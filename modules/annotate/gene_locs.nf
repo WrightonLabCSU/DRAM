@@ -15,7 +15,7 @@ process GENE_LOCS {
     """
 
 
-    python ${ch_called_genes_loc_script_faa} ${genes} > "${sample}_called_genes_table.tsv"
+    python ${ch_called_genes_loc_script_faa} ${genes} "${sample}_called_genes_table.tsv"
 
     """
 }
