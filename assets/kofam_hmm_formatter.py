@@ -23,8 +23,7 @@ def mark_best_hit_based_on_rank(df):
     return df
 
 def clean_ec_numbers(ec_entry):
-    """Clean up EC numbers by removing '[EC:' and ']'. Replace spaces between EC numbers with ';'.
-    """
+    """Clean up EC numbers by removing '[EC:' and ']'. Replace spaces between EC numbers with ';'. """
     ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
     cleaned_ec_numbers = [re.sub(r'[^0-9.-]', '', ec) for match in ec_matches for ec in match.split()]
     result = '; '.join(cleaned_ec_numbers)
@@ -42,9 +41,9 @@ def main():
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
 
-    # Load gene locations TSV file
+    # Load gene locations TSV file including strandedness
     print("Loading gene locations TSV file...")
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position', 'strandedness'])
 
     # Merge hits_df with gene_locs_df
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
@@ -71,13 +70,13 @@ def main():
 
     # Extract values for kofam_definition and kofam_EC
     merged_df['kofam_definition'] = merged_df['definition'].apply(lambda x: re.sub(r' \[EC:[^\]]*\]', '', str(x)) if pd.notna(x) else '')
-    merged_df['kofam_EC'] = merged_df['definition'].apply(lambda x: clean_ec_numbers(str(x)) if pd.notna(x) else '')
+    merged_df['kofam_EC'] = merged_df['definition'].apply(clean_ec_numbers if pd.notna(x) else '')
 
-    # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']]
+    # Keep only the relevant columns in the final output, including strandedness
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'kofam_definition', 'kofam_EC']]
 
-    # Rename the columns for clarity
-    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC']
+    # Rename the columns for clarity, ensuring strandedness is included
+    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition', 'kofam_EC']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
