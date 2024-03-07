@@ -91,6 +91,8 @@ include { CANTHYD_HMM_FORMATTER                         } from './modules/annota
 include { SULFUR_HMM_FORMATTER                          } from './modules/annotate/sulfur_hmm_formatter.nf'
 include { FEGENIE_HMM_FORMATTER                         } from './modules/annotate/fegenie_hmm_formatter.nf'
 
+include { GENE_LOCS                                     } from './modules/annotate/gene_locs.nf'
+
 include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
 include { ADD_ANNOTATIONS                               } from './modules/annotate/add_annotations.nf'
@@ -340,6 +342,8 @@ if( params.annotate ){
 
     ch_sql_descriptions_db = file(params.sql_descriptions_db)
 
+    ch_called_genes_loc_script_fna = file(called_genes_loc_script_fna)
+
     index_mmseqs = "0"
 
     if (annotate_kegg == 1) {
@@ -582,7 +586,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
         // Ensure an add_annotations channel is generated if the user specifies --add_annotations
         if( params.add_annotations != ""){
-            ch_add_annots = file(params.add_annotations).exists() ? file(params.add_annotations) : error("Error: If using --add_annotations, you must supply a DRAM-formatted annotations file. Taxonomy file not found at ${params.add_annotations}")
+            ch_add_annots = file(params.add_annotations).exists() ? file(params.add_annotations) : error("Error: If using --add_annotations, you must supply a DRAM-formatted annotations file. Annotations file not found at ${params.add_annotations}")
         }
 
     }
@@ -874,6 +878,14 @@ workflow {
 
         def formattedOutputChannels = channel.of()
 
+        // Here we need to get the gene locations from the user-provided genes.fna file
+        // This will require rules about a user-provided .fna file
+        // It MUST contain the gene locs as the 2nd and 3rd # entries
+        if( params.call == 0){
+            GENE_LOCS( ch_called_genes, ch_generate_gene_locs_script )
+            ch_gene_locs = GENE_LOCS.out.gene_locs_tsv
+        }
+
         // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
         if( index_mmseqs == "1" ){
             //Also need to add in functionality when user provides either an fna or gff as input_genes
@@ -1157,6 +1169,7 @@ workflow {
                 ch_final_annots = ch_combined_annotations
                 COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
             }
+
         } 
         
         /* Combine the individual user-specified distill sheets into a single channel */
