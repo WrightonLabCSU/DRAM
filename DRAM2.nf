@@ -883,7 +883,7 @@ workflow {
         // It MUST contain the gene locs as the 2nd and 3rd # entries
         if( params.call == 0){
             GENE_LOCS( ch_called_genes, ch_called_genes_loc_script_fna )
-            ch_gene_locs = GENE_LOCS.out.gene_locs_tsv
+            ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
         }
 
         // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
