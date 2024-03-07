@@ -53,17 +53,23 @@ def main():
     # Merge gene locations data
     merged_df = pd.merge(merged_df, gene_locs_df, on='query_id', how='left')
 
-    # Assign canthyd rank based on bit score
+    # Extract values for canthyd_description
+    merged_df['canthyd_description'] = merged_df['description']
+
+    # Calculate canthyd_rank
     merged_df['canthyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
 
-    # Rename 'description' column to 'canthyd_description'
-    merged_df.rename(columns={'description': 'canthyd_description'}, inplace=True)
+    # Add the additional columns to the output
+    merged_df['start_position'] = merged_df['query_start']
+    merged_df['stop_position'] = merged_df['query_end']
+    merged_df['strandedness'] = merged_df['strandedness']
 
-    # Prepare final output DataFrame
+    # Keep only the relevant columns in the final output
     final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description', 'canthyd_rank']]
 
-    # Rename columns appropriately
+    # Rename the columns
     final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'canthyd_id', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description', 'canthyd_rank']
+
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
