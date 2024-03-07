@@ -1324,7 +1324,7 @@ def helpMessage() {
                                             *Only one set can be used. Can be used in combination with --use_[db-name]
         
         --input_genes           PATH    <path/to/called/genes/directory/>
-                                            Directory containing called genes (.fna) 
+                                            Directory containing called genes (.faa) 
 
         --add_annotations       PATH    <path/to/old-annoations.tsv> 
                                             Used to add in old annotations to the current run. (See example for format.)
