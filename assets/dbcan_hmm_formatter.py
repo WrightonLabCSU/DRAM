@@ -34,12 +34,11 @@ def main():
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
 
-    print("Loading gene locations TSV file including strandedness...")
-    # Ensure to include strandedness in the names list for columns
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position', 'strandedness'])
+    print("Loading gene locations TSV file...")
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
 
     print("Processing HMM search results...")
-    # Merge gene locations into the hits dataframe including strandedness
+    # Merge gene locations into the hits dataframe
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
 
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
@@ -59,19 +58,19 @@ def main():
     # Mark the best hit for each unique query_id based on score_rank
     hits_df = hits_df.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-    print("Saving the formatted output to CSV including strandedness...")
-    selected_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore']
-    modified_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore']
+    print("Saving the formatted output to CSV...")
+    selected_columns = ['query_id', 'start_position', 'stop_position', 'target_id', 'score_rank', 'bitScore']
+    modified_columns = ['query_id', 'start_position', 'stop_position', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore']
 
     # Ensure the columns exist in the DataFrame before renaming
     if set(selected_columns).issubset(hits_df.columns):
-        # Rename the selected columns to include strandedness
+        # Rename the selected columns
         hits_df.rename(columns=dict(zip(selected_columns, modified_columns)), inplace=True)
 
         # Remove '.hmm' extension from 'dbcan_id' values if it exists
         hits_df['dbcan_id'] = hits_df['dbcan_id'].str.replace('.hmm', '', regex=False)
 
-        # Save the formatted output to CSV including strandedness
+        # Save the formatted output to CSV
         hits_df[modified_columns].to_csv(args.output, index=False)
 
         print("Process completed successfully!")
