@@ -15,26 +15,21 @@ def calculate_rank(row):
 
 def find_best_dbcan_hit(df):
     """Find the best DBCAN hit based on E-value and coverage."""
-    print("Sorting DataFrame based on E-value and coverage...")
     df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
     return df.iloc[0]
 
 def mark_best_hit_based_on_rank(df):
     """Mark the best hit for each unique query_id based on score_rank."""
-    print("Marking the best hit for each unique query_id...")
     best_hit_idx = df["score_rank"].idxmin()
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
-def calculate_strandedness(alignment_start, alignment_end, query_start, query_end):
-    """Calculate strandedness based on alignment and query start/end positions."""
-    print("Calculating strandedness...")
-    if alignment_start < alignment_end:
-        return '+'
-    elif query_start < query_end:
-        return '-'
+def calculate_strandedness(strand):
+    """Calculate strandedness based on the strand information."""
+    if strand < 0:
+        return "Reverse"
     else:
-        return 'Unknown'
+        return "Forward"
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
@@ -53,8 +48,9 @@ def main():
     # Merge gene locations into the hits dataframe
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
 
-    # Calculate strandedness based on alignment and query start/end positions
-    hits_df['strandedness'] = hits_df.apply(lambda row: calculate_strandedness(row['alignment_start'], row['alignment_end'], row['query_start'], row['query_end']), axis=1)
+    print("Calculating strandedness based on strand information...")
+    # Calculate strandedness based on strand information
+    hits_df['strandedness'] = hits_df['strand'].apply(calculate_strandedness)
 
     # Other processing steps remain unchanged
 
