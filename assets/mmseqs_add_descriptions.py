@@ -21,12 +21,12 @@ def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path
     if descriptions_path != "NULL":
         df_descriptions = pd.read_csv(descriptions_path, sep='\t')
         
-        # Merge the DataFrames on the database ID
-        df_merged = pd.merge(df_merged, df_descriptions, left_on=f"{db_name}_id", right_on=df_descriptions.columns[0], how='left')
+        # Add database name prefix to added columns
+        df_descriptions.columns = [f"{db_name}_{col}" if col not in ['query_id', f"{db_name}_id", f"{db_name}_bitScore"] else col for col in df_descriptions.columns]
         
-        # Drop the matching column to avoid duplication
-        df_merged.drop(columns=[df_descriptions.columns[0]], inplace=True)
-    
+        # Merge the DataFrames on the database ID
+        df_merged = pd.merge(df_merged, df_descriptions, left_on=f"{db_name}_id", right_on=f"{db_name}_id", how='left')
+        
     # Save the merged DataFrame to CSV
     output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
     df_merged.to_csv(output_path, index=False)
