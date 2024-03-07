@@ -56,10 +56,10 @@ def main():
 
     # Assign canthyd rank based on bit score
     merged_df['canthyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
-    merged_df['canthyd_description'] = merged_df['description']
+
 
     # Prepare final output DataFrame
-    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description', 'canthyd_rank']]
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'description', 'canthyd_rank']]
 
     # Rename columns appropriately
     final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'canthyd_id', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description', 'canthyd_rank']
