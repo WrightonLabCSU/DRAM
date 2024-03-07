@@ -24,11 +24,14 @@ def mark_best_hit_based_on_rank(df):
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
-def get_strandedness(description):
-    """Extract strandedness from the description field."""
-    parts = description.split(',')
-    strandedness = parts[-1].split('=')[-1]
-    return strandedness
+def calculate_strandedness(alignment_start, alignment_end, query_start, query_end):
+    """Calculate strandedness based on alignment and query start/end positions."""
+    if alignment_start < alignment_end:
+        return '+'
+    elif query_start < query_end:
+        return '-'
+    else:
+        return 'Unknown'
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
@@ -40,15 +43,15 @@ def main():
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
 
-    print("Loading gene locations TSV file including strandedness...")
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position', 'strandedness'])
+    print("Loading gene locations TSV file...")
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
 
     print("Processing HMM search results...")
-    # Merge gene locations into the hits dataframe including strandedness
+    # Merge gene locations into the hits dataframe
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
 
-    # Extract strandedness from the description field
-    hits_df['strandedness'] = hits_df['description'].apply(get_strandedness)
+    # Calculate strandedness based on alignment and query start/end positions
+    hits_df['strandedness'] = hits_df.apply(lambda row: calculate_strandedness(row['alignment_start'], row['alignment_end'], row['query_start'], row['query_end']), axis=1)
 
     # Other processing steps remain unchanged
 
