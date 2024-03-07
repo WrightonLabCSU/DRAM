@@ -3,7 +3,12 @@ import argparse
 
 def calculate_strandedness(strandedness):
     """Calculate strandedness based on the strandedness information."""
-    return strandedness
+    if strandedness == '+':
+        return '1'
+    elif strandedness == '-':
+        return '-1'
+    else:
+        return strandedness
 
 def calculate_bit_score(row):
     """Calculate bit score for each row."""
