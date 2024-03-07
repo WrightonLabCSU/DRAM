@@ -1,10 +1,6 @@
 import pandas as pd
 import argparse
 
-def get_sig_row(row):
-    """Filter rows based on a significance threshold for the e-value."""
-    return row['full_evalue'] < 1e-18
-
 def calculate_bit_score(row):
     """Calculate bit score for each row."""
     return row['full_score'] / row['domain_number']
@@ -13,24 +9,13 @@ def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def find_best_dbcan_hit(df):
-    """Find the best DBCAN hit based on E-value and coverage."""
-    df.sort_values(["full_evalue", "perc_cov"], inplace=True, ascending=[True, False])
-    return df.iloc[0]
+def calculate_perc_cov(row):
+    """Calculate percent coverage for each row."""
+    return (row['target_end'] - row['target_start']) / row['target_length']
 
-def mark_best_hit_based_on_rank(df):
-    """Mark the best hit for each unique query_id based on score_rank."""
-    best_hit_idx = df["score_rank"].idxmin()
-    df.at[best_hit_idx, "best_hit"] = True
-    return df
-
-def calculate_strandedness(row):
-    """Calculate strandedness based on the 'strandedness' column."""
-    strandedness = row['strandedness']
-    if strandedness in ['+', '-']:
-        return strandedness
-    else:
-        return ''
+def calculate_strandedness(strandedness):
+    """Calculate strandedness based on the strandedness information."""
+    return strandedness
 
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
@@ -51,23 +36,17 @@ def main():
 
     print("Calculating strandedness...")
     # Calculate strandedness based on the strandedness column
-    hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
+    hits_df['strandedness'] = hits_df['strandedness'].apply(calculate_strandedness)
 
-    # Calculate bit score
+    # Calculate bitScore, score_rank, and perc_cov
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
-
-    # Calculate rank
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
+    hits_df['perc_cov'] = hits_df.apply(calculate_perc_cov, axis=1)
 
-    # Filter significant rows
-    hits_df = hits_df[hits_df.apply(get_sig_row, axis=1)]
+    # Drop rows with NaN in score_rank
+    hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Find the best DBCAN hit
-    hits_df = find_best_dbcan_hit(hits_df)
-
-    # Mark the best hit based on rank
-    hits_df = mark_best_hit_based_on_rank(hits_df)
-
+    print("Saving the formatted output to CSV including strandedness...")
     # Save the formatted output to CSV including strandedness
     selected_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore']
     modified_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'dbcan_id', 'dbcan_score_rank', 'dbcan_bitScore']
