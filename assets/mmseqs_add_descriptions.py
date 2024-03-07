@@ -1,3 +1,6 @@
+import sys
+import pandas as pd
+
 def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path):
     # Load the MMseqs output
     mmseqs_path = f"mmseqs_out/{sample}_mmseqs_{db_name}.tsv"
@@ -32,3 +35,13 @@ def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path
     df_merged.to_csv(output_path, index=False)
 
     print("Merged DataFrame saved to", output_path)
+
+
+if __name__ == "__main__":
+    sample = sys.argv[1]
+    db_name = sys.argv[2]
+    descriptions_path = sys.argv[3]
+    bit_score_threshold = float(sys.argv[4])  # Ensure threshold is a float
+    gene_locs_path = sys.argv[5]  # Path to the gene locations file
+
+    main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path)
