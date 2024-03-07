@@ -18,7 +18,7 @@ process ADD_ANNOTATIONS {
     df_new = pd.read_csv("new_annotations.tsv", sep='\t')
 
     # Define key columns for merging
-    key_columns = ['query_id', 'sample', 'start_position', 'end_position', 'strandedness']
+    key_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness']
 
     # Perform an outer merge on the key columns
     merged_df = pd.merge(df_old, df_new, on=key_columns, how='outer', suffixes=('_old', '_new'))
