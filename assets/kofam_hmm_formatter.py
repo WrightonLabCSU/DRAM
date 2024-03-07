@@ -1,14 +1,9 @@
 import pandas as pd
 import argparse
 
-def calculate_strandedness(row):
-    """Calculate strandedness based on alignment_start and alignment_end."""
-    if row['alignment_start'] < row['alignment_end']:
-        return '+'
-    elif row['alignment_start'] > row['alignment_end']:
-        return '-'
-    else:
-        return 'Unknown'
+def calculate_strandedness(strandedness):
+    """Calculate strandedness based on the strandedness information."""
+    return strandedness
 
 def calculate_bit_score(row):
     """Calculate bit score for each row."""
@@ -17,6 +12,10 @@ def calculate_bit_score(row):
 def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
+
+def calculate_perc_cov(row):
+    """Calculate percent coverage for each row."""
+    return (row['target_end'] - row['target_start']) / row['target_length']
 
 def find_best_kofam_hit(df):
     """Find the best hit based on E-value and coverage."""
@@ -44,7 +43,7 @@ def main():
 
     # Calculate strandedness
     print("Calculating strandedness...")
-    hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
+    hits_df['strandedness'] = hits_df['strandedness'].apply(calculate_strandedness)
 
     # Load gene locations TSV file
     print("Loading gene locations TSV file...")
