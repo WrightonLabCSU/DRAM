@@ -45,7 +45,14 @@ def import_annotations(conn, file_path):
         id_cols = [col for col in df.columns if col.startswith(db_name) and ('_id' in col or '_EC' in col)]
         for col in id_cols:
             for _, row in df[['query_id', 'sample', col] + extra_columns].dropna().iterrows():
-                record = (row['query_id'], row['sample'], row[col]) + tuple(row[extra_column] for extra_column in extra_columns)
+                # Check if the column name ends with '_EC' and prefix the value with 'EC:' if it does
+                if col.endswith('_EC'):
+                    gene_id = 'EC:' + str(row[col])
+                else:
+                    gene_id = row[col]
+                
+                # Construct the record with the potentially modified gene_id
+                record = (row['query_id'], row['sample'], gene_id) + tuple(row[extra_column] for extra_column in extra_columns)
                 data_to_insert.append(record)
 
     columns_sql = "query_id, sample, gene_id" + (", " + ", ".join(extra_columns) if extra_columns else "")
