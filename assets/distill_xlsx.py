@@ -236,6 +236,7 @@ def main():
         # Iterate through topics within each distill sheet
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
+            gene_ids = df_topic['gene_id'].unique().tolist()  
             
             # Query annotations database for each gene_id/ec_id to find matches
             df_matched_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids)
