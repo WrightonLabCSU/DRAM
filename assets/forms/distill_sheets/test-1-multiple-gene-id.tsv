@@ -3,6 +3,6 @@ CE1, CE4	Multi-test	Multi-test	EC_test			high	skor
 CE1,CE9	Multi-test	Multi-test	EC_test			high	skor
 CE1;GH2	Multi-test	Multi-test	EC_test			high	skor
 CE1; GH31	Multi-test	Multi-test	EC_test			high	CANDY-BARS
-CE1							
-CE4							
-GH2							
+CE1	Multi-test	Multi-test	EC_test			high	CANDY-BARS
+CE4	Multi-test	Multi-test	EC_test			high	CANDY-BARS
+GH2	Multi-test	Multi-test	EC_test			high	CANDY-BARS
