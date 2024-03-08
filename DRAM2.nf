@@ -659,7 +659,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
                         distill_topic_list += "transport "
                         break
                     case "camper":
-                        distill_transport = "1"
+                        distill_camper = "1"
                         distill_topic_list += "camper "
                         break
                 }
