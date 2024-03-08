@@ -550,13 +550,13 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         //    ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
         //    ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
         if( params.rrnas != "" ){
-            Channel.fromPath("${params.rrnas}", checkIfExists: true)
+            Channel.fromPath("${params.rrnas}/*.tsv", checkIfExists: true)
                 .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with barrnap. Cannot find any files at: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/directory" }
                 .collect()
                 .set { ch_collected_rRNAs }
         }
         if( params.trnas != "" ){
-            Channel.fromPath("${params.trnas}", checkIfExists: true)
+            Channel.fromPath("${params.trnas}/*.tsv", checkIfExists: true)
                 .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
                 .collect()
                 .set { ch_collected_tRNAs }
