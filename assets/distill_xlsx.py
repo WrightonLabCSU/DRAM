@@ -165,6 +165,39 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
     return df_result
 
+def query_annotations_for_gene_ids(db_name, ids, column_type):
+    conn = sqlite3.connect(db_name)
+    # Initialize df_result with an empty 'gene_id' column to avoid KeyError
+    df_result = pd.DataFrame(columns=['gene_id'])
+    all_gene_ids = pd.read_sql_query("SELECT DISTINCT gene_id FROM annotations", conn)
+
+    for id_value in ids:
+        logging.debug(f"Processing ID: {id_value} as {column_type}")
+        if column_type == 'ec_id':
+            def ec_match(gene_id):
+                parts = re.split('; |, |;|,', gene_id)  # Adjusted to handle various separators
+                return any(id_value == part.strip() for part in parts)
+
+            df_partial = all_gene_ids[all_gene_ids['gene_id'].apply(ec_match)]
+        else:  # For gene_id column_type
+            # Handle composite gene_ids by splitting and checking each part
+            composite_ids = re.split(', |,|; |;', id_value)
+            df_partial = pd.DataFrame()
+            for part_id in composite_ids:
+                part_df = all_gene_ids[all_gene_ids['gene_id'].str.contains(f'^{part_id}$')]
+                if not part_df.empty:
+                    df_partial = pd.concat([df_partial, part_df])
+                if not df_partial.empty:
+                    logging.debug(f"Found matches for ID {id_value}: {df_partial['gene_id'].tolist()}")
+                    # Append found matches to result, ensuring 'gene_id' column existence
+    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': df_partial['gene_id']})], ignore_index=True)
+    df_result.drop_duplicates(inplace=True)
+    conn.close()
+    logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
+    return df_result               
+
+
+
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
     rrna_data = pd.read_csv(combined_rrna_file, sep='\t')
