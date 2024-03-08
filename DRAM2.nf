@@ -620,50 +620,69 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     if (params.distill_topic != "") {
         def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport', 'camper']
         def topics = params.distill_topic.split()
-        
-        // If 'default' is one of the topics, ignore other topics and set everything to "1"
-        if (topics.contains("default")) {
-            distill_default = "1"
-            distill_carbon = "1"
-            distill_energy = "1"
-            distill_misc = "1"
-            distill_nitrogen = "1"
-            distill_transport = "1"
-            distill_topic_list = "default (carbon, energy, misc, nitrogen, transport)"
-        } else {
-            // Process other topics only if 'default' is not selected
-            topics.each { topic ->
-                if (!validTopics.contains(topic)) {
-                    error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
-                }
 
+        // Initialize variables to store the state of each topic
+        def distill_default = "0"
+        def distill_carbon = "0"
+        def distill_energy = "0"
+        def distill_misc = "0"
+        def distill_nitrogen = "0"
+        def distill_transport = "0"
+        def distill_camper = "0"
+        def distill_topic_list = ""
+
+        topics.each { topic ->
+            if (!validTopics.contains(topic)) {
+                error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
+            }
+
+            // Handle the 'default' case by setting all default topics to "1"
+            if (topic == "default") {
+                distill_default = "1"
+                distill_carbon = "1"
+                distill_energy = "1"
+                distill_misc = "1"
+                distill_nitrogen = "1"
+                distill_transport = "1"
+                // Ensure that default topics are listed only once
+                if (!distill_topic_list.contains("default")) {
+                    distill_topic_list += "default (carbon, energy, misc, nitrogen, transport) "
+                }
+            } else {
+                // Handle other topics
                 switch (topic) {
                     case "carbon":
                         distill_carbon = "1"
-                        distill_topic_list += "carbon "
+                        if (!distill_topic_list.contains("carbon")) distill_topic_list += "carbon "
                         break
                     case "energy":
                         distill_energy = "1"
-                        distill_topic_list += "energy "
+                        if (!distill_topic_list.contains("energy")) distill_topic_list += "energy "
                         break
                     case "misc":
                         distill_misc = "1"
-                        distill_topic_list += "misc "
+                        if (!distill_topic_list.contains("misc")) distill_topic_list += "misc "
                         break
                     case "nitrogen":
                         distill_nitrogen = "1"
-                        distill_topic_list += "nitrogen "
+                        if (!distill_topic_list.contains("nitrogen")) distill_topic_list += "nitrogen "
                         break
                     case "transport":
                         distill_transport = "1"
-                        distill_topic_list += "transport "
+                        if (!distill_topic_list.contains("transport")) distill_topic_list += "transport "
                         break
                     case "camper":
                         distill_camper = "1"
-                        distill_topic_list += "camper "
+                        if (!distill_topic_list.contains("camper")) distill_topic_list += "camper "
                         break
                 }
             }
+        }
+
+        // Remove the default placeholder if other topics were added in addition to default
+        if (distill_default == "1" && topics.size() > 1) {
+            distill_topic_list = distill_topic_list.replace("default (carbon, energy, misc, nitrogen, transport) ", "")
+            if (!distill_topic_list.contains("carbon")) distill_topic_list = "carbon, energy, misc, nitrogen, transport, " + distill_topic_list.trim()
         }
     }
 
