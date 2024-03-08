@@ -614,10 +614,11 @@ distill_energy = "0"
 distill_misc = "0"
 distill_nitrogen = "0"
 distill_transport = "0"
+distill_camper = "0"
 
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {    
     if (params.distill_topic != "") {
-        def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport']
+        def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport', 'camper']
         def topics = params.distill_topic.split()
         
         // If 'default' is one of the topics, ignore other topics and set everything to "1"
@@ -657,6 +658,10 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
                         distill_transport = "1"
                         distill_topic_list += "transport "
                         break
+                    case "camper":
+                        distill_transport = "1"
+                        distill_topic_list += "camper "
+                        break
                 }
             }
         }
@@ -694,6 +699,13 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
     } else{
         ch_distill_transport = default_channel
+    }
+
+    if (distill_camper == "1") {
+        ch_distill_camper = file(params.distill_camper_sheet).exists() ? file(params.distill_camper_sheet) : error("Error: If using --distill_topic camper (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+
+    } else{
+        ch_distill_camper = default_channel
     }
 
     distill_eng_sys = "0"
@@ -1175,7 +1187,7 @@ workflow {
         } 
         
         /* Combine the individual user-specified distill sheets into a single channel */
-        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_custom )
+        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_camper, ch_distill_custom )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         /* Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets */
