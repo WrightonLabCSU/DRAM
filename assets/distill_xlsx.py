@@ -144,20 +144,21 @@ def query_annotations_for_gene_ids(db_name, ids):
         # Split based on various separators, and strip whitespace
         split_ids = re.split('; |, |;|,', id_value)
         split_ids = [id.strip() for id in split_ids if id.strip()]
-
+        
+        matches_found = []  # To keep track of found matches for composite gene_ids
         for part_id in split_ids:
-            # Direct search for both EC numbers and gene IDs in the annotations
-            # As EC numbers are already prefixed with "EC:" in the database
-            matches = all_gene_ids[all_gene_ids['gene_id'] == part_id]
-            if not matches.empty:
-                # Include the gene_id in the results
-                df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [part_id]})], ignore_index=True)
+            # Search for each part in the database
+            if all_gene_ids['gene_id'].str.contains(f'^{part_id}$').any():
+                matches_found.append(part_id)
+
+        if matches_found:
+            # If any part of the composite gene_id is found, include the original composite gene_id in the results
+            df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [id_value]})], ignore_index=True)
 
     df_result.drop_duplicates(inplace=True)
     conn.close()
     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
     return df_result
-
 
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
