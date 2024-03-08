@@ -134,37 +134,6 @@ def prepare_ec_like_patterns(ec_number):
 #     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
 #     return df_result
 
-def query_annotations_for_gene_ids(db_name, ids, column_type):
-    conn = sqlite3.connect(db_name)
-    df_result = pd.DataFrame()
-    all_gene_ids = pd.read_sql_query("SELECT DISTINCT gene_id FROM annotations", conn)
-
-    # Function to check if any part of the composite gene_id matches entries in the annotations database
-    def composite_gene_id_match(composite_id, gene_id_list):
-        # Split the composite_id by ", " or "," or ";" or "; "
-        parts = re.split(', |,|; |;', composite_id)
-        # Check if any part matches any gene_id in the annotations database
-        return any(part in gene_id_list for part in parts)
-
-    # Prepare a list of all gene_ids from the annotations database for efficient searching
-    all_gene_id_list = all_gene_ids['gene_id'].tolist()
-
-    for id_value in ids:
-        logging.debug(f"Processing ID: {id_value} as {column_type}")
-        if column_type == 'gene_id':
-            # Check if the composite gene_id or any part of it matches
-            match_found = composite_gene_id_match(id_value, all_gene_id_list)
-            if match_found:
-                # Include the original composite gene_id in the results
-                df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [id_value]})], ignore_index=True)
-
-        # No change for 'ec_id' processing, assuming ec_id does not have composite entries
-
-    df_result.drop_duplicates(inplace=True)
-    conn.close()
-    logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
-    return df_result
-
 def query_annotations_for_gene_ids(db_name, ids):
     conn = sqlite3.connect(db_name)
     df_result = pd.DataFrame(columns=['gene_id'])
@@ -172,23 +141,21 @@ def query_annotations_for_gene_ids(db_name, ids):
 
     for id_value in ids:
         logging.debug(f"Processing ID: {id_value}")
-        id_parts = re.split(', |,|; |;', id_value)  # Split based on various separators
-        id_parts = [part.strip() for part in id_parts if part.strip()]
-
-        for part_id in id_parts:
-            if part_id.startswith("EC:"):
-                # Handle EC numbers, stripping the 'EC:' prefix for comparison
-                ec_number = part_id[3:]
-                pattern = re.compile(fr'\b{ec_number}\b')  # Use word boundary to match exact EC number
-                matches = all_gene_ids[all_gene_ids['gene_id'].apply(lambda x: bool(pattern.search(x)))]
+        # Handle both EC numbers and gene IDs
+        if id_value.startswith("EC:"):
+            # Extract EC number and search in 'gene_id' column for matches
+            ec_number = id_value[3:]
+            # Find matches for EC numbers
+            matches = all_gene_ids[all_gene_ids['gene_id'].apply(lambda x: ec_number in x.split(';'))]
+            if not matches.empty:
+                df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [id_value] * len(matches)})], ignore_index=True)
+        else:
+            # Handle gene IDs possibly separated by commas or semicolons
+            gene_ids = re.split('; |, |;|,', id_value)
+            for gene_id in gene_ids:
+                matches = all_gene_ids[all_gene_ids['gene_id'] == gene_id.strip()]
                 if not matches.empty:
-                    # Include 'EC:' prefix in the output to match the input format
-                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [part_id] * len(matches)})], ignore_index=True)
-            else:
-                # Handle regular gene IDs
-                matches = all_gene_ids[all_gene_ids['gene_id'] == part_id]
-                if not matches.empty:
-                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [part_id] * len(matches)})], ignore_index=True)
+                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [gene_id.strip()]})], ignore_index=True)
 
     df_result.drop_duplicates(inplace=True)
     conn.close()
@@ -265,26 +232,20 @@ def main():
     distill_data = read_distill_sheets(args.distill_sheets)
     for sheet_path, info in distill_data.items():
         df_distill = info['dataframe']
-        column_type = info['column_type']
         
         # Iterate through topics within each distill sheet
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
-            gene_ids = df_topic[column_type].unique().tolist()
             
             # Query annotations database for each gene_id/ec_id to find matches
-            df_matched_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids, column_type)
+            df_matched_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids)
             
             # Merge matched gene IDs with target ID counts
-            df_merged = pd.merge(df_topic, df_matched_gene_ids, left_on=column_type, right_on='gene_id', how='inner')
+            df_merged = pd.merge(df_topic, df_matched_gene_ids, left_on='gene_id', right_on='gene_id', how='inner')
             df_merged_with_counts = pd.merge(df_merged, target_id_counts_df, on='gene_id', how='left')
             
             # Drop unnecessary columns
             df_final = df_merged_with_counts.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
-            
-            # Rename column_type to gene_id if it's ec_id for consistency in output
-            if column_type == 'ec_id':
-                df_final.rename(columns={'ec_id': 'gene_id'}, inplace=True)
             
             # Add final dataframe as a new sheet in the workbook
             sheet_name = topic[:31]  # Limit sheet name to 31 characters
@@ -301,79 +262,6 @@ def main():
 
     # Save the workbook
     wb.save(args.output_file)
-
-# Used for partial EC matching - good in theory but can easily produce too many hits for XLSX
-# def expand_df_with_matched_gene_ids(df, gene_ids, column_type, db_name):
-#     expanded_rows = []
-#     for gene_id in gene_ids:
-#         matched_gene_ids = query_annotations_for_gene_ids(db_name, [gene_id], column_type)
-#         for matched_gene_id in matched_gene_ids['gene_id'].tolist():
-#             for _, row in df.iterrows():
-#                 new_row = row.copy()
-#                 new_row['gene_id'] = matched_gene_id  # Update gene_id with matched value
-#                 expanded_rows.append(new_row)
-#     return pd.DataFrame(expanded_rows)
-
-# Used for partial EC matching - good in theory but can easily produce too many hits for XLSX
-# def main():
-#     args = parse_arguments()
-
-#     wb = Workbook()
-#     wb.remove(wb.active)  # Remove the default sheet
-
-#     genome_stats_df = compile_genome_stats(args.db_name)
-#     # Update genome_stats with rRNA and tRNA data if available
-#     genome_stats_df = update_genome_stats_with_rrna_trna(genome_stats_df, args.rrna_file, args.trna_file)
-#     genome_stats_df = update_genome_stats_with_rrna(genome_stats_df, args.combined_rrna_file)
-#     add_sheet_from_dataframe(wb, genome_stats_df, "genome_stats")
-
-#     target_id_counts_df = compile_target_id_counts(args.target_id_counts)
-#     distill_data = read_distill_sheets(args.distill_sheets)
-#     for sheet_path, info in distill_data.items():
-#         df_distill = info['dataframe']
-#         column_type = info['column_type']  # Extract column_type here
-#         for topic in info['topics']:
-#             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
-#             gene_ids = df_topic[column_type].unique().tolist()  # Use column_type to extract IDs
-
-#             # Adjusted to pass column_type
-#             df_valid_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids, column_type)
-
-#             # Filter the df_topic to keep only rows where gene_id exists in annotations.db
-#             # Instead of accessing 'gene_id' directly, use the column_type attribute
-#             df_topic_filtered = df_topic[df_topic[info['column_type']].isin(df_valid_gene_ids['gene_id'])].copy()
-
-#             # Instead of accessing 'gene_id' directly, use the column_type attribute
-#             column_type = distill_data[sheet_path]['column_type']
-#             # Instead of directly renaming and merging df_topic_filtered
-#             if column_type == 'ec_id':
-#                 logging.debug(f"Columns before renaming: {df_topic_filtered.columns}")
-#                 # No need to rename here as it will be handled in the expand_df_with_matched_gene_ids function
-#                 logging.debug(f"Columns after renaming: {df_topic_filtered.columns}")
-
-#             # Fetch the matched gene_ids for the entire set of EC numbers or gene_ids
-#             matched_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids, column_type)
-
-#             # Expand df_topic_filtered to include a row for each matched gene_id
-#             df_topic_filtered_expanded = expand_df_with_matched_gene_ids(df_topic_filtered, gene_ids, column_type, args.db_name)
-
-#             logging.debug(f"df_topic_filtered_expanded gene_id unique values: {df_topic_filtered_expanded['gene_id'].unique()}")
-#             logging.debug(f"df_topic_filtered_expanded shape: {df_topic_filtered_expanded.shape}")
-
-#             # Proceed with the merge operation using the expanded dataframe
-#             df_merged = pd.merge(df_topic_filtered_expanded, target_id_counts_df, on='gene_id', how="left")
-
-#             logging.debug(f"df_merged shape after merge: {df_merged.shape}")
-
-#             df_final = df_merged.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
-            
-#             sheet_name = topic[:31]  # Excel sheet name character limit
-#             add_sheet_from_dataframe(wb, df_final, sheet_name)
-
-#     # Add rrna and trna sheets if not NULL
-#     add_rrna_trna_sheets(wb, args.rrna_file, args.trna_file)
-
-#     wb.save(args.output_file)
 
 if __name__ == '__main__':
     main()
