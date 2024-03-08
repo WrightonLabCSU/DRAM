@@ -165,29 +165,30 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
     return df_result
 
-def query_annotations_for_gene_ids(db_name, ids, column_type):
+def query_annotations_for_gene_ids(db_name, ids):
     conn = sqlite3.connect(db_name)
     df_result = pd.DataFrame(columns=['gene_id'])
     all_gene_ids = pd.read_sql_query("SELECT DISTINCT gene_id FROM annotations", conn)
 
     for id_value in ids:
-        logging.debug(f"Processing ID: {id_value} as {column_type}")
-        
-        if column_type == 'ec_id':
-            # Split EC numbers and check for any matches
-            ec_parts = re.split('; |, |;|,', id_value)
-            matches = [ec for ec in ec_parts if all_gene_ids['gene_id'].str.contains(f'^{ec}$', regex=True).any()]
-            if matches:
-                for match in matches:
-                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [match]})], ignore_index=True)
-        
-        elif column_type == 'gene_id':
-            # Handle composite gene_ids by splitting and checking each part against the database
-            composite_ids = re.split(', |,|; |;', id_value)
-            match_found = any(all_gene_ids['gene_id'].str.contains(f'^{part_id}$', regex=True).any() for part_id in composite_ids)
-            if match_found:
-                # If any component matches, add the original composite structure to the output
-                df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [id_value]})], ignore_index=True)
+        logging.debug(f"Processing ID: {id_value}")
+        id_parts = re.split(', |,|; |;', id_value)  # Split based on various separators
+        id_parts = [part.strip() for part in id_parts if part.strip()]
+
+        for part_id in id_parts:
+            if part_id.startswith("EC:"):
+                # Handle EC numbers, stripping the 'EC:' prefix for comparison
+                ec_number = part_id[3:]
+                pattern = re.compile(fr'\b{ec_number}\b')  # Use word boundary to match exact EC number
+                matches = all_gene_ids[all_gene_ids['gene_id'].apply(lambda x: bool(pattern.search(x)))]
+                if not matches.empty:
+                    # Include 'EC:' prefix in the output to match the input format
+                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [part_id] * len(matches)})], ignore_index=True)
+            else:
+                # Handle regular gene IDs
+                matches = all_gene_ids[all_gene_ids['gene_id'] == part_id]
+                if not matches.empty:
+                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [part_id] * len(matches)})], ignore_index=True)
 
     df_result.drop_duplicates(inplace=True)
     conn.close()
