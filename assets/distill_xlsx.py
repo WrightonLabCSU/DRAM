@@ -165,26 +165,33 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
     return df_result
 
-def query_annotations_for_composite_gene_ids(db_name, ids):
+def query_annotations_for_gene_ids(db_name, ids, column_type):
     conn = sqlite3.connect(db_name)
-    df_result = pd.DataFrame(columns=['composite_gene_id'])
+    df_result = pd.DataFrame(columns=['gene_id'])
     all_gene_ids = pd.read_sql_query("SELECT DISTINCT gene_id FROM annotations", conn)
 
-    for composite_id in ids:
-        # Splitting composite IDs by multiple delimiters
-        individual_ids = re.split(', |,|; |;', composite_id)
-        match_found = False
+    for id_value in ids:
+        logging.debug(f"Processing ID: {id_value} as {column_type}")
+        
+        if column_type == 'ec_id':
+            # Split EC numbers and check for any matches
+            ec_parts = re.split('; |, |;|,', id_value)
+            matches = [ec for ec in ec_parts if all_gene_ids['gene_id'].str.contains(f'^{ec}$', regex=True).any()]
+            if matches:
+                for match in matches:
+                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [match]})], ignore_index=True)
+        
+        elif column_type == 'gene_id':
+            # Handle composite gene_ids by splitting and checking each part against the database
+            composite_ids = re.split(', |,|; |;', id_value)
+            match_found = any(all_gene_ids['gene_id'].str.contains(f'^{part_id}$', regex=True).any() for part_id in composite_ids)
+            if match_found:
+                # If any component matches, add the original composite structure to the output
+                df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [id_value]})], ignore_index=True)
 
-        for individual_id in individual_ids:
-            if all_gene_ids['gene_id'].str.contains(f'^{individual_id}$').any():
-                match_found = True
-                break
-
-        if match_found:
-            # If any individual ID matches, add the entire composite ID to the result
-            df_result = df_result.append({'composite_gene_id': composite_id}, ignore_index=True)
-
+    df_result.drop_duplicates(inplace=True)
     conn.close()
+    logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
     return df_result
 
 def compile_rrna_information(combined_rrna_file):
