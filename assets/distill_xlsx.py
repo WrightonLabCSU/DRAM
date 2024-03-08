@@ -139,23 +139,26 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
     df_result = pd.DataFrame()
     all_gene_ids = pd.read_sql_query("SELECT DISTINCT gene_id FROM annotations", conn)
 
+    # Function to check if any part of the composite gene_id matches entries in the annotations database
+    def composite_gene_id_match(composite_id, gene_id_list):
+        # Split the composite_id by ", " or "," or ";" or "; "
+        parts = re.split(', |,|; |;', composite_id)
+        # Check if any part matches any gene_id in the annotations database
+        return any(part in gene_id_list for part in parts)
+
+    # Prepare a list of all gene_ids from the annotations database for efficient searching
+    all_gene_id_list = all_gene_ids['gene_id'].tolist()
+
     for id_value in ids:
         logging.debug(f"Processing ID: {id_value} as {column_type}")
-        if column_type == 'ec_id':
-            def ec_match(gene_id):
-                parts = re.split('; | ', gene_id)  # Split by both semicolon and space
-                return any(id_value == part.strip() for part in parts)
-            # Apply matching function and keep only the matching EC part
-            df_partial = all_gene_ids[all_gene_ids['gene_id'].apply(ec_match)]
-            # If there's a match, adjust df_partial to only include the matching part
-            if not df_partial.empty:
-                df_partial = pd.DataFrame({'gene_id': [id_value] * len(df_partial)})
-        else:
-            df_partial = all_gene_ids[all_gene_ids['gene_id'] == id_value]
+        if column_type == 'gene_id':
+            # Check if the composite gene_id or any part of it matches
+            match_found = composite_gene_id_match(id_value, all_gene_id_list)
+            if match_found:
+                # Include the original composite gene_id in the results
+                df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [id_value]})], ignore_index=True)
 
-        if not df_partial.empty:
-            logging.debug(f"Found matches for ID {id_value}: {df_partial['gene_id'].tolist()}")
-        df_result = pd.concat([df_result, df_partial], ignore_index=True)
+        # No change for 'ec_id' processing, assuming ec_id does not have composite entries
 
     df_result.drop_duplicates(inplace=True)
     conn.close()
