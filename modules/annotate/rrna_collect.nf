@@ -3,7 +3,7 @@ process RRNA_COLLECT {
     errorStrategy 'finish'
 
     input:
-    file (combined_rrnas, stageAs: "rrnas.tsv" ))
+    file combined_rrnas
 
     output:
     path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true
