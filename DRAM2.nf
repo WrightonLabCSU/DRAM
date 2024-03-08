@@ -702,7 +702,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     }
 
     if (distill_camper == "1") {
-        ch_distill_camper = file(params.distill_camper_sheet).exists() ? file(params.distill_camper_sheet) : error("Error: If using --distill_topic camper (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_camper = file(params.distill_camper_sheet).exists() ? file(params.distill_camper_sheet) : error("Error: If using --distill_topic camper, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
     } else{
         ch_distill_camper = default_channel
