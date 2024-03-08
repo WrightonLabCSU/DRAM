@@ -6,3 +6,8 @@ CE1; GH31	Multi-test	Multi-test	EC_test			high	CANDY-BARS
 CE1	Multi-test	Multi-test	EC_test			high	CANDY-BARS
 CE4	Multi-test	Multi-test	EC_test			high	CANDY-BARS
 GH2	Multi-test	Multi-test	EC_test			high	CANDY-BARS
+EC:4.1.1.19	EC-test	complete match	EC_test			med	snickers
+EC:6.1.1.21	Imma real gene!	complete match	EC_test			low	milkyway
+EC:3.1.3.100	im lots of genes!	partial match	EC_test			high	Kit-kat bar
+EC:3.4.11.6, EC:3.4.11.10	all da 3!	partial match	EC_test			high	skor
+EC:1.8.98.5;EC:1.8.98.6	Imma real gene!	complete match	EC_test			med	snickers
