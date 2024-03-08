@@ -621,16 +621,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport', 'camper']
         def topics = params.distill_topic.split()
 
-        // Initialize variables to store the state of each topic
-        def distill_default = "0"
-        def distill_carbon = "0"
-        def distill_energy = "0"
-        def distill_misc = "0"
-        def distill_nitrogen = "0"
-        def distill_transport = "0"
-        def distill_camper = "0"
-        def distill_topic_list = ""
-
         topics.each { topic ->
             if (!validTopics.contains(topic)) {
                 error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
