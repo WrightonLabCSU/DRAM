@@ -190,7 +190,7 @@ def query_annotations_for_gene_ids(db_name, ids, column_type):
         if not df_partial.empty:
             logging.debug(f"Found matches for ID {id_value}: {df_partial['gene_id'].tolist()}")
             # Append found matches to result, ensuring 'gene_id' column existence
-        df_result = pd.concat([df_result, pd.DataFrame({'gene_id': df_partial['gene_id']})], ignore_index=True)
+            df_result = pd.concat([df_result, pd.DataFrame({'gene_id': df_partial['gene_id']})], ignore_index=True)
     df_result.drop_duplicates(inplace=True)
     conn.close()
     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
