@@ -141,21 +141,24 @@ def query_annotations_for_gene_ids(db_name, ids):
 
     for id_value in ids:
         logging.debug(f"Processing ID: {id_value}")
-        # Handle both EC numbers and gene IDs
-        if id_value.startswith("EC:"):
-            # Extract EC number and search in 'gene_id' column for matches
-            ec_number = id_value[3:]
-            # Find matches for EC numbers
-            matches = all_gene_ids[all_gene_ids['gene_id'].apply(lambda x: ec_number in x.split(';'))]
-            if not matches.empty:
-                df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [id_value] * len(matches)})], ignore_index=True)
-        else:
-            # Handle gene IDs possibly separated by commas or semicolons
-            gene_ids = re.split('; |, |;|,', id_value)
-            for gene_id in gene_ids:
-                matches = all_gene_ids[all_gene_ids['gene_id'] == gene_id.strip()]
+        split_ids = re.split('; |, |;|,', id_value)  # Split based on various separators
+        split_ids = [id.strip() for id in split_ids if id.strip()]  # Remove any extra spaces
+
+        for part_id in split_ids:
+            if part_id.startswith("EC:"):
+                # Handle EC numbers prefixed with "EC:"
+                ec_number = part_id[3:]  # Remove "EC:" prefix
+                # Find rows in the database where the gene_id contains the EC number
+                matches = all_gene_ids[all_gene_ids['gene_id'].apply(lambda x: ec_number in x.split('; '))]
                 if not matches.empty:
-                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [gene_id.strip()]})], ignore_index=True)
+                    # Add each matching EC number back to results with "EC:" prefix
+                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [part_id]})], ignore_index=True)
+            else:
+                # Handle regular gene IDs
+                matches = all_gene_ids[all_gene_ids['gene_id'] == part_id]
+                if not matches.empty:
+                    # Add each matching gene ID to results
+                    df_result = pd.concat([df_result, pd.DataFrame({'gene_id': [part_id]})], ignore_index=True)
 
     df_result.drop_duplicates(inplace=True)
     conn.close()
