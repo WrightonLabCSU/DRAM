@@ -41,7 +41,7 @@ process QUAST {
     conda_env_path = '/opt/miniconda'
     conda_env_name = 'support'
     threads = ${params.threads}
-    run_quast_with_coda(fasta_file_paths, 'quast_results', threads, conda_env_path, conda_env_name)
+    run_quast_with_conda(fasta_file_paths, 'quast_results', threads, conda_env_path, conda_env_name)
 
     # Read the QUAST report generated for all samples
     quast_report_path = 'quast_results/report.tsv'
