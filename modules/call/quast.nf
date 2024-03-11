@@ -8,9 +8,9 @@ process QUAST {
 
     output:
     tuple val( sample ), path( "quast_results/report.tsv" ), emit: quast_tsv
-    tuple val( sample ), path( "${sample}_QUAST/icarus.tsv" ), emit: quast_tsv
-    tuple val( sample ), path( "${sample}_QUAST/report.html" ), emit: quast_tsv
-    tuple val( sample ), path( "${sample}_QUAST/report.pdf" ), emit: quast_tsv
+    tuple val( sample ), path( "${sample}_QUAST/icarus.tsv" ),
+    tuple val( sample ), path( "${sample}_QUAST/report.html" )
+    tuple val( sample ), path( "${sample}_QUAST/report.pdf" )
 
     script:
     """
