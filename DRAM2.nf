@@ -61,6 +61,7 @@ include { ADD_SQL_DESCRIPTIONS as SQL_UNIREF            } from './modules/annota
 include { ADD_SQL_DESCRIPTIONS as SQL_VIRAL             } from './modules/annotate/add_sql_descriptions.nf'
 include { ADD_SQL_DESCRIPTIONS as SQL_MEROPS            } from './modules/annotate/add_sql_descriptions.nf'
 include { ADD_SQL_DESCRIPTIONS as SQL_KEGG              } from './modules/annotate/add_sql_descriptions.nf'
+include { ADD_SQL_DESCRIPTIONS as SQL_PFAM              } from './modules/annotate/add_sql_descriptions.nf'
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
@@ -960,9 +961,12 @@ workflow {
         if( annotate_pfam == 1 ){
             ch_combined_query_locs_pfam = ch_mmseqs_query.join(ch_gene_locs)
             MMSEQS_SEARCH_PFAM( ch_combined_query_locs_pfam, ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.pfam_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
-            ch_uniref_formatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
+            ch_pfam_unformatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
 
-            formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
+            SQL_PFAM(ch_pfam_unformatted, params.pfam_name, ch_sql_descriptions_db, ch_sql_parser)
+            ch_kegg_formatted = SQL_PFAM.out.sql_formatted_hits
+
+            formattedOutputChannels = formattedOutputChannels.mix(ch_pfam_formatted)
         }
 
         if( annotate_dbcan == 1 ){
@@ -1044,10 +1048,6 @@ workflow {
             
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_hmm_formatted)
 
-        }
-        // Not done - not sure what this is?
-        if (annotate_heme == 1){
-            formattedOutputChannels =  formattedOutputChannels.mix(ch_heme_formatted)
         }
 
         if (annotate_sulfur == 1){

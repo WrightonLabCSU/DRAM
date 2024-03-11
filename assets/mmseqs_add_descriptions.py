@@ -24,20 +24,26 @@ def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path
     print("Merged MMseqs output with gene locations. Sample rows:")
     print(df_merged.head())
 
-    # Load the descriptions file if it's provided
+    # Load the descriptions file if it's provided and check its contents
     if descriptions_path != "NULL":
-        df_descriptions = pd.read_csv(descriptions_path, sep='\t')
-        # Add database name prefix to added columns
-        df_descriptions.columns = [f"{db_name}_{col}" for col in df_descriptions.columns]
-        print("Descriptions loaded. Columns in df_descriptions:")
-        print(df_descriptions.columns)
-        print("Sample rows from df_descriptions:")
-        print(df_descriptions.head())
-
-        # Merge the DataFrames on the query_id and the index of descriptions
-        df_merged = pd.merge(df_merged, df_descriptions, left_index=True, right_index=True, how='left')
-    else:
-        print("Descriptions path is 'NULL', skipping loading of descriptions.")
+        with open(descriptions_path, 'r') as file:
+            first_line = file.readline().strip()
+        # Check if the first line of the file is "NULL"
+        if first_line != "NULL":
+            df_descriptions = pd.read_csv(descriptions_path, sep='\t')
+            
+            # Add database name prefix to added columns
+            df_descriptions.columns = [f"{db_name}_{col}" for col in df_descriptions.columns]
+            
+            # Print statements for debugging
+            print("Columns in df_merged:", df_merged.columns)
+            print("Columns in df_descriptions:", df_descriptions.columns)
+            
+            # Merge the DataFrames on the query_id and the index of descriptions
+            df_merged = pd.merge(df_merged, df_descriptions, left_index=True, right_index=True, how='left')
+        else:
+            print("Descriptions file content is 'NULL', skipping loading of descriptions.")
+    
 
     # Save the merged DataFrame to CSV
     output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
