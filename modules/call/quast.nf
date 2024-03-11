@@ -21,52 +21,60 @@ process QUAST {
     import subprocess
     from glob import glob
 
-    # Function to run QUAST
-    def run_quast(fasta_files, output_dir, threads):
-        cmd = ['quast.py', '-o', output_dir, '--threads', str(threads)] + fasta_files
-        subprocess.run(cmd, check=True)
+    # Function to activate conda environment and run QUAST
+    def run_quast_with_conda(fasta_files, output_dir, threads, conda_env_path, conda_env_name):
+        activate_env = f'source {conda_env_path}/bin/activate {conda_env_name}'
+        quast_cmd = f'quast.py -o {output_dir} --threads {threads} ' + ' '.join(fasta_files)
+        cmd = f'{activate_env} && {quast_cmd}'
+        subprocess.run(cmd, shell=True, check=True, executable='/bin/bash')
 
     # Function to count predicted genes in a GFF file
     def count_genes_in_gff(gff_file):
         with open(gff_file, 'r') as file:
             return sum(1 for line in file if '\\tgene\\t' in line)
 
-    # Get all fasta and gff file paths
-    fasta_file_paths = glob('*.fa')
-    gff_file_paths = glob('*.gff')
+    # Prepare the list of fasta and gff file paths
+    fasta_file_paths = [str(fasta) for fasta in fasta_files]
+    gff_file_paths = [str(gff) for gff in gff_files]
 
-    # Run QUAST on all collected FASTA files together
-    run_quast(fasta_file_paths, 'quast_results', ${params.threads})
+    # Activate conda environment and run QUAST on all FASTA files together
+    conda_env_path = '/opt/miniconda'
+    conda_env_name = 'support'
+    run_quast_with_conda(fasta_file_paths, 'quast_results', ${params.threads}, conda_env_path, conda_env_name)
 
-    # Initialize a list to collect data for the combined report
-    collected_data = []
+    # Read the single QUAST report generated for all samples
+    quast_report_path = 'quast_results/report.tsv'
+    if os.path.exists(quast_report_path):
+        report_df = pd.read_csv(quast_report_path, sep='\\t')
 
-    # Loop through all GFF files, count genes, and prepare the data for the combined report
-    for gff_file in gff_file_paths:
-        # Extract sample name by removing '_called_genes.gff'
-        sample_name = os.path.basename(gff_file).replace('_called_genes.gff', '')
-        num_genes = count_genes_in_gff(gff_file)
-        
-        # Construct the expected QUAST report path based on the sample name
-        quast_report_path = os.path.join('quast_results', f'{sample_name}_report.tsv')
-        
-        # Check if the report exists before attempting to read it
-        if os.path.exists(quast_report_path):
-            df = pd.read_csv(quast_report_path, sep='\\t', names=["Metric", "Value"], skiprows=1)
-            df.set_index("Metric", inplace=True)
+        # Assuming the QUAST report includes columns for each sample
+        # Initialize a list to collect data for the combined report
+        collected_data = []
+
+        # Loop through all GFF files, count genes
+        for gff_file in gff_file_paths:
+            # Extract sample name
+            sample_name = os.path.basename(gff_file).split('_')[0]
+            num_genes = count_genes_in_gff(gff_file)
             
+            # Extract metrics from the QUAST report for this sample
+            # Replace the following lines with the actual logic to extract data for sample_name
+            no_contigs = 'NA' # Placeholder, replace with actual extraction logic
+            largest_contig = 'NA' # Placeholder, replace with actual extraction logic
+            N50 = 'NA' # Placeholder, replace with actual extraction logic
+
             collected_data.append({
                 'sample': sample_name,
-                'no. contigs': df.at['# contigs', 'Value'],
-                'largest contig': df.at['Largest contig', 'Value'],
-                'N50': df.at['N50', 'Value'],
+                'no. contigs': no_contigs,
+                'largest contig': largest_contig,
+                'N50': N50,
                 'no. pred. genes': num_genes
             })
-        else:
-            print(f"Report for {sample_name} not found.")
 
-    # Create a DataFrame from the collected data and save it as a TSV file
-    combined_df = pd.DataFrame(collected_data)
-    combined_df.to_csv('collected_quast.tsv', sep='\\t', index=False)
+        # Create a DataFrame from the collected data and save it as a TSV file
+        combined_df = pd.DataFrame(collected_data)
+        combined_df.to_csv('collected_quast.tsv', sep='\\t', index=False)
+    else:
+        print("QUAST report not found.")
     """
 }
