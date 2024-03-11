@@ -975,7 +975,7 @@ workflow {
             DBCAN_HMM_FORMATTER ( ch_combined_hits_locs_dbcan, params.dbcan_top_hit, params.dbcan_name, ch_dbcan_formatter, ch_sql_parser, ch_sql_descriptions_db )
             ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
 
-            formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
+            formattedOutputChannels = formattedOutputChannels.miless workflowda checkM1x(ch_dbcan_formatted)
         }
 
         if (annotate_camper == 1){

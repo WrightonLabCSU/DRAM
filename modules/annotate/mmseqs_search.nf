@@ -53,7 +53,7 @@ process MMSEQS_SEARCH {
             # Need additional processing for KEGG RBH
         
         fi
-    else if [ "${db_name}" == "pfam" ]; then
+    elif [ "${db_name}" == "pfam" ]; then
         # Do profile search:
         mmseqs search query_database/${sample}.mmspro ${db_name}.mmsdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
