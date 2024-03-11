@@ -46,33 +46,40 @@ process QUAST {
     quast_report_path = 'quast_results/report.tsv'
     report_df = pd.read_csv(quast_report_path, sep='\t', index_col='Assembly')
 
-    # Loop through all GFF files, count genes, and prepare the data for the combined report
-    # Initialize an empty list to collect metrics for each sample
+    # Dynamically identify sample names based on FASTA filenames
+    sample_names = [os.path.splitext(os.path.basename(fasta))[0] for fasta in fasta_file_paths]
+
+    # Loop through all GFF files, count genes, and match with QUAST report
     collected_data = []
-
-    # Process each GFF file to count predicted genes
     for gff_file in gff_file_paths:
-        sample_name = os.path.basename(gff_file).split('_')[0]
+        base_name = os.path.splitext(os.path.basename(gff_file))[0]
+        sample_name = base_name.split('_called_genes')[0]
         num_genes = count_genes_in_gff(gff_file)
-        
-        # Attempt to extract metrics for the sample from the report DataFrame
-        # Ensure we're matching column names correctly
-        try:
-            sample_metrics = {
-                'sample': sample_name,
-                'no. contigs': report_df[f"{sample_name}_2500"]['# contigs'],
-                'largest contig': report_df[f"{sample_name}_2500"]['Largest contig'],
-                'N50': report_df[f"{sample_name}_2500"]['N50'],
-                'no. pred. genes': num_genes
-            }
-        except KeyError as e:
-            print(f"Key error: {e}. Check if the metric name matches exactly with the QUAST report.")
-            continue  # Skip this sample if there's a key error
-        
-        collected_data.append(sample_metrics)
 
-    # Convert the list of dictionaries into a DataFrame
+        # Find the corresponding column in the QUAST report for this sample
+        for column in report_df.columns:
+            if sample_name in column:
+                metrics = report_df[column].to_dict()
+                metrics['sample'] = sample_name
+                metrics['no. pred. genes'] = num_genes
+                collected_data.append(metrics)
+                break
+
+    # Create a DataFrame from the collected data
     combined_df = pd.DataFrame(collected_data)
+
+    # If needed, rename or select specific columns from the combined DataFrame
+    # Example renaming, adjust according to actual column names found in report_df
+    combined_df.rename(columns={
+        'Total length': 'total length',
+        'Largest contig': 'largest contig',
+        'N50': 'N50',
+        'no. pred. genes': 'no. pred. genes'
+    }, inplace=True)
+
+    # Select and reorder columns based on your specific needs
+    desired_columns = ['sample', 'total length', 'largest contig', 'N50', 'no. pred. genes']
+    combined_df = combined_df[desired_columns]
 
     # Save the DataFrame to a TSV file
     combined_df.to_csv('collected_quast.tsv', sep='\t', index=False)
