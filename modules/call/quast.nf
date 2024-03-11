@@ -7,9 +7,9 @@ process QUAST {
 
     output:
     path( "quast_results/report.tsv" ), emit: quast_tsv
-    path( "${sample}_QUAST/icarus.tsv" )
-    path( "${sample}_QUAST/report.html" )
-    path( "${sample}_QUAST/report.pdf" )
+    path( "quast_results/icarus.tsv" )
+    path( "quast_results/report.html" )
+    path( "quast_results/report.pdf" )
     path( "collected_quast.tsv" ), emit: quast_collected_out
 
     script:
@@ -30,8 +30,13 @@ process QUAST {
 
     # Function to count predicted genes in a GFF file
     def count_genes_in_gff(gff_file):
+        gene_count = 0
         with open(gff_file, 'r') as file:
-            return sum(1 for line in file if '\\tgene\\t' in line)
+            for line in file:
+                if '\tCDS\t' in line:  # Adjusted to match "CDS" entries
+                    gene_count += 1
+        print(f"Counted {gene_count} genes in {gff_file}")  # Debugging print
+        return gene_count
 
     # Find all FASTA and GFF files in the current directory
     fasta_file_paths = glob('*.fa')
