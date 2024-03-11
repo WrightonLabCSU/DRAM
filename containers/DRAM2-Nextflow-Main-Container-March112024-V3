@@ -53,8 +53,6 @@ From: ubuntu:22.04
 
     conda install -c bioconda prodigal=2.6.3
 
-    conda install -c bioconda quast=5.2.0
-
     conda install python=3.10
     conda install pandas=1.5.2
     conda install pytest=7.2.0
@@ -83,6 +81,8 @@ From: ubuntu:22.04
     conda install -n support bowtie2=2.5.1 -y
 
     conda install -n support -c conda-forge ncurses
+
+    conda install -n support -c bioconda quast=5.2.0
 
     # Export miniconda bin just to be safe
     export PATH="/opt/miniconda/bin:$PATH"

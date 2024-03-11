@@ -37,6 +37,7 @@ nextflow.enable.dsl = 2
 */
 include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
 include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
+include { QUAST                                         } from './modules/call/quast.nf'
 
 include { TRNA_SCAN                                     } from './modules/annotate/trna_scan.nf'
 include { RRNA_SCAN                                     } from './modules/annotate/rrna_scan.nf'
