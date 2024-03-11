@@ -38,6 +38,7 @@ nextflow.enable.dsl = 2
 include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
 include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
 include { QUAST                                         } from './modules/call/quast.nf'
+include { QUAST_COLLECT                                 } from './modules/call/quast_collect.nf'
 
 include { TRNA_SCAN                                     } from './modules/annotate/trna_scan.nf'
 include { RRNA_SCAN                                     } from './modules/annotate/rrna_scan.nf'
@@ -857,20 +858,16 @@ workflow {
         ch_called_proteins = CALL_GENES.out.prodigal_faa
         ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv
         ch_gene_gff = CALL_GENES.out.prodigal_gff
+        ch_filtered_fasta - CALL_GENES.out.prodigal_filtered_fasta
 
         /* Run QUAST on individual FASTA file combined with respective GFF */
-        ch_combined_fasta_gff = ch_fasta.join(ch_gene_gff)
-        QUAST( ch_fasta )
-        ch_quast_stats = QUAST.out.quast_stats_out
-        // Collect all individual fasta quast results
+        // Collect all individual fasta to pass to quast
         Channel.empty()
-            .mix( ch_quast_stats )
+            .mix( ch_filtered_fasta )
             .collect()
-            .set { ch_collected_quast }
-        /* Run QUAST_COLLECT to generate a combined TSV for all fastas */
-        QUAST_COLLECT( ch_collected_quast )
-        ch_quast_stats = QUAST_COLLECT.out.quast_collected_out
-
+            .set { ch_collected_fasta }
+        QUAST( ch_collected_fasta )
+        ch_quast_stats = QUAST.out.quast_collected_out
 
         /* Run tRNAscan-SE on each fasta to identify tRNAs */
         TRNA_SCAN( ch_fasta )
