@@ -7,10 +7,10 @@ process QUAST {
     path ( collected_gff )
 
     output:
-    tuple val( sample ), path( "quast_results/report.tsv" ), emit: quast_tsv
-    tuple val( sample ), path( "${sample}_QUAST/icarus.tsv" ),
-    tuple val( sample ), path( "${sample}_QUAST/report.html" )
-    tuple val( sample ), path( "${sample}_QUAST/report.pdf" )
+    path( "quast_results/report.tsv" ), emit: quast_tsv
+    path( "${sample}_QUAST/icarus.tsv" ),
+    path( "${sample}_QUAST/report.html" )
+    path( "${sample}_QUAST/report.pdf" )
 
     script:
     """
