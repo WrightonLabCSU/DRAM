@@ -15,7 +15,7 @@ process MMSEQS_SEARCH {
 
     output:
     tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
-    tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv "), emit: mmseqs_search_rbh_formatted_out, optional: true
+    //tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv "), emit: mmseqs_search_rbh_formatted_out, optional: true
 
     script:
     """
@@ -37,8 +37,23 @@ process MMSEQS_SEARCH {
     mmseqs convertalis query_database/${sample}.mmsdb ${db_name}.mmsdb  mmseqs_out/${sample}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
     
 
+    # Check if the mmseqs_out/${sample}_mmseqs_${db_name}.tsv file is empty
+    if [ ! -s "mmseqs_out/${sample}_mmseqs_${db_name}.tsv" ]; then
+        echo "The file mmseqs_out/${sample}_mmseqs_${db_name}.tsv is empty. Skipping further processing."
+    else
+        # Call Python script for further processing
+        python ${ch_add_db_descriptions} "${sample}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv"
+    fi
+
+    
+    """
+}
 
 
+/*
+
+
+    if db_name == KEGG
     # Perform Reverse Best Hit search
     mmseqs search ${db_name}.mmsdb query_database/${sample}.mmsdb  mmseqs_out/${sample}_rbh_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
@@ -52,17 +67,7 @@ process MMSEQS_SEARCH {
     mmseqs convertalis ${db_name}.mmsdb query_database/${sample}.mmsdb mmseqs_out/${sample}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv --threads ${params.threads}
     
 
+    if db_name == pfam
+    #Do mmseqs profile search
 
-
-
-    # Check if the mmseqs_out/${sample}_mmseqs_${db_name}.tsv file is empty
-    if [ ! -s "mmseqs_out/${sample}_mmseqs_${db_name}.tsv" ]; then
-        echo "The file mmseqs_out/${sample}_mmseqs_${db_name}.tsv is empty. Skipping further processing."
-    else
-        # Call Python script for further processing
-        python ${ch_add_db_descriptions} "${sample}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv"
-    fi
-
-    
-    """
-}
+*/

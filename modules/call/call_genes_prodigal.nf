@@ -9,7 +9,7 @@ process CALL_GENES {
     output:
     tuple val( sample ), path( "${sample}_called_genes.fna" ), emit: prodigal_fna
     tuple val( sample ), path( "${sample}_called_genes.faa" ), emit: prodigal_faa
-    tuple val( sample ), path( "${sample}_called_genes.${params.prodigal_format}" ), emit: prodigal_output
+    tuple val( sample ), path( "${sample}_called_genes.gff" ), emit: prodigal_gff
     tuple val( sample ), path( "${sample}_called_genes_table.tsv" ), emit: prodigal_locs_tsv
 
 
@@ -17,16 +17,21 @@ process CALL_GENES {
 
     """
 
+    /opt/bbmap/reformat.sh \\
+    in=${fasta} \\
+    out="${sample}_${params.min_contig_len}.fa" \\
+    minlength=${params.min_contig_len}
+
     prodigal \\
-    -i ${fasta} \\
-    -o "${sample}_called_genes.${params.prodigal_format}" \\
+    -i "${sample}_${params.min_contig_len}.fa" \\
+    -o "${sample}_called_genes.gff" \\
     -p ${params.prodigal_mode} \\
     -g ${params.prodigal_trans_table} \\
-    -f ${params.prodigal_format} \\
+    -f gff \\
     -d "${sample}_called_genes.fna" \\
     -a "${sample}_called_genes.faa"
 
-    python ${ch_called_genes_loc_script} "${sample}_called_genes.${params.prodigal_format}" > "${sample}_called_genes_table.tsv"
+    python ${ch_called_genes_loc_script} "${sample}_called_genes.gff" > "${sample}_called_genes_table.tsv"
 
     """
 }

@@ -855,8 +855,22 @@ workflow {
         called_genes = CALL_GENES.out.prodigal_fna
         ch_called_proteins = CALL_GENES.out.prodigal_faa
         ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv
+        ch_gene_gff = CALL_GENE.out.prodigal_gff
 
-        // Not sure if we want these default or optional yet
+        /* Run QUAST on individual FASTA file combined with respective GFF */
+        ch_combined_fasta_gff = ch_fasta.join(ch_gene_gff)
+        QUAST( ch_fasta )
+        ch_quast_stats = QUAST.out.quast_stats_out
+        // Collect all individual fasta quast results
+        Channel.empty()
+            .mix( ch_quast_stats )
+            .collect()
+            .set { ch_collected_quast }
+        /* Run QUAST_COLLECT to generate a combined TSV for all fastas */
+        QUAST_COLLECT( ch_collected_quast )
+        ch_quast_stats = QUAST_COLLECT.out.quast_collected_out
+
+
         /* Run tRNAscan-SE on each fasta to identify tRNAs */
         TRNA_SCAN( ch_fasta )
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out
