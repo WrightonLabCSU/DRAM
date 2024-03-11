@@ -30,13 +30,8 @@ process QUAST {
 
     # Function to count predicted genes in a GFF file
     def count_genes_in_gff(gff_file):
-        gene_count = 0
         with open(gff_file, 'r') as file:
-            for line in file:
-                if '\tCDS\t' in line:  # Adjusted to match "CDS" entries
-                    gene_count += 1
-        print(f"Counted {gene_count} genes in {gff_file}")  # Debugging print
-        return gene_count
+            return sum(1 for line in file if '\\tCDS\\t' in line)
 
     # Find all FASTA and GFF files in the current directory
     fasta_file_paths = glob('*.fa')
@@ -44,48 +39,38 @@ process QUAST {
 
     # Activate conda environment and run QUAST on all FASTA files together
     conda_env_path = '/opt/miniconda'
-    conda_env_name = 'support'
-    threads = ${params.threads}  # Using threads from Nextflow parameters
-    run_quast_with_conda(fasta_file_paths, 'quast_results', threads, conda_env_path, conda_env_name)
+    conda_env_name = 'support'n
+    threads = ${params.threads}
+    run_quast_with_coda(fasta_file_paths, 'quast_results', threads, conda_env_path, conda_env_name)
 
     # Read the QUAST report generated for all samples
     quast_report_path = 'quast_results/report.tsv'
     report_df = pd.read_csv(quast_report_path, sep='\t', index_col='Assembly')
 
-    # Dynamically identify sample names based on FASTA filenames
-    sample_names = [os.path.splitext(os.path.basename(fasta))[0] for fasta in fasta_file_paths]
-
-    # Loop through all GFF files, count genes, and match with QUAST report
+    # Dynamically identify sample names based on FASTA filenames and match with QUAST report
     collected_data = []
     for gff_file in gff_file_paths:
         base_name = os.path.splitext(os.path.basename(gff_file))[0]
         sample_name = base_name.split('_called_genes')[0]
         num_genes = count_genes_in_gff(gff_file)
 
-        # Find the corresponding column in the QUAST report for this sample
+        # Extract metrics from the QUAST report for this sample
         for column in report_df.columns:
             if sample_name in column:
-                metrics = report_df[column].to_dict()
-                metrics['sample'] = sample_name
-                metrics['no. pred. genes'] = num_genes
+                metrics = {
+                    'sample': sample_name,
+                    'assembly length': 'total length',
+                    'no. contigs': report_df.loc['# contigs', column],
+                    'largest contig': report_df.loc['Largest contig', column],
+                    'N50': report_df.loc['N50', column],
+                    'GC (%)': report_df.loc['GC (%)', column],
+                    'no. pred. genes': num_genes
+                }
                 collected_data.append(metrics)
                 break
 
-    # Create a DataFrame from the collected data
+    # Convert the list of dictionaries into a DataFrame
     combined_df = pd.DataFrame(collected_data)
-
-    # If needed, rename or select specific columns from the combined DataFrame
-    # Example renaming, adjust according to actual column names found in report_df
-    combined_df.rename(columns={
-        'Total length': 'total length',
-        'Largest contig': 'largest contig',
-        'N50': 'N50',
-        'no. pred. genes': 'no. pred. genes'
-    }, inplace=True)
-
-    # Select and reorder columns based on your specific needs
-    desired_columns = ['sample', 'total length', 'largest contig', 'N50', 'no. pred. genes']
-    combined_df = combined_df[desired_columns]
 
     # Save the DataFrame to a TSV file
     combined_df.to_csv('collected_quast.tsv', sep='\t', index=False)

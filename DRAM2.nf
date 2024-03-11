@@ -1174,6 +1174,7 @@ workflow {
                 ch_rrna_sheet = params.distill_dummy_sheet
                 ch_rrna_combined = params.distill_dummy_sheet
             }
+            ch_quast_stats = params.distill_dummy_sheet
         }       
         // If the user did not annotate and provided taxa and/or bin quality, add it to annotations.
         if( params.annotate == 0 ){
@@ -1212,7 +1213,7 @@ workflow {
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         /* Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets */
-        DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
+        DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
 
     }
 
