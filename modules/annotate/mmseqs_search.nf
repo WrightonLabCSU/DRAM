@@ -12,6 +12,7 @@ process MMSEQS_SEARCH {
     path( db_descriptions, stageAs: "db_descriptions.tsv" )
     val( db_name )
     file( ch_add_db_descriptions )
+    file( ch_RBH_filter_script )
 
     output:
     tuple val( sample ), path("mmseqs_out/${sample}_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
@@ -51,7 +52,8 @@ process MMSEQS_SEARCH {
             mmseqs convertalis ${db_name}.mmsdb query_database/${sample}.mmsdb mmseqs_out/${sample}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv --threads ${params.threads}
         
             # Need additional processing for KEGG RBH
-        
+            python ${ch_RBH_filter_script} --forward "mmseqs_out/${sample}_mmseqs_${db_name}.tsv" --reverse "mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv" --output "mmseqs_out/${sample}_mmseqs_rbh_${db_name}_combined.tsv"
+            mv mmseqs_out/${sample}_mmseqs_rbh_${db_name}_combined.tsv mmseqs_out/${sample}_mmseqs_${db_name}.tsv
         fi
     elif [ "${db_name}" == "pfam" ]; then
         # Do profile search:
