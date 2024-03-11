@@ -55,10 +55,10 @@ process MMSEQS_SEARCH {
         fi
     elif [ "${db_name}" == "pfam" ]; then
         # Do profile search:
-        mmseqs search query_database/${sample}.mmspro ${db_name}.mmsdb mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+        mmseqs search query_database/${sample}.mmsdb ${db_name}.mmspro mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
         # Convert results to BLAST outformat 6
-        mmseqs convertalis query_database/${sample}.mmspro ${db_name}.mmsdb mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
+        mmseqs convertalis query_database/${sample}.mmsdb ${db_name}.mmspro mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
     fi
 
     # Check if the mmseqs_out/${sample}_mmseqs_${db_name}.tsv file is empty
