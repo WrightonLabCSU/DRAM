@@ -1,7 +1,6 @@
 import argparse
 import pandas as pd
 import logging
-import os
 
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -34,7 +33,7 @@ def combine_annotations(annotation_files, output_file):
             continue
 
         # Add the 'sample' column
-        annotation_df.insert(1, 'sample', sample)
+        annotation_df.insert(0, 'sample', sample)
 
         # Combine data
         combined_data = pd.concat([combined_data, annotation_df], ignore_index=True, sort=False)
@@ -44,16 +43,13 @@ def combine_annotations(annotation_files, output_file):
 
     # Sort columns based on their prefixes
     sorted_columns = sorted(combined_data.columns, key=lambda x: x.split('_')[0])
-    
-    # Ensure query_id is the first column
-    sorted_columns.remove('query_id')
-    sorted_columns.insert(0, 'query_id')
 
-    # Ensure other specified columns are in the desired order
-    specified_columns = ['sample', 'start_position', 'stop_position', 'strandedness']
-    for col in specified_columns[::-1]:
-        sorted_columns.remove(col)
-        sorted_columns.insert(1, col)
+    # Reinsert the base columns at the start in the specified order
+    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness']
+    for col in reversed(base_columns):
+        if col in sorted_columns:
+            sorted_columns.remove(col)
+            sorted_columns.insert(0, col)
 
     # Reorder the columns in the DataFrame
     combined_data = combined_data[sorted_columns]
@@ -61,10 +57,9 @@ def combine_annotations(annotation_files, output_file):
     # Save the combined DataFrame to the output file
     combined_data.to_csv(output_file, index=False, sep='\t')
 
-
 if __name__ == "__main__":
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', and 'stop_position'.")
+    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', 'stop_position', and including 'strandedness'.")
     parser.add_argument("--annotations", nargs='+', help="List of annotation files and sample names.")
     parser.add_argument("--output", help="Output file path for the combined annotations.")
     args = parser.parse_args()
