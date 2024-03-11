@@ -2,8 +2,6 @@ process QUAST {
 
     errorStrategy 'finish'
 
-    tag { sample }
-
     input:
     path ( collected_fasta )
     path ( collected_gff )
