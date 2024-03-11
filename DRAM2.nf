@@ -855,7 +855,7 @@ workflow {
         called_genes = CALL_GENES.out.prodigal_fna
         ch_called_proteins = CALL_GENES.out.prodigal_faa
         ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv
-        ch_gene_gff = CALL_GENE.out.prodigal_gff
+        ch_gene_gff = CALL_GENES.out.prodigal_gff
 
         /* Run QUAST on individual FASTA file combined with respective GFF */
         ch_combined_fasta_gff = ch_fasta.join(ch_gene_gff)
