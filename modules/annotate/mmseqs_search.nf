@@ -61,7 +61,7 @@ process MMSEQS_SEARCH {
         # -k 5 -s 7
 
         # Convert results to BLAST outformat 6
-        mmseqs convertalis query_database/${sample}.mmsdb ${db_name}.mmspro mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
+        mmseqs convertalis query_database/${sample}.mmsdb ${db_name}.mmspro mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
     fi
 
     # Check if the mmseqs_out/${sample}_mmseqs_${db_name}.tsv file is empty
