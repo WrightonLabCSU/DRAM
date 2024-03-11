@@ -18,10 +18,17 @@ def parse_arguments():
     parser.add_argument('--combined_rrna_file', type=str, help='Path to the combined rRNA TSV file.', default=None)
     parser.add_argument('--trna_file', type=str, help='Path to the trna_sheet.tsv file.', default=None)
     parser.add_argument('--output_file', type=str, help='Path to the output XLSX file.')
+    parser.add_argument('--quast', type=str, help='Path to the QUAST stats TSV file.', default=None)
     return parser.parse_args()
 
 def compile_target_id_counts(target_id_counts):
     return pd.read_csv(target_id_counts, sep='\t')
+
+def compile_quast_info(quast_file):
+    if not file_contains_data(quast_file):
+        print(f"Skipping QUAST processing for {quast_file} as it contains 'NULL'.")
+        return None
+    return pd.read_csv(quast_file, sep='\t')
 
 def read_distill_sheets(distill_sheets):
     sheets_data = {}
@@ -219,8 +226,19 @@ def main():
 
     # Compile genome stats and add as a sheet
     genome_stats_df = compile_genome_stats(args.db_name)
+    
+    # Update the genome_stats_df with rRNA and tRNA information
     genome_stats_df = update_genome_stats_with_rrna_trna(genome_stats_df, args.rrna_file, args.trna_file)
     genome_stats_df = update_genome_stats_with_rrna(genome_stats_df, args.combined_rrna_file)
+    
+    # Process QUAST data if the file is not "NULL"
+    quast_data = None
+    if hasattr(args, 'quast') and file_contains_data(args.quast):
+        quast_data = pd.read_csv(args.quast, sep='\t')
+        # Merging QUAST data with genome stats
+        genome_stats_df = pd.merge(genome_stats_df, quast_data, on="sample", how="left")
+    
+    # Add the updated genome_stats_df as a sheet
     add_sheet_from_dataframe(wb, genome_stats_df, "Genome_Stats")
 
     # Read target ID counts
