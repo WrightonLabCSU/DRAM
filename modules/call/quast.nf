@@ -45,7 +45,8 @@ process QUAST {
     # Activate conda environment and run QUAST on all FASTA files together
     conda_env_path = '/opt/miniconda'
     conda_env_name = 'support'
-    run_quast_with_conda(fasta_file_paths, 'quast_results', '4', conda_env_path, conda_env_name)
+    threads = ${params.threads}  # Using threads from Nextflow parameters
+    run_quast_with_conda(fasta_file_paths, 'quast_results', threads, conda_env_path, conda_env_name)
 
     # Read the QUAST report generated for all samples
     quast_report_path = 'quast_results/report.tsv'
