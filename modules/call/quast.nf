@@ -59,7 +59,7 @@ process QUAST {
             if sample_name in column:
                 metrics = {
                     'sample': sample_name,
-                    'assembly length': 'total length',
+                    'assembly length': report_df.loc['Total length', column],
                     'no. contigs': report_df.loc['# contigs', column],
                     'largest contig': report_df.loc['Largest contig', column],
                     'N50': report_df.loc['N50', column],
