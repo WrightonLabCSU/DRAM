@@ -862,16 +862,11 @@ workflow {
 
         // Collect all individual fasta to pass to quast
         Channel.empty()
-            .mix( ch_filtered_fasta )
+            .mix( ch_filtered_fasta, ch_gene_gff  )
             .collect()
             .set { ch_collected_fasta }
-        // Collect all individual gff to pass to quast
-        Channel.empty()
-        .mix( ch_gene_gff )
-        .collect()
-        .set { ch_collected_gff }
         /* Run QUAST on individual FASTA file combined with respective GFF */
-        QUAST( ch_collected_fasta, ch_gene_gff )
+        QUAST( ch_collected_fasta )
         ch_quast_stats = QUAST.out.quast_collected_out
 
         /* Run tRNAscan-SE on each fasta to identify tRNAs */

@@ -3,8 +3,7 @@ process QUAST {
     errorStrategy 'finish'
 
     input:
-    path ( collected_fasta )
-    path ( collected_gff )
+    path ( collected_fasta_gff )
 
     output:
     path( "quast_results/report.tsv" ), emit: quast_tsv
