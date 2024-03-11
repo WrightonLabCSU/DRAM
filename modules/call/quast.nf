@@ -40,41 +40,40 @@ process QUAST {
     # Activate conda environment and run QUAST on all FASTA files together
     conda_env_path = '/opt/miniconda'
     conda_env_name = 'support'
-    run_quast_with_conda(fasta_file_paths, 'quast_results', ${params.threads}, conda_env_path, conda_env_name)
+    run_quast_with_conda(fasta_file_paths, 'quast_results', '4', conda_env_path, conda_env_name)
 
-    # Read the single QUAST report generated for all samples
+    # Read the QUAST report generated for all samples
     quast_report_path = 'quast_results/report.tsv'
-    if os.path.exists(quast_report_path):
-        report_df = pd.read_csv(quast_report_path, sep='\\t')
+    report_df = pd.read_csv(quast_report_path, sep='\t', index_col='Assembly')
 
-        # Assuming the QUAST report includes columns for each sample
-        # Initialize a list to collect data for the combined report
-        collected_data = []
+    # Loop through all GFF files, count genes, and prepare the data for the combined report
+    collected_data = []
+    for gff_file in gff_file_paths:
+        sample_name = os.path.basename(gff_file).split('_')[0]
+        num_genes = count_genes_in_gff(gff_file)
+        
+        # Extract metrics from the QUAST report for this sample
+        metrics = report_df[sample_name + '_2500'].to_dict()
+        metrics['sample'] = sample_name
+        metrics['no. pred. genes'] = num_genes
+        collected_data.append(metrics)
 
-        # Loop through all GFF files, count genes
-        for gff_file in gff_file_paths:
-            # Extract sample name
-            sample_name = os.path.basename(gff_file).split('_')[0]
-            num_genes = count_genes_in_gff(gff_file)
-            
-            # Extract metrics from the QUAST report for this sample
-            # Replace the following lines with the actual logic to extract data for sample_name
-            no_contigs = 'NA' # Placeholder, replace with actual extraction logic
-            largest_contig = 'NA' # Placeholder, replace with actual extraction logic
-            N50 = 'NA' # Placeholder, replace with actual extraction logic
+    # Convert the list of dictionaries into a DataFrame
+    combined_df = pd.DataFrame(collected_data)
 
-            collected_data.append({
-                'sample': sample_name,
-                'no. contigs': no_contigs,
-                'largest contig': largest_contig,
-                'N50': N50,
-                'no. pred. genes': num_genes
-            })
+    # If needed, adjust the columns to match your desired output structure
+    # For instance, you might only want to keep certain metrics:
+    combined_df = combined_df[['sample', 'no. contigs (>= 0 bp)', 'Largest contig', 'N50', 'no. pred. genes']]
 
-        # Create a DataFrame from the collected data and save it as a TSV file
-        combined_df = pd.DataFrame(collected_data)
-        combined_df.to_csv('collected_quast.tsv', sep='\\t', index=False)
-    else:
-        print("QUAST report not found.")
+    # Rename columns to remove the condition '(>= 0 bp)' for clarity, if desired
+    combined_df.rename(columns={
+        'no. contigs (>= 0 bp)': 'no. contigs',
+        'Largest contig': 'largest contig',
+        'N50': 'N50',
+        'no. pred. genes': 'no. pred. genes'
+    }, inplace=True)
+
+    # Save the DataFrame to a TSV file
+    combined_df.to_csv('collected_quast.tsv', sep='\t', index=False)
     """
 }
