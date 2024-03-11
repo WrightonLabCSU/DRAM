@@ -8,6 +8,7 @@ process QUAST {
     output:
     path( "quast_results/report.tsv" ), emit: quast_tsv
     path( "quast_results/icarus.html" )
+    path( "quast_results/icarus_viewers/" )   
     path( "quast_results/report.html" )
     path( "quast_results/report.pdf" )
     path( "collected_quast.tsv" ), emit: quast_collected_out
