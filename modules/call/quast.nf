@@ -19,21 +19,21 @@ process QUAST {
     import os
     import pandas as pd
     import subprocess
+    from glob import glob
 
     # Function to run QUAST
     def run_quast(fasta_files, output_dir, threads):
-        subprocess.run(['quast.py', '-o', output_dir, '--threads', str(threads)] + fasta_files, check=True)
+        cmd = ['quast.py', '-o', output_dir, '--threads', str(threads)] + fasta_files
+        subprocess.run(cmd, check=True)
 
     # Function to count predicted genes in a GFF file
     def count_genes_in_gff(gff_file):
         with open(gff_file, 'r') as file:
             return sum(1 for line in file if '\\tgene\\t' in line)
 
-    # Extract sample names from fasta file names
-    sample_names = [os.path.splitext(os.path.basename(fasta))[0].split('_')[0] for fasta in fasta_files]
-
-    # Prepare the list of fasta files for QUAST analysis
-    fasta_file_paths = [str(fasta) for fasta in fasta_files]
+    # Get all fasta and gff file paths
+    fasta_file_paths = glob('*.fa')
+    gff_file_paths = glob('*.gff')
 
     # Run QUAST on all collected FASTA files together
     run_quast(fasta_file_paths, 'quast_results', ${params.threads})
@@ -42,22 +42,28 @@ process QUAST {
     collected_data = []
 
     # Loop through all GFF files, count genes, and prepare the data for the combined report
-    for gff_file in gff_files:
-        sample_name = os.path.splitext(os.path.basename(str(gff_file)))[0].split('_')[0]
+    for gff_file in gff_file_paths:
+        # Extract sample name by removing '_called_genes.gff'
+        sample_name = os.path.basename(gff_file).replace('_called_genes.gff', '')
         num_genes = count_genes_in_gff(gff_file)
         
-        # Assuming the QUAST report includes the desired metrics
-        quast_report_path = os.path.join('quast_results', sample_name + '_report.tsv')
-        df = pd.read_csv(quast_report_path, sep='\\t', names=["Metric", "Value"], skiprows=1)
-        df.set_index("Metric", inplace=True)
+        # Construct the expected QUAST report path based on the sample name
+        quast_report_path = os.path.join('quast_results', f'{sample_name}_report.tsv')
         
-        collected_data.append({
-            'sample': sample_name,
-            'no. contigs': df.at['# contigs', 'Value'],
-            'largest contig': df.at['Largest contig', 'Value'],
-            'N50': df.at['N50', 'Value'],
-            'no. pred. genes': num_genes
-        })
+        # Check if the report exists before attempting to read it
+        if os.path.exists(quast_report_path):
+            df = pd.read_csv(quast_report_path, sep='\\t', names=["Metric", "Value"], skiprows=1)
+            df.set_index("Metric", inplace=True)
+            
+            collected_data.append({
+                'sample': sample_name,
+                'no. contigs': df.at['# contigs', 'Value'],
+                'largest contig': df.at['Largest contig', 'Value'],
+                'N50': df.at['N50', 'Value'],
+                'no. pred. genes': num_genes
+            })
+        else:
+            print(f"Report for {sample_name} not found.")
 
     # Create a DataFrame from the collected data and save it as a TSV file
     combined_df = pd.DataFrame(collected_data)
