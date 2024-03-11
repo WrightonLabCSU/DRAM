@@ -33,9 +33,9 @@ process QUAST {
         with open(gff_file, 'r') as file:
             return sum(1 for line in file if '\\tgene\\t' in line)
 
-    # Prepare the list of fasta and gff file paths
-    fasta_file_paths = [str(fasta) for fasta in fasta_files]
-    gff_file_paths = [str(gff) for gff in gff_files]
+    # Find all FASTA and GFF files in the current directory
+    fasta_file_paths = glob('*.fa')
+    gff_file_paths = glob('*.gff')
 
     # Activate conda environment and run QUAST on all FASTA files together
     conda_env_path = '/opt/miniconda'
