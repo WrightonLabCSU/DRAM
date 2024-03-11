@@ -39,7 +39,7 @@ process QUAST {
 
     # Activate conda environment and run QUAST on all FASTA files together
     conda_env_path = '/opt/miniconda'
-    conda_env_name = 'support'n
+    conda_env_name = 'support'
     threads = ${params.threads}
     run_quast_with_coda(fasta_file_paths, 'quast_results', threads, conda_env_path, conda_env_name)
 
