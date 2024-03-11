@@ -1115,6 +1115,7 @@ workflow {
             .mix( formattedOutputChannels )
             .collect()
             .set { collected_formatted_hits }
+        collected_formatted_hits.view()
 
         // COMBINE_ANNOTATIONS collects all annotations files across ALL databases 
         COMBINE_ANNOTATIONS( collected_formatted_hits, ch_combine_annot_script )
