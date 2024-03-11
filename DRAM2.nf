@@ -860,7 +860,6 @@ workflow {
         ch_gene_gff = CALL_GENES.out.prodigal_gff
         ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta
 
-        /* Run QUAST on individual FASTA file combined with respective GFF */
         // Collect all individual fasta to pass to quast
         Channel.empty()
             .mix( ch_filtered_fasta )
@@ -871,6 +870,7 @@ workflow {
         .mix( ch_gene_gff )
         .collect()
         .set { ch_collected_gff }
+        /* Run QUAST on individual FASTA file combined with respective GFF */
         QUAST( ch_collected_fasta, ch_gene_gff )
         ch_quast_stats = QUAST.out.quast_collected_out
 

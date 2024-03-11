@@ -11,6 +11,7 @@ process QUAST {
     path( "${sample}_QUAST/icarus.tsv" )
     path( "${sample}_QUAST/report.html" )
     path( "${sample}_QUAST/report.pdf" )
+    path( "collected_quast.tsv" ), emit: quast_collected_out
 
     script:
     """
