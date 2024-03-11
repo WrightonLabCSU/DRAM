@@ -1,8 +1,8 @@
 process COMBINE_ANNOTATIONS {
 
     input:
-    path( all_annotations )
-    file( ch_combine_annot_script )
+    val all_annotations
+    file(ch_combine_annot_script)
 
     output:
     path "raw-annotations.tsv", emit: combined_annotations_out
