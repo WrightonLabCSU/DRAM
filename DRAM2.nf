@@ -964,7 +964,7 @@ workflow {
             ch_pfam_unformatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
 
             SQL_PFAM(ch_pfam_unformatted, params.pfam_name, ch_sql_descriptions_db, ch_sql_parser)
-            ch_kegg_formatted = SQL_PFAM.out.sql_formatted_hits
+            ch_pfam_formatted = SQL_PFAM.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_pfam_formatted)
         }
