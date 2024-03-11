@@ -24,12 +24,18 @@ process QUAST {
     mv quast_results/quast_results/* .
 
 
-    # This will need to be in a loop no to iterate through all .gff files
-    # Count number of called genes in ${gff}
-    num_genes=\$(grep -c -P "\tgene\t" ${gff})
+    # Initialize an empty file to collect gene counts
+    echo -e "Sample\tPredicted Genes" > gene_counts.tsv
 
-    # Add a new row to "${sample}_QUAST/${sample}_icarus.tsv" with gene count
-    echo "# predicted genes ${num_genes}" >> "${sample}_QUAST/${sample}_icarus.tsv"
+    # Loop through all GFF files and count predicted genes
+    for gff in ${collected_gff}; do
+        sample_name=\$(basename \$gff .gff)
+        num_genes=\$(grep -c -P "\tgene\t" \$gff)
+        echo -e "\${sample_name}\t\${num_genes}" >> gene_counts.tsv
+    done
+
+    # Add the gene count information to the QUAST report
+    cat gene_counts.tsv >> ${sample}_QUAST/report.tsv
 
     """
 

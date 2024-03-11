@@ -858,7 +858,7 @@ workflow {
         ch_called_proteins = CALL_GENES.out.prodigal_faa
         ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv
         ch_gene_gff = CALL_GENES.out.prodigal_gff
-        ch_filtered_fasta - CALL_GENES.out.prodigal_filtered_fasta
+        ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta
 
         /* Run QUAST on individual FASTA file combined with respective GFF */
         // Collect all individual fasta to pass to quast
