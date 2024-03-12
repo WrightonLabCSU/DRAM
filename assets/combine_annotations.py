@@ -14,7 +14,24 @@ def extract_samples_and_paths(annotation_files):
     return samples_and_paths
 
 def assign_rank(row):
-    # Your assign_rank function logic here
+    # Initial rank is 'E'
+    rank = 'E'
+    
+    # Logic to assign ranks based on bit scores from various databases
+    if row.get('kegg_bitScore', 0) > 350:
+        rank = 'A'
+    elif row.get('uniref_bitScore', 0) > 350:
+        rank = 'B'
+    elif row.get('kegg_bitScore', 0) > 60 or row.get('uniref_bitScore', 0) > 60:
+        rank = 'C'
+    elif any(row.get(f"{db}_bitScore", 0) > 60 for db in ['pfam', 'dbcan', 'merops']):
+        rank = 'D'
+    # No need for an explicit check for rank 'E', as it's the default
+
+    # Optional: Log the decision for auditing or debugging
+    # logging.debug(f"Assigned rank {rank} for query_id {row.get('query_id', 'N/A')} with kegg_bitScore {row.get('kegg_bitScore', 'N/A')}")
+
+    return rank
 
 def convert_bit_scores_to_numeric(df):
     for col in df.columns:
