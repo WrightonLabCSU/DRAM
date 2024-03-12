@@ -66,36 +66,33 @@ def main():
     # Merge gene locations into the hits dataframe
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
 
-    # Calculate strandedness
-    print("Calculating strandedness...")
+    # Calculate strandedness, bit score, and rank as before
+    print("Calculating additional fields...")
     hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
-
-    # Process HMM search results
-    print("Processing HMM search results...")
-    hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Find and mark best hits
-    best_hits = hits_df.groupby('query_id').apply(find_best_camper_hit).reset_index(drop=True)
-    best_hits = best_hits.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
+    # Rename 'target_id' in hits_df to 'camper_id'
+    hits_df.rename(columns={'target_id': 'camper_id'}, inplace=True)
 
-    # Load ch_camper_list file and merge
+    # Load ch_camper_list file
     print("Loading ch_camper_list file...")
-    ch_camper_list_df = pd.read_csv(args.ch_camper_list, sep="\t")
-    merged_df = pd.merge(best_hits, ch_camper_list_df[['target_id', 'A_rank', 'B_rank', 'score_type', 'definition']], left_on='target_id', right_on='target_id', how='left')
+    ch_camper_list_df = pd.read_csv(args.ch_camper_list, sep="\t", names=['query_id', 'A_rank', 'B_rank', 'score_type', 'definition'], header=0)
+
+    # Merge hits_df with ch_camper_list_df
+    merged_df = pd.merge(hits_df, ch_camper_list_df, left_on='camper_id', right_on='query_id', how='left')
 
     # Calculate camper_rank and clean EC numbers
+    print("Calculating camper_rank and cleaning EC numbers...")
     merged_df['camper_rank'] = merged_df.apply(lambda row: assign_camper_rank(row, row['A_rank'], row['B_rank']), axis=1)
     merged_df['camper_EC'] = merged_df['definition'].apply(clean_ec_numbers)
 
-    # Rename the merged column to 'camper_id'
-    merged_df.rename(columns={'target_id': 'camper_id'}, inplace=True)
-
     # Keep only relevant columns and rename them
-    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'camper_id', 'camper_score_rank', 'camper_bitScore', 'definition', 'camper_rank', 'camper_EC']]
-    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'camper_id', 'camper_score_rank', 'camper_bitScore', 'camper_description', 'camper_rank', 'camper_EC']
+    print("Finalizing output...")
+    final_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'camper_id', 'score_rank', 'bitScore', 'camper_rank', 'camper_EC']
+    final_output_df = merged_df[final_columns]
+    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'camper_id', 'camper_score_rank', 'camper_bitScore', 'camper_rank', 'camper_EC']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
