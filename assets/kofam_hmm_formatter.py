@@ -81,7 +81,7 @@ def main():
     final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'definition']]
 
     # Rename the columns for clarity
-    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition']
+    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_description']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)

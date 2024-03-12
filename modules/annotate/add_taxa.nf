@@ -29,16 +29,30 @@ process ADD_TAXA {
     # Replace "." with "-" in the "user_genome" column of ch_taxa for matching
     ch_taxa_data["user_genome"] = ch_taxa_data["user_genome"].str.replace(".", "-")
 
-    # Merge data based on the sample column
-    merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left")
+    # Check if "taxonomy" column exists and has non-null values
+    if "taxonomy" in combined_annotations.columns:
+        if not combined_annotations["taxonomy"].isnull().all():
+            # If "taxonomy" exists and has non-null values, don't merge taxonomy from ch_taxa_data
+            taxonomy_to_merge = False
+        else:
+            # If "taxonomy" exists but only contains null values, prepare to replace those with ch_taxa_data
+            taxonomy_to_merge = True
+    else:
+        # If "taxonomy" doesn't exist, add it
+        taxonomy_to_merge = True
 
-    # Drop the additional "user_genome" column
-    merged_data.drop(columns=["user_genome"], inplace=True)
+    if taxonomy_to_merge:
+        # Merge data based on the sample column
+        merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left")
+        # Drop the additional "user_genome" column
+        merged_data.drop(columns=["user_genome"], inplace=True)
+        # Rename the "classification" column to "taxonomy"
+        merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
+    else:
+        # If taxonomy should not be merged, use combined_annotations directly
+        merged_data = combined_annotations
 
-    # Rename the "classification" column to "Classification"
-    merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
-
-    # Save the updated data to annots_taxa.tsv
+    # Save the updated data to raw-annotations.tsv
     output_path = "raw-annotations.tsv"
     merged_data.to_csv(output_path, sep='\t', index=False)
 
