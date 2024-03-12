@@ -29,17 +29,28 @@ process ADD_TAXA {
     # Replace "." with "-" in the "user_genome" column of ch_taxa for matching
     ch_taxa_data["user_genome"] = ch_taxa_data["user_genome"].str.replace(".", "-")
 
-    # Merge data based on the sample column
-    merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left")
-    # Drop the additional "user_genome" column
-    merged_data.drop(columns=["user_genome"], inplace=True)
-    # Rename the "classification" column to "taxonomy"
-    merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
-
-    # Check if "taxonomy" column exists
+    # Check if "taxonomy" column exists and has non-null values
     if "taxonomy" in combined_annotations.columns:
-        # Replace NaN values in the existing taxonomy column with corresponding values from ch_taxa_data
-        merged_data['taxonomy'] = merged_data['taxonomy'].combine_first(ch_taxa_data.set_index('user_genome')['classification'])
+        if not combined_annotations["taxonomy"].isnull().all():
+            # If "taxonomy" exists and has non-null values, don't merge taxonomy from ch_taxa_data
+            taxonomy_to_merge = False
+        else:
+            # If "taxonomy" exists but only contains null values, prepare to replace those with ch_taxa_data
+            taxonomy_to_merge = True
+    else:
+        # If "taxonomy" doesn't exist, add it
+        taxonomy_to_merge = True
+
+    if taxonomy_to_merge:
+        # Merge data based on the sample column
+        merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left")
+        # Drop the additional "user_genome" column
+        merged_data.drop(columns=["user_genome"], inplace=True)
+        # Rename the "classification" column to "taxonomy"
+        merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
+    else:
+        # If taxonomy should not be merged, use combined_annotations directly
+        merged_data = combined_annotations
 
     # Save the updated data to raw-annotations.tsv
     output_path = "raw-annotations.tsv"
