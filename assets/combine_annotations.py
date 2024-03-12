@@ -13,6 +13,22 @@ def extract_samples_and_paths(annotation_files):
         samples_and_paths.append((sample, path))
     return samples_and_paths
 
+def organize_columns(df):
+    # Define base columns and ensure they are at the beginning
+    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness']
+    base_columns_present = [col for col in base_columns if col in df.columns]
+
+    # Find and prioritize KEGG columns if present
+    kegg_columns = [col for col in df.columns if col.startswith('kegg_')]
+    
+    # Find other database columns
+    other_db_columns = [col for col in df.columns if col not in base_columns_present + kegg_columns]
+    
+    # The final column order starts with base columns, followed by KEGG columns, then the rest
+    final_columns_order = base_columns_present + kegg_columns + other_db_columns
+    
+    return df[final_columns_order]
+
 def combine_annotations(annotation_files, output_file):
     # Extract samples and paths from the input annotation_files
     samples_and_paths = extract_samples_and_paths(annotation_files)
@@ -41,25 +57,15 @@ def combine_annotations(annotation_files, output_file):
     # Modify grouping to preserve unique combinations of 'query_id', 'start_position', and 'stop_position'
     combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position'])
 
-    # Sort columns based on their prefixes
-    sorted_columns = sorted(combined_data.columns, key=lambda x: x.split('_')[0])
-
-    # Reinsert the base columns at the start in the specified order
-    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness']
-    for col in reversed(base_columns):
-        if col in sorted_columns:
-            sorted_columns.remove(col)
-            sorted_columns.insert(0, col)
-
-    # Reorder the columns in the DataFrame
-    combined_data = combined_data[sorted_columns]
+    # Reorder the columns according to the new requirements
+    combined_data = organize_columns(combined_data)
 
     # Save the combined DataFrame to the output file
     combined_data.to_csv(output_file, index=False, sep='\t')
 
 if __name__ == "__main__":
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', 'stop_position', and including 'strandedness'.")
+    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', 'stop_position', and including 'strandedness'. Prioritize 'kegg' database columns if present.")
     parser.add_argument("--annotations", nargs='+', help="List of annotation files and sample names.")
     parser.add_argument("--output", help="Output file path for the combined annotations.")
     args = parser.parse_args()
