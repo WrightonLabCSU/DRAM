@@ -31,11 +31,14 @@ def mark_best_hit_based_on_rank(df):
     return df
 
 def clean_ec_numbers(ec_entry):
-    """Clean up EC numbers by removing '[EC:' and ']'. Replace spaces between EC numbers with ';'. """
-    ec_matches = re.findall(r'\[EC:([^\]]*?)\]', ec_entry)
-    cleaned_ec_numbers = [re.sub(r'[^0-9.-]', '', ec) for match in ec_matches for ec in match.split()]
-    result = '; '.join(cleaned_ec_numbers)
-    return result
+    """Clean up EC numbers by adding 'EC:' prefix and formatting as a semicolon-separated list."""
+    # This pattern matches individual EC numbers within the entry
+    ec_matches = re.findall(r'\b\d+\.\d+\.\d+\.\-?\d*\b', ec_entry)
+    
+    # Prefix each EC number with 'EC:' and join them with a semicolon and space
+    formatted_ec_numbers = '; '.join(['EC:' + ec for ec in ec_matches])
+    
+    return formatted_ec_numbers
 
 def assign_camper_rank(row, a_rank, b_rank):
     """Assign camper rank based on bit score and provided thresholds."""

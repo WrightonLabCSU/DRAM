@@ -7,59 +7,40 @@ import argparse
 def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
-    # Use "id" as the column name for fetching IDs from the hits CSV file
-    ids_column = "id"
+    ids_column = "id"  # Column name for fetching IDs
     descriptions_column = "description"
     
     # Establish connection to SQLite database
     conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
     
-    # Adjust the column name to match the hits CSV file
+    # Adjust the column name to match the hits CSV file and process dbcan_id values if needed
     hits_ids_column = f"{db_name}_id"
-    
-    # Remove ".hmm" extension from dbcan_id values
     if db_name == "dbcan":
         chunk[hits_ids_column] = chunk[hits_ids_column].str.replace(".hmm", "")
-    
     ids = chunk[hits_ids_column].unique()
     
-    # Construct the query based on the database name
-    if db_name == "dbcan":
-        query = f"SELECT {ids_column}, {descriptions_column}, ec FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
-    else:
-        query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
-    
-    cursor = conn.cursor()
+    # Construct the query
+    query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     cursor.execute(query, ids)
     results = cursor.fetchall()
     
-    if db_name == "dbcan":
-        descriptions_dict = {row[0]: (row[1], row[2]) for row in results}
-    else:
-        descriptions_dict = {row[0]: (row[1], "") for row in results}  # For other databases, EC column is empty
+    # Map fetched descriptions (and EC numbers for dbcan) to the chunk
+    descriptions_dict = {row[0]: row[1] for row in results}
+    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ""))
     
-    # Update chunk with descriptions
-    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[0])
+    # Format and extract EC numbers for dbcan and kegg
+    if db_name in ["dbcan", "kegg"]:
+        chunk[f"{db_name}_EC"] = chunk[f"{db_name}_description"].apply(format_and_extract_EC_numbers)
     
-    # Special processing for "kegg" database
+    # Special processing for "kegg" database to extract orthology
     if db_name == "kegg":
-        # Add additional output columns for KEGG orthology and EC numbers
-        chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_orthology(x))
-        chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(lambda x: extract_kegg_EC(x))
-    
-    # Special processing for "dbcan" database
-    if db_name == "dbcan":
-        # Add additional output column for EC numbers
-        chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[1])
+        chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(extract_kegg_orthology)
     
     # Close database connection
     conn.close()
     
     return chunk
-
-
-
-
 
 
 def extract_kegg_orthology(description):
@@ -72,16 +53,17 @@ def extract_kegg_orthology(description):
         return None
 
 
-def extract_kegg_EC(description):
-    # Extract EC numbers from the description
+def format_and_extract_EC_numbers(description):
+    # Find the start of the EC number section in the description
     ec_start = description.find("[EC:")
     if ec_start != -1:
         ec_end = description.find("]", ec_start)
         ec_text = description[ec_start + 4:ec_end]  # Skip the "[EC:" part
-        ec_numbers = re.findall(r'\b\d+\.\d+\.\d+\.\d+\b', ec_text)  # Extract EC numbers using regex
-        return ' '.join(ec_numbers)  # Join EC numbers with space separator
-    else:
-        return None
+        # Extract EC numbers using regex and format them with "EC:" prefix
+        ec_numbers = re.findall(r'\b\d+\.\d+\.\d+\.\d+\b', ec_text)
+        # Format each EC number with "EC:" prefix and join with "; "
+        formatted_ec_numbers = '; '.join([f"EC:{ec}" for ec in ec_numbers])
+        return formatted_ec_numbers
 
 
 def main():
