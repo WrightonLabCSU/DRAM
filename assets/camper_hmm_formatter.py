@@ -64,7 +64,10 @@ def main():
 
     print("Loading ch_camper_list file...")
     descriptions_df = pd.read_csv(args.ch_camper_list, sep="\t")
-    descriptions_df.rename(columns={descriptions_df.columns[0]: 'camper_id'}, inplace=True)
+    descriptions_df.rename(columns={'hmm_name': 'camper_id'}, inplace=True)  # Adjust based on the new information
+
+    # IMPORTANT: Rename 'target_id' in hits_df to 'camper_id'
+    hits_df.rename(columns={'target_id': 'camper_id'}, inplace=True)
 
     # Merge gene locations into the hits dataframe
     merged_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
