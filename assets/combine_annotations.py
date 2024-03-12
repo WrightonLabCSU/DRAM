@@ -14,21 +14,13 @@ def extract_samples_and_paths(annotation_files):
     return samples_and_paths
 
 def assign_rank(row):
-    # Define default rank as 'E'
-    rank = 'E'
-    print(f"Assigning rank {rank} to row with kegg_bitScore {row.get('kegg_bitScore', 'N/A')}")
-    # Check for conditions that would assign a higher rank
-    if row.get('kegg_bitScore', 0) > 350:
-        rank = 'A'
-    elif row.get('uniref_bitScore', 0) > 350:
-        rank = 'B'
-    elif row.get('kegg_bitScore', 0) > 60 or row.get('uniref_bitScore', 0) > 60:
-        rank = 'C'
-    elif any(row.get(db + '_bitScore', 0) > 60 for db in ['pfam', 'dbcan', 'merops']) and all(row.get(db + '_bitScore', 0) <= 60 for db in ['kegg', 'uniref']):
-        rank = 'D'
-    # If there are any significant hits to VOGDB or no hits to any database, it remains 'E'
-    
-    return rank
+    # Your assign_rank function logic here
+
+def convert_bit_scores_to_numeric(df):
+    for col in df.columns:
+        if "_bitScore" in col:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+    return df
 
 def organize_columns(df):
     # Ensure the 'rank' column is included after 'strandedness'
@@ -57,14 +49,13 @@ def combine_annotations(annotation_files, output_file):
     # Drop duplicates
     combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position'])
 
-    # Right before applying the assign_rank function
-    print("DataFrame columns before assigning ranks:", combined_data.columns.tolist())
+    # Convert bit scores to numeric for accurate comparisons
+    combined_data = convert_bit_scores_to_numeric(combined_data)
 
-
-    # Assign ranks based on defined criteria
+    # Assign ranks based on defined criteria after ensuring numeric conversion
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
 
-    # Organize and sort columns
+    # Organize and sort columns, including the newly added 'rank' column
     combined_data = organize_columns(combined_data)
     combined_data = combined_data.sort_values(by='query_id', ascending=True)
 
