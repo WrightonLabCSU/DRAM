@@ -13,32 +13,37 @@ def extract_samples_and_paths(annotation_files):
         samples_and_paths.append((sample, path))
     return samples_and_paths
 
-def organize_columns(df):
-    # Define base columns and ensure they are at the beginning
-    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness']
-    base_columns_present = [col for col in base_columns if col in df.columns]
+def assign_rank(row):
+    # Dynamically check for database hits and assign ranks based on bitScore criteria
+    databases = ["kegg", "uniref", "pfam", "dbcan", "merops", "vogdb"]
+    db_scores = {db: row.get(f"{db}_bitScore", None) for db in databases}
+    
+    # Rank logic
+    if db_scores["kegg"] is not None and db_scores["kegg"] > 350:
+        return 'A'
+    elif db_scores["uniref"] is not None and db_scores["uniref"] > 350:
+        return 'B'
+    elif (db_scores["kegg"] is not None and db_scores["kegg"] > 60) or (db_scores["uniref"] is not None and db_scores["uniref"] > 60):
+        return 'C'
+    elif any(db in row for db in ["pfam_id", "dbcan_id", "merops_id"]) and all(score <= 60 for score in db_scores.values() if score is not None):
+        return 'D'
+    elif db_scores["vogdb"] is not None or all(score is None or score < 60 for score in db_scores.values()):
+        return 'E'
+    return 'E'  # Default to rank E if no other conditions are met
 
-    # Find and prioritize KEGG columns if present
+def organize_columns(df):
+    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank']
     kegg_columns = [col for col in df.columns if col.startswith('kegg_')]
+    other_db_columns = [col for col in df.columns if col not in base_columns + kegg_columns]
     
-    # Find other database columns
-    other_db_columns = [col for col in df.columns if col not in base_columns_present + kegg_columns]
-    
-    # The final column order starts with base columns, followed by KEGG columns, then the rest
-    final_columns_order = base_columns_present + kegg_columns + other_db_columns
-    
+    final_columns_order = base_columns + kegg_columns + other_db_columns
     return df[final_columns_order]
 
 def combine_annotations(annotation_files, output_file):
-    # Extract samples and paths from the input annotation_files
     samples_and_paths = extract_samples_and_paths(annotation_files)
-
-    # Create an empty DataFrame to store the combined data
     combined_data = pd.DataFrame()
 
-    # Process the input annotation files
     for sample, path in samples_and_paths:
-        # Load each annotation file into a DataFrame
         try:
             annotation_df = pd.read_csv(path)
         except pd.errors.EmptyDataError:
@@ -48,34 +53,24 @@ def combine_annotations(annotation_files, output_file):
             logging.error(f"Error loading DataFrame for sample {sample}: {str(e)}")
             continue
 
-        # Add the 'sample' column
         annotation_df.insert(0, 'sample', sample)
-
-        # Combine data
         combined_data = pd.concat([combined_data, annotation_df], ignore_index=True, sort=False)
 
-    # Modify grouping to preserve unique combinations of 'query_id', 'start_position', and 'stop_position'
     combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position'])
-
-    # Reorder the columns according to the new requirements
+    combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
     combined_data = organize_columns(combined_data)
-
-    # Sort the DataFrame by 'query_id' in ascending order
     combined_data = combined_data.sort_values(by='query_id', ascending=True)
 
-    # Save the combined DataFrame to the output file
     combined_data.to_csv(output_file, index=False, sep='\t')
 
 if __name__ == "__main__":
-    # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', 'stop_position', including 'strandedness', and prioritizing 'kegg' database columns if present. Sort by 'query_id'.")
+    parser = argparse.ArgumentParser(description="Combine annotation files with ranking based on annotation confidence and sort by 'query_id'.")
     parser.add_argument("--annotations", nargs='+', help="List of annotation files and sample names.")
     parser.add_argument("--output", help="Output file path for the combined annotations.")
     args = parser.parse_args()
 
-    # Combine annotations
     if args.annotations and args.output:
         combine_annotations(args.annotations, args.output)
-        logging.info(f"Combined annotations saved to {args.output} and sorted by 'query_id'.")
+        logging.info(f"Combined annotations saved to {args.output}, with ranks assigned and sorted by 'query_id'.")
     else:
         logging.error("Missing required arguments. Use --help for usage information.")
