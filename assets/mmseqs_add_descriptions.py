@@ -33,22 +33,26 @@ def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path
 
     if descriptions_path != "NULL":
         df_descriptions = pd.read_csv(descriptions_path, sep='\t')
-
-        # Rename 'definition' to 'description' and prefix other columns, excluding 'A_rank' and 'B_rank'
-        df_descriptions.rename(columns={'definition': 'description'}, inplace=True)
-        df_descriptions = df_descriptions.rename(columns={col: f"{db_name}_{col}" for col in df_descriptions.columns if col not in ['A_rank', 'B_rank', f'{db_name}_id']})
-
-        # Ensure the first column is renamed to match db_name_id for merging
         first_column = df_descriptions.columns[0]
         df_descriptions.rename(columns={first_column: f'{db_name}_id'}, inplace=True)
-
-        df_merged = pd.merge(df_merged, df_descriptions, on=f'{db_name}_id', how='left')
-
-        db_name_bit_score = f"{db_name}_bitScore"
-        df_merged[f'{db_name}_rank'] = df_merged.apply(lambda row: assign_rank(row, row[f'{db_name}_A_rank'], row[f'{db_name}_B_rank'], db_name_bit_score), axis=1)
         
-        # Drop A_rank and B_rank columns if present
-        df_merged.drop(columns=[f'{db_name}_A_rank', f'{db_name}_B_rank'], inplace=True, errors='ignore')
+        # Assuming we still need to dynamically rename 'definition' to 'description'
+        df_descriptions.rename(columns={'definition': 'description'}, inplace=True)
+        
+        # Prefix other columns except 'A_rank', 'B_rank', and the first column (already handled)
+        df_descriptions = df_descriptions.rename(columns={col: f"{db_name}_{col}" for col in df_descriptions.columns if col not in ['A_rank', 'B_rank', f'{db_name}_id', 'description']})
+
+        # Merge descriptions DataFrame
+        df_merged = pd.merge(df_merged, df_descriptions, on=f'{db_name}_id', how='left')
+        
+        # If A_rank and B_rank exist, use them for assigning ranks without db_name prefix
+        if 'A_rank' in df_descriptions.columns and 'B_rank' in df_descriptions.columns:
+            db_name_bit_score = f"{db_name}_bitScore"
+            df_merged[f'{db_name}_rank'] = df_merged.apply(lambda row: assign_rank(row, row['A_rank'], row['B_rank'], db_name_bit_score), axis=1)
+        
+        # After using A_rank and B_rank for rank assignment, drop them as they should not be output
+        df_merged.drop(columns=['A_rank', 'B_rank'], inplace=True, errors='ignore')
+
 
     output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
     df_merged.to_csv(output_path, index=False)
