@@ -7,12 +7,11 @@ import argparse
 def fetch_descriptions(chunk, db_name, db_file):
     # Function to fetch descriptions based on IDs from the specified table
     table_name = f"{db_name}_description"
-    ids_column = "id"  # Column name for fetching IDs
+    ids_column = "id"
     descriptions_column = "description"
     
     # Establish connection to SQLite database
     conn = sqlite3.connect(db_file)
-    cursor = conn.cursor()
     
     # Adjust the column name to match the hits CSV file and process dbcan_id values if needed
     hits_ids_column = f"{db_name}_id"
@@ -20,41 +19,32 @@ def fetch_descriptions(chunk, db_name, db_file):
         chunk[hits_ids_column] = chunk[hits_ids_column].str.replace(".hmm", "")
     ids = chunk[hits_ids_column].unique()
     
-    # Construct and execute the query
+    # Construct the query based on the database name
+    query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     if db_name == "dbcan":
         query = f"SELECT {ids_column}, {descriptions_column}, ec FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
-    else:
-        query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
     
+    cursor = conn.cursor()
     cursor.execute(query, ids)
     results = cursor.fetchall()
     
-    # Map fetched descriptions to the chunk
+    # Update chunk with descriptions and process according to the database type
     if db_name == "dbcan":
+        # For dbcan, also fetch and format EC numbers
         descriptions_dict = {row[0]: (row[1], row[2]) for row in results}
+        chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[0])
+        chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: format_dbcan_EC(descriptions_dict.get(x, ("", ""))[1]))
     else:
+        # For other databases, just update with descriptions
         descriptions_dict = {row[0]: row[1] for row in results}
+        chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ""))
+        if db_name == "kegg":
+            # Additional processing for kegg
+            chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(extract_kegg_orthology)
+            chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(extract_kegg_EC)
     
-    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[0])
-    
-    # Directly use the 'ec' column for dbcan or format and extract EC numbers from description for kegg
-    if db_name == "dbcan":
-        # Format the EC numbers with "EC:" prefix and semicolon-separated for dbcan
-        chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: '; '.join([f"EC:{ec}" for ec in descriptions_dict.get(x, ("", ""))[1].split(',') if ec]) if descriptions_dict.get(x, ("", ""))[1] else "")
-    elif db_name == "kegg":
-        # Use the original description text to extract and format EC numbers for kegg
-        chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(format_and_extract_EC_numbers)
-    
-    # Extract KEGG orthology if needed (for KEGG database)
-    if db_name == "kegg":
-        chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(extract_kegg_orthology)
-    
-    # Close database connection
     conn.close()
-    
     return chunk
-
-
 
 def extract_kegg_orthology(description):
     # Extract KO from the description
@@ -65,19 +55,26 @@ def extract_kegg_orthology(description):
     else:
         return None
 
+def format_dbcan_EC(ec_string):
+    # Format EC numbers from the dbcan ec column with "EC:" prefix and semicolon separation
+    if ec_string:
+        ec_numbers = ec_string.split(',')  # Split the EC numbers string
+        formatted_ec_numbers = '; '.join([f"EC:{ec}" for ec in ec_numbers if ec])  # Add "EC:" prefix and join with semicolon
+        return formatted_ec_numbers
+    else:
+        return ""
 
-def format_and_extract_EC_numbers(description):
-    # Find the start of the EC number section in the description
+def extract_kegg_EC(description):
+    # Extract and format EC numbers from the description with "EC:" prefix and semicolon separation
     ec_start = description.find("[EC:")
     if ec_start != -1:
         ec_end = description.find("]", ec_start)
         ec_text = description[ec_start + 4:ec_end]  # Skip the "[EC:" part
-        # Extract EC numbers using regex and format them with "EC:" prefix
-        ec_numbers = re.findall(r'\b\d+\.\d+\.\d+\.\d+\b', ec_text)
-        # Format each EC number with "EC:" prefix and join with "; "
-        formatted_ec_numbers = '; '.join([f"EC:{ec}" for ec in ec_numbers])
+        ec_numbers = re.findall(r'\b\d+\.\d+\.\d+\.\d+\b', ec_text)  # Extract EC numbers using regex
+        formatted_ec_numbers = '; '.join([f"EC:{ec}" for ec in ec_numbers])  # Add "EC:" prefix and join with semicolon
         return formatted_ec_numbers
-
+    else:
+        return None
 
 def main():
     parser = argparse.ArgumentParser(description="Add descriptions from SQL database to hits file")
