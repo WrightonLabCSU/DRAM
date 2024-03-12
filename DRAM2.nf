@@ -780,7 +780,19 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 // This is just a catch-all for now - NEED to generate others for various options
-if( params.call && params.annotate && (params.distill_ecosystem !="" || params.distill_custom !="" || params.distill_topic !="" )){
+if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || params.distill_custom =="" || params.distill_topic =="" )){
+    log.info """
+            DRAM2 Nextflow
+            ===================================
+            fastas       : ${params.input_fasta}
+            outdir       : ${params.outdir}
+            threads      : ${params.threads}
+            annotate     : ${params.annotate ? 'true' : 'false'}
+            databases    : ${annotate_list}
+
+            """
+            .stripIndent()
+}else if( params.call && params.annotate && (params.distill_ecosystem !="" || params.distill_custom !="" || params.distill_topic !="" )){
     log.info """
             DRAM2 Nextflow
             ===================================
