@@ -1,5 +1,18 @@
 import pandas as pd
 import argparse
+import re
+
+def extract_ec_numbers(definition):
+    """
+    Extract EC numbers from the definition string and format them into a semi-colon separated list.
+    Each EC number is prefixed with 'EC:'.
+    """
+    # This regex pattern looks for EC numbers within square brackets and captures the numbers following "EC:"
+    ec_numbers = re.findall(r'\[EC:([^\]]+)\]', definition)
+    # Split any EC numbers found by spaces and reformat with 'EC:' prefix
+    all_ec_numbers = [f"EC:{ec.strip()}" for ec_block in ec_numbers for ec in ec_block.split()]
+    formatted_ec_numbers = '; '.join(all_ec_numbers)
+    return formatted_ec_numbers
 
 def calculate_strandedness(strandedness):
     """Calculate strandedness based on the strandedness information."""
@@ -74,14 +87,17 @@ def main():
     print("Loading ch_kofam_ko file...")
     ch_kofam_ko_df = pd.read_csv(args.ch_kofam_ko, sep="\t")
 
-    # Merge hits_df with ch_kofam_ko_df
-    merged_df = pd.merge(best_hits, ch_kofam_ko_df[['knum', 'definition']], left_on='target_id', right_on='knum', how='left')
+    # Extract and format EC numbers from the "definition" column
+    ch_kofam_ko_df['kofam_EC'] = ch_kofam_ko_df['definition'].apply(extract_ec_numbers)
 
-    # Keep only the relevant columns in the final output
-    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'definition']]
+    # Example of merging (assuming the rest of your script runs before this):
+    merged_df = pd.merge(best_hits, ch_kofam_ko_df[['knum', 'definition', 'kofam_EC']], left_on='target_id', right_on='knum', how='left')
+
+    # Keep only the relevant columns in the final output, including 'kofam_EC'
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'definition', 'kofam_EC']]
 
     # Rename the columns for clarity
-    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_description']
+    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_description', 'kofam_EC']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
