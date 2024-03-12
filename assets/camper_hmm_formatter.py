@@ -73,15 +73,21 @@ def main():
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Rename 'target_id' in hits_df to 'camper_id'
-    hits_df.rename(columns={'target_id': 'camper_id'}, inplace=True)
+    # Load HMM search results and gene locations CSV files
+    print("Loading HMM search results CSV file...")
+    hits_df = pd.read_csv(args.hits_csv)
 
-    # Load ch_camper_list file
-    print("Loading ch_camper_list file...")
-    ch_camper_list_df = pd.read_csv(args.ch_camper_list, sep="\t", names=['query_id', 'A_rank', 'B_rank', 'score_type', 'definition'], header=0)
+    print("Loading gene locations TSV file...")
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
 
-    # Merge hits_df with ch_camper_list_df
-    merged_df = pd.merge(hits_df, ch_camper_list_df, left_on='camper_id', right_on='query_id', how='left')
+    # Merge gene locations into the hits dataframe
+    hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
+
+    # Merge hits_df with descriptions_df, using 'camper_id' and 'query_id' for the merge
+    merged_df = pd.merge(hits_df, descriptions_df, left_on='camper_id', right_on='query_id', how='left')
+
+    # After merging, you might want to rename or drop the duplicated 'query_id' column from descriptions_df
+    merged_df.drop(columns=['query_id'], inplace=True)
 
     # Calculate camper_rank and clean EC numbers
     print("Calculating camper_rank and cleaning EC numbers...")
