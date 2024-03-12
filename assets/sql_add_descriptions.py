@@ -42,15 +42,18 @@ def fetch_descriptions(chunk, db_name, db_file):
         # Format the EC numbers with "EC:" prefix and semicolon-separated for dbcan
         chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: '; '.join([f"EC:{ec}" for ec in descriptions_dict.get(x, ("", ""))[1].split(',') if ec]) if descriptions_dict.get(x, ("", ""))[1] else "")
     elif db_name == "kegg":
-        # Extract and format EC numbers from description text for kegg
+        # Use the original description text to extract and format EC numbers for kegg
         chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(format_and_extract_EC_numbers)
-        # Extract KEGG orthology if needed
+    
+    # Extract KEGG orthology if needed (for KEGG database)
+    if db_name == "kegg":
         chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(extract_kegg_orthology)
     
     # Close database connection
     conn.close()
     
     return chunk
+
 
 
 def extract_kegg_orthology(description):
