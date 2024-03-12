@@ -47,6 +47,8 @@ def main():
     # Perform the merge
     merged_df = pd.merge(hits_df, ch_canthyd_ko_df[['hmm_name', 'A_rank', 'B_rank', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
+    merged_df.rename(columns={'target_id': 'cant_hyd_id'}, inplace=True)
+
     # Merge gene locations data to update start and stop positions
     merged_df = pd.merge(merged_df, gene_locs_df, on='query_id', how='left')
 
@@ -63,8 +65,9 @@ def main():
         'bitScore': 'cant_hyd_bitScore',
     }, inplace=True)
 
-    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'cant_hyd_score_rank', 'cant_hyd_bitScore', 'cant_hyd_description', 'cant_hyd_rank']]
-
+    # Specify the final output DataFrame with the correct column names, including 'cant_hyd_id'
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'cant_hyd_score_rank', 'cant_hyd_bitScore', 'cant_hyd_description', 'cant_hyd_rank', 'cant_hyd_id']]
+    
     final_output_df.to_csv(args.output, index=False)
 
     print("Process completed successfully!")
