@@ -56,45 +56,41 @@ def main():
     parser.add_argument("--output", type=str, help="Path to the formatted output file.")
     args = parser.parse_args()
 
-    # Load HMM search results and gene locations CSV files
+    # Load HMM search results CSV file
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
 
+    # Load gene locations TSV file
     print("Loading gene locations TSV file...")
     gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
 
     # Merge gene locations into the hits dataframe
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
 
-    # Calculate strandedness, bit score, and rank as before
+    # Load ch_camper_list file
+    print("Loading ch_camper_list file...")
+    descriptions_df = pd.read_csv(args.ch_camper_list, sep="\t")
+
+    # Rename 'target_id' in hits_df to 'camper_id' for clarity and consistency
+    hits_df.rename(columns={'target_id': 'camper_id'}, inplace=True)
+
+    # Calculate additional fields as before
     print("Calculating additional fields...")
     hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Load HMM search results and gene locations CSV files
-    print("Loading HMM search results CSV file...")
-    hits_df = pd.read_csv(args.hits_csv)
-
-    print("Loading gene locations TSV file...")
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
-
-    # Merge gene locations into the hits dataframe
-    hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
-
-    # Merge hits_df with descriptions_df, using 'camper_id' and 'query_id' for the merge
+    # Merge hits_df with descriptions_df
     merged_df = pd.merge(hits_df, descriptions_df, left_on='camper_id', right_on='query_id', how='left')
-
-    # After merging, you might want to rename or drop the duplicated 'query_id' column from descriptions_df
-    merged_df.drop(columns=['query_id'], inplace=True)
+    merged_df.drop(columns=['query_id'], inplace=True)  # Remove duplicate 'query_id' column after merge
 
     # Calculate camper_rank and clean EC numbers
     print("Calculating camper_rank and cleaning EC numbers...")
     merged_df['camper_rank'] = merged_df.apply(lambda row: assign_camper_rank(row, row['A_rank'], row['B_rank']), axis=1)
     merged_df['camper_EC'] = merged_df['definition'].apply(clean_ec_numbers)
 
-    # Keep only relevant columns and rename them
+    # Finalize output, ensuring columns are correctly named and ordered
     print("Finalizing output...")
     final_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'camper_id', 'score_rank', 'bitScore', 'camper_rank', 'camper_EC']
     final_output_df = merged_df[final_columns]
