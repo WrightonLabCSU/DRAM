@@ -3,7 +3,7 @@ process ADD_TAXA {
     errorStrategy 'finish'
 
     input:
-    file( combined_annotations, stageAs: "input-raw-annotations.tsv" )
+    path( combined_annotations, stageAs: "input-raw-annotations.tsv" )
     file( ch_taxa )
 
     output:
