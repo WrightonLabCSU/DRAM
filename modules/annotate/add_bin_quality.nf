@@ -14,6 +14,7 @@ process ADD_BIN_QUALITY {
     #!/usr/bin/env python
 
     import pandas as pd
+    import numpy as np
 
     # Load combined_annotations.tsv
     combined_annotations_path = "${combined_annotations}"
@@ -36,11 +37,31 @@ process ADD_BIN_QUALITY {
     # Replace "." with "-" in the first column of checkm TSV
     checkm_data[first_column_name] = checkm_data[first_column_name].str.replace(".", "-")
 
-    # Merge data based on the sample column
-    merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on=first_column_name, how="left")
+    # Check for existing Completeness and Contamination columns in combined_annotations
+    columns_to_merge = ["Completeness", "Contamination"]
+    for col in columns_to_merge:
+        if col in combined_annotations.columns:
+            # Check if all values are NaN in this column
+            if combined_annotations[col].isnull().all():
+                # Prepare to replace NaN values with checkm_data values
+                continue
+            else:
+                # Remove the column from the list of columns to merge from checkm_data
+                columns_to_merge.remove(col)
 
-    # Drop the additional first column
-    merged_data.drop(columns=[first_column_name], inplace=True)
+    # Adjust checkm_data to include only the necessary columns
+    checkm_data_filtered = checkm_data[[first_column_name] + columns_to_merge]
+
+    # Merge data based on the sample column
+    merged_data = pd.merge(combined_annotations, checkm_data_filtered, left_on="sample", right_on=first_column_name, how="left")
+
+    # Drop the additional first column if it's not the sample column
+    if first_column_name != "sample":
+        merged_data.drop(columns=[first_column_name], inplace=True)
+
+    # Fill NaN values for merged columns if they were originally present
+    if len(columns_to_merge) > 0:
+        merged_data.update(checkm_data[columns_to_merge])
 
     # Save the updated data to annots_bin_quality.tsv
     output_path = "raw-annotations.tsv"

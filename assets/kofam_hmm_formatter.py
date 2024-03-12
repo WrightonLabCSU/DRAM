@@ -35,9 +35,9 @@ def mark_best_hit_based_on_rank(df):
     return df
 
 def main():
-    parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
+    parser = argparse.ArgumentParser(description="Format HMM search results.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
-    parser.add_argument("--ch_camper_list", type=str, help="Path to the ch_camper_list file.")
+    parser.add_argument("--ch_kofam_ko", type=str, help="Path to the ch_kofam_ko file.")
     parser.add_argument("--gene_locs", type=str, help="Path to the gene locations TSV file.")
     parser.add_argument("--output", type=str, help="Path to the formatted output file.")
     args = parser.parse_args()
@@ -46,41 +46,42 @@ def main():
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
 
+    # Calculate strandedness
+    print("Calculating strandedness...")
+    hits_df['strandedness'] = hits_df['strandedness'].apply(calculate_strandedness)
+
     # Load gene locations TSV file
     print("Loading gene locations TSV file...")
     gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
 
-    # Merge gene locations into the hits dataframe
+    # Merge hits_df with gene_locs_df
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
 
-    # Load ch_camper_list file
-    print("Loading ch_camper_list file...")
-    descriptions_df = pd.read_csv(args.ch_camper_list, sep="\t")
-
-    # Rename 'target_id' in hits_df to 'camper_id' for clarity and consistency
-    hits_df.rename(columns={'target_id': 'camper_id'}, inplace=True)
-
-    # Calculate additional fields as before
-    print("Calculating additional fields...")
-    hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
+    # Preprocess HMM search results
+    print("Processing HMM search results...")
+    hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
-    # Merge hits_df with descriptions_df
-    merged_df = pd.merge(hits_df, descriptions_df, left_on='camper_id', right_on='query_id', how='left')
-    merged_df.drop(columns=['query_id'], inplace=True)  # Remove duplicate 'query_id' column after merge
+    # Find the best hit for each unique query_id
+    best_hits = hits_df.groupby('query_id').apply(find_best_kofam_hit).reset_index(drop=True)
 
-    # Calculate camper_rank and clean EC numbers
-    print("Calculating camper_rank and cleaning EC numbers...")
-    merged_df['camper_rank'] = merged_df.apply(lambda row: assign_camper_rank(row, row['A_rank'], row['B_rank']), axis=1)
-    merged_df['camper_EC'] = merged_df['definition'].apply(clean_ec_numbers)
+    # Mark the best hit for each unique query_id based on score_rank
+    best_hits = best_hits.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-    # Finalize output, ensuring columns are correctly named and ordered
-    print("Finalizing output...")
-    final_columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'camper_id', 'score_rank', 'bitScore', 'camper_rank', 'camper_EC']
-    final_output_df = merged_df[final_columns]
-    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'camper_id', 'camper_score_rank', 'camper_bitScore', 'camper_rank', 'camper_EC']
+    # Load ch_kofam_ko file
+    print("Loading ch_kofam_ko file...")
+    ch_kofam_ko_df = pd.read_csv(args.ch_kofam_ko, sep="\t")
+
+    # Merge hits_df with ch_kofam_ko_df
+    merged_df = pd.merge(best_hits, ch_kofam_ko_df[['knum', 'definition']], left_on='target_id', right_on='knum', how='left')
+
+    # Keep only the relevant columns in the final output
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'definition']]
+
+    # Rename the columns for clarity
+    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_definition']
 
     # Save the modified DataFrame to CSV
     final_output_df.to_csv(args.output, index=False)
