@@ -36,34 +36,31 @@ process ADD_BIN_QUALITY {
     # Replace "." with "-" in the first column of checkm TSV
     checkm_data[first_column_name] = checkm_data[first_column_name].str.replace(".", "-")
 
-    # Check if "Completeness" and "Contamination" columns exist and have non-null values in combined_annotations
-    if "Completeness" in combined_annotations.columns and "Contamination" in combined_annotations.columns:
-        # Check if all values are NaN in these columns
-        if combined_annotations["Completeness"].isnull().all() and combined_annotations["Contamination"].isnull().all():
-            # If both columns are empty, prepare to replace them with checkm_data values
-            completeness_contamination_to_merge = True
-        else:
-            # If any of the columns have non-null values, do not merge from checkm_data
-            completeness_contamination_to_merge = False
-    else:
-        # If either or both columns don't exist, prepare to add them
-        completeness_contamination_to_merge = True
+    # Ensure "Completeness" and "Contamination" information is updated only if missing in combined_annotations
+    # Merge data based on the sample column, prioritizing existing data in combined_annotations
+    merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on=first_column_name, how="left")
 
-    if completeness_contamination_to_merge:
-        # Merge data based on the sample column
-        merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on=first_column_name, how="left")
-        # Drop the additional first column if it's not the sample column
-        if first_column_name != "sample":
-            merged_data.drop(columns=[first_column_name], inplace=True)
-    else:
-        # If Completeness and Contamination should not be merged, use combined_annotations directly
-        merged_data = combined_annotations
+    # For each column in checkm_columns (excluding the matching column), update only if NaN in combined_annotations
+    for col in ["Completeness", "Contamination"]:
+        # Use combined_annotations' values if present, otherwise fill in from checkm_data
+        if col in combined_annotations.columns:
+            merged_data[col] = merged_data[col + "_x"].combine_first(merged_data[col + "_y"])
+        else:  # If the column doesn't exist in combined_annotations, simply use checkm_data's values
+            merged_data[col] = merged_data[col + "_y"]
+
+        # Cleanup temporary merge columns
+        merged_data.drop(columns=[col + "_x", col + "_y"], inplace=True, errors='ignore')
+
+    # Ensure the first column from checkm_data is dropped if it was merged and is no longer needed
+    if first_column_name != "sample":
+        merged_data.drop(columns=[first_column_name], inplace=True, errors='ignore')
 
     # Save the updated data to raw-annotations.tsv
     output_path = "raw-annotations.tsv"
     merged_data.to_csv(output_path, sep='\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
+
 
     """
 }
