@@ -21,36 +21,27 @@ process ADD_BIN_QUALITY {
 
     # Load checkm TSV
     checkm_path = "${ch_bin_quality}"
-    checkm_data = pd.read_csv(checkm_path, sep='\t')
+    checkm_data = pd.read_csv(checkm_path, sep='\t', dtype=str)  # Ensure all data is read as string to avoid dtype issues
 
-    # Identify the first column name dynamically, assuming it's for matching samples
-    first_column_name = checkm_data.columns[0]
-
-    # Extract relevant columns from checkm_data
-    checkm_columns = [first_column_name, "Completeness", "Contamination"]
-    checkm_data = checkm_data[checkm_columns]
-
-    # Replace "." with "-" in the sample column for comparison
+    # Replace "." with "-" in the sample column for consistent naming
     combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
-    checkm_data[first_column_name] = checkm_data[first_column_name].str.replace(".", "-")
+    checkm_data[checkm_data.columns[0]] = checkm_data[checkm_data.columns[0]].str.replace(".", "-")
 
-    # Merge data based on the sample column, prioritizing existing data in combined_annotations
-    merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on=first_column_name, how="left", suffixes=('', '_checkm'))
+    # Merge while keeping the 'rank' column intact
+    merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on=checkm_data.columns[0], how="left")
 
-    # Cleanup: Drop the additional first column from checkm_data and any temporary merge columns
-    merged_data.drop(columns=[first_column_name, 'Completeness_checkm', 'Contamination_checkm'], inplace=True, errors='ignore')
+    # Fill in "Completeness" and "Contamination" from checkm_data if they are NaN in combined_annotations
+    for col in ["Completeness", "Contamination"]:
+        if col in merged_data.columns:
+            merged_data[col] = merged_data[col].fillna(merged_data[f'{col}_y'])
+            merged_data.drop([f'{col}_y'], axis=1, inplace=True, errors='ignore')
 
-    # Update "Completeness" and "Contamination" only where NaN in combined_annotations
-    for col in ['Completeness', 'Contamination']:
-        if f'{col}_checkm' in merged_data:
-            merged_data[col] = merged_data[col].fillna(merged_data[f'{col}_checkm'])
+    # Clean up any temporary columns and ensure 'rank' column is not affected
+    merged_data.drop(list(merged_data.filter(regex='_x$')), axis=1, inplace=True, errors='ignore')
+    merged_data.drop(list(merged_data.filter(regex='_y$')), axis=1, inplace=True, errors='ignore')
 
-    # Save the updated data to raw-annotations.tsv
-    output_path = "raw-annotations.tsv"
-    merged_data.to_csv(output_path, sep='\t', index=False)
-
-    print(f"Updated annotations saved to {output_path}")
-
+    # Save the updated data
+    merged_data.to_csv("raw-annotations.tsv", sep='\t', index=False)
 
     """
 }

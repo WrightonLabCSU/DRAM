@@ -21,25 +21,22 @@ process ADD_TAXA {
 
     # Load ch_taxa TSV
     ch_taxa_path = "${ch_taxa}"
-    ch_taxa_data = pd.read_csv(ch_taxa_path, sep='\t')
+    ch_taxa_data = pd.read_csv(ch_taxa_path, sep='\t', dtype=str)  # Ensure all data is read as string to avoid dtype issues
 
-    # Prepare for comparison adjustments
+    # Replace "." with "-" for consistency
     combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
     ch_taxa_data["user_genome"] = ch_taxa_data["user_genome"].str.replace(".", "-")
 
-    # Merge taxonomy data if "taxonomy" column doesn't exist or is entirely null
-    if "taxonomy" not in combined_annotations.columns or combined_annotations["taxonomy"].isnull().all():
-        merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left", suffixes=('', '_taxa'))
-        merged_data.drop(columns=['user_genome'], inplace=True, errors='ignore')
-        merged_data.rename(columns={'classification': 'taxonomy'}, inplace=True)
-    else:
-        merged_data = combined_annotations.copy()
+    # Merge taxonomy, ensuring 'rank' is preserved
+    merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left", suffixes=('', '_taxa'))
 
-    # Save the updated data to raw-annotations.tsv
-    output_path = "raw-annotations.tsv"
-    merged_data.to_csv(output_path, sep='\t', index=False)
+    # Update 'taxonomy' with 'classification' if it's NaN in the original data
+    if 'taxonomy' in merged_data and 'classification' in merged_data:
+        merged_data['taxonomy'] = merged_data['taxonomy'].fillna(merged_data['classification'])
+        merged_data.drop(['classification', 'user_genome'], axis=1, inplace=True, errors='ignore')
 
-    print(f"Updated annotations saved to {output_path}")
+    # Save the updated data
+    merged_data.to_csv("raw-annotations.tsv", sep='\t', index=False)
 
     """
 }
