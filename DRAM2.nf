@@ -1160,7 +1160,7 @@ workflow {
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
 
-        if( params.generate_gff || params.generate_genbank ){
+        if( params.generate_gff || params.generate_gbk ){
             GENERATE_GFF_GENBANK( ch_collected_fna, params.database_list, ch_final_annots, ch_generate_gff_gbk )
         }
 
