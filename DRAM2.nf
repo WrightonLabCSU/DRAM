@@ -100,7 +100,7 @@ include { COMBINE_ANNOTATIONS                           } from './modules/annota
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
 include { ADD_ANNOTATIONS                               } from './modules/annotate/add_annotations.nf'
 include { MERGE_ANNOTATIONS                             } from './modules/annotate/merge_annotations.nf'
-
+include { GENERATE_GFF_GENBANK                          } from './modules/annotate/generate_gff_gbk.nf'
 
 include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
 include { DISTILL                                       } from './modules/distill/distill.nf'
@@ -348,6 +348,8 @@ if( params.annotate ){
     ch_mmseqs_rbh_script = file(params.mmseqs_rbh_filter_script)
 
     ch_called_genes_loc_script_faa = file(params.called_genes_loc_script_faa)
+    
+    ch_generate_gff_gbk = file(params.ch_generate_gff_gbk_script)
 
     index_mmseqs = "0"
 
@@ -857,11 +859,17 @@ workflow {
         }
 
         CALL_GENES ( ch_fasta, ch_generate_gene_locs_script )
-        called_genes = CALL_GENES.out.prodigal_fna
+        ch_called_genes = CALL_GENES.out.prodigal_fna
         ch_called_proteins = CALL_GENES.out.prodigal_faa
         ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv
         ch_gene_gff = CALL_GENES.out.prodigal_gff
         ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta
+
+        // Collect all individual fasta to pass to quast
+        Channel.empty()
+            .mix( ch_called_genes  )
+            .collect()
+            .set { ch_collected_fna }
 
         // Collect all individual fasta to pass to quast
         Channel.empty()
@@ -1150,6 +1158,10 @@ workflow {
             ch_final_annots = ch_updated_taxa_annots
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+        }
+
+        if( params.generate_gff || params.generate_genbank ){
+            GENERATE_GFF_GENBANK( ch_collected_fna, params.database_list, ch_final_annots, ch_generate_gff_gbk )
         }
 
     }

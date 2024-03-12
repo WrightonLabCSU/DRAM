@@ -38,23 +38,7 @@ process MMSEQS_SEARCH {
         # Convert results to BLAST outformat 6
         mmseqs convertalis query_database/${sample}.mmsdb ${db_name}.mmsdb  mmseqs_out/${sample}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_${db_name}.tsv --threads ${params.threads}
 
-        if [ "${db_name}" == "kegg" ]; then
-            # Perform Reverse Best Hit search
-            mmseqs search ${db_name}.mmsdb query_database/${sample}.mmsdb  mmseqs_out/${sample}_rbh_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
-
-            # Filter Reverse Best Hit to only best hit
-            mmseqs filterdb mmseqs_out/${sample}_rbh_${db_name}.mmsdb mmseqs_out/${sample}_${db_name}_rbh_tophit.mmsdb --extract-lines 1
-
-            # Filter Reverse Best Hit  to only hits with minimum bit score
-            mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${rbh_bit_score_threshold} --threads ${params.threads} mmseqs_out/${sample}_${db_name}_rbh_tophit.mmsdb mmseqs_out/${sample}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb
-
-            # Convert Reverse Best Hit  results to BLAST outformat 6
-            mmseqs convertalis ${db_name}.mmsdb query_database/${sample}.mmsdb mmseqs_out/${sample}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv --threads ${params.threads}
-        
-            # Need additional processing for KEGG RBH
-            python ${ch_RBH_filter_script} --forward "mmseqs_out/${sample}_mmseqs_${db_name}.tsv" --reverse "mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv" --output "mmseqs_out/${sample}_mmseqs_rbh_${db_name}_combined.tsv"
-            mv mmseqs_out/${sample}_mmseqs_rbh_${db_name}_combined.tsv mmseqs_out/${sample}_mmseqs_${db_name}.tsv
-        fi
+        # if statement for kegg rbh goes here
     elif [ "${db_name}" == "pfam" ]; then
         # Do profile search:
         mmseqs search query_database/${sample}.mmsdb ${db_name}.mmspro mmseqs_out/${sample}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
@@ -75,4 +59,25 @@ process MMSEQS_SEARCH {
     
     """
 }
+
+/*  Code for kegg RBH - this mayt or may not work, it takes FOREVER to do the reverse search... will test later on riviera
+        if [ "${db_name}" == "kegg" ]; then
+            # Perform Reverse Best Hit search
+            mmseqs search ${db_name}.mmsdb query_database/${sample}.mmsdb  mmseqs_out/${sample}_rbh_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+
+            # Filter Reverse Best Hit to only best hit
+            mmseqs filterdb mmseqs_out/${sample}_rbh_${db_name}.mmsdb mmseqs_out/${sample}_${db_name}_rbh_tophit.mmsdb --extract-lines 1
+
+            # Filter Reverse Best Hit  to only hits with minimum bit score
+            mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${rbh_bit_score_threshold} --threads ${params.threads} mmseqs_out/${sample}_${db_name}_rbh_tophit.mmsdb mmseqs_out/${sample}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb
+
+            # Convert Reverse Best Hit  results to BLAST outformat 6
+            mmseqs convertalis ${db_name}.mmsdb query_database/${sample}.mmsdb mmseqs_out/${sample}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv --threads ${params.threads}
+        
+            # Need additional processing for KEGG RBH
+            python ${ch_RBH_filter_script} --forward "mmseqs_out/${sample}_mmseqs_${db_name}.tsv" --reverse "mmseqs_out/${sample}_mmseqs_rbh_${db_name}.tsv" --output "mmseqs_out/${sample}_mmseqs_rbh_${db_name}_combined.tsv"
+            mv mmseqs_out/${sample}_mmseqs_rbh_${db_name}_combined.tsv mmseqs_out/${sample}_mmseqs_${db_name}.tsv
+        fi
+
+*/
 
