@@ -36,24 +36,24 @@ def main():
     gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
-    # Ensure the first column in hits_df is named 'cant_hyd_id'
-    hits_df.rename(columns={hits_df.columns[0]: 'cant_hyd_id'}, inplace=True)
+    # Rename the first column of ch_canthyd_ko_df to 'target_id' if it's named differently
+    ch_canthyd_ko_df.rename(columns={ch_canthyd_ko_df.columns[0]: 'target_id'}, inplace=True)
 
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
     hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
 
-    # Prepare ch_canthyd_ko_df for merge
-    ch_canthyd_ko_df.rename(columns={'hmm_name': 'cant_hyd_id'}, inplace=True)
+    # Merge hits_df with ch_canthyd_ko_df on 'target_id'
+    merged_df = pd.merge(hits_df, ch_canthyd_ko_df, on='target_id', how='left')
 
-    # Perform the merge
-    merged_df = pd.merge(hits_df, ch_canthyd_ko_df, on='cant_hyd_id', how='left')
+    # Proceed with merging gene locations data and other operations
     merged_df = pd.merge(merged_df, gene_locs_df, on='query_id', how='left')
 
     merged_df['cant_hyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
     merged_df.rename(columns={
         'score_rank': 'cant_hyd_score_rank',
         'bitScore': 'cant_hyd_bitScore',
+        'target_id': 'cant_hyd_id',
     }, inplace=True)
 
     if 'description' in merged_df.columns:
