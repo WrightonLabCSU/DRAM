@@ -33,19 +33,12 @@ process ADD_TAXA {
     taxonomy_to_merge = "taxonomy" not in combined_annotations.columns or combined_annotations["taxonomy"].isnull().all()
 
     if taxonomy_to_merge:
-        # Merge taxonomy data based on the sample column
-        merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left")
-        # Drop the "user_genome" column after merge
-        merged_data.drop(columns=["user_genome"], inplace=True)
-        # If the "taxonomy" column did not exist before, or if it only contained null values, rename "classification" to "taxonomy"
-        if "taxonomy" not in combined_annotations.columns or combined_annotations["taxonomy"].isnull().all():
-            merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
-        else:
-            # If "taxonomy" existed and had valid values, keep the original "taxonomy" column and drop the "classification" column from the merge
-            merged_data.drop(columns=["classification"], inplace=True)
+        merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left", suffixes=('', '_taxa'))
+        if "classification" in merged_data:
+            merged_data['taxonomy'] = merged_data['taxonomy'].fillna(merged_data['classification'])
+            merged_data.drop(columns=['user_genome', 'classification'], inplace=True)
     else:
-        # If taxonomy should not be merged, use combined_annotations directly
-        merged_data = combined_annotations
+        merged_data = combined_annotations.copy()
 
     # Ensure the "rank" column is correctly preserved if it was already present
     if 'rank' in combined_annotations.columns:
