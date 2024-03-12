@@ -16,17 +16,14 @@ def extract_samples_and_paths(annotation_files):
 def assign_rank(row):
     # Define default rank as 'E'
     rank = 'E'
-
     # Check for conditions that would assign a higher rank
-    if 'kegg_bitScore' in row and row['kegg_bitScore'] > 350:
+    if row.get('kegg_bitScore', 0) > 350:
         rank = 'A'
-    elif 'uniref_bitScore' in row and row['uniref_bitScore'] > 350:
+    elif row.get('uniref_bitScore', 0) > 350:
         rank = 'B'
-    elif (('kegg_bitScore' in row and row['kegg_bitScore'] > 60) or 
-        ('uniref_bitScore' in row and row['uniref_bitScore'] > 60)):
+    elif row.get('kegg_bitScore', 0) > 60 or row.get('uniref_bitScore', 0) > 60:
         rank = 'C'
-    elif any(row.get(db + '_bitScore', 0) > 60 for db in ['pfam', 'dbcan', 'merops']) and \
-        all(row.get(db + '_bitScore', 0) <= 60 for db in ['kegg', 'uniref']):
+    elif any(row.get(db + '_bitScore', 0) > 60 for db in ['pfam', 'dbcan', 'merops']) and all(row.get(db + '_bitScore', 0) <= 60 for db in ['kegg', 'uniref']):
         rank = 'D'
     # If there are any significant hits to VOGDB or no hits to any database, it remains 'E'
     
