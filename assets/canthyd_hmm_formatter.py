@@ -11,7 +11,7 @@ def calculate_rank(row):
 
 def calculate_strandedness(row):
     """Calculate strandedness based on the strandedness information."""
-    return row['strandedness']  # Assuming 'strandedness' is a column in the DataFrame
+    return row['strandedness']
 
 def assign_canthyd_rank(row, a_rank, b_rank):
     """Assign canthyd rank based on bit score and provided thresholds."""
@@ -19,7 +19,7 @@ def assign_canthyd_rank(row, a_rank, b_rank):
         return None
     elif row['bitScore'] >= a_rank:
         return 'A'
-    elif row['bitScore'] >= b_rank:
+    elif row['bit_score'] >= b_rank:
         return 'B'
     else:
         return None
@@ -36,38 +36,32 @@ def main():
     gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
-    hits_df['target_id'] = hits_df['target_id'].str.replace(r'.hmm', '', regex=True)
+    # Ensure the first column in hits_df is named 'cant_hyd_id'
+    hits_df.rename(columns={hits_df.columns[0]: 'cant_hyd_id'}, inplace=True)
+
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
-
-    # Calculate strandedness
-    print("Calculating strandedness...")
     hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
 
+    # Prepare ch_canthyd_ko_df for merge
+    ch_canthyd_ko_df.rename(columns={'hmm_name': 'cant_hyd_id'}, inplace=True)
+
     # Perform the merge
-    merged_df = pd.merge(hits_df, ch_canthyd_ko_df[['hmm_name', 'A_rank', 'B_rank', 'description']], left_on='target_id', right_on='hmm_name', how='left')
-
-    merged_df.rename(columns={'target_id': 'cant_hyd_id'}, inplace=True)
-
-    # Merge gene locations data to update start and stop positions
+    merged_df = pd.merge(hits_df, ch_canthyd_ko_df, on='cant_hyd_id', how='left')
     merged_df = pd.merge(merged_df, gene_locs_df, on='query_id', how='left')
 
     merged_df['cant_hyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
-    if 'description' in merged_df.columns:
-        merged_df['cant_hyd_description'] = merged_df['description']
-    else:
-        print("Warning: 'description' column not found after merge. Check 'ch_canthyd_ko' file structure.")
-        merged_df['cant_hyd_description'] = 'No description available'
-
-    # Rename columns in merged_df before creating final_output_df
     merged_df.rename(columns={
         'score_rank': 'cant_hyd_score_rank',
         'bitScore': 'cant_hyd_bitScore',
     }, inplace=True)
 
-    # Specify the final output DataFrame with the correct column names, including 'cant_hyd_id'
+    if 'description' in merged_df.columns:
+        merged_df['cant_hyd_description'] = merged_df['description']
+    else:
+        merged_df['cant_hyd_description'] = 'No description available'
+
     final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'cant_hyd_score_rank', 'cant_hyd_bitScore', 'cant_hyd_description', 'cant_hyd_rank', 'cant_hyd_id']]
-    
     final_output_df.to_csv(args.output, index=False)
 
     print("Process completed successfully!")
