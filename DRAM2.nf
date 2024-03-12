@@ -912,7 +912,7 @@ workflow {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
     if( params.merge_annotations != "" ){
-        MERGE_ANNOTATIONS(params.merge_annotations)
+        MERGE_ANNOTATIONS( params.merge_annotations )
     }
 
     /*
@@ -987,7 +987,7 @@ workflow {
 
             ch_combined_hits_locs_dbcan = ch_dbcan_parsed.join(ch_gene_locs)
             DBCAN_HMM_FORMATTER ( ch_combined_hits_locs_dbcan, params.dbcan_top_hit, params.dbcan_name, ch_dbcan_formatter, ch_sql_parser, ch_sql_descriptions_db )
-            ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.dbcan_formatted_hits
+            ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.sql_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
         }
