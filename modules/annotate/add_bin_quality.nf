@@ -3,7 +3,7 @@ process ADD_BIN_QUALITY {
     errorStrategy 'finish'
 
     input:
-    path( combined_annotations, stageAs: "input-raw-annotations.tsv" )
+    path( combined_annotations )
     file( ch_bin_quality )
 
     output:
