@@ -60,12 +60,15 @@ def combine_annotations(annotation_files, output_file):
     # Reorder the columns according to the new requirements
     combined_data = organize_columns(combined_data)
 
+    # Sort the DataFrame by 'query_id' in ascending order
+    combined_data = combined_data.sort_values(by='query_id', ascending=True)
+
     # Save the combined DataFrame to the output file
     combined_data.to_csv(output_file, index=False, sep='\t')
 
 if __name__ == "__main__":
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', 'stop_position', and including 'strandedness'. Prioritize 'kegg' database columns if present.")
+    parser = argparse.ArgumentParser(description="Combine annotation files preserving unique combinations of 'query_id', 'start_position', 'stop_position', including 'strandedness', and prioritizing 'kegg' database columns if present. Sort by 'query_id'.")
     parser.add_argument("--annotations", nargs='+', help="List of annotation files and sample names.")
     parser.add_argument("--output", help="Output file path for the combined annotations.")
     args = parser.parse_args()
@@ -73,6 +76,6 @@ if __name__ == "__main__":
     # Combine annotations
     if args.annotations and args.output:
         combine_annotations(args.annotations, args.output)
-        logging.info(f"Combined annotations saved to {args.output}")
+        logging.info(f"Combined annotations saved to {args.output} and sorted by 'query_id'.")
     else:
         logging.error("Missing required arguments. Use --help for usage information.")

@@ -13,7 +13,6 @@ def calculate_strandedness(row):
     """Calculate strandedness based on the strandedness information."""
     return row['strandedness']  # Assuming 'strandedness' is a column in the DataFrame
 
-
 def assign_canthyd_rank(row, a_rank, b_rank):
     """Assign canthyd rank based on bit score and provided thresholds."""
     if pd.isna(row['bitScore']):
@@ -45,26 +44,26 @@ def main():
     print("Calculating strandedness...")
     hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
 
-    # Perform the merge as you've described
+    # Perform the merge
     merged_df = pd.merge(hits_df, ch_canthyd_ko_df[['hmm_name', 'A_rank', 'B_rank', 'description']], left_on='target_id', right_on='hmm_name', how='left')
 
     # Merge gene locations data to update start and stop positions
     merged_df = pd.merge(merged_df, gene_locs_df, on='query_id', how='left')
 
-    merged_df['canthyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
+    merged_df['cant_hyd_rank'] = merged_df.apply(lambda row: assign_canthyd_rank(row, row['A_rank'], row['B_rank']), axis=1)
     if 'description' in merged_df.columns:
-        merged_df['canthyd_description'] = merged_df['description']
+        merged_df['cant_hyd_description'] = merged_df['description']
     else:
         print("Warning: 'description' column not found after merge. Check 'ch_canthyd_ko' file structure.")
-        merged_df['canthyd_description'] = 'No description available'
+        merged_df['cant_hyd_description'] = 'No description available'
 
     # Rename columns in merged_df before creating final_output_df
     merged_df.rename(columns={
-        'score_rank': 'canthyd_score_rank',
-        'bitScore': 'canthyd_bitScore',
+        'score_rank': 'cant_hyd_score_rank',
+        'bitScore': 'cant_hyd_bitScore',
     }, inplace=True)
 
-    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description', 'canthyd_rank']]
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'cant_hyd_score_rank', 'cant_hyd_bitScore', 'cant_hyd_description', 'cant_hyd_rank']]
 
     final_output_df.to_csv(args.output, index=False)
 
