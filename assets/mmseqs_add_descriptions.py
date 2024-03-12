@@ -15,48 +15,41 @@ def assign_rank(row, a_rank, b_rank, db_name_bit_score):
 def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path):
     print(f"Starting processing for sample: {sample}, database: {db_name}")
 
-    # Load the MMseqs output
     mmseqs_path = f"mmseqs_out/{sample}_mmseqs_{db_name}.tsv"
     print(f"Loading MMseqs output from {mmseqs_path}")
     
-    # Load gene locations
     df_gene_locs = pd.read_csv(gene_locs_path, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
     print("Gene locations loaded. Sample rows:")
     print(df_gene_locs.head())
     
-    # Read the MMseqs file with the necessary columns
     df_mmseqs = pd.read_csv(mmseqs_path, sep='\t', header=None, usecols=[0, 1, 11])
     df_mmseqs.columns = ['query_id', f'{db_name}_id', f'{db_name}_bitScore']
     print("MMseqs data loaded and columns renamed. Sample rows:")
     print(df_mmseqs.head())
     
-    # Merge MMseqs output with gene locations based on 'query_id'
     df_merged = pd.merge(df_mmseqs, df_gene_locs, on='query_id', how='left')
     print("Merged MMseqs output with gene locations. Sample rows:")
     print(df_merged.head())
 
-    # Load the descriptions file if it's provided and check its contents
     if descriptions_path != "NULL":
         df_descriptions = pd.read_csv(descriptions_path, sep='\t')
-        # Dynamically rename the first column to match the database ID column in df_mmseqs
+
+        # Rename 'definition' to 'description' and prefix other columns, excluding 'A_rank' and 'B_rank'
+        df_descriptions.rename(columns={'definition': 'description'}, inplace=True)
+        df_descriptions = df_descriptions.rename(columns={col: f"{db_name}_{col}" for col in df_descriptions.columns if col not in ['A_rank', 'B_rank', f'{db_name}_id']})
+
+        # Ensure the first column is renamed to match db_name_id for merging
         first_column = df_descriptions.columns[0]
         df_descriptions.rename(columns={first_column: f'{db_name}_id'}, inplace=True)
-        
-        # Proceed with descriptions merge, rank assignment, and other processing
-        if 'A_rank' in df_descriptions.columns and 'B_rank' in df_descriptions.columns:
-            db_name_bit_score = f"{db_name}_bitScore"
-            # Merge descriptions DataFrame
-            df_merged = pd.merge(df_merged, df_descriptions, on=f'{db_name}_id', how='left')
-            
-            # Assign ranks based on A_rank and B_rank thresholds
-            df_merged[f'{db_name}_rank'] = df_merged.apply(lambda row: assign_rank(row, row['A_rank'], row['B_rank'], db_name_bit_score), axis=1)
-            
-            # Clean up: Drop A_rank and B_rank columns if you don't need them anymore
-            df_merged.drop(columns=['A_rank', 'B_rank'], inplace=True)
-        else:
-            print("Descriptions do not contain 'A_rank' and 'B_rank', skipping rank assignment.")
 
-    # Save the merged DataFrame to CSV
+        df_merged = pd.merge(df_merged, df_descriptions, on=f'{db_name}_id', how='left')
+
+        db_name_bit_score = f"{db_name}_bitScore"
+        df_merged[f'{db_name}_rank'] = df_merged.apply(lambda row: assign_rank(row, row[f'{db_name}_A_rank'], row[f'{db_name}_B_rank'], db_name_bit_score), axis=1)
+        
+        # Drop A_rank and B_rank columns if present
+        df_merged.drop(columns=[f'{db_name}_A_rank', f'{db_name}_B_rank'], inplace=True, errors='ignore')
+
     output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
     df_merged.to_csv(output_path, index=False)
     print("Merged DataFrame saved to", output_path)
@@ -65,7 +58,7 @@ if __name__ == "__main__":
     sample = sys.argv[1]
     db_name = sys.argv[2]
     descriptions_path = sys.argv[3]
-    bit_score_threshold = float(sys.argv[4])  # Ensure threshold is a float
-    gene_locs_path = sys.argv[5]  # Path to the gene locations file
+    bit_score_threshold = float(sys.argv[4])
+    gene_locs_path = sys.argv[5]
 
     main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path)
