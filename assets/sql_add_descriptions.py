@@ -20,21 +20,31 @@ def fetch_descriptions(chunk, db_name, db_file):
         chunk[hits_ids_column] = chunk[hits_ids_column].str.replace(".hmm", "")
     ids = chunk[hits_ids_column].unique()
     
-    # Construct the query
-    query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
+    # Construct and execute the query
+    if db_name == "dbcan":
+        query = f"SELECT {ids_column}, {descriptions_column}, ec FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
+    else:
+        query = f"SELECT {ids_column}, {descriptions_column} FROM {table_name} WHERE {ids_column} IN ({','.join(['?'] * len(ids))})"
+    
     cursor.execute(query, ids)
     results = cursor.fetchall()
     
-    # Map fetched descriptions (and EC numbers for dbcan) to the chunk
-    descriptions_dict = {row[0]: row[1] for row in results}
-    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ""))
+    # Map fetched descriptions to the chunk
+    if db_name == "dbcan":
+        descriptions_dict = {row[0]: (row[1], row[2]) for row in results}
+    else:
+        descriptions_dict = {row[0]: row[1] for row in results}
     
-    # Format and extract EC numbers for dbcan and kegg
-    if db_name in ["dbcan", "kegg"]:
-        chunk[f"{db_name}_EC"] = chunk[f"{db_name}_description"].apply(format_and_extract_EC_numbers)
+    chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[0])
     
-    # Special processing for "kegg" database to extract orthology
-    if db_name == "kegg":
+    # Directly use the 'ec' column for dbcan or format and extract EC numbers from description for kegg
+    if db_name == "dbcan":
+        # Format the EC numbers with "EC:" prefix and semicolon-separated for dbcan
+        chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: '; '.join([f"EC:{ec}" for ec in descriptions_dict.get(x, ("", ""))[1].split(',') if ec]) if descriptions_dict.get(x, ("", ""))[1] else "")
+    elif db_name == "kegg":
+        # Extract and format EC numbers from description text for kegg
+        chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(format_and_extract_EC_numbers)
+        # Extract KEGG orthology if needed
         chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(extract_kegg_orthology)
     
     # Close database connection
