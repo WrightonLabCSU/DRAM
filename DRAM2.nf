@@ -100,7 +100,7 @@ include { COMBINE_ANNOTATIONS                           } from './modules/annota
 include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
 include { ADD_ANNOTATIONS                               } from './modules/annotate/add_annotations.nf'
 include { MERGE_ANNOTATIONS                             } from './modules/annotate/merge_annotations.nf'
-include { GENERATE_GFF_GENBANK                          } from './modules/annotate/generate_gff_gbk.nf'
+include { GENERATE_GFF_GENBANK                          } from './modules/annotate/generate_gff_genbank.nf'
 
 include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
 include { DISTILL                                       } from './modules/distill/distill.nf'
