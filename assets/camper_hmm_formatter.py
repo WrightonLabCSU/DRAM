@@ -83,7 +83,7 @@ def main():
 
     # Merge hits_df with descriptions_df
     merged_df = pd.merge(hits_df, descriptions_df, left_on='camper_id', right_on='query_id', how='left')
-    merged_df.drop(columns=['query_id'], inplace=True)  # Remove duplicate 'query_id' column after merge
+    #merged_df.drop(columns=['query_id'], inplace=True)  # Remove duplicate 'query_id' column after merge
 
     # Calculate camper_rank and clean EC numbers
     print("Calculating camper_rank and cleaning EC numbers...")
