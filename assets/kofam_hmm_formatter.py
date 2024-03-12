@@ -8,10 +8,9 @@ def extract_ec_numbers(definition):
     Each EC number is prefixed with 'EC:'.
     """
     # This regex pattern looks for EC numbers within square brackets and captures the numbers following "EC:"
-    ec_numbers = re.findall(r'\[EC:([^\]]+)\]', definition)
-    # Split any EC numbers found by spaces and reformat with 'EC:' prefix
-    all_ec_numbers = [f"EC:{ec.strip()}" for ec_block in ec_numbers for ec in ec_block.split()]
-    formatted_ec_numbers = '; '.join(all_ec_numbers)
+    ec_numbers = re.findall(r'\[EC:(.*?)\]', definition)
+    # Join the EC numbers with semi-colon separator and prepend 'EC:' to each number
+    formatted_ec_numbers = '; '.join([f"EC:{ec.strip()}" for ec_block in ec_numbers for ec in ec_block.split()])
     return formatted_ec_numbers
 
 def calculate_strandedness(strandedness):
