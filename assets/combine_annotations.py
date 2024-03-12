@@ -16,6 +16,7 @@ def extract_samples_and_paths(annotation_files):
 def assign_rank(row):
     # Define default rank as 'E'
     rank = 'E'
+    print(f"Assigning rank {rank} to row with kegg_bitScore {row.get('kegg_bitScore', 'N/A')}")
     # Check for conditions that would assign a higher rank
     if row.get('kegg_bitScore', 0) > 350:
         rank = 'A'
@@ -55,6 +56,10 @@ def combine_annotations(annotation_files, output_file):
 
     # Drop duplicates
     combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position'])
+
+    # Right before applying the assign_rank function
+    print("DataFrame columns before assigning ranks:", combined_data.columns.tolist())
+
 
     # Assign ranks based on defined criteria
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
