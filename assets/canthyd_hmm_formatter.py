@@ -57,8 +57,8 @@ def main():
     else:
         print("Warning: 'description' column not found after merge. Check 'ch_canthyd_ko' file structure.")
         merged_df['canthyd_description'] = 'No description available'
-
-    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'canthyd_description', 'canthyd_rank']]
+        
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'canthyd_score_rank', 'canthyd_bitScore', 'canthyd_description', 'canthyd_rank']]
 
     final_output_df.to_csv(args.output, index=False)
 
