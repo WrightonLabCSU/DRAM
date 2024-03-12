@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 
 def assign_rank(row, a_rank, b_rank, db_name_bit_score):
-    """Assign canthyd rank based on bit score and provided thresholds."""
+    """Assign rank based on bit score and provided thresholds."""
     if pd.isna(row[db_name_bit_score]):
         return None
     elif row[db_name_bit_score] >= a_rank:
@@ -37,31 +37,24 @@ def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path
 
     # Load the descriptions file if it's provided and check its contents
     if descriptions_path != "NULL":
-        with open(descriptions_path, 'r') as file:
-            first_line = file.readline().strip()
-        if first_line != "NULL":
-            df_descriptions = pd.read_csv(descriptions_path, sep='\t')
+        df_descriptions = pd.read_csv(descriptions_path, sep='\t')
+        # Dynamically rename the first column to match the database ID column in df_mmseqs
+        first_column = df_descriptions.columns[0]
+        df_descriptions.rename(columns={first_column: f'{db_name}_id'}, inplace=True)
+        
+        # Proceed with descriptions merge, rank assignment, and other processing
+        if 'A_rank' in df_descriptions.columns and 'B_rank' in df_descriptions.columns:
+            db_name_bit_score = f"{db_name}_bitScore"
+            # Merge descriptions DataFrame
+            df_merged = pd.merge(df_merged, df_descriptions, on=f'{db_name}_id', how='left')
             
-            # Check if A_rank and B_rank columns are present
-            if 'A_rank' in df_descriptions.columns and 'B_rank' in df_descriptions.columns:
-                # Add database name prefix to 'bitScore' to match merged DataFrame
-                db_name_bit_score = f"{db_name}_bitScore"
-                
-                # Ensure descriptions columns are prefixed with db_name
-                df_descriptions = df_descriptions.rename(columns=lambda x: f"{db_name}_{x}" if x not in ['A_rank', 'B_rank'] else x)
-                
-                # Merge descriptions DataFrame
-                df_merged = pd.merge(df_merged, df_descriptions, on=f'{db_name}_id', how='left')
-                
-                # Assign ranks based on A_rank and B_rank thresholds
-                df_merged[f'{db_name}_rank'] = df_merged.apply(lambda row: assign_rank(row, row['A_rank'], row['B_rank'], db_name_bit_score), axis=1)
-                
-                # Clean up: Drop A_rank and B_rank columns if you don't need them anymore
-                df_merged.drop(columns=['A_rank', 'B_rank'], inplace=True)
-            else:
-                # Handle case where descriptions do not contain A_rank and B_rank
-                print("Descriptions do not contain 'A_rank' and 'B_rank', skipping rank assignment.")
-    
+            # Assign ranks based on A_rank and B_rank thresholds
+            df_merged[f'{db_name}_rank'] = df_merged.apply(lambda row: assign_rank(row, row['A_rank'], row['B_rank'], db_name_bit_score), axis=1)
+            
+            # Clean up: Drop A_rank and B_rank columns if you don't need them anymore
+            df_merged.drop(columns=['A_rank', 'B_rank'], inplace=True)
+        else:
+            print("Descriptions do not contain 'A_rank' and 'B_rank', skipping rank assignment.")
 
     # Save the merged DataFrame to CSV
     output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
