@@ -16,7 +16,7 @@ process COMBINE_ANNOTATIONS {
     touch logs/combine_annotations.log
     log_file="logs/combine_annotations.log"
 
-    python ${ch_combine_annot_script} --annotations ${all_annotations} --output "raw-annotations.tsv" >> \$log_file 2>&1
+    python ${ch_combine_annot_script} --annotations ${all_annotations} --threads ${params.threads} --output "raw-annotations.tsv" >> \$log_file 2>&1
 
     """
 }
