@@ -65,18 +65,27 @@ def file_contains_data(file_path):
         print(f"Error reading {file_path}: {e}")
         return False
 
-def process_distill_sheet_topic(df_topic, target_id_counts_df):
+def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     """Process each topic within a distill sheet for composite gene_id entries."""
-    # Split composite gene_ids and sum their counts, while retaining the original gene_id format
-    df_topic['summed_counts'] = df_topic['gene_id'].apply(lambda x: sum_counts_for_multi_gene_ids(target_id_counts_df, re.split(r'[;,]\s*', x)))
-    
-    # Apply summed counts to each column appropriately
-    for col in target_id_counts_df.columns:
-        if col != 'gene_id':
-            df_topic[col] = df_topic['summed_counts'].apply(lambda counts: counts.get(col, 0))
-    
-    return df_topic.drop(columns=['summed_counts'], errors='ignore')
+    # This function will now also need access to the annotations database to check for matches
+    processed_rows = []
 
+    for _, row in df_topic.iterrows():
+        # Splitting composite gene_ids considering different separators and strip any surrounding whitespaces
+        gene_ids = re.split(r'[;,]\s*', row['gene_id'])
+        # Checking which gene_ids have matches in the annotations database
+        matched_gene_ids = query_annotations_for_gene_ids(db_name, gene_ids)
+        
+        if not matched_gene_ids.empty:
+            # If there are matched gene_ids, sum their counts
+            summed_counts = sum_counts_for_multi_gene_ids(target_id_counts_df, matched_gene_ids['gene_id'].tolist())
+            # Update the row with these summed counts
+            for col in summed_counts:
+                row[col] = summed_counts[col]
+            processed_rows.append(row)
+
+    df_processed = pd.DataFrame(processed_rows)
+    return df_processed
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
