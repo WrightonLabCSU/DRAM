@@ -356,7 +356,10 @@ def add_optional_sheets(wb, args):
         add_sheet_from_dataframe(wb, pd.read_csv(args.trna_file, sep='\t'), 'tRNA')
 
 def is_partial_ec_number(gene_id):
-    return gene_id.startswith("EC:") and gene_id.endswith("-")
+    is_partial = gene_id.startswith("EC:") and gene_id.endswith("-")
+    if is_partial:
+        logging.debug(f"Identified {gene_id} as a partial EC number.")
+    return is_partial
 
 def split_gene_ids(gene_id_field):
     # This function will split the gene_id field into individual gene IDs or EC numbers
