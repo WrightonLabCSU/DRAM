@@ -119,6 +119,7 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
 
     # Use SQL query to directly filter matching EC numbers
     query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+    logging.debug(f"Executing query: {query}")
     cursor.execute(query, ("EC:" + partial_ec_clean + "%",))
     
     matching_ec_numbers = set(row[0] for row in cursor.fetchall())
@@ -129,6 +130,7 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
 
     conn.close()
     return list(matching_ec_numbers)
+
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
