@@ -120,7 +120,9 @@ def generate_gbk(samples_annotations, database_list, fna_directory):
         sequences = aggregate_sample_sequences(sample_fna_files)
         
         # Create a SeqRecord for the sample, initializing with an empty sequence
-        seq_record = SeqRecord(Seq(""), id=sample, description=f"Generated GBK file for {sample}")
+        # Now also including a default molecule_type in the annotations
+        seq_record = SeqRecord(Seq(""), id=sample, description=f"Generated GBK file for {sample}",
+                               annotations={"molecule_type": "DNA"})  # Adjust molecule_type as necessary
         
         for annotation in annotations:
             query_id = annotation['query_id']
@@ -134,7 +136,6 @@ def generate_gbk(samples_annotations, database_list, fna_directory):
                 seq_record.features.append(feature)
         
         # Assuming a single, representative sequence is sufficient per sample
-        # This might need adjustment based on how you want to handle multiple sequences per sample
         if sequences:
             representative_seq = next(iter(sequences.values()))
             seq_record.seq = representative_seq
@@ -143,6 +144,7 @@ def generate_gbk(samples_annotations, database_list, fna_directory):
         output_filename = f"GBK/{sample}.gbk"
         with open(output_filename, "w") as output_handle:
             SeqIO.write(seq_record, output_handle, "genbank")
+
 
 def main():
     args = parse_arguments()
