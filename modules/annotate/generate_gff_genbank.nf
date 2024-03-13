@@ -1,7 +1,7 @@
 process GENERATE_GFF_GENBANK {
 
     input:
-    path( all_genes_fna )
+    val( all_genes_fna )
     val( databases_list )
     path( raw_annotations, stageAs: "raw-annotations.tsv" )
     path( ch_generate_gff_gbk )
@@ -17,8 +17,8 @@ process GENERATE_GFF_GENBANK {
     def gbk_flag = ${params.generate_gbk} ? "--gbk" : ""
 
     """
-    mkdir GFF
-    mkdir GBK
+    mkdir -p GFF
+    mkdir -p GBK
 
     python ${ch_generate_gff_gbk} ${flags.join(' ')} --database_list ${database_list} --annotations raw-annotations.tsv
     """

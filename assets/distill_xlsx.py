@@ -93,29 +93,48 @@ def sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts):
             else:
                 aggregated_counts[col] = gene_counts[col]
 
+def fetch_all_gene_ids(db_name):
+    """
+    Fetch all unique gene IDs from the annotations database.
+    """
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT gene_id FROM annotations")
+    all_gene_ids = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return all_gene_ids
+
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     """
-    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers.
+    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers,
+    ensuring only gene_ids found in the annotations database are included.
     """
     processed_rows = []
-    
+    all_gene_ids_in_db = fetch_all_gene_ids(db_name)  # Fetch all gene IDs from the annotations database
+
     for _, row in df_topic.iterrows():
         gene_ids = split_gene_ids(row['gene_id'])
-        aggregated_counts = aggregate_counts(gene_ids, target_id_counts_df, db_name)
+        # Filter gene_ids to include only those found in the annotations database
+        filtered_gene_ids = [gene_id for gene_id in gene_ids if gene_id in all_gene_ids_in_db or is_partial_ec_number(gene_id)]
+
+        if not filtered_gene_ids:
+            continue  # Skip processing this row if no matching gene_ids are found
+
+        aggregated_counts = aggregate_counts(filtered_gene_ids, target_id_counts_df, db_name)
         
-        # Update the row with aggregated counts
-        new_row = row.to_dict()
-        for sample_col, count in aggregated_counts.items():
-            new_row[sample_col] = count
-        processed_rows.append(new_row)
+        # Only proceed if there are aggregated counts to add (this should always be true at this point)
+        if aggregated_counts:
+            new_row = row.to_dict()
+            for sample_col, count in aggregated_counts.items():
+                new_row[sample_col] = count
+            processed_rows.append(new_row)
 
     df_processed = pd.DataFrame(processed_rows)
-    # Ensure we don't lose any columns during processing
+    # Ensure all columns are present
     for col in target_id_counts_df.columns[1:]:  # Skip the gene_id column
         if col not in df_processed:
             df_processed[col] = 0
     return df_processed
-
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
