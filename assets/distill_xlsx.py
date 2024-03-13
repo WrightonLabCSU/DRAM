@@ -144,7 +144,7 @@ def aggregate_counts(gene_ids, target_id_counts_df, db_name):
             for partial_ec_number in partial_ec_numbers:
                 partial_ec_number = partial_ec_number.strip()  # Remove leading and trailing spaces
                 partial_ec_pattern = gene_id.replace("EC:", "").replace("-", ".")
-                partial_ec_pattern = "EC:" + partial_ec_pattern.replace(".", "\\.")  # Escape '.' characters
+                partial_ec_pattern = "EC:" + partial_ec_pattern.replace(".", "\\.") + ".*"  # Match any characters after the provided pattern
                 print(f"Partial EC number: {partial_ec_pattern}")
                 matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
                 logging.debug(f"Partial EC number '{partial_ec_number}' matches: {matching_ec_numbers}")
