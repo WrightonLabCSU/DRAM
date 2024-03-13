@@ -13,25 +13,17 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate GFF and/or GBK files from raw annotations, with specified databases formatting.")
     parser.add_argument("--gff", action='store_true', help="Generate GFF file")
     parser.add_argument("--gbk", action='store_true', help="Generate GBK file")
-    parser.add_argument("--samples_paths_file", required=True, help="Path to the file containing sample names and paths to their .fna files.")
+    parser.add_argument("--samples_paths", nargs='+', help="Alternating list of sample names and paths to their .fna files.")
     parser.add_argument("--database_list", type=str, help="List of databases to include in the annotations. Use 'empty' for all.", default="empty")
     parser.add_argument("--annotations", required=True, help="Path to the raw annotations file")
     args = parser.parse_args()
     args.database_list = None if args.database_list == "empty" else args.database_list.split()
     return args
 
-def parse_samples_and_paths(annotation_files):
-    """
-    Parses the list of sample names and .fna file paths into a structured list of tuples.
-
-    Args:
-    - annotation_files: A list of strings where each sample name is followed by its corresponding .fna file path.
-
-    Returns:
-    - A list of tuples, each containing a sample name and its .fna file path.
-    """
-    samples_and_paths = [(annotation_files[i], annotation_files[i + 1]) for i in range(0, len(annotation_files), 2)]
-    return samples_and_paths
+def parse_samples_and_paths(samples_paths):
+    """Parses the alternating list of sample names and .fna file paths into a structured dictionary."""
+    iterator = iter(samples_paths)
+    return dict(zip(iterator, iterator))
 
 def sanitize_description(description):
     """Replace semicolons in descriptions to avoid parsing issues."""
