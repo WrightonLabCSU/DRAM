@@ -131,7 +131,6 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     conn.close()
     return list(matching_ec_numbers)
 
-
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
     Aggregate counts for each gene ID or partial EC number.
@@ -140,6 +139,7 @@ def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     all_gene_ids = fetch_all_gene_ids(db_name)
 
     for gene_id in gene_ids:
+        logging.debug(f"Starting aggregate_counts for gene IDs: {gene_ids}")
         if is_partial_ec_number(gene_id):
             partial_ec_pattern = gene_id.replace("EC:", "").replace("-", "%")
             matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
@@ -158,7 +158,6 @@ def aggregate_counts(gene_ids, target_id_counts_df, db_name):
 
     logging.debug(f"Aggregated counts: {aggregated_counts}")
     return aggregated_counts
-
 
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     """
