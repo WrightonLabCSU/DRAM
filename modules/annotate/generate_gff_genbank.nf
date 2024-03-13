@@ -26,3 +26,4 @@ process GENERATE_GFF_GENBANK {
 
     python ${ch_generate_gff_gbk} ${flags.join(' ')} --database_list ${databases_list} --annotations ${raw_annotations}
     """
+}
