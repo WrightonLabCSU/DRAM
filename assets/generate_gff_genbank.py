@@ -165,7 +165,7 @@ def main():
     # Here, you need to ensure the fna_directory is correctly defined or passed
     # This could be another command line argument, or it could be a predefined value within your script
     # Parse sample names and .fna file paths from the specified file
-    with open(args.samples_paths_file, 'r') as f:
+    with open(args.samples_paths, 'r') as f:
         samples_and_paths = parse_samples_and_paths(args.samples_paths)
 
     if args.gbk:
