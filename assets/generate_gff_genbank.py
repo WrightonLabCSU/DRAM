@@ -154,11 +154,15 @@ def main():
         for row in reader:
             samples_annotations[row['sample']].append(row)
 
-    # Generate GFF and/or GBK files based on flags and database list
-    if args.gff:
-        generate_gff(samples_annotations, args.database_list)
+    # Here, you need to ensure the fna_directory is correctly defined or passed
+    # This could be another command line argument, or it could be a predefined value within your script
+    fna_directory = "/path/to/your/fna/files"  # Update this path as necessary
+
+    # Now, when calling generate_gbk, include the fna_directory argument
     if args.gbk:
-        generate_gbk(samples_annotations, args.database_list)
+        generate_gbk(samples_annotations, args.database_list, fna_directory)
+
+# Make sure this fna_directory path is correctly passed to the generate_gbk function
 
 if __name__ == "__main__":
     main()

@@ -30,6 +30,25 @@ def sum_counts_for_multi_gene_ids(target_id_counts_df, gene_ids):
             summed_counts[col] += counts[col].sum() if not counts.empty else 0
     return summed_counts
 
+def sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts):
+    if gene_id in target_id_counts_df['gene_id'].values:
+        gene_counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id]
+        for col in target_id_counts_df.columns[1:]:  # Skip the gene_id column
+            if col not in aggregated_counts:
+                aggregated_counts[col] = 0
+            aggregated_counts[col] += gene_counts[col].sum()
+
+def aggregate_counts(gene_ids, target_id_counts_df, db_name):
+    aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
+    for gene_id in gene_ids:
+        if is_partial_ec_number(gene_id):
+            matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
+            for matching_ec_number in matching_ec_numbers:
+                sum_counts_for_gene_id(matching_ec_number, target_id_counts_df, aggregated_counts)
+        else:
+            sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts)
+    return aggregated_counts
+
 def compile_target_id_counts(target_id_counts):
     """Compile target ID counts from the specified TSV file."""
     return pd.read_csv(target_id_counts, sep='\t')
@@ -105,33 +124,32 @@ def fetch_all_gene_ids(db_name):
     return all_gene_ids
 
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
-    """
-    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers,
-    ensuring only gene_ids found in the annotations database are included.
-    """
     all_gene_ids_in_db = fetch_all_gene_ids(db_name)  # Fetch all gene IDs from the annotations database
     processed_rows = []
+    any_gene_identified = False  # Flag to track if any gene is identified for this topic
 
     for _, row in df_topic.iterrows():
-        original_gene_ids = row['gene_id']
-        gene_ids = split_gene_ids(original_gene_ids)
+        gene_ids = split_gene_ids(row['gene_id'])
+        filtered_gene_ids = [gene_id for gene_id in gene_ids if gene_id in all_gene_ids_in_db or is_partial_ec_number(gene_id)]
 
-        # Filter and aggregate counts for gene IDs found in the annotations database
-        filtered_gene_ids, aggregated_counts = filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene_ids_in_db)
-
-        # Skip rows where no gene_ids were found in the annotations database
         if not filtered_gene_ids:
-            continue
+            continue  # Skip processing this row if no matching gene_ids are found
+
+        aggregated_counts = aggregate_counts(filtered_gene_ids, target_id_counts_df, db_name)
+        any_gene_identified = True  # At least one gene ID matched
 
         # Update row with aggregated counts
-        updated_row = row.copy()
-        for col, value in aggregated_counts.items():
-            updated_row[col] = value
+        updated_row = row.to_dict()
+        for sample_col, count in aggregated_counts.items():
+            updated_row[sample_col] = count
         processed_rows.append(updated_row)
 
-    # If no rows processed, create a placeholder row
-    if not processed_rows:
-        return pd.DataFrame([{"gene_id": "No genes identified for this distill sheet"}])
+    # If no genes were identified for this topic, create a placeholder row
+    if not any_gene_identified:
+        placeholder_row = {"gene_id": "No genes identified for this distill sheet"}
+        for col in target_id_counts_df.columns[1:]:  # Initialize sample columns with 0
+            placeholder_row[col] = 0
+        return pd.DataFrame([placeholder_row])
 
     return pd.DataFrame(processed_rows)
 
