@@ -63,7 +63,7 @@ def generate_gff(samples_annotations, database_list):
             for annotation in annotations:
                 attributes_str = format_attributes(annotation, database_list)
                 strand = '+' if annotation['strandedness'] == '+1' else '-'
-                gff_line = f"{annotation['query_id']}\t.\tgene\t{annotation['start_position']}\t{annotation['end_position']}\t.\t{strand}\t.\t{attributes_str}\n"
+                gff_line = f"{annotation['query_id']}\t.\tgene\t{annotation['start_position']}\t{annotation['stop_position']}\t.\t{strand}\t.\t{attributes_str}\n"
                 gff_file.write(gff_line)
 
 def parse_fna_sequence(fna_file_path):
@@ -127,7 +127,7 @@ def generate_gbk(samples_annotations, database_list, fna_directory):
             if query_id in sequences:  # Ensure the sequence for this annotation exists
                 sequence = sequences[query_id]
                 feature_location = FeatureLocation(start=int(annotation['start_position']) - 1,
-                                                   end=int(annotation['end_position']),
+                                                   end=int(annotation['stop_position']),
                                                    strand=1 if annotation['strandedness'] == '+1' else -1)
                 qualifiers = format_qualifiers(annotation, database_list)
                 feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
