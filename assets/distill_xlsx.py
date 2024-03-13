@@ -150,11 +150,13 @@ def aggregate_counts(gene_ids, target_id_counts_df, db_name):
             if not match_counts.empty:
                 for col in aggregated_counts.keys():
                     aggregated_counts[col] += match_counts[col].sum()
+                    logging.debug(f"Adding count {match_counts[col].sum()} for column {col} from gene ID {match}")
             else:
                 logging.debug(f"No counts found for '{match}'")
 
     logging.debug(f"Aggregated counts: {aggregated_counts}")
     return aggregated_counts
+
 
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     """
