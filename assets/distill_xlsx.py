@@ -105,44 +105,40 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
 
 def fetch_matching_ec_numbers(db_name, partial_ec_number):
     """
-    Fetch all matching EC numbers from the database for a given partial EC number,
-    taking into account complex gene_id fields with multiple EC numbers.
+    Fetch all matching EC numbers for a given partial EC number from the database,
+    considering that each gene_id might include multiple EC numbers.
     """
     # Connect to the SQLite database
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     
-    # Fetch all distinct gene_id entries
+    # Execute query to fetch all distinct EC numbers (gene_id)
     cursor.execute("SELECT DISTINCT gene_id FROM annotations")
-    all_gene_ids = cursor.fetchall()
+    all_ec_entries = cursor.fetchall()
     
     # Close the database connection
     conn.close()
     
-    # Prepare the partial EC number for matching
-    partial_ec_number_cleaned = partial_ec_number.replace("EC:", "").strip("-")
+    # Clean up the partial EC number for comparison
+    partial_ec_cleaned = partial_ec_number.replace("EC:", "").rstrip("-")
     
-    # Initialize a list to hold all matching EC numbers
-    matching_ec_numbers = []
-    
-    # Loop through each gene_id entry from the database
-    for (gene_id,) in all_gene_ids:
-        # Split the gene_id into individual EC numbers
-        ec_numbers = gene_id.split(';')
-        
-        # Check each EC number for a match with the partial EC number
-        for ec_number in ec_numbers:
-            ec_number_cleaned = ec_number.strip().replace("EC:", "")
-            
-            # If the EC number starts with the partial EC number, add it to the matching list
-            if ec_number_cleaned.startswith(partial_ec_number_cleaned):
-                matching_ec_numbers.append("EC:" + ec_number_cleaned)
-    
-    # Remove duplicates from the matching EC numbers
-    matching_ec_numbers = list(set(matching_ec_numbers))
+    # Initialize a set to hold matching EC numbers
+    matching_ec_numbers_set = set()
+
+    # Iterate through all EC entries to find matches
+    for (gene_id,) in all_ec_entries:
+        # Split gene_id into individual EC numbers and check for matches
+        for ec in gene_id.split(';'):
+            ec_cleaned = ec.strip().replace("EC:", "")
+            # Check if the cleaned EC number starts with the cleaned partial EC number
+            if ec_cleaned.startswith(partial_ec_cleaned):
+                # If so, add it to the set of matching EC numbers
+                matching_ec_numbers_set.add(ec.strip())
+
+    # Convert set back to list for consistency
+    matching_ec_numbers = list(matching_ec_numbers_set)
     
     return matching_ec_numbers
-
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
