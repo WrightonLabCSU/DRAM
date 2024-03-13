@@ -104,21 +104,15 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
     return filtered_gene_ids, aggregated_counts
 
 def fetch_matching_ec_numbers(db_name, partial_ec_number):
-    """
-    Fetch all matching EC numbers from the database for a given partial EC number.
-    Accounts for matches both with and without the trailing '-'.
-    """
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-    # Adjust the pattern to search for both exact and broader matches
-    pattern_with_dash = partial_ec_number.replace("EC:", "").replace("-", "%") + "%"
-    pattern_without_dash = partial_ec_number.replace("EC:", "").replace("-", "") + "%"
-    
-    # Fetch matches for both patterns
-    cursor.execute("SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ? OR gene_id LIKE ?", (pattern_with_dash, pattern_without_dash))
-    matching_ec_numbers = [row[0] for row in cursor.fetchall()]
+    patterns = prepare_ec_like_patterns(partial_ec_number)
+    matching_ec_numbers = []
+    for pattern in patterns:
+        query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+        cursor.execute(query, (pattern,))
+        matching_ec_numbers.extend([row[0] for row in cursor.fetchall()])
     conn.close()
-    logging.debug(f"Fetched matching EC numbers for '{partial_ec_number}': {matching_ec_numbers}")
     return matching_ec_numbers
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):

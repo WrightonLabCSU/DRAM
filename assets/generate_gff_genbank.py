@@ -13,6 +13,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate GFF and/or GBK files from raw annotations, with specified databases formatting.")
     parser.add_argument("--gff", action='store_true', help="Generate GFF file")
     parser.add_argument("--gbk", action='store_true', help="Generate GBK file")
+    parser.add_argument("--samples_paths_file", required=True, help="Path to the file containing sample names and paths to their .fna files.")
     parser.add_argument("--database_list", type=str, help="List of databases to include in the annotations. Use 'empty' for all.", default="empty")
     parser.add_argument("--annotations", required=True, help="Path to the raw annotations file")
     args = parser.parse_args()
@@ -107,52 +108,56 @@ def aggregate_sample_sequences(sample_files):
         for seq_record in SeqIO.parse(file_path, "fasta"):
             sequences[seq_record.id] = seq_record.seq
     return sequences
-def generate_gbk(samples_annotations, database_list, fna_directory):
-    """
-    Generate GBK files for each sample, containing all annotations for that sample.
-    """
-    print("Starting GBK generation...")  # Debug statement
-    os.makedirs("GBK", exist_ok=True)  # Ensure the output directory exists
 
+def generate_gbk(samples_annotations, database_list, samples_and_paths):
+    """
+    Generate GBK files for each sample, containing all annotations for that sample,
+    using a direct mapping of samples to .fna file paths.
+    """
+    print("Starting GBK generation...")
+    os.makedirs("GBK", exist_ok=True)
+
+    # Convert the list of tuples into a dictionary for easy lookup
+    sample_to_fna_path = dict(samples_and_paths)
+    
     for sample, annotations in samples_annotations.items():
-        print(f"Processing sample: {sample}")  # Debug statement
-        sample_fna_files = find_sample_fna_files(sample, fna_directory)
-        print(f"Found .fna files for {sample}: {sample_fna_files}")  # Debug statement
-        sequences = aggregate_sample_sequences(sample_fna_files)  # This should map sequence IDs to sequences
-        print(f"Aggregated sequences for {sample}: {list(sequences.keys())}")  # Debug statement
-
-        # Initialize a SeqRecord for the sample
-        seq_record = SeqRecord(Seq(""), id=sample, description=f"Generated GBK file for {sample}",
-                               annotations={"molecule_type": "DNA"})  # Adjust 'molecule_type' as necessary
-
-        for annotation in annotations:
-            query_id = annotation['query_id']
-            print(f"Processing annotation {query_id} for {sample}")  # Debug statement
-            if query_id in sequences:
-                print(f"Match found for {query_id} in {sample}")  # Debug statement
-                sequence = sequences[query_id]  # Get the sequence for this gene
-                feature_location = FeatureLocation(start=int(annotation['start_position']) - 1,
-                                                   end=int(annotation['stop_position']),
-                                                   strand=1 if annotation['strandedness'] == '+1' else -1)
-                qualifiers = format_qualifiers(annotation, database_list)
-                feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
-                seq_record.features.append(feature)
+        print(f"Processing sample: {sample}")
+        
+        if sample in sample_to_fna_path:
+            fna_file_path = sample_to_fna_path[sample]
+            print(f"Using .fna file for {sample}: {fna_file_path}")
+            sequences = parse_fna_sequence(fna_file_path)
+            print(f"Aggregated sequences for {sample}: {list(sequences.keys())}")
+            
+            seq_record = SeqRecord(Seq(""), id=sample, description=f"Generated GBK file for {sample}", annotations={"molecule_type": "DNA"})
+            
+            for annotation in annotations:
+                query_id = annotation['query_id']
+                print(f"Processing annotation {query_id} for {sample}")
+                
+                if query_id in sequences:
+                    print(f"Match found for {query_id} in {sample}")
+                    sequence = sequences[query_id]
+                    feature_location = FeatureLocation(start=int(annotation['start_position']) - 1, end=int(annotation['stop_position']), strand=1 if annotation['strandedness'] == '+1' else -1)
+                    qualifiers = format_qualifiers(annotation, database_list)
+                    feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
+                    seq_record.features.append(feature)
+                else:
+                    print(f"No match found for {query_id} in {sample}")
+                    
+            if sequences:
+                representative_seq = next(iter(sequences.values()))
+                seq_record.seq = representative_seq
+                print(f"Set representative sequence for {sample}: {repr(representative_seq[:50])}...")
             else:
-                print(f"No match found for {query_id} in {sample}")  # Debug statement
-
-        if sequences:
-            # Assuming a single, representative sequence is sufficient per sample
-            representative_seq = next(iter(sequences.values()))
-            seq_record.seq = representative_seq
-            print(f"Set representative sequence for {sample}: {repr(representative_seq[:50])}...")  # Debug statement
+                print(f"No sequences found for {sample}, GBK file will be empty!")
+            
+            output_filename = f"GBK/{sample}.gbk"
+            with open(output_filename, "w") as output_handle:
+                SeqIO.write(seq_record, output_handle, "genbank")
+            print(f"GBK file generated for {sample}: {output_filename}")
         else:
-            print(f"No sequences found for {sample}, GBK file will be empty!")  # Debug statement
-
-        # Output the GBK file for this sample
-        output_filename = f"GBK/{sample}.gbk"
-        with open(output_filename, "w") as output_handle:
-            SeqIO.write(seq_record, output_handle, "genbank")
-        print(f"GBK file generated for {sample}: {output_filename}")  # Debug statement
+            print(f"No .fna file path found for sample {sample}")
 
 
 def main():
@@ -167,11 +172,15 @@ def main():
 
     # Here, you need to ensure the fna_directory is correctly defined or passed
     # This could be another command line argument, or it could be a predefined value within your script
-    fna_directory = "/path/to/your/fna/files"  # Update this path as necessary
+    # Parse sample names and .fna file paths from the specified file
+    with open(args.samples_paths_file, 'r') as f:
+        samples_and_paths = [line.strip().split() for line in f.readlines()]
 
-    # Now, when calling generate_gbk, include the fna_directory argument
     if args.gbk:
-        generate_gbk(samples_annotations, args.database_list, fna_directory)
+        generate_gbk(samples_annotations, args.database_list, samples_and_paths)
+
+    if args.gff:
+        generate_gff(samples_annotations, args.database_list)
 
 # Make sure this fna_directory path is correctly passed to the generate_gbk function
 
