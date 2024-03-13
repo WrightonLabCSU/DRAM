@@ -173,9 +173,27 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
             continue
 
         logging.debug(f"Processing row with gene_ids: {gene_ids}")
-        # Call filter_and_aggregate_counts for valid gene IDs
-        filtered_gene_ids, aggregated_counts = filter_and_aggregate_counts(valid_gene_ids, target_id_counts_df, db_name, fetch_all_gene_ids(db_name))
-        any_gene_identified = True
+
+        # Check if any gene IDs are partial EC numbers
+        partial_ec_gene_ids = [gene_id for gene_id in valid_gene_ids if is_partial_ec_number(gene_id)]
+        regular_gene_ids = [gene_id for gene_id in valid_gene_ids if not is_partial_ec_number(gene_id)]
+
+        # Call filter_and_aggregate_counts for regular gene IDs
+        if regular_gene_ids:
+            _, aggregated_counts_regular = filter_and_aggregate_counts(regular_gene_ids, target_id_counts_df, db_name, fetch_all_gene_ids(db_name))
+            any_gene_identified = True
+        else:
+            aggregated_counts_regular = {}
+
+        # Call aggregate_counts for partial EC numbers
+        if partial_ec_gene_ids:
+            aggregated_counts_partial_ec = aggregate_counts(partial_ec_gene_ids, target_id_counts_df, db_name)
+            any_gene_identified = True
+        else:
+            aggregated_counts_partial_ec = {}
+
+        # Combine aggregated counts
+        aggregated_counts = {**aggregated_counts_regular, **aggregated_counts_partial_ec}
 
         updated_row = row.to_dict()
         for sample_col, count in aggregated_counts.items():
@@ -189,6 +207,7 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
         processed_rows = [placeholder_row]
 
     return pd.DataFrame(processed_rows)
+
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
