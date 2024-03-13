@@ -130,7 +130,6 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     conn.close()
     return list(matching_ec_numbers)
 
-
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
     Aggregate counts for each gene ID or partial EC number.
