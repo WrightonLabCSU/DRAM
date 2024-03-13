@@ -109,13 +109,15 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     """
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-    pattern = partial_ec_number.replace("EC:", "").replace("-", "%")
+    # Ensure the pattern includes 'EC:' prefix and accurately matches the database format
+    pattern = partial_ec_number.replace("-", "%")
     query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
     cursor.execute(query, (pattern,))
     matching_ec_numbers = [row[0] for row in cursor.fetchall()]
     conn.close()
     logging.debug(f"Fetched matching EC numbers for {partial_ec_number}: {matching_ec_numbers}")
     return matching_ec_numbers
+
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
