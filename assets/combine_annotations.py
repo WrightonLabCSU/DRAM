@@ -6,12 +6,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
-def read_and_preprocess(sample_path):
-    sample, path = sample_path
+def read_and_preprocess(sample, path):
     try:
         df = pd.read_csv(path)
         df['sample'] = sample  # Add sample column
-        # Pre-process data here if needed
         return df
     except Exception as e:
         logging.error(f"Error loading DataFrame for sample {sample}: {str(e)}")
