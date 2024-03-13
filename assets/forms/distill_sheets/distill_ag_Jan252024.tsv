@@ -20,9 +20,9 @@ K06137	pqqC, Pyrroloquinoline quinone synthase C	inorganic P solubuiliation	ag	P
 K07657	phoB, Phosphate regulon response regulator	P-starvation response regulation	ag	Phosphorus	
 K07636	phoR, Phosphate regulon sensor histidine kinase	P-starvation response regulation	ag	Phosphorus	
 K02039	phoU, PhoR/phoB inhibitor protein	P-starvation response regulation	ag	Phosphorus	
-K01430 	ureA, urease subunit gamma	Urea Degradation	ag	Nitrogen 	
-K01429     	ureB, urease subunit beta	Urea Degradation	ag	Nitrogen 	
-K01428   	ureC, urease subunit alpha (largest aplha unit of protein structure)	Urea Degradation	ag	Nitrogen 	
+K01430	ureA, urease subunit gamma	Urea Degradation	ag	Nitrogen 	
+K01429	ureB, urease subunit beta	Urea Degradation	ag	Nitrogen 	
+K01428	ureC, urease subunit alpha (largest aplha unit of protein structure)	Urea Degradation	ag	Nitrogen 	
 K00368	nir= nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	nitrite + ammonia => nitrogen	ag	Nitrogen 	
 K00370	nxr= nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	nitrite + ammonia => nitrogen	ag	Nitrogen 	
 K00371	nxr= nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	nitrite + ammonia => nitrogen	ag	Nitrogen 	

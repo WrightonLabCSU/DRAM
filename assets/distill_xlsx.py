@@ -21,6 +21,17 @@ def parse_arguments():
     parser.add_argument('--quast', type=str, help='Path to the QUAST stats TSV file.', default=None)
     return parser.parse_args()
 
+def sum_counts_for_multi_gene_ids(target_id_counts_df, gene_ids):
+    # Initialize a dictionary to hold the sum of counts for each sample
+    summed_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
+    for gene_id in gene_ids:
+        # Find counts for each gene_id
+        counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id]
+        # Sum counts across all samples
+        for col in summed_counts.keys():
+            summed_counts[col] += counts[col].sum() if not counts.empty else 0
+    return summed_counts
+
 def compile_target_id_counts(target_id_counts):
     return pd.read_csv(target_id_counts, sep='\t')
 
@@ -226,19 +237,13 @@ def main():
 
     # Compile genome stats and add as a sheet
     genome_stats_df = compile_genome_stats(args.db_name)
-    
-    # Update the genome_stats_df with rRNA and tRNA information
+    # Update genome_stats with additional data as before
     genome_stats_df = update_genome_stats_with_rrna_trna(genome_stats_df, args.rrna_file, args.trna_file)
     genome_stats_df = update_genome_stats_with_rrna(genome_stats_df, args.combined_rrna_file)
-    
-    # Process QUAST data if the file is not "NULL"
-    quast_data = None
-    if hasattr(args, 'quast') and file_contains_data(args.quast):
-        quast_data = pd.read_csv(args.quast, sep='\t')
-        # Merging QUAST data with genome stats
-        genome_stats_df = pd.merge(genome_stats_df, quast_data, on="sample", how="left")
-    
-    # Add the updated genome_stats_df as a sheet
+    if args.quast:
+        quast_data = compile_quast_info(args.quast)
+        if quast_data is not None:
+            genome_stats_df = pd.merge(genome_stats_df, quast_data, on="sample", how="left")
     add_sheet_from_dataframe(wb, genome_stats_df, "Genome_Stats")
 
     # Read target ID counts
@@ -248,21 +253,33 @@ def main():
     distill_data = read_distill_sheets(args.distill_sheets)
     for sheet_path, info in distill_data.items():
         df_distill = info['dataframe']
+        column_type = info['column_type']
         
         # Iterate through topics within each distill sheet
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
-            gene_ids = df_topic['gene_id'].unique().tolist()  
             
-            # Query annotations database for each gene_id/ec_id to find matches
-            df_matched_gene_ids = query_annotations_for_gene_ids(args.db_name, gene_ids)
+            # Prepare df_topic by expanding multi-gene entries into separate rows (if needed)
+            # and then summing counts for each gene_id from target_id_counts
+            expanded_rows = []  # This will store rows after expanding and summing counts
+            for _, row in df_topic.iterrows():
+                gene_ids = [x.strip() for x in re.split(';|,', row[column_type])]
+                summed_counts = sum_counts_for_multi_gene_ids(target_id_counts_df, gene_ids)
+                # Create a new row for each gene_id with the summed counts
+                for gene_id in gene_ids:
+                    new_row = row.copy()
+                    new_row[column_type] = gene_id
+                    for sample, count in summed_counts.items():
+                        new_row[sample] = count
+                    expanded_rows.append(new_row)
             
-            # Merge matched gene IDs with target ID counts
-            df_merged = pd.merge(df_topic, df_matched_gene_ids, left_on='gene_id', right_on='gene_id', how='inner')
-            df_merged_with_counts = pd.merge(df_merged, target_id_counts_df, on='gene_id', how='left')
+            # Convert expanded_rows to DataFrame
+            df_expanded = pd.DataFrame(expanded_rows)
+            # Ensure there's no duplication of effort in merging df_expanded with df_matched_gene_ids
+            # and target_id_counts_df since we already have the summed counts correctly associated
             
-            # Drop unnecessary columns
-            df_final = df_merged_with_counts.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
+            # Drop unnecessary columns and prepare for adding as new sheet
+            df_final = df_expanded.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
             
             # Add final dataframe as a new sheet in the workbook
             sheet_name = topic[:31]  # Limit sheet name to 31 characters
@@ -270,15 +287,14 @@ def main():
 
     # Add rRNA and tRNA sheets if available
     if args.rrna_file and file_contains_data(args.rrna_file):
-        df_rrna = pd.read_csv(args.rrna_file, sep='\t')
-        add_sheet_from_dataframe(wb, df_rrna, 'rRNA')
+        add_sheet_from_dataframe(wb, pd.read_csv(args.rrna_file, sep='\t'), 'rRNA')
     
     if args.trna_file and file_contains_data(args.trna_file):
-        df_trna = pd.read_csv(args.trna_file, sep='\t')
-        add_sheet_from_dataframe(wb, df_trna, 'tRNA')
+        add_sheet_from_dataframe(wb, pd.read_csv(args.trna_file, sep='\t'), 'tRNA')
 
     # Save the workbook
     wb.save(args.output_file)
+
 
 if __name__ == '__main__':
     main()
