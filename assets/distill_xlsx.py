@@ -98,7 +98,6 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     df_processed = pd.DataFrame(processed_rows)
     return df_processed
 
-
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
