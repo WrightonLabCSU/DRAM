@@ -6,7 +6,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 import logging
 import re
 
-# Setup logging
+import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def parse_arguments():
@@ -110,41 +110,26 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     parsing compound gene_id entries containing multiple EC numbers.
     """
     logging.debug(f"Starting fetch_matching_ec_numbers for {partial_ec_number}")
+    
+    # Clean up the partial EC number for matching
+    partial_ec_clean = partial_ec_number.replace("EC:", "").rstrip("-")
+    
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
-    # Retrieve all gene_id entries from the annotations table
-    cursor.execute("SELECT DISTINCT gene_id FROM annotations")
-    all_gene_ids = cursor.fetchall()
-
-    logging.debug(f"Fetched {len(all_gene_ids)} gene_id entries from database.")
-
-    # Clean up the partial EC number for matching
-    partial_ec_clean = partial_ec_number.replace("EC:", "").rstrip("-")
-
-    # Initialize an empty list for matches
-    matching_ec_numbers = set()
-
-    # Iterate over retrieved gene_id entries
-    for gene_tuple in all_gene_ids:
-        # Split compound gene_id entry into individual EC numbers
-        ec_numbers = gene_tuple[0].split(";")
-        for ec in ec_numbers:
-            ec_clean = ec.strip().replace("EC:", "")
-            # Check if the EC number starts with the cleaned partial EC pattern
-            if ec_clean.startswith(partial_ec_clean):
-                full_ec = "EC:" + ec_clean
-                matching_ec_numbers.add(full_ec)
-                logging.debug(f"Matched {full_ec} with partial EC {partial_ec_number}")
+    # Use SQL query to directly filter matching EC numbers
+    query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+    cursor.execute(query, ("EC:" + partial_ec_clean + "%",))
+    
+    matching_ec_numbers = set(row[0] for row in cursor.fetchall())
+    logging.debug(f"Matched {len(matching_ec_numbers)} EC numbers with partial EC {partial_ec_number}")
 
     if not matching_ec_numbers:
         logging.debug(f"No matches found for partial EC {partial_ec_number}")
 
-    # Convert set to list to return
-    matching_list = list(matching_ec_numbers)
-    logging.debug(f"Returning matches for '{partial_ec_number}': {matching_list}")
     conn.close()
-    return matching_list
+    return list(matching_ec_numbers)
+
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
