@@ -105,9 +105,8 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
 
 def fetch_matching_ec_numbers(db_name, partial_ec_number):
     """
-    Fetch all matching EC numbers for a given partial EC number by checking against
-    all EC numbers listed in the annotations database. Accounts for EC numbers
-    stored in concatenated strings within database entries.
+    Fetch all matching EC numbers for a given partial EC number.
+    This approach considers concatenated EC numbers in database entries.
     """
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
@@ -115,21 +114,24 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     all_records = cursor.fetchall()
     conn.close()
 
-    # Prepare patterns for matching
-    partial_ec_pattern = partial_ec_number.replace("EC:", "").replace("-", "")
-    matching_ec_numbers = set()
+    # Adjust the pattern for SQL LIKE query
+    pattern = partial_ec_number.replace("EC:", "").rstrip('-') + '%'
+    logging.debug(f"Using pattern for matching: {pattern}")
 
-    # Process each record to find matches
+    matching_ec_numbers = []
+
     for record in all_records:
-        # Split concatenated EC numbers and check for matches
-        for ec_number in record[0].split(';'):
+        ec_numbers = record[0].split(';')  # Assuming EC numbers are separated by ';'
+        for ec_number in ec_numbers:
             ec_number = ec_number.strip()
-            if partial_ec_pattern in ec_number.replace("EC:", ""):
-                matching_ec_numbers.add(ec_number)
+            # Match both with and without the trailing '-'
+            if re.match(f"{pattern.replace('%', '.*')}$", ec_number.replace("EC:", "")):
+                matching_ec_numbers.append(ec_number)
+                logging.debug(f"Match found: {ec_number}")
 
-    logging.debug(f"Fetched matching EC numbers for '{partial_ec_number}': {matching_ec_numbers}")
-    return list(matching_ec_numbers)
-
+    matching_ec_numbers = list(set(matching_ec_numbers))  # Remove duplicates
+    logging.debug(f"Matches for '{partial_ec_number}': {matching_ec_numbers}")
+    return matching_ec_numbers
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
