@@ -34,9 +34,15 @@ def convert_bit_scores_to_numeric(df):
     return df
 
 def organize_columns(df):
+    # Base columns are defined and should always appear first
     base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank']
-    other_columns = [col for col in df.columns if col not in base_columns]
-    final_columns_order = base_columns + other_columns
+    # Identify all columns that start with 'kegg_'
+    kegg_columns = [col for col in df.columns if col.startswith('kegg_')]
+    # Identify other columns that are not in base_columns or kegg_columns
+    other_columns = [col for col in df.columns if col not in base_columns and col not in kegg_columns]
+    # The final order starts with base_columns, followed by kegg_columns, then the rest
+    final_columns_order = base_columns + kegg_columns + other_columns
+    # Reorder the DataFrame according to the final column order and return
     return df[final_columns_order]
 
 def combine_annotations(annotation_files, output_file, threads):
