@@ -166,7 +166,7 @@ def main():
     # This could be another command line argument, or it could be a predefined value within your script
     # Parse sample names and .fna file paths from the specified file
     with open(args.samples_paths_file, 'r') as f:
-        samples_and_paths = [line.strip().split() for line in f.readlines()]
+        samples_and_paths = parse_samples_and_paths(args.samples_paths)
 
     if args.gbk:
         generate_gbk(samples_annotations, args.database_list, samples_and_paths)
