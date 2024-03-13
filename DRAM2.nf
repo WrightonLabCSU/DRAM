@@ -882,7 +882,6 @@ workflow {
             .mix( ch_called_genes  )
             .collect()
             .set { ch_collected_fna }
-        ch_collected_fna.view()
 
         // Collect all individual fasta to pass to quast
         Channel.empty()
