@@ -140,21 +140,32 @@ def aggregate_counts(gene_ids, target_id_counts_df, db_name):
 
     for gene_id in gene_ids:
         if is_partial_ec_number(gene_id):
-            partial_ec_pattern = gene_id.replace("EC:", "").replace("-", "%")
-            partial_ec_pattern = "EC:" + partial_ec_pattern  # Add "EC:" prefix
-            matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
-            logging.debug(f"Partial EC number '{gene_id}' matches: {matching_ec_numbers}")
+            partial_ec_numbers = [ec.strip() for ec in gene_id.split(';')]
+            for partial_ec_number in partial_ec_numbers:
+                partial_ec_pattern = partial_ec_number.replace("EC:", "").replace("-", "%")
+                partial_ec_pattern = "EC:" + partial_ec_pattern  # Add "EC:" prefix
+                matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
+                logging.debug(f"Partial EC number '{partial_ec_number}' matches: {matching_ec_numbers}")
+
+                for match in matching_ec_numbers:
+                    match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
+                    if not match_counts.empty:
+                        for col in aggregated_counts.keys():
+                            aggregated_counts[col] += match_counts[col].sum()
+                            logging.debug(f"Adding count {match_counts[col].sum()} for column {col} from gene ID {match}")
+                    else:
+                        logging.debug(f"No counts found for '{match}'")
         else:
             matching_ec_numbers = [gene_id] if gene_id in all_gene_ids else []
 
-        for match in matching_ec_numbers:
-            match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
-            if not match_counts.empty:
-                for col in aggregated_counts.keys():
-                    aggregated_counts[col] += match_counts[col].sum()
-                    logging.debug(f"Adding count {match_counts[col].sum()} for column {col} from gene ID {match}")
-            else:
-                logging.debug(f"No counts found for '{match}'")
+            for match in matching_ec_numbers:
+                match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
+                if not match_counts.empty:
+                    for col in aggregated_counts.keys():
+                        aggregated_counts[col] += match_counts[col].sum()
+                        logging.debug(f"Adding count {match_counts[col].sum()} for column {col} from gene ID {match}")
+                else:
+                    logging.debug(f"No counts found for '{match}'")
 
     logging.debug(f"Aggregated counts: {aggregated_counts}")
     return aggregated_counts
