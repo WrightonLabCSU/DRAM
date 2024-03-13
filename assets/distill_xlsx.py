@@ -105,41 +105,38 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
 
 def fetch_matching_ec_numbers(db_name, partial_ec_number):
     """
-    Fetch all matching EC numbers for a given partial EC number from the database.
-    This function first fetches all gene_id entries, then filters them in Python to find matches.
+    Fetch all matching EC numbers for a given partial EC number from the database,
+    parsing compound gene_id entries containing multiple EC numbers.
     """
-    # Open a connection to the SQLite database
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-    
-    # Fetch all gene_id values from the database
-    cursor.execute("SELECT DISTINCT gene_id FROM annotations")
-    all_genes = cursor.fetchall()
-    
+
+    # Retrieve all gene_id entries from the annotations table
+    cursor.execute("SELECT gene_id FROM annotations")
+    all_gene_ids = cursor.fetchall()
+
     # Close the database connection
     conn.close()
-    
-    # Prepare the partial EC number for matching
-    partial_ec_clean = partial_ec_number.replace("EC:", "").strip("-")
-    
-    # Initialize an empty list to store matches
-    matching_ec_numbers = []
-    
-    # Loop through all gene_id values to find matches
-    for gene_tuple in all_genes:
-        gene_id = gene_tuple[0]
-        # Split the gene_id into individual EC numbers
-        ec_numbers = gene_id.split(';')
-        for ec_number in ec_numbers:
-            ec_clean = ec_number.strip().replace("EC:", "")
-            # Check if the EC number starts with the partial EC pattern
+
+    # Clean up the partial EC number for matching
+    partial_ec_clean = partial_ec_number.replace("EC:", "").rstrip("-")
+
+    # Initialize an empty list for matches
+    matching_ec_numbers = set()
+
+    # Iterate over retrieved gene_id entries
+    for gene_tuple in all_gene_ids:
+        # Split compound gene_id entry into individual EC numbers
+        ec_numbers = gene_tuple[0].split(";")
+        for ec in ec_numbers:
+            ec_clean = ec.strip().replace("EC:", "")
+            # Check if the EC number starts with the cleaned partial EC pattern
             if ec_clean.startswith(partial_ec_clean):
-                matching_ec_numbers.append("EC:" + ec_clean)
-    
-    # Remove duplicates from the list
-    matching_ec_numbers = list(set(matching_ec_numbers))
-    
-    return matching_ec_numbers
+                matching_ec_numbers.add("EC:" + ec_clean)
+
+    # Convert set to list to return
+    return list(matching_ec_numbers)
+
 
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
