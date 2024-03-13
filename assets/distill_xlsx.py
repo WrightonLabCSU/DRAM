@@ -38,28 +38,6 @@ def sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts):
                 aggregated_counts[col] = 0
             aggregated_counts[col] += gene_counts[col].sum()
 
-def aggregate_counts(gene_ids, target_id_counts_df, db_name):
-    aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
-    # Fetch all gene IDs from the database to ensure we're working with valid IDs
-    all_gene_ids = fetch_all_gene_ids(db_name)
-
-    for gene_id in gene_ids:
-        # Handle partial EC numbers by fetching all matching full EC numbers
-        if is_partial_ec_number(gene_id):
-            partial_ec_pattern = gene_id.replace("EC:", "").replace("-", "%")
-            matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
-        else:
-            # Direct match for non-partial EC numbers or gene IDs
-            matching_ec_numbers = [gene_id] if gene_id in all_gene_ids else []
-
-        # Aggregate counts for all matching EC numbers or gene IDs
-        for match in matching_ec_numbers:
-            match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
-            for col in aggregated_counts.keys():
-                aggregated_counts[col] += match_counts[col].sum()
-
-    return aggregated_counts
-
 def compile_target_id_counts(target_id_counts):
     """Compile target ID counts from the specified TSV file."""
     return pd.read_csv(target_id_counts, sep='\t')
@@ -106,36 +84,6 @@ def fetch_all_gene_ids(db_name):
     conn.close()
     return all_gene_ids
 
-def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
-    processed_rows = []
-    any_gene_identified = False
-
-    for _, row in df_topic.iterrows():
-        gene_ids = split_gene_ids(row['gene_id'])
-        # Filter gene IDs to those found in the database or that are partial EC numbers
-        valid_gene_ids = [gene_id for gene_id in gene_ids if gene_id in fetch_all_gene_ids(db_name) or is_partial_ec_number(gene_id)]
-
-        if not valid_gene_ids:
-            continue
-
-        aggregated_counts = aggregate_counts(valid_gene_ids, target_id_counts_df, db_name)
-        any_gene_identified = True
-
-        # Update row with aggregated counts
-        updated_row = row.to_dict()
-        for sample_col, count in aggregated_counts.items():
-            updated_row[sample_col] = count
-        processed_rows.append(updated_row)
-
-    if not any_gene_identified:
-        # If no genes were identified, return a placeholder row
-        placeholder_row = {"gene_id": "No genes identified for this distill sheet"}
-        for col in target_id_counts_df.columns[1:]:
-            placeholder_row[col] = 0
-        return pd.DataFrame([placeholder_row])
-
-    return pd.DataFrame(processed_rows)
-
 def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene_ids_in_db):
     """
     Filters gene_ids to those found in the annotations database and aggregates their counts.
@@ -155,6 +103,76 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
 
     return filtered_gene_ids, aggregated_counts
 
+def fetch_matching_ec_numbers(db_name, partial_ec_number):
+    """
+    Fetch all matching EC numbers from the database for a given partial EC number.
+    """
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    pattern = partial_ec_number.replace("EC:", "").replace("-", "%")
+    query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+    cursor.execute(query, (pattern,))
+    matching_ec_numbers = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    logging.debug(f"Fetched matching EC numbers for {partial_ec_number}: {matching_ec_numbers}")
+    return matching_ec_numbers
+
+def aggregate_counts(gene_ids, target_id_counts_df, db_name):
+    """
+    Aggregate counts for each gene ID or partial EC number.
+    """
+    aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
+    all_gene_ids = fetch_all_gene_ids(db_name)
+
+    for gene_id in gene_ids:
+        if is_partial_ec_number(gene_id):
+            partial_ec_pattern = gene_id.replace("EC:", "").replace("-", "%")
+            matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
+            logging.debug(f"Partial EC number '{gene_id}' matches: {matching_ec_numbers}")
+        else:
+            matching_ec_numbers = [gene_id] if gene_id in all_gene_ids else []
+
+        for match in matching_ec_numbers:
+            match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
+            if not match_counts.empty:
+                for col in aggregated_counts.keys():
+                    aggregated_counts[col] += match_counts[col].sum()
+            else:
+                logging.debug(f"No counts found for '{match}'")
+
+    logging.debug(f"Aggregated counts: {aggregated_counts}")
+    return aggregated_counts
+
+def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
+    """
+    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers.
+    """
+    processed_rows = []
+    any_gene_identified = False
+
+    for _, row in df_topic.iterrows():
+        gene_ids = split_gene_ids(row['gene_id'])
+        valid_gene_ids = [gene_id for gene_id in gene_ids if gene_id in fetch_all_gene_ids(db_name) or is_partial_ec_number(gene_id)]
+
+        if not valid_gene_ids:
+            continue
+
+        logging.debug(f"Processing row with gene_ids: {gene_ids}")
+        aggregated_counts = aggregate_counts(valid_gene_ids, target_id_counts_df, db_name)
+        any_gene_identified = True
+
+        updated_row = row.to_dict()
+        for sample_col, count in aggregated_counts.items():
+            updated_row[sample_col] = count
+        processed_rows.append(updated_row)
+
+    if not any_gene_identified:
+        placeholder_row = {"gene_id": "No genes identified for this distill sheet"}
+        for col in target_id_counts_df.columns[1:]:
+            placeholder_row[col] = 0
+        processed_rows = [placeholder_row]
+
+    return pd.DataFrame(processed_rows)
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
@@ -304,16 +322,6 @@ def add_optional_sheets(wb, args):
 
 def is_partial_ec_number(gene_id):
     return gene_id.startswith("EC:") and gene_id.endswith("-")
-
-def fetch_matching_ec_numbers(db_name, partial_ec_number):
-    conn = sqlite3.connect(db_name)
-    cursor = conn.cursor()
-    pattern = partial_ec_number.replace("EC:", "").replace("-", "%")  # Convert EC:4.1.- to 4.1.%
-    query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
-    cursor.execute(query, (pattern,))
-    matching_ec_numbers = [row[0] for row in cursor.fetchall()]
-    conn.close()
-    return matching_ec_numbers
 
 def split_gene_ids(gene_id_field):
     # This function will split the gene_id field into individual gene IDs or EC numbers

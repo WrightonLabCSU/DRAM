@@ -107,27 +107,29 @@ def aggregate_sample_sequences(sample_files):
         for seq_record in SeqIO.parse(file_path, "fasta"):
             sequences[seq_record.id] = seq_record.seq
     return sequences
-
 def generate_gbk(samples_annotations, database_list, fna_directory):
     """
     Generate GBK files for each sample, containing all annotations for that sample.
     """
+    print("Starting GBK generation...")  # Debug statement
     os.makedirs("GBK", exist_ok=True)  # Ensure the output directory exists
 
     for sample, annotations in samples_annotations.items():
-        # Find and process the .fna file for the current sample
+        print(f"Processing sample: {sample}")  # Debug statement
         sample_fna_files = find_sample_fna_files(sample, fna_directory)
+        print(f"Found .fna files for {sample}: {sample_fna_files}")  # Debug statement
         sequences = aggregate_sample_sequences(sample_fna_files)  # This should map sequence IDs to sequences
+        print(f"Aggregated sequences for {sample}: {list(sequences.keys())}")  # Debug statement
 
         # Initialize a SeqRecord for the sample
         seq_record = SeqRecord(Seq(""), id=sample, description=f"Generated GBK file for {sample}",
                                annotations={"molecule_type": "DNA"})  # Adjust 'molecule_type' as necessary
 
-        # Iterate over annotations and match them to sequences
         for annotation in annotations:
             query_id = annotation['query_id']
+            print(f"Processing annotation {query_id} for {sample}")  # Debug statement
             if query_id in sequences:
-                # Create a feature for this annotation
+                print(f"Match found for {query_id} in {sample}")  # Debug statement
                 sequence = sequences[query_id]  # Get the sequence for this gene
                 feature_location = FeatureLocation(start=int(annotation['start_position']) - 1,
                                                    end=int(annotation['stop_position']),
@@ -135,15 +137,23 @@ def generate_gbk(samples_annotations, database_list, fna_directory):
                 qualifiers = format_qualifiers(annotation, database_list)
                 feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
                 seq_record.features.append(feature)
+            else:
+                print(f"No match found for {query_id} in {sample}")  # Debug statement
 
-        # At this point, 'seq_record' contains features for all matched annotations but lacks a complete sequence.
-        # If you intend to represent the entire sample's sequence, you need to adjust how sequences are aggregated and set.
-        # The simplest approach is to concatenate all sequences, but this may not reflect the biological reality.
+        if sequences:
+            # Assuming a single, representative sequence is sufficient per sample
+            representative_seq = next(iter(sequences.values()))
+            seq_record.seq = representative_seq
+            print(f"Set representative sequence for {sample}: {repr(representative_seq[:50])}...")  # Debug statement
+        else:
+            print(f"No sequences found for {sample}, GBK file will be empty!")  # Debug statement
 
         # Output the GBK file for this sample
         output_filename = f"GBK/{sample}.gbk"
         with open(output_filename, "w") as output_handle:
             SeqIO.write(seq_record, output_handle, "genbank")
+        print(f"GBK file generated for {sample}: {output_filename}")  # Debug statement
+
 
 def main():
     args = parse_arguments()
