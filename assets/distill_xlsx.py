@@ -102,21 +102,22 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
                 sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts)
 
     return filtered_gene_ids, aggregated_counts
+import logging
 
 def fetch_matching_ec_numbers(db_name, partial_ec_number):
     """
     Fetch all matching EC numbers for a given partial EC number from the database,
     parsing compound gene_id entries containing multiple EC numbers.
     """
+    logging.debug(f"Starting fetch_matching_ec_numbers for {partial_ec_number}")
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
     # Retrieve all gene_id entries from the annotations table
-    cursor.execute("SELECT gene_id FROM annotations")
+    cursor.execute("SELECT DISTINCT gene_id FROM annotations")
     all_gene_ids = cursor.fetchall()
 
-    # Close the database connection
-    conn.close()
+    logging.debug(f"Fetched {len(all_gene_ids)} gene_id entries from database.")
 
     # Clean up the partial EC number for matching
     partial_ec_clean = partial_ec_number.replace("EC:", "").rstrip("-")
@@ -132,12 +133,18 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
             ec_clean = ec.strip().replace("EC:", "")
             # Check if the EC number starts with the cleaned partial EC pattern
             if ec_clean.startswith(partial_ec_clean):
-                matching_ec_numbers.add("EC:" + ec_clean)
+                full_ec = "EC:" + ec_clean
+                matching_ec_numbers.add(full_ec)
+                logging.debug(f"Matched {full_ec} with partial EC {partial_ec_number}")
+
+    if not matching_ec_numbers:
+        logging.debug(f"No matches found for partial EC {partial_ec_number}")
 
     # Convert set to list to return
-    return list(matching_ec_numbers)
-
-
+    matching_list = list(matching_ec_numbers)
+    logging.debug(f"Returning matches for '{partial_ec_number}': {matching_list}")
+    conn.close()
+    return matching_list
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
