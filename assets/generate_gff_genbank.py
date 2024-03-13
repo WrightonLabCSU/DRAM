@@ -22,6 +22,7 @@ def parse_arguments():
 
 def parse_samples_and_paths(samples_paths):
     """Parses the alternating list of sample names and .fna file paths into a structured dictionary."""
+    # This function already expects samples_paths to be a list
     iterator = iter(samples_paths)
     return dict(zip(iterator, iterator))
 
@@ -162,11 +163,8 @@ def main():
         for row in reader:
             samples_annotations[row['sample']].append(row)
 
-    # Here, you need to ensure the fna_directory is correctly defined or passed
-    # This could be another command line argument, or it could be a predefined value within your script
-    # Parse sample names and .fna file paths from the specified file
-    with open(args.samples_paths, 'r') as f:
-        samples_and_paths = parse_samples_and_paths(args.samples_paths)
+    # Directly parse the samples and paths passed as arguments
+    samples_and_paths = parse_samples_and_paths(args.samples_paths)
 
     if args.gbk:
         generate_gbk(samples_annotations, args.database_list, samples_and_paths)
@@ -174,7 +172,6 @@ def main():
     if args.gff:
         generate_gff(samples_annotations, args.database_list)
 
-# Make sure this fna_directory path is correctly passed to the generate_gbk function
 
 if __name__ == "__main__":
     main()
