@@ -142,6 +142,7 @@ def aggregate_counts(gene_ids, target_id_counts_df, db_name):
         logging.debug(f"Starting aggregate_counts for gene IDs: {gene_ids}")
         if is_partial_ec_number(gene_id):
             partial_ec_pattern = gene_id.replace("EC:", "").replace("-", "%")
+            logging.debug(f"Partial EC pattern for '{gene_id}': {partial_ec_pattern}")
             matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
             logging.debug(f"Partial EC number '{gene_id}' matches: {matching_ec_numbers}")
         else:
