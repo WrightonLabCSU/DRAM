@@ -1,6 +1,8 @@
 import argparse
 import csv
 from collections import defaultdict
+import os
+import glob
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, FeatureLocation
@@ -51,9 +53,70 @@ def generate_gff(samples_annotations, database_list):
                 gff_line = f"{annotation['query_id']}\t.\tgene\t{annotation['start_position']}\t{annotation['end_position']}\t.\t{strand}\t.\t{attributes_str}\n"
                 gff_file.write(gff_line)
 
-def generate_gbk(samples_annotations, database_list):
-    """Placeholder function for GBK file generation."""
-    print("GBK generation not implemented yet.")
+def parse_fna_sequence(fna_file_path):
+    """Parse the .fna file to get sequences indexed by their header name."""
+    sequences = {}
+    for seq_record in SeqIO.parse(fna_file_path, "fasta"):
+        # The header name is directly used as the key
+        header_name = seq_record.id
+        sequences[header_name] = seq_record.seq
+    return sequences
+
+def format_qualifiers(annotation, database_list):
+    """Format database-specific annotations into qualifiers."""
+    qualifiers = {}
+    for key, value in annotation.items():
+        if key.endswith('_id') or key.endswith('_description'):
+            db_name = key.split('_')[0]
+            upper_db_name = db_name.upper()
+            if database_list is None or db_name in database_list:
+                if key.endswith('_id'):
+                    # Use the upper-cased database name in parentheses as part of the key
+                    description_key = f"{db_name}_description"
+                    desc = annotation.get(description_key, "NA")
+                    qualifiers[f"({upper_db_name}) {db_name}_id"] = [value]
+                    qualifiers[f"({upper_db_name}) description"] = [desc]
+    return qualifiers
+
+def find_sample_fna_files(sample, fna_directory):
+    """Find all .fna files starting with the sample name in the specified directory."""
+    pattern = os.path.join(fna_directory, f"{sample}*.fna")
+    return glob.glob(pattern)
+
+def aggregate_sample_sequences(sample_files):
+    """Aggregate sequences from multiple .fna files for a sample."""
+    sequences = []
+    for file_path in sample_files:
+        for seq_record in SeqIO.parse(file_path, "fasta"):
+            sequences.append(seq_record)
+    return sequences
+
+def generate_gbk(samples_annotations, database_list, fna_directory):
+    """Generate GBK files for each sample, containing all annotations for that sample."""
+    for sample, annotations in samples_annotations.items():
+        sample_fna_files = find_sample_fna_files(sample, fna_directory)
+        sequences = aggregate_sample_sequences(sample_fna_files)
+        
+        # Create a SeqRecord for the sample
+        seq_record = SeqRecord(Seq(""), id=sample, description="Generated GBK file for " + sample)
+        
+        for seq in sequences:
+            for annotation in annotations:
+                if annotation['query_id'] == seq.id:  # Match sequence to annotation
+                    feature_location = FeatureLocation(start=int(annotation['start_position']) - 1,
+                                                       end=int(annotation['end_position']),
+                                                       strand=1 if annotation['strandedness'] == '+1' else -1)
+                    qualifiers = format_qualifiers(annotation, database_list)
+                    feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
+                    seq_record.features.append(feature)
+        
+        # Assuming sequences are concatenated; adjust if sequences should be handled differently
+        seq_record.seq = Seq("".join([str(seq.seq) for seq in sequences]))
+
+        # Output the GBK file for this sample
+        output_filename = f"GBK/{sample}.gbk"
+        with open(output_filename, "w") as output_handle:
+            SeqIO.write(seq_record, output_handle, "genbank")
 
 def main():
     args = parse_arguments()

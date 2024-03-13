@@ -8,7 +8,7 @@ process GENERATE_GFF_GENBANK {
 
     output:
     path( "GFF/" ), emit: output_gff, optional: true
-    path( "GBK/" ), emit: output_gff, optional: true
+    path( "GBK/" ), emit: output_gbk, optional: true
 
 
     script:
@@ -17,6 +17,9 @@ process GENERATE_GFF_GENBANK {
     def gbk_flag = ${params.generate_gbk} ? "--gbk" : ""
 
     """
+    mkdir GFF
+    mkdir GBK
+
     python ${ch_generate_gff_gbk} ${flags.join(' ')} --database_list ${database_list} --annotations raw-annotations.tsv
     """
 }
