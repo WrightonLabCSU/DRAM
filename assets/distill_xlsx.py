@@ -65,25 +65,57 @@ def file_contains_data(file_path):
         print(f"Error reading {file_path}: {e}")
         return False
 
+def aggregate_counts(gene_ids, target_id_counts_df, db_name):
+    """
+    Aggregate counts for each gene ID or partial EC number.
+    """
+    aggregated_counts = {}
+    for gene_id in gene_ids:
+        if is_partial_ec_number(gene_id):
+            # For partial EC numbers, fetch all matching EC numbers and aggregate their counts
+            matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
+            for matching_ec_number in matching_ec_numbers:
+                sum_counts_for_gene_id(matching_ec_number, target_id_counts_df, aggregated_counts)
+        else:
+            # For regular gene IDs, aggregate their counts directly
+            sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts)
+    return aggregated_counts
+
+def sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts):
+    """
+    Sum counts for a single gene ID and update the aggregated_counts dictionary.
+    """
+    if gene_id in target_id_counts_df['gene_id'].values:
+        gene_counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id].iloc[0]
+        for col in target_id_counts_df.columns[1:]:  # Skip the gene_id column
+            if col in aggregated_counts:
+                aggregated_counts[col] += gene_counts[col]
+            else:
+                aggregated_counts[col] = gene_counts[col]
+
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
-    """Process each topic within a distill sheet for composite gene_id entries and partial EC numbers."""
+    """
+    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers.
+    """
     processed_rows = []
     
     for _, row in df_topic.iterrows():
-        # Handle composite gene IDs and partial EC numbers
         gene_ids = split_gene_ids(row['gene_id'])
-        
-        # Aggregate counts for all matching gene IDs or EC numbers
         aggregated_counts = aggregate_counts(gene_ids, target_id_counts_df, db_name)
         
-        # Only proceed if there are any aggregated counts to add
-        if aggregated_counts:
-            new_row = row.copy()
-            for col, value in aggregated_counts.items():
-                new_row[col] = value
-            processed_rows.append(new_row)
+        # Update the row with aggregated counts
+        new_row = row.to_dict()
+        for sample_col, count in aggregated_counts.items():
+            new_row[sample_col] = count
+        processed_rows.append(new_row)
 
-    return pd.DataFrame(processed_rows)
+    df_processed = pd.DataFrame(processed_rows)
+    # Ensure we don't lose any columns during processing
+    for col in target_id_counts_df.columns[1:]:  # Skip the gene_id column
+        if col not in df_processed:
+            df_processed[col] = 0
+    return df_processed
+
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
@@ -249,27 +281,6 @@ def split_gene_ids(gene_id_field):
     # This function will split the gene_id field into individual gene IDs or EC numbers
     # Handle different separators and strip whitespace
     return [gene_id.strip() for gene_id in re.split(r'[;,]\s*', gene_id_field)]
-
-def aggregate_counts(gene_ids, target_id_counts_df, db_name):
-    # This function will aggregate counts for each gene ID or partial EC number
-    # It should fetch matching gene IDs for partial EC numbers and sum their counts
-    # Implement the logic to match gene IDs and sum counts from target_id_counts_df
-    
-    # Placeholder for aggregated counts logic
-    aggregated_counts = {}
-    for gene_id in gene_ids:
-        if is_partial_ec_number(gene_id):
-            matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
-            for ec_number in matching_ec_numbers:
-                sum_counts_for_gene_id(ec_number, target_id_counts_df, aggregated_counts)
-        else:
-            sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts)
-    return aggregated_counts
-
-def sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts):
-    # Sum counts for a single gene ID and update aggregated_counts dictionary
-    # Implement the logic to fetch and sum counts from target_id_counts_df for gene_id
-    pass
 
 def main():
     args = parse_arguments()
