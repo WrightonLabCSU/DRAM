@@ -172,7 +172,8 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
             continue
 
         logging.debug(f"Processing row with gene_ids: {gene_ids}")
-        aggregated_counts = aggregate_counts(valid_gene_ids, target_id_counts_df, db_name)
+        # Call filter_and_aggregate_counts for valid gene IDs
+        filtered_gene_ids, aggregated_counts = filter_and_aggregate_counts(valid_gene_ids, target_id_counts_df, db_name, fetch_all_gene_ids(db_name))
         any_gene_identified = True
 
         updated_row = row.to_dict()
@@ -187,6 +188,7 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
         processed_rows = [placeholder_row]
 
     return pd.DataFrame(processed_rows)
+
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
@@ -363,11 +365,6 @@ def main():
     
     # Fetch all gene IDs from the annotations database
     all_gene_ids_in_db = fetch_all_gene_ids(args.db_name)
-
-    # Call filter_and_aggregate_counts
-    filtered_gene_ids, aggregated_counts = filter_and_aggregate_counts(
-        all_gene_ids_in_db, target_id_counts_df, args.db_name, all_gene_ids_in_db
-    )
     
     # Process each distill sheet
     distill_data = read_distill_sheets(args.distill_sheets)
