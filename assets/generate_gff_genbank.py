@@ -1,6 +1,10 @@
 import argparse
 import csv
 from collections import defaultdict
+from Bio import SeqIO
+from Bio.SeqRecord import SeqRecord
+from Bio.SeqFeature import SeqFeature, FeatureLocation
+from Bio.Seq import Seq
 
 def parse_arguments():
     """Parse command line arguments."""

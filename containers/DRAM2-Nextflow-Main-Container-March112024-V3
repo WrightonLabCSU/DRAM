@@ -68,6 +68,7 @@ From: ubuntu:22.04
     conda install ruby=3.1.2
     conda install parallel=20221122    
     conda install trnascan-se=2.0.12
+    conda install -c conda-forge biopython=1.83
 
     # Commented out if conda install into base does not work
     #conda create -n trnascan python=3.10 -y 

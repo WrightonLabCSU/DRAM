@@ -6,7 +6,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 import logging
 import re
 
-# Setup logging to display messages to console
+# Setup logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def parse_arguments():
@@ -14,34 +14,35 @@ def parse_arguments():
     parser.add_argument('--target_id_counts', type=str, help='Path to the target_id_counts.tsv file.')
     parser.add_argument('--db_name', type=str, help='Name of the SQLite database file.')
     parser.add_argument('--distill_sheets', nargs='+', help='List of paths to distill sheets.')
-    parser.add_argument('--rrna_file', type=str, help='Path to the rrna_sheet.tsv file.', default=None)
-    parser.add_argument('--combined_rrna_file', type=str, help='Path to the combined rRNA TSV file.', default=None)
-    parser.add_argument('--trna_file', type=str, help='Path to the trna_sheet.tsv file.', default=None)
+    parser.add_argument('--rrna_file', type=str, default=None, help='Path to the rrna_sheet.tsv file.')
+    parser.add_argument('--combined_rrna_file', type=str, default=None, help='Path to the combined rRNA TSV file.')
+    parser.add_argument('--trna_file', type=str, default=None, help='Path to the trna_sheet.tsv file.')
     parser.add_argument('--output_file', type=str, help='Path to the output XLSX file.')
-    parser.add_argument('--quast', type=str, help='Path to the QUAST stats TSV file.', default=None)
+    parser.add_argument('--quast', type=str, default=None, help='Path to the QUAST stats TSV file.')
     return parser.parse_args()
 
 def sum_counts_for_multi_gene_ids(target_id_counts_df, gene_ids):
-    # Initialize a dictionary to hold the sum of counts for each sample
+    """Sum counts for each gene ID across all samples."""
     summed_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
     for gene_id in gene_ids:
-        # Find counts for each gene_id
         counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id]
-        # Sum counts across all samples
-        for col in summed_counts.keys():
+        for col in summed_counts:
             summed_counts[col] += counts[col].sum() if not counts.empty else 0
     return summed_counts
 
 def compile_target_id_counts(target_id_counts):
+    """Compile target ID counts from the specified TSV file."""
     return pd.read_csv(target_id_counts, sep='\t')
 
 def compile_quast_info(quast_file):
+    """Compile QUAST info if the file contains data."""
     if not file_contains_data(quast_file):
         print(f"Skipping QUAST processing for {quast_file} as it contains 'NULL'.")
         return None
     return pd.read_csv(quast_file, sep='\t')
 
 def read_distill_sheets(distill_sheets):
+    """Read distill sheets and compile them into a dictionary."""
     sheets_data = {}
     for sheet_path in distill_sheets:
         if file_contains_data(sheet_path):
@@ -55,6 +56,7 @@ def read_distill_sheets(distill_sheets):
     return sheets_data
 
 def file_contains_data(file_path):
+    """Check if the file contains data other than 'NULL'."""
     try:
         with open(file_path, 'r') as f:
             first_line = f.readline().strip()
@@ -62,6 +64,19 @@ def file_contains_data(file_path):
     except Exception as e:
         print(f"Error reading {file_path}: {e}")
         return False
+
+def process_distill_sheet_topic(df_topic, target_id_counts_df):
+    """Process each topic within a distill sheet for composite gene_id entries."""
+    # Split composite gene_ids and sum their counts, while retaining the original gene_id format
+    df_topic['summed_counts'] = df_topic['gene_id'].apply(lambda x: sum_counts_for_multi_gene_ids(target_id_counts_df, re.split(r'[;,]\s*', x)))
+    
+    # Apply summed counts to each column appropriately
+    for col in target_id_counts_df.columns:
+        if col != 'gene_id':
+            df_topic[col] = df_topic['summed_counts'].apply(lambda counts: counts.get(col, 0))
+    
+    return df_topic.drop(columns=['summed_counts'], errors='ignore')
+
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
@@ -124,33 +139,6 @@ def prepare_ec_like_patterns(ec_number):
             patterns.append(pattern)
     logging.debug(f"Generated patterns for EC number {ec_number}: {patterns}")
     return patterns
-
-# Used for partial EC matching - good in theory but can easily produce too many hits for XLSX
-# def query_annotations_for_gene_ids(db_name, ids, column_type):
-#     conn = sqlite3.connect(db_name)
-#     df_result = pd.DataFrame()
-
-#     for id_value in ids:
-#         logging.debug(f"Processing ID: {id_value} as {column_type}")
-#         if column_type == 'ec_id':
-#             like_patterns = prepare_ec_like_patterns(id_value)
-#             for pattern in like_patterns:
-#                 query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ? ESCAPE '\\'"
-#                 logging.debug(f"Executing query with pattern: {pattern}")
-#                 df_partial = pd.read_sql_query(query, conn, params=(pattern,))
-#                 if not df_partial.empty:
-#                     logging.debug(f"Found matches for pattern {pattern}: {df_partial['gene_id'].tolist()}")
-#                 df_result = pd.concat([df_result, df_partial], ignore_index=True)
-#         else:
-#             query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id = ?"
-#             logging.debug(f"Executing query for exact match: {id_value}")
-#             df_partial = pd.read_sql_query(query, conn, params=(id_value,))
-#             df_result = pd.concat([df_result, df_partial], ignore_index=True)
-
-#     df_result.drop_duplicates(inplace=True)
-#     conn.close()
-#     logging.debug(f"Final matched gene_ids: {df_result['gene_id'].tolist()}")
-#     return df_result
 
 def query_annotations_for_gene_ids(db_name, ids):
     conn = sqlite3.connect(db_name)
@@ -229,15 +217,21 @@ def update_genome_stats_with_rrna(genome_stats_df, combined_rrna_file):
         genome_stats_df = pd.merge(genome_stats_df, rrna_summary, on="sample", how="left")
     return genome_stats_df
 
+def add_optional_sheets(wb, args):
+    """Adds optional rRNA and tRNA sheets if data is available."""
+    if args.rrna_file and file_contains_data(args.rrna_file):
+        add_sheet_from_dataframe(wb, pd.read_csv(args.rrna_file, sep='\t'), 'rRNA')
+    
+    if args.trna_file and file_contains_data(args.trna_file):
+        add_sheet_from_dataframe(wb, pd.read_csv(args.trna_file, sep='\t'), 'tRNA')
+
 def main():
     args = parse_arguments()
 
     wb = Workbook()
     wb.remove(wb.active)  # Remove the default sheet
 
-    # Compile genome stats and add as a sheet
     genome_stats_df = compile_genome_stats(args.db_name)
-    # Update genome_stats with additional data as before
     genome_stats_df = update_genome_stats_with_rrna_trna(genome_stats_df, args.rrna_file, args.trna_file)
     genome_stats_df = update_genome_stats_with_rrna(genome_stats_df, args.combined_rrna_file)
     if args.quast:
@@ -246,55 +240,23 @@ def main():
             genome_stats_df = pd.merge(genome_stats_df, quast_data, on="sample", how="left")
     add_sheet_from_dataframe(wb, genome_stats_df, "Genome_Stats")
 
-    # Read target ID counts
     target_id_counts_df = compile_target_id_counts(args.target_id_counts)
-    
-    # Process each distill sheet
     distill_data = read_distill_sheets(args.distill_sheets)
+
     for sheet_path, info in distill_data.items():
         df_distill = info['dataframe']
-        column_type = info['column_type']
+        # No need for column_type as we're directly working with 'gene_id'
         
-        # Iterate through topics within each distill sheet
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
-            
-            # Prepare df_topic by expanding multi-gene entries into separate rows (if needed)
-            # and then summing counts for each gene_id from target_id_counts
-            expanded_rows = []  # This will store rows after expanding and summing counts
-            for _, row in df_topic.iterrows():
-                gene_ids = [x.strip() for x in re.split(';|,', row[column_type])]
-                summed_counts = sum_counts_for_multi_gene_ids(target_id_counts_df, gene_ids)
-                # Create a new row for each gene_id with the summed counts
-                for gene_id in gene_ids:
-                    new_row = row.copy()
-                    new_row[column_type] = gene_id
-                    for sample, count in summed_counts.items():
-                        new_row[sample] = count
-                    expanded_rows.append(new_row)
-            
-            # Convert expanded_rows to DataFrame
-            df_expanded = pd.DataFrame(expanded_rows)
-            # Ensure there's no duplication of effort in merging df_expanded with df_matched_gene_ids
-            # and target_id_counts_df since we already have the summed counts correctly associated
-            
-            # Drop unnecessary columns and prepare for adding as new sheet
-            df_final = df_expanded.drop(columns=['query_id', 'sample', 'taxonomy', 'Completeness', 'Contamination'], errors='ignore')
-            
-            # Add final dataframe as a new sheet in the workbook
+            df_topic_final = process_distill_sheet_topic(df_topic, target_id_counts_df)
             sheet_name = topic[:31]  # Limit sheet name to 31 characters
-            add_sheet_from_dataframe(wb, df_final, sheet_name)
+            add_sheet_from_dataframe(wb, df_topic_final, sheet_name)
 
     # Add rRNA and tRNA sheets if available
-    if args.rrna_file and file_contains_data(args.rrna_file):
-        add_sheet_from_dataframe(wb, pd.read_csv(args.rrna_file, sep='\t'), 'rRNA')
-    
-    if args.trna_file and file_contains_data(args.trna_file):
-        add_sheet_from_dataframe(wb, pd.read_csv(args.trna_file, sep='\t'), 'tRNA')
+    add_optional_sheets(wb, args)
 
-    # Save the workbook
     wb.save(args.output_file)
-
 
 if __name__ == '__main__':
     main()
