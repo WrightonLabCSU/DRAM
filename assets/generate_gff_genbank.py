@@ -155,6 +155,57 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     conn.close()
     return list(matching_ec_numbers)
 
+def generate_gbk(samples_annotations, database_list, samples_and_paths):
+    print("Starting GBK generation...")
+    os.makedirs("GBK", exist_ok=True)
+
+    print(f"Cleaned and parsed samples and paths: {samples_and_paths}")
+
+    for sample, annotations in samples_annotations.items():
+        print(f"\nProcessing sample: {sample}")
+
+        if sample in samples_and_paths:
+            fna_file_path = samples_and_paths[sample]
+            print(f"Using .fna file for {sample}: {fna_file_path}")
+
+            if os.path.exists(fna_file_path):
+                sequences = parse_fna_sequence(fna_file_path)
+
+                # Initialize an empty SeqRecord with basic info
+                seq_record = SeqRecord(Seq(""), id=sample, description=f"Generated GBK file for {sample}", annotations={"molecule_type": "DNA", "source": "DRAM2"})
+                
+                if annotations:
+                    metadata = annotations[0]  # Assuming shared metadata across each sample's annotations
+                    taxonomy_info = metadata.get('taxonomy', 'Not Available')
+                    seq_record.annotations["organism"] = taxonomy_info
+                    completeness_info = str(metadata.get('Completeness', 'Not Available'))
+                    contamination_info = str(metadata.get('Contamination', 'Not Available'))
+                    seq_record.annotations["note"] = f"Completeness: {completeness_info}; Contamination: {contamination_info}"
+
+                for annotation in annotations:
+                    query_id = annotation['query_id']
+                    if query_id in sequences:
+                        # Retrieve sequence for this annotation
+                        sequence = sequences[query_id]
+                        feature_location = FeatureLocation(start=int(annotation['start_position']) - 1, end=int(annotation['stop_position']), strand=1 if annotation['strandedness'] == '+1' else -1)
+                        qualifiers = format_qualifiers(annotation, database_list)
+                        feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
+                        seq_record.features.append(feature)
+
+                        # Concatenate sequence to SeqRecord.seq for the entire sample
+                        # This assumes sequences are non-overlapping and can be concatenated
+                        seq_record.seq += sequence
+
+                output_filename = f"GBK/{sample}.gbk"
+                with open(output_filename, "w") as output_handle:
+                    SeqIO.write([seq_record], output_handle, "genbank")
+                print(f"GBK file generated for {sample}: {output_filename}")
+            else:
+                print(f"File does not exist: {fna_file_path}")
+        else:
+            print(f"No .fna file path found for sample {sample}")
+
+
 def main():
     args = parse_arguments()
 
