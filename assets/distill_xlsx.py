@@ -66,26 +66,38 @@ def file_contains_data(file_path):
         return False
 
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
-    """Process each topic within a distill sheet for composite gene_id entries."""
-    # This function will now also need access to the annotations database to check for matches
+    """Process each topic within a distill sheet for composite gene_id entries and partial EC numbers."""
     processed_rows = []
-
+    
     for _, row in df_topic.iterrows():
-        # Splitting composite gene_ids considering different separators and strip any surrounding whitespaces
-        gene_ids = re.split(r'[;,]\s*', row['gene_id'])
-        # Checking which gene_ids have matches in the annotations database
-        matched_gene_ids = query_annotations_for_gene_ids(db_name, gene_ids)
+        original_gene_ids = row['gene_id']
+        # Splitting composite gene_ids and considering partial EC numbers
+        gene_ids = re.split(r'[;,]\s*', original_gene_ids)
         
-        if not matched_gene_ids.empty:
-            # If there are matched gene_ids, sum their counts
+        if any(is_partial_ec_number(gene_id) for gene_id in gene_ids):
+            # Handle partial EC numbers
+            all_matching_ec_numbers = []
+            for gene_id in gene_ids:
+                if is_partial_ec_number(gene_id):
+                    matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
+                    all_matching_ec_numbers.extend(matching_ec_numbers)
+                else:
+                    all_matching_ec_numbers.append(gene_id)
+            summed_counts = sum_counts_for_multi_gene_ids(target_id_counts_df, all_matching_ec_numbers)
+        else:
+            # Handle normal and full EC numbers
+            matched_gene_ids = query_annotations_for_gene_ids(db_name, gene_ids)
             summed_counts = sum_counts_for_multi_gene_ids(target_id_counts_df, matched_gene_ids['gene_id'].tolist())
-            # Update the row with these summed counts
+        
+        # Update row with summed counts if there are matched gene_ids
+        if summed_counts:
             for col in summed_counts:
                 row[col] = summed_counts[col]
             processed_rows.append(row)
 
     df_processed = pd.DataFrame(processed_rows)
     return df_processed
+
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
@@ -233,6 +245,19 @@ def add_optional_sheets(wb, args):
     
     if args.trna_file and file_contains_data(args.trna_file):
         add_sheet_from_dataframe(wb, pd.read_csv(args.trna_file, sep='\t'), 'tRNA')
+
+def is_partial_ec_number(gene_id):
+    return gene_id.startswith("EC:") and gene_id.endswith("-")
+
+def fetch_matching_ec_numbers(db_name, partial_ec_number):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    pattern = partial_ec_number.replace("EC:", "").replace("-", "%")  # Convert EC:4.1.- to 4.1.%
+    query = "SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
+    cursor.execute(query, (pattern,))
+    matching_ec_numbers = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return matching_ec_numbers
 
 def main():
     args = parse_arguments()
