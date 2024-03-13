@@ -254,11 +254,10 @@ def main():
 
     for sheet_path, info in distill_data.items():
         df_distill = info['dataframe']
-        # No need for column_type as we're directly working with 'gene_id'
         
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
-            df_topic_final = process_distill_sheet_topic(df_topic, target_id_counts_df)
+            df_topic_final = process_distill_sheet_topic(df_topic, target_id_counts_df, args.db_name)
             sheet_name = topic[:31]  # Limit sheet name to 31 characters
             add_sheet_from_dataframe(wb, df_topic_final, sheet_name)
 
