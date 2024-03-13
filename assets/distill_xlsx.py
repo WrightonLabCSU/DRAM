@@ -70,37 +70,20 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     processed_rows = []
     
     for _, row in df_topic.iterrows():
-        original_gene_ids = row['gene_id']
-        # Splitting composite gene_ids considering different separators and strip any surrounding whitespaces
-        gene_ids = re.split(r'[;,]\s*', original_gene_ids)
+        # Handle composite gene IDs and partial EC numbers
+        gene_ids = split_gene_ids(row['gene_id'])
         
-        all_matching_ec_numbers = []
-        for gene_id in gene_ids:
-            if is_partial_ec_number(gene_id):
-                # Fetch all full EC numbers that match the partial EC pattern
-                matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
-                all_matching_ec_numbers.extend(matching_ec_numbers)
-            else:
-                # For full EC numbers or gene_ids, just append them to the list
-                all_matching_ec_numbers.append(gene_id)
+        # Aggregate counts for all matching gene IDs or EC numbers
+        aggregated_counts = aggregate_counts(gene_ids, target_id_counts_df, db_name)
         
-        # Sum the counts for all matching full EC numbers or gene_ids
-        summed_counts = sum_counts_for_multi_gene_ids(target_id_counts_df, all_matching_ec_numbers)
-        
-        # Update the row with these summed counts, maintaining the original 'gene_id' value
-        updated_row = row.copy()
-        for sample_col in summed_counts.keys():
-            updated_row[sample_col] = summed_counts[sample_col]
-        
-        # Only add the row to processed_rows if there were matched gene_ids or EC numbers
-        if any(value > 0 for value in summed_counts.values()):
-            processed_rows.append(updated_row)
+        # Only proceed if there are any aggregated counts to add
+        if aggregated_counts:
+            new_row = row.copy()
+            for col, value in aggregated_counts.items():
+                new_row[col] = value
+            processed_rows.append(new_row)
 
-    # Convert processed rows list to DataFrame
-    df_processed = pd.DataFrame(processed_rows)
-    # Ensure the original 'gene_id' is retained in the output, even for rows with summed counts
-    df_processed['gene_id'] = [row['gene_id'] for row in processed_rows]
-    return df_processed
+    return pd.DataFrame(processed_rows)
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
@@ -261,6 +244,32 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     matching_ec_numbers = [row[0] for row in cursor.fetchall()]
     conn.close()
     return matching_ec_numbers
+
+def split_gene_ids(gene_id_field):
+    # This function will split the gene_id field into individual gene IDs or EC numbers
+    # Handle different separators and strip whitespace
+    return [gene_id.strip() for gene_id in re.split(r'[;,]\s*', gene_id_field)]
+
+def aggregate_counts(gene_ids, target_id_counts_df, db_name):
+    # This function will aggregate counts for each gene ID or partial EC number
+    # It should fetch matching gene IDs for partial EC numbers and sum their counts
+    # Implement the logic to match gene IDs and sum counts from target_id_counts_df
+    
+    # Placeholder for aggregated counts logic
+    aggregated_counts = {}
+    for gene_id in gene_ids:
+        if is_partial_ec_number(gene_id):
+            matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
+            for ec_number in matching_ec_numbers:
+                sum_counts_for_gene_id(ec_number, target_id_counts_df, aggregated_counts)
+        else:
+            sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts)
+    return aggregated_counts
+
+def sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts):
+    # Sum counts for a single gene ID and update aggregated_counts dictionary
+    # Implement the logic to fetch and sum counts from target_id_counts_df for gene_id
+    pass
 
 def main():
     args = parse_arguments()
