@@ -116,13 +116,6 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
     for sample, annotations in samples_annotations.items():
         print(f"\nProcessing sample: {sample}")
 
-        # Assuming at least one annotation exists to extract shared metadata
-        if annotations:
-            metadata = annotations[0]
-            taxonomy_info = metadata.get('taxonomy', 'Not Available')
-            completeness_info = str(metadata.get('Completeness', 'Not Available'))
-            contamination_info = str(metadata.get('Contamination', 'Not Available'))
-
         if sample in samples_and_paths:
             fna_file_path = samples_and_paths[sample]
             print(f"Using .fna file for {sample}: {fna_file_path}")
@@ -131,11 +124,29 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
                 sequences = parse_fna_sequence(fna_file_path)
                 seq_record = SeqRecord(Seq(""), id=sample, description=f"Generated GBK file for {sample}")
 
-                # Set additional metadata for GBK file here
-                seq_record.annotations["source"] = taxonomy_info
-                seq_record.annotations["organism"] = taxonomy_info
-                seq_record.annotations["note"] = f"Completeness: {completeness_info}; Contamination: {contamination_info}"
+                # Ensure the molecule_type is set for each SeqRecord
+                seq_record.annotations["molecule_type"] = "DNA"
 
+                # Set additional metadata for GBK file here
+                if annotations:
+                    metadata = annotations[0]  # Assuming shared metadata across each sample's annotations
+                    taxonomy_info = metadata.get('taxonomy', 'Not Available')
+                    completeness_info = str(metadata.get('Completeness', 'Not Available'))
+                    contamination_info = str(metadata.get('Contamination', 'Not Available'))
+                    
+                    seq_record.annotations["source"] = taxonomy_info
+                    seq_record.annotations["organism"] = taxonomy_info
+                    seq_record.annotations["note"] = f"Completeness: {completeness_info}; Contamination: {contamination_info}"
+
+                for annotation in annotations:
+                    query_id = annotation['query_id']
+                    if query_id in sequences:
+                        sequence = sequences[query_id]
+                        feature_location = FeatureLocation(start=int(annotation['start_position']) - 1, end=int(annotation['stop_position']), strand=1 if annotation['strandedness'] == '+1' else -1)
+                        qualifiers = format_qualifiers(annotation, database_list)
+                        feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
+                        seq_record.features.append(feature)
+                        
                 for annotation in annotations:
                     query_id = annotation['query_id']
                     if query_id in sequences:
