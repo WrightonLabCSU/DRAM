@@ -110,49 +110,59 @@ def aggregate_sample_sequences(sample_files):
 def generate_gbk(samples_annotations, database_list, samples_and_paths):
     """
     Generate GBK files for each sample, containing all annotations for that sample,
-    based on a direct mapping of samples to .fna file paths.
+    based on a mapping of samples to .fna file paths.
     """
     print("Starting GBK generation...")
     os.makedirs("GBK", exist_ok=True)
 
-    # Attempt to clean up and parse the samples and paths from the argument
-    cleaned_samples_paths = parse_samples_and_paths(samples_and_paths)
-
-    # Debug: Print cleaned and parsed samples and paths
-    print(f"Cleaned and parsed samples and paths: {cleaned_samples_paths}")
+    print(f"Cleaned and parsed samples and paths: {samples_and_paths}")
 
     for sample, annotations in samples_annotations.items():
-        print(f"Processing sample: {sample}")
+        print(f"\nProcessing sample: {sample}")
 
-        if sample in cleaned_samples_paths:
-            fna_file_path = cleaned_samples_paths[sample]
-            print(f"Attempting to use .fna file for {sample}: {fna_file_path}")
+        if sample in samples_and_paths:
+            fna_file_path = samples_and_paths[sample]
+            # Assuming the fna_file_path might not be absolute; adjust if your setup guarantees absolute paths
+            if not os.path.isabs(fna_file_path):
+                print(f"NOTE: The provided file path for {sample} is not absolute: {fna_file_path}")
+                fna_file_path = os.path.join(os.getcwd(), fna_file_path)
+                print(f"Attempting to resolve to absolute path: {fna_file_path}")
 
             if os.path.exists(fna_file_path):
-                print(f"File confirmed to exist: {fna_file_path}")
+                print(f"Confirmed .fna file exists for {sample}: {fna_file_path}")
                 sequences = parse_fna_sequence(fna_file_path)
                 print(f"Aggregated sequences for {sample}: {list(sequences.keys())}")
 
                 seq_record = SeqRecord(Seq(""), id=sample, description=f"Generated GBK file for {sample}", annotations={"molecule_type": "DNA"})
-
+                
                 for annotation in annotations:
                     query_id = annotation['query_id']
+                    print(f"Processing annotation {query_id} for {sample}")
+
                     if query_id in sequences:
+                        print(f"Match found for {query_id} in {sample}")
                         sequence = sequences[query_id]
                         feature_location = FeatureLocation(start=int(annotation['start_position']) - 1, end=int(annotation['stop_position']), strand=1 if annotation['strandedness'] == '+1' else -1)
                         qualifiers = format_qualifiers(annotation, database_list)
                         feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
                         seq_record.features.append(feature)
-                # Assuming a representative sequence covers all annotations for simplicity
-                seq_record.seq = next(iter(sequences.values()), Seq(""))
-                output_filename = f"GBK/{sample}.gbk"
-                with open(output_filename, "w") as output_handle:
-                    SeqIO.write(seq_record, output_handle, "genbank")
-                print(f"GBK file generated for {sample}: {output_filename}")
+                    else:
+                        print(f"No match found for {query_id} in {sample}")
+
+                if sequences:
+                    print(f"Setting sequences for {sample} in GBK file.")
+                    # Instead of setting one representative sequence, consider appending all sequences or revising the logic based on your needs
+                    output_filename = f"GBK/{sample}.gbk"
+                    with open(output_filename, "w") as output_handle:
+                        SeqIO.write(seq_record, output_handle, "genbank")
+                    print(f"GBK file generated for {sample}: {output_filename}")
+                else:
+                    print(f"No sequences found for {sample}, GBK file will be empty!")
             else:
-                print(f"File does not exist: {fna_file_path}")
+                print(f"File does not exist at resolved path: {fna_file_path}")
         else:
             print(f"No .fna file path found for sample {sample}")
+
 
 def main():
     args = parse_arguments()
