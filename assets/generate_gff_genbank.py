@@ -21,9 +21,14 @@ def parse_arguments():
     return args
 
 def parse_samples_and_paths(samples_paths):
-    """Parses the alternating list of sample names and .fna file paths into a structured dictionary."""
-    # This function already expects samples_paths to be a list
-    iterator = iter(samples_paths)
+    """
+    Cleans up and parses the provided list of sample names and .fna file paths into a structured dictionary.
+    """
+    # Attempt to clean up the input list by removing unwanted characters
+    cleaned_samples_paths = [item.strip("[]',") for item in samples_paths]
+    
+    # Convert the cleaned list into a dictionary
+    iterator = iter(cleaned_samples_paths)
     return dict(zip(iterator, iterator))
 
 def sanitize_description(description):

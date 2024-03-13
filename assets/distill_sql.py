@@ -47,7 +47,7 @@ def import_annotations(conn, file_path):
             for _, row in df[['query_id', 'sample', col] + extra_columns].dropna().iterrows():
                 # Check if the column name ends with '_EC' and prefix the value with 'EC:' if it does
                 if col.endswith('_EC'):
-                    gene_id = 'EC:' + str(row[col])
+                    gene_id = '' + str(row[col])
                 else:
                     gene_id = row[col]
                 
