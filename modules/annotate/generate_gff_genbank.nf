@@ -26,3 +26,4 @@ process GENERATE_GFF_GENBANK {
 
     python ${ch_generate_gff_gbk} ${flags.join(' ')} --samples_paths_file ${all_genes_fna} --database_list ${databases_list} --annotations ${raw_annotations}
     """
+}
