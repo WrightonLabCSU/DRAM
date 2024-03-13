@@ -106,33 +106,54 @@ def fetch_all_gene_ids(db_name):
 
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     """
-    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers.
-    Ensure only gene_ids found in the annotations database are included.
-    If no gene IDs are identified, return None.
+    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers,
+    ensuring only gene_ids found in the annotations database are included.
     """
-    processed_rows = []
     all_gene_ids_in_db = fetch_all_gene_ids(db_name)  # Fetch all gene IDs from the annotations database
+    processed_rows = []
 
     for _, row in df_topic.iterrows():
-        gene_ids = split_gene_ids(row['gene_id'])
-        filtered_gene_ids = [gene_id for gene_id in gene_ids if gene_id in all_gene_ids_in_db or is_partial_ec_number(gene_id)]
+        original_gene_ids = row['gene_id']
+        gene_ids = split_gene_ids(original_gene_ids)
 
+        # Filter and aggregate counts for gene IDs found in the annotations database
+        filtered_gene_ids, aggregated_counts = filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene_ids_in_db)
+
+        # Skip rows where no gene_ids were found in the annotations database
         if not filtered_gene_ids:
             continue
 
-        aggregated_counts = aggregate_counts(filtered_gene_ids, target_id_counts_df, db_name)
-        
-        if aggregated_counts:
-            new_row = row.to_dict()
-            for sample_col, count in aggregated_counts.items():
-                new_row[sample_col] = count
-            processed_rows.append(new_row)
+        # Update row with aggregated counts
+        updated_row = row.copy()
+        for col, value in aggregated_counts.items():
+            updated_row[col] = value
+        processed_rows.append(updated_row)
 
+    # If no rows processed, create a placeholder row
     if not processed_rows:
-        return None  # Indicate no genes were identified
+        return pd.DataFrame([{"gene_id": "No genes identified for this distill sheet"}])
 
-    df_processed = pd.DataFrame(processed_rows)
-    return df_processed
+    return pd.DataFrame(processed_rows)
+
+def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene_ids_in_db):
+    """
+    Filters gene_ids to those found in the annotations database and aggregates their counts.
+    """
+    filtered_gene_ids = []
+    aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
+
+    for gene_id in gene_ids:
+        if gene_id in all_gene_ids_in_db or is_partial_ec_number(gene_id):
+            filtered_gene_ids.append(gene_id)
+            if is_partial_ec_number(gene_id):
+                matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
+                for ec_number in matching_ec_numbers:
+                    sum_counts_for_gene_id(ec_number, target_id_counts_df, aggregated_counts)
+            else:
+                sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts)
+
+    return filtered_gene_ids, aggregated_counts
+
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
@@ -177,7 +198,6 @@ def add_sheet_from_dataframe(wb, df, sheet_name):
     ws = wb.create_sheet(title=sheet_name)
     for r in dataframe_to_rows(df, index=False, header=True):
         ws.append(r)
-
 
 def prepare_ec_like_patterns(ec_number):
     """
