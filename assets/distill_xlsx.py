@@ -360,6 +360,15 @@ def main():
 
     # Read target ID counts
     target_id_counts_df = compile_target_id_counts(args.target_id_counts)
+    
+    # Fetch all gene IDs from the annotations database
+    all_gene_ids_in_db = fetch_all_gene_ids(args.db_name)
+
+    # Call filter_and_aggregate_counts
+    filtered_gene_ids, aggregated_counts = filter_and_aggregate_counts(
+        all_gene_ids_in_db, target_id_counts_df, args.db_name, all_gene_ids_in_db
+    )
+    
     # Process each distill sheet
     distill_data = read_distill_sheets(args.distill_sheets)
 
