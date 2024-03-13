@@ -39,15 +39,28 @@ def sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts):
             aggregated_counts[col] += gene_counts[col].sum()
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
+    """
+    Aggregate counts for each gene ID or partial EC number from the target_id_counts_df.
+    """
     aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
+    all_gene_ids = fetch_all_gene_ids(db_name)
+
     for gene_id in gene_ids:
+        # Handle partial EC number matching and direct gene ID matching
         if is_partial_ec_number(gene_id):
-            matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
-            for matching_ec_number in matching_ec_numbers:
-                sum_counts_for_gene_id(matching_ec_number, target_id_counts_df, aggregated_counts)
+            partial_ec_pattern = gene_id.replace("EC:", "").replace("-", "%")
+            matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
         else:
-            sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts)
+            matching_ec_numbers = [gene_id] if gene_id in all_gene_ids else []
+
+        # Aggregate counts for matching EC numbers or direct gene ID matches
+        for match in matching_ec_numbers:
+            match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
+            for col in aggregated_counts.keys():
+                aggregated_counts[col] += match_counts[col].sum()
+
     return aggregated_counts
+
 
 def compile_target_id_counts(target_id_counts):
     """Compile target ID counts from the specified TSV file."""
@@ -83,34 +96,6 @@ def file_contains_data(file_path):
     except Exception as e:
         print(f"Error reading {file_path}: {e}")
         return False
-
-def aggregate_counts(gene_ids, target_id_counts_df, db_name):
-    """
-    Aggregate counts for each gene ID or partial EC number.
-    """
-    aggregated_counts = {}
-    for gene_id in gene_ids:
-        if is_partial_ec_number(gene_id):
-            # For partial EC numbers, fetch all matching EC numbers and aggregate their counts
-            matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
-            for matching_ec_number in matching_ec_numbers:
-                sum_counts_for_gene_id(matching_ec_number, target_id_counts_df, aggregated_counts)
-        else:
-            # For regular gene IDs, aggregate their counts directly
-            sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts)
-    return aggregated_counts
-
-def sum_counts_for_gene_id(gene_id, target_id_counts_df, aggregated_counts):
-    """
-    Sum counts for a single gene ID and update the aggregated_counts dictionary.
-    """
-    if gene_id in target_id_counts_df['gene_id'].values:
-        gene_counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id].iloc[0]
-        for col in target_id_counts_df.columns[1:]:  # Skip the gene_id column
-            if col in aggregated_counts:
-                aggregated_counts[col] += gene_counts[col]
-            else:
-                aggregated_counts[col] = gene_counts[col]
 
 def fetch_all_gene_ids(db_name):
     """
