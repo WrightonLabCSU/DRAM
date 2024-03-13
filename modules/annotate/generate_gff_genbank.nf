@@ -12,14 +12,17 @@ process GENERATE_GFF_GENBANK {
 
 
     script:
+    // Correct usage: Directly use params without ${...} for Groovy code
+    def gff_flag = params.generate_gff ? "--gff" : ""
+    def gbk_flag = params.generate_gbk ? "--gbk" : ""
+    def flags = []
+    if(params.generate_gff) flags += "--gff"
+    if(params.generate_gbk) flags += "--gbk"
 
-    def gff_flag = ${params.generate_gff} ? "--gff" : ""
-    def gbk_flag = ${params.generate_gbk} ? "--gbk" : ""
-
+    // Make sure to properly pass the `flags` variable to the Python script
     """
     mkdir -p GFF
     mkdir -p GBK
 
-    python ${ch_generate_gff_gbk} ${flags.join(' ')} --database_list ${database_list} --annotations raw-annotations.tsv
+    python ${ch_generate_gff_gbk} ${flags.join(' ')} --database_list ${databases_list} --annotations ${raw_annotations}
     """
-}

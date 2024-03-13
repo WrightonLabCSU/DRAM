@@ -106,34 +106,32 @@ def fetch_all_gene_ids(db_name):
 
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     """
-    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers,
-    ensuring only gene_ids found in the annotations database are included.
+    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers.
+    Ensure only gene_ids found in the annotations database are included.
+    If no gene IDs are identified, return None.
     """
     processed_rows = []
     all_gene_ids_in_db = fetch_all_gene_ids(db_name)  # Fetch all gene IDs from the annotations database
 
     for _, row in df_topic.iterrows():
         gene_ids = split_gene_ids(row['gene_id'])
-        # Filter gene_ids to include only those found in the annotations database
         filtered_gene_ids = [gene_id for gene_id in gene_ids if gene_id in all_gene_ids_in_db or is_partial_ec_number(gene_id)]
 
         if not filtered_gene_ids:
-            continue  # Skip processing this row if no matching gene_ids are found
+            continue
 
         aggregated_counts = aggregate_counts(filtered_gene_ids, target_id_counts_df, db_name)
         
-        # Only proceed if there are aggregated counts to add (this should always be true at this point)
         if aggregated_counts:
             new_row = row.to_dict()
             for sample_col, count in aggregated_counts.items():
                 new_row[sample_col] = count
             processed_rows.append(new_row)
 
+    if not processed_rows:
+        return None  # Indicate no genes were identified
+
     df_processed = pd.DataFrame(processed_rows)
-    # Ensure all columns are present
-    for col in target_id_counts_df.columns[1:]:  # Skip the gene_id column
-        if col not in df_processed:
-            df_processed[col] = 0
     return df_processed
 
 def compile_genome_stats(db_name):
@@ -307,6 +305,7 @@ def main():
     wb = Workbook()
     wb.remove(wb.active)  # Remove the default sheet
 
+    # Compile genome stats and add as a sheet
     genome_stats_df = compile_genome_stats(args.db_name)
     genome_stats_df = update_genome_stats_with_rrna_trna(genome_stats_df, args.rrna_file, args.trna_file)
     genome_stats_df = update_genome_stats_with_rrna(genome_stats_df, args.combined_rrna_file)
@@ -316,7 +315,9 @@ def main():
             genome_stats_df = pd.merge(genome_stats_df, quast_data, on="sample", how="left")
     add_sheet_from_dataframe(wb, genome_stats_df, "Genome_Stats")
 
+    # Read target ID counts
     target_id_counts_df = compile_target_id_counts(args.target_id_counts)
+    # Process each distill sheet
     distill_data = read_distill_sheets(args.distill_sheets)
 
     for sheet_path, info in distill_data.items():
@@ -325,12 +326,27 @@ def main():
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
             df_topic_final = process_distill_sheet_topic(df_topic, target_id_counts_df, args.db_name)
+            
             sheet_name = topic[:31]  # Limit sheet name to 31 characters
-            add_sheet_from_dataframe(wb, df_topic_final, sheet_name)
+
+            if df_topic_final is None or df_topic_final.empty:
+                # No genes identified for this topic
+                ws = wb.create_sheet(title=sheet_name)
+                ws['A1'] = "No genes identified for this distill sheet"
+            else:
+                # Add the processed dataframe to the workbook
+                add_sheet_from_dataframe(wb, df_topic_final, sheet_name)
 
     # Add rRNA and tRNA sheets if available
-    add_optional_sheets(wb, args)
+    if args.rrna_file and file_contains_data(args.rrna_file):
+        rrna_df = pd.read_csv(args.rrna_file, sep='\t')
+        add_sheet_from_dataframe(wb, rrna_df, 'rRNA')
 
+    if args.trna_file and file_contains_data(args.trna_file):
+        trna_df = pd.read_csv(args.trna_file, sep='\t')
+        add_sheet_from_dataframe(wb, trna_df, 'tRNA')
+
+    # Save the workbook
     wb.save(args.output_file)
 
 if __name__ == '__main__':
