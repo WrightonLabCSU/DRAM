@@ -19,6 +19,19 @@ def parse_arguments():
     args.database_list = None if args.database_list == "empty" else args.database_list.split()
     return args
 
+def parse_samples_and_paths(annotation_files):
+    """
+    Parses the list of sample names and .fna file paths into a structured list of tuples.
+
+    Args:
+    - annotation_files: A list of strings where each sample name is followed by its corresponding .fna file path.
+
+    Returns:
+    - A list of tuples, each containing a sample name and its .fna file path.
+    """
+    samples_and_paths = [(annotation_files[i], annotation_files[i + 1]) for i in range(0, len(annotation_files), 2)]
+    return samples_and_paths
+
 def sanitize_description(description):
     """Replace semicolons in descriptions to avoid parsing issues."""
     return description.replace(';', ',')
@@ -93,6 +106,7 @@ def aggregate_sample_sequences(sample_files):
 
 def generate_gbk(samples_annotations, database_list, fna_directory):
     """Generate GBK files for each sample, containing all annotations for that sample."""
+    
     for sample, annotations in samples_annotations.items():
         sample_fna_files = find_sample_fna_files(sample, fna_directory)
         sequences = aggregate_sample_sequences(sample_fna_files)
