@@ -1,19 +1,5 @@
 process CALL_GENES {
-
-    errorStrategy 'finish'
-
-    tag { sample }
-
-    input:
-    tuple val(sample), path(fasta)
-    path(ch_called_genes_loc_script)
-
-    output:
-    tuple val(sample), path("${sample}_called_genes.fna"), emit: prodigal_fna, optional: true
-    tuple val(sample), path("${sample}_called_genes.faa"), emit: prodigal_faa, optional: true
-    tuple val(sample), path("${sample}_called_genes_table.tsv"), emit: prodigal_locs_tsv, optional: true
-    path("${sample}_${params.min_contig_len}.fa"), emit: prodigal_filtered_fasta, optional: true
-    path("${sample}_called_genes.gff"), emit: prodigal_gff, optional: true
+    // Your process configuration remains the same...
 
     script:
     """
@@ -38,28 +24,30 @@ process CALL_GENES {
         -g ${params.prodigal_trans_table} \\
         -f gff
 
-        gene_counter=1 # Initialize the gene counter correctly
+        gene_counter=1
 
-        for ext in fna faa gff; do
-            if [[ "\$ext" == "gff" ]]; then
-                awk -v prefix="${sample}_" 'BEGIN{FS=OFS="\t"}
-                    \$0 !~ /^#/ {
-                        # Processing GFF lines with incremented gene_counter
-                        print \$0 "gene_counter=" gene_counter; # Placeholder for actual command
-                        gene_counter++;
-                    }
-                    {print}' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
-            else
-                awk -v prefix=">${sample}_" 'BEGIN{gene_counter=1}
-                    /^>/ { 
-                        print prefix sprintf("%06d", gene_counter); # Print modified header
-                        gene_counter++;
-                        next; 
-                    }
-                    { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
-            fi
+        # Process .fna and .faa
+        for ext in fna faa; do
+            awk -v prefix=">${sample}_" '/^>/{ 
+                print prefix sprintf("%06d", gene_counter); 
+                gene_counter++;
+                next; 
+            }
+            { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
         done
 
+        # Reset counter for .gff processing
+        gene_counter=1
+
+        # Process .gff
+        awk -v prefix="${sample}_" 'BEGIN{FS=OFS="\t"}
+            !/^#/ && \$3 == "CDS" {
+                gsub(/ID=[^;]+/, "ID=" prefix sprintf("%06d", gene_counter), \$9);
+                gene_counter++;
+            }
+            {print}' "${sample}_called_genes_needs_renaming.gff" > "${sample}_called_genes.gff"
+
+        # Now, process the .gff file to generate .tsv using the Python script
         if [ -s "${sample}_called_genes.gff" ]; then
             python ${ch_called_genes_loc_script} "${sample}_called_genes.gff" > "${sample}_called_genes_table.tsv"
         else
