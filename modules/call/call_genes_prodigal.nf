@@ -38,16 +38,30 @@ process CALL_GENES {
         -g ${params.prodigal_trans_table} \\
         -f gff
 
-        gene_counter=1
-        for ext in fna faa; do
-            if [ -s "${sample}_called_genes_needs_renaming.\$ext" ]; then
-                awk -v OFS='\\n' -v prefix="${sample}_" '/^>/ { printf ">%s%06d\\n", prefix, gene_counter++; next } { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
+        gene_counter=1 # Initialize the gene counter
+
+        for ext in fna faa gff; do
+            if [[ "$ext" == "gff" ]]; then
+                awk -v prefix="${sample}_" 'BEGIN{FS=OFS="\t"}
+                    $0 !~ /^#/ {
+                        split($9, id_parts, ";");
+                        id_parts[1] = "ID=" prefix sprintf("%06d", gene_counter);
+                        $9 = id_parts[1];
+                        for(i = 2; i in id_parts; i++) {
+                            $9 = $9 ";" id_parts[i];
+                        }
+                        gene_counter++;
+                    } 
+                    {print}' "${sample}_called_genes_needs_renaming.$ext" > "${sample}_called_genes.$ext"
+            else
+                awk -v prefix=">${sample}_" '/^>/{ 
+                    print prefix sprintf("%06d", gene_counter); 
+                    gene_counter++;
+                    next; 
+                }
+                { print }' "${sample}_called_genes_needs_renaming.$ext" > "${sample}_called_genes.$ext"
             fi
         done
-        
-        if [ -s "${sample}_called_genes_needs_renaming.gff" ]; then
-            awk -v prefix="${sample}_" 'BEGIN{FS=OFS="\\t"; gene_counter=1} \$0 !~ /^#/ { \$1 = prefix \$1 "_" sprintf("%06d", gene_counter++); } {print}' "${sample}_called_genes_needs_renaming.gff" > "${sample}_called_genes.gff"
-        fi
 
         if [ -s "${sample}_called_genes.gff" ]; then
             python ${ch_called_genes_loc_script} "${sample}_called_genes.gff" > "${sample}_called_genes_table.tsv"
