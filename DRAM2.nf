@@ -198,7 +198,11 @@ if (params.merge_annotations != "") {
     Channel
         .from(tsv_files.collect { annotations_dir.toString() + '/' + it })
         .set { ch_merge_annotations }
-    ch_merge_annotations.view()
+    Channel.empty()
+        .mix( ch_merge_annotations )
+        .collect()
+        .set { ch_merge_annotations_collected }
+    
 }
 
 /*
@@ -930,7 +934,7 @@ workflow {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
     if( params.merge_annotations != "" ){
-        MERGE_ANNOTATIONS( ch_merge_annotations )
+        MERGE_ANNOTATIONS( ch_merge_annotations_collected )
     }
 
     /*
