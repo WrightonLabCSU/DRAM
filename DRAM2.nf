@@ -180,32 +180,28 @@ if( params.annotations == "" && params.annotate == 0 && (params.distill_topic !=
     Check for merge_annotations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-if(params.merge_annotations != ""){
+// Verify the directory exists
+if (params.merge_annotations != "") {
     // Verify the directory exists
     def annotations_dir = file(params.merge_annotations)
-    if (params.merge_annotations) {
-        // Verify the directory exists
-        def annotations_dir = file(params.merge_annotations)
-        if (!annotations_dir.exists()) {
-            error "Error: The specified directory for merging annotations (--merge_annotations) does not exist: ${params.merge_annotations}"
-        }
-
-        // Verify the directory contains .tsv files
-        def tsv_files = annotations_dir.list().findAll { it.endsWith('.tsv') }
-        if (tsv_files.isEmpty()) {
-            error "Error: The specified directory for merging annotations (--merge_annotations) does not contain any .tsv files: ${params.merge_annotations}"
-        }
-
-        // Create a channel with the paths to the .tsv files
-        Channel
-            .from(tsv_files.collect { annotations_dir.toString() + '/' + it })
-            .set { ch_merge_annotations }
-    } else {
-        // Handle the case where 'merge_annotations' parameter is not provided or empty
-        error "Error: The '--merge_annotations' parameter was not provided or is empty."
+    if (!annotations_dir.exists()) {
+        error "Error: The specified directory for merging annotations (--merge_annotations) does not exist: ${params.merge_annotations}"
     }
-}
 
+    // Verify the directory contains .tsv files
+    def tsv_files = annotations_dir.list().findAll { it.endsWith('.tsv') }
+    if (tsv_files.isEmpty()) {
+        error "Error: The specified directory for merging annotations (--merge_annotations) does not contain any .tsv files: ${params.merge_annotations}"
+    }
+
+    // Create a channel with the paths to the .tsv files
+    Channel
+        .from(tsv_files.collect { annotations_dir.toString() + '/' + it })
+        .set { ch_merge_annotations }
+} else {
+    // Handle the case where 'merge_annotations' parameter is not provided or empty
+    error "Error: The '--merge_annotations' parameter was not provided or is empty."
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
