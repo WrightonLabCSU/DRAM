@@ -1,5 +1,19 @@
 process CALL_GENES {
-    // Your process configuration remains the same...
+
+    errorStrategy 'finish'
+
+    tag { sample }
+
+    input:
+    tuple val(sample), path(fasta)
+    path(ch_called_genes_loc_script)
+
+    output:
+    tuple val(sample), path("${sample}_called_genes.fna"), emit: prodigal_fna, optional: true
+    tuple val(sample), path("${sample}_called_genes.faa"), emit: prodigal_faa, optional: true
+    tuple val(sample), path("${sample}_called_genes_table.tsv"), emit: prodigal_locs_tsv, optional: true
+    path("${sample}_${params.min_contig_len}.fa"), emit: prodigal_filtered_fasta, optional: true
+    path("${sample}_called_genes.gff"), emit: prodigal_gff, optional: true
 
     script:
     """
