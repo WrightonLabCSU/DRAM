@@ -132,22 +132,25 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     return matching_ec_numbers
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
+    """
+    Aggregate counts for each gene ID or partial EC number.
+    """
     aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
-    all_gene_ids = fetch_all_gene_ids(db_name)
-
+    
+    # Get matching EC numbers for partial EC numbers directly from annotations
     for gene_id in gene_ids:
-        # For partial EC numbers, use the fetch_matching_ec_numbers to get matches
         if is_partial_ec_number(gene_id):
             matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
+
+            # For each matching EC number, find the exact match in the target_id_counts_df
             for match in matching_ec_numbers:
                 if match in target_id_counts_df['gene_id'].values:
-                    match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
+                    match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == match]
                     for col in aggregated_counts.keys():
                         aggregated_counts[col] += match_counts[col].sum()
-        # For direct gene ID matches
         else:
             if gene_id in target_id_counts_df['gene_id'].values:
-                match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == gene_id]
+                match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id]
                 for col in aggregated_counts.keys():
                     aggregated_counts[col] += match_counts[col].sum()
 

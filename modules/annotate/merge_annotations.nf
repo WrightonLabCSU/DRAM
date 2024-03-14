@@ -55,10 +55,14 @@ process MERGE_ANNOTATIONS {
     # Recalculate 'rank' for each row after concatenation, ensuring all columns used for ranking are numeric
     merged_df['rank'] = merged_df.apply(assign_rank, axis=1)
 
-    # Insert 'rank' after 'strandedness' and organize columns as required
+    # Prioritize KEGG columns, if present, and ensure specific columns are retained and positioned correctly
     base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank']
-    other_columns = [col for col in merged_df.columns if col not in base_columns]
-    merged_df = merged_df[base_columns + other_columns]
+    kegg_columns = [col for col in merged_df.columns if col.startswith('kegg_')]
+    essential_columns = ['Completeness', 'Contamination', 'taxonomy']
+    other_columns = [col for col in merged_df.columns if col not in base_columns + kegg_columns + essential_columns]
+    final_columns = base_columns + kegg_columns + other_columns + [col for col in essential_columns if col in merged_df.columns]
+
+    merged_df = merged_df[final_columns]
 
     # Save the merged DataFrame to a new file
     merged_file_path = "raw-merged-annotations.tsv"
