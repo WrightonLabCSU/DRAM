@@ -63,7 +63,7 @@ process CALL_GENES {
                 gene_counter++;
                 next; 
             }
-            { print }' "${sample}_called_genes_needs_renaming.${ext}" > "${sample}_called_genes.${ext}"
+            { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
 
 
         # Now, process the .gff file to generate .tsv using the Python script
