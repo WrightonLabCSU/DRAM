@@ -37,7 +37,7 @@ process CALL_GENES {
 
         for ext in fna faa gff; do
             if [ -s "${sample}_called_genes_needs_renaming.\$ext" ]; then
-                awk -F'[>|_]' -v OFS='_' '/^>/ { \$NF=sprintf("%06d", \$NF) } {print}' "${sample}_called_genes_needs_renaming.$$ext" > "${sample}_called_genes.$$ext"
+                awk -F'[>|_]' -v OFS='_' '/^>/ { \$NF=sprintf("%06d", \$NF) } {print}' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
             fi
         done
 
