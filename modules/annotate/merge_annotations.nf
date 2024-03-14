@@ -32,30 +32,24 @@ process MERGE_ANNOTATIONS {
                 df[col] = pd.to_numeric(df[col], errors='coerce')
         return df
 
-    # Directory where the annotations TSV files are staged
     annotations_dir = "annotations"
-
-    # Initialize a list to collect DataFrames
     dfs = []
 
-    # Iterate over each TSV file in the directory
     for file_path in glob.glob(os.path.join(annotations_dir, '*.tsv')):
-        # Load the current TSV file into a DataFrame
         current_df = pd.read_csv(file_path, sep='\t')
-        
-        # Convert bit scores to numeric for accurate comparisons and ranking
         current_df = convert_bit_scores_to_numeric(current_df)
-
-        # Add DataFrame to the list
         dfs.append(current_df)
 
-    # Concatenate all DataFrames in the list
     merged_df = pd.concat(dfs, ignore_index=True)
 
-    # Recalculate 'rank' for each row after concatenation, ensuring all columns used for ranking are numeric
+    # Removing duplicates
+    merged_df.drop_duplicates(inplace=True)
+
     merged_df['rank'] = merged_df.apply(assign_rank, axis=1)
 
-    # Prioritize KEGG columns, if present, and ensure specific columns are retained and positioned correctly
+    # Sorting by 'query_id'
+    merged_df.sort_values(by='query_id', inplace=True)
+
     base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank']
     kegg_columns = [col for col in merged_df.columns if col.startswith('kegg_')]
     essential_columns = ['Completeness', 'Contamination', 'taxonomy']
@@ -64,10 +58,6 @@ process MERGE_ANNOTATIONS {
 
     merged_df = merged_df[final_columns]
 
-    # Sort the DataFrame in ascending order based on the 'query_id' column
-    merged_df = merged_df.sort_values(by='query_id', ascending=True)
-
-    # Save the merged DataFrame to a new file
     merged_file_path = "raw-merged-annotations.tsv"
     merged_df.to_csv(merged_file_path, sep='\t', index=False)
 
