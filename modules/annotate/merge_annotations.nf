@@ -1,7 +1,7 @@
 process MERGE_ANNOTATIONS {
 
     input:
-    path( ch_annotations, stageAs: "annotations/*" )
+    file( ch_annotations, stageAs: "annotations/*" )
 
     output:
     path "raw-merged-annotations.tsv", emit: ch_merged_annots_out
