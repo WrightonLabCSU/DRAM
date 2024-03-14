@@ -13,7 +13,7 @@ def create_database(db_name, include_extra_columns=False):
     cursor = conn.cursor()
     extra_columns_sql = ""
     if include_extra_columns:
-        extra_columns_sql = ", taxonomy TEXT, Completeness REAL, Contamination REAL"
+        extra_columns_sql = ", taxonomy TEXT, Completeness REAL, Contamination REAL, rank TEXT, gene_no INTEGER"
     cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS annotations (
             query_id TEXT,
@@ -38,7 +38,7 @@ def import_annotations(conn, file_path):
     df = pd.read_csv(file_path, sep='\t')
     db_names = identify_databases(df)
 
-    extra_columns = [col for col in ['taxonomy', 'Completeness', 'Contamination'] if col in df.columns]
+    extra_columns = [col for col in ['taxonomy', 'Completeness', 'Contamination', 'rank', 'gene no.'] if col in df.columns]
 
     data_to_insert = []
     for db_name in db_names:
@@ -46,12 +46,9 @@ def import_annotations(conn, file_path):
         for col in id_cols:
             for _, row in df[['query_id', 'sample', col] + extra_columns].dropna().iterrows():
                 # Check if the column name ends with '_EC' and prefix the value with 'EC:' if it does
-                if col.endswith('_EC'):
-                    gene_id = '' + str(row[col])
-                else:
-                    gene_id = row[col]
+                gene_id = 'EC:' + str(row[col]) if col.endswith('_EC') else row[col]
                 
-                # Construct the record with the potentially modified gene_id
+                # Construct the record with the potentially modified gene_id and include new columns
                 record = (row['query_id'], row['sample'], gene_id) + tuple(row[extra_column] for extra_column in extra_columns)
                 data_to_insert.append(record)
 
