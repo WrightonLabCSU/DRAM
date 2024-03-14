@@ -55,7 +55,6 @@ process CALL_GENES {
 
         # Process .gff
 
-        // For .fna and .faa files
         awk -v prefix=">${sample}_" 'BEGIN{gene_counter=1}
             /^>/ { 
                 print prefix sprintf("%06d", gene_counter);  
