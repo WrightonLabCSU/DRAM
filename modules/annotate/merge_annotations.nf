@@ -35,8 +35,8 @@ process MERGE_ANNOTATIONS {
     # Directory where the annotations TSV files are staged
     annotations_dir = "annotations"
 
-    # Initialize an empty DataFrame for merging all annotations
-    merged_df = pd.DataFrame()
+    # Initialize a list to collect DataFrames
+    dfs = []
 
     # Iterate over each TSV file in the directory
     for file_path in glob.glob(os.path.join(annotations_dir, '*.tsv')):
@@ -46,24 +46,16 @@ process MERGE_ANNOTATIONS {
         # Convert bit scores to numeric for accurate comparisons and ranking
         current_df = convert_bit_scores_to_numeric(current_df)
 
-        # If merged_df is empty, just copy the first file
-        if merged_df.empty:
-            merged_df = current_df
-        else:
-            # Perform an outer join merge with the new DataFrame
-            merged_df = pd.merge(merged_df, current_df, how='outer', on=['query_id', 'sample'], suffixes=('', '_duplicate'))
+        # Add DataFrame to the list
+        dfs.append(current_df)
 
-    # Recalculate 'rank' for each row after merge, ensuring all columns used for ranking are numeric
+    # Concatenate all DataFrames in the list
+    merged_df = pd.concat(dfs, ignore_index=True)
+
+    # Recalculate 'rank' for each row after concatenation, ensuring all columns used for ranking are numeric
     merged_df['rank'] = merged_df.apply(assign_rank, axis=1)
 
-    # After merging, handle duplicate columns (if any) by merging their values
-    for col in [col for col in merged_df.columns if '_duplicate' in col]:
-        original_col = col.replace('_duplicate', '')
-        # Merge values of the original and duplicate columns, then drop the duplicate
-        merged_df[original_col] = merged_df.apply(lambda x: x[original_col] if pd.notnull(x[original_col]) else x[col], axis=1)
-        merged_df.drop(columns=[col], inplace=True)
-
-    # Ensure 'rank' follows 'strandedness'
+    # Insert 'rank' after 'strandedness' and organize columns as required
     base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank']
     other_columns = [col for col in merged_df.columns if col not in base_columns]
     merged_df = merged_df[base_columns + other_columns]
