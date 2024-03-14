@@ -38,17 +38,18 @@ def import_annotations(conn, file_path):
     df = pd.read_csv(file_path, sep='\t')
     db_names = identify_databases(df)
 
-    extra_columns = [col for col in ['taxonomy', 'Completeness', 'Contamination', 'rank', 'gene no.'] if col in df.columns]
+    # Rename 'gene no.' to 'gene_no' to avoid SQL syntax issues
+    df.rename(columns={'gene no.': 'gene_no'}, inplace=True)
+
+    extra_columns = [col for col in ['taxonomy', 'Completeness', 'Contamination', 'rank', 'gene_no'] if col in df.columns]
 
     data_to_insert = []
     for db_name in db_names:
         id_cols = [col for col in df.columns if col.startswith(db_name) and ('_id' in col or '_EC' in col)]
         for col in id_cols:
             for _, row in df[['query_id', 'sample', col] + extra_columns].dropna().iterrows():
-                # Check if the column name ends with '_EC' and prefix the value with 'EC:' if it does
                 gene_id = 'EC:' + str(row[col]) if col.endswith('_EC') else row[col]
                 
-                # Construct the record with the potentially modified gene_id and include new columns
                 record = (row['query_id'], row['sample'], gene_id) + tuple(row[extra_column] for extra_column in extra_columns)
                 data_to_insert.append(record)
 
@@ -60,6 +61,7 @@ def import_annotations(conn, file_path):
         VALUES ({placeholders_sql})
     ''', data_to_insert)
     conn.commit()
+
 
 def main():
     args = parse_arguments()
