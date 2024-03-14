@@ -42,12 +42,12 @@ process CALL_GENES {
         for ext in fna faa gff; do
             if [ -s "${sample}_called_genes_needs_renaming.\$ext" ]; then
                 awk '/^>/ { 
-                    split($0, parts, "_"); 
+                    split(\$0, parts, "_"); 
                     gene_number = sprintf("%06d", parts[length(parts)]); 
                     parts[length(parts)] = gene_number; 
-                    $0 = parts[1]; 
+                    \$0 = parts[1]; 
                     for (i = 2; i in parts; i++) { 
-                        $0 = $0 "_" parts[i]; 
+                        \$0 = \$0 "_" parts[i]; 
                     } 
                 } { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
             fi
