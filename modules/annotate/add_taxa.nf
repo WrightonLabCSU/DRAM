@@ -24,31 +24,26 @@ process ADD_TAXA {
     # Load ch_taxa TSV
     ch_taxa_path = "${ch_taxa}"
     ch_taxa_data = pd.read_csv(ch_taxa_path, sep='\t')
-
-    # Replace "." with "-" in the first column for comparison in combined_annotations DataFrame
-    combined_annotations[combined_annotations_first_col_name] = combined_annotations[combined_annotations_first_col_name].str.replace(".", "-", regex=False)
-
-    # Since taxonomy information is always in a column named 'classification', no need to check column name in ch_taxa_data
-    # However, we need to ensure that we replace "." with "-" in the first column for comparison, if needed
+    # Assume genome/sample names are in the first column of ch_taxa as well
     ch_taxa_first_col_name = ch_taxa_data.columns[0]
+
+    # Standardize sample names in both dataframes for accurate merging
+    combined_annotations[combined_annotations_first_col_name] = combined_annotations[combined_annotations_first_col_name].str.replace(".", "-", regex=False)
     ch_taxa_data[ch_taxa_first_col_name] = ch_taxa_data[ch_taxa_first_col_name].str.replace(".", "-", regex=False)
 
-    # Check if "taxonomy" column exists and has non-null values in combined_annotations
-    if "taxonomy" in combined_annotations.columns and not combined_annotations["taxonomy"].isnull().all():
-        taxonomy_to_merge = False
-    else:
-        taxonomy_to_merge = True
+    # Merge taxonomy information based on sample names
+    # Ensure only relevant columns from ch_taxa_data are merged to avoid unnecessary data duplication
+    merged_data = pd.merge(combined_annotations, ch_taxa_data[[ch_taxa_first_col_name, 'classification']], left_on=combined_annotations_first_col_name, right_on=ch_taxa_first_col_name, how="left")
 
-    if taxonomy_to_merge:
-        # Merge data based on the first column which represents the genome/sample name
-        merged_data = pd.merge(combined_annotations, ch_taxa_data[[ch_taxa_first_col_name, 'classification']], left_on=combined_annotations_first_col_name, right_on=ch_taxa_first_col_name, how="left")
-        # Drop the additional first column from ch_taxa_data that was used for the merge
-        merged_data.drop(columns=[ch_taxa_first_col_name], inplace=True)
-        # Rename the "classification" column to "taxonomy"
-        merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
+    # After merging, if there's an existing "taxonomy" column, we need to handle it appropriately
+    if "taxonomy" in merged_data.columns:
+        # If the merged 'classification' data is not null, update the 'taxonomy' column with it
+        merged_data.loc[~merged_data['classification'].isnull(), 'taxonomy'] = merged_data['classification']
+        # Drop the 'classification' column as its data is now merged into 'taxonomy'
+        merged_data.drop(columns=['classification'], inplace=True)
     else:
-        # If taxonomy should not be merged, use combined_annotations directly
-        merged_data = combined_annotations
+        # If there's no existing "taxonomy" column, rename "classification" to "taxonomy"
+        merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
 
     # Save the updated data to raw-annotations.tsv
     output_path = "raw-annotations.tsv"
