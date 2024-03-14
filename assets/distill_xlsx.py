@@ -105,24 +105,31 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
 import logging
 
 def fetch_matching_ec_numbers(db_name, partial_ec_number):
+    logging.debug(f"Fetching matching EC numbers for partial EC number: {partial_ec_number}")
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     
-    # Adjust the partial EC number to be used in SQL LIKE query
-    partial_ec_pattern = partial_ec_number.replace("EC:", "").rstrip("-") + "%"
+    # Modify the pattern to search for matches more broadly
+    partial_ec_pattern = "EC:" + partial_ec_number.replace("EC:", "").rstrip("-") + "%"
+    logging.debug(f"Using pattern for SQL query: {partial_ec_pattern}")
     
-    cursor.execute("SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?", ("EC:%" + partial_ec_pattern,))
-    rows = cursor.fetchall()
+    cursor.execute("SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?", (partial_ec_pattern,))
+    all_rows = cursor.fetchall()
+    
+    # Log the fetched rows for debugging
+    logging.debug(f"Fetched rows: {all_rows}")
     
     matching_ec_numbers = set()
-    for row in rows:
+    for row in all_rows:
         gene_ids = row[0].split(";")
         for gene_id in gene_ids:
-            if partial_ec_number in gene_id:
+            if partial_ec_number in gene_id.strip():
                 matching_ec_numbers.add(gene_id.strip())
-    
+                
+    logging.debug(f"Matching EC numbers: {matching_ec_numbers}")
     conn.close()
     return list(matching_ec_numbers)
+
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
