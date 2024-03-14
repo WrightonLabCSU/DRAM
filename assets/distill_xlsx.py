@@ -138,18 +138,23 @@ def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     if is_partial_ec_number(gene_ids[0]):  # Assuming all gene_ids are either all partial or all direct EC numbers
         partial_matches = fetch_matching_ec_numbers(db_name, gene_ids[0])
         logging.debug(f"Partial EC {gene_ids[0]} matches: {', '.join(partial_matches)}")
-        # Aggregate counts for partial EC numbers
-        for match in partial_matches:
-            # Match entire string of EC numbers against target_id_counts
-            match_counts = target_id_counts_df[target_id_counts_df['gene_id'].str.contains(match)]
-            for col in aggregated_counts.keys():
-                aggregated_counts[col] += match_counts[col].sum()
-                logging.debug(f"Added {match_counts[col].sum()} to {col} from {match}")
+
+        # Generate regex pattern to match any of the partial EC numbers within a gene_id string
+        partial_matches_pattern = '|'.join(map(re.escape, partial_matches))
+        logging.debug(f"Regex pattern for matching: {partial_matches_pattern}")
+
+        # Filter target_id_counts_df for rows where gene_id matches any of the partial EC numbers
+        for _, row in target_id_counts_df.iterrows():
+            if re.search(partial_matches_pattern, row['gene_id']):
+                for col in aggregated_counts.keys():
+                    aggregated_counts[col] += row[col]
+                    logging.debug(f"Added {row[col]} to {col} from {row['gene_id']} due to partial EC match")
+
     else:
         # Handle direct gene ID matches
         for gene_id in gene_ids:
             if gene_id in target_id_counts_df['gene_id'].values:
-                match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id]
+                match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == gene_id]
                 for col in aggregated_counts.keys():
                     aggregated_counts[col] += match_counts[col].sum()
                     logging.debug(f"Added {match_counts[col].sum()} to {col} from {gene_id}")
