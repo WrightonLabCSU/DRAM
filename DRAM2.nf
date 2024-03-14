@@ -198,9 +198,6 @@ if (params.merge_annotations != "") {
     Channel
         .from(tsv_files.collect { annotations_dir.toString() + '/' + it })
         .set { ch_merge_annotations }
-} else {
-    // Handle the case where 'merge_annotations' parameter is not provided or empty
-    error "Error: The '--merge_annotations' parameter was not provided or is empty."
 }
 
 /*
