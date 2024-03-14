@@ -60,16 +60,22 @@ def combine_annotations(annotation_files, output_file, threads):
 
     # Extract unique gene identifier from 'query_id'
     combined_data['gene_identifier'] = combined_data['query_id'].apply(lambda x: "_".join(x.split('_')[:-1]))
-    
     # Group by 'sample' and 'gene_identifier' and enumerate entries
     combined_data['gene no.'] = combined_data.groupby(['sample', 'gene_identifier']).cumcount() + 1
-
     # Drop the temporary 'gene_identifier' column
     combined_data.drop(columns=['gene_identifier'], inplace=True)
 
-    combined_data.to_csv(output_file, index=False, sep='\t')
-    logging.info(f"Combined annotations saved to {output_file}, with ranks assigned, sorted by 'sample' and 'query_id', and 'gene no.' added.")
+    # Ensure "gene no." comes after "rank"
+    # Define the desired column order
+    col_order = combined_data.columns.tolist()
+    # Move 'gene no.' to the position right after 'rank'
+    rank_index = col_order.index('rank')
+    col_order.insert(rank_index + 1, col_order.pop(col_order.index('gene no.')))
+    # Reorder the DataFrame according to the new column order
+    combined_data = combined_data[col_order]
 
+    combined_data.to_csv(output_file, index=False, sep='\t')
+    logging.info(f"Combined annotations saved to {output_file}, with ranks assigned, sorted by 'sample' and 'query_id', and 'gene no.' correctly positioned.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Combine annotation files with ranks and avoid duplicating specific columns.")
