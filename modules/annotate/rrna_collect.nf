@@ -17,77 +17,71 @@ process RRNA_COLLECT {
     import pandas as pd
     from collections import Counter
 
+    def check_file_content(file_path):
+        with open(file_path, 'r') as file:
+            content = file.read().strip()
+            return content == "NULL"
+
     # List all tsv files in the current directory
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
 
-    # Extract sample names from the file names
-    samples = [os.path.basename(file).replace("_processed_rrnas.tsv", "") for file in tsv_files]
+    # Check if file contents are "NULL"
+    all_files_null = all(check_file_content(f) for f in tsv_files)
 
-    # Create an empty DataFrame to store the collected data
-    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "category", "topic_ecosystem", "subcategory"] + samples)
+    if all_files_null:
+        # Write "NULL" to both output files if all files contain "NULL"
+        with open("combined_rrna_scan.tsv", "w") as combined_out, open("collected_rrnas.tsv", "w") as collected_out:
+            combined_out.write("NULL")
+            collected_out.write("NULL")
+    else:
+        # Process files normally, skipping any files that contain "NULL"
+        tsv_files = [f for f in tsv_files if not check_file_content(f)]
 
-    # Create a dictionary to store counts for each sample
-    sample_counts = {sample: Counter() for sample in samples}
+        samples = [os.path.basename(file).replace("_processed_rrnas.tsv", "") for file in tsv_files]
 
-    # Create a list to store individual input DataFrames
-    individual_dfs = []
+        collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "category", "topic_ecosystem", "subcategory"] + samples)
 
-    # Iterate through each input file
-    for file in tsv_files:
-        sample_name = os.path.basename(file).replace("_processed_rrnas.tsv", "")
-        input_df = pd.read_csv(file, sep='\t')
+        sample_counts = {sample: Counter() for sample in samples}
 
-        # Populate gene_id column with collective values from the "type" column
-        gene_ids = input_df['type'].tolist()
-        unique_gene_ids = list(set(gene_ids))
-        gene_counts = Counter(gene_ids)
+        individual_dfs = []
 
-        # Populate gene_description column
-        collected_data = pd.concat([collected_data, pd.DataFrame({'gene_id': unique_gene_ids})], ignore_index=True)
+        for file in tsv_files:
+            sample_name = os.path.basename(file).replace("_processed_rrnas.tsv", "")
+            input_df = pd.read_csv(file, sep='\t')
 
-        # Set category column values to "rRNA"
-        collected_data['category'] = 'rRNA'
+            gene_ids = input_df['type'].tolist()
+            unique_gene_ids = list(set(gene_ids))
+            gene_counts = Counter(gene_ids)
 
-        # Update counts for each sample
-        for gene_id, count in gene_counts.items():
-            sample_counts[sample_name][gene_id] += count
+            collected_data = pd.concat([collected_data, pd.DataFrame({'gene_id': unique_gene_ids})], ignore_index=True)
 
-        # Append the individual input DataFrame to the list
-        individual_dfs.append(input_df)
+            collected_data['category'] = 'rRNA'
 
-    # Combine all individual DataFrames into a single DataFrame
-    combined_df = pd.concat(individual_dfs, ignore_index=True)
+            for gene_id, count in gene_counts.items():
+                sample_counts[sample_name][gene_id] += count
 
-    # Write the combined DataFrame to the output file
-    combined_df.to_csv("combined_rrna_scan.tsv", sep="\t", index=False)
+            individual_dfs.append(input_df)
 
-    # Add 'type' column to collected_data
-    collected_data['type'] = ""
+        combined_df = pd.concat(individual_dfs, ignore_index=True)
 
-    # Populate other columns based on the given rules
-    collected_data['gene_description'] = collected_data['gene_id'] + " gene"
-    collected_data['topic_ecosystem'] = ""
-    collected_data['subcategory'] = ""
+        combined_df.to_csv("combined_rrna_scan.tsv", sep="\t", index=False)
 
-    # Deduplicate the rows based on gene_id
-    collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
+        collected_data['type'] = ""
+        collected_data['gene_description'] = collected_data['gene_id'] + " gene"
+        collected_data['topic_ecosystem'] = ""
+        collected_data['subcategory'] = ""
 
-    # Count occurrences for each sample and fill the additional columns dynamically
-    for sample in samples:
-        collected_data[sample] = collected_data['gene_id'].map(lambda x: sample_counts[sample][x] if x in sample_counts[sample] else 0)
+        collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
 
-    # Remove the first row that includes extra column names
-    collected_data = collected_data[collected_data['gene_id'] != 'gene_id']
+        for sample in samples:
+            collected_data[sample] = collected_data['gene_id'].map(lambda x: sample_counts[sample][x] if x in sample_counts[sample] else 0)
 
-    # Sort the whole table by the gene_id column
-    collected_data.sort_values(by='gene_id', inplace=True)
+        collected_data = collected_data[collected_data['gene_id'] != 'gene_id']
 
-    # Drop the 'type' column
-    collected_data.drop(['type'], axis=1, inplace=True)
+        collected_data.sort_values(by='gene_id', inplace=True)
 
-    # Write the collected data to the output file
-    collected_data.to_csv("collected_rrnas.tsv", sep="\t", index=False)
+        collected_data.drop(['type'], axis=1, inplace=True)
 
-
+        collected_data.to_csv("collected_rrnas.tsv", sep="\t", index=False)
     """
 }
