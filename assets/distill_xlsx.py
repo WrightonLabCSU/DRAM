@@ -105,71 +105,46 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
 import logging
 
 def fetch_matching_ec_numbers(db_name, partial_ec_number):
-    # Initialize connection to the database
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     
-    # Clean up the partial EC number for pattern matching
+    # Adjust the partial EC number to be used in SQL LIKE query
     partial_ec_pattern = partial_ec_number.replace("EC:", "").rstrip("-") + "%"
     
-    # Fetch potentially matching gene_ids
-    cursor.execute("SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE 'EC:%'")
-    potential_matches = [row[0] for row in cursor.fetchall()]
+    cursor.execute("SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?", ("EC:%" + partial_ec_pattern,))
+    rows = cursor.fetchall()
     
-    # Close the database connection
+    matching_ec_numbers = set()
+    for row in rows:
+        gene_ids = row[0].split(";")
+        for gene_id in gene_ids:
+            if partial_ec_number in gene_id:
+                matching_ec_numbers.add(gene_id.strip())
+    
     conn.close()
-
-    # Filter matches with fine-grained control in Python
-    matched_ec_numbers = []
-    for gene_ids in potential_matches:
-        for gene_id in gene_ids.split(";"):
-            gene_id = gene_id.strip()
-            if re.match("EC:" + partial_ec_pattern, gene_id):
-                matched_ec_numbers.append(gene_id)
-    
-    return matched_ec_numbers
+    return list(matching_ec_numbers)
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
-    """
-    Aggregate counts for each gene ID or partial EC number.
-    """
     aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
     all_gene_ids = fetch_all_gene_ids(db_name)
 
     for gene_id in gene_ids:
+        # For partial EC numbers, use the fetch_matching_ec_numbers to get matches
         if is_partial_ec_number(gene_id):
-            partial_ec_numbers = re.split(r'[;, ]+', gene_id)
-            for partial_ec_number in partial_ec_numbers:
-                partial_ec_number = partial_ec_number.strip()  # Remove leading and trailing spaces
-                partial_ec_pattern = gene_id.replace("EC:", "").replace("-", ".")
-                partial_ec_pattern = "EC:" + partial_ec_pattern.replace(".", "\\.") + ".*"  # Match any characters after the provided pattern
-                print(f"Partial EC number: {partial_ec_pattern}")
-                matching_ec_numbers = [ec for ec in all_gene_ids if re.match(partial_ec_pattern.replace('%', '.*'), ec)]
-                logging.debug(f"Partial EC number '{partial_ec_number}' matches: {matching_ec_numbers}")
-
-                for match in matching_ec_numbers:
-                    match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
-                    if not match_counts.empty:
-                        for col in aggregated_counts.keys():
-                            aggregated_counts[col] += match_counts[col].sum()
-                            logging.debug(f"Adding count {match_counts[col].sum()} for column {col} from gene ID {match}")
-                    else:
-                        logging.debug(f"No counts found for '{match}'")
-        else:
-            matching_ec_numbers = [gene_id] if gene_id in all_gene_ids else []
-
+            matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
             for match in matching_ec_numbers:
-                match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
-                if not match_counts.empty:
+                if match in target_id_counts_df['gene_id'].values:
+                    match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == match]
                     for col in aggregated_counts.keys():
                         aggregated_counts[col] += match_counts[col].sum()
-                        logging.debug(f"Adding count {match_counts[col].sum()} for column {col} from gene ID {match}")
-                else:
-                    logging.debug(f"No counts found for '{match}'")
+        # For direct gene ID matches
+        else:
+            if gene_id in target_id_counts_df['gene_id'].values:
+                match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == gene_id]
+                for col in aggregated_counts.keys():
+                    aggregated_counts[col] += match_counts[col].sum()
 
-    logging.debug(f"Aggregated counts: {aggregated_counts}")
     return aggregated_counts
-
 
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
     """
