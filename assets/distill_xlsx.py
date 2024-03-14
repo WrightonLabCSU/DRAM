@@ -105,31 +105,29 @@ def filter_and_aggregate_counts(gene_ids, target_id_counts_df, db_name, all_gene
 import logging
 
 def fetch_matching_ec_numbers(db_name, partial_ec_number):
-    """
-    Fetch all matching EC numbers for a given partial EC number from the database,
-    parsing compound gene_id entries containing multiple EC numbers.
-    """
-    logging.debug(f"Starting fetch_matching_ec_numbers for {partial_ec_number}")
-    
-    # Clean up the partial EC number for matching
-    partial_ec_clean = partial_ec_number.replace("EC:", "").rstrip("-")
-    
+    # Initialize connection to the database
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-
-    # Use SQL query to directly filter matching EC numbers
-    query = f"SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE ?"
-    logging.debug(f"Executing query: {query}")
-    cursor.execute(query, ("EC:" + partial_ec_clean + "%",))
     
-    matching_ec_numbers = set(row[0] for row in cursor.fetchall())
-    logging.debug(f"Matched {len(matching_ec_numbers)} EC numbers with partial EC {partial_ec_number}")
-
-    if not matching_ec_numbers:
-        logging.debug(f"No matches found for partial EC {partial_ec_number}")
-
+    # Clean up the partial EC number for pattern matching
+    partial_ec_pattern = partial_ec_number.replace("EC:", "").rstrip("-") + "%"
+    
+    # Fetch potentially matching gene_ids
+    cursor.execute("SELECT DISTINCT gene_id FROM annotations WHERE gene_id LIKE 'EC:%'")
+    potential_matches = [row[0] for row in cursor.fetchall()]
+    
+    # Close the database connection
     conn.close()
-    return list(matching_ec_numbers)
+
+    # Filter matches with fine-grained control in Python
+    matched_ec_numbers = []
+    for gene_ids in potential_matches:
+        for gene_id in gene_ids.split(";"):
+            gene_id = gene_id.strip()
+            if re.match("EC:" + partial_ec_pattern, gene_id):
+                matched_ec_numbers.append(gene_id)
+    
+    return matched_ec_numbers
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     """
