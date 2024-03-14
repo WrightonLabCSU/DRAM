@@ -17,7 +17,7 @@ process CALL_GENES {
 
     script:
     """
-    mkidir -p tmp
+    mkdir -p tmp
     export TMPDIR='./tmp/'
 
     /opt/bbmap/reformat.sh \\
