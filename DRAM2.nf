@@ -157,7 +157,7 @@ else if ((params.help) || (params.h)){
 */
 def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename"]
 
-if (params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
+if (!params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
 }
 
@@ -167,7 +167,7 @@ if( params.use_dbset){
     }
 }
 
-if( params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
+if( !params.rename && params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
     error("If you want to distill, you must provide annotations via --annotations <path/to/file>.")
 }
 
