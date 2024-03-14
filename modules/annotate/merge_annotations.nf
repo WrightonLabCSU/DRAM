@@ -3,8 +3,6 @@ process MERGE_ANNOTATIONS {
     input:
     path( ch_annotations, stageAs: "annotations/*" )
 
-
-
     output:
     path "raw-merged-annotations.tsv", emit: ch_merged_annots_out
 
@@ -15,6 +13,24 @@ process MERGE_ANNOTATIONS {
     import pandas as pd
     import os
     import glob
+
+    def assign_rank(row):
+        rank = 'E'
+        if row.get('kegg_bitScore', 0) > 350:
+            rank = 'A'
+        elif row.get('uniref_bitScore', 0) > 350:
+            rank = 'B'
+        elif row.get('kegg_bitScore', 0) > 60 or row.get('uniref_bitScore', 0) > 60:
+            rank = 'C'
+        elif any(row.get(f"{db}_bitScore", 0) > 60 for db in ['pfam', 'dbcan', 'merops']):
+            rank = 'D'
+        return rank
+
+    def convert_bit_scores_to_numeric(df):
+        for col in df.columns:
+            if "_bitScore" in col:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+        return df
 
     # Directory where the annotations TSV files are staged
     annotations_dir = "annotations"
@@ -34,6 +50,12 @@ process MERGE_ANNOTATIONS {
             # Perform an outer join merge with the new DataFrame
             merged_df = pd.merge(merged_df, current_df, how='outer', on=['query_id', 'sample'], suffixes=('', '_duplicate'))
 
+    # Convert relevant bit score columns to numeric
+    merged_df = convert_bit_scores_to_numeric(merged_df)
+
+    # Recalculate 'rank' for each row after merge
+    merged_df['temp_rank'] = merged_df.apply(assign_rank, axis=1)
+
     # After merging, handle duplicate columns (if any) by merging their values
     for col in [col for col in merged_df.columns if '_duplicate' in col]:
         original_col = col.replace('_duplicate', '')
@@ -41,11 +63,17 @@ process MERGE_ANNOTATIONS {
         merged_df[original_col] = merged_df.apply(lambda x: x[original_col] if pd.notnull(x[original_col]) else x[col], axis=1)
         merged_df.drop(columns=[col], inplace=True)
 
+    # Insert 'rank' after 'strandedness', remove 'temp_rank'
+    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness']
+    merged_df['rank'] = merged_df['temp_rank']
+    merged_df.drop(columns=['temp_rank'], inplace=True)
+    other_columns = [col for col in merged_df.columns if col not in base_columns + ['rank']]
+    merged_df = merged_df[base_columns + ['rank'] + other_columns]
+
     # Save the merged DataFrame to a new file
     merged_file_path = "raw-merged-annotations.tsv"
     merged_df.to_csv(merged_file_path, sep='\t', index=False)
 
     print(f"Merged annotations saved to {merged_file_path}")
-
     """
 }
