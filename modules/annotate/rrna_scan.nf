@@ -81,9 +81,7 @@ process RRNA_SCAN {
         rrna_df.to_csv("${sample}_processed_rrnas.tsv", sep="\t", index=False)
     else:
         # Copy the distill_dummy_sheet content to the output file
-        # Assumes that distill_dummy_sheet is a path to the file with default contents
-        with open(${params.distill_dummy_sheet}, 'r') as dummy_sheet:
-            with open("${sample}_processed_rrnas.tsv", 'w') as output_file:
-                output_file.write(dummy_sheet.read())
+        with open("${sample}_processed_rrnas.tsv", 'w') as output_file:
+            output_file.write("NULL")
     """
 }
