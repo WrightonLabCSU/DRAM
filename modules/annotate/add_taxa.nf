@@ -18,34 +18,33 @@ process ADD_TAXA {
     # Load combined_annotations.tsv
     combined_annotations_path = "${combined_annotations}"
     combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
+    # Assume genome/sample names are in the first column, regardless of the column name
+    combined_annotations_first_col_name = combined_annotations.columns[0]
 
     # Load ch_taxa TSV
     ch_taxa_path = "${ch_taxa}"
     ch_taxa_data = pd.read_csv(ch_taxa_path, sep='\t')
+    # Assume genome/sample names are in the first column, regardless of the column name
+    ch_taxa_first_col_name = ch_taxa_data.columns[0]
 
-    # Replace "." with "-" in the sample column for comparison
-    combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
+    # Replace "." with "-" in the first column for comparison in both DataFrames
+    combined_annotations[combined_annotations_first_col_name] = combined_annotations[combined_annotations_first_col_name].str.replace(".", "-", regex=False)
+    ch_taxa_data[ch_taxa_first_col_name] = ch_taxa_data[ch_taxa_first_col_name].str.replace(".", "-", regex=False)
 
-    # Replace "." with "-" in the "user_genome" column of ch_taxa for matching
-    ch_taxa_data["user_genome"] = ch_taxa_data["user_genome"].str.replace(".", "-")
-
-    # Check if "taxonomy" column exists and has non-null values
+    # Check if "taxonomy" column exists and has non-null values in combined_annotations
     if "taxonomy" in combined_annotations.columns:
         if not combined_annotations["taxonomy"].isnull().all():
-            # If "taxonomy" exists and has non-null values, don't merge taxonomy from ch_taxa_data
             taxonomy_to_merge = False
         else:
-            # If "taxonomy" exists but only contains null values, prepare to replace those with ch_taxa_data
             taxonomy_to_merge = True
     else:
-        # If "taxonomy" doesn't exist, add it
         taxonomy_to_merge = True
 
     if taxonomy_to_merge:
-        # Merge data based on the sample column
-        merged_data = pd.merge(combined_annotations, ch_taxa_data[['user_genome', 'classification']], left_on="sample", right_on="user_genome", how="left")
-        # Drop the additional "user_genome" column
-        merged_data.drop(columns=["user_genome"], inplace=True)
+        # Merge data based on the genome/sample name, which is in the first column of both DataFrames
+        merged_data = pd.merge(combined_annotations, ch_taxa_data[[ch_taxa_first_col_name, 'classification']], left_on=combined_annotations_first_col_name, right_on=ch_taxa_first_col_name, how="left")
+        # Drop the additional column from ch_taxa_data that was used for the merge
+        merged_data.drop(columns=[ch_taxa_first_col_name], inplace=True)
         # Rename the "classification" column to "taxonomy"
         merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
     else:
@@ -57,6 +56,5 @@ process ADD_TAXA {
     merged_data.to_csv(output_path, sep='\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
-
     """
 }
