@@ -41,25 +41,25 @@ process CALL_GENES {
         gene_counter=1 # Initialize the gene counter
 
         for ext in fna faa gff; do
-            if [[ "$ext" == "gff" ]]; then
+            if [[ "\$ext" == "gff" ]]; then
                 awk -v prefix="${sample}_" 'BEGIN{FS=OFS="\t"}
-                    $0 !~ /^#/ {
-                        split($9, id_parts, ";");
+                    \$0 !~ /^#/ {
+                        split(\$9, id_parts, ";");
                         id_parts[1] = "ID=" prefix sprintf("%06d", gene_counter);
-                        $9 = id_parts[1];
+                        \$9 = id_parts[1];
                         for(i = 2; i in id_parts; i++) {
-                            $9 = $9 ";" id_parts[i];
+                            \$9 = \$9 ";" id_parts[i];
                         }
                         gene_counter++;
                     } 
-                    {print}' "${sample}_called_genes_needs_renaming.$ext" > "${sample}_called_genes.$ext"
+                    {print}' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
             else
                 awk -v prefix=">${sample}_" '/^>/{ 
                     print prefix sprintf("%06d", gene_counter); 
                     gene_counter++;
                     next; 
                 }
-                { print }' "${sample}_called_genes_needs_renaming.$ext" > "${sample}_called_genes.$ext"
+                { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
             fi
         done
 
