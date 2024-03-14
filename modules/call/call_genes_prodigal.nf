@@ -41,15 +41,18 @@ process CALL_GENES {
 
         for ext in fna faa gff; do
             if [ -s "${sample}_called_genes_needs_renaming.\$ext" ]; then
-                awk '/^>/ { 
-                    split(\$0, parts, "_"); 
-                    gene_number = sprintf("%06d", parts[length(parts)]); 
-                    parts[length(parts)] = gene_number; 
-                    \$0 = parts[1]; 
-                    for (i = 2; i in parts; i++) { 
-                        \$0 = \$0 "_" parts[i]; 
+                awk -v sample="${sample}" 'BEGIN{FS=OFS=" "}{ 
+                    if(\$0 ~ /^>/) {
+                        split(\$1, id, "_");
+                        gene_number = sprintf("%06d", id[length(id)]);
+                        id[length(id)] = gene_number;
+                        \$1 = ">" sample "_" id[2];
+                        for(i = 3; i <= length(id); i++) {
+                            \$1 = \$1 "_" id[i];
+                        }
                     } 
-                } { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
+                    print 
+                }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
             fi
         done
 
