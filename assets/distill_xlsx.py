@@ -134,33 +134,27 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     logging.debug("Starting aggregation of counts.")
     aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
-    # Fetch all matching EC numbers for partial and direct EC numbers
-    all_matches = set()
 
-    for gene_id in gene_ids:
-        if not is_partial_ec_number(gene_id):
-            if gene_id in target_id_counts_df['gene_id'].values:
-                logging.debug(f"Direct match found: {gene_id}")
-                all_matches.add(gene_id)
-            else:
-                logging.debug(f"Direct match not found in target_id_counts: {gene_id}")
-        elif is_partial_ec_number(gene_id):
-            partial_matches = fetch_matching_ec_numbers(db_name, gene_id)
-            logging.debug(f"Partial EC {gene_id} matches: {partial_matches}")
-            all_matches.update(partial_matches)
-
-    # Aggregate counts for all matches
-    for match in all_matches:
-        logging.debug(f"Aggregating counts for: {match}")
-        if match in target_id_counts_df['gene_id'].values:
-            match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == match]
+    if is_partial_ec_number(gene_ids[0]):  # Assuming all gene_ids are either all partial or all direct EC numbers
+        partial_matches = fetch_matching_ec_numbers(db_name, gene_ids[0])
+        logging.debug(f"Partial EC {gene_ids[0]} matches: {', '.join(partial_matches)}")
+        # Aggregate counts for partial EC numbers
+        for match in partial_matches:
+            # Match entire string of EC numbers against target_id_counts
+            match_counts = target_id_counts_df[target_id_counts_df['gene_id'].str.contains(match)]
             for col in aggregated_counts.keys():
                 aggregated_counts[col] += match_counts[col].sum()
                 logging.debug(f"Added {match_counts[col].sum()} to {col} from {match}")
-        else:
-            logging.debug(f"No counts found for '{match}' in target_id_counts")
+    else:
+        # Handle direct gene ID matches
+        for gene_id in gene_ids:
+            if gene_id in target_id_counts_df['gene_id'].values:
+                match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id]
+                for col in aggregated_counts.keys():
+                    aggregated_counts[col] += match_counts[col].sum()
+                    logging.debug(f"Added {match_counts[col].sum()} to {col} from {gene_id}")
 
-    logging.debug(f"Aggregated counts: {aggregated_counts}")
+    logging.debug(f"Final aggregated counts: {aggregated_counts}")
     return aggregated_counts
 
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
