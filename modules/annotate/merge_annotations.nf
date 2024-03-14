@@ -43,6 +43,9 @@ process MERGE_ANNOTATIONS {
         # Load the current TSV file into a DataFrame
         current_df = pd.read_csv(file_path, sep='\t')
         
+        # Convert bit scores to numeric for accurate comparisons and ranking
+        current_df = convert_bit_scores_to_numeric(current_df)
+
         # If merged_df is empty, just copy the first file
         if merged_df.empty:
             merged_df = current_df
@@ -50,11 +53,8 @@ process MERGE_ANNOTATIONS {
             # Perform an outer join merge with the new DataFrame
             merged_df = pd.merge(merged_df, current_df, how='outer', on=['query_id', 'sample'], suffixes=('', '_duplicate'))
 
-    # Convert relevant bit score columns to numeric
-    merged_df = convert_bit_scores_to_numeric(merged_df)
-
-    # Recalculate 'rank' for each row after merge
-    merged_df['temp_rank'] = merged_df.apply(assign_rank, axis=1)
+    # Recalculate 'rank' for each row after merge, ensuring all columns used for ranking are numeric
+    merged_df['rank'] = merged_df.apply(assign_rank, axis=1)
 
     # After merging, handle duplicate columns (if any) by merging their values
     for col in [col for col in merged_df.columns if '_duplicate' in col]:
@@ -63,12 +63,10 @@ process MERGE_ANNOTATIONS {
         merged_df[original_col] = merged_df.apply(lambda x: x[original_col] if pd.notnull(x[original_col]) else x[col], axis=1)
         merged_df.drop(columns=[col], inplace=True)
 
-    # Insert 'rank' after 'strandedness', remove 'temp_rank'
-    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness']
-    merged_df['rank'] = merged_df['temp_rank']
-    merged_df.drop(columns=['temp_rank'], inplace=True)
-    other_columns = [col for col in merged_df.columns if col not in base_columns + ['rank']]
-    merged_df = merged_df[base_columns + ['rank'] + other_columns]
+    # Ensure 'rank' follows 'strandedness'
+    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank']
+    other_columns = [col for col in merged_df.columns if col not in base_columns]
+    merged_df = merged_df[base_columns + other_columns]
 
     # Save the merged DataFrame to a new file
     merged_file_path = "raw-merged-annotations.tsv"
