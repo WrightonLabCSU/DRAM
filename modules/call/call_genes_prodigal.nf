@@ -41,9 +41,18 @@ process CALL_GENES {
 
         for ext in fna faa gff; do
             if [ -s "${sample}_called_genes_needs_renaming.\$ext" ]; then
-                awk -F'[>|_]' -v OFS='_' '/^>/ { \$2=\$2"_"sprintf("%06d", \$NF); \$NF="" } { if (\$1 == ">") { printf "%s", \$1 }; for(i=2; i<=NF; i++) printf "%s", (\$i OFS); printf "\\n" }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
+                awk '/^>/ { 
+                    split($0, parts, "_"); 
+                    gene_number = sprintf("%06d", parts[length(parts)]); 
+                    parts[length(parts)] = gene_number; 
+                    $0 = parts[1]; 
+                    for (i = 2; i in parts; i++) { 
+                        $0 = $0 "_" parts[i]; 
+                    } 
+                } { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
             fi
         done
+
 
         if [ -s "${sample}_called_genes.gff" ]; then
             python ${ch_called_genes_loc_script} "${sample}_called_genes.gff" > "${sample}_called_genes_table.tsv"
