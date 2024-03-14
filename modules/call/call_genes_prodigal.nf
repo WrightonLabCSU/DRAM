@@ -54,12 +54,17 @@ process CALL_GENES {
         gene_counter=1
 
         # Process .gff
-        awk -v prefix="${sample}_" 'BEGIN{FS=OFS="\t"}
-            !/^#/ && \$3 == "CDS" {
-                gsub(/ID=[^;]+/, "ID=" prefix sprintf("%06d", gene_counter), \$9);
+        // Assuming gene_counter increments correctly in your Nextflow script
+
+        // For .fna and .faa files
+        awk -v prefix=">${sample}_" 'BEGIN{gene_counter=1}
+            /^>/ { 
+                print prefix sprintf("%06d", gene_counter);  // Print the header with gene_counter
                 gene_counter++;
+                next; 
             }
-            {print}' "${sample}_called_genes_needs_renaming.gff" > "${sample}_called_genes.gff"
+            { print }' "${sample}_called_genes_needs_renaming.${ext}" > "${sample}_called_genes.${ext}"
+
 
         # Now, process the .gff file to generate .tsv using the Python script
         if [ -s "${sample}_called_genes.gff" ]; then
