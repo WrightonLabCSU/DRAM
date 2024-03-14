@@ -132,27 +132,22 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
     return matching_ec_numbers
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
-    """
-    Aggregate counts for each gene ID or partial EC number.
-    """
     aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
-    
-    # Get matching EC numbers for partial EC numbers directly from annotations
+    matching_ec_numbers = []
+
     for gene_id in gene_ids:
         if is_partial_ec_number(gene_id):
-            matching_ec_numbers = fetch_matching_ec_numbers(db_name, gene_id)
+            # Fetch matching EC numbers for the partial EC number
+            partial_matches = fetch_matching_ec_numbers(db_name, gene_id)
+            matching_ec_numbers.extend(partial_matches)
 
-            # For each matching EC number, find the exact match in the target_id_counts_df
-            for match in matching_ec_numbers:
-                if match in target_id_counts_df['gene_id'].values:
-                    match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == match]
-                    for col in aggregated_counts.keys():
-                        aggregated_counts[col] += match_counts[col].sum()
-        else:
-            if gene_id in target_id_counts_df['gene_id'].values:
-                match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id]
-                for col in aggregated_counts.keys():
-                    aggregated_counts[col] += match_counts[col].sum()
+    # Now, handle both direct matches and partial EC number matches
+    for ec_number in set(matching_ec_numbers):
+        # Directly search for the EC number (or concatenated string) in the target_id_counts DataFrame
+        if ec_number in target_id_counts_df['gene_id'].values:
+            match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == ec_number]
+            for col in aggregated_counts.keys():
+                aggregated_counts[col] += match_counts[col].sum()
 
     return aggregated_counts
 
