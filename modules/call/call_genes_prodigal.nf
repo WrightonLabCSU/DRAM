@@ -15,12 +15,11 @@ process CALL_GENES {
     path("${sample}_${params.min_contig_len}.fa"), emit: prodigal_filtered_fasta, optional: true
     path("${sample}_called_genes.gff"), emit: prodigal_gff, optional: true
 
-    env {
-        TMPDIR = './tmp/'
-    }
-
     script:
     """
+    mkidir -p tmp
+    export TMPDIR='./tmp/'
+
     /opt/bbmap/reformat.sh \\
     in=${fasta} \\
     out="${sample}_${params.min_contig_len}.fa" \\
