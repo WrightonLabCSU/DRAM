@@ -41,23 +41,22 @@ process CALL_GENES {
         gene_counter=1 # Initialize the gene counter correctly
 
         for ext in fna faa gff; do
-            if [[ "$ext" == "gff" ]]; then
-                awk -v prefix="${sample}_" 'BEGIN{FS=OFS="\t"; gene_counter=1}
-                    $0 !~ /^#/ {
-                        ...
-                        # Processing lines, incrementing gene_counter
+            if [[ "\$ext" == "gff" ]]; then
+                awk -v prefix="${sample}_" 'BEGIN{FS=OFS="\t"}
+                    \$0 !~ /^#/ {
+                        # Processing GFF lines with incremented gene_counter
+                        print \$0 "gene_counter=" gene_counter; # Placeholder for actual command
                         gene_counter++;
                     }
-                    {print}' "${sample}_called_genes_needs_renaming.$ext" > "${sample}_called_genes.$ext"
+                    {print}' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
             else
-                # For .fna and .faa
-                awk -v prefix=">${sample}_" '/^>/{ 
-                    ...
-                    print prefix sprintf("%06d", gene_counter); # Correct use before increment
-                    gene_counter++;
-                    next; 
-                }
-                { print }' "${sample}_called_genes_needs_renaming.$ext" > "${sample}_called_genes.$ext"
+                awk -v prefix=">${sample}_" 'BEGIN{gene_counter=1}
+                    /^>/ { 
+                        print prefix sprintf("%06d", gene_counter); # Print modified header
+                        gene_counter++;
+                        next; 
+                    }
+                    { print }' "${sample}_called_genes_needs_renaming.\$ext" > "${sample}_called_genes.\$ext"
             fi
         done
 
