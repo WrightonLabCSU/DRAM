@@ -13,7 +13,8 @@ def create_database(db_name, include_extra_columns=False):
     cursor = conn.cursor()
     extra_columns_sql = ""
     if include_extra_columns:
-        extra_columns_sql = ", taxonomy TEXT, Completeness REAL, Contamination REAL, rank TEXT, gene_no INTEGER"
+        # Changed 'gene_no' to 'gene_number' in the SQL schema
+        extra_columns_sql = ", taxonomy TEXT, Completeness REAL, Contamination REAL, rank TEXT, gene_number INTEGER"
     cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS annotations (
             query_id TEXT,
@@ -31,25 +32,21 @@ def identify_databases(df):
         if '_' in col:
             prefix = col.split('_')[0]
             db_names.add(prefix)
-    non_db_prefixes = {'query', 'sample', 'start', 'end', 'strandedness', 'Completeness', 'Contamination', 'taxonomy'}
+    non_db_prefixes = {'query', 'sample', 'start', 'end', 'strandedness', 'Completeness', 'Contamination', 'taxonomy', 'gene_number'}
     return db_names - non_db_prefixes
 
 def import_annotations(conn, file_path):
     df = pd.read_csv(file_path, sep='\t')
     db_names = identify_databases(df)
 
-    # Rename 'gene no.' to 'gene_no' to avoid SQL syntax issues
-    df.rename(columns={'gene no.': 'gene_no'}, inplace=True)
-
-    extra_columns = [col for col in ['taxonomy', 'Completeness', 'Contamination', 'rank', 'gene_no'] if col in df.columns]
+    extra_columns = [col for col in ['taxonomy', 'Completeness', 'Contamination', 'rank', 'gene_number'] if col in df.columns]
 
     data_to_insert = []
     for db_name in db_names:
         id_cols = [col for col in df.columns if col.startswith(db_name) and ('_id' in col or '_EC' in col)]
         for col in id_cols:
-            for _, row in df[['query_id', 'sample', col] + extra_columns].dropna().iterrows():
+            for _, row in df[['query_id', 'sample', col] + extra_columns].dropna(subset=['query_id', 'sample', col]).iterrows():
                 gene_id = 'EC:' + str(row[col]) if col.endswith('_EC') else row[col]
-                
                 record = (row['query_id'], row['sample'], gene_id) + tuple(row[extra_column] for extra_column in extra_columns)
                 data_to_insert.append(record)
 
@@ -62,11 +59,10 @@ def import_annotations(conn, file_path):
     ''', data_to_insert)
     conn.commit()
 
-
 def main():
     args = parse_arguments()
     df = pd.read_csv(args.combined_annotations, sep='\t')
-    extra_columns = ['taxonomy', 'Completeness', 'Contamination']
+    extra_columns = ['taxonomy', 'Completeness', 'Contamination', 'rank', 'gene_number']  # Updated list to include 'gene_number'
 
     # Check if extra columns exist in the DataFrame
     include_extra_columns = any(col in df.columns for col in extra_columns)
