@@ -871,15 +871,16 @@ workflow {
     /* Rename fasta headers
         Process 1-by-1 
     */
-    if( params.call ){
-        if( params.rename ) {
-            RENAME_FASTA( ch_input_fastas )
-            ch_fasta = RENAME_FASTA.out.renamed_fasta
-        } 
-        else {
-            ch_fasta = ch_input_fastas
-        }
 
+    if( params.rename ) {
+        RENAME_FASTA( ch_input_fastas )
+        ch_fasta = RENAME_FASTA.out.renamed_fasta
+    } 
+    else {
+        ch_fasta = ch_input_fastas
+    }    
+    
+    if( params.call ){
         CALL_GENES ( ch_fasta, ch_generate_gene_locs_script )
         ch_called_genes = CALL_GENES.out.prodigal_fna
         ch_called_proteins = CALL_GENES.out.prodigal_faa
