@@ -133,6 +133,29 @@ def fetch_matching_ec_numbers(db_name, partial_ec_number):
 
 def aggregate_counts(gene_ids, target_id_counts_df, db_name):
     aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
+    # Fetch all matching EC numbers for partial and direct EC numbers
+    all_matches = set()
+
+    for gene_id in gene_ids:
+        # Direct matches are added to the list
+        if not is_partial_ec_number(gene_id) and gene_id in target_id_counts_df['gene_id'].values:
+            all_matches.add(gene_id)
+        # For partial EC numbers, fetch matching numbers and add them to the set
+        elif is_partial_ec_number(gene_id):
+            partial_matches = fetch_matching_ec_numbers(db_name, gene_id)
+            all_matches.update(partial_matches)
+
+    # Aggregate counts for all matches
+    for match in all_matches:
+        if match in target_id_counts_df['gene_id'].values:
+            match_counts = target_id_counts_df[target_id_counts_df['gene_id'] == match]
+            for col in aggregated_counts.keys():
+                aggregated_counts[col] += match_counts[col].sum()
+
+    return aggregated_counts
+
+def aggregate_counts(gene_ids, target_id_counts_df, db_name):
+    aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
     matching_ec_numbers = []
 
     for gene_id in gene_ids:
