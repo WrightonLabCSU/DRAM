@@ -64,6 +64,9 @@ process MERGE_ANNOTATIONS {
 
     merged_df = merged_df[final_columns]
 
+    # Sort the DataFrame in ascending order based on the 'query_id' column
+    merged_df = merged_df.sort_values(by='query_id', ascending=True)
+
     # Save the merged DataFrame to a new file
     merged_file_path = "raw-merged-annotations.tsv"
     merged_df.to_csv(merged_file_path, sep='\t', index=False)
