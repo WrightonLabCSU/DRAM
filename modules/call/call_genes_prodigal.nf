@@ -15,6 +15,10 @@ process CALL_GENES {
     path("${sample}_${params.min_contig_len}.fa"), emit: prodigal_filtered_fasta, optional: true
     path("${sample}_called_genes.gff"), emit: prodigal_gff, optional: true
 
+    env {
+        TMPDIR = './tmp/'
+    }
+
     script:
     """
     /opt/bbmap/reformat.sh \\
