@@ -192,6 +192,15 @@ if(params.merge_annotations != ""){
     if (tsv_files.isEmpty()) {
         error("Error: The specified directory for merging annotations (--merge_annotations) does not contain any .tsv files: ${params.merge_annotations}")
     }
+
+        // Create a channel with the paths to the .tsv files
+    Channel
+        .from(tsv_files.collect { annotations_dir.toString() + '/' + it })
+        .set { ch_merge_annotations }
+    } else {
+        // Handle the case where 'merge_annotations' parameter is not provided or empty
+        error "Error: The '--merge_annotations' parameter was not provided or is empty."
+    }
 }
 
 
@@ -924,7 +933,7 @@ workflow {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
     if( params.merge_annotations != "" ){
-        MERGE_ANNOTATIONS( params.merge_annotations )
+        MERGE_ANNOTATIONS( ch_merge_annotations )
     }
 
     /*
