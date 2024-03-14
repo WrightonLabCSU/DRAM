@@ -56,9 +56,20 @@ def combine_annotations(annotation_files, output_file, threads):
     combined_data = convert_bit_scores_to_numeric(combined_data)
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
     combined_data = organize_columns(combined_data)
-    combined_data.sort_values(by='query_id', ascending=True, inplace=True)
+    combined_data.sort_values(by=['sample', 'query_id'], ascending=True, inplace=True)
+
+    # Extract unique gene identifier from 'query_id'
+    combined_data['gene_identifier'] = combined_data['query_id'].apply(lambda x: "_".join(x.split('_')[:-1]))
+    
+    # Group by 'sample' and 'gene_identifier' and enumerate entries
+    combined_data['gene no.'] = combined_data.groupby(['sample', 'gene_identifier']).cumcount() + 1
+
+    # Drop the temporary 'gene_identifier' column
+    combined_data.drop(columns=['gene_identifier'], inplace=True)
+
     combined_data.to_csv(output_file, index=False, sep='\t')
-    logging.info(f"Combined annotations saved to {output_file}, with ranks assigned and sorted by 'query_id'.")
+    logging.info(f"Combined annotations saved to {output_file}, with ranks assigned, sorted by 'sample' and 'query_id', and 'gene no.' added.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Combine annotation files with ranks and avoid duplicating specific columns.")

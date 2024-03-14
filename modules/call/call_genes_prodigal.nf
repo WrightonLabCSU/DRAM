@@ -47,3 +47,24 @@ process CALL_GENES {
     fi
     """
 }
+/*
+
+for ext in fna faa gff; do
+    if [ -s "${sample}_called_genes_needs_renaming.$ext" ]; then
+        awk -v sample="${sample}" 'BEGIN{FS=OFS=" "}{ 
+            if($0 ~ /^>/) {
+                split($1, id, "_");
+                gene_number = sprintf("%06d", id[length(id)]);
+                id[length(id)] = gene_number;
+                $1 = ">" sample "_" id[2];
+                for(i = 3; i <= length(id); i++) {
+                    $1 = $1 "_" id[i];
+                }
+            } 
+            print 
+        }' "${sample}_called_genes_needs_renaming.$ext" > "${sample}_called_genes.$ext"
+    fi
+done
+
+
+*/
