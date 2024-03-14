@@ -472,11 +472,10 @@ if( params.annotate ){
 */
 def distill_flag = "off"
 
+
 // Here we will check for the various kinds of inputs
-// The structure of this will change
-// For example, we will be able to ingest only metaT data and call genes on that
-// For example, users may use a csv or put a path to a directory
-if( params.call ){
+
+if( params.rename || params.call ){
 
     ch_generate_gene_locs_script = file(params.generate_gene_locs_script)
 
@@ -491,14 +490,15 @@ if( params.call ){
             .ifEmpty { exit 1, "If you specify --input_fasta you must provide a path/to/directory containing fasta files or they must be in: ./raw_data/*.fa" }
     }    
 
-    // Validate prodigal options for Call
-    if (!['single', 'meta'].contains(params.prodigal_mode)) {
-        error("Invalid parameter '--prodigal_mode ${params.prodigal_mode}'. Valid values are 'single' or 'meta'.")
+    if( params.call ){
+        // Validate prodigal options for Call
+        if (!['single', 'meta'].contains(params.prodigal_mode)) {
+            error("Invalid parameter '--prodigal_mode ${params.prodigal_mode}'. Valid values are 'single' or 'meta'.")
+        }
+        if (!['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25'].contains(params.prodigal_trans_table)) {
+            error("Invalid parameter '--prodigal_trans_table ${params.binning_map_mode}'. Valid values are '1','2',...,'25'.")
+        }
     }
-    if (!['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25'].contains(params.prodigal_trans_table)) {
-        error("Invalid parameter '--prodigal_trans_table ${params.binning_map_mode}'. Valid values are '1','2',...,'25'.")
-    }
-
     // Convert ch_input_fastas into a tuple: [samplename, file]
     ch_input_fastas.map {
         sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
