@@ -198,6 +198,7 @@ if (params.merge_annotations != "") {
     Channel
         .from(tsv_files.collect { annotations_dir.toString() + '/' + it })
         .set { ch_merge_annotations }
+    ch_merge_annotations.view()
 }
 
 /*
