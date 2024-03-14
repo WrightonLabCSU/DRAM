@@ -54,7 +54,6 @@ process CALL_GENES {
         gene_counter=1
 
         # Process .gff
-        // Assuming gene_counter increments correctly in your Nextflow script
 
         // For .fna and .faa files
         awk -v prefix=">${sample}_" 'BEGIN{gene_counter=1}
