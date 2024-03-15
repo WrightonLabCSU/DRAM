@@ -164,7 +164,7 @@ def aggregate_counts_for_ec(gene_id, target_id_counts_df):
 def parallel_aggregate_counts(gene_ids, target_id_counts_df, db_name, threads):
     final_aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
 
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    with ThreadPoolExecutor(max_workers=threads) as executor:
         future_to_ec = {executor.submit(aggregate_counts_for_ec, gene_id, target_id_counts_df): gene_id for gene_id in gene_ids}
 
         for future in as_completed(future_to_ec):
