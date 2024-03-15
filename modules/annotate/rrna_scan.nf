@@ -27,6 +27,10 @@ process RRNA_SCAN {
             fasta
         ]
         raw_rrna_str = subprocess.run(barrnap_command, capture_output=True, text=True).stdout
+        if not raw_rrna_str.strip():  # Check if barrnap output is empty
+            print(f"No rRNAs were detected for {sample_name}.", file=stderr)
+            return pd.DataFrame()  # Return an empty DataFrame
+
         raw_rrna_table = pd.read_csv(
             io.StringIO(raw_rrna_str),
             skiprows=1,
@@ -51,16 +55,12 @@ process RRNA_SCAN {
                     rrna_row_dict.get("note", ""),
                 ]
             )
-        if len(raw_rrna_table) > 0:
-            return pd.DataFrame(
-                rrna_table_rows, index=raw_rrna_table.index, columns=RRNA_COLUMNS
-            ).reset_index()
-        else:
-            print(f"No rRNAs were detected for {sample_name}.", file=stderr)
-            return None
+        return pd.DataFrame(
+            rrna_table_rows, columns=RRNA_COLUMNS
+        ).reset_index(drop=True)
 
     RAW_RRNA_COLUMNS = [
-        "query_id",  # Changed from "scaffold" to "query_id"
+        "query_id",
         "tool_name",
         "type",
         "begin",
@@ -70,13 +70,17 @@ process RRNA_SCAN {
         "empty",
         "note",
     ]
-    RRNA_COLUMNS = ["sample", "begin", "end", "strand", "type", "e-value", "note"]  # Changed from "fasta" to "sample"
+    RRNA_COLUMNS = ["sample", "begin", "end", "strand", "type", "e-value", "note"]
 
     # Run barrnap
     rrna_df = run_barrnap("${fasta}", "${sample}", threads=${params.threads}, verbose=True)
 
-    if rrna_df is not None:
-        # Save rrna_df to ${sample}_processed_rrnas.tsv
+    if rrna_df is not None and not rrna_df.empty:
         rrna_df.to_csv("${sample}_processed_rrnas.tsv", sep="\t", index=False)
+    else:
+        # Write "NULL" to the file if rrna_df is empty
+        with open("${sample}_processed_rrnas.tsv", "w") as file:
+            file.write("NULL")
+
     """
 }
