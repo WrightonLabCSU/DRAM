@@ -15,8 +15,8 @@ process RRNA_SCAN {
     #!/usr/bin/env python
 
     import pandas as pd
-    import io
     import subprocess
+    import io
     from sys import stderr
 
     def run_barrnap(fasta, sample_name, threads, verbose=True):
@@ -31,56 +31,33 @@ process RRNA_SCAN {
             print(f"No rRNAs were detected for {sample_name}.", file=stderr)
             return pd.DataFrame()  # Return an empty DataFrame
 
-        raw_rrna_table = pd.read_csv(
+        # Assuming the first column of barrnap output is 'query_id'
+        rrna_df = pd.read_csv(
             io.StringIO(raw_rrna_str),
-            skiprows=1,
             sep="\t",
             header=None,
-            names=RAW_RRNA_COLUMNS,
-            index_col=0,
+            names=["query_id", "tool_name", "type", "begin", "end", "strand", "e-value", "score", "note"],
+            usecols=["query_id", "type", "begin", "end", "strand", "e-value", "note"]  # Adjust based on actual barrnap output columns
         )
-        rrna_table_rows = list()
-        for gene, row in raw_rrna_table.iterrows():
-            rrna_row_dict = {
-                entry.split("=")[0]: entry.split("=")[1] for entry in row["note"].split(";")
-            }
-            rrna_table_rows.append(
-                [
-                    sample_name,
-                    row.begin,
-                    row.end,
-                    row.strand,
-                    rrna_row_dict["Name"].replace("_", " "),
-                    row["e-value"],
-                    rrna_row_dict.get("note", ""),
-                ]
-            )
-        return pd.DataFrame(
-            rrna_table_rows, columns=RRNA_COLUMNS
-        ).reset_index(drop=True)
+        rrna_df.insert(0, 'sample', sample_name)  # Add 'sample' column at the beginning
 
-    RAW_RRNA_COLUMNS = [
-        "query_id",
-        "tool_name",
-        "type",
-        "begin",
-        "end",
-        "e-value",
-        "strand",
-        "empty",
-        "note",
-    ]
-    RRNA_COLUMNS = ["sample", "begin", "end", "strand", "type", "e-value", "note"]
+        return rrna_df
+
+    # Using parameters from Nextflow
+    fasta = "${fasta}"
+    sample_name = "${sample}"
+    threads = ${params.threads}
 
     # Run barrnap
-    rrna_df = run_barrnap("${fasta}", "${sample}", threads=${params.threads}, verbose=True)
+    rrna_df = run_barrnap(fasta, sample_name, threads, verbose=True)
 
-    if rrna_df is not None and not rrna_df.empty:
-        rrna_df.to_csv("${sample}_processed_rrnas.tsv", sep="\t", index=False)
+    if not rrna_df.empty:
+        rrna_df.to_csv(f"{sample_name}_processed_rrnas.tsv", sep="\t", index=False)
     else:
         # Write "NULL" to the file if rrna_df is empty
-        with open("${sample}_processed_rrnas.tsv", "w") as file:
+        with open(f"{sample_name}_processed_rrnas.tsv", "w") as file:
             file.write("NULL")
+
 
     """
 }
