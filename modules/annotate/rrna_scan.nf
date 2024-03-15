@@ -51,9 +51,9 @@ process RRNA_SCAN {
     rrna_df = run_barrnap("${fasta}", "${sample}", threads=${params.threads}, verbose=True)
 
     if not rrna_df.empty:
-        rrna_df.to_csv(f"{sample_name}_processed_rrnas.tsv", sep="\t", index=False)
+        rrna_df.to_csv(f"${sample}_processed_rrnas.tsv", sep="\t", index=False)
     else:
-        with open(f"{sample_name}_processed_rrnas.tsv", "w") as file:
+        with open(f"${sample}_processed_rrnas.tsv", "w") as file:
             file.write("NULL")
 
     """
