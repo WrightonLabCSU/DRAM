@@ -11,8 +11,6 @@ process RRNA_COLLECT {
 
     script:
     """
-    #!/usr/bin/env python
-
     import os
     import pandas as pd
     from collections import Counter
@@ -25,6 +23,8 @@ process RRNA_COLLECT {
 
     # Create a list to store individual input DataFrames
     individual_dfs = []
+    # Create a list to store names of non-"NULL" files
+    non_null_files = []
 
     for file in tsv_files:
         with open(file, 'r') as f:
@@ -35,6 +35,7 @@ process RRNA_COLLECT {
             all_files_null = False  # At least one file is not "NULL"
             input_df = pd.read_csv(file, sep='\t')
             individual_dfs.append(input_df)
+            non_null_files.append(file)  # Add the file name to non_null_files
 
     # If all files contain "NULL", write "NULL" to output files and exit
     if all_files_null:
@@ -43,12 +44,12 @@ process RRNA_COLLECT {
         with open("combined_rrna_scan.tsv", "w") as f:
             f.write("NULL")
     else:
-        # Process the non-"NULL" files as before
-        samples = [os.path.basename(file).replace("_processed_rrnas.tsv", "") for file in tsv_files if os.path.basename(file) not in individual_dfs]
+        # Extract sample names from non-null files
+        samples = [os.path.basename(file).replace("_processed_rrnas.tsv", "") for file in non_null_files]
         collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "category", "topic_ecosystem", "subcategory"] + samples)
         sample_counts = {sample: Counter() for sample in samples}
 
-        for df, file in zip(individual_dfs, tsv_files):
+        for df, file in zip(individual_dfs, non_null_files):  # Use non_null_files here
             sample_name = os.path.basename(file).replace("_processed_rrnas.tsv", "")
             gene_ids = df['type'].tolist()
             unique_gene_ids = list(set(gene_ids))
@@ -75,8 +76,6 @@ process RRNA_COLLECT {
         collected_data.sort_values(by='gene_id', inplace=True)
         collected_data.drop(['type'], axis=1, inplace=True)
         collected_data.to_csv("collected_rrnas.tsv", sep="\t", index=False)
-
-
 
     """
 }
