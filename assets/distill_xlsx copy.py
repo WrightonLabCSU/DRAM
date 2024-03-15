@@ -4,7 +4,6 @@ import argparse
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import re
 
 import logging
@@ -152,32 +151,10 @@ def aggregate_counts(gene_ids, target_id_counts_df, db_name):
 
     return aggregated_counts
 
-def aggregate_counts_for_ec(gene_id, target_id_counts_df):
-    aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
-    if gene_id in target_id_counts_df['gene_id'].values:
-        match_counts = target_id_counts_df.loc[target_id_counts_df['gene_id'] == gene_id]
-        for col in aggregated_counts.keys():
-            aggregated_counts[col] += match_counts[col].sum()
-    return gene_id, aggregated_counts
-
-def parallel_aggregate_counts(gene_ids, target_id_counts_df, db_name, max_workers=10):
-    final_aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
-    
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_ec = {executor.submit(aggregate_counts_for_ec, gene_id, target_id_counts_df): gene_id for gene_id in gene_ids}
-
-        for future in as_completed(future_to_ec):
-            gene_id = future_to_ec[future]
-            try:
-                _, aggregated_counts = future.result()
-                for col in final_aggregated_counts.keys():
-                    final_aggregated_counts[col] += aggregated_counts[col]
-            except Exception as exc:
-                print(f'Gene ID {gene_id} generated an exception: {exc}')
-    
-    return final_aggregated_counts
-
 def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
+    """
+    Process each topic within a distill sheet for composite gene_id entries and partial EC numbers.
+    """
     processed_rows = []
     any_gene_identified = False
 
@@ -188,19 +165,26 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
         if not valid_gene_ids:
             continue
 
+        # Check if any gene IDs are partial EC numbers
         partial_ec_gene_ids = [gene_id for gene_id in valid_gene_ids if is_partial_ec_number(gene_id)]
         regular_gene_ids = [gene_id for gene_id in valid_gene_ids if not is_partial_ec_number(gene_id)]
 
-        aggregated_counts = {}
+        # Call filter_and_aggregate_counts for regular gene IDs
         if regular_gene_ids:
             _, aggregated_counts_regular = filter_and_aggregate_counts(regular_gene_ids, target_id_counts_df, db_name, fetch_all_gene_ids(db_name))
-            aggregated_counts.update(aggregated_counts_regular)
             any_gene_identified = True
+        else:
+            aggregated_counts_regular = {}
 
+        # Call aggregate_counts for partial EC numbers
         if partial_ec_gene_ids:
-            aggregated_counts_partial_ec = parallel_aggregate_counts(partial_ec_gene_ids, target_id_counts_df, db_name)
-            aggregated_counts.update(aggregated_counts_partial_ec)
+            aggregated_counts_partial_ec = aggregate_counts(partial_ec_gene_ids, target_id_counts_df, db_name)
             any_gene_identified = True
+        else:
+            aggregated_counts_partial_ec = {}
+
+        # Combine aggregated counts
+        aggregated_counts = {**aggregated_counts_regular, **aggregated_counts_partial_ec}
 
         updated_row = row.to_dict()
         for sample_col, count in aggregated_counts.items():
@@ -214,6 +198,7 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
         processed_rows = [placeholder_row]
 
     return pd.DataFrame(processed_rows)
+
 
 def compile_genome_stats(db_name):
     conn = sqlite3.connect(db_name)
