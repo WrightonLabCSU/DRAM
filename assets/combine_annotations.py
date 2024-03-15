@@ -51,15 +51,15 @@ def combine_annotations(annotation_files, output_file, threads):
     combined_data = convert_bit_scores_to_numeric(combined_data)
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
     
-    # Extract base query_id without the trailing count
-    combined_data['base_query_id'] = combined_data['query_id'].str.rsplit('_', 1).str[0]
+    # Create a new identifier for sorting that combines the non-numeric part of query_id and its numeric suffix
+    combined_data['sorting_id'] = combined_data['query_id'].str.extract(r'(.+)_([0-9]+)$', expand=True).apply(lambda x: f"{x[0]}_{int(x[1]):05d}", axis=1)
     
     combined_data = organize_columns(combined_data)
-    # Sort data by 'sample', 'base_query_id', and 'start_position' to correctly assign 'gene_number'
-    combined_data.sort_values(by=['sample', 'base_query_id', 'start_position'], ascending=True, inplace=True)
+    # Sort data by 'sample' and 'sorting_id' to correctly assign 'gene_number'
+    combined_data.sort_values(by=['sample', 'sorting_id'], ascending=True, inplace=True)
 
-    # Group by 'sample' and 'base_query_id' and enumerate entries based on their sorted order
-    combined_data['gene_number'] = combined_data.groupby(['sample', 'base_query_id']).cumcount() + 1
+    # Group by 'sample' and original 'query_id' base (without the numeric part) and enumerate entries
+    combined_data['gene_number'] = combined_data.groupby(['sample', 'query_id'].apply(lambda x: "_".join(x.split('_')[:-1]))).cumcount() + 1
     
     # Ensure "gene_number" comes after "rank"
     col_order = combined_data.columns.tolist()
@@ -67,10 +67,10 @@ def combine_annotations(annotation_files, output_file, threads):
     col_order.insert(rank_index + 1, col_order.pop(col_order.index('gene_number')))
     combined_data = combined_data[col_order]
 
-    combined_data.drop(columns=['base_query_id'], inplace=True)  # Drop the temporary 'base_query_id' column
+    combined_data.drop(columns=['sorting_id'], inplace=True)  # Drop the temporary 'sorting_id' column
 
     combined_data.to_csv(output_file, index=False, sep='\t')
-    logging.info(f"Combined annotations saved to {output_file}, with ranks assigned, sorted by 'sample', 'base_query_id', and 'start_position', and 'gene_number' correctly positioned.")
+    logging.info(f"Combined annotations saved to {output_file}, with ranks assigned, sorted by 'sample' and 'query_id' numerically, and 'gene_number' correctly positioned.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Combine annotation files with ranks and avoid duplicating specific columns.")
