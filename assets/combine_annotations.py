@@ -58,8 +58,9 @@ def combine_annotations(annotation_files, output_file, threads):
     # Sort data by 'sample' and 'sorting_id' to correctly assign 'gene_number'
     combined_data.sort_values(by=['sample', 'sorting_id'], ascending=True, inplace=True)
 
-    # Group by 'sample' and original 'query_id' base (without the numeric part) and enumerate entries
-    combined_data['gene_number'] = combined_data.groupby(['sample', 'query_id'].apply(lambda x: "_".join(x.split('_')[:-1]))).cumcount() + 1
+    # Group by 'sample' and original 'query_id' base (without the numeric part) and enumerate entries based on their sorted order
+    combined_data['base_query_id'] = combined_data['query_id'].apply(lambda x: "_".join(x.split('_')[:-1]))
+    combined_data['gene_number'] = combined_data.groupby(['sample', 'base_query_id']).cumcount() + 1
     
     # Ensure "gene_number" comes after "rank"
     col_order = combined_data.columns.tolist()
@@ -67,7 +68,7 @@ def combine_annotations(annotation_files, output_file, threads):
     col_order.insert(rank_index + 1, col_order.pop(col_order.index('gene_number')))
     combined_data = combined_data[col_order]
 
-    combined_data.drop(columns=['sorting_id'], inplace=True)  # Drop the temporary 'sorting_id' column
+    combined_data.drop(columns=['sorting_id', 'base_query_id'], inplace=True)  # Drop the temporary 'sorting_id' and 'base_query_id' columns
 
     combined_data.to_csv(output_file, index=False, sep='\t')
     logging.info(f"Combined annotations saved to {output_file}, with ranks assigned, sorted by 'sample' and 'query_id' numerically, and 'gene_number' correctly positioned.")
