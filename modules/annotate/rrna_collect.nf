@@ -11,6 +11,8 @@ process RRNA_COLLECT {
 
     script:
     """
+    #!/usr/bin/env python
+    
     import os
     import pandas as pd
     from collections import Counter
