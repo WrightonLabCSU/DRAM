@@ -34,15 +34,10 @@ def convert_bit_scores_to_numeric(df):
     return df
 
 def organize_columns(df):
-    # Base columns are defined and should always appear first
     base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank']
-    # Identify all columns that start with 'kegg_'
     kegg_columns = [col for col in df.columns if col.startswith('kegg_')]
-    # Identify other columns that are not in base_columns or kegg_columns
     other_columns = [col for col in df.columns if col not in base_columns and col not in kegg_columns]
-    # The final order starts with base_columns, followed by kegg_columns, then the rest
     final_columns_order = base_columns + kegg_columns + other_columns
-    # Reorder the DataFrame according to the final column order and return
     return df[final_columns_order]
 
 def combine_annotations(annotation_files, output_file, threads):
@@ -56,26 +51,24 @@ def combine_annotations(annotation_files, output_file, threads):
     combined_data = convert_bit_scores_to_numeric(combined_data)
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
     combined_data = organize_columns(combined_data)
-    combined_data.sort_values(by=['sample', 'query_id'], ascending=True, inplace=True)
+    # Sort data by 'sample', 'query_id', and 'start_position' to correctly assign 'gene_number'
+    combined_data.sort_values(by=['sample', 'query_id', 'start_position'], ascending=True, inplace=True)
 
     # Extract unique gene identifier from 'query_id'
     combined_data['gene_identifier'] = combined_data['query_id'].apply(lambda x: "_".join(x.split('_')[:-1]))
-    # Group by 'sample' and 'gene_identifier' and enumerate entries
-    combined_data['gene_number'] = combined_data.groupby(['sample', 'gene_identifier']).cumcount() + 1
+    # Group by 'sample' and 'gene_identifier' and enumerate entries based on their sorted order
+    combined_data['gene_number'] = combined_data.groupby(['sample', 'query_id']).cumcount() + 1
     # Drop the temporary 'gene_identifier' column
     combined_data.drop(columns=['gene_identifier'], inplace=True)
 
     # Ensure "gene_number" comes after "rank"
-    # Define the desired column order
     col_order = combined_data.columns.tolist()
-    # Move 'gene_number' to the position right after 'rank'
     rank_index = col_order.index('rank')
     col_order.insert(rank_index + 1, col_order.pop(col_order.index('gene_number')))
-    # Reorder the DataFrame according to the new column order
     combined_data = combined_data[col_order]
 
     combined_data.to_csv(output_file, index=False, sep='\t')
-    logging.info(f"Combined annotations saved to {output_file}, with ranks assigned, sorted by 'sample' and 'query_id', and 'gene_number' correctly positioned.")
+    logging.info(f"Combined annotations saved to {output_file}, with ranks assigned, sorted by 'sample', 'query_id', and 'start_position', and 'gene_number' correctly positioned.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Combine annotation files with ranks and avoid duplicating specific columns.")
