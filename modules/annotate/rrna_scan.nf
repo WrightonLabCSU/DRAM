@@ -39,7 +39,8 @@ process RRNA_SCAN {
                 sep="\t",
                 header=None,
                 names=["query_id", "tool_name", "type", "begin", "end", "strand", "e-value", "score", "note"],
-                usecols=["query_id", "type", "begin", "end", "strand", "e-value", "note"]
+                usecols=["query_id", "type", "begin", "end", "strand", "e-value", "note"],
+                comment='#'  # This will skip lines starting with '#', including the '##gff-version 3' line
             )
             rrna_df.insert(0, 'sample', sample_name)
             return rrna_df
