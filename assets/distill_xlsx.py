@@ -20,6 +20,7 @@ def parse_arguments():
     parser.add_argument('--trna_file', type=str, default=None, help='Path to the trna_sheet.tsv file.')
     parser.add_argument('--output_file', type=str, help='Path to the output XLSX file.')
     parser.add_argument('--quast', type=str, default=None, help='Path to the QUAST stats TSV file.')
+    parser.add_argument('--threads', type=int, default=4, help='Number of threads for parallel processing')
     return parser.parse_args()
 
 def sum_counts_for_multi_gene_ids(target_id_counts_df, gene_ids):
@@ -160,9 +161,9 @@ def aggregate_counts_for_ec(gene_id, target_id_counts_df):
             aggregated_counts[col] += match_counts[col].sum()
     return gene_id, aggregated_counts
 
-def parallel_aggregate_counts(gene_ids, target_id_counts_df, db_name, max_workers=10):
+def parallel_aggregate_counts(gene_ids, target_id_counts_df, db_name, threads):
     final_aggregated_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
-    
+
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_ec = {executor.submit(aggregate_counts_for_ec, gene_id, target_id_counts_df): gene_id for gene_id in gene_ids}
 
@@ -177,7 +178,7 @@ def parallel_aggregate_counts(gene_ids, target_id_counts_df, db_name, max_worker
     
     return final_aggregated_counts
 
-def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
+def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name, threads):
     processed_rows = []
     any_gene_identified = False
 
@@ -198,7 +199,7 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name):
             any_gene_identified = True
 
         if partial_ec_gene_ids:
-            aggregated_counts_partial_ec = parallel_aggregate_counts(partial_ec_gene_ids, target_id_counts_df, db_name)
+            aggregated_counts_partial_ec = parallel_aggregate_counts(partial_ec_gene_ids, target_id_counts_df, db_name,threads)
             aggregated_counts.update(aggregated_counts_partial_ec)
             any_gene_identified = True
 
@@ -397,7 +398,7 @@ def main():
         
         for topic in info['topics']:
             df_topic = df_distill[df_distill['topic_ecosystem'] == topic]
-            df_topic_final = process_distill_sheet_topic(df_topic, target_id_counts_df, args.db_name)
+            df_topic_final = process_distill_sheet_topic(df_topic, target_id_counts_df, args.db_name, args.threads)
             
             sheet_name = topic[:31]  # Limit sheet name to 31 characters
 
