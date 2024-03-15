@@ -34,15 +34,20 @@ def fetch_descriptions(chunk, db_name, db_file):
         descriptions_dict = {row[0]: (row[1], row[2]) for row in results}
         chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ("", ""))[0])
         chunk["dbcan_EC"] = chunk[hits_ids_column].map(lambda x: format_dbcan_EC(descriptions_dict.get(x, ("", ""))[1]))
-    else:
+    elif db_name == "kegg":
         # For other databases, just update with descriptions
         descriptions_dict = {row[0]: row[1] for row in results}
         chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ""))
-        if db_name == "kegg":
-            # Additional processing for kegg
-            chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(extract_kegg_orthology)
-            chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(extract_kegg_EC)
-    
+        chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(extract_kegg_orthology)
+        chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(extract_kegg_EC)
+        
+        # After processing for kegg, rename "kegg_orthology" to "kegg_id"
+        chunk.rename(columns={"kegg_orthology": "kegg_id"}, inplace=True)
+    else:
+        descriptions_dict = {row[0]: row[1] for row in results}
+        chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ""))
+
+        
     conn.close()
     return chunk
 
