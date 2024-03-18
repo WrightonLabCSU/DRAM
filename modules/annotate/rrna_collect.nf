@@ -23,7 +23,7 @@ process RRNA_COLLECT {
         if match:
             # Extract and format the rRNA gene id.
             return f"{match.group(1)} rRNA"
-        return "Unknown rRNA"
+        return 'Unknown rRNA'
 
     # List all TSV files in the current directory.
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
