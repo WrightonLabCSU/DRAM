@@ -41,7 +41,14 @@ def fetch_descriptions(chunk, db_name, db_file):
         chunk["kegg_orthology"] = chunk[f"{db_name}_description"].apply(extract_kegg_orthology)
         chunk["kegg_EC"] = chunk[f"{db_name}_description"].apply(extract_kegg_EC)
         
-        # After processing for kegg, rename "kegg_orthology" to "kegg_id"
+        # Ensure the 'kegg_id' column exists if your logic does not create it earlier
+        if 'kegg_id' not in chunk.columns:
+            chunk['kegg_id'] = ''  # or any default logic you have for generating 'kegg_id'
+
+        # Rename 'kegg_id' to 'kegg_gene_name'
+        chunk.rename(columns={"kegg_id": "kegg_gene_name"}, inplace=True)
+        
+        # After extracting for kegg, rename "kegg_orthology" to "kegg_id"
         chunk.rename(columns={"kegg_orthology": "kegg_id"}, inplace=True)
     else:
         descriptions_dict = {row[0]: row[1] for row in results}
