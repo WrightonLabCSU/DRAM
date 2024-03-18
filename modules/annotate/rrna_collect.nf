@@ -15,7 +15,7 @@ process RRNA_COLLECT {
 
     import os
     import pandas as pd
-    from collections import defaultdict
+    from collections import Counter, defaultdict
 
     # List all TSV files in the current directory
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
@@ -23,47 +23,59 @@ process RRNA_COLLECT {
     # Extract sample names from the file names
     samples = [os.path.basename(file).replace("_processed_rrnas.tsv", "") for file in tsv_files]
 
-    # Initialize dictionary to track gene counts per sample
-    sample_gene_counts = defaultdict(lambda: defaultdict(int))
+    # Check if all files contain "NULL"
+    all_files_null = all(open(file).read().strip() == "NULL" for file in tsv_files)
 
-    # Initialize list for combined data from non-"NULL" files
-    combined_data = []
+    if all_files_null:
+        # Write "NULL" to output files and exit
+        with open("collected_rrnas.tsv", "w") as f:
+            f.write("NULL")
+        with open("combined_rrna_scan.tsv", "w") as f:
+            f.write("NULL")
+    else:
+        # Initialize a dictionary to store counts of each specific rRNA gene type per sample
+        gene_type_counts = defaultdict(lambda: defaultdict(int))
 
-    for file in tsv_files:
-        with open(file, 'r') as f:
-            contents = f.read().strip()
-            if contents == "NULL":
-                continue
+        # Initialize list for storing data from non-"NULL" files for combined output
+        combined_data = []
 
-            df = pd.read_csv(file, sep='\t')
-            for _, row in df.iterrows():
-                # Assuming 'type' directly contains the specific rRNA gene type
-                gene_type = row['type']
-                sample_gene_counts[row['sample']][gene_type] += 1
-                combined_data.append(row)
+        for file in tsv_files:
+            with open(file, 'r') as f:
+                contents = f.read().strip()
+                if contents == "NULL":
+                    continue  # Skip this file
 
-    # Prepare collected data
-    collected_data = []
-    for gene_type in set(gt for counts in sample_gene_counts.values() for gt in counts):
-        row = {
-            'gene_id': gene_type,
-            'gene_description': f"{gene_type} gene",
-            'category': 'rRNA',
-            'topic_ecosystem': '',
-            'subcategory': ''
-        }
-        for sample in samples:
-            row[sample] = sample_gene_counts[sample].get(gene_type, 0)
-        collected_data.append(row)
+                df = pd.read_csv(file, sep='\t')
+                # Update combined_data
+                combined_data.extend(df.to_dict('records'))
 
-    collected_df = pd.DataFrame(collected_data)
-    collected_df = collected_df[['gene_id', 'gene_description', 'category', 'topic_ecosystem', 'subcategory'] + samples]
-    collected_df.to_csv("collected_rrnas.tsv", sep='\t', index=False)
+                for _, row in df.iterrows():
+                    gene_type = row['type']  # Extract specific rRNA gene type
+                    gene_type_counts[gene_type][row['sample']] += 1
 
-    # Combine and save combined data
-    combined_df = pd.DataFrame(combined_data)
-    combined_df.to_csv("combined_rrna_scan.tsv", sep='\t', index=False)
+        # Prepare collected data DataFrame from gene_type_counts
+        collected_data_rows = []
+        for gene_type, samples_counts in gene_type_counts.items():
+            row = {
+                'gene_id': gene_type,
+                'gene_description': f"{gene_type} gene",
+                'category': 'rRNA',
+                'topic_ecosystem': '',
+                'subcategory': ''
+            }
+            # Update counts for each sample
+            for sample in samples:
+                row[sample] = samples_counts.get(sample, 0)
+            collected_data_rows.append(row)
 
+        collected_df = pd.DataFrame(collected_data_rows)
+        collected_df = collected_df[['gene_id', 'gene_description', 'category', 'topic_ecosystem', 'subcategory'] + samples]
+        collected_df.sort_values(by='gene_id', inplace=True)
+        collected_df.to_csv("collected_rrnas.tsv", sep='\t', index=False)
+
+        # Combine non-"NULL" data for combined_rrna_scan.tsv
+        combined_df = pd.DataFrame(combined_data)
+        combined_df.to_csv("combined_rrna_scan.tsv", sep='\t', index=False)
 
     """
 }
