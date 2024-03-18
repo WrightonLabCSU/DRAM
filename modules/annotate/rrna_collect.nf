@@ -19,7 +19,6 @@ process RRNA_COLLECT {
     import re
 
     def extract_rrna_gene_id(note):
-        """Extract rRNA gene type from the note column."""
         match = re.search(r"Name=(\w+)_rRNA", note)
         if match:
             # Extract and format the rRNA gene id.
