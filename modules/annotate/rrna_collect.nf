@@ -54,7 +54,7 @@ process RRNA_COLLECT {
         collected_df.to_csv('collected_rrnas.tsv', sep='\\t', index=False) \\
         combined_df = pd.concat(combined_data, ignore_index=True) \\
         combined_df.to_csv('combined_rrna_scan.tsv', sep='\\t', index=False)
-    """.trimIndent()
+    """
 }
 
 
