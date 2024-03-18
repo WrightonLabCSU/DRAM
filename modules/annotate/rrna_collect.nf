@@ -22,7 +22,7 @@ process RRNA_COLLECT {
         match = re.search(r'Name=(\w+)_rRNA', note)
         if match:
             # Extract and format the rRNA gene id.
-            return f"{match.group(1)} rRNA"
+            return f'{match.group(1)} rRNA'
         return 'Unknown rRNA'
 
     # List all TSV files in the current directory.
