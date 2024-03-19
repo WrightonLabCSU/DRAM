@@ -21,6 +21,20 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
  
 ----------
 
+## Quick links
+- [Installation](#install)
+- [Pipeline options](#pipelineoptions)
+- [Example command-line usage](#exampleusage)
+- [Brief command-line options](#cmdoptions)
+- [Workflow Image](#workflow)
+- [Coassembly options](#expdesign)
+- [Output Directory Structure and Files](#output_image)
+- [All command-line options](#options)
+- [Software versions](#software)
+- [Cool Nextflow Tips and Tricks](#tipsandtricks)
+  
+----------
+
 <a name="install"></a>
 ### Installation
 1) Clone the DRAM2 GitHub Repository
