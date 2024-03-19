@@ -34,7 +34,7 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
 ----------
 
 <a name="install"></a>
-### Installation
+## Installation
 
 1) Clone the DRAM2 GitHub Repository
 2) Download Singularity container and pre-formatted databases
@@ -60,7 +60,7 @@ cd COMET
 ---------
 
 <a name="databases"></a>
-### DRAM2 Databases
+## DRAM2 Databases
 
 DRAM2 databases, unlike DRAM1 databases, will be pre-formatted and hosted online. Users of DRAM2 will need to:
 1) decide which databases suits their needs
@@ -111,6 +111,7 @@ DRAM2 databases, unlike DRAM1 databases, will be pre-formatted and hosted online
     - Placeholder description.
     - (4.5G)
 
+<a name="database-sets"></a>
 #### DRAM2 Database (sets)
 **Big set**
 - Includes all medium databases + UniRef 
@@ -149,6 +150,7 @@ Run the `format-KEGG-DRAM2.sh` script:
 
 --------
 
+<a name="database-descriptions"></a>
 #### DRAM2 Descriptions Database
 
 **Big set**
@@ -168,7 +170,7 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
 --------
 
 <a name="exampleusage"></a>
-### Example usage
+## Example usage
 
 DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, each app can be run individualy (assuming you provide the required input data for each app).
 
@@ -197,17 +199,27 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 `nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>`
 
 
-6) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and AG ecosystem:**
+6) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:**
 
-`nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --   use_kofam`
+`nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
 
+7) **"Real-world example using the test data provided in this repository:**
+
+nextflow run -bg DRAM2.nf --input_fasta ../test_data/DRAM2_test_data/ --outdir DRAM2-test-data-call-annotate-distill --threads 8 --call --rename --annotate --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv --slurm_node tardigrade -with-report -with-trace -with-timeline
+
+  **Breakdown of example (7):**
+  - `--bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
+  - `--slurm_node`: DRAM2 option to select a specific node to compute on during the whole run.
+  - `-with-trace-`: Nextflow option to output a process-by-process report of the run. (TEXT)
+  - `-with-report`: Nextflow option to output a process-by-process report of the run. (HTML)
+  - `-with-timeline`: Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
 
 -------
 
 <a name="options"></a>
-### Command-line Options
+## Command-line Options
 
-#### General Help Menu
+### General Command-line Options
     Description: 
         The purpose of DRAM2 is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation. 
         DRAM2 can be used to call, annotate and distill annotations from input FASTA files. 
@@ -322,7 +334,7 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
-#### Call Help Menu
+### Call Command-line Options
     Call description: The purpose of DRAM2 --call is to call genes on input FASTA files.
 
     Usage:
@@ -354,7 +366,7 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
-#### Annotate Help Menu
+### Annotate Command-line Options
     Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
 
     Usage:
@@ -396,7 +408,7 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
                                         Default '10'
 
 
-#### Distill Help Menu
+### Distill Command-line Options
 
     Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s). 
                             User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
@@ -480,21 +492,14 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
 In Nextflow DSL2, the `-resume` option offers a powerful feature that allows you to efficiently manage and modify your workflow runs. It enables you to resume a run after it has finished, make changes to parameters, and reuse previously generated data, enhancing the flexibility and reusability of your workflow. Here are some common scenarios where the `-resume` option comes in handy:
 
-- **I Want to Run Again with a Different Assembler**
-  - By using the `-resume` option, if you have not deleted your `work/` directory, running your previous command with the desired changes will allow you to use your quality-controlled reads from your previous run.
-  - For example, if you intially used `--assembler megahit`, you can re-assemble using MetaSPAdes by using instead, `--assembler metaspades`. This will reuse the quality controlled (trimmed) reads stored in the `work/` directory.
-
-- **I Want to Run Again but This Time with a Different Read Mapping Percentage Identity**
-  - Similar to the previous scenario, with the `-resume` option, if you have not deleted your `work/` directory, running your previous command with the desired changes will enable you to reuse your QC'd reads and their assemblies from the previous run.
-  - For example, if you initally used the default mapping % (`bin_min_id_filter 0.99`) but you want to re-map using a different %, you can change your command to `--bin_min_id_filter 0.95`. This will enable you to reuse your trimmed reads and previous assemblies - the pipeline will pickup at the mapping stage. 
-
-- **I Want to Lower My Completeness and Contamination Values**
-  - For this scenario, you have two options:
-    1) Examine the checkm2 logs and identify the bins you are interested in within the `all_metabat_bins/` output directory.
-    2) Use the `-resume` option to your advantage. If you have not deleted your `work/` directory, running your previous command with the desired changes will allow you to reuse your QC'd reads and their assemblies from the previous run.
+- **I Want to run DRAM2 again but with additional databases**
+  - By using the `-resume` option, if you have not deleted your `work/` directory, running your previous command with the desired changes will allow you to reuse your called genes and existing annotations.
+  - For example, if you intially used `--use_kofam --use_dbcan`, you can add in additional annotation databases like, `--use_kegg --use_uniref`. This will reuse the existing called genes to annotate the newly added databases and will retain the existing annotations (assuming they were retained within the modified command).
 
 These Nextflow tips and tricks demonstrate how the `-resume` option can optimize your workflow, save time, and improve the reusability of previously computed data.
 
+**How the resume option does NOT work:**
+- <examples>
 
 --------
 
@@ -502,6 +507,14 @@ These Nextflow tips and tricks demonstrate how the `-resume` option can optimize
 ## System Requirements
 **EDIT**
 
+### Storage space for databases, database descriptions and potentially a Singualrity container
+
+#### Pre-formatted databases:
+DRAM2 requires pre-formatted database files in addition 
+
+#### Database descriptions:
+DRAM2 requires a SQL databases which contains the database descriptions. (Metadata for database hits including descriptions, EC numbers, etc.)
+We have provided 
 
 *NOTE:* Setting up DRAM can take a long time (up to 5 hours) and uses a large amount of memory (512 gb) by default. To
 use less memory you can use the `--skip_uniref` flag which will reduce memory usage to ~64 gb if you do not provide KEGG
