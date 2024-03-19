@@ -184,7 +184,7 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
 6) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and AG ecosystem:**
 
-`nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
+```nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam```
 
 
 -------
