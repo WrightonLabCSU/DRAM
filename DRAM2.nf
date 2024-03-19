@@ -1341,7 +1341,7 @@ def helpMessage() {
             nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
         (Combined): Call, annotate and distill input fasta files:
-            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s) 
+            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
         (Real) example: (on multiple lines for clarity)
         nextflow run DRAM2.nf --input_fasta ../test_data/ 
