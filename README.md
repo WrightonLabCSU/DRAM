@@ -141,9 +141,9 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
 
 --------
 
-##### Help Menu(s)
+### Help Menu(s)
 
-###### General Help Menu
+#### General Help Menu
     Description: 
         The purpose of DRAM2 is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation. 
         DRAM2 can be used to call, annotate and distill annotations from input FASTA files. 
@@ -258,7 +258,7 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
-###### Call Help Menu
+#### Call Help Menu
     Call description: The purpose of DRAM2 --call is to call genes on input FASTA files.
 
     Usage:
@@ -290,7 +290,7 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
-###### Annotate Help Menu
+#### Annotate Help Menu
     Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
 
     Usage:
@@ -332,7 +332,7 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
                                         Default '10'
 
 
-###### Distill Help Menu
+#### Distill Help Menu
 
     Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s). 
                             User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
@@ -381,7 +381,7 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
 
 -----------
 
-##### Software Used
+### Software Used
 
 - **BBTools** [v39.01](https://jgi.doe.gov/data-and-tools/bbtools/)
 - **Bowtie2** [v2.5.1](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
