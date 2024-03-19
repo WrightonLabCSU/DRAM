@@ -62,9 +62,12 @@ cd COMET
 <a name="databases"></a>
 ### DRAM2 Databases
 
-DRAM2 databases, unlike DRAM1 databases, will be pre-formatted and hosted online. Users of DRAM2 will need to 1) decide which databases suits their needs and 2) download DRAM2 databases via the provided `pull_databases_*.py scripts. However, these databases can be quite large and it is therefore important to look through the options below.
+DRAM2 databases, unlike DRAM1 databases, will be pre-formatted and hosted online. Users of DRAM2 will need to:
+1) decide which databases suits their needs
+2) download DRAM2 databases via the provided `pull_databases_*.py scripts. 
+*However, these databases can be quite large and it is therefore important to look through the options below.*
 
-These databases rely on an SQL database of database descriptions which is provided in 3 different sizes based on ther user's needs.
+*These databases rely on an SQL database of database descriptions which is provided in 3 different sizes based on ther user's needs.*
 
 #### All databases DRAM2 accommodates:
 - [KEGG](https://www.genome.jp/kegg/)
