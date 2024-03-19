@@ -155,10 +155,26 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
 <a name="exampleusage"></a>
 ### Example usage
 
+DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, each app can be run individualy (assuming you provide the required input data for each app).
 
+**Call genes using input fastas (use --rename to rename FASTA headers):**
+    nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>
 
+**Distill using input annotations:**
+    nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
+**(Combined): Call, annotate and distill input fasta files:**
+    nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)> 
 
+**Annotate called genes using input called genes and the KOFAM database:**
+    nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam
+
+**Annotate called genes using input fasta files and the KOFAM database:**
+    nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+
+#### Run Call, annotate and Distill apps and annotate with the 
+**Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and AG ecosystem:**
+    nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam
 
 
 -------
