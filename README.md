@@ -23,13 +23,12 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
 
 ## Quick links
 - [Installation](#install)
-- [PDatabases](#databases)
+- [Databases](#databases)
 - [Example command-line usage](#exampleusage)
-- [Brief command-line options](#cmdoptions)
-- [Output Directory Structure and Files](#output_image)
 - [All command-line options](#options)
 - [Software versions](#software)
 - [Cool Nextflow Tips and Tricks](#tipsandtricks)
+- [System Requirements](#systemrequirements)
   
 ----------
 
@@ -433,8 +432,32 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
 - **XlsxWriter** [v3.1.6](https://xlsxwriter.readthedocs.io/)
 - **Numpy** [v1.26.0](https://numpy.org/)
 
+------
+
+<a name="tipsandtricks"></a>
+### Nextflow Tips and Tricks
+
+In Nextflow DSL2, the `-resume` option offers a powerful feature that allows you to efficiently manage and modify your workflow runs. It enables you to resume a run after it has finished, make changes to parameters, and reuse previously generated data, enhancing the flexibility and reusability of your workflow. Here are some common scenarios where the `-resume` option comes in handy:
+
+- **I Want to Run Again with a Different Assembler**
+  - By using the `-resume` option, if you have not deleted your `work/` directory, running your previous command with the desired changes will allow you to use your quality-controlled reads from your previous run.
+  - For example, if you intially used `--assembler megahit`, you can re-assemble using MetaSPAdes by using instead, `--assembler metaspades`. This will reuse the quality controlled (trimmed) reads stored in the `work/` directory.
+
+- **I Want to Run Again but This Time with a Different Read Mapping Percentage Identity**
+  - Similar to the previous scenario, with the `-resume` option, if you have not deleted your `work/` directory, running your previous command with the desired changes will enable you to reuse your QC'd reads and their assemblies from the previous run.
+  - For example, if you initally used the default mapping % (`bin_min_id_filter 0.99`) but you want to re-map using a different %, you can change your command to `--bin_min_id_filter 0.95`. This will enable you to reuse your trimmed reads and previous assemblies - the pipeline will pickup at the mapping stage. 
+
+- **I Want to Lower My Completeness and Contamination Values**
+  - For this scenario, you have two options:
+    1) Examine the checkm2 logs and identify the bins you are interested in within the `all_metabat_bins/` output directory.
+    2) Use the `-resume` option to your advantage. If you have not deleted your `work/` directory, running your previous command with the desired changes will allow you to reuse your QC'd reads and their assemblies from the previous run.
+
+These Nextflow tips and tricks demonstrate how the `-resume` option can optimize your workflow, save time, and improve the reusability of previously computed data.
+
 
 --------
+
+<a name="systemrequirements"></a>
 ## System Requirements
 **EDIT**
 
