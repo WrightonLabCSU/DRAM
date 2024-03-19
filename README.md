@@ -15,19 +15,17 @@ For more detail on DRAM and how DRAM works please see our [paper](https://academ
 
 The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1.
 - Future updates will include:
-  - Both support for Nextflow + Conda and Nextflow + Singularity (Note: Singularity is not well-supported for MAC.)
-  - Pre-formatted 
+  - Both support for Nextflow + Conda and Nextflow + Singularity (Note: Singularity is not well-supported for MAC.).
+  - Pre-formatted annotation and description databases avaiable via (GLOBUS)[https://www.globus.org/].
 
  
 ----------
 
 ## Quick links
 - [Installation](#install)
-- [Pipeline options](#pipelineoptions)
+- [PDatabases](#databases)
 - [Example command-line usage](#exampleusage)
 - [Brief command-line options](#cmdoptions)
-- [Workflow Image](#workflow)
-- [Coassembly options](#expdesign)
 - [Output Directory Structure and Files](#output_image)
 - [All command-line options](#options)
 - [Software versions](#software)
@@ -57,7 +55,7 @@ cd COMET
   - **To use this config, you need to add the following to your command: `-c nextflow-No-SLURM.config`.**
 
 ---------
-
+<a name="databases"></a>
 ### DRAM2 Databases
 DRAM2 databases, unlike DRAM1 databases, will be pre-formatted and hosted online. Users of DRAM2 will need to 1) decide which databases suits their needs and 2) download DRAM2 databases via the provided `pull_databases_*.py scripts. However, these databases can be quite large and it is therefore important to look through the options below.
 
@@ -155,7 +153,19 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
 
 --------
 
-### Help Menu(s)
+<a name="exampleusage"></a>
+### Example usage
+
+
+
+
+
+
+
+-------
+
+<a name="options"></a>
+### Command-line Options
 
 #### General Help Menu
     Description: 
@@ -182,7 +192,7 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
             nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
         (Combined): Call, annotate and distill input fasta files:
-            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s) 
+            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)> 
 
         (Real) example: (on multiple lines for clarity)
         nextflow run DRAM2.nf --input_fasta ../test_data/ 
@@ -395,6 +405,7 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
 
 -----------
 
+<a name="software"></a>
 ### Software Used
 
 - **BBTools** [v39.01](https://jgi.doe.gov/data-and-tools/bbtools/)
