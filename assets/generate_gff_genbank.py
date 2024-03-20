@@ -74,28 +74,30 @@ def generate_gff(samples_annotations, database_list):
         with open(f"GFF/{sample}.gff", "w") as gff_file:
             gff_file.write("##gff-version 3\n")
             
-            # Metadata: Completeness, Contamination, and sanitized Taxonomy
-            completeness = annotations[0].get('Completeness', 'NA')
-            contamination = annotations[0].get('Contamination', 'NA')
-            taxonomy = escape_gff3_value(annotations[0].get('taxonomy', 'NA').replace(';', ','))  # Sanitize taxonomy
+            # Extract metadata from the first annotation (assuming it's consistent across annotations)
+            metadata = annotations[0]
+            completeness = metadata.get('Completeness', 'NA')
+            contamination = metadata.get('Contamination', 'NA')
+            taxonomy = escape_gff3_value(metadata.get('taxonomy', 'NA').replace(';', ','))
             
             gff_file.write(f"# Completeness: {completeness}\n")
             gff_file.write(f"# Contamination: {contamination}\n")
             gff_file.write(f"# Taxonomy: {taxonomy}\n")
             
             for annotation in annotations:
-                seqid = escape_gff3_value(annotation['query_id'])
-                source = '.'  # Use a real source if available
-                type = "gene"  # Adjust based on actual data
-                start = annotation['start_position']
-                end = annotation['stop_position']
-                score = '.'  # Use actual score if available
-                strand = '+' if annotation['strandedness'] == '+1' else '-'
-                phase = '.'  # Adjust for features like CDS
+                seqid = escape_gff3_value(annotation.get('query_id', 'NA'))
+                source = '.'
+                type = "gene"
+                start = annotation.get('start_position', '1')  # Default to '1' if missing
+                end = annotation.get('stop_position', '1')  # Default to '1' if missing
+                score = '.'
+                strand = '+' if annotation.get('strandedness', '+1') == '+1' else '-'
+                phase = '.'
                 attributes_str = format_attributes(annotation, database_list)
                 
                 gff_line = f"{seqid}\t{source}\t{type}\t{start}\t{end}\t{score}\t{strand}\t{phase}\t{attributes_str}\n"
                 gff_file.write(gff_line)
+
 
 def parse_fna_sequence(fna_file_path):
     """Parse the .fna file to get sequences indexed by their header name."""
