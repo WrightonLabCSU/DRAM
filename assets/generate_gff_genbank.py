@@ -187,6 +187,9 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
                     feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
                     seq_record.features.append(feature)
 
+                    current_date = datetime.now().strftime("%d-%b-%Y").upper()
+                    seq_record.annotations["date"] = current_date
+
                     output_filename = os.path.join("GBK", f"{query_id}.gbk")
                     with open(output_filename, "w") as output_handle:
                         SeqIO.write([seq_record], output_handle, "genbank")
