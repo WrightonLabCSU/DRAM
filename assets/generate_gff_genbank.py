@@ -175,17 +175,20 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
         if not fna_file_path or not os.path.exists(fna_file_path):
             print(f"No .fna file found for sample {sample}. Skipping...")
             continue
+
+        # Assuming metadata is consistent across annotations for a sample, take the first one
+        metadata = annotations[0] if annotations else {}
         
         # Create a SeqRecord object for the whole sample
+        # Use SeqIO to read sequences if needed or create a dummy Seq("") if sequences are not used directly
         sample_seq_record = SeqRecord(Seq(""), id=sample, description=f"Annotations for {sample}")
-        
-        # Add metadata to the SeqRecord object (e.g., taxonomy, completeness, contamination)
-        # [Your code to add metadata here]
-        
+        sample_seq_record.annotations["molecule_type"] = "DNA"
+        sample_seq_record.annotations["date"] = datetime.now().strftime("%d-%b-%Y").upper()
+        sample_seq_record.annotations["comment"] = f"Completeness: {metadata.get('Completeness', 'NA')}; Contamination: {metadata.get('Contamination', 'NA')}; Taxonomy: {metadata.get('taxonomy', 'NA').replace(';', ',')}"
+
         # Iterate through annotations to create features for the SeqRecord
         for annotation in annotations:
             feature = generate_gbk_feature(annotation)
-            # Add feature to SeqRecord for the sample
             sample_seq_record.features.append(feature)
         
         # Write the SeqRecord object to a GBK file
