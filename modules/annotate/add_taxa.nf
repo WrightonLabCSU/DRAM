@@ -26,26 +26,33 @@ process ADD_TAXA {
     # Replace "." with "-" in the sample column for comparison
     combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
 
-    # Get the name of the first column in ch_taxa data
-    first_column_name = ch_taxa_data.columns[0]
+    # Check if 'taxonomy' column exists and has at least one non-empty value
+    if 'taxonomy' in combined_annotations.columns and not combined_annotations['taxonomy'].isnull().all():
+        print("Taxonomy information already exists. Skipping addition of taxonomy data.")
+    else:
+        # Proceed with adding taxonomy information
 
-    # Replace "." with "-" in the first column of ch_taxa for matching
-    ch_taxa_data[first_column_name] = ch_taxa_data[first_column_name].str.replace(".", "-")
+        # Get the name of the first column in ch_taxa data
+        first_column_name = ch_taxa_data.columns[0]
 
-    # Merge data based on the sample column
-    merged_data = pd.merge(combined_annotations, ch_taxa_data[[first_column_name, 'classification']], left_on="sample", right_on=first_column_name, how="left")
+        # Replace "." with "-" in the first column of ch_taxa for matching
+        ch_taxa_data[first_column_name] = ch_taxa_data[first_column_name].str.replace(".", "-")
 
-    # Drop the additional first column from ch_taxa in the merged data
-    merged_data.drop(columns=[first_column_name], inplace=True)
+        # Merge data based on the sample column
+        merged_data = pd.merge(combined_annotations, ch_taxa_data[[first_column_name, 'classification']], left_on="sample", right_on=first_column_name, how="left")
 
-    # Rename the "classification" column to "Classification"
-    merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
+        # Drop the additional first column from ch_taxa in the merged data
+        merged_data.drop(columns=[first_column_name], inplace=True)
 
-    # Save the updated data to annots_taxa.tsv
-    output_path = "raw-annotations.tsv"
-    merged_data.to_csv(output_path, sep='\t', index=False)
+        # Rename the "classification" column to "Classification"
+        merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
 
-    print(f"Updated annotations saved to {output_path}")
+        # Save the updated data to raw-annotations.tsv
+        output_path = "raw-annotations.tsv"
+        merged_data.to_csv(output_path, sep='\t', index=False)
+
+        print(f"Updated annotations saved to {output_path}")
+
 
     """
 }
