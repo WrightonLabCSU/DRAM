@@ -46,7 +46,7 @@ process ADD_TAXA {
         merged_data = combined_annotations
 
     # Save the updated data to raw-annotations.tsv
-    output_path = "updated-raw-annotations.tsv"  # Changed to avoid overwriting the original file
+    output_path = "raw-annotations.tsv"  # Changed to avoid overwriting the original file
     merged_data.to_csv(output_path, sep='\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
