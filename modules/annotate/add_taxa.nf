@@ -15,16 +15,22 @@ process ADD_TAXA {
 
     import pandas as pd
 
-    # Load combined_annotations.tsv
+    # Define necessary columns for loading. Adjust column names as needed.
+    annotations_columns = ['sample', 'other_columns_if_necessary']
+    taxa_columns = ['sample_name', 'classification'] # Adjust 'sample_name' to the actual name of the first column in ch_taxa
+
+    # Load combined_annotations.tsv with only necessary columns
     combined_annotations_path = "${combined_annotations}"
-    combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
+    combined_annotations = pd.read_csv(combined_annotations_path, sep='\t', usecols=annotations_columns)
 
-    # Load ch_taxa TSV
+    # Load ch_taxa TSV with only necessary columns
     ch_taxa_path = "${ch_taxa}"
-    ch_taxa_data = pd.read_csv(ch_taxa_path, sep='\t')
+    ch_taxa_data = pd.read_csv(ch_taxa_path, sep='\t', usecols=taxa_columns)
 
-    # Replace "." with "-" in the sample column for comparison
-    combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
+    # Efficiently replace "." with "-" in the 'sample' columns
+    # Assuming 'sample' is the name in both dataframes, adjust if it's different in ch_taxa
+    combined_annotations['sample'] = combined_annotations['sample'].str.replace('.', '-')
+    ch_taxa_data['sample_name'] = ch_taxa_data['sample_name'].str.replace('.', '-')
 
     # Check if 'taxonomy' column exists and has at least one non-empty value
     if 'taxonomy' in combined_annotations.columns and not combined_annotations['taxonomy'].isnull().all():
@@ -32,19 +38,13 @@ process ADD_TAXA {
     else:
         # Proceed with adding taxonomy information
 
-        # Get the name of the first column in ch_taxa data
-        first_column_name = ch_taxa_data.columns[0]
+        # Merge data based on the sample column. Adjust 'sample_name' to match the actual column name in ch_taxa
+        merged_data = pd.merge(combined_annotations, ch_taxa_data, left_on="sample", right_on="sample_name", how="left")
 
-        # Replace "." with "-" in the first column of ch_taxa for matching
-        ch_taxa_data[first_column_name] = ch_taxa_data[first_column_name].str.replace(".", "-")
+        # Drop the additional 'sample_name' column from ch_taxa in the merged data
+        merged_data.drop(columns=['sample_name'], inplace=True)
 
-        # Merge data based on the sample column
-        merged_data = pd.merge(combined_annotations, ch_taxa_data[[first_column_name, 'classification']], left_on="sample", right_on=first_column_name, how="left")
-
-        # Drop the additional first column from ch_taxa in the merged data
-        merged_data.drop(columns=[first_column_name], inplace=True)
-
-        # Rename the "classification" column to "Classification"
+        # Rename the "classification" column to "taxonomy"
         merged_data.rename(columns={"classification": "taxonomy"}, inplace=True)
 
         # Save the updated data to raw-annotations.tsv
@@ -52,7 +52,5 @@ process ADD_TAXA {
         merged_data.to_csv(output_path, sep='\t', index=False)
 
         print(f"Updated annotations saved to {output_path}")
-
-
     """
 }

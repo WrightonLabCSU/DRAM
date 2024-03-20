@@ -191,7 +191,6 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
         else:
             print(f"Sequence not found for sample {sample} in provided .fna files.")
 
-
 def main():
     args = parse_arguments()
 
