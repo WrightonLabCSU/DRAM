@@ -87,7 +87,7 @@ def generate_gff(samples_annotations, database_list):
 
             # Extract and write metadata as comments, ensuring all expected fields are checked.
             # This simplifies the logic by directly attempting to write each expected metadata comment.
-            expected_metadata = ['Completeness', 'Contamination', 'Taxonomy']
+            expected_metadata = ['Completeness', 'Contamination', 'taxonomy']
             for metadata_key in expected_metadata:
                 metadata_value = annotations[0].get(metadata_key)
                 if metadata_value:
