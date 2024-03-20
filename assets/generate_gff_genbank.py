@@ -78,6 +78,13 @@ def format_attributes(annotation, database_list):
                     attributes.append(f"{upper_db_name}_ID={value};{upper_db_name}_Description={desc}")
     return "; ".join(attributes)
 
+def sanitize_taxonomy(taxonomy):
+    """
+    Sanitizes the taxonomy string for safe inclusion in GFF comments.
+    Replaces semicolons with commas or another safe delimiter to avoid parsing issues.
+    """
+    return taxonomy.replace(';', ',')  # Replace semicolons with commas
+
 def generate_gff(samples_annotations, database_list):
     """Generate GFF files for each sample, filtered by specified databases."""
     os.makedirs("GFF", exist_ok=True)
@@ -86,12 +93,17 @@ def generate_gff(samples_annotations, database_list):
             gff_file.write("##gff-version 3\n")
 
             # Extract and write metadata as comments, ensuring all expected fields are checked.
-            # This simplifies the logic by directly attempting to write each expected metadata comment.
-            expected_metadata = ['Completeness', 'Contamination', 'taxonomy']
+            expected_metadata = ['Completeness', 'Contamination']
             for metadata_key in expected_metadata:
                 metadata_value = annotations[0].get(metadata_key)
                 if metadata_value:
                     gff_file.write(f"# {metadata_key}: {metadata_value}\n")
+            
+            # Handle taxonomy separately to ensure it is sanitized
+            taxonomy_value = annotations[0].get('taxonomy')
+            if taxonomy_value:
+                sanitized_taxonomy = sanitize_taxonomy(taxonomy_value)
+                gff_file.write(f"# Taxonomy: {sanitized_taxonomy}\n")
 
             for annotation in annotations:
                 seqid = escape_gff3_value(annotation['query_id'])
@@ -105,7 +117,7 @@ def generate_gff(samples_annotations, database_list):
                 attributes_str = format_attributes(annotation, database_list)
                 gff_line = f"{seqid}\t{source}\t{type}\t{start}\t{end}\t{score}\t{strand}\t{phase}\t{attributes_str}\n"
                 gff_file.write(gff_line)
-
+                
 def parse_fna_sequence(fna_file_path):
     """Parse the .fna file to get sequences indexed by their header name."""
     sequences = {}
