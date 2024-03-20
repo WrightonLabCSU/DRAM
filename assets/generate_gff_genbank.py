@@ -48,12 +48,6 @@ def parse_arguments():
     args.database_list = None if args.database_list == "empty" else args.database_list.split(',')
     return args
 
-def escape_gff3_value(value):
-    """
-    Escapes characters in a string according to GFF3 specification using URL encoding.
-    """
-    return urllib.parse.quote(value, safe=':/,=.-')
-
 def parse_samples_and_paths(samples_paths):
     """
     Parses the provided list of sample names and .fna file paths into a structured dictionary.
@@ -62,22 +56,6 @@ def parse_samples_and_paths(samples_paths):
     iterator = iter(cleaned_samples_paths)
     return dict(zip(iterator, iterator))
 
-def format_attributes(annotation, database_list):
-    """
-    Format and order database-specific annotations for the GFF attributes column, with customized formatting and escaping.
-    """
-    attributes = []
-    for key, value in sorted(annotation.items()):
-        if key.endswith('_id') or key.endswith('_description'):
-            db_name = key.split('_')[0]
-            if database_list is None or db_name in database_list:
-                upper_db_name = db_name.upper()
-                if key.endswith('_id'):
-                    description_key = f"{db_name}_description"
-                    desc = escape_gff3_value(annotation.get(description_key, "NA"))
-                    attributes.append(f"{upper_db_name}_ID={value};{upper_db_name}_Description={desc}")
-    return "; ".join(attributes)
-
 def sanitize_taxonomy(taxonomy):
     """
     Sanitizes the taxonomy string for safe inclusion in GFF comments.
@@ -85,39 +63,63 @@ def sanitize_taxonomy(taxonomy):
     """
     return taxonomy.replace(';', ',')  # Replace semicolons with commas
 
+def escape_gff3_value(value):
+    """
+    Escapes characters in a string for GFF3 compliance, using URL encoding.
+    """
+    # RFC 3986 percent-encoding, excluding reserved characters used in GFF3 format
+    return urllib.parse.quote(value, safe=':/,=.-')
+
+def format_attributes(annotation, database_list):
+    """
+    Format and order database-specific annotations for the GFF attributes column, with customized formatting.
+    This version omits empty attributes and ensures no extraneous spaces or semicolons.
+    """
+    attributes = []
+    for key, value in sorted(annotation.items()):
+        if (key.endswith('_id') or key.endswith('_description')) and value:
+            db_name = key.split('_')[0]
+            if database_list is None or db_name in database_list:
+                # Ensure value is URL-encoded
+                encoded_value = escape_gff3_value(value)
+                attributes.append(f"{db_name.upper()}_{key.upper()}={encoded_value}")
+    
+    # Join attributes with semicolons, avoiding spaces for GFF3 compliance
+    return ";".join(attributes)
+
 def generate_gff(samples_annotations, database_list):
-    """Generate GFF files for each sample, filtered by specified databases."""
+    """
+    Generate GFF files for each sample, filtered by specified databases,
+    ensuring adherence to GFF3 specifications, including attribute encoding and metadata comments.
+    """
     os.makedirs("GFF", exist_ok=True)
     for sample, annotations in samples_annotations.items():
         with open(f"GFF/{sample}.gff", "w") as gff_file:
             gff_file.write("##gff-version 3\n")
-
-            # Extract and write metadata as comments, ensuring all expected fields are checked.
-            expected_metadata = ['Completeness', 'Contamination']
-            for metadata_key in expected_metadata:
-                metadata_value = annotations[0].get(metadata_key)
-                if metadata_value:
-                    gff_file.write(f"# {metadata_key}: {metadata_value}\n")
             
-            # Handle taxonomy separately to ensure it is sanitized
-            taxonomy_value = annotations[0].get('taxonomy')
-            if taxonomy_value:
-                sanitized_taxonomy = sanitize_taxonomy(taxonomy_value)
-                gff_file.write(f"# Taxonomy: {sanitized_taxonomy}\n")
-
+            # Metadata: Completeness, Contamination, and sanitized Taxonomy
+            completeness = annotations[0].get('Completeness', 'NA')
+            contamination = annotations[0].get('Contamination', 'NA')
+            taxonomy = escape_gff3_value(annotations[0].get('taxonomy', 'NA').replace(';', ','))  # Sanitize taxonomy
+            
+            gff_file.write(f"# Completeness: {completeness}\n")
+            gff_file.write(f"# Contamination: {contamination}\n")
+            gff_file.write(f"# Taxonomy: {taxonomy}\n")
+            
             for annotation in annotations:
                 seqid = escape_gff3_value(annotation['query_id'])
-                source = '.'  # Placeholder, should be replaced with actual source if available
-                type = "gene"  # Example type, should be replaced with actual type from annotation if available
+                source = '.'  # Use a real source if available
+                type = "gene"  # Adjust based on actual data
                 start = annotation['start_position']
                 end = annotation['stop_position']
-                score = '.'  # Placeholder, replace if score available
+                score = '.'  # Use actual score if available
                 strand = '+' if annotation['strandedness'] == '+1' else '-'
-                phase = '.'  # Placeholder, applicable for CDS features
+                phase = '.'  # Adjust for features like CDS
                 attributes_str = format_attributes(annotation, database_list)
+                
                 gff_line = f"{seqid}\t{source}\t{type}\t{start}\t{end}\t{score}\t{strand}\t{phase}\t{attributes_str}\n"
                 gff_file.write(gff_line)
-                
+
 def parse_fna_sequence(fna_file_path):
     """Parse the .fna file to get sequences indexed by their header name."""
     sequences = {}
