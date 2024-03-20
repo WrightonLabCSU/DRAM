@@ -15,55 +15,40 @@ process ADD_BIN_QUALITY {
 
     import pandas as pd
 
-    # Load combined_annotations.tsv
+    # Define necessary columns for loading
+    annotations_columns = ['sample', 'other_relevant_columns']  # Update other_relevant_columns as needed
+    quality_columns = ['Name', 'Completeness', 'Contamination']  # Assuming 'Name' is the sample identifier in ch_bin_quality
+
+    # Load combined_annotations.tsv with only necessary columns
     combined_annotations_path = "${combined_annotations}"
-    combined_annotations = pd.read_csv(combined_annotations_path, sep='\t')
+    combined_annotations = pd.read_csv(combined_annotations_path, sep='\\t', usecols=annotations_columns)
 
-    # Load checkm TSV
+    # Load checkm TSV with only necessary columns
     checkm_path = "${ch_bin_quality}"
-    checkm_data = pd.read_csv(checkm_path, sep='\t')
+    checkm_data = pd.read_csv(checkm_path, sep='\\t', usecols=quality_columns)
 
-    # Identify the first column name dynamically
-    first_column_name = checkm_data.columns[0]
-
-    # Extract relevant columns from checkm_data
-    checkm_columns = [first_column_name, "Completeness", "Contamination"]
-    checkm_data = checkm_data[checkm_columns]
-
-    # Replace "." with "-" in the sample column for comparison
+    # Standardize sample identifiers by replacing "." with "-" if necessary
     combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
+    checkm_data["Name"] = checkm_data["Name"].str.replace(".", "-")
 
-    # Replace "." with "-" in the first column of checkm TSV
-    checkm_data[first_column_name] = checkm_data[first_column_name].str.replace(".", "-")
-
-    # Check if "Completeness" and "Contamination" columns exist and have non-null values in combined_annotations
+    # Determine if "Completeness" and "Contamination" need to be merged
     if "Completeness" in combined_annotations.columns and "Contamination" in combined_annotations.columns:
-        # Check if all values are NaN in these columns
-        if combined_annotations["Completeness"].isnull().all() and combined_annotations["Contamination"].isnull().all():
-            # If both columns are empty, prepare to replace them with checkm_data values
-            completeness_contamination_to_merge = True
+        if not combined_annotations["Completeness"].isnull().all() or not combined_annotations["Contamination"].isnull().all():
+            print("Completeness or Contamination information already exists. Skipping addition of bin quality data.")
+            merged_data = combined_annotations
         else:
-            # If any of the columns have non-null values, do not merge from checkm_data
-            completeness_contamination_to_merge = False
+            # Merge and update Completeness and Contamination
+            merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on="Name", how="left")
+            merged_data.drop(columns=["Name"], inplace=True)
     else:
-        # If either or both columns don't exist, prepare to add them
-        completeness_contamination_to_merge = True
-
-    if completeness_contamination_to_merge:
-        # Merge data based on the sample column
-        merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on=first_column_name, how="left")
-        # Drop the additional first column if it's not the sample column
-        if first_column_name != "sample":
-            merged_data.drop(columns=[first_column_name], inplace=True)
-    else:
-        # If Completeness and Contamination should not be merged, use combined_annotations directly
-        merged_data = combined_annotations
+        # Columns don't exist, proceed to merge
+        merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on="Name", how="left")
+        merged_data.drop(columns=["Name"], inplace=True)
 
     # Save the updated data to raw-annotations.tsv
     output_path = "raw-annotations.tsv"
-    merged_data.to_csv(output_path, sep='\t', index=False)
+    merged_data.to_csv(output_path, sep='\\t', index=False)
 
     print(f"Updated annotations saved to {output_path}")
-
     """
 }
