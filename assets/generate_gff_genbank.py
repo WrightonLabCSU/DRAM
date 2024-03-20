@@ -172,45 +172,47 @@ def generate_gbk_feature(feature, sequence):
     location = FeatureLocation(start, end, strand=feature['strandedness'])
     qualifiers = {'product': feature.get('product', '')}  # Add more qualifiers as needed
     return SeqFeature(location=location, type="CDS", qualifiers=qualifiers)
+
 def generate_gbk(samples_annotations, database_list, samples_and_paths):
     print("Starting GBK generation...")
     os.makedirs("GBK", exist_ok=True)
 
     for sample, annotations in samples_annotations.items():
-        if sample in samples_and_paths:
-            fna_file_path = samples_and_paths[sample]
-            print(f"Processing sample: {sample}")
+        print(f"\nProcessing sample: {sample}")
+        fna_file_path = samples_and_paths.get(sample)
+        if fna_file_path and os.path.exists(fna_file_path):
+            sequences = parse_fna_sequence(fna_file_path)
 
-            if os.path.exists(fna_file_path):
-                sequences = parse_fna_sequence(fna_file_path)
-                seq_record = SeqRecord(sequences[sample], id=sample, name="", description=f"Generated GBK file for {sample}")
+            if sample not in sequences:
+                print(f"Sequence for {sample} not found in provided .fna files.")
+                continue  # Skip this sample if its sequence wasn't found
 
-                # Assuming shared metadata across each sample's annotations
-                metadata = annotations[0]
-                taxonomy_info = metadata.get('taxonomy', 'Not Available')
-                completeness_info = metadata.get('Completeness', 'Not Available')
-                contamination_info = metadata.get('Contamination', 'Not Available')
-                
-                # Setting annotations
-                seq_record.annotations["organism"] = taxonomy_info
-                seq_record.annotations["molecule_type"] = "DNA"
-                
-                # Adding custom metadata to the comments section
-                custom_metadata = f"Completeness: {completeness_info}; Contamination: {contamination_info}; Taxonomy: {taxonomy_info}"
-                seq_record.annotations["comment"] = custom_metadata
+            seq_record = SeqRecord(sequences[sample], id=sample, name="", description=f"Generated GBK file for {sample}")
+            seq_record.annotations["data_file_division"] = "PLN"
+            seq_record.annotations["date"] = "01-JAN-2000"  # Example date, adjust as needed
 
-                for annotation in annotations:
-                    gbk_feature = generate_gbk_feature(annotation, sequences[sample])
-                    seq_record.features.append(gbk_feature)
+            metadata = annotations[0]  # Assuming shared metadata across each sample's annotations
+            taxonomy_info = metadata.get('taxonomy', 'Not Available')
+            seq_record.annotations["organism"] = taxonomy_info
+            seq_record.annotations["molecule_type"] = "DNA"
+            seq_record.annotations["taxonomy"] = taxonomy_info.split(';')  # Split taxonomy into a list
 
-                output_filename = f"GBK/{sample}.gbk"
-                with open(output_filename, "w") as output_handle:
-                    SeqIO.write([seq_record], output_handle, "genbank")
-                print(f"GBK file generated for {sample}: {output_filename}")
-            else:
-                print(f"File does not exist: {fna_file_path}")
+            # Custom metadata
+            custom_metadata = f"Completeness: {metadata.get('Completeness', 'NA')}; Contamination: {metadata.get('Contamination', 'NA')}"
+            seq_record.annotations["comment"] = custom_metadata
+
+            for annotation in annotations:
+                # Assuming `generate_gbk_feature` creates SeqFeature objects correctly
+                gbk_feature = generate_gbk_feature(annotation, sequences[sample])
+                seq_record.features.append(gbk_feature)
+
+            output_filename = f"GBK/{sample}.gbk"
+            with open(output_filename, "w") as output_handle:
+                SeqIO.write([seq_record], output_handle, "genbank")
+            print(f"GBK file generated for {sample}: {output_filename}")
         else:
-            print(f"No .fna file path found for sample {sample}")
+            print(f"No .fna file path found or file does not exist for sample {sample}")
+
 def main():
     args = parse_arguments()
 
