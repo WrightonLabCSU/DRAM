@@ -169,46 +169,34 @@ def generate_gbk_feature(feature, seq_record):
     return SeqFeature(location=feature_location, type="CDS", qualifiers=qualifiers)
 
 def generate_gbk(samples_annotations, database_list, samples_and_paths):
-    print("Starting GBK generation...")
+    # Ensure the output directory exists
     os.makedirs("GBK", exist_ok=True)
-
+    
     for sample, annotations in samples_annotations.items():
-        # Retrieve the path to the sample's .fna file
+        print(f"Processing sample: {sample}")
         fna_file_path = samples_and_paths.get(sample)
-        print(f"\nProcessing sample: {sample}")
         
-        if fna_file_path and os.path.exists(fna_file_path):
-            sample_sequences = SeqIO.index(fna_file_path, "fasta")  # Index the sequences for efficient access
-
-            for annotation in annotations:
-                query_id = annotation['query_id']
-                if query_id in sample_sequences:
-                    seq_record = SeqRecord(sample_sequences[query_id].seq, id=query_id, description="")
-                    seq_record.annotations["source"] = "DRAM2"
-                    seq_record.annotations["molecule_type"] = "DNA"
-
-                    # Optional: Extract taxonomy, completeness, and contamination from annotations if applicable
-                    # seq_record.annotations["organism"] = annotation.get('taxonomy', 'Not Available')
-                    # Custom metadata example
-                    # custom_metadata = f"Completeness: {annotation.get('Completeness', 'NA')}; Contamination: {annotation.get('Contamination', 'NA')}"
-                    # seq_record.annotations["note"] = custom_metadata
-
-                    feature_location = FeatureLocation(start=int(annotation['start_position']) - 1, end=int(annotation['stop_position']), strand=1 if annotation['strandedness'] == '+1' else -1)
-                    qualifiers = format_qualifiers(annotation, database_list)
-                    feature = SeqFeature(feature_location, type="gene", qualifiers=qualifiers)
-                    seq_record.features.append(feature)
-
-                    current_date = datetime.now().strftime("%d-%b-%Y").upper()
-                    seq_record.annotations["date"] = current_date
-
-                    output_filename = os.path.join("GBK", f"{query_id}.gbk")
-                    with open(output_filename, "w") as output_handle:
-                        SeqIO.write([seq_record], output_handle, "genbank")
-                    print(f"GBK file generated for query ID {query_id}: {output_filename}")
-                else:
-                    print(f"Sequence for query ID {query_id} not found in provided .fna file for sample {sample}.")
-        else:
-            print(f".fna file path not found or does not exist for sample {sample}. Skipping...")
+        # Check if there's a corresponding .fna file for the sample
+        if not fna_file_path or not os.path.exists(fna_file_path):
+            print(f"No .fna file found for sample {sample}. Skipping...")
+            continue
+        
+        # Create a SeqRecord object for the whole sample
+        sample_seq_record = SeqRecord(Seq(""), id=sample, description=f"Annotations for {sample}")
+        
+        # Add metadata to the SeqRecord object (e.g., taxonomy, completeness, contamination)
+        # [Your code to add metadata here]
+        
+        # Iterate through annotations to create features for the SeqRecord
+        for annotation in annotations:
+            feature = generate_gbk_feature(annotation)
+            sample_seq_record.features.append(feature)
+        
+        # Write the SeqRecord object to a GBK file
+        output_filename = f"GBK/{sample}.gbk"
+        with open(output_filename, "w") as output_handle:
+            SeqIO.write([sample_seq_record], output_handle, "genbank")
+        print(f"GBK file generated for {sample}: {output_filename}")
 
 
 def main():
