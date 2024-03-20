@@ -85,18 +85,22 @@ def generate_gff(samples_annotations, database_list):
             gff_file.write(f"# Taxonomy: {taxonomy}\n")
             
             for annotation in annotations:
-                seqid = escape_gff3_value(annotation.get('query_id', 'NA'))
-                source = '.'
-                type = "gene"
-                start = annotation.get('start_position', '1')  # Default to '1' if missing
-                end = annotation.get('stop_position', '1')  # Default to '1' if missing
-                score = '.'
-                strand = '+' if annotation.get('strandedness', '+1') == '+1' else '-'
-                phase = '.'
-                attributes_str = format_attributes(annotation, database_list)
-                
-                gff_line = f"{seqid}\t{source}\t{type}\t{start}\t{end}\t{score}\t{strand}\t{phase}\t{attributes_str}\n"
-                gff_file.write(gff_line)
+                try:
+                    seqid = escape_gff3_value(annotation['query_id'])
+                    source = '.'
+                    type = "gene"
+                    start = annotation['start_position']
+                    end = annotation['stop_position']
+                    score = '.'
+                    strand = '+' if annotation['strandedness'] == '+1' else '-'
+                    phase = '.'
+                    attributes_str = format_attributes(annotation, database_list)
+                    
+                    gff_line = f"{seqid}\t{source}\t{type}\t{start}\t{end}\t{score}\t{strand}\t{phase}\t{attributes_str}\n"
+                    gff_file.write(gff_line)
+                except KeyError as e:
+                    logging.warning(f"Missing key in annotation: {e}. Skipping annotation: {annotation}")
+
 
 
 def parse_fna_sequence(fna_file_path):
