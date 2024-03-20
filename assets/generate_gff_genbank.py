@@ -85,13 +85,13 @@ def generate_gff(samples_annotations, database_list):
         with open(f"GFF/{sample}.gff", "w") as gff_file:
             gff_file.write("##gff-version 3\n")
 
-            # Check for and write metadata as comments if available
-            metadata_fields = ['Completeness', 'Contamination', 'Taxonomy']
-            for field in metadata_fields:
-                # Assuming all annotations for a sample have the same metadata value
-                # Writing the first occurrence as a comment
-                if field in annotations[0]:
-                    gff_file.write(f"# {field}: {annotations[0][field]}\n")
+            # Extract and write metadata as comments, ensuring all expected fields are checked.
+            # This simplifies the logic by directly attempting to write each expected metadata comment.
+            expected_metadata = ['Completeness', 'Contamination', 'Taxonomy']
+            for metadata_key in expected_metadata:
+                metadata_value = annotations[0].get(metadata_key)
+                if metadata_value:
+                    gff_file.write(f"# {metadata_key}: {metadata_value}\n")
 
             for annotation in annotations:
                 seqid = escape_gff3_value(annotation['query_id'])
@@ -210,7 +210,7 @@ def main():
 
     # Directly parse the samples and paths passed as arguments
     samples_and_paths = parse_samples_and_paths(args.samples_paths)
-    
+
     # Check if GFF generation is requested and call generate_gff
     if args.gff:
         generate_gff(samples_annotations, args.database_list)
