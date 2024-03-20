@@ -77,6 +77,7 @@ def format_attributes(annotation, database_list):
                     desc = escape_gff3_value(annotation.get(description_key, "NA"))
                     attributes.append(f"{upper_db_name}_ID={value};{upper_db_name}_Description={desc}")
     return "; ".join(attributes)
+
 def generate_gff(samples_annotations, database_list):
     """Generate GFF files for each sample, filtered by specified databases."""
     os.makedirs("GFF", exist_ok=True)
@@ -197,7 +198,6 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
         else:
             print(f"No .fna file path found for sample {sample}")
 
-
 def main():
     args = parse_arguments()
 
@@ -211,5 +211,13 @@ def main():
     # Directly parse the samples and paths passed as arguments
     samples_and_paths = parse_samples_and_paths(args.samples_paths)
     
+    # Check if GFF generation is requested and call generate_gff
+    if args.gff:
+        generate_gff(samples_annotations, args.database_list)
+
+    # Check if GBK generation is requested and call generate_gbk
+    if args.gbk:
+        generate_gbk(samples_annotations, args.database_list, samples_and_paths)
+
 if __name__ == "__main__":
     main()
