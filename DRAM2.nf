@@ -1,23 +1,23 @@
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    DRAM2: <Description>
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    DRAM2: DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes. 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Homepage of project 
-    homePage = <GitHub homepage>
+    homePage = https://github.com/WrightonLabCSU/DRAM2
     
     Author of DRAM2 Nextflow pipeline
     author = Reed Woyda, Rory Flynn
     institution = Colorado State University - Wrighton Lab
 
     Description of project
-    description = <Description>
+    description = DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes. 
 
     Main pipeline script
     mainScript = DRAM2.nf
     
     version
-    v2.0.1
+    v2.0.0
 ----------------------------------------------------------------------------------------
 */
 
@@ -28,7 +28,6 @@
 */
 
 nextflow.enable.dsl = 2
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,6 +104,7 @@ include { GENERATE_GFF_GENBANK                          } from './modules/annota
 include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
 include { DISTILL                                       } from './modules/distill/distill.nf'
 
+// This is a placeholder Product process
 include { PRODUCT_HEATMAP                               } from './modules/product/product_heatmap.nf'
 
 

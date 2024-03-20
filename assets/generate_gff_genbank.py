@@ -22,23 +22,50 @@ def parse_arguments():
     args.database_list = None if args.database_list == "empty" else args.database_list.split()
     return args
 
+import argparse
+import csv
+from collections import defaultdict
+import os
+import glob
+from Bio import SeqIO
+from Bio.SeqRecord import SeqRecord
+from Bio.SeqFeature import SeqFeature, FeatureLocation
+from Bio.Seq import Seq
+import logging
+import urllib.parse  # For escaping characters in accordance with RFC 3986
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def parse_arguments():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="Generate GFF and/or GBK files from raw annotations, with specified databases formatting.")
+    parser.add_argument("--gff", action='store_true', help="Generate GFF file")
+    parser.add_argument("--gbk", action='store_true', help="Generate GBK file")
+    parser.add_argument("--samples_paths", nargs='+', help="Alternating list of sample names and paths to their .fna files.")
+    parser.add_argument("--database_list", type=str, help="Comma-separated list of databases to include in the annotations. Use 'empty' for all.", default="empty")
+    parser.add_argument("--annotations", required=True, help="Path to the raw annotations file")
+    args = parser.parse_args()
+    args.database_list = None if args.database_list == "empty" else args.database_list.split(',')
+    return args
+
+def escape_gff3_value(value):
+    """
+    Escapes characters in a string according to GFF3 specification using URL encoding.
+    """
+    return urllib.parse.quote(value, safe=':/,=.-')
+
 def parse_samples_and_paths(samples_paths):
     """
-    Cleans up and parses the provided list of sample names and .fna file paths into a structured dictionary.
+    Parses the provided list of sample names and .fna file paths into a structured dictionary.
     """
-    # Attempt to clean up the input list by removing unwanted characters
     cleaned_samples_paths = [item.strip("[]',") for item in samples_paths]
-    
-    # Convert the cleaned list into a dictionary
     iterator = iter(cleaned_samples_paths)
     return dict(zip(iterator, iterator))
 
-def sanitize_description(description):
-    """Replace semicolons in descriptions to avoid parsing issues."""
-    return description.replace(';', ',')
-
 def format_attributes(annotation, database_list):
-    """Format and order database-specific annotations for the GFF attributes column, with customized formatting."""
+    """
+    Format and order database-specific annotations for the GFF attributes column, with customized formatting and escaping.
+    """
     attributes = []
     for key, value in sorted(annotation.items()):
         if key.endswith('_id') or key.endswith('_description'):
@@ -47,25 +74,42 @@ def format_attributes(annotation, database_list):
                 upper_db_name = db_name.upper()
                 if key.endswith('_id'):
                     description_key = f"{db_name}_description"
-                    desc = sanitize_description(annotation.get(description_key, "NA"))
-                    attributes.append(f"({upper_db_name}) {key} {value}; {desc}")
+                    desc = escape_gff3_value(annotation.get(description_key, "NA"))
+                    attributes.append(f"{upper_db_name}_ID={value};{upper_db_name}_Description={desc}")
     return "; ".join(attributes)
 
 def generate_gff(samples_annotations, database_list):
     """Generate GFF files for each sample, filtered by specified databases."""
+    os.makedirs("GFF", exist_ok=True)
     for sample, annotations in samples_annotations.items():
         with open(f"GFF/{sample}.gff", "w") as gff_file:
-            gff_file.write(f"##gff-version 3\n")
-            metadata = annotations[0]  # Assuming shared metadata across each sample's annotations
-            gff_file.write(f"# Completeness: {metadata['Completeness']}\n")
-            gff_file.write(f"# Contamination: {metadata['Contamination']}\n")
-            gff_file.write(f"# Taxonomy: {metadata['taxonomy']}\n")
-            
+            gff_file.write("##gff-version 3\n")
             for annotation in annotations:
-                attributes_str = format_attributes(annotation, database_list)
+                # Ensure seqid complies with GFF3 specification by escaping reserved characters
+                seqid = escape_gff3_value(annotation['query_id'])
+                source = '.'  # Placeholder, should be replaced with actual source if available
+                type = "gene"  # Example type, should be replaced with actual type from annotation if available
+                start = annotation['start_position']
+                end = annotation['stop_position']
+                score = '.'  # Placeholder, replace if score available
                 strand = '+' if annotation['strandedness'] == '+1' else '-'
-                gff_line = f"{annotation['query_id']}\t.\tgene\t{annotation['start_position']}\t{annotation['stop_position']}\t.\t{strand}\t.\t{attributes_str}\n"
+                phase = '.'  # Placeholder, applicable for CDS features
+                attributes_str = format_attributes(annotation, database_list)
+                gff_line = f"{seqid}\t{source}\t{type}\t{start}\t{end}\t{score}\t{strand}\t{phase}\t{attributes_str}\n"
                 gff_file.write(gff_line)
+
+def main():
+    args = parse_arguments()
+
+    # Load annotations and organize by sample
+    samples_annotations = defaultdict(list)
+    with open(args.annotations, 'r') as file:
+        reader = csv.DictReader(file, delimiter='\t')
+        for row in reader:
+            samples_annotations[row['sample']].append(row)
+
+    # Directly parse the samples and paths passed as arguments
+    samples_and_paths = parse_samples_and_paths(args.samples_paths)
 
 def parse_fna_sequence(fna_file_path):
     """Parse the .fna file to get sequences indexed by their header name."""
@@ -108,52 +152,6 @@ def aggregate_sample_sequences(sample_files):
         for seq_record in SeqIO.parse(file_path, "fasta"):
             sequences[seq_record.id] = seq_record.seq
     return sequences
-
-def fetch_matching_ec_numbers(db_name, partial_ec_number):
-    """
-    Fetch all matching EC numbers for a given partial EC number from the database,
-    parsing compound gene_id entries containing multiple EC numbers.
-    """
-    logging.debug(f"Starting fetch_matching_ec_numbers for {partial_ec_number}")
-
-    # Define a custom SQLite function to split gene_id entries and check for matches
-    def ec_matcher(gene_id, pattern):
-        # Split by semicolon and strip each EC number
-        ec_numbers = [ec.strip() for ec in gene_id.split(';')]
-        # Check if any EC number in the entry matches the pattern
-        for ec in ec_numbers:
-            if ec.startswith(pattern):
-                return True
-        return False
-
-    # Connect to the SQLite database
-    conn = sqlite3.connect(db_name)
-    # Register the custom function with the connection
-    conn.create_function("EC_MATCHER", 2, ec_matcher)
-
-    # Adjust the partial EC number to form the SQL LIKE pattern
-    pattern = partial_ec_number.replace("EC:", "").rstrip("-")
-
-    # Execute the query using the custom EC_MATCHER function
-    cursor = conn.cursor()
-    cursor.execute("SELECT DISTINCT gene_id FROM annotations WHERE EC_MATCHER(gene_id, ?)", (pattern,))
-    matches = cursor.fetchall()
-
-    matching_ec_numbers = set()
-    for match in matches:
-        # Split and filter the gene_id field to extract matching EC numbers
-        ec_numbers = match[0].split(';')
-        for ec in ec_numbers:
-            if ec.startswith(f'EC:{pattern}'):
-                matching_ec_numbers.add(ec.strip())
-
-    if not matching_ec_numbers:
-        logging.debug(f"No matches found for partial EC {partial_ec_number}")
-    else:
-        logging.debug(f"Matches found for partial EC {partial_ec_number}: {matching_ec_numbers}")
-
-    conn.close()
-    return list(matching_ec_numbers)
 
 def generate_gbk(samples_annotations, database_list, samples_and_paths):
     print("Starting GBK generation...")
