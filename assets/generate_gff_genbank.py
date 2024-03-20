@@ -77,15 +77,22 @@ def format_attributes(annotation, database_list):
                     desc = escape_gff3_value(annotation.get(description_key, "NA"))
                     attributes.append(f"{upper_db_name}_ID={value};{upper_db_name}_Description={desc}")
     return "; ".join(attributes)
-
 def generate_gff(samples_annotations, database_list):
     """Generate GFF files for each sample, filtered by specified databases."""
     os.makedirs("GFF", exist_ok=True)
     for sample, annotations in samples_annotations.items():
         with open(f"GFF/{sample}.gff", "w") as gff_file:
             gff_file.write("##gff-version 3\n")
+
+            # Check for and write metadata as comments if available
+            metadata_fields = ['Completeness', 'Contamination', 'Taxonomy']
+            for field in metadata_fields:
+                # Assuming all annotations for a sample have the same metadata value
+                # Writing the first occurrence as a comment
+                if field in annotations[0]:
+                    gff_file.write(f"# {field}: {annotations[0][field]}\n")
+
             for annotation in annotations:
-                # Ensure seqid complies with GFF3 specification by escaping reserved characters
                 seqid = escape_gff3_value(annotation['query_id'])
                 source = '.'  # Placeholder, should be replaced with actual source if available
                 type = "gene"  # Example type, should be replaced with actual type from annotation if available
@@ -97,19 +104,6 @@ def generate_gff(samples_annotations, database_list):
                 attributes_str = format_attributes(annotation, database_list)
                 gff_line = f"{seqid}\t{source}\t{type}\t{start}\t{end}\t{score}\t{strand}\t{phase}\t{attributes_str}\n"
                 gff_file.write(gff_line)
-
-def main():
-    args = parse_arguments()
-
-    # Load annotations and organize by sample
-    samples_annotations = defaultdict(list)
-    with open(args.annotations, 'r') as file:
-        reader = csv.DictReader(file, delimiter='\t')
-        for row in reader:
-            samples_annotations[row['sample']].append(row)
-
-    # Directly parse the samples and paths passed as arguments
-    samples_and_paths = parse_samples_and_paths(args.samples_paths)
 
 def parse_fna_sequence(fna_file_path):
     """Parse the .fna file to get sequences indexed by their header name."""
@@ -216,13 +210,6 @@ def main():
 
     # Directly parse the samples and paths passed as arguments
     samples_and_paths = parse_samples_and_paths(args.samples_paths)
-
-    if args.gbk:
-        generate_gbk(samples_annotations, args.database_list, samples_and_paths)
-
-    if args.gff:
-        generate_gff(samples_annotations, args.database_list)
-
-
+    
 if __name__ == "__main__":
     main()
