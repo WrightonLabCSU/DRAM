@@ -45,8 +45,18 @@ def combine_annotations(annotation_files, output_file, threads):
     
     with ThreadPoolExecutor(max_workers=threads) as executor:
         futures = [executor.submit(read_and_preprocess, sample, path) for sample, path in samples_and_paths]
-        combined_data = pd.concat([future.result() for future in as_completed(futures)], ignore_index=True)
-
+        data_frames = [future.result() for future in as_completed(futures)]
+    
+    # Combine data frames while checking for special columns to ensure they are not duplicated
+    combined_data = pd.DataFrame()
+    special_columns = ['Completeness', 'Contamination', 'taxonomy']
+    for df in data_frames:
+        # Rename duplicates in the current df before concatenation
+        for col in special_columns:
+            if col in combined_data.columns and col in df.columns:
+                df.drop(columns=[col], inplace=True)  # Drop or rename as needed
+        combined_data = pd.concat([combined_data, df], ignore_index=True)
+    
     combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position'])
     combined_data = convert_bit_scores_to_numeric(combined_data)
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
