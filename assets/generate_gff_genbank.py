@@ -101,8 +101,6 @@ def generate_gff(samples_annotations, database_list):
                 except KeyError as e:
                     logging.warning(f"Missing key in annotation: {e}. Skipping annotation: {annotation}")
 
-
-
 def parse_fna_sequence(fna_file_path):
     """Parse the .fna file to get sequences indexed by their header name."""
     sequences = {}
@@ -125,18 +123,6 @@ def aggregate_sample_sequences(samples_and_paths):
             print(f"File does not exist: {file_path}")
     return sequences
 
-def format_qualifiers(annotation):
-    """
-    Formats qualifiers for a GenBank feature, ensuring correct syntax and inclusion of essential information.
-    """
-    qualifiers = []
-    for key, value in annotation.items():
-        if key in ['gene', 'product', 'note', 'function']:  # Example qualifier keys
-            value = value.replace('"', '""')  # Escape double quotes in value
-            qualifiers.append(f"/{key}=\"{value}\"")
-    # Add additional qualifiers as needed, using controlled vocabularies or specific formats
-    return qualifiers
-
 def format_qualifiers(annotation, database_list=None):
     """
     Formats qualifiers for a GenBank feature, ensuring correct syntax and inclusion of essential information.
@@ -153,13 +139,27 @@ def format_qualifiers(annotation, database_list=None):
                 qualifiers[key] = value
     return qualifiers
 
-def generate_gbk_feature(feature):
+def generate_gbk_feature(annotation):
     """Generate a SeqFeature for a GenBank file based on annotation data."""
-    start = int(feature['start_position']) - 1  # Convert to 0-based indexing
-    end = int(feature['stop_position'])  # End is inclusive, no adjustment needed
-    strand = 1 if feature['strandedness'] == '+1' else -1  # Convert strandedness
+    start = int(annotation['start_position']) - 1  # Convert to 0-based indexing
+    end = int(annotation['stop_position'])  # End is inclusive, no adjustment needed
+    strand = 1 if annotation['strandedness'] == '+1' else -1  # Convert strandedness
     location = FeatureLocation(start, end, strand=strand)
-    qualifiers = {'product': feature.get('product', 'unknown product')}  # Adjust as needed
+
+    qualifiers = {
+        'locus_tag': annotation.get('query_id', 'unknown_locus'),
+        # Assuming 'product' or a general description can be derived from the data
+        'product': next((annotation.get(k) for k in annotation.keys() if k.endswith('_description') and annotation[k]), 'unknown product')
+    }
+
+    # Dynamically add database-specific information as qualifiers
+    for key, value in annotation.items():
+        if key.endswith(('_id', '_description', '_EC')) and value:
+            # Simple heuristic to extract database prefix and adjust it if necessary
+            db_prefix = key.split('_')[0]
+            qualifier_key = f"db_{db_prefix}"
+            qualifiers[qualifier_key] = value
+
     return SeqFeature(location=location, type="CDS", qualifiers=qualifiers)
 
 
@@ -168,35 +168,29 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
     os.makedirs("GBK", exist_ok=True)
     
     for sample, annotations in samples_annotations.items():
-        print(f"Processing sample: {sample}")
-        fna_file_path = samples_and_paths.get(sample)
-        
-        # Check if there's a corresponding .fna file for the sample
-        if not fna_file_path or not os.path.exists(fna_file_path):
-            print(f"No .fna file found for sample {sample}. Skipping...")
+        if not annotations:  # Skip if there are no annotations
             continue
+        first_annotation = annotations[0]
+        completeness = first_annotation.get('Completeness', 'NA')
+        contamination = first_annotation.get('Contamination', 'NA')
+        taxonomy = first_annotation.get('taxonomy', 'NA')
 
-        # Assuming metadata is consistent across annotations for a sample, take the first one
-        metadata = annotations[0] if annotations else {}
-        
-        # Create a SeqRecord object for the whole sample
-        # Use SeqIO to read sequences if needed or create a dummy Seq("") if sequences are not used directly
-        sample_seq_record = SeqRecord(Seq(""), id=sample, description=f"Annotations for {sample}")
-        sample_seq_record.annotations["molecule_type"] = "DNA"
-        sample_seq_record.annotations["date"] = datetime.now().strftime("%d-%b-%Y").upper()
-        sample_seq_record.annotations["comment"] = f"Completeness: {metadata.get('Completeness', 'NA')}; Contamination: {metadata.get('Contamination', 'NA')}; Taxonomy: {metadata.get('taxonomy', 'NA').replace(';', ',')}"
-
-        # Iterate through annotations to create features for the SeqRecord
         for annotation in annotations:
+            seq_record = SeqRecord(Seq(""), id=sample, description="Generated GBK file")
+            seq_record.annotations["source"] = "Your source here"
+            seq_record.annotations["molecule_type"] = "DNA"
+            # Example of adding custom metadata to the SeqRecord
+            seq_record.annotations["note"] = f"Completeness: {completeness}; Contamination: {contamination}; Taxonomy: {taxonomy}"
+            seq_record.annotations["organism"] = taxonomy
+            seq_record.annotations["comment"] = f"Completeness: {completeness}; Contamination: {contamination}"
+            
             feature = generate_gbk_feature(annotation)
-            sample_seq_record.features.append(feature)
-        
-        # Write the SeqRecord object to a GBK file
-        output_filename = f"GBK/{sample}.gbk"
-        with open(output_filename, "w") as output_handle:
-            SeqIO.write([sample_seq_record], output_handle, "genbank")
-        print(f"GBK file generated for {sample}: {output_filename}")
-
+            seq_record.features.append(feature)
+            
+            output_filename = os.path.join("GBK", f"{sample}_{annotation['query_id']}.gbk")
+            with open(output_filename, "w") as output_handle:
+                SeqIO.write([seq_record], output_handle, "genbank")
+            print(f"GBK file generated: {output_filename}")
 
 def main():
     args = parse_arguments()
