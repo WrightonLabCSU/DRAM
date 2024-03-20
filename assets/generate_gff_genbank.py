@@ -3,6 +3,7 @@ import csv
 from collections import defaultdict
 import os
 import glob
+from datetime import datetime
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, FeatureLocation
@@ -164,8 +165,11 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
         if sample in sequences:
             seq = sequences[sample]  # Retrieve the sequence using the corrected key
             seq_record = SeqRecord(seq, id=sample, name="", description=f"Generated GBK file for {sample}")
+            
+            # Use current date
+            current_date = datetime.now().strftime("%d-%b-%Y").upper()  # Format date as DD-MMM-YYYY
             seq_record.annotations["data_file_division"] = "PLN"
-            seq_record.annotations["date"] = "01-JAN-2000"  # Example date, adjust as needed
+            seq_record.annotations["date"] = current_date  # Set to current date
 
             metadata = annotations[0]  # Assuming shared metadata across each sample's annotations
             taxonomy_info = metadata.get('taxonomy', 'Not Available')
@@ -185,9 +189,10 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
             output_filename = f"GBK/{sample}.gbk"
             with open(output_filename, "w") as output_handle:
                 SeqIO.write([seq_record], output_handle, "genbank")
-            print(f"Sequence for {sample} not found in provided .fna files.")
+            print(f"GBK file generated for {sample}: {output_filename}")
         else:
-            print(f"Sequence for {sample} not found in provided .fna files)
+            print(f"Sequence for {sample} not found in provided .fna files.")
+
 def main():
     args = parse_arguments()
 
