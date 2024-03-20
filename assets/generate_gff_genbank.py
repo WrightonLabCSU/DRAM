@@ -101,6 +101,8 @@ def generate_gff(samples_annotations, database_list):
                 except KeyError as e:
                     logging.warning(f"Missing key in annotation: {e}. Skipping annotation: {annotation}")
 
+
+
 def parse_fna_sequence(fna_file_path):
     """Parse the .fna file to get sequences indexed by their header name."""
     sequences = {}
@@ -162,35 +164,48 @@ def generate_gbk_feature(annotation):
 
     return SeqFeature(location=location, type="CDS", qualifiers=qualifiers)
 
-
 def generate_gbk(samples_annotations, database_list, samples_and_paths):
-    # Ensure the output directory exists
-    os.makedirs("GBK", exist_ok=True)
-    
-    for sample, annotations in samples_annotations.items():
-        if not annotations:  # Skip if there are no annotations
-            continue
-        first_annotation = annotations[0]
-        completeness = first_annotation.get('Completeness', 'NA')
-        contamination = first_annotation.get('Contamination', 'NA')
-        taxonomy = first_annotation.get('taxonomy', 'NA')
+    os.makedirs("GBK", exist_ok=True)  # Ensure the output directory exists
 
+    for sample, annotations in samples_annotations.items():
+        print(f"Processing sample: {sample}")
+        fna_file_path = samples_and_paths.get(sample)
+
+        if not fna_file_path or not os.path.exists(fna_file_path):
+            print(f"No .fna file found for sample {sample}. Skipping...")
+            continue
+
+        # Index the .fna file for efficient access
+        sequence_index = SeqIO.index(fna_file_path, "fasta")
+
+        # Initialize a SeqRecord for the sample
+        sample_seq_record = SeqRecord(Seq(""), id=sample, name="", description=f"Annotations for {sample}")
+        
+        # Extract metadata from one of the annotations (assuming consistency)
+        metadata = annotations[0] if annotations else {}
+        sample_seq_record.annotations["source"] = "Your Source"
+        sample_seq_record.annotations["molecule_type"] = "DNA"
+        sample_seq_record.annotations["organism"] = metadata.get('taxonomy', 'Not Available')
+        sample_seq_record.annotations["comment"] = f"Completeness: {metadata.get('Completeness', 'NA')}; Contamination: {metadata.get('Contamination', 'NA')}; Taxonomy: {metadata.get('taxonomy', 'Not Available')}"
+        
+        # Iterate through annotations, creating features for each
         for annotation in annotations:
-            seq_record = SeqRecord(Seq(""), id=sample, description="Generated GBK file")
-            seq_record.annotations["source"] = "Your source here"
-            seq_record.annotations["molecule_type"] = "DNA"
-            # Example of adding custom metadata to the SeqRecord
-            seq_record.annotations["note"] = f"Completeness: {completeness}; Contamination: {contamination}; Taxonomy: {taxonomy}"
-            seq_record.annotations["organism"] = taxonomy
-            seq_record.annotations["comment"] = f"Completeness: {completeness}; Contamination: {contamination}"
-            
-            feature = generate_gbk_feature(annotation)
-            seq_record.features.append(feature)
-            
-            output_filename = os.path.join("GBK", f"{sample}_{annotation['query_id']}.gbk")
-            with open(output_filename, "w") as output_handle:
-                SeqIO.write([seq_record], output_handle, "genbank")
-            print(f"GBK file generated: {output_filename}")
+            query_id = annotation["query_id"]
+            if query_id in sequence_index:
+                feature = generate_gbk_feature(annotation)
+                sample_seq_record.features.append(feature)
+            else:
+                print(f"Warning: Query ID {query_id} not found in .fna file for sample {sample}.")
+
+        # Determine the output file path
+        output_filename = os.path.join("GBK", f"{sample}.gbk")
+        
+        # Write the SeqRecord to a GBK file
+        with open(output_filename, "w") as output_handle:
+            SeqIO.write([sample_seq_record], output_handle, "genbank")
+        print(f"GBK file generated for sample {sample}: {output_filename}")
+
+
 
 def main():
     args = parse_arguments()
