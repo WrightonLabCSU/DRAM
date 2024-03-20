@@ -203,9 +203,9 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
 `nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
 
-7) **"Real-world example using the test data provided in this repository:**
+7) **"Real-world" example using the test data provided in this repository:**
 
-nextflow run -bg DRAM2.nf --input_fasta ../test_data/DRAM2_test_data/ --outdir DRAM2-test-data-call-annotate-distill --threads 8 --call --rename --annotate --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv --slurm_node tardigrade -with-report -with-trace -with-timeline
+`nextflow run -bg DRAM2.nf --input_fasta ../test_data/DRAM2_test_data/ --outdir DRAM2-test-data-call-annotate-distill --threads 8 --call --rename --annotate --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv --slurm_node main -with-report -with-trace -with-timeline`
 
   **Breakdown of example (7):**
   - `--bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
