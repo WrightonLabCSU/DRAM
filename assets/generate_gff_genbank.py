@@ -137,16 +137,21 @@ def format_qualifiers(annotation):
     # Add additional qualifiers as needed, using controlled vocabularies or specific formats
     return qualifiers
 
-def format_qualifiers_gbk(qualifiers_dict):
+def format_qualifiers(annotation, database_list=None):
     """
-    Format qualifiers for a GenBank feature.
+    Formats qualifiers for a GenBank feature, ensuring correct syntax and inclusion of essential information.
+    Optionally filters the qualifiers based on a list of specified databases.
     """
-    qualifiers_list = []
-    for key, value in qualifiers_dict.items():
-        # Standardize the representation of certain key qualifiers for GenBank format
-        if key in ['gene', 'product', 'note', 'function']:
-            qualifiers_list.append(f"/{key}=\"{value}\"")
-    return qualifiers_list
+    qualifiers = {}
+    for key, value in annotation.items():
+        if key in ['gene', 'product', 'note', 'function', 'locus_tag']:  # Add 'locus_tag' if relevant
+            qualifiers[key] = value
+        else:
+            # Check if the key is database-specific and whether it should be included
+            db_name = key.split('_')[0]
+            if database_list is None or db_name in database_list:
+                qualifiers[key] = value
+    return qualifiers
 
 def generate_gbk_feature(feature, seq_record):
     """
