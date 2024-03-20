@@ -153,20 +153,15 @@ def format_qualifiers(annotation, database_list=None):
                 qualifiers[key] = value
     return qualifiers
 
-def generate_gbk_feature(feature, seq_record):
-    """
-    Generate a SeqFeature for a GenBank file based on annotation data.
-    Assumes 1-based indexing in the feature dictionary and converts to 0-based indexing for Biopython.
-    """
-    start = int(feature['start_position']) - 1  # Convert start to 0-based indexing
-    end = int(feature['stop_position'])  # End is inclusive, no conversion needed
-    strand = 1 if feature['strandedness'] == '+1' else -1  # Convert strandedness to Biopython strand
-    feature_location = FeatureLocation(start, end, strand=strand)
-    qualifiers = {
-        'locus_tag': feature.get('query_id'),
-        'product': feature.get('product', 'unknown product')
-    }
-    return SeqFeature(location=feature_location, type="CDS", qualifiers=qualifiers)
+def generate_gbk_feature(feature):
+    """Generate a SeqFeature for a GenBank file based on annotation data."""
+    start = int(feature['start_position']) - 1  # Convert to 0-based indexing
+    end = int(feature['stop_position'])  # End is inclusive, no adjustment needed
+    strand = 1 if feature['strandedness'] == '+1' else -1  # Convert strandedness
+    location = FeatureLocation(start, end, strand=strand)
+    qualifiers = {'product': feature.get('product', 'unknown product')}  # Adjust as needed
+    return SeqFeature(location=location, type="CDS", qualifiers=qualifiers)
+
 
 def generate_gbk(samples_annotations, database_list, samples_and_paths):
     # Ensure the output directory exists
@@ -190,6 +185,7 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
         # Iterate through annotations to create features for the SeqRecord
         for annotation in annotations:
             feature = generate_gbk_feature(annotation)
+            # Add feature to SeqRecord for the sample
             sample_seq_record.features.append(feature)
         
         # Write the SeqRecord object to a GBK file
