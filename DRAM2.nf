@@ -555,8 +555,6 @@ if( params.annotate ){
 if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") { 
     distill_flag = "on"
     // Set channels for supporting python scripts - will be moved to container eventually
-    ch_distill_summary_script = file(params.distill_summary_script)
-    ch_distill_final_script = file(params.distill_final_script)  
     ch_distill_xlsx_script = file(params.distill_xlsx_script)
     ch_distill_sql_script = file(params.distill_sql_script)
 
@@ -1250,7 +1248,7 @@ workflow {
 
         /* Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets */
         DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
-
+        ch_distillate = DISTILL.out.distillate
     }
 
     /*
@@ -1260,7 +1258,7 @@ workflow {
     */   
     /*
     if( params.product ){
-        PRODUCT_HEATMAP( ch_annotation_counts )
+        PRODUCT_HEATMAP( ch_final_annots, ch_distillate )
 
     }
     */
