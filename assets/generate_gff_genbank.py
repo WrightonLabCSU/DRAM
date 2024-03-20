@@ -8,30 +8,6 @@ from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 from Bio.Seq import Seq
 import logging
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
-def parse_arguments():
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Generate GFF and/or GBK files from raw annotations, with specified databases formatting.")
-    parser.add_argument("--gff", action='store_true', help="Generate GFF file")
-    parser.add_argument("--gbk", action='store_true', help="Generate GBK file")
-    parser.add_argument("--samples_paths", nargs='+', help="Alternating list of sample names and paths to their .fna files.")
-    parser.add_argument("--database_list", type=str, help="List of databases to include in the annotations. Use 'empty' for all.", default="empty")
-    parser.add_argument("--annotations", required=True, help="Path to the raw annotations file")
-    args = parser.parse_args()
-    args.database_list = None if args.database_list == "empty" else args.database_list.split()
-    return args
-
-import argparse
-import csv
-from collections import defaultdict
-import os
-import glob
-from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
-from Bio.SeqFeature import SeqFeature, FeatureLocation
-from Bio.Seq import Seq
-import logging
 import urllib.parse  # For escaping characters in accordance with RFC 3986
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -124,9 +100,21 @@ def parse_fna_sequence(fna_file_path):
     """Parse the .fna file to get sequences indexed by their header name."""
     sequences = {}
     for seq_record in SeqIO.parse(fna_file_path, "fasta"):
-        # The header name is directly used as the key
         header_name = seq_record.id
         sequences[header_name] = seq_record.seq
+    return sequences
+
+def aggregate_sample_sequences(sample_files):
+    """
+    Aggregate sequences from multiple .fna files for a sample, ensuring correct matching with sample names.
+    """
+    sequences = {}
+    for sample, file_path in sample_files.items():
+        if os.path.exists(file_path):
+            seq_record = SeqIO.read(file_path, "fasta")
+            sequences[sample] = seq_record.seq
+        else:
+            print(f"File does not exist: {file_path}")
     return sequences
 
 def format_qualifiers(annotation):
@@ -141,16 +129,6 @@ def format_qualifiers(annotation):
     # Add additional qualifiers as needed, using controlled vocabularies or specific formats
     return qualifiers
 
-def aggregate_sample_sequences(sample_files):
-    """
-    Aggregate sequences from multiple .fna files for a sample.
-    """
-    sequences = {}
-    for file_path in sample_files:
-        for seq_record in SeqIO.parse(file_path, "fasta"):
-            sequences[seq_record.id] = seq_record.seq
-    return sequences
-
 def format_qualifiers_gbk(qualifiers_dict):
     """
     Format qualifiers for a GenBank feature.
@@ -162,32 +140,30 @@ def format_qualifiers_gbk(qualifiers_dict):
             qualifiers_list.append(f"/{key}=\"{value}\"")
     return qualifiers_list
 
-def generate_gbk_feature(feature, sequence):
+def generate_gbk_feature(annotation, sequence):
     """
-    Generate a SeqFeature for a GenBank file.
+    Generate a SeqFeature for a GenBank file based on annotation data.
+    This is a placeholder function that you'll need to implement based on
+    your specific annotation format and requirements.
     """
-    # Adjust location handling based on your data format, assuming 1-based indexing
-    start = feature['start_position'] - 1  # Convert to 0-based for Biopython
-    end = feature['stop_position']  # End is inclusive in GenBank, no adjustment needed
-    location = FeatureLocation(start, end, strand=feature['strandedness'])
-    qualifiers = {'product': feature.get('product', '')}  # Add more qualifiers as needed
+    # Implement feature creation logic here
+    # Example implementation:
+    location = FeatureLocation(start=int(annotation['start_position']) - 1, end=int(annotation['stop_position']), strand=0 if annotation['strandedness'] == '+1' else -1)
+    qualifiers = {'locus_tag': annotation.get('query_id'), 'product': annotation.get('product', 'unknown')}
     return SeqFeature(location=location, type="CDS", qualifiers=qualifiers)
 
 def generate_gbk(samples_annotations, database_list, samples_and_paths):
     print("Starting GBK generation...")
     os.makedirs("GBK", exist_ok=True)
+    
+    # Aggregate sequences correctly keyed by sample names
+    sequences = aggregate_sample_sequences(samples_and_paths)
 
     for sample, annotations in samples_annotations.items():
         print(f"\nProcessing sample: {sample}")
-        fna_file_path = samples_and_paths.get(sample)
-        if fna_file_path and os.path.exists(fna_file_path):
-            sequences = parse_fna_sequence(fna_file_path)
-
-            if sample not in sequences:
-                print(f"Sequence for {sample} not found in provided .fna files.")
-                continue  # Skip this sample if its sequence wasn't found
-
-            seq_record = SeqRecord(sequences[sample], id=sample, name="", description=f"Generated GBK file for {sample}")
+        if sample in sequences:
+            seq = sequences[sample]  # Retrieve the sequence using the corrected key
+            seq_record = SeqRecord(seq, id=sample, name="", description=f"Generated GBK file for {sample}")
             seq_record.annotations["data_file_division"] = "PLN"
             seq_record.annotations["date"] = "01-JAN-2000"  # Example date, adjust as needed
 
@@ -203,16 +179,15 @@ def generate_gbk(samples_annotations, database_list, samples_and_paths):
 
             for annotation in annotations:
                 # Assuming `generate_gbk_feature` creates SeqFeature objects correctly
-                gbk_feature = generate_gbk_feature(annotation, sequences[sample])
+                gbk_feature = generate_gbk_feature(annotation, seq)
                 seq_record.features.append(gbk_feature)
 
             output_filename = f"GBK/{sample}.gbk"
             with open(output_filename, "w") as output_handle:
                 SeqIO.write([seq_record], output_handle, "genbank")
-            print(f"GBK file generated for {sample}: {output_filename}")
+            print(f"Sequence for {sample} not found in provided .fna files.")
         else:
-            print(f"No .fna file path found or file does not exist for sample {sample}")
-
+            print(f"Sequence for {sample} not found in provided .fna files)
 def main():
     args = parse_arguments()
 
