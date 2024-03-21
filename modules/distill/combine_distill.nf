@@ -9,7 +9,7 @@ process COMBINE_DISTILL {
     path( ch_distill_transport, stageAs:  "transport_distill_sheet.tsv") 
     path( ch_distill_ag, stageAs:  "ag_distill_sheet.tsv") 
     path( ch_distill_eng_sys, stageAs:  "eng_sys_distill_sheet.tsv")
-    path( ch_distill_camper, stageAs:  "camper_distill_sheet.tsv*")
+    path( ch_distill_camper, stageAs:  "camper_distill_sheet.tsv")
     file( ch_distill_custom ) 
 
     output:
