@@ -808,13 +808,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     else{
         ch_distill_custom_collected = default_channel
     }
-    else{
-        ch_distill_custom_collected = default_channel
-    }
-
-
-
-
 
 }
 
