@@ -17,6 +17,6 @@ process COMBINE_DISTILL {
 
     script:
     """
-    touch *.tsv
+    cp *.tsv .
     """
 }
