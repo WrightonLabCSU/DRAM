@@ -1270,6 +1270,7 @@ workflow {
         } 
         
         /* Combine the individual user-specified distill sheets into a single channel */
+        ch_distill_custom.view()
         COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_camper, ch_distill_custom_collected )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
