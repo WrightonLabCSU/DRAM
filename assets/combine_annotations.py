@@ -33,29 +33,22 @@ def convert_bit_scores_to_numeric(df):
             df[col] = pd.to_numeric(df[col], errors='coerce')
     return df
 
-def organize_columns(df):
-    # Base columns to always appear first
+def organize_columns(df, special_columns=None):
+    if special_columns is None:
+        special_columns = []
     base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank', 'gene_number']
+    base_columns = [col for col in base_columns if col in df.columns]
     
-    # Extract KEGG columns and ensure they are listed first if present
-    kegg_columns = [col for col in df.columns if col.startswith('kegg_')]
-    kegg_columns_sorted = sorted(kegg_columns, key=lambda x: (x != 'kegg_id', x))
+    kegg_columns = sorted([col for col in df.columns if col.startswith('kegg_')], key=lambda x: (x != 'kegg_id', x))
+    other_columns = [col for col in df.columns if col not in base_columns + kegg_columns + special_columns]
     
-    # Identify and organize other database columns
-    db_columns = [col for col in df.columns if col not in base_columns and col not in kegg_columns]
+    db_prefixes = set(col.split('_')[0] for col in other_columns)
+    sorted_other_columns = []
+    for prefix in db_prefixes:
+        prefixed_columns = sorted([col for col in other_columns if col.startswith(prefix + '_')], key=lambda x: (x != f"{prefix}_id", x))
+        sorted_other_columns.extend(prefixed_columns)
     
-    # Identify unique database prefixes
-    db_prefixes = set(col.split('_')[0] for col in db_columns)
-    
-    # Sort and organize columns for each database, ensuring <db_name>_id is the first column
-    other_db_columns_sorted = []
-    for prefix in sorted(db_prefixes):
-        prefixed_columns = [col for col in db_columns if col.startswith(prefix + '_')]
-        prefixed_columns_sorted = sorted(prefixed_columns, key=lambda x: (x != f"{prefix}_id", x))
-        other_db_columns_sorted.extend(prefixed_columns_sorted)
-    
-    # Final order of columns
-    final_columns_order = base_columns + kegg_columns_sorted + other_db_columns_sorted
+    final_columns_order = base_columns + kegg_columns + sorted_other_columns + special_columns
     return df[final_columns_order]
 
 
@@ -66,30 +59,34 @@ def combine_annotations(annotation_files, output_file, threads):
         futures = [executor.submit(read_and_preprocess, sample, path) for sample, path in samples_and_paths]
         data_frames = [future.result() for future in as_completed(futures)]
     
-    # Initialize an empty DataFrame for combined data
-    combined_data = pd.DataFrame()
-    # Track if special columns have been added already
-    special_columns_added = {'Completeness': False, 'Contamination': False, 'taxonomy': False}
+    # Concatenate all DataFrames into one
+    combined_data = pd.concat(data_frames, ignore_index=True)
     
-    for df in data_frames:
-        # Check and drop special columns if they've been added already
-        for col in ['Completeness', 'Contamination', 'taxonomy']:
-            if col in df.columns and special_columns_added[col]:
-                df.drop(columns=[col], inplace=True)
-            elif col in df.columns:
-                special_columns_added[col] = True
-                
-        combined_data = pd.concat([combined_data, df], ignore_index=True)
+    # Check for the presence of 'Completeness', 'Contamination', 'taxonomy'
+    # If they exist in the first data frame, assume we should keep these columns without modification
+    special_columns = ['Completeness', 'Contamination', 'taxonomy']
+    columns_to_exclude = [col for col in special_columns if col in combined_data.columns]
     
-    combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position', 'sample'])
+    # Drop duplicates based on key identifiers excluding special columns from consideration
+    # This means duplicates are identified without considering these special columns
+    combined_data = combined_data.drop_duplicates(subset=['query_id', 'start_position', 'stop_position', 'sample'] + columns_to_exclude)
+    
+    # Convert bit scores to numeric
     combined_data = convert_bit_scores_to_numeric(combined_data)
+    
+    # Assign ranks
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
     
-    combined_data = organize_columns(combined_data)
-    combined_data['gene_number'] = combined_data.groupby(['sample', 'query_id']).cumcount() + 1
+    # Calculate 'gene_number' for each group of 'sample' and 'query_id'
+    combined_data['gene_number'] = combined_data.sort_values(by=['sample', 'query_id', 'start_position']).groupby(['sample', 'query_id']).cumcount() + 1
     
+    # Organize columns, now considering the handling of special columns
+    combined_data = organize_columns(combined_data, special_columns=columns_to_exclude)
+    
+    # Finally, save the combined data to the specified output file
     combined_data.to_csv(output_file, index=False, sep='\t')
-    logging.info(f"Combined annotations saved to {output_file}.")
+    logging.info(f"Combined annotations saved to {output_file}, with special columns handled appropriately.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Combine annotation files with ranks and avoid duplicating specific columns.")
