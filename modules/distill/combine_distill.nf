@@ -13,12 +13,11 @@ process COMBINE_DISTILL {
     path( ch_distill_custom ) 
 
     output:
-    path( "*.tsv"), emit: ch_combined_distill_sheets
+    path( "combined/*.tsv"), emit: ch_combined_distill_sheets
 
     script:
     """
     mkdir -p combined
     cp *.tsv combined/
-    mv combined/*.tsv .
     """
 }
