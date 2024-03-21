@@ -1280,8 +1280,6 @@ workflow {
         ch_rrna_sheet.view()
         ch_rrna_combined.view()
         ch_trna_sheet.view()
-        ch_distill_xlsx_script.view()
-        ch_distill_sql_script.view()
 
 
 
