@@ -17,7 +17,6 @@ process COMBINE_DISTILL {
 
     script:
     """
-    ls "${ch_distill_custom}"/*.tsv
-    cp "${ch_distill_custom}"/*.tsv ./
+    cp ${ch_distill_custom} ./
     """
 }
