@@ -2,7 +2,7 @@ process DISTILL {
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
-    path( ch_combined_distill_sheets )
+    path( ch_combined_distill_sheets, stageAs: "combined/*" )
     path( ch_target_id_counts, stageAs: "target_id_counts.tsv")
     path( ch_quast_stats, stageAs: "collected_quast.tsv" )
     path( ch_rrna_sheet, stageAs: "rrna_sheet.tsv" )
