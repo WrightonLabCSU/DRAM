@@ -17,8 +17,5 @@ process COMBINE_DISTILL {
 
     script:
     """
-    for file in \$(ls ${ch_distill_custom}); do
-        cp "\$file" ./
-    done
     """
 }
