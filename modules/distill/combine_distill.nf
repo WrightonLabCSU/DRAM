@@ -13,7 +13,7 @@ process COMBINE_DISTILL {
     path( ch_distill_custom ) 
 
     output:
-    tuple path( "*.tsv"), emit: ch_combined_distill_sheets
+    path( "*.tsv"), emit: ch_combined_distill_sheets
 
     script:
     """
