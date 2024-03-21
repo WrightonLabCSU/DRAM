@@ -1270,10 +1270,9 @@ workflow {
         } 
         
         /* Combine the individual user-specified distill sheets into a single channel */
-        ch_distill_custom.view()
         COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_camper, ch_distill_custom_collected )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
-
+        ch_combined_distill_sheets.view()
         /* Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets */
         DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
         ch_distillate = DISTILL.out.distillate

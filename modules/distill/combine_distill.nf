@@ -17,6 +17,8 @@ process COMBINE_DISTILL {
 
     script:
     """
-    cp ${ch_distill_custom} ./
+    ${ch_distill_custom}.each { file ->
+        cp \$file ./
+    }
     """
 }
