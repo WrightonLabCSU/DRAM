@@ -17,6 +17,8 @@ process COMBINE_DISTILL {
 
     script:
     """
-    cp *.tsv .
+    mkdir -p combined
+    cp *.tsv combined/
+    mv combined/*.tsv .
     """
 }
