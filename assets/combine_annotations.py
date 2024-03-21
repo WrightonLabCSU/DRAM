@@ -59,36 +59,32 @@ def combine_annotations(annotation_files, output_file, threads):
         futures = [executor.submit(read_and_preprocess, sample, path) for sample, path in samples_and_paths]
         data_frames = [future.result() for future in as_completed(futures)]
     
-    # Concatenate all DataFrames into one
     combined_data = pd.concat(data_frames, ignore_index=True)
-    
-    # Convert bit scores to numeric
     combined_data = convert_bit_scores_to_numeric(combined_data)
     
-    # Before dropping duplicates, merge database-specific annotations for each unique combination of 'query_id' and 'sample'
-    # Define the aggregation logic for database-specific columns (e.g., first non-null value or concatenate unique values)
     aggregation_functions = {col: 'first' for col in combined_data.columns if col not in ['query_id', 'sample']}
     for col in ['Completeness', 'Contamination', 'taxonomy']:
         if col in combined_data.columns:
-            aggregation_functions[col] = 'max'  # Assuming numerical values that we want the max of; adjust as needed
+            aggregation_functions[col] = 'max'
     
-    # Aggregate data
     combined_data = combined_data.groupby(['query_id', 'sample'], as_index=False).agg(aggregation_functions)
-    
-    # Assign ranks
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
     
-    # Now calculate 'gene_number' for each group of 'sample' and 'query_id', ensuring unique rows are retained
-    combined_data['gene_number'] = combined_data.groupby(['sample', 'query_id']).cumcount() + 1
+    # Adjusted section for correct gene_number calculation
+    # Extract the base part of 'query_id' excluding the numeric identifier at the end
+    combined_data['base_query_id'] = combined_data['query_id'].str.rsplit('_', 1).str[0]
+    combined_data['gene_number'] = combined_data.groupby(['sample', 'base_query_id']).cumcount() + 1
     
-    # Organize columns, considering the handling of special columns
     special_columns = ['Completeness', 'Contamination', 'taxonomy']
     columns_to_exclude = [col for col in special_columns if col in combined_data.columns]
     combined_data = organize_columns(combined_data, special_columns=columns_to_exclude)
     
-    # Save the combined data to the specified output file
+    # Drop the temporary 'base_query_id' used for gene_number calculation
+    combined_data.drop(columns=['base_query_id'], inplace=True)
+    
     combined_data.to_csv(output_file, index=False, sep='\t')
-    logging.info(f"Combined annotations saved to {output_file}, with database annotations merged.")
+    logging.info(f"Combined annotations saved to {output_file}, with corrected gene numbers.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Combine annotation files with ranks and avoid duplicating specific columns.")
