@@ -770,13 +770,40 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     } else{
         ch_distill_ag = default_channel
     }
-
+    /*
     if (params.distill_custom != "") {
         ch_distill_custom = file(params.distill_custom).exists() ? file(params.distill_custom) : error("Error: If using --distill_custom <path/to/TSV>, you must have the preformatted custom distill sheet in the provided file: ${params.distill_custom}.")
         distill_custom_list = "params.distill_custom"
     }else{
         ch_distill_custom = default_channel
     }
+    */
+    if (params.distill_custom != "") {
+    // Verify the directory exists
+    def custom_distill_dir = file(params.distill_custom)
+    if (!custom_distill_dir.exists()) {
+        error "Error: The specified directory for merging annotations (--distill_custom) does not exist: ${params.distill_custom}"
+    }
+
+    // Verify the directory contains .tsv files
+    def tsv_files = custom_distill_dir.list().findAll { it.endsWith('.tsv') }
+    if (tsv_files.isEmpty()) {
+        error "Error: The specified directory for merging annotations (--distill_custom) does not contain any .tsv files: ${params.distill_custom}"
+    }
+
+    // Create a channel with the paths to the .tsv files
+    Channel
+        .from(tsv_files.collect { custom_distill_dir.toString() + '/' + it })
+        .set { ch_distill_custom }
+    Channel.empty()
+        .mix( ch_distill_custom )
+        .collect()
+        .set { ch_distill_custom_collected }
+    
+    }
+
+
+
 }
 
 
@@ -1243,7 +1270,7 @@ workflow {
         } 
         
         /* Combine the individual user-specified distill sheets into a single channel */
-        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_camper, ch_distill_custom )
+        COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_camper, ch_distill_custom_collected )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         /* Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets */
