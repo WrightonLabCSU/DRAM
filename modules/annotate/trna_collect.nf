@@ -18,13 +18,17 @@ process TRNA_COLLECT {
 
     import os
     import pandas as pd
-    import re
+
+    print("Starting TRNA_COLLECT script...")
 
     # List all tsv files in the current directory
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
+    print(f"Found {len(tsv_files)} TSV files.")
 
-    # Check if all file contents are "NULL"
+    # Initialize variable to check if all files are "NULL"
     all_files_null = True
+
+    # Check each file
     for file in tsv_files:
         with open(file, 'r') as f:
             contents = f.read().strip()
@@ -32,31 +36,40 @@ process TRNA_COLLECT {
                 all_files_null = False
                 break
 
-    # If all file contents are "NULL", set the output file's content to "NULL"
     if all_files_null:
+        print("All files contain 'NULL'. Writing 'NULL' to collected_trnas.tsv")
         with open('collected_trnas.tsv', 'w') as f:
             f.write("NULL")
     else:
-        # Process files as usual if not all contents are "NULL"
+        print("Processing TSV files...")
 
-        # Extract sample names from the file names
-        samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
-
-        # Create an empty DataFrame to store the collected data
+        # Initialize an empty DataFrame for collected data
         collected_data = pd.DataFrame()
 
-        # Iterate through each input file
+        # Process each file
         for file in tsv_files:
-            # Read the input file into a DataFrame, if not "NULL"
+            print(f"Processing file: {file}")
+            # Skip files with 'NULL' content
             with open(file, 'r') as f:
-                contents = f.read().strip()
-                if contents == "NULL":
+                if f.read().strip() == "NULL":
                     continue
-                input_data = pd.read_csv(file, sep='\t', header=None, names=["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
-                # Proceed with processing as before
+            
+            # Read the TSV file
+            df = pd.read_csv(file, sep='\t')
+            # Assuming the structure of your TSV files matches the example given
+            # Append to the collected_data DataFrame
+            collected_data = pd.concat([collected_data, df], ignore_index=True)
 
-        # Note: The rest of your processing code remains the same as in your original script,
-        # including collecting data into 'collected_data' and writing it to 'collected_trnas.tsv'.
-        # Make sure to adjust the logic accordingly if there are parts that depend on the initial structure of 'collected_data'.
+        # Assuming you want to perform some aggregations or transformations
+        # For demonstration, I'll simply remove duplicates based on 'gene_id'
+        if not collected_data.empty:
+            collected_data = collected_data.drop_duplicates(subset=['gene_id'])
+
+            # Write the processed data to a TSV file
+            collected_data.to_csv('collected_trnas.tsv', sep='\t', index=False)
+            print("Processed data written to collected_trnas.tsv")
+        else:
+            print("No data to process after checking files.")
+
     """
 }
