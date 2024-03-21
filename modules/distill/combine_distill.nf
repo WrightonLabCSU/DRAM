@@ -13,12 +13,12 @@ process COMBINE_DISTILL {
     path( ch_distill_custom ) 
 
     output:
-    tuple path( "*.tsv "), emit: ch_combined_distill_sheets
+    tuple path( "*.tsv"), emit: ch_combined_distill_sheets
 
     script:
     """
-    ${ch_distill_custom}.each { file ->
-        cp \$file ./
-    }
+    for file in \$(ls ${ch_distill_custom}); do
+        cp "\$file" ./
+    done
     """
 }
