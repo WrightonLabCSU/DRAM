@@ -18,58 +18,64 @@ process TRNA_COLLECT {
 
     import os
     import pandas as pd
-
-    print("Starting TRNA_COLLECT script...")
+    import re
 
     # List all tsv files in the current directory
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
-    print(f"Found {len(tsv_files)} TSV files.")
 
-    # Initialize variable to check if all files are "NULL"
-    all_files_null = True
+    # Extract sample names from the file names
+    samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
 
-    # Check each file
+    # Create an empty DataFrame to store the collected data
+    collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "category", "topic_ecosystem", "subcategory"] + samples)
+
+    # Create a dictionary to store counts for each sample
+    sample_counts = {sample: [] for sample in samples}
+
+    # Iterate through each input file
     for file in tsv_files:
-        with open(file, 'r') as f:
-            contents = f.read().strip()
-            if contents != "NULL":
-                all_files_null = False
-                break
+        # Read the input file into a DataFrame
+        input_data = pd.read_csv(file, sep='\t', header=None, names=["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
 
-    if all_files_null:
-        print("All files contain 'NULL'. Writing 'NULL' to collected_trnas.tsv")
-        with open('collected_trnas.tsv', 'w') as f:
-            f.write("NULL")
-    else:
-        print("Processing TSV files...")
+        # Populate the gene_id column
+        collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
 
-        # Initialize an empty DataFrame for collected data
-        collected_data = pd.DataFrame()
+        # Count occurrences for each sample
+        for sample in samples:
+            sample_counts[sample].extend(input_data[input_data['sample'] == sample]['gene_id'])
 
-        # Process each file
-        for file in tsv_files:
-            print(f"Processing file: {file}")
-            # Skip files with 'NULL' content
-            with open(file, 'r') as f:
-                if f.read().strip() == "NULL":
-                    continue
-            
-            # Read the TSV file
-            df = pd.read_csv(file, sep='\t')
-            # Assuming the structure of your TSV files matches the example given
-            # Append to the collected_data DataFrame
-            collected_data = pd.concat([collected_data, df], ignore_index=True)
+    # Add 'type' and 'codon' columns to collected_data
+    collected_data['type'] = ""
+    collected_data['codon'] = ""
 
-        # Assuming you want to perform some aggregations or transformations
-        # For demonstration, I'll simply remove duplicates based on 'gene_id'
-        if not collected_data.empty:
-            collected_data = collected_data.drop_duplicates(subset=['gene_id'])
+    # Populate other columns based on the given rules
+    collected_data['gene_description'] = collected_data['gene_id'] + " tRNA with " + collected_data['codon'] + " Codon"
+    collected_data['category'] = collected_data['gene_id'] + " tRNA"
 
-            # Write the processed data to a TSV file
-            collected_data.to_csv('collected_trnas.tsv', sep='\t', index=False)
-            print("Processed data written to collected_trnas.tsv")
-        else:
-            print("No data to process after checking files.")
+    # Remove parentheses and text in between from gene_description and category columns
+    collected_data['gene_description'] = collected_data['gene_id'].apply(lambda x: x.split('(')[0].strip() + " tRNA with " + collected_data.loc[collected_data['gene_id'] == x, 'codon'].values[0] + " Codon")
+    collected_data['category'] = collected_data['gene_id'].apply(lambda x: x.split('(')[0].strip() + " tRNA")
 
+    collected_data['topic_ecosystem'] = "tRNA"
+    collected_data['subcategory'] = ""
+
+    # Deduplicate the rows based on gene_id
+    collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
+
+    # Count occurrences for each sample and fill the additional columns dynamically
+    for sample in samples:
+        collected_data[sample] = collected_data['gene_id'].map(lambda x: sample_counts[sample].count(x) if x in sample_counts[sample] else 0)
+
+    # Remove 'type' and 'codon' columns
+    collected_data.drop(['type', 'codon'], axis=1, inplace=True)
+
+    # Remove the first row that includes extra column names
+    collected_data = collected_data[collected_data['gene_id'] != 'gene_id']
+
+    # Sort the whole table by the gene_id column
+    collected_data.sort_values(by='gene_id', inplace=True)
+
+    # Write the collected data to the output file
+    collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
     """
 }
