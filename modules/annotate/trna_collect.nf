@@ -63,6 +63,14 @@ process TRNA_COLLECT {
         # Deduplicate the rows based on gene_id
         collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
 
+        # Populate gene_description and category using gene_id
+        # Assuming gene_description is "gene_id tRNA"
+        # Assuming category is simply "tRNA"
+        collected_data['gene_description'] = collected_data['gene_id'].apply(lambda x: x + " tRNA")
+        collected_data['category'] = "tRNA"
+        collected_data['topic_ecosystem'] = "tRNA"
+        collected_data['subcategory'] = ""  # Assuming subcategory is not defined
+
         # Count occurrences for each sample and fill the additional columns dynamically
         for sample in samples:
             collected_data[sample] = collected_data['gene_id'].map(lambda x: sample_counts[sample].count(x) if x in sample_counts[sample] else 0)
