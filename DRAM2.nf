@@ -779,31 +779,34 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     }
     */
     if (params.distill_custom != "") {
-        // Verify the directory exists
-        def custom_distill_dir = file(params.distill_custom)
-        if (!custom_distill_dir.exists()) {
-            error "Error: The specified directory for merging annotations (--distill_custom) does not exist: ${params.distill_custom}"
-        }
-        else{
-            ch_distill_custom_collected = default_channel
-        }
+    // Verify the directory exists
+    def custom_distill_dir = file(params.distill_custom)
+    if (!custom_distill_dir.exists()) {
+        error "Error: The specified directory for merging annotations (--distill_custom) does not exist: ${params.distill_custom}"
+    }
+    else{
+        ch_distill_custom_collected = default_channel
+    }
 
-        // Verify the directory contains .tsv files
-        def tsv_files = custom_distill_dir.list().findAll { it.endsWith('.tsv') }
-        if (tsv_files.isEmpty()) {
-            error "Error: The specified directory for merging annotations (--distill_custom) does not contain any .tsv files: ${params.distill_custom}"
-        }
-        else{
-                // Create a channel with the paths to the .tsv files
-        Channel
-            .from(tsv_files.collect { custom_distill_dir.toString() + '/' + it })
-            .set { ch_distill_custom }
-        Channel.empty()
-            .mix( ch_distill_custom )
-            .collect()
-            .set { ch_distill_custom_collected }
-        
-        }
+    // Verify the directory contains .tsv files
+    def tsv_files = custom_distill_dir.list().findAll { it.endsWith('.tsv') }
+    if (tsv_files.isEmpty()) {
+        error "Error: The specified directory for merging annotations (--distill_custom) does not contain any .tsv files: ${params.distill_custom}"
+    }
+    else{
+            // Create a channel with the paths to the .tsv files
+    Channel
+        .from(tsv_files.collect { custom_distill_dir.toString() + '/' + it })
+        .set { ch_distill_custom }
+    Channel.empty()
+        .mix( ch_distill_custom )
+        .collect()
+        .set { ch_distill_custom_collected }
+    
+    }
+    }
+    else{
+        ch_distill_custom_collected = default_channel
     }
     else{
         ch_distill_custom_collected = default_channel
