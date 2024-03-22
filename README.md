@@ -21,7 +21,7 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
 ----------
 
 ## Documentation
-For further documentation, tutorials and background, please visit the [Read the Docs page](https://dram2.readthedocs.io/en/latest/index.html).
+For further documentation, tutorials and background information, please visit the [Read the Docs page](https://dram2.readthedocs.io/en/latest/index.html).
  
 ----------
 
