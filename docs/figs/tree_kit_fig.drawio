@@ -1,0 +1,155 @@
+<mxfile host="app.diagrams.net" modified="2022-11-04T16:12:05.723Z" agent="5.0 (X11)" etag="pLa5_aCty9cxITln9OI7" version="20.5.1" type="github">
+  <diagram id="Rtj_xhAMCjtNW2K5r0i-" name="Page-1">
+    <mxGraphModel dx="2007" dy="826" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-1" value="&amp;lt;name&amp;gt;_tree.xml This is the original tree with newly placed nodes that can be uploaded to iIol" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" vertex="1" parent="1">
+          <mxGeometry x="-399" y="667" width="223" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeWidth=3;" edge="1" parent="1" source="cmLPi3Eq9WUsnecLFcOw-14" target="cmLPi3Eq9WUsnecLFcOw-48">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-14" value="" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="-527" y="162" width="480" height="398" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-10" value="other" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" parent="1" vertex="1">
+          <mxGeometry x="-674" y="265" width="91" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-11" value="other" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" parent="1" vertex="1">
+          <mxGeometry x="-674" y="241" width="91" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.002;entryY=0.402;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cmLPi3Eq9WUsnecLFcOw-2" target="cmLPi3Eq9WUsnecLFcOw-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-2" value="genes.faa" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" parent="1" vertex="1">
+          <mxGeometry x="-674" y="204" width="91" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontSize=14;strokeWidth=1;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-1" target="cmLPi3Eq9WUsnecLFcOw-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-1" value="raw.tsv" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#647687;fontColor=#ffffff;strokeColor=#314354;" parent="1" vertex="1">
+          <mxGeometry x="-674" y="161" width="91" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=0;entryDy=37.5;entryPerimeter=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-13" target="cmLPi3Eq9WUsnecLFcOw-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-710" y="234" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-13" target="cmLPi3Eq9WUsnecLFcOw-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-724" y="170" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-13" value="&lt;div style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Run DRAM&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt; with no additional arguments&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="-835" y="173" width="125" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-381" y="372" as="sourcePoint" />
+            <mxPoint x="-246" y="371" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-377" y="372" />
+              <mxPoint x="-377" y="390" />
+              <mxPoint x="-287" y="390" />
+              <mxPoint x="-287" y="371" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-17" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://cdn1.iconfinder.com/data/icons/material-audio-video/22/loop-128.png;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+          <mxGeometry x="-411" y="357" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-18" target="cmLPi3Eq9WUsnecLFcOw-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-18" value="Read in &lt;b&gt;raw.tsv&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+          <mxGeometry x="-210" y="266.5" width="120" height="44.5" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-20" target="cmLPi3Eq9WUsnecLFcOw-35" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-20" value="Read in trees, packeged with the kit " style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+          <mxGeometry x="-519" y="268" width="130" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-22" value="&lt;div style=&quot;font-size: 20px;&quot; align=&quot;center&quot;&gt;&lt;b&gt;Run Tree Kit&lt;/b&gt;&lt;/div&gt;&lt;div align=&quot;center&quot;&gt;Takes only the raw.tsv and &lt;br&gt;genes.faa and returns an raw.tsv with the additional columns, tree ids, distance, metric, and difrance metric&lt;br&gt;&lt;/div&gt;&lt;p align=&quot;center&quot;&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;" parent="1" vertex="1">
+          <mxGeometry x="-403" y="182" width="260" height="148" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-27" target="cmLPi3Eq9WUsnecLFcOw-28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-27" value="Find genes that need to be clarified" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+          <mxGeometry x="-246" y="346" width="97" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-28" target="cmLPi3Eq9WUsnecLFcOw-34" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-28" value="Filter &lt;b&gt;genes.faa&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+          <mxGeometry x="-137" y="420" width="70" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-34" target="cmLPi3Eq9WUsnecLFcOw-36" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-34" value="Run pplace on genes.faa" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+          <mxGeometry x="-243" y="482" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-35" target="cmLPi3Eq9WUsnecLFcOw-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-35" value="Locate Definitive nodes (need colors)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" parent="1" vertex="1">
+          <mxGeometry x="-370" y="266.5" width="110" height="45.5" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-36" target="cmLPi3Eq9WUsnecLFcOw-39" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-36" value="Deturmine definitve gene landings" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#e51400;fontColor=#ffffff;strokeColor=#B20000;" parent="1" vertex="1">
+          <mxGeometry x="-393" y="482" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;fillColor=#fa6800;strokeColor=#C73500;" parent="1" source="cmLPi3Eq9WUsnecLFcOw-39" target="cmLPi3Eq9WUsnecLFcOw-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-39" value="Check Distances for more hits" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fillColor=#e51400;fontColor=#ffffff;strokeColor=#B20000;" parent="1" vertex="1">
+          <mxGeometry x="-507" y="413.5" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-48" value="New raw.tsv (make a replace option) includs confidence for maximum liklyhood placement, tree labels, and a explanation for the labels. " style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" parent="1" vertex="1">
+          <mxGeometry x="-399" y="597" width="224" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cmLPi3Eq9WUsnecLFcOw-50" value="For each tree" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="-376" y="361" width="86" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="9F3Nqchgk1eRThmT6uBu-2" target="9F3Nqchgk1eRThmT6uBu-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-2" value="gene_map" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;" vertex="1" parent="1">
+          <mxGeometry x="-818" y="439" width="91" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="9F3Nqchgk1eRThmT6uBu-3" target="9F3Nqchgk1eRThmT6uBu-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-3" value="color_map" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;" vertex="1" parent="1">
+          <mxGeometry x="-818" y="400" width="91" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="9F3Nqchgk1eRThmT6uBu-4" target="9F3Nqchgk1eRThmT6uBu-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-4" value="tree" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;" vertex="1" parent="1">
+          <mxGeometry x="-818" y="362" width="91" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="9F3Nqchgk1eRThmT6uBu-5" target="9F3Nqchgk1eRThmT6uBu-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-5" value="sickel" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;" vertex="1" parent="1">
+          <mxGeometry x="-818" y="326" width="91" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="9F3Nqchgk1eRThmT6uBu-6" target="cmLPi3Eq9WUsnecLFcOw-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-6" value="One Tree: for example nar nax tree" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e3c800;fontColor=#000000;strokeColor=#B09500;" vertex="1" parent="1">
+          <mxGeometry x="-690" y="379" width="110" height="71" as="geometry" />
+        </mxCell>
+        <mxCell id="9F3Nqchgk1eRThmT6uBu-15" value="&lt;h1&gt;Next Steps&lt;br&gt;&lt;/h1&gt;&lt;ol&gt;&lt;li&gt;Get confidences for maximum likelihood and implement filter and column&lt;br&gt;&lt;/li&gt;&lt;li&gt;Finalize output format for the new columns in the raw.tsv&lt;/li&gt;&lt;li&gt;Validate distance measurement and finish its inclusion, also need to make sure we have a test case for it.&lt;br&gt;&lt;/li&gt;&lt;li&gt;Integrate into dram2 (fast)&lt;/li&gt;&lt;li&gt;Finalize test cases&lt;/li&gt;&lt;li&gt;Add all other trees&lt;/li&gt;&lt;li&gt;Integrate into new dram2 config&lt;br&gt;&lt;/li&gt;&lt;/ol&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;direction=east;" vertex="1" parent="1">
+          <mxGeometry x="-790" y="560" width="360" height="260" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
