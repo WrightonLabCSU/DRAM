@@ -1,43 +1,40 @@
-.. RMNP_Pipeline documentation master file, created by
-   sphinx-quickstart on Thu Jul 14 14:52:41 2022.
+.. DRAM2 documentation master file, created by
+   sphinx-quickstart on Wed Nov 30 14:52:41 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Introducing Tree Kit For DRAM
 =========================================
+Welcome to the DRAM2 Docs!
+=========================================
+
+You are reading the official documentation for DRAM2 (Distilled and Refined Annotation of Metabolism, Version 2) a tool for annotating metagenomic assembled genomes. DRAM2 annotates MAGs using a set of pre-formatted databases in addition to user-provided databases.
+
+DRAM2 is run in three stages. 
+
+   * First an genes are called given a MAG, or set of MAGs, in FASTA format. 
+   * Second, an annotation step to assign database identifiers to called genes. 
+   * Lastly, a distill step to curate these annotations into useful functional categories. 
+   * Additionally, viral contigs are further analyzed during to identify potential AMGs. This is done via assigning an auxiliary score and flags representing the confidence that a gene is both metabolic and viral.
+
+For more detail on how the Science of DRAM2 works please see our DRAM1 `paper <https://academic.oup.com/nar/article/48/16/8883/5884738>`_.
+
+For information on how DRAM is changing, please read the most recent `release notes <https://github.com/WrightonLabCSU/DRAM/releases/latest>`_.
+
+DRAM2 Development Note
+----------------------
+
+At this time, DRAM2 is only available internally
+The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1. Features requested for DRAM1 will be added to DRAM2, to the best of our ability and as appropriate.
+
+
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-## Usage
-Coming soon
-
-### Input Options
-
-### Output to expect
-
-## Status
-At this point there are 2 tree files (nxr_nar, and pmoa_amoa) and one working tree (nxr_nar). Each has a mapping that takes leaves and reduces them to calls, then the call that is closessed is applied. but all data is saved a stronger tree based method is still in dev and may not be needed? These mappings are from the excell file you provied but modified it. To start with the calls did not make sense to me, nore did the adjectives, so I droped them. I droped the genome info keeping only the gene, the call+adjective and the tree. then I split them by tree. 
-
-At this time there are 4 mutualy exclusive clasifications in the Nxr/Nar tree and they are 'other-None', 'nxr-None', 'nxr-Nitrifier', 'nxr/nar-N utilization', 'narG-N reducer', this is the first thing that needs to be tweeked
-
-
-The Process
-=====================
-
-Below you can see a more complex overview of annotation process. 
-
-
-.. raw:: html
-   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers tags lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;url&quot;:&quot;https://raw.githubusercontent.com/rmFlynn/DRAM_Trees/main/docs/figs/tree_kit_fig.drawio&quot;}"></div>
-   <script type="text/javascript" src="https://viewer.diagrams.net/embed2.js?&fetch=https%3A%2F%2Fraw.githubusercontent.com%2FrmFlynn%2FDRAM_Trees%2Fmain%2Fdocs%2Ffigs%2Ftree_kit_fig.drawio"></script>
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   overview
+   installation
+   quick_start
+   example_output
+   input_formats
+   user_manual

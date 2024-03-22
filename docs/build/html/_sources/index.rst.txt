@@ -7,7 +7,7 @@
 Welcome to the DRAM2 Docs!
 =========================================
 
-You are reading the official documentation for DRAM2 (Distilled and Refined Annotation of Metabolism, Version 2) a tool for annotating metagenomic assembled genomes. DRAM2 annotates MAGs  using a set of :ref:`databases<database_info>` including custom user databases. 
+You are reading the official documentation for DRAM2 (Distilled and Refined Annotation of Metabolism, Version 2) a tool for annotating metagenomic assembled genomes. DRAM2 annotates MAGs using a set of pre-formatted databases in addition to user-provided databases.
 
 DRAM2 is run in three stages. 
 
@@ -30,12 +30,11 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
 
 
 .. toctree::
-  :maxdepth: 2
+   :maxdepth: 2
 
-  overview
-  installation
-  quick_start
-  example_output
-  choosing_parameters
-  module_descriptions
-  advanced_use
+   overview
+   installation
+   quick_start
+   example_output
+   input_formats
+   user_manual
