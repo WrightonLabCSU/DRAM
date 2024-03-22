@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "DRAM2"
-copyright = "2023, Rory M. Flynn and Reed R. Woyda"
+copyright = "2024, Rory M. Flynn and Reed R. Woyda"
 author = "Rory M. Flynn and Reed R. Woyda"
 
 # The full version, including alpha/beta/rc tags

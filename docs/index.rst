@@ -30,43 +30,12 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
 
 
 .. toctree::
-  :caption: Getting Started
-  :name: getting_started
-  :hidden:
-  :maxdepth: 1
+  :maxdepth: 2
 
-  getting_started/setup_configure_dram2
-  getting_started/visualization
-  getting_started/basic_use
-  getting_started/dram1_to_dram2
-  getting_started/update_database
-  getting_started/command
-  getting_started/example_use_case
-
-.. toctree::
-  :caption: Science Guide
-  :name: commands
-  :hidden:
-  :maxdepth: 1
-
-  science/scientific_overview
-  science/database
-
-.. toctree::
-  :caption: Command Guide
-  :name: commands
-  :hidden:
-  :maxdepth: 1
-
-  commands/dram2
-  commands/merger
-
-.. toctree::
-  :caption: Developer Documentaition
-  :name: dev
-  :hidden:
-  :maxdepth: 0
-
-  dev/docs
-  dev/functions
-  dev/making_db_kits
+  overview
+  installation
+  quick_start
+  example_output
+  choosing_parameters
+  module_descriptions
+  advanced_use
