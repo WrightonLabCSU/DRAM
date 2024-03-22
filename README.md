@@ -18,6 +18,10 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
   - Both support for Nextflow + Conda and Nextflow + Singularity (Note: Singularity is not well-supported for MAC.).
   - Pre-formatted annotation and description databases avaiable via (GLOBUS)[https://www.globus.org/].
 
+----------
+
+## Documentation
+For further documentation, tutorials and background, please visit the [Read the Docs page](https://dram2.readthedocs.io/en/latest/index.html).
  
 ----------
 
