@@ -13,7 +13,7 @@ process RENAME_FASTA {
 
     """
 
-    /opt/bbmap/rename.sh \\
+    rename.sh \\
     in=${fasta} \\
     out=${sample}_renamed.fna \\
     prefix=${sample} \\
