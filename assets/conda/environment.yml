@@ -27,6 +27,7 @@ dependencies:
   - bbtools
   - openpyxl
   - pip
+  - pbiotools
   - pip:
       - matplotlib==3.8.3
       - quast==5.2.0
