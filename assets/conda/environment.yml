@@ -30,3 +30,4 @@ dependencies:
   - pip:
       - matplotlib==3.8.3
       - quast==5.2.0
+      - openpyxl
