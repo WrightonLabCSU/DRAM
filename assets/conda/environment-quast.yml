@@ -1,11 +1,11 @@
-name: dram2-env
+name: dram2-quast-env
 channels:
   - bioconda
   - conda-forge
   - agbiome
   - defaults
 dependencies:
-  - python=3.7
+  - python>=3.8
   - openpyxl=3.1.2
   - quast=5.2.0
   - pip:
