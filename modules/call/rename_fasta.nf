@@ -1,6 +1,6 @@
 process RENAME_FASTA {
     conda = './assets/conda/environment.yml'
-    
+
     tag { sample }
 
     input:
@@ -13,6 +13,7 @@ process RENAME_FASTA {
     script:
 
     """
+    conda activate ./assets/conda/environment.yml
     echo "Active Python version:"
     python --version
     echo "Which Python:"
