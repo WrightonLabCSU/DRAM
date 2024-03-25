@@ -20,7 +20,7 @@ process DISTILL {
     which python
     echo "Which conda: "
     which conda
-    echo "Python version:""
+    echo "Python version:"
     python --version
     conda list
     python ${ch_distill_sql_script} --combined_annotations ${ch_combined_annotations} --db_name "annotations.db" 
