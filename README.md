@@ -15,7 +15,6 @@ For more detail on DRAM and how DRAM works please see our [paper](https://academ
 
 The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1.
 - Future updates will include:
-  - Both support for Nextflow + Conda and Nextflow + Singularity (Note: Singularity is not well-supported for MAC.).
   - Pre-formatted annotation and description databases avaiable via (GLOBUS)[https://www.globus.org/].
 
 ----------
@@ -40,8 +39,17 @@ For further documentation, tutorials and background information, please visit th
 <a name="install"></a>
 ## Installation
 
+### Option 1: Conda Environment
+
 1) Clone the DRAM2 GitHub Repository
-2) Download Singularity container and pre-formatted databases
+2) Download pre-formatted databases
+2) [Install Nextflow >= v23.04.2.5870](https://www.nextflow.io/docs/latest/getstarted.html)
+
+### Option 2: Singularity Container
+
+1) Clone the DRAM2 GitHub Repository
+2) Download Singularity container
+3) Download pre-formatted databases
 2) [Install Nextflow >= v23.04.2.5870](https://www.nextflow.io/docs/latest/getstarted.html)
 3) [Install Singularity >= v3.7.0](https://docs.sylabs.io/guides/3.0/user-guide/installation.html) (to pull Singualrity images from SyLabs).
 
