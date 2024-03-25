@@ -1,0 +1,10 @@
+name: quast-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.8
+  - quast=5.2.0
+  - matplotlib 
+
