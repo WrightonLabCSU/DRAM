@@ -10,7 +10,7 @@ process QUAST {
     path("quast_results/icarus.html")
     path("quast_results/icarus_viewers/")   
     path("quast_results/report.html")
-    path("quast_results/report.pdf")
+    path("quast_results/report.pdf"), optional: true
     path("collected_quast.tsv"), emit: quast_collected_out
 
     script:
