@@ -1,5 +1,6 @@
 process RENAME_FASTA {
-
+    conda = './assets/conda/environment.yml'
+    
     tag { sample }
 
     input:
