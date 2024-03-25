@@ -27,3 +27,5 @@ dependencies:
   - quast=5.2.0
   - matplotlib=3.8.3
   - bbtools
+  - pip:
+      - matplotlib==3.8.3

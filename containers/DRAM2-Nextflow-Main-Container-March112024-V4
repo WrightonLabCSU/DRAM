@@ -78,6 +78,8 @@ From: ubuntu:22.04
     conda install  -c conda-forge ncurses
 
     conda install  -c bioconda quast=5.2.0
+
+    python -m pip install -U matplotlib
     
     conda install matplotlib
 
