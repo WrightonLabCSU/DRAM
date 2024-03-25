@@ -79,6 +79,8 @@ From: ubuntu:22.04
 
     conda install  -c bioconda quast=5.2.0
 
+    conda install bbtools
+
     # Export miniconda bin just to be safe
     export PATH="/opt/miniconda/bin:$PATH"
 
