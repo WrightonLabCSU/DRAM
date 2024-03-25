@@ -13,7 +13,7 @@ process RENAME_FASTA {
     script:
 
     """
-    conda activate ./assets/conda/environment.yml
+    conda activate /home/rwoyda/miniconda3/envs/dram2-env
     echo "Active Python version:"
     python --version
     echo "Which Python:"
