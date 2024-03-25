@@ -48,6 +48,7 @@ From: ubuntu:22.04
     conda config --add channels conda-forge
     conda config --add channels defaults
     conda config --add channels bioconda
+    conda config --add channels agbiome
     conda config --add channels r
     conda update -n base -c defaults conda
 
@@ -80,7 +81,7 @@ From: ubuntu:22.04
     conda install  -c bioconda quast=5.2.0
 
     python -m pip install -U matplotlib
-    
+
     conda install matplotlib
 
     conda install bbtools
