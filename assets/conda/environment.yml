@@ -23,6 +23,7 @@ dependencies:
   - prodigal=2.6.3
   - samtools=1.17
   - bowtie2=2.5.1
+  openpyxl=3.0.10
   - ncurses
   - bbtools
   - pip:
