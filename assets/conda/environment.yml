@@ -26,6 +26,6 @@ dependencies:
   - ncurses
   - bbtools
   - openpyxl=3.1.2
+  - quast=5.2.0
   - pip:
       - matplotlib==3.8.3
-      - quast==5.2.0
