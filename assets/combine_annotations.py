@@ -68,22 +68,24 @@ def combine_annotations(annotation_files, output_file, threads):
             aggregation_functions[col] = 'max'
     
     combined_data = combined_data.groupby(['query_id', 'sample'], as_index=False).agg(aggregation_functions)
+    # After aggregating data
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
-    
-    # Adjusted section for correct gene_number calculation
-    # Extract the base part of 'query_id' excluding the numeric identifier at the end
-    combined_data['base_query_id'] = combined_data['query_id'].str.rsplit('_', 1).str[0]
+
+    # Correctly extract the base part of 'query_id'
+    combined_data['base_query_id'] = combined_data['query_id'].str.rsplit('_', n=1).str[0]
+    # Recalculate 'gene_number' with corrected grouping
     combined_data['gene_number'] = combined_data.groupby(['sample', 'base_query_id']).cumcount() + 1
-    
+
+    # Continue with organizing columns and saving the DataFrame
     special_columns = ['Completeness', 'Contamination', 'taxonomy']
     columns_to_exclude = [col for col in special_columns if col in combined_data.columns]
     combined_data = organize_columns(combined_data, special_columns=columns_to_exclude)
-    
-    # Drop the temporary 'base_query_id' used for gene_number calculation
-    combined_data.drop(columns=['base_query_id'], inplace=True)
-    
+
+    combined_data.drop(columns=['base_query_id'], inplace=True)  # Cleanup
+
     combined_data.to_csv(output_file, index=False, sep='\t')
     logging.info(f"Combined annotations saved to {output_file}, with corrected gene numbers.")
+
 
 
 if __name__ == "__main__":
