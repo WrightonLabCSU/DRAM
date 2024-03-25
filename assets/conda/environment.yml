@@ -25,7 +25,7 @@ dependencies:
   - bowtie2=2.5.1
   - ncurses
   - bbtools
-  - openpyxl=3.1.2
+  - openpyxl
   - pip
   - pip:
       - matplotlib==3.8.3
