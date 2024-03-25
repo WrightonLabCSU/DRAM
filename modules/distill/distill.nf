@@ -16,8 +16,12 @@ process DISTILL {
 
     script:
     """
-    echo "Using Python interpreter at: \$(which python)"
-    echo "Python version: \$(python --version)"
+    echo "Using Python interpreter at: "
+    which python
+    echo "Which conda: "
+    which conda
+    echo "Python version:
+    python --version
     conda list
     python ${ch_distill_sql_script} --combined_annotations ${ch_combined_annotations} --db_name "annotations.db" 
     python ${ch_distill_xlsx_script} --target_id_counts ${ch_target_id_counts} --db_name "annotations.db" --distill_sheets combined/*.tsv --rrna_file ${ch_rrna_sheet} --combined_rrna_file ${ch_combined_rrna} --trna_file ${ch_trna_sheet} --quast ${ch_quast_stats} --output_file "distillate.xlsx" --threads ${params.threads}
