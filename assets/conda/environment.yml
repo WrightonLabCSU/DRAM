@@ -2,6 +2,7 @@ name: dram2-env
 channels:
   - bioconda
   - conda-forge
+  - agbiome
   - defaults
 dependencies:
   - python=3.10
