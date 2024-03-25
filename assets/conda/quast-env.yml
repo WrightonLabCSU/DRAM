@@ -6,5 +6,6 @@ channels:
 dependencies:
   - python=2.7
   - quast=5.2.0
-  - matplotlib 
+  -pip:
+    - matplotlib
 
