@@ -25,5 +25,5 @@ dependencies:
   - bowtie2=2.5.1
   - ncurses
   - quast=5.2.0
-  - matplotlib
+  - matplotlib=3.8.3
   - bbtools
