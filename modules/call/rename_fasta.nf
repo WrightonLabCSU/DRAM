@@ -12,7 +12,15 @@ process RENAME_FASTA {
     script:
 
     """
-
+    echo "Active Python version:"
+    python --version
+    echo "Which Python:"
+    which python
+    which conda
+    echo "List conda envs"
+    conda env list
+    echo "Which conda"
+    which conda
     rename.sh \\
     in=${fasta} \\
     out=${sample}_renamed.fna \\
