@@ -456,10 +456,10 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
-        --slurm_node            string  <node_name>
+        --slurm_node            STRING  <node_name>
                                         Example --slurm_queue c001
 
-        --slurm_queue           string  <slurm partition name>
+        --slurm_queue           STRING  <slurm partition name>
                                         Example:  --slurn_queue 'smith-hi,smith-low'
 
         -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
