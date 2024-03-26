@@ -87,8 +87,6 @@ From: ubuntu:22.04
 
     conda install bbtools
 
-    conda env create -p environment.yml 
-
     # Export miniconda bin just to be safe
     export PATH="/opt/miniconda/bin:$PATH"
 

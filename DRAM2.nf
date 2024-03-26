@@ -1392,6 +1392,12 @@ def helpMessage() {
         --call      : Call genes using prodigal 
         --annotate  : Annotate called genes using downloaded databases
         --distill   : Distill the annotations into a multi-sheet distillate.xlsx
+    
+    REQUIRED DRAM2 profile options:
+        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        See SLURM options in full help menu.
 
     Call options:
         --call                  OPTION  Call genes on the input FASTA files using Prodigal.
@@ -1461,6 +1467,12 @@ def helpMessage() {
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
+        --slurm_node            string  <node_name>
+                                        Example --slurm_queue c001
+
+        --slurm_queue           string  <slurm partition name>
+                                        Example:  --slurn_queue 'smith-hi,smith-low'
+
     """.stripIndent()
 }
 
@@ -1475,6 +1487,12 @@ def callHelpMessage() {
 
         Call genes using input fastas:
             nextflow run DRAM2.nf --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
+    
+    REQUIRED DRAM2 profile options:
+        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        See SLURM options in full help menu.
 
     Call options:
         --rename                Rename FASTA headers based on file name.    
@@ -1500,6 +1518,11 @@ def callHelpMessage() {
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
+        --slurm_node            string  <node_name>
+                                        Example --slurm_queue c001
+
+        --slurm_queue           string  <slurm partition name>
+                                        Example:  --slurn_queue 'smith-hi,smith-low'
     """.stripIndent()
 }
 
@@ -1517,6 +1540,12 @@ def annotateHelpMessage() {
         
         Annotate called genes using input fasta files and the KOFAM database:
             nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+    
+    REQUIRED DRAM2 profile options:
+        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        See SLURM options in full help menu.
 
     Annotate options:
     --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
@@ -1548,6 +1577,11 @@ def annotateHelpMessage() {
     --threads               NUMBER  Number of threads to use for processing.
                                         Default '10'
 
+    --slurm_node            string  <node_name>
+                                    Example --slurm_queue c001
+
+    --slurm_queue           string  <slurm partition name>
+                                    Example:  --slurn_queue 'smith-hi,smith-low'
     """.stripIndent()
 }
 
@@ -1568,7 +1602,13 @@ def distillHelpMessage() {
     Example:
         Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
             nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
-
+    
+    REQUIRED DRAM2 profile options:
+        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        See SLURM options in full help menu.
+                                        
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
                                             Required if you are running distill without --call and --annotate.
@@ -1601,6 +1641,11 @@ def distillHelpMessage() {
         --threads               NUMBER  Number of threads to use for processing.
                                             Default '10'
 
+        --slurm_node            string  <node_name>
+                                        Example --slurm_queue c001
+
+        --slurm_queue           string  <slurm partition name>
+                                        Example:  --slurn_queue 'smith-hi,smith-low'
     """.stripIndent()
 }
 
@@ -1664,5 +1709,10 @@ def adjectivesHelpMessage() {
                                 Output directory path.
     --threads               Number of threads to use for processing.
 
+    --slurm_node            string  <node_name>
+                                    Example --slurm_queue c001
+
+    --slurm_queue           string  <slurm partition name>
+                                    Example:  --slurn_queue 'smith-hi,smith-low'
     """.stripIndent()
 }
