@@ -43,15 +43,17 @@ For further documentation, tutorials and background information, please visit th
 
 1) Clone the DRAM2 GitHub Repository
 2) Download pre-formatted databases
+3) [Install Anaconda/Miniconda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
 2) [Install Nextflow >= v23.04.2.5870](https://www.nextflow.io/docs/latest/getstarted.html)
 
 ### Option 2: Singularity Container
 
 1) Clone the DRAM2 GitHub Repository
-2) Download Singularity container
-3) Download pre-formatted databases
-2) [Install Nextflow >= v23.04.2.5870](https://www.nextflow.io/docs/latest/getstarted.html)
-3) [Install Singularity >= v3.7.0](https://docs.sylabs.io/guides/3.0/user-guide/installation.html) (to pull Singualrity images from SyLabs).
+2) [Install Singularity >= v3.7.0](https://docs.sylabs.io/guides/3.0/user-guide/installation.html) (to pull Singualrity images from SyLabs).
+3) Download Singularity container
+4) Download pre-formatted databases
+5) [Install Nextflow >= v23.04.2.5870](https://www.nextflow.io/docs/latest/getstarted.html)
+
 
 #### General Instructions:
 
@@ -62,12 +64,21 @@ cd COMET
 ./pull_databases_full.py
 ```
 
-#### Note for use on HPC:
+#### Important Computation Notes:
 
-- DRAM2 has SLURM auto submission integrated into the pipeline.
-  - To use this feature, ensure you have [SLURM](https://slurm.schedmd.com/quickstart_admin.html) on your cluster.
-- **If you do not have SLURM and do not want to use SLURM, use the provided alternative config file: `nextflow-No-SLURM.config`.**
-  - **To use this config, you need to add the following to your command: `-c nextflow-No-SLURM.config`.**
+DRAM2 utilizes either Conda or Singularity for dependency management and the user MUST choose one of the following options on execution of any DRAM2 command
+*The profile option is used (`-profile`) - yes! a single hyphen!*
+
+1) `-profile conda`
+  This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
+2) `-profile conda_slurm`
+  This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details).
+  This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
+3) `-profile singularity`
+  This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
+4) `-profile singularity_slurm`
+  This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details)
+  This option relies on the local systems Singularity to run the downloaded Singularity container.  
 
 ---------
 
@@ -232,6 +243,7 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 ## Command-line Options
 
 ### General Command-line Options
+
     Description: 
         The purpose of DRAM2 is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation. 
         DRAM2 can be used to call, annotate and distill annotations from input FASTA files. 
@@ -256,7 +268,7 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
             nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
         (Combined): Call, annotate and distill input fasta files:
-            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)> 
+            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
         (Real) example: (on multiple lines for clarity)
         nextflow run DRAM2.nf --input_fasta ../test_data/ 
@@ -277,6 +289,12 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         --call      : Call genes using prodigal 
         --annotate  : Annotate called genes using downloaded databases
         --distill   : Distill the annotations into a multi-sheet distillate.xlsx
+    
+    REQUIRED DRAM2 profile options:
+        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        See SLURM options in full help menu.
 
     Call options:
         --call                  OPTION  Call genes on the input FASTA files using Prodigal.
@@ -346,13 +364,26 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
+        --slurm_node            string  <node_name>
+                                        Example --slurm_queue c001
+
+        --slurm_queue           string  <slurm partition name>
+                                        Example:  --slurn_queue 'smith-hi,smith-low'
+
 ### Call Command-line Options
+
     Call description: The purpose of DRAM2 --call is to call genes on input FASTA files.
 
     Usage:
 
         Call genes using input fastas:
             nextflow run DRAM2.nf --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
+    
+    REQUIRED DRAM2 profile options:
+        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        See SLURM options in full help menu.
 
     Call options:
         --rename                Rename FASTA headers based on file name.    
@@ -378,7 +409,14 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
+        --slurm_node            string  <node_name>
+                                        Example --slurm_queue c001
+
+        --slurm_queue           string  <slurm partition name>
+                                        Example:  --slurn_queue 'smith-hi,smith-low'
+                                        
 ### Annotate Command-line Options
+
     Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
 
     Usage:
@@ -388,6 +426,12 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         
         Annotate called genes using input fasta files and the KOFAM database:
             nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+    
+    REQUIRED DRAM2 profile options:
+        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        See SLURM options in full help menu.
 
     Annotate options:
     --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
@@ -419,9 +463,16 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
     --threads               NUMBER  Number of threads to use for processing.
                                         Default '10'
 
+    --slurm_node            string  <node_name>
+                                    Example --slurm_queue c001
 
+    --slurm_queue           string  <slurm partition name>
+                                    Example:  --slurn_queue 'smith-hi,smith-low'
+                                    
 ### Distill Command-line Options
 
+    DRAM2 Nextflow Pipeline
+    ===================================
     Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s). 
                             User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
                             Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). 
@@ -434,6 +485,12 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
     Example:
         Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
             nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
+    
+    REQUIRED DRAM2 profile options:
+        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        See SLURM options in full help menu.
 
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
@@ -466,6 +523,12 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
         --threads               NUMBER  Number of threads to use for processing.
                                             Default '10'
+
+        --slurm_node            string  <node_name>
+                                        Example --slurm_queue c001
+
+        --slurm_queue           string  <slurm partition name>
+                                        Example:  --slurn_queue 'smith-hi,smith-low'
 
 -----------
 
