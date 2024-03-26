@@ -1703,8 +1703,8 @@ def adjectivesHelpMessage() {
     Main options:
     --input_fasta           'path/to/fasta/directory/''
                                 Directory containing input fasta files.      
-                                Default: 'input_fasta/''                  
-    --outdir                'path/to/output/directory/''
+                                Default: 'input_fasta/'                 
+    --outdir                'path/to/output/directory/'
                                 Default: 'DRAM2_output/'
                                 Output directory path.
     --threads               Number of threads to use for processing.

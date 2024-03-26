@@ -407,11 +407,15 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         --threads               NUMBER  Number of threads to use for processing.
                                         Default: '10'
 
-        --slurm_node            string  <node_name>
+        --slurm_node            STRING  <node_name>
                                         Example --slurm_queue c001
 
-        --slurm_queue           string  <slurm partition name>
+        --slurm_queue           STRING  <slurm partition name>
                                         Example:  --slurn_queue 'smith-hi,smith-low'
+
+        -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
+        -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
+        -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
 
 ### Call Command-line Options
 
@@ -457,7 +461,11 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
         --slurm_queue           string  <slurm partition name>
                                         Example:  --slurn_queue 'smith-hi,smith-low'
-                                        
+
+        -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
+        -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
+        -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
+                                       
 ### Annotate Command-line Options
 
     Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
@@ -471,7 +479,7 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
             nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
     
     REQUIRED DRAM2 profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
+        -profile            STRING  <conda, conda_slurm, singularity, singularity_conda>
                                         Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
                                         Runs DRAM2 with no scheduling or scheduling via SLURM.
                                         See SLURM options in full help menu.
@@ -511,7 +519,11 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
     --slurm_queue           string  <slurm partition name>
                                     Example:  --slurn_queue 'smith-hi,smith-low'
-                                    
+
+    -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
+    -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
+    -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)         
+                                
 ### Distill Command-line Options
 
     DRAM2 Nextflow Pipeline
@@ -573,6 +585,9 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
         --slurm_queue           string  <slurm partition name>
                                         Example:  --slurn_queue 'smith-hi,smith-low'
 
+        -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
+        -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
+        -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
 -----------
 
 <a name="software"></a>
