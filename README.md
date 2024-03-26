@@ -88,36 +88,40 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
   This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details)
   This option relies on the local systems Singularity to run the downloaded Singularity container.  
 
-### "Which is better?"
 
-Conda Environments
+### Which is Better?
 
-Pros:
+#### Conda Environments
 
-  Easy to install and use, making it beginner-friendly.
-  Efficient management of environments, facilitating reproducibility.
-  
-Cons:
+#### Pros:
 
-  Dependency resolution can be slow and may lead to conflicts.
-  Portability is limited by system dependencies, which may introduce variability.
-  Variability between systems can occur due to reliance on the host system's architecture and libraries.
-  
-Singularity Containers
+- Beginner-Friendly: Easy to install and use, making it accessible for newcomers.
+- Reproducibility: Efficient management of environments facilitates reproducibility.
 
-Pros:
+##### Cons:
 
-  Ensures consistent runtime environments, enhancing reproducibility.
-  Ideal for high-performance computing (HPC) without needing root access.
-  Offers isolation from the host system, minimizing conflicts.
-  Containers are portable across any Linux system with Singularity.
-  
-Cons:
+- Dependency Conflicts: Dependency resolution can be slow and may lead to conflicts.
+- Limited Portability: System dependencies may introduce variability, affecting portability.
+- System Variability: Reliance on the host system's architecture and libraries can cause variability between systems.
 
-  Can be trickier to install.
-  May consume more storage space.
-  
-Summary: Choose Conda for ease of use and language versatility or Singularity for reproducibility and HPC compatibility.
+#### Singularity Containers
+
+##### Pros:
+
+- Consistent Environments: Ensures consistent runtime environments, enhancing reproducibility.
+- HPC Ideal: Perfect for high-performance computing (HPC) environments without the need for root access.
+- Isolation: Offers isolation from the host system, minimizing conflicts.
+- Wide Portability: Containers are portable across any Linux system with Singularity.
+
+##### Cons:
+
+- Installation Complexity: Can be trickier to install compared to Conda environments.
+- Storage Space: May consume more storage space.
+
+####Summary
+
+Conda is recommended for its ease of use and versatility across different programming languages.
+Singularity excels in ensuring reproducibility and compatibility in high-performance computing environments.
 
 ---------
 
