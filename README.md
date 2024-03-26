@@ -67,16 +67,24 @@ cd COMET
 #### Important Computation Notes:
 
 DRAM2 utilizes either Conda or Singularity for dependency management and the user MUST choose one of the following options on execution of any DRAM2 command
+
 *The profile option is used (`-profile`) - yes! a single hyphen!*
 
 1) `-profile conda`
+   
   This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
-2) `-profile conda_slurm`
+
+3) `-profile conda_slurm`
+   
   This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details).
   This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
-3) `-profile singularity`
+
+5) `-profile singularity`
+   
   This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
-4) `-profile singularity_slurm`
+
+7) `-profile singularity_slurm`
+   
   This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details)
   This option relies on the local systems Singularity to run the downloaded Singularity container.  
 
