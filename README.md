@@ -15,7 +15,7 @@ For more detail on DRAM and how DRAM works please see our [paper](https://academ
 
 The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1.
 - Future updates will include:
-  - Pre-formatted annotation and description databases avaiable via (GLOBUS)[https://www.globus.org/].
+  - Pre-formatted annotation and description databases avaiable via [GLOBUS](https://www.globus.org/).
 
 ----------
 
@@ -81,7 +81,7 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
 
 5) `-profile singularity`
    
-  This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
+  This option relies on the local systems Singularity. Nextflow will create its own Conda environments to run in. 
 
 7) `-profile singularity_slurm`
    
