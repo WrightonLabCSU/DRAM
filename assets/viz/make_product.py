@@ -12,7 +12,9 @@ from itertools import tee, chain
 from math import pi
 from pathlib import Path
 from typing import Optional
+import argparse
 
+import click
 import networkx as nx
 import numpy as np
 import pandas as pd
@@ -22,6 +24,9 @@ from bokeh.palettes import BuGn, Cividis256
 from bokeh.plotting import figure
 from bokeh.resources import INLINE as INLINE_RESOURCES
 from bokeh.transform import factor_cmap, linear_cmap
+
+from .definitions import DEFAULT_GROUPBY_COLUMN
+
 
 __authors__ = ["Madeline Scyphers"]
 __copyright__ = "Copyright 2024, Wrighton Lab"
@@ -36,7 +41,6 @@ logger = logging.getLogger("dram2_log.viz")
 __version__ = "3.0.0"
 DRAM_DATAFOLDER_TAG = "dram_data_folder"
 DBSETS_COL = "db_id_sets"
-DEFAULT_GROUPBY_COLUMN = "fasta"
 DEFAULT_GENOMES_PER_PRODUCT = 1000
 GENOMES_PRODUCT_LIMIT = 2000
 DEFAULT_MAKE_BIG_HTML = False
@@ -581,112 +585,6 @@ def get_ordered_uniques(seq):
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x) or pd.isna(x))]
 
-
-def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, genomes_per_product=DEFAULT_GENOMES_PER_PRODUCT,
-         make_big_html=DEFAULT_MAKE_BIG_HTML):
-    logger = logging.getLogger("dram2_log.viz")
-    dram_config = {}
-    output_dir = Path.cwd().resolve()
-    annotations = pd.read_csv(annotations_tsv_path, sep="\t", index_col=0)
-    print(annotations.columns)
-    print(annotations.head())
-
-    # db_kits_with_ids = [i for i in DB_KITS if i.selectable and i.can_get_ids]
-    # print(f"{DB_KITS=}")
-    # print(f"{db_kits_with_ids=}")
-    # db_kits = [i(dram_config, logger) for i in db_kits_with_ids]
-    # print(f"{db_kits=}")
-
-    db_id_sets: pd.Series = get_annotation_ids_by_row(
-        annotations
-    )
-    annotation_ids_by_row = annotations.copy()
-    annotation_ids_by_row[DBSETS_COL] = db_id_sets
-
-    module_steps_form = get_distillate_sheet(
-        MODULE_STEPS_FORM_TAG, dram_config, logger
-    )
-    print(module_steps_form.columns)
-    print(module_steps_form.head())
-    etc_module_df = get_distillate_sheet(ETC_MODULE_DF_TAG, dram_config, logger)
-    print(etc_module_df.columns)
-    print(etc_module_df.head())
-    function_heatmap_form = get_distillate_sheet(
-        FUNCTION_HEATMAP_FORM_TAG, dram_config, logger
-    )
-    # make product
-    if "bin_taxonomy" in annotations:
-        genome_order = get_ordered_uniques(
-            annotations.sort_values("bin_taxonomy")[groupby_column]
-        )
-        # if gtdb format then get phylum and most specific
-        if all(
-                [
-                    i[:3] == "d__" and len(i.split(";")) == 7
-                    for i in annotations["bin_taxonomy"].fillna("")
-                ]
-        ):
-            taxa_str_parser = get_phylum_and_most_specific
-        # else just throw in what is there
-        else:
-
-            def taxa_str_parser(x):
-                return x
-
-        labels = make_strings_no_repeats(
-            {
-                row[groupby_column]: taxa_str_parser(row["bin_taxonomy"])
-                for _, row in annotations.iterrows()
-            }
-        )
-    else:
-        genome_order = get_ordered_uniques(
-            annotations.sort_values(groupby_column)[groupby_column]
-        )
-        labels = None
-
-    # make module coverage frame
-    module_nets = {
-        module: build_module_net(module_df)
-        for module, module_df in module_steps_form.groupby("module")
-        if module in HEATMAP_MODULES
-    }
-
-    module_coverage_df, etc_coverage_df, function_df = fill_product_dfs(
-        annotations=annotations,
-        module_nets=module_nets,
-        etc_module_df=etc_module_df,
-        function_heatmap_form=function_heatmap_form,
-        annotation_ids_by_row=annotation_ids_by_row,
-        groupby_column=groupby_column
-    )
-    product_df = make_product_df(module_coverage_df, etc_coverage_df, function_df)
-
-    # module_coverage_df.to_csv("module_coverage_df.csv", index=False)
-    # etc_coverage_df.to_csv("etc_coverage_df.csv", index=False)
-    # function_df.to_csv("function_df.csv", index=False)
-
-    #
-
-    if labels is not None:
-        function_df = rename_genomes_to_taxa(function_df, labels)
-
-    if make_big_html or len(genome_order) < GENOMES_PRODUCT_LIMIT:
-        # product = make_product_heatmap(
-        plot = make_product_heatmap(
-            module_coverage_df,
-            etc_coverage_df,
-            function_df,
-            genome_order,
-            labels,
-        )
-        plot.save(output_dir / "product.html", resources=INLINE_RESOURCES)
-        plot.show(port=5006)
-    product_df = make_product_df(module_coverage_df, etc_coverage_df, function_df)
-    product_df.to_csv(output_dir / "product.tsv", sep="\t", index=False)
-    logger.info("Completed visualization")
-
-
 def make_product_heatmap(
         module_coverage_df,
         etc_coverage_df,
@@ -838,5 +736,93 @@ def heatmap(df, x_col, y_col, c_col, tooltip_cols, title="", rect_kw=None, **fig
     return p
 
 
+def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir=None):
+    dram_config = {}
+    output_dir = output_dir or Path.cwd().resolve()
+    annotations = pd.read_csv(annotations_tsv_path, sep="\t", index_col=0)
+
+    db_id_sets: pd.Series = get_annotation_ids_by_row(
+        annotations
+    )
+    annotation_ids_by_row = annotations.copy()
+    annotation_ids_by_row[DBSETS_COL] = db_id_sets
+
+    module_steps_form = get_distillate_sheet(
+        MODULE_STEPS_FORM_TAG, dram_config, logger
+    )
+    etc_module_df = get_distillate_sheet(ETC_MODULE_DF_TAG, dram_config, logger)
+    function_heatmap_form = get_distillate_sheet(
+        FUNCTION_HEATMAP_FORM_TAG, dram_config, logger
+    )
+    # make product
+    if "bin_taxonomy" in annotations:
+        genome_order = get_ordered_uniques(
+            annotations.sort_values("bin_taxonomy")[groupby_column]
+        )
+        # if gtdb format then get phylum and most specific
+        if all(
+                [
+                    i[:3] == "d__" and len(i.split(";")) == 7
+                    for i in annotations["bin_taxonomy"].fillna("")
+                ]
+        ):
+            taxa_str_parser = get_phylum_and_most_specific
+        # else just throw in what is there
+        else:
+
+            def taxa_str_parser(x):
+                return x
+
+        labels = make_strings_no_repeats(
+            {
+                row[groupby_column]: taxa_str_parser(row["bin_taxonomy"])
+                for _, row in annotations.iterrows()
+            }
+        )
+    else:
+        genome_order = get_ordered_uniques(
+            annotations.sort_values(groupby_column)[groupby_column]
+        )
+        labels = None
+
+    # make module coverage frame
+    module_nets = {
+        module: build_module_net(module_df)
+        for module, module_df in module_steps_form.groupby("module")
+        if module in HEATMAP_MODULES
+    }
+
+    module_coverage_df, etc_coverage_df, function_df = fill_product_dfs(
+        annotations=annotations,
+        module_nets=module_nets,
+        etc_module_df=etc_module_df,
+        function_heatmap_form=function_heatmap_form,
+        annotation_ids_by_row=annotation_ids_by_row,
+        groupby_column=groupby_column
+    )
+    product_df = make_product_df(module_coverage_df, etc_coverage_df, function_df)
+
+    if labels is not None:
+        function_df = rename_genomes_to_taxa(function_df, labels)
+
+    plot = make_product_heatmap(
+        module_coverage_df,
+        etc_coverage_df,
+        function_df,
+        genome_order,
+        labels,
+    )
+    plot.save(output_dir / "product.html", resources=INLINE_RESOURCES)
+    plot.show(port=5006)
+    product_df.to_csv(output_dir / "product.tsv", sep="\t", index=False)
+    logger.info("Completed visualization")
+
+
 if __name__ == "__main__":
-    main(Path(__file__).resolve().parent / "data" / "annotations.tsv")
+    parser = argparse.ArgumentParser(description="Generate a product visualization from the DRAM output.")
+    parser.add_argument("--annotations", help="Path to the annotations tsv file")
+    parser.add_argument("--groupby_column", help="Column to group by", default=DEFAULT_GROUPBY_COLUMN)
+    parser.add_argument("--output_dir", help="Output directory", default=Path.cwd().resolve())
+    args = parser.parse_args()
+
+    main(annotations_tsv_path=args.annotations, groupby_column=args.groupby_column, output_dir=args.output_dir)
