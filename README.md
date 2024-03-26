@@ -15,7 +15,7 @@ For more detail on DRAM and how DRAM works please see our [paper](https://academ
 
 The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1.
 - Future updates will include:
-  - Pre-formatted annotation and description databases avaiable via (GLOBUS)[https://www.globus.org/].
+  - Pre-formatted annotation and description databases avaiable via [GLOBUS](https://www.globus.org/).
 
 ----------
 
