@@ -157,17 +157,17 @@ else if ((params.help) || (params.h)){
 */
 def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename"]
 
-if (!params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
+if (!params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
 }
 
-if( params.use_dbset){
+if(!params.profile && params.use_dbset){
     if (!['metabolism_kegg_set', 'metabolism_set', 'adjectives_kegg_set', 'adjectives_set'].contains(params.use_dbset)) {
         error("Invalid parameter '--use_dbset ${params.use_dbset}'. Valid values are 'metabolism_kegg_set', 'metabolism_set', 'adjectives_kegg_set', 'adjectives_set'.")
     }
 }
 
-if( !params.rename && params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
+if(!params.profile && !params.rename && params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
     error("If you want to distill, you must provide annotations via --annotations <path/to/file>.")
 }
 
@@ -1608,7 +1608,7 @@ def distillHelpMessage() {
                                         Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
                                         Runs DRAM2 with no scheduling or scheduling via SLURM.
                                         See SLURM options in full help menu.
-                                        
+
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
                                             Required if you are running distill without --call and --annotate.
