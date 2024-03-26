@@ -276,7 +276,7 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
   **Breakdown of example (7):**
   - `--bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
   - `--slurm_node`: DRAM2 option to select a specific node to compute on during the whole run.
-  - `-with-trace-`: Nextflow option to output a process-by-process report of the run. (TEXT)
+  - `-with-trace`: Nextflow option to output a process-by-process report of the run. (TEXT)
   - `-with-report`: Nextflow option to output a process-by-process report of the run. (HTML)
   - `-with-timeline`: Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
 
