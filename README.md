@@ -81,7 +81,7 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
 
 5) `-profile singularity`
    
-  This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
+  This option relies on the local systems Singularity. Nextflow will create its own Conda environments to run in. 
 
 7) `-profile singularity_slurm`
    
