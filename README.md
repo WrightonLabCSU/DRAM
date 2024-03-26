@@ -64,11 +64,11 @@ cd COMET
 ./pull_databases_full.py
 ```
 
-#### Important Computation Notes:
+### Important Computation Notes:
 
 DRAM2 utilizes either Conda or Singularity for dependency management and the user MUST choose one of the following options on execution of any DRAM2 command
 
-*The profile option is used (`-profile`) - yes! a single hyphen!*
+*The Nextflow profile option is used (`-profile`) - yes! a single hyphen!*
 
 1) `-profile conda`
    
@@ -87,6 +87,37 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
    
   This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details)
   This option relies on the local systems Singularity to run the downloaded Singularity container.  
+
+### "Which is better?"
+
+Conda Environments
+
+Pros:
+
+  Easy to install and use, making it beginner-friendly.
+  Efficient management of environments, facilitating reproducibility.
+  
+Cons:
+
+  Dependency resolution can be slow and may lead to conflicts.
+  Portability is limited by system dependencies, which may introduce variability.
+  Variability between systems can occur due to reliance on the host system's architecture and libraries.
+  
+Singularity Containers
+
+Pros:
+
+  Ensures consistent runtime environments, enhancing reproducibility.
+  Ideal for high-performance computing (HPC) without needing root access.
+  Offers isolation from the host system, minimizing conflicts.
+  Containers are portable across any Linux system with Singularity.
+  
+Cons:
+
+  Can be trickier to install.
+  May consume more storage space.
+  
+Summary: Choose Conda for ease of use and language versatility or Singularity for reproducibility and HPC compatibility.
 
 ---------
 
