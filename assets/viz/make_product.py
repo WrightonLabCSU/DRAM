@@ -681,6 +681,7 @@ def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, genomes_pe
             labels,
         )
         plot.save(output_dir / "product.html", resources=INLINE_RESOURCES)
+        plot.show(port=5006)
     product_df = make_product_df(module_coverage_df, etc_coverage_df, function_df)
     product_df.to_csv(output_dir / "product.tsv", sep="\t", index=False)
     logger.info("Completed visualization")
