@@ -19,7 +19,7 @@ process PRODUCT_HEATMAP {
     """
     # Create a log directory if it doesn't exist
     mkdir -p logs
-  
+
     # Define the log file path
     log_file="logs/product.log"
 

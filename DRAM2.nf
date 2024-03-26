@@ -1407,6 +1407,8 @@ def helpMessage() {
             --rrnas ../test-data/rrnas.tsv
             --bin_quality ../test-data/checkM1-test-data.tsv
             --taxa ../test-data/gtdbtk.bac120.summary.tsv
+            --generate_gff 
+            --generate_gbk
             --threads 5
             -with-report -with-trace -with-timeline
 
@@ -1457,6 +1459,10 @@ def helpMessage() {
         --add_annotations       PATH    <path/to/old-annoations.tsv> 
                                             Used to add in old annotations to the current run. (See example for format.)
 
+        --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
+
+        --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
+        
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
                                             Required if you are running distill without --call and --annotate.
@@ -1583,6 +1589,10 @@ def annotateHelpMessage() {
     --add_annotations       PATH    <path/to/old-annoations.tsv> 
                                         Used to add in old annotations to the current run. (See example for format.)
 
+    --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
+
+    --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
+    
     Main options:
     --input_fasta           PATH    <path/to/fasta/directory/>
                                         Directory containing input fasta files.      
