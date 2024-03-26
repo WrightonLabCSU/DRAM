@@ -59,7 +59,7 @@ For further documentation, tutorials and background information, please visit th
 
 ```
 git clone https://github.com/WrightonLabCSU/DRAM2.git
-cd COMET
+cd DRAM2
 ./pull_singularity_containers.py
 ./pull_databases_full.py
 ```
