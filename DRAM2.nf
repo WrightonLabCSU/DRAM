@@ -155,23 +155,28 @@ else if ((params.help) || (params.h)){
     Validate Input parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename"]
+def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename", "--product"]
 
-if (!params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
+if ( !params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
 }
 
-if(!params.profile && params.use_dbset){
+if( !params.profile && params.use_dbset){
     if (!['metabolism_kegg_set', 'metabolism_set', 'adjectives_kegg_set', 'adjectives_set'].contains(params.use_dbset)) {
         error("Invalid parameter '--use_dbset ${params.use_dbset}'. Valid values are 'metabolism_kegg_set', 'metabolism_set', 'adjectives_kegg_set', 'adjectives_set'.")
     }
 }
 
-if(!params.profile && !params.rename && params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
+if( !params.profile && !params.rename && params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
     error("If you want to distill, you must provide annotations via --annotations <path/to/file>.")
 }
 
-
+if( params.product && !params.call && !params.annotate && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ))
+{
+    if( params.annotations = "" && params.distillate "" ){
+        error("If you want to generate a product, you must either (1) provide annotations via --annotations <path/to/file> and a distillate --distillate <path/to/file> OR (2) use Call, Annotate and Distill to generate these input files.")
+    }
+}
 
 //Add in other checks for adjectives,... etc.
 /*
@@ -811,6 +816,23 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
 }
 
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Create channels for Product processes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+if( params.product ){
+    //This is just temporary - want these in the containers eventually
+    ch_make_product_script = file(params.make_product_script)
+    ch_etc_module_form = file(params.etc_module_form)
+    ch_function_heatmap_form = file(params.function_heatmap_form)
+    ch_module_step_form = file(params.module_step_form)
+
+    if( distillate != "" ){
+        ch_distillate = file(params.distillate).exists() ? file(params.distillate) : error("Error: If using --product <path/to/file>, you must supply a DRAM2-formatted distill.xlsx file. Distill file not found at ${params.distillate}")
+    }
+
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1290,7 +1312,7 @@ workflow {
     */   
     /*
     if( params.product ){
-        PRODUCT_HEATMAP( ch_final_annots, ch_distillate )
+        PRODUCT_HEATMAP( ch_final_annots, ch_distillate, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, ch_make_product_script )
 
     }
     */
