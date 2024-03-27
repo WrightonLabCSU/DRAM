@@ -823,7 +823,15 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 */
 if( params.product ){
     //This is just temporary - want these in the containers eventually
+
+    //This is a placeholder for the product python script
     ch_make_product_script = file(params.make_product_script)
+
+    //This is a placeholder for a directory of Product scripts
+    ch_product_scripts = file(params.make_product_scripts)
+
+
+
     ch_etc_module_form = file(params.etc_module_form)
     ch_function_heatmap_form = file(params.function_heatmap_form)
     ch_module_step_form = file(params.module_step_form)
@@ -1312,7 +1320,7 @@ workflow {
     */   
     /*
     if( params.product ){
-        PRODUCT_HEATMAP( ch_final_annots, ch_distillate, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, ch_make_product_script )
+        PRODUCT_HEATMAP( ch_final_annots, ch_distillate, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, ch_make_product_script, ch_product_scripts )
 
     }
     */
