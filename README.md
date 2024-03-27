@@ -59,7 +59,7 @@ For further documentation, tutorials and background information, please visit th
 
 ```
 git clone https://github.com/WrightonLabCSU/DRAM2.git
-cd COMET
+cd DRAM2
 ./pull_singularity_containers.py
 ./pull_databases_full.py
 ```
@@ -325,6 +325,8 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
             --rrnas ../test-data/rrnas.tsv
             --bin_quality ../test-data/checkM1-test-data.tsv
             --taxa ../test-data/gtdbtk.bac120.summary.tsv
+            --generate_gff 
+            --generate_gbk
             --threads 5
             -with-report -with-trace -with-timeline
 
@@ -373,7 +375,11 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
                                             Directory containing called genes (.faa) 
 
         --add_annotations       PATH    <path/to/old-annoations.tsv> 
-                                            Used to add in old annotations to the current run. (See example for format.)
+
+        --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
+
+        --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
+                                                    Used to add in old annotations to the current run. (See example for format.)
 
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
@@ -498,6 +504,10 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
     --add_annotations       PATH    <path/to/old-annoations.tsv> 
                                         Used to add in old annotations to the current run. (See example for format.)
 
+    --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
+
+    --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
+    
     Main options:
     --input_fasta           PATH    <path/to/fasta/directory/>
                                         Directory containing input fasta files.      
