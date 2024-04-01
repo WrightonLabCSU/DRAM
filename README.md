@@ -242,41 +242,56 @@ Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/)
 
 DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, each app can be run individualy (assuming you provide the required input data for each app).
 
-1) **Call genes using input fastas (use --rename to rename FASTA headers):**
+Additionally, `--merge-annotations` and `--rename` can be run idenpendently of any other apps. 
+
+
+1) **Rename fasta headers based on input sample file names:**
+
+`nextflow run DRAM2.nf --rename --input_fasta_dir <path/to/fasta/directory/>`
+
+
+3) **Call genes using input fastas (use --rename to rename FASTA headers):**
 
 `nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>`
 
     
-2) **Annotate called genes using input called genes and the KOFAM database:**
+3) **Annotate called genes using input called genes and the KOFAM database:**
 
 `nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam`
 
 
-3) **Annotate called genes using input fasta files and the KOFAM database:**
+4) **Annotate called genes using input fasta files and the KOFAM database:**
 
 `nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam`
 
 
-4) **Distill using input annotations:**
+5) **Merge verious existing annotations files together (Must be generated using DRAM2.)
+
+`nextflow run DRAM2.nf --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>`
+
+
+6) **Distill using input annotations:**
 
 `nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>`
 
 
-5) **(Combined): Call, annotate and distill input fasta files:**
+7) **(Combined): Call, annotate and distill input fasta files:**
 
 `nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>`
 
 
-6) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:**
+8) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:**
 
 `nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
 
-7) **"Real-world" example using the test data provided in this repository:**
 
-`nextflow run -bg DRAM2.nf --input_fasta ../test_data/DRAM2_test_data/ --outdir DRAM2-test-data-call-annotate-distill --threads 8 --call --rename --annotate --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv --slurm_node main -with-report -with-trace -with-timeline`
+9) **"Real-world" example using the test data provided in this repository:**
 
-  **Breakdown of example (7):**
+`nextflow run -bg DRAM2.nf --input_fasta ../test_data/DRAM2_test_data/ --outdir DRAM2-test-data-call-annotate-distill --threads 8 --call --rename --annotate --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv --profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline`
+
+  **Breakdown of example (9):**
   - `--bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
+  - `-profile` Nextflow option to select profile (Conda vs Singularity and SLURM vs no-SLURM).
   - `--slurm_node`: DRAM2 option to select a specific node to compute on during the whole run.
   - `-with-trace`: Nextflow option to output a process-by-process report of the run. (TEXT)
   - `-with-report`: Nextflow option to output a process-by-process report of the run. (HTML)
