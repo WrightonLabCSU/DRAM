@@ -303,7 +303,7 @@ DRAM2.nf
 ```
 
   **Breakdown of example (9):**
-  - `--bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
+  - `-bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
   - `-profile` Nextflow option to select profile (Conda vs Singularity and SLURM vs no-SLURM).
   - `--slurm_node`: DRAM2 option to select a specific node to compute on during the whole run.
   - `-with-trace`: Nextflow option to output a process-by-process report of the run. (TEXT)
