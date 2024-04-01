@@ -290,7 +290,6 @@ Additionally, `--merge-annotations` and `--rename` can be run idenpendently of a
 (put on multiple lines for clarity)
 
 ```
-
 nextflow run -bg
 DRAM2.nf
 --input_fasta ../test_data/DRAM2_test_data/
@@ -301,7 +300,6 @@ DRAM2.nf
 --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
 --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv
 --profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline
-
 ```
 
   **Breakdown of example (9):**
