@@ -100,6 +100,7 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
 
 ##### Cons:
 
+- Generally slower than using Singularity containers (will have metrics in the future).
 - Dependency Conflicts: Dependency resolution can be slow and may lead to conflicts.
 - Limited Portability: System dependencies may introduce variability, affecting portability.
 - System Variability: Reliance on the host system's architecture and libraries can cause variability between systems.
@@ -108,6 +109,7 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
 
 ##### Pros:
 
+- Generally faster than using Conda environments (will have metrics in the future).
 - Consistent Environments: Ensures consistent runtime environments, enhancing reproducibility.
 - HPC Ideal: Perfect for high-performance computing (HPC) environments without the need for root access.
 - Isolation: Offers isolation from the host system, minimizing conflicts.
