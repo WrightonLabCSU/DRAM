@@ -265,7 +265,7 @@ Additionally, `--merge-annotations` and `--rename` can be run idenpendently of a
 `nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam`
 
 
-5) **Merge verious existing annotations files together (Must be generated using DRAM2.)
+5) **Merge verious existing annotations files together (Must be generated using DRAM2.):**
 
 `nextflow run DRAM2.nf --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>`
 
@@ -286,8 +286,23 @@ Additionally, `--merge-annotations` and `--rename` can be run idenpendently of a
 
 
 9) **"Real-world" example using the test data provided in this repository:**
+   
+(put on multiple lines for clarity)
 
-`nextflow run -bg DRAM2.nf --input_fasta ../test_data/DRAM2_test_data/ --outdir DRAM2-test-data-call-annotate-distill --threads 8 --call --rename --annotate --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv --profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline`
+```
+
+nextflow run -bg
+DRAM2.nf
+--input_fasta ../test_data/DRAM2_test_data/
+--outdir DRAM2-test-data-call-annotate-distill
+--threads 8
+--call --rename --annotate
+--use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper
+--use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
+--distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv
+--profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline
+
+```
 
   **Breakdown of example (9):**
   - `--bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
