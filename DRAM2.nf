@@ -173,7 +173,7 @@ if( !params.profile && !params.rename && params.annotations == "" && params.anno
 
 if( params.product && !params.call && !params.annotate && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ))
 {
-    if( params.annotations = "" && params.distillate "" ){
+    if( params.annotations == "" && params.distillate == "" ){
         error("If you want to generate a product, you must either (1) provide annotations via --annotations <path/to/file> and a distillate --distillate <path/to/file> OR (2) use Call, Annotate and Distill to generate these input files.")
     }
 }
