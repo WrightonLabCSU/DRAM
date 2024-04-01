@@ -224,14 +224,14 @@ Run the `format-KEGG-DRAM2.sh` script:
   
 `./pull_descriptions_full.py`
 OR
-Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/].
+Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
 
 **Routine Set**
 - Excludes Uniref and KEGG
   
 `./pull_descriptions_routine.py`
 OR
-Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/].
+Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
 
 --------
 
@@ -359,7 +359,10 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
         --prodigal_tras_table   NUMBER  (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
                                             Specify a translation table to use (default: '1').
-
+                                    
+        --min_contig_len        NUMBER  <number in base pairs>
+                                            Default: '2500'
+                                            
     Annotate options:
         --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
                                             Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
@@ -450,6 +453,9 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
         --prodigal_tras_table   <1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25>
                                     Specify a translation table to use (default: '1').
+                                    
+        --min_contig_len        NUMBER  <number in base pairs>
+                                            Default: '2500'
 
     Main options:
         --input_fasta           PATH    <path/to/fasta/directory/>
