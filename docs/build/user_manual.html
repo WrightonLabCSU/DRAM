@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Nextflow Pipeline Options" href="nextflow_options.html" />
-    <link rel="prev" title="Input Formats" href="input_formats.html" /> 
+    <link rel="prev" title="Output Files" href="example_output.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,8 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example_output.html">Example Outputs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="input_formats.html">Input Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_output.html">Output Files</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">DRAM2 User Manual</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bring-up-help-menu-s">Bring up help menu(s)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bring-up-versions-menu">Bring up versions menu</a></li>
@@ -285,7 +284,7 @@ VVNQLANNRQGTQSAKTRSEVSGGGRKPWRQKGTGHARQGSTRSPQWTGGGVVFAPKPRD
 <ul>
 <li><p>To perform a combined operation of renaming, calling, annotating, and distilling, use:</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--rename<span class="w"> </span>--call<span class="w"> </span>--annotate<span class="w"> </span>--use_&lt;database<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>--distill_topic<span class="w"> </span>&lt;distillate<span class="o">(</span>s<span class="o">)</span>&gt;
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--rename<span class="w"> </span>--call<span class="w"> </span>--annotate<span class="w"> </span>--use_&lt;database<span class="o">(</span>s<span class="o">)</span>&gt;<span class="w"> </span>--distill_topic<span class="w"> </span>&lt;distillate<span class="o">(</span>s<span class="o">)</span>&gt;
 </pre></div>
 </div>
 </div></blockquote>
@@ -656,7 +655,7 @@ Singularity excels in ensuring reproducibility and compatibility in high-perform
 </ul>
 <p><a class="reference external" href="https://github.com/Arkadiy-Garber/FeGenie">FeGenie</a></p>
 <ul class="simple">
-<li><p>Placeholder description.</p></li>
+<li><p>HMM-based identification and categorization of iron genes and iron gene operons in genomes and metagenome assemblies.</p></li>
 <li><p>(6.6M)</p></li>
 </ul>
 <p><a class="reference external" href="url_to_sulfur_placeholder">Sulfur</a></p>
@@ -742,13 +741,13 @@ Singularity excels in ensuring reproducibility and compatibility in high-perform
 <p><code class="docutils literal notranslate"><span class="pre">--slurm_node</span> <span class="pre">&lt;node_name&gt;</span></code> Use to specify a specific node to compute on</p>
 <p>Example: <code class="docutils literal notranslate"><span class="pre">--slurm_node</span> <span class="pre">alpha</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">&lt;node_name&gt;</span></code> Use to specify a specific partition/queue to compute within</p>
-<p>Example: <code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">smith</span></code>
-Example: <code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">'smith-hi,smith-low'</span></code></p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">smith</span></code></p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">'smith-hi,smith-low'</span></code></p>
 <p><strong>Note:</strong> SLURM can be tricky because administrators do not set up SLURM the same across machines.
 You may need to modify a given profile <cite>.config</cite> file to get DRAM2 with SLURM to work on your HPC.</p>
-<p><strong>For Example</strong>, a HPC our group computes on does not allow for memory specificaton. Thus, to use DRAM2 with SLURM on this HPC, we comment out (“//”) the <cite>memory=</cite> lines in the config files.</p>
+<p><strong>For Example</strong>, a HPC our group computes on does not allow for memory specificaton. Thus, to use DRAM2 with SLURM on this HPC, we comment out (“//”) the <code class="docutils literal notranslate"><span class="pre">memory=</span></code> lines in the config files.</p>
 <p>The config files are located in:
-<cite>/assets/conda/conda_slurm.config</cite> and <cite>/assets/singularity/singularity_slurm.config</cite></p>
+<code class="docutils literal notranslate"><span class="pre">/assets/conda/conda_slurm.config</span></code> and <code class="docutils literal notranslate"><span class="pre">/assets/singularity/singularity_slurm.config</span></code></p>
 </section>
 </section>
 <hr class="docutils" />
@@ -787,7 +786,7 @@ You may need to modify a given profile <cite>.config</cite> file to get DRAM2 wi
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="input_formats.html" class="btn btn-neutral float-left" title="Input Formats" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="example_output.html" class="btn btn-neutral float-left" title="Output Files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="nextflow_options.html" class="btn btn-neutral float-right" title="Nextflow Pipeline Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

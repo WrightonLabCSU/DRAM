@@ -135,7 +135,7 @@ The usage of DRAM2 involves various commands and options, as outlined below:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+        nextflow run DRAM2.nf --rename --call --annotate --use_<database(s)> --distill_topic <distillate(s)>
 
 - To call genes using input FASTA files and optionally rename the FASTA headers, use:
 
