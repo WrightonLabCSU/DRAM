@@ -1375,8 +1375,17 @@ def version() {
 */
 def helpMessage() {
     log.info """
-    DRAM2 Nextflow Pipeline
-    ===================================
+   (==(     )==)                 (==(     )==)
+    `-.`. ,',-'                   `-.`. ,',-'
+       _,-'"                         _,-'"
+    ,-',' `.`-.                   ,-',' `.`-.
+   (==(     )==)     DRAM2       (==(     )==)
+    `-.`. ,',-'                   `-.`. ,',-'
+       _,-'"                        _,-'"
+    ,-',' `.`-.                  ,-',' `.`-.
+   (==(     )==)                 (==(     )==)
+   
+    ==========================================
     Description: 
         The purpose of DRAM2 is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation. 
         DRAM2 can be used to call, annotate and distill annotations from input FASTA files. 
