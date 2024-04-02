@@ -1349,31 +1349,32 @@ def version() {
                       v2.0.0
     ===========================================
 
-    Software versions used:
-    BBTools             v39.01
-    Bowtie2             v2.5.1
-    Prodigal            v2.6.3
-    Python              v3.10
-    Pandas              v1.5.2
-    Pytest              v7.2.0
-    Scikit-bio          v0.5.7
-    MMseqs2             v14.7e284
-    HMMER               v3.3.2
-    SciPy               v1.8.1
-    SQLAlchemy          v1.4.46
-    Barrnap             v0.9
-    Altair              v4.2.0
-    OpenPyXL            v3.0.10
-    NetworkX            v2.8.8
-    Ruby                v3.1.2
-    GNU Parallel        v20221122
-    tRNAscan-SE         v2.0.12
-    Samtools            v1.17
-    CD-HIT              v4.6
-    CoverM              v0.6.1
-    Subread             v2.0.6
-    XlsxWriter          v3.1.6
-    Numpy               v1.26.0
+        Software versions used:
+        
+        BBTools             v39.01
+        Bowtie2             v2.5.1
+        Prodigal            v2.6.3
+        Python              v3.10
+        Pandas              v1.5.2
+        Pytest              v7.2.0
+        Scikit-bio          v0.5.7
+        MMseqs2             v14.7e284
+        HMMER               v3.3.2
+        SciPy               v1.8.1
+        SQLAlchemy          v1.4.46
+        Barrnap             v0.9
+        Altair              v4.2.0
+        OpenPyXL            v3.0.10
+        NetworkX            v2.8.8
+        Ruby                v3.1.2
+        GNU Parallel        v20221122
+        tRNAscan-SE         v2.0.12
+        Samtools            v1.17
+        CD-HIT              v4.6
+        CoverM              v0.6.1
+        Subread             v2.0.6
+        XlsxWriter          v3.1.6
+        Numpy               v1.26.0
 
     """.stripIndent()
 }
