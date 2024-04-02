@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Start Guide &mdash; DRAM2 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example Outputs" href="example_output.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #1e4b28" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/dram_logo_med_white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-command-line-usage">Example command-line usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#breakdown-of-example-9">Breakdown of example (9):</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#select-a-profile-which-suits-your-compute-setup">Select a Profile which suits your compute setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="example_output.html">Example Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_formats.html">Input Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_options.html">Nextflow Pipeline Options</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1e4b28" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DRAM2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quick Start Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quick_start.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quick-start-guide">
+<h1>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading"></a></h1>
+<p>Assuming you have followed the <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a> instructions and you have the databases you desire, you can start running the commands below:</p>
+<p>DRAM2 apps Call, Annotate, and Distill can all be run at once, or alternatively, each app can be run individually (assuming you provide the required input data for each app..)</p>
+<p>Additionally, <cite>–merge-annotations</cite> and <cite>–rename</cite> can be run independently of any other apps.</p>
+<section id="example-command-line-usage">
+<h2>Example command-line usage<a class="headerlink" href="#example-command-line-usage" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Rename fasta headers based on input sample file names:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--rename<span class="w"> </span>--input_fasta_dir<span class="w"> </span>&lt;path/to/fasta/directory/&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Call genes using input fastas (use –rename to rename FASTA headers.:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--call<span class="w"> </span>--rename<span class="w"> </span>--input_fasta_dir<span class="w"> </span>&lt;path/to/fasta/directory/&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Annotate called genes using input called genes and the KOFAM database:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--annotate<span class="w"> </span>--input_genes<span class="w"> </span>&lt;path/to/called/genes/directory&gt;<span class="w"> </span>--use_kofam
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Annotate called genes using input fasta files and the KOFAM database:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--annotate<span class="w"> </span>--input_fasta<span class="w"> </span>&lt;path/to/called/genes/directory&gt;<span class="w"> </span>--use_kofam
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Merge various existing annotations files together (Must be generated using DRAM2..:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--merge_annotations<span class="w"> </span>&lt;path/to/directory/with/multiple/annotation/TSV/files&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Distill using input annotations:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--distill_&lt;topic<span class="p">|</span>ecosystem<span class="p">|</span>custom&gt;<span class="w"> </span>--annotations<span class="w"> </span>&lt;path/to/annotations.tsv&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>(Combined): Call, annotate and distill input fasta files:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--rename<span class="w"> </span>--call<span class="w"> </span>--annotate<span class="w"> </span>--use_&lt;database<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>--distill_topic<span class="w"> </span>&lt;distillate<span class="o">(</span>s.&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--input_fasta_dir<span class="w"> </span>&lt;path/to/fasta/directory/&gt;<span class="w"> </span>--outdir<span class="w"> </span>&lt;path/to/output/directory/&gt;<span class="w"> </span>--call<span class="w"> </span>--annotate<span class="w"> </span>--distill_topic<span class="w"> </span>default<span class="w"> </span>--distill_ecosystem<span class="w"> </span>ag<span class="w"> </span>--threads<span class="w"> </span>&lt;threads&gt;<span class="w"> </span>--use_kofam
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>“Real-world” example using the test data provided in this repository:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>-bg<span class="w"> </span>DRAM2.nf<span class="w"> </span>--input_fasta<span class="w"> </span>../test_data/DRAM2_test_data/<span class="w"> </span>--outdir<span class="w"> </span>DRAM2-test-data-call-annotate-distill<span class="w"> </span>--threads<span class="w"> </span><span class="m">8</span><span class="w"> </span>--call<span class="w"> </span>--rename<span class="w"> </span>--annotate<span class="w"> </span>--use_uniref<span class="w"> </span>--use_kegg<span class="w"> </span>--use_merops<span class="w"> </span>--use_viral<span class="w"> </span>--use_pfam<span class="w"> </span>--use_camper<span class="w"> </span>--use_kofam<span class="w"> </span>--use_dbcan<span class="w"> </span>--use_methyl<span class="w"> </span>--use_canthyd<span class="w"> </span>--use_vog<span class="w"> </span>--use_fegenie<span class="w"> </span>--use_sulfur<span class="w"> </span>--distill_topic<span class="w"> </span>default<span class="w"> </span>--distill_ecosystem<span class="w"> </span><span class="s1">&#39;eng_sys ag&#39;</span><span class="w"> </span>--distill_custom<span class="w"> </span>test-data/custom-test-distilalte.tsv<span class="w"> </span>--profile<span class="w"> </span>conda_slurm<span class="w"> </span>--slurm_node<span class="w"> </span>main<span class="w"> </span>-with-report<span class="w"> </span>-with-trace<span class="w"> </span>-with-timeline
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<section id="breakdown-of-example-9">
+<h3>Breakdown of example (9):<a class="headerlink" href="#breakdown-of-example-9" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>-bg</cite> : Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue..</p></li>
+<li><p><cite>-profile</cite> : Nextflow option to select profile (Conda vs Singularity and SLURM vs no-SLURM..</p></li>
+<li><p><cite>–slurm_node</cite>: DRAM2 option to select a specific node to compute on during the whole run.</p></li>
+<li><p><cite>-with-trace</cite>: Nextflow option to output a process-by-process report of the run. (TEXT.</p></li>
+<li><p><cite>-with-report</cite>: Nextflow option to output a process-by-process report of the run. (HTML.</p></li>
+<li><p><cite>-with-timeline</cite>: Nextflow option to output a process-by-process HTML timeline report of the run. (HTML.</p></li>
+</ul>
+</section>
+</section>
+<section id="select-a-profile-which-suits-your-compute-setup">
+<h2>Select a Profile which suits your compute setup<a class="headerlink" href="#select-a-profile-which-suits-your-compute-setup" title="Link to this heading"></a></h2>
+<p>DRAM2 utilizes either Conda or Singularity for dependency management and the user MUST choose one of the following options on execution of any DRAM2 command</p>
+<p><em>The Nextflow profile option is used (`-profile`) - yes! a single hyphen!</em></p>
+<ol class="arabic">
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-profile<span class="w"> </span>conda
+</pre></div>
+</div>
+<p>This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in.</p>
+</li>
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-profile<span class="w"> </span>conda_slurm
+</pre></div>
+</div>
+<p>This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details).
+This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in.</p>
+</li>
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-profile<span class="w"> </span>singularity
+</pre></div>
+</div>
+<p>This option relies on the local systems Singularity. Nextflow will create its own Conda environments to run in.</p>
+</li>
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-profile<span class="w"> </span>singularity_slurm
+</pre></div>
+</div>
+<p>This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details)
+This option relies on the local systems Singularity to run the downloaded Singularity container.</p>
+</li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="example_output.html" class="btn btn-neutral float-right" title="Example Outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Rory M. Flynn and Reed R. Woyda.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

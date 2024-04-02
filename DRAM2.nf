@@ -1449,6 +1449,9 @@ def helpMessage() {
 
         --prodigal_tras_table   NUMBER  (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
                                             Specify a translation table to use (default: '1').
+        
+        --min_contig_len        NUMBER  <number in base pairs>
+                                            Default: '2500'
 
     Annotate options:
         --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
@@ -1542,7 +1545,9 @@ def callHelpMessage() {
 
         --prodigal_tras_table   <1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25>
                                     Specify a translation table to use (default: '1').
-
+                                    
+        --min_contig_len        NUMBER  <number in base pairs>
+                                            Default: '2500'
     Main options:
         --input_fasta           PATH    <path/to/fasta/directory/>
                                         Directory containing input fasta files.      
