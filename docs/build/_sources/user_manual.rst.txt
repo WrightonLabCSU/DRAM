@@ -490,7 +490,7 @@ All databases DRAM2 accommodates:
 
 `FeGenie <https://github.com/Arkadiy-Garber/FeGenie>`_
 
-- HMM-based identification and categorization of iron genes and iron gene operons in genomes and metagenome assemblies.
+- Placeholder description.
 - (6.6M)
 
 `Sulfur <url_to_sulfur_placeholder>`_
@@ -583,17 +583,16 @@ Example: ``--slurm_node alpha``
 ``--slurm_queue <node_name>`` Use to specify a specific partition/queue to compute within
 
 Example: ``--slurm_queue smith``
-
 Example: ``--slurm_queue 'smith-hi,smith-low'``
 
 
 **Note:** SLURM can be tricky because administrators do not set up SLURM the same across machines.
 You may need to modify a given profile `.config` file to get DRAM2 with SLURM to work on your HPC.
 
-**For Example**, a HPC our group computes on does not allow for memory specificaton. Thus, to use DRAM2 with SLURM on this HPC, we comment out ("//") the ``memory=`` lines in the config files.
+**For Example**, a HPC our group computes on does not allow for memory specificaton. Thus, to use DRAM2 with SLURM on this HPC, we comment out ("//") the `memory=` lines in the config files.
 
 The config files are located in:
-``/assets/conda/conda_slurm.config`` and ``/assets/singularity/singularity_slurm.config``
+`/assets/conda/conda_slurm.config` and `/assets/singularity/singularity_slurm.config`
 
 ----------------------------------------------------------------------------------------------------------------------------
 

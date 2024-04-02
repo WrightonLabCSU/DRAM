@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; DRAM2 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to the DRAM2 Docs!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #1e4b28" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/dram_logo_med_white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dram2-development-note">DRAM2 Development Note</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#call">Call</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#annotate">Annotate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#distill">Distill</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#toolkits">Toolkits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ingest-toolkit">Ingest Toolkit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#genomic-data">Genomic data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#genomic-metadata">Genomic metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#manipulate-toolkit">Manipulate Toolkit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#generate-gff-and-gbk">Generate GFF and GBK:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strain">Strain:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merge-and-add-annotations">Merge and Add annotations:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#topic-toolkit">Topic Toolkit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ecosystem-toolkit">Ecosystem Toolkit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#non-homology-toolkit">Non-homology Toolkit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#neighborhoods">Neighborhoods:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#patterns">Patterns:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#phylogenetic-trees">Phylogenetic Trees:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#phenotype-toolkit">Phenotype Toolkit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#traits">Traits:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#heatmap">Heatmap:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-trait-map">Build trait map:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-omics-toolkit">Multi-Omics Toolkit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paint-pathways">Paint pathways:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analyze-pathways">Analyze pathways:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#consensus-pathways">Consensus pathways:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_output.html">Example Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_formats.html">Input Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_options.html">Nextflow Pipeline Options</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1e4b28" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DRAM2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h1>
+<p>DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes. DRAM2 annotates MAGs using <a class="reference external" href="https://www.kegg.jp/">KEGG</a> (if provided by the user), <a class="reference external" href="https://www.uniprot.org/">UniRef90</a>, <a class="reference external" href="https://pfam.xfam.org/">PFAM</a>, <a class="reference external" href="http://bcb.unl.edu/dbCAN2/">dbCAN</a>, <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genome/viruses/">RefSeq viral</a>, <a class="reference external" href="http://vogdb.org/">VOGDB</a> and the <a class="reference external" href="https://www.ebi.ac.uk/merops/">MEROPS</a> peptidase database as well as custom user databases. DRAM is run in two stages. First, an annotation step to assign database identifiers to genes, and then a distill step to curate these annotations into useful functional categories. DRAM2 was implemented in <a class="reference external" href="https://www.nextflow.io/">Nextflow</a> due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments.</p>
+<p>For more detail on DRAM and how DRAM works, please see our <a class="reference external" href="https://academic.oup.com/nar/article/48/16/8883/5884738">paper</a> as well as the <a class="reference external" href="https://github.com/WrightonLabCSU/DRAM/wiki">wiki</a>.</p>
+<section id="dram2-development-note">
+<h2>DRAM2 Development Note<a class="headerlink" href="#dram2-development-note" title="Link to this heading"></a></h2>
+<p>The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1.</p>
+<ul>
+<li><p>Future updates will include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Pre-formatted annotation and description databases avaiable via <a class="reference external" href="https://www.globus.org/">GLOBUS</a>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Source code is <a class="reference external" href="https://github.com/WrightonLabCSU/DRAM2/tree/dev">available on GitHub</a>.</p>
+</section>
+<section id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Link to this heading"></a></h2>
+<p>DRAM2 is organized into 3 main modules. Each module can be run independently of other modules, or strung together in one command.</p>
+<section id="call">
+<h3>Call<a class="headerlink" href="#call" title="Link to this heading"></a></h3>
+<p>DRAM2 Call is used to generate called genes from input FASTA files.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--call
+</pre></div>
+</div>
+</div></blockquote>
+<p><cite>Prodigal v2.6.3 &lt;https://github.com/hyattpd/Prodigal&gt;</cite> is utilized here to generate output <code class="docutils literal notranslate"><span class="pre">*.fna</span></code>, <code class="docutils literal notranslate"><span class="pre">*.faa</span></code>, and <code class="docutils literal notranslate"><span class="pre">*.gff</span></code> files.</p>
+<p>Output:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prodigal_v2.6.3/&lt;*.fna,<span class="w"> </span>*.faa,<span class="w"> </span>*.gff&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="annotate">
+<h3>Annotate<a class="headerlink" href="#annotate" title="Link to this heading"></a></h3>
+<p>DRAM2 Annotate is used to generate annotations from called genes using both <cite>HMMER v3.3.2 &lt;http://hmmer.org/&gt;</cite> and <cite>MMseqs2 v14.7e284 &lt;https://github.com/soedinglab/MMseqs2&gt;</cite>.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--annotate<span class="w"> </span>&lt;options&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<p>Annotate relies on the user to download pre-formatted databases. Additionally the user can provide pre-formatted custom databases as well.</p>
+<dl>
+<dt>Output:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>RAW/raw-annotations.tsv
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="distill">
+<h3>Distill<a class="headerlink" href="#distill" title="Link to this heading"></a></h3>
+<p>DRAM2 Distill is used to distill down the annotations using expertly-curated distillation input data. Additionally, users may provide custom distill input spreadsheets to distill the annotations.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>....<span class="w"> </span>--distill_topic<span class="w"> </span>&lt;option&gt;<span class="w"> </span>--distill_ecosystem<span class="w"> </span>&lt;option&gt;<span class="w"> </span>--distill_custom<span class="w"> </span>&lt;option&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="toolkits">
+<h2>Toolkits<a class="headerlink" href="#toolkits" title="Link to this heading"></a></h2>
+<p>DRAM2 toolkits are used to organize commands within the modules based on their scientific cohesion.</p>
+<section id="ingest-toolkit">
+<h3>Ingest Toolkit<a class="headerlink" href="#ingest-toolkit" title="Link to this heading"></a></h3>
+<p>DRAM2 can ingest a variety of inputs depending on the desired outcome.</p>
+<section id="genomic-data">
+<h4>Genomic data<a class="headerlink" href="#genomic-data" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>metaG</p>
+<p>metaT &lt;coming soon&gt;</p>
+<p>metaP &lt;coming soon&gt;</p>
+<p>metaB &lt;coming soon&gt;</p>
+</div></blockquote>
+</section>
+<section id="genomic-metadata">
+<h4>Genomic metadata<a class="headerlink" href="#genomic-metadata" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>Taxonomy:</p>
+<p>Sample, MAG, bin, etc. taxonomy - typically obtained from <cite>GTDB &lt;https://github.com/Ecogenomics/GTDBTk&gt;</cite></p>
+<p>Quality:</p>
+<p>MAG or bin quality - typically obtained from <cite>CheckM &lt;https://github.com/Ecogenomics/CheckM&gt;</cite> or <cite>CheckM2 &lt;https://github.com/chklovski/CheckM2&gt;</cite></p>
+<p>See Input Formats for more details.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="manipulate-toolkit">
+<h3>Manipulate Toolkit<a class="headerlink" href="#manipulate-toolkit" title="Link to this heading"></a></h3>
+<section id="generate-gff-and-gbk">
+<h4>Generate GFF and GBK:<a class="headerlink" href="#generate-gff-and-gbk" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>DRAM2 can generate GFF and GBK output files based on the generated annotations:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>....<span class="w"> </span>--generate_gff<span class="w"> </span>--generate_gbk
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="strain">
+<h4>Strain:<a class="headerlink" href="#strain" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>DRAM2 can strain out genes of interest:</p>
+<p>&lt;coming soon&gt;</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>....<span class="w"> </span>--strain<span class="w"> </span>&lt;options&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="merge-and-add-annotations">
+<h4>Merge and Add annotations:<a class="headerlink" href="#merge-and-add-annotations" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>DRAM2 can either merge existing DRAM2 annotations together or a user can provide additional annotations to incorporate to a current DRAM2 run.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--merge_annotations<span class="w"> </span>&lt;options&gt;
+
+nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>....<span class="w"> </span>--add_annotations<span class="w"> </span>&lt;options&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+</section>
+</section>
+<section id="topic-toolkit">
+<h3>Topic Toolkit<a class="headerlink" href="#topic-toolkit" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>DRAM2 offers expertly-curated distillation of annotations.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>....<span class="w"> </span>--distill_topic<span class="w"> </span>&lt;options&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<p>Current list of available Distill Topics:</p>
+<p>Carbon &lt;description&gt;</p>
+<p>Energy &lt;description&gt;</p>
+<p>Misc. &lt;description&gt;</p>
+<p>Nitrogen &lt;description&gt;</p>
+<p>Transport &lt;description&gt;</p>
+<p>CAMPER &lt;description&gt;</p>
+<p>&lt;Stay tuned for more!&gt;</p>
+</div></blockquote>
+</section>
+<section id="ecosystem-toolkit">
+<h3>Ecosystem Toolkit<a class="headerlink" href="#ecosystem-toolkit" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>DRAM2 offers expertly-curated distillation of annotations.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>....<span class="w"> </span>--distill_ecosystem<span class="w"> </span>&lt;options&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<p>Current list of available Distill Ecosystems:</p>
+<p>Engineered Systems &lt;description&gt;</p>
+<p>Agricultural  &lt;description&gt;</p>
+</div></blockquote>
+</section>
+<section id="non-homology-toolkit">
+<h3>Non-homology Toolkit<a class="headerlink" href="#non-homology-toolkit" title="Link to this heading"></a></h3>
+<section id="neighborhoods">
+<h4>Neighborhoods:<a class="headerlink" href="#neighborhoods" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>DRAM2 can pull genes based on neighborhoods. &lt;coming soon&gt;</p>
+<p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+<section id="patterns">
+<h4>Patterns:<a class="headerlink" href="#patterns" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>DRAM2 can pull genes based on patterns. &lt;coming soon&gt;</p>
+<p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+<section id="phylogenetic-trees">
+<h4>Phylogenetic Trees:<a class="headerlink" href="#phylogenetic-trees" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>DRAM2 can construct phylogenetic trees for closely related genes, using precise annotations to explore their evolutionary histories and functional divergences across various organisms. &lt;coming soon&gt;</p>
+<p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+</section>
+<section id="phenotype-toolkit">
+<h3>Phenotype Toolkit<a class="headerlink" href="#phenotype-toolkit" title="Link to this heading"></a></h3>
+<section id="traits">
+<h4>Traits:<a class="headerlink" href="#traits" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+<section id="heatmap">
+<h4>Heatmap:<a class="headerlink" href="#heatmap" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+<section id="build-trait-map">
+<h4>Build trait map:<a class="headerlink" href="#build-trait-map" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+</section>
+<section id="multi-omics-toolkit">
+<h3>Multi-Omics Toolkit<a class="headerlink" href="#multi-omics-toolkit" title="Link to this heading"></a></h3>
+<section id="paint-pathways">
+<h4>Paint pathways:<a class="headerlink" href="#paint-pathways" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+<section id="analyze-pathways">
+<h4>Analyze pathways:<a class="headerlink" href="#analyze-pathways" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+<section id="consensus-pathways">
+<h4>Consensus pathways:<a class="headerlink" href="#consensus-pathways" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>&lt;description&gt;</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to the DRAM2 Docs!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Rory M. Flynn and Reed R. Woyda.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -74,16 +74,16 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
    
   This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
 
-3) `-profile conda_slurm`
+2) `-profile conda_slurm`
    
   This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details).
   This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
 
-5) `-profile singularity`
+3) `-profile singularity`
    
   This option relies on the local systems Singularity. Nextflow will create its own Conda environments to run in. 
 
-7) `-profile singularity_slurm`
+4) `-profile singularity_slurm`
    
   This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details)
   This option relies on the local systems Singularity to run the downloaded Singularity container.  
@@ -303,8 +303,8 @@ DRAM2.nf
 ```
 
   **Breakdown of example (9):**
-  - `-bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
-  - `-profile` Nextflow option to select profile (Conda vs Singularity and SLURM vs no-SLURM).
+  - `-bg` : Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
+  - `-profile` : Nextflow option to select profile (Conda vs Singularity and SLURM vs no-SLURM).
   - `--slurm_node`: DRAM2 option to select a specific node to compute on during the whole run.
   - `-with-trace`: Nextflow option to output a process-by-process report of the run. (TEXT)
   - `-with-report`: Nextflow option to output a process-by-process report of the run. (HTML)
