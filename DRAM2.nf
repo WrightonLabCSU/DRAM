@@ -1350,7 +1350,7 @@ def version() {
     ===========================================
 
         Software versions used:
-        
+
         BBTools             v39.01
         Bowtie2             v2.5.1
         Prodigal            v2.6.3
@@ -1450,9 +1450,9 @@ def helpMessage() {
     
     REQUIRED DRAM2 profile options:
         -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                        See SLURM options in full help menu.
+                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                            See SLURM options in full help menu.
 
     Call options:
         --call                  OPTION  Call genes on the input FASTA files using Prodigal.
@@ -1493,9 +1493,9 @@ def helpMessage() {
         --add_annotations       PATH    <path/to/old-annoations.tsv> 
                                             Used to add in old annotations to the current run. (See example for format.)
 
-        --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
+        --generate_gff          OPTION  Will generate an output GFF for each sample based on the raw-annotations.tsv.
 
-        --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
+        --generate_gbk          OPTION  Will generate an output GBK for each sample based on the raw-annotations.tsv.
         
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
@@ -1527,13 +1527,13 @@ def helpMessage() {
                                             Default: './DRAM2_output/'
 
         --threads               NUMBER  Number of threads to use for processing.
-                                        Default: '10'
+                                            Default: '10'
 
         --slurm_node            string  <node_name>
-                                        Example --slurm_queue c001
+                                            Example --slurm_queue c001
 
         --slurm_queue           string  <slurm partition name>
-                                        Example:  --slurn_queue 'smith-hi,smith-low'
+                                            Example:  --slurn_queue 'smith-hi,smith-low'
 
     """.stripIndent()
 }
@@ -1561,9 +1561,9 @@ def callHelpMessage() {
     
     REQUIRED DRAM2 profile options:
         -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                        See SLURM options in full help menu.
+                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                            See SLURM options in full help menu.
 
     Call options:
         --rename                Rename FASTA headers based on file name.    
@@ -1582,20 +1582,20 @@ def callHelpMessage() {
                                             Default: '2500'
     Main options:
         --input_fasta           PATH    <path/to/fasta/directory/>
-                                        Directory containing input fasta files.      
-                                        Default: './input_fasta/'
+                                            Directory containing input fasta files.      
+                                            Default: './input_fasta/'
 
         --outdir                PATH    <path/to/output/directory>
                                             Default: './DRAM2_output/'
 
         --threads               NUMBER  Number of threads to use for processing.
-                                        Default: '10'
+                                            Default: '10'
 
         --slurm_node            string  <node_name>
-                                        Example --slurm_queue c001
+                                            Example --slurm_queue c001
 
         --slurm_queue           string  <slurm partition name>
-                                        Example:  --slurn_queue 'smith-hi,smith-low'
+                                            Example:  --slurn_queue 'smith-hi,smith-low'
     """.stripIndent()
 }
 
@@ -1625,9 +1625,9 @@ def annotateHelpMessage() {
     
     REQUIRED DRAM2 profile options:
         -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                        See SLURM options in full help menu.
+                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                            See SLURM options in full help menu.
 
     Annotate options:
     --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
@@ -1643,9 +1643,9 @@ def annotateHelpMessage() {
     --add_annotations       PATH    <path/to/old-annoations.tsv> 
                                         Used to add in old annotations to the current run. (See example for format.)
 
-    --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
+    --generate_gff          OPTION  Will generate an output GFF for each sample based on the raw-annotations.tsv.
 
-    --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
+    --generate_gbk          OPTION  Will generate an output GBK for each sample based on the raw-annotations.tsv.
     
     Main options:
     --input_fasta           PATH    <path/to/fasta/directory/>
@@ -1664,10 +1664,10 @@ def annotateHelpMessage() {
                                         Default '10'
 
     --slurm_node            string  <node_name>
-                                    Example --slurm_queue c001
+                                        Example --slurm_queue c001
 
     --slurm_queue           string  <slurm partition name>
-                                    Example:  --slurn_queue 'smith-hi,smith-low'
+                                        Example:  --slurn_queue 'smith-hi,smith-low'
     """.stripIndent()
 }
 
@@ -1700,9 +1700,9 @@ def distillHelpMessage() {
     
     REQUIRED DRAM2 profile options:
         -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                        See SLURM options in full help menu.
+                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
+                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                            See SLURM options in full help menu.
 
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
@@ -1718,7 +1718,7 @@ def distillHelpMessage() {
                                             CheckM and CheckM2 compatible. 
 
         --taxa                  PATH    <path/to/bin-taxonomy.tsv>
-                                        Compatible with GTDB. (See example for format.)
+                                            Compatible with GTDB. (See example for format.)
 
         --distill_topic         STRING  <carbon|energy|misc|nitrogen|transport> OR <default = carbon, energy, misc, nitrogen, transport>
                                             If more than one topic included, they must be enclosed in single quotes
@@ -1737,10 +1737,10 @@ def distillHelpMessage() {
                                             Default '10'
 
         --slurm_node            string  <node_name>
-                                        Example --slurm_queue c001
+                                            Example --slurm_queue c001
 
         --slurm_queue           string  <slurm partition name>
-                                        Example:  --slurn_queue 'smith-hi,smith-low'
+                                            Example:  --slurn_queue 'smith-hi,smith-low'
     """.stripIndent()
 }
 
