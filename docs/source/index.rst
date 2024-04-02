@@ -33,6 +33,5 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
    installation
    quick_start
    example_output
-   input_formats
    user_manual
    nextflow_options

@@ -1337,7 +1337,17 @@ workflow {
 def version() {
     log.info"""
 
-    DRAM2 
+    (==(     )==)                 (==(     )==)
+    `-.`. ,',-'                   `-.`. ,',-'
+        _,-'"                         _,-'"
+    ,-',' `.`-.                   ,-',' `.`-.
+    (==(     )==)     DRAM2       (==(     )==)
+    `-.`. ,',-'                   `-.`. ,',-'
+        _,-'"                         _,-'"
+     ,-',' `.`-.                   ,-',' `.`-.
+    (==(     )==)                 (==(     )==)
+                      v2.0.0
+    ===========================================
 
     Software versions used:
     BBTools             v39.01
@@ -1384,7 +1394,7 @@ def helpMessage() {
              _,-'"                         _,-'"
           ,-',' `.`-.                   ,-',' `.`-.
          (==(     )==)                 (==(     )==)
-
+                           v2.0.0
           =========================================
 
     Reed Woyda. MIT License. Micobial Ecosystems Lab, Colorado State University Fort Collins. 2024 (last updated 2024)
@@ -1539,7 +1549,7 @@ def callHelpMessage() {
              _,-'"                         _,-'"
           ,-',' `.`-.                   ,-',' `.`-.
          (==(     )==)                 (==(     )==)
-
+                           v2.0.0
           =========================================
     Call description: The purpose of DRAM2 --call is to call genes on input FASTA files.
 
@@ -1600,7 +1610,7 @@ def annotateHelpMessage() {
              _,-'"                         _,-'"
           ,-',' `.`-.                   ,-',' `.`-.
          (==(     )==)                 (==(     )==)
-
+                           v2.0.0
           =========================================
     Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
 
@@ -1672,7 +1682,7 @@ def distillHelpMessage() {
              _,-'"                         _,-'"
           ,-',' `.`-.                   ,-',' `.`-.
          (==(     )==)                 (==(     )==)
-
+                           v2.0.0
           =========================================
     Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s). 
                             User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
@@ -1745,7 +1755,7 @@ def adjectivesHelpMessage() {
              _,-'"                         _,-'"
           ,-',' `.`-.                   ,-',' `.`-.
          (==(     )==)                 (==(     )==)
-
+                           v2.0.0
           =========================================
     Annotate description: The purpose of DRAM2 '--adjectives' is to evaluate genes and describe their features.
 
