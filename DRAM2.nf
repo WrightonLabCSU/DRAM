@@ -1375,17 +1375,20 @@ def version() {
 */
 def helpMessage() {
     log.info """
-   (==(     )==)                 (==(     )==)
-    `-.`. ,',-'                   `-.`. ,',-'
-       _,-'"                         _,-'"
-    ,-',' `.`-.                   ,-',' `.`-.
-   (==(     )==)     DRAM2       (==(     )==)
-    `-.`. ,',-'                   `-.`. ,',-'
-       _,-'"                        _,-'"
-    ,-',' `.`-.                  ,-',' `.`-.
-   (==(     )==)                 (==(     )==)
-   
-    ==========================================
+         (==(     )==)                 (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)     DRAM2       (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)                 (==(     )==)
+
+          =========================================
+
+    Reed Woyda. MIT License. Micobial Ecosystems Lab, Colorado State University Fort Collins. 2024 (last updated 2024)
+
     Description: 
         The purpose of DRAM2 is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation. 
         DRAM2 can be used to call, annotate and distill annotations from input FASTA files. 
@@ -1527,8 +1530,17 @@ def helpMessage() {
 /* Call Help Menu */
 def callHelpMessage() {
     log.info """
-    DRAM2 Nextflow Pipeline
-    ===================================
+         (==(     )==)                 (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)     DRAM2       (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)                 (==(     )==)
+
+          =========================================
     Call description: The purpose of DRAM2 --call is to call genes on input FASTA files.
 
     Usage:
@@ -1579,8 +1591,17 @@ def callHelpMessage() {
 /* Annotate Help Menu */
 def annotateHelpMessage() {
     log.info """
-    DRAM2 Nextflow Pipeline
-    ===================================
+         (==(     )==)                 (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)     DRAM2       (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)                 (==(     )==)
+
+          =========================================
     Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
 
     Usage:
@@ -1642,8 +1663,17 @@ def annotateHelpMessage() {
 /* Distill Help Menu */
 def distillHelpMessage() {
     log.info """
-    DRAM2 Nextflow Pipeline
-    ===================================
+         (==(     )==)                 (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)     DRAM2       (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)                 (==(     )==)
+
+          =========================================
     Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s). 
                             User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
                             Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). 
@@ -1706,8 +1736,17 @@ def distillHelpMessage() {
 /* Adjectives Help Menu */
 def adjectivesHelpMessage() {
     log.info """
-    DRAM2 Nextflow Pipeline
-    ===================================
+         (==(     )==)                 (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)     DRAM2       (==(     )==)
+          `-.`. ,',-'                   `-.`. ,',-'
+             _,-'"                         _,-'"
+          ,-',' `.`-.                   ,-',' `.`-.
+         (==(     )==)                 (==(     )==)
+
+          =========================================
     Annotate description: The purpose of DRAM2 '--adjectives' is to evaluate genes and describe their features.
 
     Usage:
