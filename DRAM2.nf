@@ -8,7 +8,7 @@
     
     Author of DRAM2 Nextflow pipeline
     author = Reed Woyda, Rory Flynn
-    institution = Colorado State University - Wrighton Lab
+    institution = Colorado State University - Wrighton Lab - Microbial Ecosystems Lab
 
     Description of project
     description = DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes. 

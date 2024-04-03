@@ -186,8 +186,8 @@
 <p>DRAM2 will submit as many jobs as there are resources. Remaining jobs will be places in the SLURM queue and will be performed when resources are available.</p>
 <p>Jane included all of the databases to annotate from.</p>
 <p>Outcome:</p>
-<p>Say Jane had 1000 samples. This means that, because of the maxForks of <code class="docutils literal notranslate"><span class="pre">max_forks_user_cpu</span> <span class="pre">=</span> <span class="pre">10</span></code>, 10 samples will be annotated at the same time for the KEGG database, each with 40 CPUs = 400 CPUs.</p>
-<p>Jane was a bit ambitious - this HPC cannot possible run all annotations, for all databases, for all samples, at the same time. However, because this HPC uses SLURM, her jobs will sit in the queue and will be ran when resources are available.</p>
+<p>Say Jane had 1000 samples. This means, because of the maxForks of <code class="docutils literal notranslate"><span class="pre">max_forks_user_cpu</span> <span class="pre">=</span> <span class="pre">10</span></code>, 10 samples will be annotated at the same time for the KEGG database, each with 40 CPUs = 400 CPUs.</p>
+<p>Jane was a bit ambitious - this HPC cannot possibly run all annotations, for all databases, for all samples, at the same time. However, because this HPC uses SLURM, her jobs will sit in the queue and will be ran when resources are available.</p>
 </section>
 </section>
 </section>
