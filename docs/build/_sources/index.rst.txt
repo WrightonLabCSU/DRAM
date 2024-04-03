@@ -35,3 +35,4 @@ The DRAM development team is actively working on DRAM2. We do not anticipate add
    example_output
    user_manual
    nextflow_options
+   resource_management

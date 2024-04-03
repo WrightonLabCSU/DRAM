@@ -576,15 +576,27 @@ SLURM is used when either of these ``--profile`` options are used: `conda_slurm`
 SLURM command-line options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``--slurm_node <node_name>`` Use to specify a specific node to compute on
+Specify SLURM job duration:
 
-Example: ``--slurm_node alpha``
+    ``--time <time in SLURM format>`` 
 
-``--slurm_queue <node_name>`` Use to specify a specific partition/queue to compute within
+    Example: ``--time 10h``
 
-Example: ``--slurm_queue smith``
+    Example: ``--time 7d``
 
-Example: ``--slurm_queue 'smith-hi,smith-low'``
+Specify a specific node to compute on:
+
+    ``--slurm_node <node_name>``
+
+    Example: ``--slurm_node alpha``
+
+Specify a specific partition/queue to compute within:
+
+    ``--slurm_queue <node_name>`` 
+
+    Example: ``--slurm_queue smith``
+
+    Example: ``--slurm_queue 'smith-hi,smith-low'``
 
 
 **Note:** SLURM can be tricky because administrators do not set up SLURM the same across machines.

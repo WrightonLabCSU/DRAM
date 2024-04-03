@@ -21,6 +21,7 @@ DRAM2 ``--call`` will output the following for each input FASTA file:
 3. ``QUAST_v5.2.0/collected_quast.tsv`` and ``QUAST_v5.2.0/quast_results/``
 4. ``tRNA_rRNA/collected_rrnas.tsv`` and ``tRNA_rRNA/collected_trnas.tsv`` 
 
+------------------
 
 Annotation Output
 ------------------
