@@ -299,7 +299,7 @@ DRAM2.nf
 --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper
 --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
 --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv
---profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline
+-profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline
 ```
 
   **Breakdown of example (9):**
