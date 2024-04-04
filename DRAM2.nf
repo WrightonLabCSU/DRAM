@@ -179,7 +179,7 @@ if( params.product && !params.call && !params.annotate && (params.distill_topic 
     }
 }
 
-//Add in other checks for adjectives,... etc.
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Check for merge_annotations
@@ -524,16 +524,6 @@ if( params.annotate ){
                 tuple(sampleName, it)
             }
 
-        // Set ch_input_proteins
-        /*
-        ch_called_proteins = Channel
-            .fromPath(params.input_proteins + params.proteins_fmt, checkIfExists: true)
-            .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called proteins. Cannot find any called gene fasta files matching: ${params.input_proteins}\nNB: Path needs to follow pattern: path/to/directory/" }
-            .map {
-                sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-                tuple(sampleName, it)
-            }
-        */
     }    
     
     /* Check for input Bin Quality file */
@@ -927,7 +917,7 @@ if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || pa
             threads      : ${params.threads}
             tRNA         : ${params.trnas}
             rRNA         : ${params.rrnas}
-            databases    : 
+            databases    : ${annotate_list}
             distill      : ${distill_flag}
               topic      : ${distill_topic_list}
               ecosystem  : ${distill_ecosystem_list}
@@ -963,6 +953,7 @@ workflow {
     }    
     
     if( params.call ){
+        // Call genes using Prodigal on the input fasta file(s) 1-by-1
         CALL_GENES ( ch_fasta, ch_generate_gene_locs_script )
         ch_called_genes = CALL_GENES.out.prodigal_fna
         ch_called_proteins = CALL_GENES.out.prodigal_faa
@@ -987,11 +978,12 @@ workflow {
             .mix( ch_filtered_fasta, ch_gene_gff  )
             .collect()
             .set { ch_collected_fasta }
-        /* Run QUAST on individual FASTA file combined with respective GFF */
+
+        // Run QUAST on individual FASTA file combined with respective GFF 
         QUAST( ch_collected_fasta )
         ch_quast_stats = QUAST.out.quast_collected_out
 
-        /* Run tRNAscan-SE on each fasta to identify tRNAs */
+        // Run tRNAscan-SE on each fasta to identify tRNAs
         TRNA_SCAN( ch_fasta )
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out
         // Collect all sample formatted tRNA files
@@ -999,18 +991,20 @@ workflow {
             .mix( ch_trna_scan )
             .collect()
             .set { ch_collected_tRNAs }
-        /* Run TRNA_COLLECT to generate a combined TSV for all fastas */
+
+        // Run TRNA_COLLECT to generate a combined TSV for all fastas 
         TRNA_COLLECT( ch_collected_tRNAs )
         ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
 
-        /* Run barrnap on each fasta to identify rRNAs */
+        // Run barrnap on each fasta to identify rRNAs
         RRNA_SCAN( ch_fasta )
         ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
         Channel.empty()
             .mix( ch_rrna_scan )
             .collect()
             .set { ch_collected_rRNAs }
-        /* Run RRNA_COLLECT to generate a combined TSV for all fastas */
+
+        // Run RRNA_COLLECT to generate a combined TSV for all fastas
         RRNA_COLLECT( ch_collected_rRNAs )
         ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
         ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
@@ -1033,11 +1027,9 @@ workflow {
     */
     if( params.annotate ){
 
+        // Define empty channel to populate with annotation results
         def formattedOutputChannels = channel.of()
 
-        // Here we need to get the gene locations from the user-provided genes.fna file
-        // This will require rules about a user-provided .fna file
-        // It MUST contain the gene locs as the 2nd and 3rd # entries
         if( params.call == 0){
             GENE_LOCS( ch_called_proteins, ch_called_genes_loc_script_faa )
             ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
@@ -1045,13 +1037,11 @@ workflow {
 
         // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
         if( index_mmseqs == "1" ){
-            //Also need to add in functionality when user provides either an fna or gff as input_genes
-            //For now I will jsut hard code assuming they user did both call and annotate:
+            // Use MMSEQS2 to index each called genes protein file
             MMSEQS_INDEX( ch_called_proteins )
             ch_mmseqs_query = MMSEQS_INDEX.out.mmseqs_index_out
         }
-
-        // Annotate according to the user-specified databases 
+        // KEGG annotation
         if( annotate_kegg == 1 ){
             ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
             MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
@@ -1062,7 +1052,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_kegg_formatted)
         }
-
+        // KOFAM annotation
         if( annotate_kofam == 1 ){
             HMM_SEARCH_KOFAM ( ch_called_proteins, params.kofam_e_value, ch_kofam_db )
             ch_kofam_hmms = HMM_SEARCH_KOFAM.out.hmm_search_out
@@ -1076,7 +1066,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_kofam_formatted)
         }
-        //NOT DONE
+        // PFAM annotation
         if( annotate_pfam == 1 ){
             ch_combined_query_locs_pfam = ch_mmseqs_query.join(ch_gene_locs)
             MMSEQS_SEARCH_PFAM( ch_combined_query_locs_pfam, ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.pfam_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
@@ -1087,7 +1077,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_pfam_formatted)
         }
-
+        // dbCAN annotation
         if( annotate_dbcan == 1 ){
             
             HMM_SEARCH_DBCAN ( ch_called_proteins, params.dbcan_e_value , ch_dbcan_db)
@@ -1102,7 +1092,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
         }
-
+        // CAMPER annotation
         if (annotate_camper == 1){
             // HMM
             HMM_SEARCH_CAMPER ( ch_called_proteins, params.camper_e_value , ch_camper_hmm_db)
@@ -1124,7 +1114,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
         }
-
+        // FeGenie annotation
         if (annotate_fegenie == 1){
             HMM_SEARCH_FEGENIE ( ch_called_proteins,  params.fegenie_e_value, ch_fegenie_db )
             ch_fegenie_hmms = HMM_SEARCH_FEGENIE.out.hmm_search_out
@@ -1137,7 +1127,7 @@ workflow {
             ch_fegenie_formatted = FEGENIE_HMM_FORMATTER.out.fegenie_formatted_hits
             formattedOutputChannels = formattedOutputChannels.mix(ch_fegenie_formatted)
         }
-
+        // Methyl annotation
         if (annotate_methyl == 1){
             ch_combined_query_locs_methyl = ch_mmseqs_query.join(ch_gene_locs)
             MMSEQS_SEARCH_METHYL( ch_combined_query_locs_methyl, ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.methyl_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
@@ -1145,7 +1135,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_mmseqs_formatted)
         }
-
+        // CANT-HYD annotation
         if (annotate_canthyd == 1){
             // MMseqs
             ch_combined_query_locs_canthyd = ch_mmseqs_query.join(ch_gene_locs)
@@ -1168,7 +1158,7 @@ workflow {
             formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_hmm_formatted)
 
         }
-
+        // Sulfur annotation
         if (annotate_sulfur == 1){
             HMM_SEARCH_SULFUR ( ch_called_proteins,  params.sulfur_e_value, ch_sulfur_db )
             ch_sulfur_hmms = HMM_SEARCH_SULFUR.out.hmm_search_out
@@ -1182,7 +1172,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_sulfur_formatted)
         }
-
+        // MEROPS annotation
         if (annotate_merops == 1){
             ch_combined_query_locs_merops = ch_mmseqs_query.join(ch_gene_locs)
             MMSEQS_SEARCH_MEROPS( ch_combined_query_locs_merops, ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.merops_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
@@ -1193,7 +1183,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
         }
-
+        // Uniref annotation
         if (annotate_uniref == 1){
             ch_combined_query_locs_uniref = ch_mmseqs_query.join(ch_gene_locs)
             MMSEQS_SEARCH_UNIREF( ch_combined_query_locs_uniref, ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.uniref_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
@@ -1204,7 +1194,7 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
         }
-
+        // VOGdb annotation
         if (annotate_vogdb == 1){
             HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb_db )
             ch_vog_hmms = HMM_SEARCH_VOG.out.hmm_search_out
@@ -1217,8 +1207,8 @@ workflow {
             ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_vog_formatted)
-        }
-
+        }   
+        // Viral annotation
         if (annotate_viral == 1){
             ch_combined_query_locs_viral = ch_mmseqs_query.join(ch_gene_locs)
             MMSEQS_SEARCH_VIRAL( ch_combined_query_locs_viral, ch_viral_db, params.bit_score_threshold,  params.rbh_bit_score_threshold,ch_dummy_sheet, params.viral_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
@@ -1229,7 +1219,8 @@ workflow {
 
             formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)
         }
-
+        
+        // Collect all formatted annotation output files
         Channel.empty()
             .mix( formattedOutputChannels )
             .collect()
@@ -1303,7 +1294,7 @@ workflow {
         }       
         // If the user did not annotate and provided taxa and/or bin quality, add it to annotations.
         if( params.annotate == 0 ){
-            /* Add Bin Quality to annotations */
+            // Add Bin Quality to annotations
             if( params.bin_quality != "" ){
                 ADD_BIN_QUALITY( ch_combined_annotations, ch_bin_quality )
                 ch_updated_annots = ADD_BIN_QUALITY.out.annots_bin_quality_out
@@ -1311,7 +1302,7 @@ workflow {
             else{
                 ch_updated_annots = ch_combined_annotations
             }
-            /* Add Taxonomy to annotations */
+            // Add Taxonomy to annotations
             if( params.taxa != "" ){
                 ADD_TAXA( ch_updated_annots, ch_taxa )
                 ch_updated_taxa_annots = ADD_TAXA.out.annots_taxa_out
@@ -1320,24 +1311,27 @@ workflow {
                 ch_updated_taxa_annots = ch_combined_annotations
             }
             if( params.add_annotations != "" ){
+                // Add additional annotations if user provided them
                 ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
                 ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
                 
+                // Count annotations per sample
                 COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
                 ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
             }
             else{
                 ch_final_annots = ch_combined_annotations
+                // Count annotations per sample
                 COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
             }
 
         } 
         
-        /* Combine the individual user-specified distill sheets into a single channel */
+        // Combine the individual user-specified distill sheets into a single channel
         COMBINE_DISTILL(ch_distill_carbon, ch_distill_energy, ch_distill_misc, ch_distill_nitrogen, ch_distill_transport, ch_distill_ag, ch_distill_eng_sys, ch_distill_camper, ch_distill_custom_collected )
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
-        /* Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets */
+        // Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets
         DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
         ch_distillate = DISTILL.out.distillate
     }
