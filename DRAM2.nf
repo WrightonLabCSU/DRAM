@@ -107,6 +107,7 @@ include { DISTILL                                       } from './modules/distil
 // This is a placeholder Product process
 include { PRODUCT_HEATMAP                               } from './modules/product/product_heatmap.nf'
 
+include { TREES                                         } from './modules/trees/trees.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -612,9 +613,31 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
     }
 
+}
 
+if( params.trees ) {
+    def validOptions = ["nar_nxr", "amoa_pmoa"]
+
+    if (!validOptions.contains(userOption)) {
+        error "Invalid option provided for --trees. Please choose one of the following options: ${validOptions.join(', ')}"
+    }
+
+    if( !params.call ){
+        if ( params.annotations == "" && params.input_genes == "" ){
+            error "If you want to run TREES, you must either use --call to call genes or, provide annotations via --annotations and directory of called genes via --input_genes."
+        }
+    }
+
+    ch_tree_data_files = Channel.fromPath(params.tree_data_files)
 
 }
+
+if( params.adjectives ){
+
+    ch_adjectives_script = file(params.adjectives_script)
+
+}
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -946,6 +969,12 @@ workflow {
         ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv
         ch_gene_gff = CALL_GENES.out.prodigal_gff
         ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta
+
+        // Collect all individual fasta to pass to quast
+        Channel.empty()
+            .mix( ch_called_proteins  )
+            .collect()
+            .set { ch_collected_faa }
 
         // Collect all individual fasta to pass to quast
         Channel.empty()
@@ -1325,6 +1354,31 @@ workflow {
     }
     */
 
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Phylogenetic Trees
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */   
+    /*
+    if( params.trees ){
+        TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
+
+    }
+    */
+
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Adjectives
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */   
+    /*
+    if( params.adjectives ){
+        ADJECTIVES( ch_final_annots, ch_adjectives_script )
+
+    }
+    */
 }
 
 

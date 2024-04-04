@@ -1,7 +1,5 @@
 process DISTILL {
 
-
-    
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
     path( ch_combined_distill_sheets, stageAs: "combined/*" )
