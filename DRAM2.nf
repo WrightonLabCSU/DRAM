@@ -606,10 +606,10 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 }
 
 if( params.trees ) {
-    def validOptions = ["nar_nxr", "amoa_pmoa"]
+    def validOptionsTrees = ["nar_nxr", "amoa_pmoa"]
 
-    if (!validOptions.contains(userOption)) {
-        error "Invalid option provided for --trees. Please choose one of the following options: ${validOptions.join(', ')}"
+    if (!validOptionsTrees.contains(userOption)) {
+        error "Invalid option provided for --trees. Please choose one of the following options: ${validOptionsTrees.join(', ')}"
     }
 
     if( !params.call ){
