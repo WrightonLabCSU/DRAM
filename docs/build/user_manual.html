@@ -738,11 +738,23 @@ Singularity excels in ensuring reproducibility and compatibility in high-perform
 </ul>
 <section id="slurm-command-line-options">
 <h3>SLURM command-line options<a class="headerlink" href="#slurm-command-line-options" title="Link to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">--slurm_node</span> <span class="pre">&lt;node_name&gt;</span></code> Use to specify a specific node to compute on</p>
+<p>Specify SLURM job duration:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">--time</span> <span class="pre">&lt;time</span> <span class="pre">in</span> <span class="pre">SLURM</span> <span class="pre">format&gt;</span></code></p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">--time</span> <span class="pre">10h</span></code></p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">--time</span> <span class="pre">7d</span></code></p>
+</div></blockquote>
+<p>Specify a specific node to compute on:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">--slurm_node</span> <span class="pre">&lt;node_name&gt;</span></code></p>
 <p>Example: <code class="docutils literal notranslate"><span class="pre">--slurm_node</span> <span class="pre">alpha</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">&lt;node_name&gt;</span></code> Use to specify a specific partition/queue to compute within</p>
+</div></blockquote>
+<p>Specify a specific partition/queue to compute within:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">&lt;node_name&gt;</span></code></p>
 <p>Example: <code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">smith</span></code></p>
 <p>Example: <code class="docutils literal notranslate"><span class="pre">--slurm_queue</span> <span class="pre">'smith-hi,smith-low'</span></code></p>
+</div></blockquote>
 <p><strong>Note:</strong> SLURM can be tricky because administrators do not set up SLURM the same across machines.
 You may need to modify a given profile <cite>.config</cite> file to get DRAM2 with SLURM to work on your HPC.</p>
 <p><strong>For Example</strong>, a HPC our group computes on does not allow for memory specificaton. Thus, to use DRAM2 with SLURM on this HPC, we comment out (“//”) the <code class="docutils literal notranslate"><span class="pre">memory=</span></code> lines in the config files.</p>

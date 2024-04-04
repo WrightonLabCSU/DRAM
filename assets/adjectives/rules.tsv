@@ -1,0 +1,93 @@
+name	parent	child	notes
+Methanogen	methanogen	mcr&notOtherMethanogen
+	mcr	K00399|K00400|K00401|K00402|K03421|K03422
+	notOtherMethanogen	not:OtherAjMethanogen
+	OtherAjMethanogen	sulfatereducer|Denitrifier|AerobicAmmoniaOxidizer|comammox|annamox|Phototroph|ETC60
+Aerobic Ammonia Oxidizer	AerobicAmmoniaOxidizer	AmmoniaMonooxygenase|AmmoniaMonooxygenase&HydroxylamineDehydrogenase
+	AmmoniaMonooxygenase	EC1.14.99.39|K10944|K10945|K10946
+	HydroxylamineDehydrogenase	EC1.7.2.6|K10535
+Comammox	comammox	AmmoniaMonooxygenase&NitriteOxidoreductase&HydrazineDeydrogenase
+	NitriteOxidoreductase	K00370|K00371
+	HydrazineDeydrogenase	EC1.7.2.8|K20935
+annamox	annamox	HydrazineDeydrogenase&HydrazineSynthase
+	HydrazineSynthase	EC1.7.2.7|K20932|K20933|K20934
+Nitrogen fixer	NitrogenFixer	Nitrogenase
+	Nitrogenase	EC1.18.6.1|EC1.18.6.2|K02591|K02586|K02588|K00531|K22897|K22896|K22898|K22899
+Phototroph	Phototroph	PhotosystemI|PhotosystemII
+	PhotosystemI	K02689|K02690|K026901|K02692|K02693|K02694|K08940|K08941|K08942|K08943
+	PhotosystemII	K02703|K02704|K02705|K02706|K02707|K02708|K08928|K08929
+	ETC60	percent60ComplexIA|percent60ComplexIB|percent60ComplexIC
+	ETC50	percent50ComplexIA|percent50ComplexIB|percent50ComplexIC
+	percent50ComplexIA	percent:50:ComplexIA
+	percent50ComplexIB	percent:50:ComplexIB
+	percent50ComplexIC	percent:50:ComplexIC
+	percent60ComplexIA	percent:60:ComplexIA
+	percent60ComplexIB	percent:60:ComplexIB
+	percent60ComplexIC	percent:60:ComplexIC
+	ComplexIA	"K00330,[K00331&K00332&[K00333|K00331]&[K13378|K13380]],K00334,K00335,K00336,K00337,K00338,K00339,K00340,[K00341&K00342|K15863],K00343"
+	ComplexIB	"K05574,K05582,K05581,K05579,K05572,K05580,K05578,K05576,K05577,K05575,K05573,K05583,K05584,K05585"
+	ComplexIC	"K03945,K03946,K03947,K03948,K03949,K03950,K03951,K03952,K03953,K03954,K03955,K03956,K11352,K11353"
+Fermenter	Fermenter	not:NegativeForFermenter
+	NegativeForFermenter	ETC50|methanogen|Denitrifier|sulfatereducer|AerobicAmmoniaOxidizer|Aerobe|Microaerophillic|Phototroph
+	Denitrifier	ETC50&[NitrateReductase|NitriteReductase|NitricOxideReductase|NitrousOxideReductase]
+	NitrousOxideReductase	K00376|EC1.7.2.4
+	NitricOxideReductase	K04561|K02305|EC1.7.2.5
+	NitriteReductase	K00368|K15864|EC1.7.2.1
+Aerobe	Aerobe	[CytochromeCOxidase|CytochromeAa3600MenaquinolOxidase|CytochromeOUbiquinolOxidase]&ETC50
+	CytochromeCOxidase	K02275|K02274|K02276|K15408|K02277
+	CytochromeAa3600MenaquinolOxidase	K02827|K02826|K02828|K02829
+	CytochromeOUbiquinolOxidase	K02297|K02298|K02299|K02300
+Microaerophillic	Microaerophillic	[percent50CytochromeBDUbiquinolOxidase|percent50CytochromeCOxidaseCBB3]&ETC50
+	percent50CytochromeBDUbiquinolOxidase	percent:50:CytochromeBDUbiquinolOxidase
+	percent50CytochromeCOxidaseCBB3	percent:50:CytochromeCOxidaseCBB3
+	CytochromeBDUbiquinolOxidase	"K00425,K00426,K00424|K22501"
+	CytochromeCOxidaseCBB3	"K00404|K00405|K15862,K00407,K00406"
+	NotNarNapNrf	not:NarNapNrf
+	NarNapNrf	NitrateReductase|NRF
+	NitrateReductase	K00370|K00371|K00374|K02567|K02568|EC1.7.5.1|EC1.9.6.1
+Iron Oxidation	IronOxidation	[Cyc2|PioA|fe>sulfocyanin|foxEYZ|foxABC]&[Microaerophillic|Aerobe|sulfatereducer|Denitrifier|Phototroph]
+	Cyc2	fe>Cyc2_repCluster1
+	PioA	PlaceHolder
+	foxEYZ	fe>FoxE|fe>FoxY|fe>FoxZ
+	foxABC	fe>FoxA|fe>FoxB|fe>FoxC
+	PlaceHolder	False
+Probable Iron Reduction	ProbIronReduction	[notIronReductionGenes|hemeCountGT3]&ETC50&NotUnironDescription
+	notIronReductionGenes	not:IronReductionGenes
+	hemeCount	inGenomeCount:3:hemeCountGT3
+	hemeCountGT3	columnvalue:gt:3:heme_regulatory_motif_count
+	NotUnironDescription	not:UnironDescription
+	UnironDescription	columncontains:kegg_hit:NitrateReducer
+Iron Reduction	IronReduction	IronReductionGenes&ETC50
+	IronReductionGenes	mtrCAB|fe>omcF|fe>omcS|fe>omcZ|fe>DFE_operons|fe>FmnA
+	mtrCAB	fe>MtrA&fe>MtrB_TIGR03509&fe>MtrC_TIGR03507
+	DFE_operons	fe>DFE_0448|fe>DFE_0449|fe>DFE_0450|fe>DFE_0451|fe>DFE_0461|fe>DFE_0462|fe>DFE_0463|fe>DFE_0464|fe>DFE_0465|
+N reducer	Nreducer	ETC50&[NitrateReductase|NitriteReductase|NitricOxideReductase|NitrousOxideReductase]&nxr_nar>narGNreducer
+Fumarate Reduction	FumarateReduction	atleast:1:FumarateReductionParts
+	FumarateReductionParts	"K00244,K00245,K00246,K00247"
+Tetrathionate Reduction	TetrathionateReduction	[1ofttrrs&1ofttrabc]|2ofttrabc
+	1ofttrrs	K13040|K13041
+	2ofttrabc	atleast:2:ttrabc
+	1ofttrabc	atleast:1:ttrabc
+	ttrabc	"K08359,K08358,K08357"
+DNRA	DNRA	nirBD|nrfAH
+	nirBD	K00362|K00363
+	nrfAH	K03385|K15876
+Methanotroph	Methanotroph	pmoA|mmoX
+	pmoA	[K10944|EC1.14.18.3]&amoa_pmoa>pmoa
+	mmoX	K16157
+S oxidizer	sulfateoxidizer	[DsrABtypeo|SoeABC|SorAB|Sqr|FccAB|SoxXA|SoxYZ|SoxB|SoxCD]&percent50NADH
+	DsrABtypeo	K11180|s>dsrA|s>dsrB|K11181	BAD dsrAB (oxidizing type) [ --BAD dissimilatory-type sulfite reductase]
+	SoeABC	K21307|K21308|K21309	GOOD soeABC 
+	SorAB	K05301|K00386	MAYBE sorAB  PF07682.11  s>SOR or just the kos I used
+	Sqr	s>sqr_alignment|K17218	MAYBE sqr 
+	FccAB	K17230|K17229	GOOD fccAB 
+	SoxXA	K17223|K17222	GOOD soxXA
+	SoxYZ	s>SoxY|K17226|s>SoxZ|K17227	MAYBE soxYZ 
+	SoxB	K17224	GOOD soxB 
+	SoxCD	K17225|K22622	GOOD soxCD Selected the KO that was SUlpher related
+	percent50NADH	percent:50:NADH	MAYBE 50% of NADH  dehydrogenase with electron acceptor [--BAD is this 2 things]
+	NADH	K03934,K03935,K03936,K03937,K03938,K03939,K03940,K03941,K03942,K03943,K03944	I am going to include the optional extra K03934+K03935+K03936+K03937+K03938+K03939+K03940+K03941+K03942+K03943-K03944
+S reducer	sulfatereducer	DsrABtyper|PhsA|TtrA
+	DsrABtyper	K11180|s>dsrA|s>dsrB|K11181	BAD dsrAB (reducing type) [dissimilatory-type sulfite reductase in sulpher]
+	PhsA	K08352	MAYBE phsA [s>thiosulfate_reductase_phsA_alignment]
+	TtrA	K08357	GOOD ttrA

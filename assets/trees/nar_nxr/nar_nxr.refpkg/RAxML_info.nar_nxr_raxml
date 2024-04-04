@@ -1,0 +1,95 @@
+
+
+IMPORTANT WARNING: Sequences g_8 and g_9 are exactly identical
+
+
+IMPORTANT WARNING: Sequences g_11 and g_12 are exactly identical
+
+
+IMPORTANT WARNING: Sequences g_13 and g_14 are exactly identical
+
+
+IMPORTANT WARNING: Sequences g_40 and g_41 are exactly identical
+
+
+IMPORTANT WARNING: Sequences g_43 and g_44 are exactly identical
+
+
+IMPORTANT WARNING: Sequences g_60 and g_61 are exactly identical
+
+
+IMPORTANT WARNING: Sequences g_76 and g_77 are exactly identical
+
+
+IMPORTANT WARNING: Sequences g_82 and g_83 are exactly identical
+
+IMPORTANT WARNING
+Found 8 sequences that are exactly identical to other sequences in the alignment.
+Normally they should be excluded from the analysis.
+
+An alignment file with sequence duplicates removed has already
+been printed to file /home/projects-wrighton-2/GROWdb/USAfocus_FinalBins110121/dereplicated_bin_analyses/metabolism/nxr_nar//nxr-nar_seqs_for_tree_aligned.faa.phy.reduced
+
+
+This is RAxML version 7.7.2 released by Alexandros Stamatakis on July 31 2013.
+
+With greatly appreciated code contributions by:
+Andre Aberer (HITS)
+Simon Berger (HITS)
+Nick Pattengale (Sandia)
+Wayne Pfeiffer (SDSC)
+Akifumi S. Tanabe (NRIFS)
+
+
+Alignment has 1565 distinct alignment patterns
+
+Proportion of gaps and completely undetermined characters in this alignment: 40.94%
+
+RAxML rapid hill-climbing mode
+
+Using 1 distinct models/data partitions with joint branch length optimization
+
+
+Executing 1 inferences on the original alignment using 1 distinct randomized MP trees
+
+All free model parameters will be estimated by RAxML
+GAMMA model of rate heteorgeneity, ML estimate of alpha-parameter
+
+GAMMA Model parameters will be estimated up to an accuracy of 0.1000000000 Log Likelihood units
+
+Partition: 0
+Alignment Patterns: 1565
+Name: No Name Provided
+DataType: AA
+Substitution Matrix: WAG
+Using empirical base frequencies
+
+
+
+
+RAxML was called as follows:
+
+raxmlHPC -m PROTGAMMAWAGF -n nxr_nar_raxml -s /home/projects-wrighton-2/GROWdb/USAfocus_FinalBins110121/dereplicated_bin_analyses/metabolism/nxr_nar//nxr-nar_seqs_for_tree_aligned.faa.phy -p 11 
+
+
+Partition: 0 with name: No Name Provided
+Base frequencies: 0.073 0.060 0.047 0.065 0.011 0.031 0.053 0.083 0.031 0.048 0.064 0.059 0.031 0.036 0.057 0.050 0.060 0.030 0.049 0.063 
+
+Inference[0]: Time 7855.233752 GAMMA-based likelihood -104967.862139, best rearrangement setting 5
+alpha[0]: 1.530755 
+
+
+Conducting final model optimizations on all 1 trees under GAMMA-based models ....
+
+Inference[0] final GAMMA-based Likelihood: -104967.862114 tree written to file /home/projects-wrighton-2/DRAM/scratch_space_flynn/jul_27_22_trees/second_try/RAxML_result.nxr_nar_raxml
+
+
+Starting final GAMMA-based thorough Optimization on tree 0 likelihood -104967.862114 .... 
+
+Final GAMMA-based Score of best tree -104967.862114
+
+Program execution info written to /home/projects-wrighton-2/DRAM/scratch_space_flynn/jul_27_22_trees/second_try/RAxML_info.nxr_nar_raxml
+Best-scoring ML tree written to: /home/projects-wrighton-2/DRAM/scratch_space_flynn/jul_27_22_trees/second_try/RAxML_bestTree.nxr_nar_raxml
+
+Overall execution time: 11244.438291 secs or 3.123455 hours or 0.130144 days
+
