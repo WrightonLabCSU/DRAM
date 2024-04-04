@@ -687,30 +687,32 @@ These Nextflow tips and tricks demonstrate how the `-resume` option can optimize
 **EDIT**
 
 ### Storage space for databases, database descriptions and potentially a Singualrity container
+Depending on which databases you download, and if you choose to use Singularity or Conda, you will need adequate storage space on your machine.
 
-#### Pre-formatted databases:
-DRAM2 requires pre-formatted database files in addition 
+### Resource Management
 
-#### Database descriptions:
-DRAM2 requires a SQL databases which contains the database descriptions. (Metadata for database hits including descriptions, EC numbers, etc.)
-We have provided 
+DRAM2 is implemented in Nextflow.
 
-*NOTE:* Setting up DRAM can take a long time (up to 5 hours) and uses a large amount of memory (512 gb) by default. To
-use less memory you can use the `--skip_uniref` flag which will reduce memory usage to ~64 gb if you do not provide KEGG
- Genes and 128 gb if you do. Depending on the number of processors which you tell  it to use (using the `--threads`
-argument) and the speed of your internet connection. On a less than 5 year old server with 10 processors it takes about
- 2 hours to process the data when databases do not need to be downloaded.
+Nextflow is able to scale horizontally on a given machine.
 
+What does this mean?
 
+Horizontal scaling refers to the ability to distribute computational tasks across multiple computing resources, such as cores or nodes, in parallel. In the context of Nextflow, this means that a single workflow can leverage the computational power of multiple CPUs or nodes, allowing for faster execution of tasks and improved overall performance.
 
-DRAM has a large memory burden and is designed to be run on high performance computers. DRAM annotates against a large
-variety of databases which must be processed and stored. Setting up DRAM with KEGG Genes and UniRef90 will take up ~500
-GB of storage after processing and require ~512 GB of RAM while using KOfam and skipping UniRef90 will mean all
-processed databases will take up ~30 GB of disk and will only use ~128 GB of RAM while processing. DRAM annotation
-memory usage depends on the databases used. When annotating with UniRef90, around 220 GB of RAM is required. If the KEGG
-gene database has been provided and UniRef90 is not used, then memory usage is around 100 GB of RAM. If KOfam is used to
-annotate KEGG and UniRef90 is not used, then less than 50 GB of RAM is required. DRAM can be run with any number of
-processors on a single node.
+By utilizing horizontal scaling, Nextflow can efficiently manage and execute workflows that require significant computational resources, such as those involved in genomic data analysis. This enables DRAM2 to process large datasets and complex analyses in a timely manner, making it suitable for a wide range of research and bioinformatics applications.
+
+#### Summary
+--------
+
+DRAM2 comes with configuration files which have the option to change how many "things" can happen at a time in the pipeline.
+
+A user can modify these, "maxForks", parameters within the ``nextflow.config`` to increase the number of "things" which DRAM2 can perform at a given time.
+
+**NOTE**: Development is in progress to enable different DRAM2 modes: "lite", "medium" and "heavy". Where "lite" would be for a good laptop and "heavy" for a HPC. These options will alter the CPU and memory (RAM) requirements for each process.
+
+Please visit the [Read the Docs page](https://dram2.readthedocs.io/en/latest/index.html). page for more detailed inforamtion on how to run DRAM2 efficiently.
+
+---------------
 
 ## Citing DRAM
 The DRAM was published in Nucleic Acids Research in 2020 and is available [here](https://academic.oup.com/nar/article/48/16/8883/5884738). If
