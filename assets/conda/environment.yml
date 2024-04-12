@@ -29,5 +29,6 @@ dependencies:
   - bbmap
   - openpyxl=3.1.2
   - pplacer=1.1.alpha19
+  - mafft=7.525
   - pip:
       - matplotlib==3.8.3

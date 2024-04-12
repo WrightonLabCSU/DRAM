@@ -31,6 +31,9 @@ process TREES {
         seqtk subseq \${sample}_called_genes.faa <(echo \${query_id}) > extracted_sequences/\${sample}_\${query_id}.fasta
     done < extracted_query_ids.txt
 
+    # Align sequences to the reference alignment
+    mafft --add combined_extracted_sequences.fasta --reorder trees/${tree_option}/reference_alignment.fasta > aligned_sequences.fasta
+
     cat extracted_sequences/*.fasta > combined_extracted_sequences.fasta
     # Uncomment the following line to run pplacer if the rest of the script works fine
     pplacer -j ${params.threads} -c trees/${tree_option}/${tree_option}.refpkg combined_extracted_sequences.fasta
