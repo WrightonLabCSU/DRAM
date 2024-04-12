@@ -608,7 +608,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 if( params.trees ) {
     def validOptionsTrees = ["nar_nxr", "amoa_pmoa"]
 
-    if (!validOptionsTrees.contains(userOption)) {
+    if (!validOptionsTrees.contains(trees)) {
         error "Invalid option provided for --trees. Please choose one of the following options: ${validOptionsTrees.join(', ')}"
     }
 
