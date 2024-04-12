@@ -1,37 +1,29 @@
-import pandas as pd
+import sqlite3
 import sys
-import os
 
-# Input arguments
-annotations_file = sys.argv[1]
-tree_option = sys.argv[2]  # Either "nar_nxr" or "amoA_pmoA"
-output_file = sys.argv[3]
+def extract_query_ids(db_path, ko_list):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    ko_terms = ko_list.split(';')
+    query = f"SELECT DISTINCT sample, query_id FROM annotations WHERE gene_id IN ({', '.join('?' for _ in ko_terms)})"
+    cursor.execute(query, ko_terms)
+    results = cursor.fetchall()
+    conn.close()
+    return results
 
-# Assuming the script is run from the Nextflow work directory
-search_terms_file = f"{tree_option}/{tree_option}_search_terms.txt"
+def main():
+    if len(sys.argv) != 4:
+        print("Usage: python parse_annotations.py <db_path> <ko_list> <output_file>")
+        sys.exit(1)
 
-# Load search terms
-with open(search_terms_file, 'r') as file:
-    search_terms = [line.strip() for line in file]
+    db_path, ko_list, output_file = sys.argv[1:]
+    results = extract_query_ids(db_path, ko_list)
 
-# Load annotations
-annotations = pd.read_csv(annotations_file, sep='\t')
+    with open(output_file, 'w') as file:
+        for sample, query_id in results:
+            file.write(f"{sample}\t{query_id}\n")
 
-# Filter annotations based on search terms and EC numbers
-def filter_row(row):
-    for term in search_terms:
-        if term in row.to_string():
-            return True
-    return False
+    print(f"Extracted {len(results)} entries written to {output_file}")
 
-filtered_annotations = annotations[annotations.apply(filter_row, axis=1)]
-
-# Extract query_ids
-query_ids = filtered_annotations['query_id'].unique()
-
-# Save query_ids to file
-with open(output_file, 'w') as f:
-    for query_id in query_ids:
-        f.write(f"{query_id}\n")
-
-print(f"Extracted {len(query_ids)} unique query IDs.")
+if __name__ == '__main__':
+    main()

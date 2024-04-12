@@ -1316,13 +1316,16 @@ workflow {
                 ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
                 
                 // Count annotations per sample
-                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script )
                 ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+                ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
             }
             else{
                 ch_final_annots = ch_combined_annotations
                 // Count annotations per sample
-                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script )
+                ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+                ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
             }
 
         } 
@@ -1332,7 +1335,7 @@ workflow {
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         // Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets
-        DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
+        DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_annotations_sqlite3 )
         ch_distillate = DISTILL.out.distillate
     }
 
@@ -1354,12 +1357,12 @@ workflow {
         Phylogenetic Trees
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */   
-    /*
+    
     if( params.trees ){
-        TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
+        TREES( ch_final_annots, ch_annotations_sqlite3, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
 
     }
-    */
+    
 
 
     /*

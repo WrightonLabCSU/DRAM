@@ -4,6 +4,7 @@ process TREES {
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
+    path( annotations_sqlite3 )
     val( tree_option )
     path( ch_collected_proteins, stageAs: "protein_fastas/*" )
     path( tree_data_files )
@@ -16,18 +17,18 @@ process TREES {
 
     script:
     """
-    # Call the Python script to parse annotations and extract query IDs
-    python ${ch_trees_scripts}/parse_annotations.py ${ch_combined_annotations} ${tree_option} "extracted_query_ids.txt"
+    KO_LIST=${tree_option == 'nar_nxr' ? params.nar_nxr_ko_list : params.amoa_pmoa_ko_list}
+    python ${ch_trees_scripts}/parse_annotations.py ${annotations_sqlite3} ${KO_LIST} "extracted_query_ids.txt"
 
-    # Extract sequences based on query IDs
-    seqtk subseq ${ch_collected_proteins} extracted_query_ids.txt > extracted_sequences.fasta
+    # Loop through each line in the output file, extract the corresponding sequence
+    mkdir -p extracted_sequences
+    while read sample query_id; do
+        seqtk subseq protein_fastas/${sample}_called_genes.faa <(echo ${query_id}) > extracted_sequences/\${sample}_\${query_id}.fasta
+    done < extracted_query_ids.txt
 
-    # Run pplacer (assuming pplacer command and options need to be adjusted based on your setup)
-    pplacer -c ${tree_data_files}/${tree_option}/${tree_option}.refpkg extracted_sequences.fasta
-
-    # Assuming pplacer generates a tree, adjust commands and filenames as necessary
+    cat extracted_sequences/*.fasta > combined_extracted_sequences.fasta
+    #pplacer -c ${tree_data_files}/${tree_option}/${tree_option}.refpkg combined_extracted_sequences.fasta
 
 
     """
-
 }
