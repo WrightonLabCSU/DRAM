@@ -3,12 +3,12 @@ process TREES {
     errorStrategy 'finish'
 
     input:
-    //path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
-    //path( annotations_sqlite3 )
+    path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
+    path( annotations_sqlite3 )
     val( tree_option )
-    //path( ch_collected_proteins, stageAs: "protein_fastas/*" )
-    //path( tree_data_files )
-    //path( ch_trees_scripts )
+    path( ch_collected_proteins )
+    path( tree_data_files )
+    path( ch_trees_scripts )
 
 
 
@@ -17,6 +17,9 @@ process TREES {
 
     script:
     """
+    mkdir -p protein_fastas
+    mv *.faa protein_fastas/
+
     KO_LIST=${tree_option == 'nar_nxr' ? params.nar_nxr_ko_list : params.amoa_pmoa_ko_list}
     python ${ch_trees_scripts}/parse_annotations.py ${annotations_sqlite3} ${KO_LIST} "extracted_query_ids.txt"
 

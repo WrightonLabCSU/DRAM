@@ -1362,10 +1362,7 @@ workflow {
     */   
     
     if( params.trees ){
-        ch_collected_faa.view()
-        TREES( params.trees )
-
-        //TREES( ch_final_annots, ch_annotations_sqlite3, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
+        TREES( ch_final_annots, ch_annotations_sqlite3, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
 
     }
     
