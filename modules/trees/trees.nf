@@ -20,6 +20,8 @@ process TREES {
     script:
     """
 
+    ln -s ${tree_data_files}/* .
+
     KO_LIST="${tree_option == 'nar_nxr' ? nar_nxr_ko_list : amoa_pmoa_ko_list}"
     python ${ch_trees_scripts} ${annotations_sqlite3} \${KO_LIST} "extracted_query_ids.txt"
 
@@ -31,7 +33,7 @@ process TREES {
 
     cat extracted_sequences/*.fasta > combined_extracted_sequences.fasta
     # Uncomment the following line to run pplacer if the rest of the script works fine
-    pplacer -j ${params.threads} -c trees/${tree_option}/${tree_option}.refpkg combined_extracted_sequences.fasta
+    pplacer -j ${params.threads} -c ${tree_data_files}/${tree_option}/${tree_option}.refpkg combined_extracted_sequences.fasta
     """
 
 }
