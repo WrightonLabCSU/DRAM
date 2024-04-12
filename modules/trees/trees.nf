@@ -7,7 +7,7 @@ process TREES {
     path( annotations_sqlite3 )
     val( tree_option )
     path( ch_collected_proteins )
-    path( tree_data_files )
+    val( tree_data_files )
     path( ch_trees_scripts )
     val( nar_nxr_ko_list )
     val( amoa_pmoa_ko_list )
