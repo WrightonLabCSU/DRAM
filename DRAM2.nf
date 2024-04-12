@@ -619,6 +619,7 @@ if( params.trees ) {
     }
 
     ch_tree_data_files = Channel.fromPath(params.tree_data_files)
+    ch_trees_scripts = file(params.trees_scripts)
 
 }
 
