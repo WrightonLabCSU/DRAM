@@ -963,11 +963,10 @@ workflow {
         ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta
 
         // Collect all individual fasta to pass to quast
-        Channel.empty()
-            .map{ ch_called_proteins -> ch_called_proteins[1]}
-            .mix( ch_called_proteins  )
-            .collect()
-            .set { ch_collected_faa }
+        ch_called_proteins
+            .map { tuple -> tuple[1] }  // Extract only the file path from each tuple
+            .collect()                  // Collect all paths into a list
+            .set { ch_collected_faa }   // Set the resulting list to ch_collected_faa
 
         // Collect all individual fasta to pass to quast
         Channel.empty()
