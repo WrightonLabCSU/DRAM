@@ -33,7 +33,7 @@ process TREES {
 
     cat extracted_sequences/*.fasta > combined_extracted_sequences.fasta
     # Uncomment the following line to run pplacer if the rest of the script works fine
-    pplacer -j ${params.threads} -c trees/${tree_option}.refpkg combined_extracted_sequences.fasta
+    pplacer -j ${params.threads} -c trees/${tree_option}/${tree_option}.refpkg combined_extracted_sequences.fasta
     """
 
 }
