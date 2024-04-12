@@ -24,6 +24,7 @@ dependencies:
   - prodigal=2.6.3
   - samtools=1.17
   - bowtie2=2.5.1
+  - seqtk
   - ncurses
   - bbmap
   - openpyxl=3.1.2
