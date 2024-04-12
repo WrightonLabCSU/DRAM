@@ -9,6 +9,8 @@ process TREES {
     val( ch_collected_proteins )
     path( tree_data_files )
     path( ch_trees_scripts )
+    val( nar_nxr_ko_list )
+    val( amoa_pmoa_ko_list )
 
 
 
@@ -20,7 +22,7 @@ process TREES {
     mkdir -p protein_fastas
     mv *.faa protein_fastas/
 
-    KO_LIST=${tree_option == 'nar_nxr' ? params.nar_nxr_ko_list : params.amoa_pmoa_ko_list}
+    KO_LIST=${tree_option == 'nar_nxr' ? nar_nxr_ko_list : amoa_pmoa_ko_list}
     python ${ch_trees_scripts}/parse_annotations.py ${annotations_sqlite3} ${KO_LIST} "extracted_query_ids.txt"
 
     # Loop through each line in the output file, extract the corresponding sequence
