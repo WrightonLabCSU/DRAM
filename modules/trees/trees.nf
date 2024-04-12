@@ -28,7 +28,7 @@ process TREES {
     # Loop through each line in the output file, extract the corresponding sequence
     mkdir -p extracted_sequences
     while read sample query_id; do
-        seqtk subseq protein_fastas/${sample}_called_genes.faa <(echo ${query_id}) > extracted_sequences/\${sample}_\${query_id}.fasta
+        seqtk subseq protein_fastas/\${sample}_called_genes.faa <(echo \${query_id}) > extracted_sequences/\${sample}_\${query_id}.fasta
     done < extracted_query_ids.txt
 
     cat extracted_sequences/*.fasta > combined_extracted_sequences.fasta
