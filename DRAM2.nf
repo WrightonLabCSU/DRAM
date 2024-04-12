@@ -1255,11 +1255,13 @@ workflow {
             
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+            ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
         }
         else{
             ch_final_annots = ch_updated_taxa_annots
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+            ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
         }
 
         if( params.generate_gff || params.generate_gbk ){
