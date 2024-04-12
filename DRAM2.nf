@@ -1253,12 +1253,12 @@ workflow {
             ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
             ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
             
-            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
         else{
             ch_final_annots = ch_updated_taxa_annots
-            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
         }
 
