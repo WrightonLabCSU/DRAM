@@ -20,7 +20,8 @@ process TREES {
     script:
     """
 
-    ln -s ${tree_data_files}/* .
+    mkdir -p trees/${tree_option}
+    ln -s ${tree_data_files}/${tree_option}/* trees/${tree_option}/
 
     KO_LIST="${tree_option == 'nar_nxr' ? nar_nxr_ko_list : amoa_pmoa_ko_list}"
     python ${ch_trees_scripts} ${annotations_sqlite3} \${KO_LIST} "extracted_query_ids.txt"
