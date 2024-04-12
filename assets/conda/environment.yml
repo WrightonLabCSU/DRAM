@@ -1,9 +1,10 @@
 name: dram2-env
 channels:
-  - bioconda
   - conda-forge
-  - agbiome
+  - bioconda
   - defaults
+  - agbiome
+
 dependencies:
   - python=3.10
   - pandas=1.5.2
