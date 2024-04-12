@@ -964,6 +964,7 @@ workflow {
 
         // Collect all individual fasta to pass to quast
         Channel.empty()
+            .map{ ch_called_proteins -> ch_called_proteins[1]}
             .mix( ch_called_proteins  )
             .collect()
             .set { ch_collected_faa }
