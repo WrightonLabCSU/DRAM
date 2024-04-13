@@ -3,6 +3,12 @@ import pandas as pd
 import sys
 from Bio import Phylo
 
+def print_tree_edges(tree):
+    """Print all edges and their names from the tree."""
+    for clade in tree.find_clades():
+        if clade.name:
+            print(f"Edge: {clade.name}")
+
 def load_phylogenetic_tree(tree_file):
     """Load the phylogenetic tree from a Newick file."""
     return Phylo.read(tree_file, 'newick')
@@ -36,13 +42,18 @@ def find_named_ancestor(tree, edge_number, tree_mapping):
         return None
     
     # Traverse up the tree to find a named ancestor with a corresponding mapping
+    path_to_root = []
     while node.parent:
         node = node.parent
-        if node.name in tree_mapping:
+        path_to_root.append(node.name)
+        if node.name and node.name in tree_mapping:
+            print(f"Matching ancestor found: {node.name} for edge {edge_number}")
             return tree_mapping[node.name]
-        if not node.parent:  # Root node reached without finding a match
-            print(f"No named ancestor found for edge number {edge_number}")
-            return None
+
+    print(f"Path to root for edge {edge_number}: {path_to_root}")
+    print(f"No named ancestor found in mapping for edge number {edge_number}")
+    return None
+
 
 def update_annotations(annotations_path, placements, tree, tree_mapping):
     annotations_df = pd.read_csv(annotations_path, sep='\t')
@@ -71,6 +82,7 @@ def main(jplace_file, mapping_file, annotations_file, output_file, tree_file):
     placements = extract_placements(jplace_file)
     tree_mapping = load_tree_mapping(mapping_file)
     tree = load_phylogenetic_tree(tree_file)  # Load the tree once
+    print_tree_edges(tree)
     updated_annotations = update_annotations(annotations_file, placements, tree, tree_mapping)
     updated_annotations.to_csv(output_file, sep='\t', index=False)
     print("Updated annotations written to file.")
