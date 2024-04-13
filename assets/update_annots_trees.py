@@ -40,21 +40,31 @@ def load_tree_mapping(mapping_path):
 
 def find_named_ancestor(tree, edge_number, tree_mapping):
     target_node = next((node for node in tree.find_clades() if str(node.name) == str(edge_number)), None)
-    if target_node:
-        # Find nearest node
-        nearest_node, distance = find_nearest_node(tree, target_node)
-        if nearest_node:
-            print(f"Nearest node to {target_node.name} is {nearest_node.name} at distance {distance}")
-
-        # Find named ancestor
-        while target_node:
-            if target_node.name and target_node.name in tree_mapping:
-                print(f"Found matching ancestor: {target_node.name} for edge {edge_number}")
-                return tree_mapping[target_node.name]
-            target_node = target_node.parent
-    else:
+    if target_node is None:
         print(f"No node found for edge number {edge_number}")
+        return None
+
+    # Attempt to find a named ancestor directly in the path to the root
+    ancestor = trace_to_root_for_named_ancestor(target_node, tree_mapping)
+    if ancestor:
+        return ancestor
+
+    # If no named ancestor found in the path to the root, check nearby nodes
+    nearest_node, distance = find_nearest_node(tree, target_node)
+    if nearest_node:
+        print(f"Nearest node to {target_node.name} is {nearest_node.name} at distance {distance}")
+        return trace_to_root_for_named_ancestor(nearest_node, tree_mapping)
+
     return None
+
+def trace_to_root_for_named_ancestor(node, tree_mapping):
+    while node:
+        if node.name and node.name in tree_mapping:
+            print(f"Found matching ancestor: {node.name} for edge {node.name}")
+            return tree_mapping[node.name]
+        node = node.parent
+    return None
+
 
 def find_nearest_node(tree, target_node):
     min_distance = float('inf')
