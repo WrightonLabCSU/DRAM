@@ -31,6 +31,9 @@ process TREES {
         seqtk subseq \${sample}_called_genes.faa <(echo \${query_id}) > extracted_sequences/\${sample}_\${query_id}.fasta
     done < extracted_query_ids.txt
 
+    # Combine all sequences into one file
+    cat extracted_sequences/*.fasta > combined_extracted_sequences.fasta
+    
     # Align sequences to the reference alignment
     mafft --add combined_extracted_sequences.fasta --reorder trees/${tree_option}/${tree_option}.refpkg/nar_nxr_seqs_for_tree_aligned.faa > aligned_sequences.fasta
 
