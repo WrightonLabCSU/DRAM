@@ -1,6 +1,24 @@
 import json
 import pandas as pd
 import sys
+from Bio import Phylo
+
+def load_phylogenetic_tree(tree_file):
+    """Load the phylogenetic tree from a Newick file."""
+    return Phylo.read(tree_file, 'newick')
+
+def find_named_ancestor(tree, edge_number, tree_mapping):
+    """Find the closest named ancestor in the tree from a given edge."""
+    node = tree.find_clades({"name": str(edge_number)}).next()  # Assuming edge numbers are used as names
+    if node is None:
+        return None
+    
+    while node:
+        if node.name in tree_mapping:
+            return node.name, tree_mapping[node.name]
+        node = node.parent
+    
+    return None
 
 def extract_placements(jplace_path):
     """Extract placement edge numbers from the jplace file."""
@@ -23,27 +41,24 @@ def load_tree_mapping(mapping_path):
     print(f"Loaded tree mapping for {len(tree_map)} genes with edges: {list(tree_map.keys())}")
     return tree_map
 
-def update_annotations(annotations_path, placements, tree_mapping):
+def update_annotations(annotations_path, placements, tree, tree_mapping):
     annotations_df = pd.read_csv(annotations_path, sep='\t')
     print(f"Attempting to update {len(annotations_df)} annotations.")
     
-    missing_mappings = set()
     for index, row in annotations_df.iterrows():
         gene_id = row['query_id']
         if gene_id in placements:
             edge = placements[gene_id]
-            if edge in tree_mapping:
-                annotations_df.at[index, 'tree-verified'] = tree_mapping[edge]
-                print(f"Gene {gene_id} placed on edge {edge} which corresponds to {tree_mapping[edge]}")
+            ancestor = find_named_ancestor(tree, edge, tree_mapping)
+            if ancestor:
+                annotations_df.at[index, 'tree-verified'] = ancestor[1]
+                print(f"Gene {gene_id} placed on edge {edge} which corresponds to {ancestor[1]}")
             else:
-                missing_mappings.add(edge)
                 print(f"Gene {gene_id} placed on edge {edge} but no matching tree mapping found.")
         else:
             print(f"No placement found for gene {gene_id}")
-
-    print(f"Edges with missing mappings: {missing_mappings}")
+    
     return annotations_df
-
 
 def main(jplace_file, mapping_file, annotations_file, output_file):
     placements = extract_placements(jplace_file)
@@ -51,10 +66,11 @@ def main(jplace_file, mapping_file, annotations_file, output_file):
     updated_annotations = update_annotations(annotations_file, placements, tree_mapping)
     updated_annotations.to_csv(output_file, sep='\t', index=False)
     print("Updated annotations written to file.")
-
+    
 if __name__ == '__main__':
     jplace_file = sys.argv[1]
     mapping_file = sys.argv[2]
     annotations_file = sys.argv[3]
     output_file = sys.argv[4]
-    main(jplace_file, mapping_file, annotations_file, output_file)
+    tree_file = sys.argv[5]  # Add this line
+    main(jplace_file, mapping_file, annotations_file, output_file, tree_file)
