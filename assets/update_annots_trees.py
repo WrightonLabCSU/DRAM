@@ -54,27 +54,22 @@ def find_named_ancestor(tree, edge_number, tree_mapping):
     print(f"No named ancestor found in mapping for edge number {edge_number}")
     return None
 
-
 def update_annotations(annotations_path, placements, tree, tree_mapping):
     annotations_df = pd.read_csv(annotations_path, sep='\t')
-    print(f"Attempting to update {len(annotations_df)} annotations.")
-    
-    missing_mappings = set()
+    # Filter annotations to only include those that have a placement
+    annotations_df = annotations_df[annotations_df['query_id'].isin(placements)]
+    print(f"Attempting to update {len(annotations_df)} annotations from placements.")
+
     for index, row in annotations_df.iterrows():
         gene_id = row['query_id']
-        if gene_id in placements:
-            edge = placements[gene_id]
-            ancestor = find_named_ancestor(tree, edge, tree_mapping)
-            if ancestor:
-                annotations_df.at[index, 'tree-verified'] = ancestor
-                print(f"Gene {gene_id} placed on edge {edge} which corresponds to {ancestor}")
-            else:
-                missing_mappings.add(edge)
-                print(f"Gene {gene_id} placed on edge {edge} but no matching tree mapping found.")
+        edge = placements[gene_id]
+        ancestor = find_named_ancestor(tree, edge, tree_mapping)
+        if ancestor:
+            annotations_df.at[index, 'tree-verified'] = ancestor
+            print(f"Gene {gene_id} placed on edge {edge} which corresponds to {ancestor}")
         else:
-            print(f"No placement found for gene {gene_id}")
+            print(f"Gene {gene_id} placed on edge {edge} but no matching tree mapping found.")
 
-    print(f"Edges with missing mappings: {missing_mappings}")
     return annotations_df
 
 
