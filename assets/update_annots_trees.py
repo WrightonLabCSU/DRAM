@@ -27,14 +27,20 @@ def load_tree_mapping(mapping_path):
 def update_annotations(annotations_path, placements, tree_mapping):
     """Update the annotations with tree-verified subunit information."""
     annotations_df = pd.read_csv(annotations_path, sep='\t')
-    # Debugging output before mapping
     print("Starting annotation update...")
-    annotations_df['tree-verified'] = annotations_df['query_id'].apply(
-        lambda x: tree_mapping.get(placements.get(x), "No match")
-    )
-    # Debugging output after mapping
-    matched = annotations_df['tree-verified'] != "No match"
-    print(f"Matches found: {matched.sum()} / {len(annotations_df)}")
+    annotations_df['tree-verified'] = annotations_df['query_id'].map(placements).map(tree_mapping)
+    
+    for index, row in annotations_df.iterrows():
+        gene_id = row['query_id']
+        if gene_id in placements:
+            edge = placements[gene_id]
+            if edge in tree_mapping:
+                print(f"Gene {gene_id} placed on edge {edge} which corresponds to {tree_mapping[edge]}")
+            else:
+                print(f"Gene {gene_id} placed on edge {edge} but no matching tree mapping found.")
+        else:
+            print(f"No placement found for gene {gene_id}")
+    
     return annotations_df
 
 def main(jplace_file, mapping_file, annotations_file, output_file):
