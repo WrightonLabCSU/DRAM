@@ -3,11 +3,6 @@ import pandas as pd
 import sys
 from Bio import Phylo
 
-def print_tree_edges(tree):
-    """Print all edges and their names from the tree."""
-    for clade in tree.find_clades():
-        if clade.name:
-            print(f"Edge: {clade.name}")
 
 def load_phylogenetic_tree(tree_file):
     """Load the phylogenetic tree from a Newick file."""
@@ -34,6 +29,11 @@ def load_tree_mapping(mapping_path):
     print(f"Loaded tree mapping for {len(tree_map)} genes with edges: {list(tree_map.keys())}")
     return tree_map
 
+def print_tree_edges(tree):
+    """Print all edges and their names from the tree."""
+    for clade in tree.find_clades():
+        print(f"Node: {clade}, Name: {clade.name}")
+
 def find_named_ancestor(tree, edge_number, tree_mapping):
     """Find the nearest named ancestor of a given edge in the tree."""
     node = next(tree.find_clades({"name": str(edge_number)}), None)
@@ -41,18 +41,16 @@ def find_named_ancestor(tree, edge_number, tree_mapping):
         print(f"No node found for edge number {edge_number}")
         return None
     
-    # Traverse up the tree to find a named ancestor with a corresponding mapping
-    path_to_root = []
     while node.parent:
         node = node.parent
-        path_to_root.append(node.name)
         if node.name and node.name in tree_mapping:
-            print(f"Matching ancestor found: {node.name} for edge {edge_number}")
+            print(f"Found matching ancestor: {node.name} for edge {edge_number}")
             return tree_mapping[node.name]
+        print(f"Visiting node: {node.name}")
 
-    print(f"Path to root for edge {edge_number}: {path_to_root}")
-    print(f"No named ancestor found in mapping for edge number {edge_number}")
+    print(f"No matching ancestor found in mapping for edge number {edge_number}")
     return None
+
 
 def update_annotations(annotations_path, placements, tree, tree_mapping):
     annotations_df = pd.read_csv(annotations_path, sep='\t')
