@@ -45,24 +45,26 @@ def load_tree_mapping(mapping_path):
     return tree_map
 
 def find_named_ancestor(tree, edge_number, tree_mapping):
-    """Find the nearest named ancestor of a given edge in the tree."""
-    try:
-        node = next(tree.find_clades({"name": str(edge_number)}))
-    except StopIteration:
-        print(f"No node found for edge number {edge_number}")
-        return None
-
-    # Trace back to find a named ancestor
-    while node:
-        if node.name and node.name in tree_mapping:
-            print(f"Found matching ancestor: {node.name} for edge {edge_number}")
-            return tree_mapping[node.name]
-        node = node.parent
-        if node:
-            print(f"Visiting node: {node.name}")
-
-    print(f"No matching ancestor found in mapping for edge number {edge_number}")
+    found_node = None
+    for node in tree.find_clades():
+        if str(node.name) == str(edge_number):
+            found_node = node
+            break
+    if found_node:
+        while found_node:
+            if found_node.name and found_node.name in tree_mapping:
+                print(f"Found matching ancestor: {found_node.name} for edge {edge_number}")
+                return tree_mapping[found_node.name]
+            found_node = found_node.parent
+            if found_node:
+                print(f"Visiting node: {found_node.name}")
+    else:
+        print(f"No node found for edge number {edge_number}. Available nodes:")
+        for node in tree.get_terminals():  # Adjust this if you want to include non-terminal nodes
+            print(f"Node Name: {node.name}, Distance: {node.branch_length}")
+    print(f"No matching ancestor found in mapping for edge {edge_number}")
     return None
+
 
 def update_annotations(annotations_path, placements, tree, tree_mapping):
     annotations_df = pd.read_csv(annotations_path, sep='\t')
