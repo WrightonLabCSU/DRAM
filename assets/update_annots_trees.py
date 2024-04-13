@@ -18,30 +18,32 @@ def extract_placements(jplace_path):
     return placements
 
 def load_tree_mapping(mapping_path):
-    """Load tree mapping from a TSV file."""
     mapping_df = pd.read_csv(mapping_path, sep='\t')
     tree_map = mapping_df.set_index('gene')['call'].to_dict()
-    print(f"Loaded tree mapping for {len(tree_map)} genes.")
+    print(f"Loaded tree mapping for {len(tree_map)} genes with edges: {list(tree_map.keys())}")
     return tree_map
 
 def update_annotations(annotations_path, placements, tree_mapping):
-    """Update the annotations with tree-verified subunit information."""
     annotations_df = pd.read_csv(annotations_path, sep='\t')
-    print("Starting annotation update...")
-    annotations_df['tree-verified'] = annotations_df['query_id'].map(placements).map(tree_mapping)
+    print(f"Attempting to update {len(annotations_df)} annotations.")
     
+    missing_mappings = set()
     for index, row in annotations_df.iterrows():
         gene_id = row['query_id']
         if gene_id in placements:
             edge = placements[gene_id]
             if edge in tree_mapping:
+                annotations_df.at[index, 'tree-verified'] = tree_mapping[edge]
                 print(f"Gene {gene_id} placed on edge {edge} which corresponds to {tree_mapping[edge]}")
             else:
+                missing_mappings.add(edge)
                 print(f"Gene {gene_id} placed on edge {edge} but no matching tree mapping found.")
         else:
             print(f"No placement found for gene {gene_id}")
-    
+
+    print(f"Edges with missing mappings: {missing_mappings}")
     return annotations_df
+
 
 def main(jplace_file, mapping_file, annotations_file, output_file):
     placements = extract_placements(jplace_file)
