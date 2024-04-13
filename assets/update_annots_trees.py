@@ -60,13 +60,14 @@ def update_annotations(annotations_path, placements, tree, tree_mapping):
     
     return annotations_df
 
-def main(jplace_file, mapping_file, annotations_file, output_file):
+def main(jplace_file, mapping_file, annotations_file, output_file, tree_file):
     placements = extract_placements(jplace_file)
     tree_mapping = load_tree_mapping(mapping_file)
-    updated_annotations = update_annotations(annotations_file, placements, tree_mapping)
+    tree = load_phylogenetic_tree(tree_file)  # Load the tree once
+    updated_annotations = update_annotations(annotations_file, placements, tree, tree_mapping)
     updated_annotations.to_csv(output_file, sep='\t', index=False)
     print("Updated annotations written to file.")
-    
+
 if __name__ == '__main__':
     jplace_file = sys.argv[1]
     mapping_file = sys.argv[2]
