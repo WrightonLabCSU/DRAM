@@ -9,7 +9,6 @@ process TREES {
     path( ch_collected_proteins )
     path( tree_data_files )
     path( ch_trees_scripts )
-    path( ch_tree_update_annots_script )
     val( nar_nxr_ko_list )
     val( amoa_pmoa_ko_list )
 
