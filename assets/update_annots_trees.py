@@ -8,7 +8,7 @@ import os
 def run_guppy(jplace_path, output_dir):
     # Generate tree with placements
     tree_path = f"{output_dir}/tree_with_placements.newick"
-    subprocess.run(['guppy', 'tog', '--xml', jplace_path, '-o', tree_path], check=True)
+    subprocess.run(['guppy', 'tog', jplace_path, '-o', tree_path], check=True)
     print(f"Tree with placements written to {tree_path}")
 
     # Calculate EDPL
@@ -102,6 +102,9 @@ def main(jplace_file, mapping_file, annotations_file, output_file, tree_file):
     print("Updated annotations written to file.")
 
 if __name__ == '__main__':
+    if len(sys.argv) < 6:
+        print("Usage: python script.py <jplace_file> <mapping_file> <annotations_file> <output_file> <tree_file>")
+        sys.exit(1)
     jplace_file = sys.argv[1]
     mapping_file = sys.argv[2]
     annotations_file = sys.argv[3]
