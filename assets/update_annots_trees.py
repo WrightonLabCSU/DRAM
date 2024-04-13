@@ -2,6 +2,21 @@ import json
 import pandas as pd
 import sys
 from Bio import Phylo
+import subprocess
+import os
+
+def run_guppy(jplace_path, output_dir):
+    # Generate tree with placements
+    tree_path = f"{output_dir}/tree_with_placements.newick"
+    subprocess.run(['guppy', 'tog', '--xml', jplace_path, '-o', tree_path], check=True)
+    print(f"Tree with placements written to {tree_path}")
+
+    # Calculate EDPL
+    edpl_path = f"{output_dir}/edpl.csv"
+    subprocess.run(['guppy', 'edpl', '--point-mass', '--csv', jplace_path, '-o', edpl_path], check=True)
+    print(f"EDPL values written to {edpl_path}")
+
+    return tree_path, edpl_path
 
 def load_phylogenetic_tree(tree_file):
     """Load the phylogenetic tree from a Newick file."""
@@ -67,9 +82,21 @@ def update_annotations(annotations_path, placements, tree, tree_mapping):
     return annotations_df
 
 def main(jplace_file, mapping_file, annotations_file, output_file, tree_file):
-    placements = extract_placements(jplace_file)
+    # Directory to store output files
+    output_dir = './output'
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Run guppy to get the tree and EDPL
+    tree_path, edpl_path = run_guppy(jplace_file, output_dir)
+    
+    # Load the phylogenetic tree with placements
+    tree = Phylo.read(tree_path, 'newick')
+    
+    # Load tree mappings and placements
     tree_mapping = load_tree_mapping(mapping_file)
-    tree = load_phylogenetic_tree(tree_file)
+    placements = extract_placements(jplace_file)
+    
+    # Update annotations
     updated_annotations = update_annotations(annotations_file, placements, tree, tree_mapping)
     updated_annotations.to_csv(output_file, sep='\t', index=False)
     print("Updated annotations written to file.")
