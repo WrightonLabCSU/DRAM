@@ -38,23 +38,13 @@ def load_tree_mapping(mapping_path):
     print(f"Loaded tree mapping for {len(tree_map)} genes.")
     return tree_map
 
-def find_nearest_node(tree, target_node):
-    min_distance = float('inf')
-    nearest_node = None
-    for node in tree.find_clades():
-        if node != target_node:
-            distance = tree.distance(target_node, node)  # Calculate the actual tree distance
-            if distance < min_distance:
-                min_distance = distance
-                nearest_node = node
-    return nearest_node, min_distance
-
 def find_named_ancestor(tree, edge_number, tree_mapping):
     target_node = next((node for node in tree.find_clades() if str(node.name) == str(edge_number)), None)
     if target_node:
         # Find nearest node
         nearest_node, distance = find_nearest_node(tree, target_node)
-        print(f"Nearest node to {target_node.name} is {nearest_node.name} at distance {distance}")
+        if nearest_node:
+            print(f"Nearest node to {target_node.name} is {nearest_node.name} at distance {distance}")
 
         # Find named ancestor
         while target_node:
@@ -65,6 +55,17 @@ def find_named_ancestor(tree, edge_number, tree_mapping):
     else:
         print(f"No node found for edge number {edge_number}")
     return None
+
+def find_nearest_node(tree, target_node):
+    min_distance = float('inf')
+    nearest_node = None
+    for node in tree.get_terminals():
+        if node != target_node:
+            distance = tree.distance(target_node, node)
+            if distance < min_distance:
+                min_distance = distance
+                nearest_node = node
+    return nearest_node, min_distance
 
 def update_annotations(annotations_path, placements, tree, tree_mapping):
     annotations_df = pd.read_csv(annotations_path, sep='\t')
@@ -85,7 +86,7 @@ def main(jplace_file, mapping_file, annotations_file, output_file, tree_file):
     output_dir = './output'
     os.makedirs(output_dir, exist_ok=True)
     tree_path, edpl_path = run_guppy(jplace_file, output_dir)
-    tree = Phylo.read(tree_path, 'newick')
+    tree = load_phylogenetic_tree(tree_path)
     tree_mapping = load_tree_mapping(mapping_file)
     placements = extract_placements(jplace_file)
     updated_annotations = update_annotations(annotations_file, placements, tree, tree_mapping)
