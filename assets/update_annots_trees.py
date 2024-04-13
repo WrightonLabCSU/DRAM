@@ -6,14 +6,15 @@ import subprocess
 import os
 
 def run_guppy(jplace_path, output_dir):
-    # Generate tree with placements
+    # Generate tree with placements as a Newick file
     tree_path = f"{output_dir}/tree_with_placements.newick"
+    # Note: Remove the '--xml' option to ensure the output is in Newick format
     subprocess.run(['guppy', 'tog', jplace_path, '-o', tree_path], check=True)
     print(f"Tree with placements written to {tree_path}")
 
-    # Calculate EDPL
+    # Calculate EDPL and save it as a CSV
     edpl_path = f"{output_dir}/edpl.csv"
-    subprocess.run(['guppy', 'edpl', '--point-mass', '--csv', jplace_path, '-o', edpl_path], check=True)
+    subprocess.run(['guppy', 'edpl', '--csv', jplace_path, '-o', edpl_path], check=True)
     print(f"EDPL values written to {edpl_path}")
 
     return tree_path, edpl_path
