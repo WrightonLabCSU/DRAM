@@ -3,7 +3,6 @@ import sys
 import subprocess
 import os
 import re
-import Bio
 from Bio import Phylo
 
 def find_label_for_edge(tree, edge_number):
@@ -43,7 +42,6 @@ def run_guppy(jplace_file, output_dir):
         print(f"Error creating output directory: {e}")
         raise
 
-
 def extract_tree_and_placements(jplace_file):
     with open(jplace_file, 'r') as file:
         data = json.load(file)
@@ -63,7 +61,6 @@ def extract_tree_and_placements(jplace_file):
     
     return tree, placements
 
-
 def find_closest_tip_labels(tree, placements):
     closest_tip_labels = {}
     for gene_id, edge_number in placements.items():
@@ -77,8 +74,8 @@ def print_closest_tip_labels(closest_tip_labels):
 
 def main(jplace_file):
     output_dir = './output'
-    tree_path, _ = run_guppy(jplace_file, output_dir)
-    tree, placements = extract_tree_and_placements(jplace_file)
+    tree_output_path, _ = run_guppy(jplace_file, output_dir)
+    tree, placements = extract_tree_and_placements(tree_output_path)
     closest_tip_labels = find_closest_tip_labels(tree, placements)
     print_closest_tip_labels(closest_tip_labels)
 
