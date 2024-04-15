@@ -42,7 +42,7 @@ process TREES {
     # Uncomment the following line to run pplacer if the rest of the script works fine
     pplacer -j ${task.cpus} -c trees/${tree_option}/${tree_option}.refpkg aligned_sequences.fasta
 
-    python update_annots_trees.py aligned_sequences.jplace 
+    python update_annots_trees.py aligned_sequences.jplace raw-annotations.tsv updated-annotations.tsv
 
     """
 
