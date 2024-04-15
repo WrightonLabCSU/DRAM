@@ -47,7 +47,10 @@ def extract_tree_and_placements(jplace_file):
         data = json.load(file)
     
     # Extract tree from .jplace file
-    tree = data['tree']
+    tree_path = data['tree']
+
+    # Load the tree from the file
+    tree = load_phylogenetic_tree(tree_path)
 
     # Extract placements
     placements = {}
@@ -57,6 +60,7 @@ def extract_tree_and_placements(jplace_file):
             placements[gene_name] = placement['p'][0][1]  # Extract edge number
     
     return tree, placements
+
 
 def find_closest_tip_labels(tree, placements):
     closest_tip_labels = {}
