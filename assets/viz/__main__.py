@@ -10,6 +10,7 @@ from .make_product import main as make_product
     "--annotations",
     "-a",
     type=Path,
+    exists=True,
     help="Path to the annotations tsv file"
 )
 @click.option(
@@ -26,14 +27,20 @@ from .make_product import main as make_product
     help="Path to the output directory",
     default=Path.cwd()
 )
-def main(annotations, groupby_column, output_dir):
+@click.option(
+    "--show",
+    "-s",
+    is_flag=True,
+)
+def main(annotations, groupby_column, output_dir, show):
     """
     A visualization tool for DRAM2
     """
     make_product(
         annotations_tsv_path=annotations,
         groupby_column=groupby_column,
-        output_dir=output_dir
+        output_dir=output_dir,
+        show=show
     )
 
 

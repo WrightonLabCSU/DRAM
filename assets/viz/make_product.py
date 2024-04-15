@@ -630,15 +630,15 @@ def make_functional_heatmaps(df, x_col="function_name", y_col="genome", c_col="p
     return function_charts
 
 
-# def add_legend(p: Plot, labels, location="center", side="right"):
-#
-#     legend = Legend(items=[
-#         (label, [glyph]) for label, glyph in zip(labels, p.renderers)
-#     ],
-#         location=location,
-#     )
-#     p.add_layout(legend, side)
-#     return p
+def add_legend(p: Plot, labels, location="center", side="right"):
+
+    legend = Legend(items=[
+        (label, [glyph]) for label, glyph in zip(labels, p.renderers)
+    ],
+        location=location,
+    )
+    p.add_layout(legend, side)
+    return p
 
 
 def make_product_heatmap(
@@ -666,7 +666,7 @@ def make_product_heatmap(
     #     )
     # add_colorbar(etc_charts[-1])
     function_charts = make_functional_heatmaps(function_df)
-    # add_legend(function_charts[-1], labels=["True", "False"])
+    # add_legend(function_charts[-1], labels=["present"])
 
     # func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
     #                      "long_function_name", "gene_symbol"]
@@ -800,7 +800,7 @@ def heatmap(df, x_col, y_col, c_col, tooltip_cols, title="", rect_kw=None, c_min
     return p
 
 
-def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir=None):
+def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir=None, show=False):
     dram_config = {}
     output_dir = output_dir or Path.cwd().resolve()
     annotations = pd.read_csv(annotations_tsv_path, sep="\t", index_col=0)
@@ -867,7 +867,8 @@ def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir
         labels,
     )
     plot.save(output_dir / "product.html", resources=INLINE_RESOURCES)
-    plot.show(port=5006)
+    if show:
+        plot.show(port=5006)
     product_df.to_csv(output_dir / "product.tsv", sep="\t", index=False)
     logger.info("Completed visualization")
 
@@ -877,6 +878,7 @@ if __name__ == "__main__":
     parser.add_argument("--annotations", help="Path to the annotations tsv file")
     parser.add_argument("--groupby_column", help="Column to group by", default=DEFAULT_GROUPBY_COLUMN)
     parser.add_argument("--output_dir", help="Output directory", default=Path.cwd().resolve())
+    parser.add_argument("--show", help="Launch as dashboard", action='store_true')
     args = parser.parse_args()
 
-    main(annotations_tsv_path=args.annotations, groupby_column=args.groupby_column, output_dir=args.output_dir)
+    main(annotations_tsv_path=args.annotations, groupby_column=args.groupby_column, output_dir=args.output_dir, show=args.show)
