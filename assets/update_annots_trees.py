@@ -1,39 +1,62 @@
 import json
 import pandas as pd
 import sys
-from Bio import Phylo
 import subprocess
 import os
+from Bio import Phylo
 
 def run_guppy(jplace_file, output_dir):
-    subprocess.run(['guppy', 'tog', jplace_file, '-o', f"{output_dir}/tree_with_placements.newick"], check=True)
-    subprocess.run(['guppy', 'edpl', '--csv', jplace_file, '-o', f"{output_dir}/edpl.csv"], check=True)
+    try:
+        subprocess.run(['guppy', 'tog', jplace_file, '-o', f"{output_dir}/tree_with_placements.newick"], check=True)
+        subprocess.run(['guppy', 'edpl', '--csv', jplace_file, '-o', f"{output_dir}/edpl.csv"], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while running guppy: {e}")
+        sys.exit(1)
     return f"{output_dir}/tree_with_placements.newick", f"{output_dir}/edpl.csv"
 
 def load_phylogenetic_tree(tree_file):
-    return Phylo.read(tree_file, 'newick')
+    try:
+        tree = Phylo.read(tree_file, 'newick')
+    except Exception as e:
+        print(f"Error reading tree file: {e}")
+        sys.exit(1)
+    return tree
 
 def extract_closest_matches(jplace_file):
-    with open(jplace_file, 'r') as file:
-        data = json.load(file)
+    try:
+        with open(jplace_file, 'r') as file:
+            data = json.load(file)
+    except Exception as e:
+        print(f"Error loading jplace file: {e}")
+        sys.exit(1)
+
     placements = {}
     for placement in data['placements']:
         for gene_info in placement['nm']:
             gene_name, _ = gene_info
-            most_likely_placement = min(placement['p'], key=lambda x: x[3])  # Minimize by likelihood score
+            most_likely_placement = min(placement['p'], key=lambda x: x[3])
             edge_number, like_weight_ratio, likelihood = most_likely_placement[1], most_likely_placement[2], most_likely_placement[3]
             placements[gene_name] = (edge_number, like_weight_ratio, likelihood)
             print(f"Closest match for {gene_name}: Edge {edge_number}, LWR: {like_weight_ratio}, Likelihood: {likelihood}")
     return placements
 
 def load_tree_mapping(mapping_file):
-    mapping_df = pd.read_csv(mapping_file, sep='\t')
-    tree_map = mapping_df.set_index('gene')['call'].to_dict()
-    print(f"Loaded tree mapping for {len(tree_map)} genes.")
+    try:
+        mapping_df = pd.read_csv(mapping_file, sep='\t')
+        tree_map = mapping_df.set_index('gene')['call'].to_dict()
+        print(f"Loaded tree mapping for {len(tree_map)} genes.")
+    except Exception as e:
+        print(f"Error loading mapping file: {e}")
+        sys.exit(1)
     return tree_map
 
 def update_annotations(annotations_file, placements, tree_mapping):
-    annotations_df = pd.read_csv(annotations_file, sep='\t')
+    try:
+        annotations_df = pd.read_csv(annotations_file, sep='\t')
+    except Exception as e:
+        print(f"Error reading annotations file: {e}")
+        sys.exit(1)
+
     annotations_df['tree-verified'] = None
     for index, row in annotations_df.iterrows():
         gene_id = row['query_id']
