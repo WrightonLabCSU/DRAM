@@ -3,7 +3,7 @@ import sys
 import subprocess
 import os
 import re
-import Bio
+import bio
 from Bio import Phylo
 
 def find_label_for_edge(tree, edge_number):
@@ -19,7 +19,7 @@ def load_phylogenetic_tree(tree_file):
     except FileNotFoundError as e:
         print(f"Error: Tree file '{tree_file}' not found.")
         raise
-    except Phylo.PhyloError as e:
+    except Exception as e:
         print(f"Error parsing tree file '{tree_file}': {e}")
         raise
 
