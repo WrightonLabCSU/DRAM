@@ -29,10 +29,12 @@ def extract_placement_details(jplace_data, tree):
         for placement_detail in placement['p']:
             edge_num = placement_detail[1]
             likelihood = placement_detail[3]
-            clade = tree.find_clades({"comment": str(edge_num)}).next()  # Assumes edge_num is stored in comment
-            closest_leaf = find_closest_labeled_ancestor(clade, tree)
-            for name, _ in placement['nm']:
-                results.append((name, edge_num, likelihood, closest_leaf))
+            clades = list(tree.find_clades({"comment": str(edge_num)}))  # Convert filter object to list
+            if clades:
+                clade = clades[0]  # Access the first clade
+                closest_leaf = find_closest_labeled_ancestor(clade, tree)
+                for name, _ in placement['nm']:
+                    results.append((name, edge_num, likelihood, closest_leaf))
     return results
 
 def print_placements(results):
