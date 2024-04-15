@@ -1,5 +1,6 @@
 import json
 import sys
+import re
 from Bio import Phylo
 from io import StringIO
 
