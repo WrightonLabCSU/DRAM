@@ -17,11 +17,20 @@ def load_and_parse_tree(tree_data):
     return tree
 
 def find_closest_labeled_ancestor(clade, tree):
+    # Start with the given clade and move up towards the root
     path = tree.get_path(clade)
     for ancestor in reversed(path):
+        # Check if the ancestor has a name and return it if exists
         if ancestor.name:
             return ancestor.name
+        # If no name, check if there's any other identifiable information
+        elif hasattr(ancestor, 'confidences') and ancestor.confidences:
+            return str(ancestor.confidences[0])
+        # Debug: Print out what is being checked
+        print(f"Checked ancestor at {ancestor} with no name or confidence.")
+
     return "No labeled ancestor found"
+
 
 def extract_placement_details(jplace_data, tree):
     placements = jplace_data['placements']
