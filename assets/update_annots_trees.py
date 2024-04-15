@@ -47,7 +47,8 @@ def extract_placement_details(jplace_data, tree):
 
 def update_tsv_file(tsv_path, placements, output_path):
     df = pd.read_csv(tsv_path, sep='\t')
-    df['tree_verified'] = df['query_id'].map(placements).fillna('No labeled ancestor found')
+    # Map tree_verified values to the dataframe, but leave as blank if no match found instead of filling with default message
+    df['tree_verified'] = df['query_id'].map(placements).replace('No labeled ancestor found', '')  # Leaves cell empty if no ancestor found
     gene_number_idx = df.columns.get_loc('gene_number')
     columns = list(df.columns)
     columns.insert(gene_number_idx + 1, 'tree_verified')
