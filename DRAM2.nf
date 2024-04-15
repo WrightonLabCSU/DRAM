@@ -850,7 +850,7 @@ if( params.product ){
     ch_function_heatmap_form = file(params.function_heatmap_form)
     ch_module_step_form = file(params.module_step_form)
 
-    if( distillate != "" ){
+    if( annotations != "" ){
         ch_distillate = file(params.distillate).exists() ? file(params.distillate) : error("Error: If using --product <path/to/file>, you must supply a DRAM2-formatted distill.xlsx file. Distill file not found at ${params.distillate}")
     }
 
@@ -1347,12 +1347,12 @@ workflow {
         Product
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */   
-    /*
+    
     if( params.product ){
         PRODUCT_HEATMAP( ch_final_annots, ch_distillate, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, ch_make_product_script, ch_product_scripts )
-
+        ch_product_html = PRODUCT_HEATMAP.out.product_html
     }
-    */
+    
 
 
     /*
