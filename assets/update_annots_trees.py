@@ -3,6 +3,7 @@ import sys
 import subprocess
 import os
 import re
+import Bio
 from Bio import Phylo
 
 def find_label_for_edge(tree, edge_number):
