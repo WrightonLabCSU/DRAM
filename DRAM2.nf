@@ -1045,7 +1045,7 @@ workflow {
         // KEGG annotation
         if( annotate_kegg == 1 ){
             ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
-            MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
+            MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold,, params.kegg_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
             ch_kegg_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
 
             SQL_KEGG(ch_kegg_unformatted, params.kegg_name, ch_sql_descriptions_db, ch_sql_parser)
