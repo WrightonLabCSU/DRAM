@@ -45,7 +45,8 @@ def load_tree_mapping(mapping_path):
 
 def find_named_ancestor(tree, edge_number, tree_mapping):
     for node in tree.find_clades():
-        if hasattr(node, "comment") and str(edge_number) in node.comment:
+        # Check if node has a comment and it is not None before checking for edge_number in it
+        if hasattr(node, "comment") and node.comment and str(edge_number) in node.comment:
             print(f"Node with edge {edge_number} found: {node.name}")
             ancestor = trace_to_root_for_named_ancestor(node, tree_mapping)
             if ancestor:
