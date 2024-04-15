@@ -44,15 +44,21 @@ def load_tree_mapping(mapping_path):
     return tree_map
 
 def find_named_ancestor(tree, edge_number, tree_mapping):
-    target_node = next((node for node in tree.find_clades() if str(node.name) == str(edge_number)), None)
-    if not target_node:
-        print(f"No node found for edge number {edge_number}")
-        return None
-    while target_node:
-        if target_node.name and target_node.name in tree_mapping:
-            print(f"Found matching ancestor: {target_node.name} for edge {target_node.name}")
-            return tree_mapping[target_node.name]
-        target_node = target_node.parent
+    for node in tree.find_clades():
+        if hasattr(node, "comment") and str(edge_number) in node.comment:
+            print(f"Node with edge {edge_number} found: {node.name}")
+            ancestor = trace_to_root_for_named_ancestor(node, tree_mapping)
+            if ancestor:
+                return ancestor
+    print(f"No node directly matching edge number {edge_number} found.")
+    return None
+
+def trace_to_root_for_named_ancestor(node, tree_mapping):
+    while node:
+        if node.name in tree_mapping:
+            print(f"Matching ancestor found: {node.name} maps to {tree_mapping[node.name]}")
+            return tree_mapping[node.name]
+        node = node.parent
     return None
 
 def update_annotations(annotations_path, placements, tree, tree_mapping):
