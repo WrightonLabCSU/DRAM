@@ -6,8 +6,8 @@ import subprocess
 import os
 
 def run_guppy(jplace_file, output_dir):
-    subprocess.run(['guppy', 'tog', jplace_file, '--output', f"{output_dir}/tree_with_placements.newick"], check=True)
-    subprocess.run(['guppy', 'edpl', '--csv', jplace_file, '--output', f"{output_dir}/edpl.csv"], check=True)
+    subprocess.run(['guppy', 'tog', jplace_file, '-o', f"{output_dir}/tree_with_placements.newick"], check=True)
+    subprocess.run(['guppy', 'edpl', '--csv', jplace_file, '-o', f"{output_dir}/edpl.csv"], check=True)
     return f"{output_dir}/tree_with_placements.newick", f"{output_dir}/edpl.csv"
 
 def load_phylogenetic_tree(tree_file):
