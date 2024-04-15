@@ -3,6 +3,7 @@ import sys
 import subprocess
 import os
 import re
+from Bio import Phylo
 
 def find_label_for_edge(tree, edge_number):
     # Parse the Newick format tree string
@@ -26,6 +27,29 @@ def find_label_for_edge(tree, edge_number):
     
     return "No matching label found"
 
+def load_phylogenetic_tree(tree_file):
+    try:
+        tree = Phylo.read(tree_file, 'newick')
+        return tree
+    except FileNotFoundError as e:
+        print(f"Error: Tree file '{tree_file}' not found.")
+        raise
+    except Phylo.NewickParserError as e:
+        print(f"Error parsing tree file '{tree_file}': {e}")
+        raise
+
+def find_closest_tip_labels(tree, placements):
+    closest_tip_labels = {}
+    for gene_id, edge_number in placements.items():
+        closest_tip_label, edge_length = find_label_for_edge(tree, edge_number)
+        closest_tip_labels[gene_id] = closest_tip_label
+    return closest_tip_labels
+
+def find_label_for_edge(tree, edge_number):
+    for clade in tree.find_clades():
+        if str(clade.comment) == str(edge_number):
+            return clade.name, clade.branch_length
+    return "No matching label found", None
 def run_guppy(jplace_file, output_dir):
     try:
         os.makedirs(output_dir, exist_ok=True)
