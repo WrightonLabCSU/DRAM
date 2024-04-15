@@ -17,18 +17,26 @@ def load_and_parse_tree(tree_data):
     return tree
 
 def find_closest_labeled_ancestor(clade, tree):
-    # Start with the given clade and move up towards the root
+    # Start with the given clade and check if it's a leaf and labeled
+    if clade.is_terminal() and clade.name:
+        return clade.name
+
+    # If not a leaf, get the path to the root and look for the first labeled leaf in the path
     path = tree.get_path(clade)
-    for ancestor in reversed(path):
-        # Look for any label that can be considered a valid identifier
-        if ancestor.name and ancestor.name.strip():
+    for ancestor in reversed(path):  # Start checking from the clade upwards
+        if ancestor.is_terminal() and ancestor.name:
             return ancestor.name
-        # Debug: Print out what is being checked
-        print(f"Checked ancestor at {ancestor}, no valid label found.")
 
-    return "No labeled ancestor found"
-
-
+    # As a fallback, search all leaves and find the closest one if no labeled ancestors found in the path
+    min_distance = float('inf')
+    closest_leaf = None
+    for leaf in tree.get_terminals():
+        distance = tree.distance(clade, leaf)
+        if distance < min_distance and leaf.name:
+            min_distance = distance
+            closest_leaf = leaf.name
+    
+    return closest_leaf if closest_leaf else "No labeled ancestor found"
 
 def extract_placement_details(jplace_data, tree):
     placements = jplace_data['placements']
