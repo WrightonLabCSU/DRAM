@@ -4,7 +4,7 @@ process TREES {
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
-    path( annotations_sqlite3 )
+    path( annotations_sqlite3, stageAs: "annotations.db" )
     val( tree_option )
     path( ch_collected_proteins )
     path( tree_data_files )
@@ -42,7 +42,7 @@ process TREES {
     # Uncomment the following line to run pplacer if the rest of the script works fine
     pplacer -j ${task.cpus} -c trees/${tree_option}/${tree_option}.refpkg aligned_sequences.fasta
 
-    python update_annots_trees.py aligned_sequences.jplace raw-annotations.tsv updated-annotations.tsv
+    python update_annots_trees.py aligned_sequences.jplace raw-annotations.tsv trees/${tree_option}/${tree_option}-tree-mapping.tsv annotations.db updated-annotations.db updated-annotations.tsv
 
     """
 
