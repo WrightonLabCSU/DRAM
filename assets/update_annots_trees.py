@@ -1,6 +1,7 @@
 import json
 import sys
 import subprocess
+import os
 import re
 
 def find_label_for_edge(tree, edge_number):
@@ -24,11 +25,26 @@ def find_label_for_edge(tree, edge_number):
             return label
     
     return "No matching label found"
-def run_guppy(jplace_file, output_dir):
-    subprocess.run(['guppy', 'tog', jplace_file, '-o', f"{output_dir}/tree_with_placements.newick"], check=True)
-    subprocess.run(['guppy', 'edpl', '--csv', jplace_file, '-o', f"{output_dir}/edpl.csv"], check=True)
-    return f"{output_dir}/tree_with_placements.newick", f"{output_dir}/edpl.csv"
 
+def run_guppy(jplace_file, output_dir):
+    try:
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # Run guppy tog command to generate tree_with_placements.newick file
+        tree_output_path = os.path.join(output_dir, "tree_with_placements.newick")
+        subprocess.run(['guppy', 'tog', jplace_file, '-o', tree_output_path], check=True)
+        
+        # Run guppy edpl command to generate edpl.csv file
+        edpl_output_path = os.path.join(output_dir, "edpl.csv")
+        subprocess.run(['guppy', 'edpl', '--csv', jplace_file, '-o', edpl_output_path], check=True)
+        
+        return tree_output_path, edpl_output_path
+    except subprocess.CalledProcessError as e:
+        print(f"Error running guppy command: {e}")
+        raise
+    except OSError as e:
+        print(f"Error creating output directory: {e}")
+        raise
 def extract_tree_and_placements(jplace_file):
     with open(jplace_file, 'r') as file:
         data = json.load(file)
