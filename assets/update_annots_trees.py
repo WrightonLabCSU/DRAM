@@ -3,39 +3,39 @@ import sys
 import re
 
 def load_jplace_file(jplace_path):
-    """ Load and parse the .jplace JSON file. """
     with open(jplace_path, 'r') as file:
         jplace_data = json.load(file)
     return jplace_data
 
 def parse_newick_tree(tree_string):
-    """ Parse the Newick tree to create mappings of nodes to their parents and labels. """
     node_stack = []
     parent_map = {}
     label_map = {}
     buf = ""
+    node_id = 0  # Assign an ID to every node for tracking
     for char in tree_string:
         if char in "(,);":
             if buf:
                 label_match = re.match(r'([^\[\]\:\{\}]+)\{(\d+)\}', buf)
                 if label_match:
-                    label, node_id = label_match.groups()
-                    label_map[int(node_id)] = label
-                node_stack.append(buf)
+                    label, num = label_match.groups()
+                    label_map[int(num)] = label
+                node_stack.append((buf, node_id))  # Push node with its ID
+                node_id += 1
                 buf = ""
-            if char == ")":  # End of a subtree
-                node = node_stack.pop()
+            if char == ")":  # Node is complete
+                node, nid = node_stack.pop()
                 if node_stack:
-                    parent_map[node] = node_stack[-1]
-            if char in "(,;":  # Start of a new node or subtree
-                if node_stack:
-                    parent_map[buf] = node_stack[-1]
+                    parent_map[nid] = node_stack[-1][1]  # Map to parent ID
+            if char == "(":
+                buf = char  # Include the character to handle nested trees
         else:
             buf += char
+    print("Label Map:", label_map)  # Debugging output
+    print("Parent Map:", parent_map)  # Debugging output
     return parent_map, label_map
 
 def find_closest_labeled_ancestor(node, parent_map, label_map):
-    """ Traverse up from a node to find the closest ancestor with a label. """
     while node in parent_map:
         node = parent_map[node]
         if node in label_map:
@@ -43,7 +43,6 @@ def find_closest_labeled_ancestor(node, parent_map, label_map):
     return "No labeled ancestor found"
 
 def extract_placement_details(jplace_data, parent_map, label_map):
-    """ Extract and print details from placements, including closest leaves. """
     placements = jplace_data['placements']
     results = []
     for placement in placements:
@@ -56,7 +55,6 @@ def extract_placement_details(jplace_data, parent_map, label_map):
     return results
 
 def print_placements(results):
-    """ Print the placement details for each sequence. """
     for name, edge_num, likelihood, leaf in results:
         print(f"Sequence: {name}, Edge: {edge_num}, Likelihood: {likelihood}, Closest Leaf: {leaf}")
 
