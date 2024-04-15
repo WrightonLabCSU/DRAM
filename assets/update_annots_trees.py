@@ -44,12 +44,20 @@ def run_guppy(jplace_file, output_dir):
 
 def extract_tree_and_placements(jplace_file):
     with open(jplace_file, 'r') as file:
-        # Read the JSON data
-        data = json.load(file)
+        file_contents = file.read()
+        print("File contents:")
+        print(file_contents)
         
-        # Extract tree from .jplace file
-        tree_path = data['tree']
+        # Attempt to load the JSON data
+        try:
+            data = json.loads(file_contents)
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON data: {e}")
+            raise
     
+    # Extract tree from .jplace file
+    tree_path = data['tree']
+
     # Load the tree from the file
     tree = load_phylogenetic_tree(tree_path)
 
@@ -61,6 +69,7 @@ def extract_tree_and_placements(jplace_file):
             placements[gene_name] = placement['p'][0][1]  # Extract edge number
     
     return tree, placements
+
 
 def find_closest_tip_labels(tree, placements):
     closest_tip_labels = {}
