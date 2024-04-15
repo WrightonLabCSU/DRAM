@@ -22,12 +22,6 @@ def load_phylogenetic_tree(tree_file):
         print(f"Error parsing tree file '{tree_file}': {e}")
         raise
 
-def find_label_for_edge(tree, edge_number):
-    for clade in tree.find_clades():
-        if str(clade.comment) == str(edge_number):
-            return clade.name, clade.branch_length
-    return "No matching label found", None
-
 def run_guppy(jplace_file, output_dir):
     try:
         os.makedirs(output_dir, exist_ok=True)
@@ -47,7 +41,7 @@ def run_guppy(jplace_file, output_dir):
     except OSError as e:
         print(f"Error creating output directory: {e}")
         raise
-    
+
 def extract_tree_and_placements(jplace_file):
     with open(jplace_file, 'r') as file:
         data = json.load(file)
