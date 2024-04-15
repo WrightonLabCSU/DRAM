@@ -606,10 +606,10 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 }
 
 if( params.trees ) {
-    def validOptions = ["nar_nxr", "amoa_pmoa"]
+    def validOptionsTrees = ["nar_nxr", "amoa_pmoa"]
 
-    if (!validOptions.contains(userOption)) {
-        error "Invalid option provided for --trees. Please choose one of the following options: ${validOptions.join(', ')}"
+    if (!validOptionsTrees.contains(params.trees)) {
+        error "Invalid option provided for --trees. Please choose one of the following options: ${validOptionsTrees.join(', ')}"
     }
 
     if( !params.call ){
@@ -619,6 +619,7 @@ if( params.trees ) {
     }
 
     ch_tree_data_files = Channel.fromPath(params.tree_data_files)
+    ch_trees_scripts = file(params.trees_scripts)
 
 }
 
@@ -962,10 +963,10 @@ workflow {
         ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta
 
         // Collect all individual fasta to pass to quast
-        Channel.empty()
-            .mix( ch_called_proteins  )
-            .collect()
-            .set { ch_collected_faa }
+        ch_called_proteins
+            .map { tuple -> tuple[1] }  // Extract only the file path from each tuple
+            .collect()                  // Collect all paths into a list
+            .set { ch_collected_faa }   // Set the resulting list to ch_collected_faa
 
         // Collect all individual fasta to pass to quast
         Channel.empty()
@@ -1044,7 +1045,7 @@ workflow {
         // KEGG annotation
         if( annotate_kegg == 1 ){
             ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
-            MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.kegg_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
+            MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold,, params.kegg_name, ch_mmseqs_script, ch_mmseqs_rbh_script )
             ch_kegg_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
 
             SQL_KEGG(ch_kegg_unformatted, params.kegg_name, ch_sql_descriptions_db, ch_sql_parser)
@@ -1253,13 +1254,15 @@ workflow {
             ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
             ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
             
-            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+            ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
         }
         else{
             ch_final_annots = ch_updated_taxa_annots
-            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+            COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+            ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
         }
 
         if( params.generate_gff || params.generate_gbk ){
@@ -1316,13 +1319,16 @@ workflow {
                 ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
                 
                 // Count annotations per sample
-                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script )
                 ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+                ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
             }
             else{
                 ch_final_annots = ch_combined_annotations
                 // Count annotations per sample
-                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script )
+                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script )
+                ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+                ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
             }
 
         } 
@@ -1332,7 +1338,7 @@ workflow {
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         // Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets
-        DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_distill_sql_script )
+        DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_annotations_sqlite3 )
         ch_distillate = DISTILL.out.distillate
     }
 
@@ -1354,14 +1360,13 @@ workflow {
         Phylogenetic Trees
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */   
-    /*
+    
     if( params.trees ){
-        TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
+
+        TREES( ch_final_annots, ch_annotations_sqlite3, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
 
     }
-    */
-
-
+    
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         Adjectives

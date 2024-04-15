@@ -1,6 +1,6 @@
 {
     "files": {
-        "aln_fasta": "nxr-nar_seqs_for_tree_aligned.faa", 
+        "aln_fasta": "nar_nxr_seqs_for_tree_aligned.faa", 
         "phylo_model": "phylo_modelNQB2rG.json", 
         "tree": "nar_nxr.tre", 
         "tree_stats": "RAxML_info.nxr_nar_raxml"
