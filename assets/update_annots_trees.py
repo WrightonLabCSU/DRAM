@@ -28,12 +28,27 @@ def extract_closest_matches(jplace_file, tree):
     return placements
 
 def find_closest_existing_label(tree, edge_number):
+    # This function needs to be refined to effectively find the closest existing tip or node.
     for clade in tree.find_clades():
         if clade.name and str(clade.name) == str(edge_number):
             return clade.name
     return "No matching label found"
 
+def main(jplace_file, output_file):
+    output_dir = './output'
+    os.makedirs(output_dir, exist_ok=True)
+    tree_path, edpl_path = run_guppy(jplace_file, output_dir)
+    tree = load_phylogenetic_tree(tree_path)
+    placements = extract_closest_matches(jplace_file, tree)
+    # This will print detailed information for debugging
 
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print("Usage: python script.py <jplace_file> <output_file>")
+        sys.exit(1)
+    main(sys.argv[1], sys.argv[2])
+
+    
 def update_annotations(annotations_file, placements, tree_mapping):
     try:
         annotations_df = pd.read_csv(annotations_file, sep='\t')
@@ -52,17 +67,3 @@ def update_annotations(annotations_file, placements, tree_mapping):
             else:
                 print(f"Gene {gene_id} placed on edge {edge} but no matching tree mapping found.")
     return annotations_df
-
-def main(jplace_file, output_file):
-    output_dir = './output'
-    os.makedirs(output_dir, exist_ok=True)
-    tree_path, edpl_path = run_guppy(jplace_file, output_dir)
-    tree = load_phylogenetic_tree(tree_path)
-    placements = extract_closest_matches(jplace_file, tree)
-    # Normally here you would update and write out the annotations, but we're skipping that for now.
-
-if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        print("Usage: python script.py <jplace_file> <output_file>")
-        sys.exit(1)
-    main(sys.argv[1], sys.argv[2])
