@@ -18,7 +18,7 @@ def load_phylogenetic_tree(tree_file):
     except FileNotFoundError as e:
         print(f"Error: Tree file '{tree_file}' not found.")
         raise
-    except Phylo.NewickError as e:
+    except Phylo.PhyloError as e:
         print(f"Error parsing tree file '{tree_file}': {e}")
         raise
 
