@@ -45,14 +45,18 @@ def load_tree_mapping(mapping_path):
 
 def find_named_ancestor(tree, edge_number, tree_mapping):
     for node in tree.find_clades():
-        # Check if node has a comment and it is not None before checking for edge_number in it
-        if hasattr(node, "comment") and node.comment and str(edge_number) in node.comment:
+        # Check node details for debugging
+        node_comment = getattr(node, 'comment', 'No comment')
+        print(f"Checking node: {node.name}, Comment: {node_comment}")
+        
+        if node_comment and str(edge_number) in node_comment:
             print(f"Node with edge {edge_number} found: {node.name}")
             ancestor = trace_to_root_for_named_ancestor(node, tree_mapping)
             if ancestor:
                 return ancestor
     print(f"No node directly matching edge number {edge_number} found.")
     return None
+
 
 def trace_to_root_for_named_ancestor(node, tree_mapping):
     while node:
@@ -76,6 +80,10 @@ def update_annotations(annotations_path, placements, tree, tree_mapping):
             else:
                 print(f"Gene {gene_id} placed on edge {edge} but no matching tree mapping found.")
     return annotations_df
+
+def debug_tree_nodes(tree):
+    for node in tree.find_clades():
+        print(f"Node: {node.name}, Comment: {getattr(node, 'comment', 'No comment')}")
 
 def main(jplace_file, mapping_file, annotations_file, output_file):
     output_dir = './output'
