@@ -18,9 +18,10 @@ def load_phylogenetic_tree(tree_file):
     except FileNotFoundError as e:
         print(f"Error: Tree file '{tree_file}' not found.")
         raise
-    except Phylo.NewickParserError as e:
+    except Phylo.NewickError as e:
         print(f"Error parsing tree file '{tree_file}': {e}")
         raise
+
 
 def run_guppy(jplace_file, output_dir):
     try:
