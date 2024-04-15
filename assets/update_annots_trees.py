@@ -9,12 +9,40 @@ def load_jplace_file(jplace_path):
     return jplace_data
 
 def parse_newick_tree(tree_string):
-    """ Parse the Newick tree string to create a mapping of edge numbers to labels. """
-    pattern = r'([^(,;]+)\{(\d+)\}'
-    matches = re.findall(pattern, tree_string)
-    return {int(num): label for label, num in matches}
+    """ Parse the Newick tree to create mappings of nodes to their parents and labels. """
+    node_stack = []
+    parent_map = {}
+    label_map = {}
+    buf = ""
+    for char in tree_string:
+        if char in "(,);":
+            if buf:
+                label_match = re.match(r'([^\[\]\:\{\}]+)\{(\d+)\}', buf)
+                if label_match:
+                    label, node_id = label_match.groups()
+                    label_map[int(node_id)] = label
+                node_stack.append(buf)
+                buf = ""
+            if char == ")":  # End of a subtree
+                node = node_stack.pop()
+                if node_stack:
+                    parent_map[node] = node_stack[-1]
+            if char in "(,;":  # Start of a new node or subtree
+                if node_stack:
+                    parent_map[buf] = node_stack[-1]
+        else:
+            buf += char
+    return parent_map, label_map
 
-def extract_placement_details(jplace_data, edge_to_label):
+def find_closest_labeled_ancestor(node, parent_map, label_map):
+    """ Traverse up from a node to find the closest ancestor with a label. """
+    while node in parent_map:
+        node = parent_map[node]
+        if node in label_map:
+            return label_map[node]
+    return "No labeled ancestor found"
+
+def extract_placement_details(jplace_data, parent_map, label_map):
     """ Extract and print details from placements, including closest leaves. """
     placements = jplace_data['placements']
     results = []
@@ -22,7 +50,7 @@ def extract_placement_details(jplace_data, edge_to_label):
         for placement_detail in placement['p']:
             edge_num = placement_detail[1]
             likelihood = placement_detail[3]
-            closest_leaf = edge_to_label.get(edge_num, "Unknown leaf")
+            closest_leaf = label_map.get(edge_num, find_closest_labeled_ancestor(edge_num, parent_map, label_map))
             for name, _ in placement['nm']:
                 results.append((name, edge_num, likelihood, closest_leaf))
     return results
@@ -39,8 +67,8 @@ def main():
     
     jplace_path = sys.argv[1]
     jplace_data = load_jplace_file(jplace_path)
-    edge_to_label = parse_newick_tree(jplace_data['tree'])
-    results = extract_placement_details(jplace_data, edge_to_label)
+    parent_map, label_map = parse_newick_tree(jplace_data['tree'])
+    results = extract_placement_details(jplace_data, parent_map, label_map)
     print_placements(results)
 
 if __name__ == "__main__":
