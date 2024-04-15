@@ -51,12 +51,6 @@ def find_closest_tip_labels(tree, placements):
         closest_tip_labels[gene_id] = find_label_for_edge(tree, edge_number)
     return closest_tip_labels
 
-def find_label_for_edge(tree, edge_number):
-    # Implement the logic to find the tip label associated with the given edge number in the tree
-    # You can use any method or library you prefer to parse the tree and find the label
-    # Return "No matching label found" if no label is found for the given edge number
-    pass
-
 def print_closest_tip_labels(closest_tip_labels):
     for gene_id, tip_label in closest_tip_labels.items():
         print(f"Sample: {gene_id}, Closest Tip Label: {tip_label}")
