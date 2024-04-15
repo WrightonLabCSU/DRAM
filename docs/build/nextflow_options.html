@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nextflow Pipeline Options &mdash; DRAM2 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="User Manual" href="user_manual.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #1e4b28" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/dram_logo_med_white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_output.html">Example Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_formats.html">Input Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User Manual</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Nextflow Pipeline Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-command">Example Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#options-breakdown">Options Breakdown</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nextflow-tips-and-tricks">Nextflow Tips and Tricks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-resume-option">The <cite>-resume</cite> option</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scenario-adding-additional-databases">Scenario: Adding Additional Databases</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations-of-the-resume-option">Limitations of the <cite>-resume</cite> Option</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1e4b28" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DRAM2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Nextflow Pipeline Options</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/nextflow_options.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nextflow-pipeline-options">
+<h1>Nextflow Pipeline Options<a class="headerlink" href="#nextflow-pipeline-options" title="Link to this heading"></a></h1>
+<p>The DRAM2 pipeline offers a range of options that leverage Nextflow’s capabilities to enhance the flexibility and efficiency of your workflow. This page details some of the core Nextflow options you can use when running the DRAM2 pipeline.</p>
+<section id="example-command">
+<h2>Example Command<a class="headerlink" href="#example-command" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--rename<span class="w"> </span>--call<span class="w"> </span>--annotate<span class="w"> </span>--use_&lt;database<span class="o">(</span>s<span class="o">)</span>&gt;<span class="w"> </span>--distill_topic<span class="w"> </span>&lt;distillate<span class="o">(</span>s<span class="o">)</span>&gt;
+</pre></div>
+</div>
+<section id="options-breakdown">
+<h3>Options Breakdown<a class="headerlink" href="#options-breakdown" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-bg
+</pre></div>
+</div>
+<p>Pushes the run immediately into the background. This is particularly useful on HPC environments, allowing you to log out while the run continues.</p>
+</li>
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-profile<span class="w"> </span>&lt;profile&gt;
+</pre></div>
+</div>
+<p>Allows the selection of a specific profile (e.g., Conda vs Singularity, SLURM vs no-SLURM). Profiles help manage different execution environments and resource management systems.</p>
+</li>
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-with-trace
+</pre></div>
+</div>
+<p>Outputs a detailed process-by-process report of the run in TEXT format.</p>
+</li>
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-with-report
+</pre></div>
+</div>
+<p>Generates a comprehensive process-by-process report of the run in HTML format.</p>
+</li>
+<li><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-with-timeline
+</pre></div>
+</div>
+<p>Produces a process-by-process HTML timeline report of the run, offering a visual representation of the pipeline’s execution over time.</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="nextflow-tips-and-tricks">
+<h2>Nextflow Tips and Tricks<a class="headerlink" href="#nextflow-tips-and-tricks" title="Link to this heading"></a></h2>
+<section id="the-resume-option">
+<h3>The <cite>-resume</cite> option<a class="headerlink" href="#the-resume-option" title="Link to this heading"></a></h3>
+<p>In Nextflow DSL2, the <code class="docutils literal notranslate"><span class="pre">-resume</span></code> option provides a powerful mechanism for efficiently managing workflow runs. It allows you to resume a run, modify parameters, and reuse previously generated data. Here are common scenarios where <code class="docutils literal notranslate"><span class="pre">-resume</span></code> is beneficial:</p>
+<section id="scenario-adding-additional-databases">
+<h4>Scenario: Adding Additional Databases<a class="headerlink" href="#scenario-adding-additional-databases" title="Link to this heading"></a></h4>
+<p>Suppose you want to run DRAM2 again but with additional annotation databases. Using the <code class="docutils literal notranslate"><span class="pre">-resume</span></code> option enables you to reuse your called genes and existing annotations, provided the <code class="docutils literal notranslate"><span class="pre">work/</span></code> directory has not been deleted.</p>
+<p>For instance, if your initial run used <code class="docutils literal notranslate"><span class="pre">--use_kofam</span> <span class="pre">--use_dbcan</span></code>, you can add more databases like <code class="docutils literal notranslate"><span class="pre">--use_kegg</span> <span class="pre">--use_uniref</span></code> to your command. This approach reuses the existing called genes to annotate with the newly added databases while retaining the existing annotations, assuming the modifications are retained in the command.</p>
+</section>
+</section>
+<section id="limitations-of-the-resume-option">
+<h3>Limitations of the <cite>-resume</cite> Option<a class="headerlink" href="#limitations-of-the-resume-option" title="Link to this heading"></a></h3>
+<p>It’s important to note how the <code class="docutils literal notranslate"><span class="pre">-resume</span></code> option does not work:</p>
+<ul class="simple">
+<li><p>The option does not allow for rerunning a workflow from scratch without manually deleting the <code class="docutils literal notranslate"><span class="pre">work/</span></code> directory or using a different project directory. It is designed to pick up where a previous run left off, utilizing cached results to avoid redoing work.</p></li>
+</ul>
+<p>This documentation aims to clarify the usage and benefits of Nextflow’s options within the DRAM2 pipeline, enhancing your workflow’s efficiency and flexibility.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="user_manual.html" class="btn btn-neutral float-left" title="User Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Rory M. Flynn and Reed R. Woyda.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

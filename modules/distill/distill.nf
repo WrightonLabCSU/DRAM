@@ -1,7 +1,5 @@
 process DISTILL {
 
-
-    
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
     path( ch_combined_distill_sheets, stageAs: "combined/*" )
@@ -11,22 +9,15 @@ process DISTILL {
     path( ch_combined_rrna, stageAs: "rrna_combined.tsv" )
     path( ch_trna_sheet, stageAs: "trna_sheet.tsv" )
     path( ch_distill_xlsx_script )
-    path( ch_distill_sql_script )
+    path( annotations_sqlite3 )
 
     output:
     path( "distillate.xlsx" ), emit: distillate
 
     script:
     """
-    echo "Using Python interpreter at: "
-    which python
-    echo "Which conda: "
-    which conda
-    echo "Python version:"
-    python --version
-    conda list
-    python ${ch_distill_sql_script} --combined_annotations ${ch_combined_annotations} --db_name "annotations.db" 
-    python ${ch_distill_xlsx_script} --target_id_counts ${ch_target_id_counts} --db_name "annotations.db" --distill_sheets combined/*.tsv --rrna_file ${ch_rrna_sheet} --combined_rrna_file ${ch_combined_rrna} --trna_file ${ch_trna_sheet} --quast ${ch_quast_stats} --output_file "distillate.xlsx" --threads ${params.threads}
+
+    python ${ch_distill_xlsx_script} --target_id_counts ${ch_target_id_counts} --db_name ${annotations_sqlite3} --distill_sheets combined/*.tsv --rrna_file ${ch_rrna_sheet} --combined_rrna_file ${ch_combined_rrna} --trna_file ${ch_trna_sheet} --quast ${ch_quast_stats} --output_file "distillate.xlsx" --threads ${params.threads}
 
     """
 }

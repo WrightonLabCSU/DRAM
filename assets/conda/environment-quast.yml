@@ -1,9 +1,10 @@
 name: dram2-quast-env
 channels:
-  - bioconda
   - conda-forge
-  - agbiome
+  - bioconda
   - defaults
+  - agbiome
+
 dependencies:
   - python>=3.8
   - pandas

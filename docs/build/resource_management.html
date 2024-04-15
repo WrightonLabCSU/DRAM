@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resource Management &mdash; DRAM2 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Nextflow Pipeline Options" href="nextflow_options.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #1e4b28" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/dram_logo_med_white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_output.html">Output Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">DRAM2 User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_options.html">Nextflow Pipeline Options</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Resource Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cpu-management">CPU Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nextflow-maxforks-parameter">Nextflow maxForks parameter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#memory-management">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-1">Example 1:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2">Example 2:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1e4b28" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DRAM2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Resource Management</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/resource_management.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="resource-management">
+<h1>Resource Management<a class="headerlink" href="#resource-management" title="Link to this heading"></a></h1>
+<p>DRAM2 is implemented in Nextflow.</p>
+<p>Nextflow is able to scale horizontally on a given machine.</p>
+<p>What does this mean?</p>
+<p>Horizontal scaling refers to the ability to distribute computational tasks across multiple computing resources, such as cores or nodes, in parallel. In the context of Nextflow, this means that a single workflow can leverage the computational power of multiple CPUs or nodes, allowing for faster execution of tasks and improved overall performance.</p>
+<p>By utilizing horizontal scaling, Nextflow can efficiently manage and execute workflows that require significant computational resources, such as those involved in genomic data analysis. This enables DRAM2 to process large datasets and complex analyses in a timely manner, making it suitable for a wide range of research and bioinformatics applications.</p>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>DRAM2 comes with configuration files which have the option to change how many “things” can happen at a time in the pipeline.</p>
+<p>A user can modify these, “maxForks”, parameters within the <code class="docutils literal notranslate"><span class="pre">nextflow.config</span></code> to increase the number of “things” which DRAM2 can perform at a given time.</p>
+<p><strong>NOTE</strong>: Development is in progress to enable different DRAM2 modes: “lite”, “medium” and “heavy”. Where “lite” would be for a good laptop and “heavy” for a HPC. These options will alter the CPU and memory (RAM) requirements for each process.</p>
+</section>
+<hr class="docutils" />
+<section id="cpu-management">
+<h2>CPU Management<a class="headerlink" href="#cpu-management" title="Link to this heading"></a></h2>
+<p>CPU management in Nextflow can be tricky BUT it gives the user great power to scale up their DRAM2 run.</p>
+<p>Why is it tricky?</p>
+<p>Each process in the DRAM2 pipeline is submitted as a separate job.</p>
+<p>Thus, each separate annotation for each sample, for each database, is submitted as a separate job.</p>
+<section id="nextflow-maxforks-parameter">
+<h3>Nextflow maxForks parameter<a class="headerlink" href="#nextflow-maxforks-parameter" title="Link to this heading"></a></h3>
+<p>In Nextflow, “maxForks” refers to the maximum number of concurrent tasks that can be executed simultaneously. It is a parameter that you can specify when running a Nextflow workflow to control the level of parallelism.</p>
+<p>Imagine you have a workflow that consists of multiple tasks, each performing a different computation or analysis. By default, Nextflow will try to execute as many tasks as possible concurrently, depending on the available computational resources (such as CPU cores or nodes). However, setting a “maxForks” value allows you to limit the maximum number of tasks that can run simultaneously.</p>
+<p>For example, if you set “maxForks” to 4, Nextflow will only allow up to 4 tasks to run concurrently at any given time, even if there are more tasks ready to be executed. This can be useful for controlling resource usage and preventing overloading of the system, especially in environments with limited computational resources.</p>
+<p>In simple terms, “maxForks” helps you manage the level of parallelism in your workflow by controlling how many tasks can be executed at the same time. It allows you to balance the trade-off between maximizing throughput and avoiding resource contention.</p>
+<p>DRAM2 has 3 types of processes:</p>
+<ol class="arabic simple">
+<li><p>small processes which can only use 1 CPU</p></li>
+<li><p>HMM searching with can only use 2 CPUs</p></li>
+<li><p>All other processes which can utilize more than 2 CPUs</p></li>
+</ol>
+<p>The “maxForks” for each type of process is set in the <code class="docutils literal notranslate"><span class="pre">nextflow.config</span></code>:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/*<span class="w"> </span>Max<span class="w"> </span>forks<span class="w"> </span>Options<span class="w"> </span>*/
+<span class="w">    </span><span class="nv">max_forks_single_cpu</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
+<span class="w">    </span><span class="nv">max_forks_user_cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
+<span class="w">    </span><span class="nv">max_forks_hmm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<hr class="docutils" />
+<section id="memory-management">
+<h2>Memory Management<a class="headerlink" href="#memory-management" title="Link to this heading"></a></h2>
+<p><strong>Memory management is only utilized when the SLURM-based profile option is used: ``-profile conda_slurm`` or ``-profile singularity_slurm``.</strong></p>
+<p>By default, DRAM2 has memory parameters set at what we feel is required to run DRAM2 at its best on a small HPC with 512GB RAM and 96 CPUS.</p>
+<p>These are as follows within the <code class="docutils literal notranslate"><span class="pre">nextflow.config</span></code>:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/*<span class="w"> </span>Memory<span class="w"> </span>allocation<span class="w"> </span>*/
+<span class="w">    </span><span class="nv">xsml_job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;200MB&#39;</span>
+<span class="w">    </span><span class="nv">sml_job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;12GB&#39;</span>
+<span class="w">    </span><span class="nv">med_job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;50GB&#39;</span>
+<span class="w">    </span><span class="nv">lrg_job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;200GB&#39;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Note:</strong> These are minimum memory allocations for SLURM and can be modified by the user either in the nextflow.config file or by using command-line options in a DRAM2 run: <code class="docutils literal notranslate"><span class="pre">--lrg_job</span> <span class="pre">100GB</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="example-1">
+<h3>Example 1:<a class="headerlink" href="#example-1" title="Link to this heading"></a></h3>
+<p>John Doe is computing on a MAC laptop w/ 8-core CPU and 16GB RAM</p>
+<p>maxForks: John modifies the <code class="docutils literal notranslate"><span class="pre">nextflow.config</span></code> and sets all maxForks = 1:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/*<span class="w"> </span>Max<span class="w"> </span>forks<span class="w"> </span>Options<span class="w"> </span>*/
+<span class="w">    </span><span class="nv">max_forks_single_cpu</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+<span class="w">    </span><span class="nv">max_forks_user_cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w">   </span><span class="o">(</span>provided<span class="w"> </span>by<span class="w"> </span>--threads<span class="w"> </span>&lt;number&gt;<span class="o">)</span>
+<span class="w">    </span><span class="nv">max_forks_hmm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>CPUs: John wants to make sure he can still use his computer so he only uses 6 CPUs: <code class="docutils literal notranslate"><span class="pre">--threads</span> <span class="pre">6</span></code>.</p>
+<p>While DRAM2 will want to submit more jobs at a time, the additional jobs will have to wait until the previous job has stopped.</p>
+<p>John also excluded the following databases because of their size and memory requirements: KEGG and UniRef.</p>
+</section>
+<section id="example-2">
+<h3>Example 2:<a class="headerlink" href="#example-2" title="Link to this heading"></a></h3>
+<p>Jane Doe is computing on a HPC with 20 nodes (each node has 96 CPUs and 512GB RAM). The HPC also requires the use of SLURM.</p>
+<p>maxForks: Jane modifies the <code class="docutils literal notranslate"><span class="pre">nextflow.config</span></code> and allows 5 single-CPU jobs to run at a time, allows 10 jobs to run at a time on the <code class="docutils literal notranslate"><span class="pre">--threads</span></code> she specifies, and allows 20 HMM searches to occur at a time.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/*<span class="w"> </span>Max<span class="w"> </span>forks<span class="w"> </span>Options<span class="w"> </span>*/
+<span class="w">    </span><span class="nv">max_forks_single_cpu</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">5</span>
+<span class="w">    </span><span class="nv">max_forks_user_cpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="w">   </span><span class="o">(</span>provided<span class="w"> </span>by<span class="w"> </span>--threads<span class="w"> </span>&lt;number&gt;<span class="o">)</span>
+<span class="w">    </span><span class="nv">max_forks_hmm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>CPUs: Jane wants to make sure DRAM2 runs efficiently across the HPC: <code class="docutils literal notranslate"><span class="pre">--threads</span> <span class="pre">40</span></code>.</p>
+<p>DRAM2 will submit as many jobs as there are resources. Remaining jobs will be places in the SLURM queue and will be performed when resources are available.</p>
+<p>Jane included all of the databases to annotate from.</p>
+<p>Outcome:</p>
+<p>Say Jane had 1000 samples. This means, because of the maxForks of <code class="docutils literal notranslate"><span class="pre">max_forks_user_cpu</span> <span class="pre">=</span> <span class="pre">10</span></code>, 10 samples will be annotated at the same time for the KEGG database, each with 40 CPUs = 400 CPUs.</p>
+<p>Jane was a bit ambitious - this HPC cannot possibly run all annotations, for all databases, for all samples, at the same time. However, because this HPC uses SLURM, her jobs will sit in the queue and will be ran when resources are available.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nextflow_options.html" class="btn btn-neutral float-left" title="Nextflow Pipeline Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Rory M. Flynn and Reed R. Woyda.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

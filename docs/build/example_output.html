@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Output Files &mdash; DRAM2 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="DRAM2 User Manual" href="user_manual.html" />
+    <link rel="prev" title="Quick Start Guide" href="quick_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #1e4b28" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/dram_logo_med_white.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Output Files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#call-output">Call Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#annotation-output">Annotation Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#distill-output">Distill Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">DRAM2 User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nextflow_options.html">Nextflow Pipeline Options</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1e4b28" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DRAM2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Output Files</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/example_output.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="output-files">
+<h1>Output Files<a class="headerlink" href="#output-files" title="Link to this heading"></a></h1>
+<p>DRAM2 outputs various files in each module.</p>
+<p>Let’s breakdown the DRAM2 output for each module based on this example command:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nextflow<span class="w"> </span>run<span class="w"> </span>DRAM2.nf<span class="w"> </span>--rename<span class="w"> </span>--call<span class="w"> </span>--annotate<span class="w"> </span>--use_kegg<span class="w"> </span>--distill_topic<span class="w"> </span>&lt;distillate<span class="o">(</span>s<span class="o">)</span>&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<hr class="docutils" />
+<section id="call-output">
+<h2>Call Output<a class="headerlink" href="#call-output" title="Link to this heading"></a></h2>
+<p>DRAM2 <code class="docutils literal notranslate"><span class="pre">--call</span></code> will output the following for each input FASTA file:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Prodigal_v2.6.3/&lt;sample_name&gt;_called_genes.&lt;faa,</span> <span class="pre">fna,</span> <span class="pre">gff&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Processed_inputs/&lt;sample_name&gt;_renamed.fna</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QUAST_v5.2.0/collected_quast.tsv</span></code> and <code class="docutils literal notranslate"><span class="pre">QUAST_v5.2.0/quast_results/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tRNA_rRNA/collected_rrnas.tsv</span></code> and <code class="docutils literal notranslate"><span class="pre">tRNA_rRNA/collected_trnas.tsv</span></code></p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="annotation-output">
+<h2>Annotation Output<a class="headerlink" href="#annotation-output" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RAW/raw-annotations.tsv</span></code></p></li>
+</ol>
+<p>In the example below we have the KEGG database information included. If other databases we used, for example <code class="docutils literal notranslate"><span class="pre">--use_db</span> <span class="pre">dbcan</span></code>, then additional columns after the KEGG information would be included for the dbCAN annotations.</p>
+<p>Format:</p>
+<blockquote>
+<div><div style="overflow-x:auto;"><table class="docutils align-center">
+<colgroup>
+<col style="width: 5.4%" />
+<col style="width: 5.4%" />
+<col style="width: 8.1%" />
+<col style="width: 8.1%" />
+<col style="width: 5.4%" />
+<col style="width: 2.7%" />
+<col style="width: 5.4%" />
+<col style="width: 5.4%" />
+<col style="width: 5.4%" />
+<col style="width: 8.1%" />
+<col style="width: 10.8%" />
+<col style="width: 8.1%" />
+<col style="width: 5.4%" />
+<col style="width: 5.4%" />
+<col style="width: 10.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>query_id</p></th>
+<th class="head"><p>sample</p></th>
+<th class="head"><p>start_position</p></th>
+<th class="head"><p>stop_position</p></th>
+<th class="head"><p>strandedness</p></th>
+<th class="head"><p>rank</p></th>
+<th class="head"><p>gene_number</p></th>
+<th class="head"><p>kegg_id</p></th>
+<th class="head"><p>kegg_EC</p></th>
+<th class="head"><p>kegg_bitScore</p></th>
+<th class="head"><p>kegg_description</p></th>
+<th class="head"><p>kegg_gene_name</p></th>
+<th class="head"><p>Completeness</p></th>
+<th class="head"><p>Contamination</p></th>
+<th class="head"><p>taxonomy</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>query_1</p></td>
+<td><p>sample1</p></td>
+<td><p>100</p></td>
+<td><p>200</p></td>
+<td><p>+1</p></td>
+<td><p>A</p></td>
+<td><p>3</p></td>
+<td><p>K12345</p></td>
+<td><p>EC1.2.3</p></td>
+<td><p>200.5</p></td>
+<td><p>Description 1</p></td>
+<td><p>Gene1</p></td>
+<td><p>90%</p></td>
+<td><p>2%</p></td>
+<td><p>Bacteria;Firmicutes</p></td>
+</tr>
+<tr class="row-odd"><td><p>query_2</p></td>
+<td><p>sample1</p></td>
+<td><p>300</p></td>
+<td><p>400</p></td>
+<td><p>-1</p></td>
+<td><p>C</p></td>
+<td><p>5</p></td>
+<td><p>K23456</p></td>
+<td><p>EC2.3.4</p></td>
+<td><p>180.3</p></td>
+<td><p>Description 2</p></td>
+<td><p>Gene2</p></td>
+<td><p>85%</p></td>
+<td><p>3%</p></td>
+<td><p>Bacteria;Proteobacteria</p></td>
+</tr>
+<tr class="row-even"><td><p>query_1</p></td>
+<td><p>sample2</p></td>
+<td><p>150</p></td>
+<td><p>250</p></td>
+<td><p>+1</p></td>
+<td><p>A</p></td>
+<td><p>6</p></td>
+<td><p>K34567</p></td>
+<td><p>EC3.4.5</p></td>
+<td><p>210.7</p></td>
+<td><p>Description 3</p></td>
+<td><p>Gene3</p></td>
+<td><p>92%</p></td>
+<td><p>1%</p></td>
+<td><p>Bacteria;Actinobacteria</p></td>
+</tr>
+<tr class="row-odd"><td><p>query_2</p></td>
+<td><p>sample2</p></td>
+<td><p>500</p></td>
+<td><p>600</p></td>
+<td><p>-1</p></td>
+<td><p>E</p></td>
+<td><p>8</p></td>
+<td><p>K45678</p></td>
+<td><p>EC4.5.6</p></td>
+<td><p>195.2</p></td>
+<td><p>Description 4</p></td>
+<td><p>Gene4</p></td>
+<td><p>88%</p></td>
+<td><p>2%</p></td>
+<td><p>Bacteria;Bacteroidetes</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="distill-output">
+<h2>Distill Output<a class="headerlink" href="#distill-output" title="Link to this heading"></a></h2>
+<p>Output file: <code class="docutils literal notranslate"><span class="pre">DISTILL/distillate.xlsx</span></code></p>
+<p>DRAM2 distill output has 3 types of sheets within the output <code class="docutils literal notranslate"><span class="pre">distillate.xlsx</span></code> (XLSX) file:</p>
+<p><strong>1. Genome_Stats</strong></p>
+<p>This sheet is generated by default and is populated based on the DRAM2 run performed.</p>
+<p>Genome_Stats output sheet format:</p>
+<blockquote>
+<div><div style="overflow-x:auto;"><table class="docutils align-center">
+<thead>
+<tr class="row-odd"><th class="head"><p>sample</p></th>
+<th class="head"><p>taxonomy</p></th>
+<th class="head"><p>Completeness</p></th>
+<th class="head"><p>Contamination</p></th>
+<th class="head"><p>tRNA count</p></th>
+<th class="head"><p>rRNA</p></th>
+<th class="head"><p>assembly length</p></th>
+<th class="head"><p>no. contigs</p></th>
+<th class="head"><p>largest contig</p></th>
+<th class="head"><p>N50</p></th>
+<th class="head"><p>GC (%)</p></th>
+<th class="head"><p>no. pred. genes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sample1</p></td>
+<td><p>Bacteria;Firmicutes</p></td>
+<td><p>90%</p></td>
+<td><p>2%</p></td>
+<td><p>500</p></td>
+<td><p>5</p></td>
+<td><p>1000000</p></td>
+<td><p>100</p></td>
+<td><p>10000</p></td>
+<td><p>5000</p></td>
+<td><p>50%</p></td>
+<td><p>5000</p></td>
+</tr>
+<tr class="row-odd"><td><p>sample2</p></td>
+<td><p>Bacteria;Proteobacteria</p></td>
+<td><p>85%</p></td>
+<td><p>3%</p></td>
+<td><p>600</p></td>
+<td><p>6</p></td>
+<td><p>1200000</p></td>
+<td><p>120</p></td>
+<td><p>12000</p></td>
+<td><p>6000</p></td>
+<td><p>55%</p></td>
+<td><p>6000</p></td>
+</tr>
+</tbody>
+</table>
+</div></div></blockquote>
+<hr class="docutils" />
+<p><strong>2. Distill Topic, Ecosystem and Custom output sheet format:</strong></p>
+<p>DRAM2 will output a separate sheet for each Topic, Ecosystem and Custom provided.</p>
+<p>Each output sheet will contain the annotations found within the <code class="docutils literal notranslate"><span class="pre">raw-annotations.tsv</span></code> followed by and metadata and lastly, the count of each annotation in the <code class="docutils literal notranslate"><span class="pre">raw-annotaions.tsv</span></code>.</p>
+<blockquote>
+<div><div style="overflow-x:auto;"><table class="docutils align-center">
+<thead>
+<tr class="row-odd"><th class="head"><p>gene_id</p></th>
+<th class="head"><p>gene_description</p></th>
+<th class="head"><p>pathway</p></th>
+<th class="head"><p>topic_ecosystem</p></th>
+<th class="head"><p>category</p></th>
+<th class="head"><p>subcategory</p></th>
+<th class="head"><p>potential_amg</p></th>
+<th class="head"><p>sample1</p></th>
+<th class="head"><p>sample2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>K01647</p></td>
+<td><p>citrate synthase [EC:2.3.3.1] [RN:R00351]</p></td>
+<td><p>Citrate cycle (TCA cycle, Krebs cycle)</p></td>
+<td><p>carbon utilization</p></td>
+<td><p>central carbon</p></td>
+<td><p>TCA</p></td>
+<td><p>TRUE</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>K05942</p></td>
+<td><p>citrate (Re)-synthase [EC:2.3.3.3] [RN:R00351]</p></td>
+<td><p>Citrate cycle (TCA cycle, Krebs cycle)</p></td>
+<td><p>carbon utilization</p></td>
+<td><p>central carbon</p></td>
+<td><p>TCA</p></td>
+<td><p>TRUE</p></td>
+<td><p>3</p></td>
+<td><p>6</p></td>
+</tr>
+</tbody>
+</table>
+</div></div></blockquote>
+<hr class="docutils" />
+<p><strong>3. tRNA and rRNA output sheets</strong></p>
+<p>rRNA and tRNA output sheets are only included if <code class="docutils literal notranslate"><span class="pre">--call</span></code> was used or if the user provided the input files required: <code class="docutils literal notranslate"><span class="pre">--trnas</span> <span class="pre">&lt;path/to/directory/*.tsv&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">--rrnas</span> <span class="pre">&lt;path/to/directory/*.tsv&gt;</span></code>.</p>
+<p>rRNA output sheet format:</p>
+<blockquote>
+<div><div style="overflow-x:auto;"><table class="docutils align-center">
+<thead>
+<tr class="row-odd"><th class="head"><p>gene_id</p></th>
+<th class="head"><p>gene_description</p></th>
+<th class="head"><p>category</p></th>
+<th class="head"><p>topic_ecosystem</p></th>
+<th class="head"><p>subcategory</p></th>
+<th class="head"><p>sample1</p></th>
+<th class="head"><p>sample2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>5S rRNA</p></td>
+<td><p>5S rRNA gene</p></td>
+<td><p>rRNA</p></td>
+<td></td>
+<td></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>23S rRNA</p></td>
+<td><p>23S rRNA gene</p></td>
+<td><p>rRNA</p></td>
+<td></td>
+<td></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>16S rRNA</p></td>
+<td><p>16S rRNA gene</p></td>
+<td><p>rRNA</p></td>
+<td></td>
+<td></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div></div></blockquote>
+<p>tRNA output sheet format:</p>
+<blockquote>
+<div><div style="overflow-x:auto;"><table class="docutils align-center">
+<thead>
+<tr class="row-odd"><th class="head"><p>gene_id</p></th>
+<th class="head"><p>gene_description</p></th>
+<th class="head"><p>category</p></th>
+<th class="head"><p>topic_ecosystem</p></th>
+<th class="head"><p>subcategory</p></th>
+<th class="head"><p>sample1</p></th>
+<th class="head"><p>sample2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Ala (CGC)</p></td>
+<td><p>Ala tRNA with Codon</p></td>
+<td><p>Ala tRNA</p></td>
+<td><p>tRNA</p></td>
+<td></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>His (GTG)</p></td>
+<td><p>His tRNA with Codon</p></td>
+<td><p>His tRNA</p></td>
+<td><p>tRNA</p></td>
+<td></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div></div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quick Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="user_manual.html" class="btn btn-neutral float-right" title="DRAM2 User Manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Rory M. Flynn and Reed R. Woyda.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

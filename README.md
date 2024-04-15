@@ -9,7 +9,7 @@
 
 DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes. DRAM2 annotates MAGs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene, and then a distill step to curate these annotations into useful functional categories. DRAM2 was implemented in [Nextflow](https://www.nextflow.io/) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
 
-For more detail on DRAM and how DRAM works please see our [paper](https://academic.oup.com/nar/article/48/16/8883/5884738) as well as the [wiki](https://github.com/WrightonLabCSU/DRAM/wiki).
+For more detail on DRAM and how DRAM2 works please see our [paper](https://academic.oup.com/nar/article/48/16/8883/5884738) as well as the [ReadtheDocs](https://github.com/WrightonLabCSU/DRAM/wiki).
 
 ### DRAM2 Development Note
 
@@ -59,7 +59,7 @@ For further documentation, tutorials and background information, please visit th
 
 ```
 git clone https://github.com/WrightonLabCSU/DRAM2.git
-cd COMET
+cd DRAM2
 ./pull_singularity_containers.py
 ./pull_databases_full.py
 ```
@@ -74,16 +74,16 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
    
   This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
 
-3) `-profile conda_slurm`
+2) `-profile conda_slurm`
    
   This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details).
   This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
 
-5) `-profile singularity`
+3) `-profile singularity`
    
   This option relies on the local systems Singularity. Nextflow will create its own Conda environments to run in. 
 
-7) `-profile singularity_slurm`
+4) `-profile singularity_slurm`
    
   This option will submit each individual DRAM2 process as its own SLURM job. (See Wiki Resource Management for details)
   This option relies on the local systems Singularity to run the downloaded Singularity container.  
@@ -100,6 +100,7 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
 
 ##### Cons:
 
+- Generally slower than using Singularity containers (will have metrics in the future).
 - Dependency Conflicts: Dependency resolution can be slow and may lead to conflicts.
 - Limited Portability: System dependencies may introduce variability, affecting portability.
 - System Variability: Reliance on the host system's architecture and libraries can cause variability between systems.
@@ -108,6 +109,7 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
 
 ##### Pros:
 
+- Generally faster than using Conda environments (will have metrics in the future).
 - Consistent Environments: Ensures consistent runtime environments, enhancing reproducibility.
 - HPC Ideal: Perfect for high-performance computing (HPC) environments without the need for root access.
 - Isolation: Offers isolation from the host system, minimizing conflicts.
@@ -224,14 +226,14 @@ Run the `format-KEGG-DRAM2.sh` script:
   
 `./pull_descriptions_full.py`
 OR
-Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/].
+Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
 
 **Routine Set**
 - Excludes Uniref and KEGG
   
 `./pull_descriptions_routine.py`
 OR
-Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/].
+Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
 
 --------
 
@@ -240,41 +242,69 @@ Follow these instructions to pull manually via (GLOBUS)[https://www.globus.org/]
 
 DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, each app can be run individualy (assuming you provide the required input data for each app).
 
-1) **Call genes using input fastas (use --rename to rename FASTA headers):**
+Additionally, `--merge-annotations` and `--rename` can be run idenpendently of any other apps. 
+
+
+1) **Rename fasta headers based on input sample file names:**
+
+`nextflow run DRAM2.nf --rename --input_fasta_dir <path/to/fasta/directory/>`
+
+
+3) **Call genes using input fastas (use --rename to rename FASTA headers):**
 
 `nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>`
 
     
-2) **Annotate called genes using input called genes and the KOFAM database:**
+3) **Annotate called genes using input called genes and the KOFAM database:**
 
 `nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam`
 
 
-3) **Annotate called genes using input fasta files and the KOFAM database:**
+4) **Annotate called genes using input fasta files and the KOFAM database:**
 
 `nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam`
 
 
-4) **Distill using input annotations:**
+5) **Merge verious existing annotations files together (Must be generated using DRAM2.):**
+
+`nextflow run DRAM2.nf --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>`
+
+
+6) **Distill using input annotations:**
 
 `nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>`
 
 
-5) **(Combined): Call, annotate and distill input fasta files:**
+7) **(Combined): Call, annotate and distill input fasta files:**
 
 `nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>`
 
 
-6) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:**
+8) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:**
 
 `nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
 
-7) **"Real-world" example using the test data provided in this repository:**
 
-`nextflow run -bg DRAM2.nf --input_fasta ../test_data/DRAM2_test_data/ --outdir DRAM2-test-data-call-annotate-distill --threads 8 --call --rename --annotate --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv --slurm_node main -with-report -with-trace -with-timeline`
+9) **"Real-world" example using the test data provided in this repository:**
+   
+(put on multiple lines for clarity)
 
-  **Breakdown of example (7):**
-  - `--bg` Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
+```
+nextflow run -bg
+DRAM2.nf
+--input_fasta ../test_data/DRAM2_test_data/
+--outdir DRAM2-test-data-call-annotate-distill
+--threads 8
+--call --rename --annotate
+--use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper
+--use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
+--distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv
+-profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline
+```
+
+  **Breakdown of example (9):**
+  - `-bg` : Nextflow option to push the run immediately into the background. (Thus, you can log out on an HPC and the run will continue).
+  - `-profile` : Nextflow option to select profile (Conda vs Singularity and SLURM vs no-SLURM).
   - `--slurm_node`: DRAM2 option to select a specific node to compute on during the whole run.
   - `-with-trace`: Nextflow option to output a process-by-process report of the run. (TEXT)
   - `-with-report`: Nextflow option to output a process-by-process report of the run. (HTML)
@@ -325,6 +355,8 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
             --rrnas ../test-data/rrnas.tsv
             --bin_quality ../test-data/checkM1-test-data.tsv
             --taxa ../test-data/gtdbtk.bac120.summary.tsv
+            --generate_gff 
+            --generate_gbk
             --threads 5
             -with-report -with-trace -with-timeline
 
@@ -357,7 +389,10 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
         --prodigal_tras_table   NUMBER  (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
                                             Specify a translation table to use (default: '1').
-
+                                    
+        --min_contig_len        NUMBER  <number in base pairs>
+                                            Default: '2500'
+                                            
     Annotate options:
         --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
                                             Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
@@ -373,7 +408,11 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
                                             Directory containing called genes (.faa) 
 
         --add_annotations       PATH    <path/to/old-annoations.tsv> 
-                                            Used to add in old annotations to the current run. (See example for format.)
+
+        --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
+
+        --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
+                                                    Used to add in old annotations to the current run. (See example for format.)
 
     Distill options:
         --annotations           PATH     <path/to/annotations.tsv>
@@ -444,6 +483,9 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
 
         --prodigal_tras_table   <1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25>
                                     Specify a translation table to use (default: '1').
+                                    
+        --min_contig_len        NUMBER  <number in base pairs>
+                                            Default: '2500'
 
     Main options:
         --input_fasta           PATH    <path/to/fasta/directory/>
@@ -498,6 +540,10 @@ DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, e
     --add_annotations       PATH    <path/to/old-annoations.tsv> 
                                         Used to add in old annotations to the current run. (See example for format.)
 
+    --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
+
+    --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
+    
     Main options:
     --input_fasta           PATH    <path/to/fasta/directory/>
                                         Directory containing input fasta files.      
@@ -641,30 +687,32 @@ These Nextflow tips and tricks demonstrate how the `-resume` option can optimize
 **EDIT**
 
 ### Storage space for databases, database descriptions and potentially a Singualrity container
+Depending on which databases you download, and if you choose to use Singularity or Conda, you will need adequate storage space on your machine.
 
-#### Pre-formatted databases:
-DRAM2 requires pre-formatted database files in addition 
+### Resource Management
 
-#### Database descriptions:
-DRAM2 requires a SQL databases which contains the database descriptions. (Metadata for database hits including descriptions, EC numbers, etc.)
-We have provided 
+DRAM2 is implemented in Nextflow.
 
-*NOTE:* Setting up DRAM can take a long time (up to 5 hours) and uses a large amount of memory (512 gb) by default. To
-use less memory you can use the `--skip_uniref` flag which will reduce memory usage to ~64 gb if you do not provide KEGG
- Genes and 128 gb if you do. Depending on the number of processors which you tell  it to use (using the `--threads`
-argument) and the speed of your internet connection. On a less than 5 year old server with 10 processors it takes about
- 2 hours to process the data when databases do not need to be downloaded.
+Nextflow is able to scale horizontally on a given machine.
 
+What does this mean?
 
+Horizontal scaling refers to the ability to distribute computational tasks across multiple computing resources, such as cores or nodes, in parallel. In the context of Nextflow, this means that a single workflow can leverage the computational power of multiple CPUs or nodes, allowing for faster execution of tasks and improved overall performance.
 
-DRAM has a large memory burden and is designed to be run on high performance computers. DRAM annotates against a large
-variety of databases which must be processed and stored. Setting up DRAM with KEGG Genes and UniRef90 will take up ~500
-GB of storage after processing and require ~512 GB of RAM while using KOfam and skipping UniRef90 will mean all
-processed databases will take up ~30 GB of disk and will only use ~128 GB of RAM while processing. DRAM annotation
-memory usage depends on the databases used. When annotating with UniRef90, around 220 GB of RAM is required. If the KEGG
-gene database has been provided and UniRef90 is not used, then memory usage is around 100 GB of RAM. If KOfam is used to
-annotate KEGG and UniRef90 is not used, then less than 50 GB of RAM is required. DRAM can be run with any number of
-processors on a single node.
+By utilizing horizontal scaling, Nextflow can efficiently manage and execute workflows that require significant computational resources, such as those involved in genomic data analysis. This enables DRAM2 to process large datasets and complex analyses in a timely manner, making it suitable for a wide range of research and bioinformatics applications.
+
+#### Summary
+--------
+
+DRAM2 comes with configuration files which have the option to change how many "things" can happen at a time in the pipeline.
+
+A user can modify these, "maxForks", parameters within the ``nextflow.config`` to increase the number of "things" which DRAM2 can perform at a given time.
+
+**NOTE**: Development is in progress to enable different DRAM2 modes: "lite", "medium" and "heavy". Where "lite" would be for a good laptop and "heavy" for a HPC. These options will alter the CPU and memory (RAM) requirements for each process.
+
+Please visit the [Read the Docs page](https://dram2.readthedocs.io/en/latest/index.html). page for more detailed inforamtion on how to run DRAM2 efficiently.
+
+---------------
 
 ## Citing DRAM
 The DRAM was published in Nucleic Acids Research in 2020 and is available [here](https://academic.oup.com/nar/article/48/16/8883/5884738). If

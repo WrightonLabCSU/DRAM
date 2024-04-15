@@ -1,9 +1,10 @@
 name: dram2-env
 channels:
-  - bioconda
   - conda-forge
-  - agbiome
+  - bioconda
   - defaults
+  - agbiome
+
 dependencies:
   - python=3.10
   - pandas=1.5.2
@@ -23,8 +24,11 @@ dependencies:
   - prodigal=2.6.3
   - samtools=1.17
   - bowtie2=2.5.1
+  - seqtk
   - ncurses
-  - bbtools
+  - bbmap
   - openpyxl=3.1.2
+  - pplacer=1.1.alpha19
+  - mafft=7.525
   - pip:
       - matplotlib==3.8.3
