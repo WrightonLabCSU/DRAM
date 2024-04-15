@@ -33,7 +33,12 @@ def find_closest_labeled_ancestor(clade, tree):
             closest_leaf = leaf.name
     return closest_leaf if closest_leaf else ""
 
-def extract_placement_details(jplace_data, tree):
+def load_tree_mapping(mapping_tsv):
+    # Load mapping TSV into a dictionary
+    df = pd.read_csv(mapping_tsv, sep='\t')
+    return dict(zip(df['gene'], df['call']))
+
+def extract_placement_details(jplace_data, tree, tree_mapping):
     placements = jplace_data['placements']
     placement_map = {}
     for placement in placements:
@@ -43,10 +48,14 @@ def extract_placement_details(jplace_data, tree):
             if clades:
                 clade = clades[0]
                 closest_leaf = find_closest_labeled_ancestor(clade, tree)
+                if closest_leaf and closest_leaf in tree_mapping:
+                    # Combine tree verified label with additional metadata
+                    closest_leaf = f"{tree_mapping[closest_leaf]};{closest_leaf}"
             else:
-                closest_leaf = "No labeled ancestor found"
+                closest_leaf = ""
+                print(f"No clades found for edge number: {edge_num}")
             for name, _ in placement['nm']:
-                placement_map[name] = closest_leaf if closest_leaf != "No labeled ancestor found" else ""
+                placement_map[name] = closest_leaf
     return placement_map
 
 def update_database_and_tsv(tsv_path, db_path, output_db_path, output_tsv_path, placement_map):
@@ -69,14 +78,15 @@ def update_database_and_tsv(tsv_path, db_path, output_db_path, output_tsv_path, 
     conn_out.close()
 
 def main():
-    if len(sys.argv) != 6:
-        print("Usage: python update_annots_trees.py <jplace_path> <tsv_path> <db_path> <output_db_path> <output_tsv_path>")
+    if len(sys.argv) != 7:
+        print("Usage: python update_annots_trees.py <jplace_path> <tsv_path> <mapping_tsv> <db_path> <output_db_path> <output_tsv_path>")
         return
     
-    jplace_path, tsv_path, db_path, output_db_path, output_tsv_path = sys.argv[1:]
+    jplace_path, tsv_path, mapping_tsv, db_path, output_db_path, output_tsv_path = sys.argv[1:]
     jplace_data = load_jplace_file(jplace_path)
     tree = load_and_parse_tree(jplace_data['tree'])
-    placement_map = extract_placement_details(jplace_data, tree)
+    tree_mapping = load_tree_mapping(mapping_tsv)
+    placement_map = extract_placement_details(jplace_data, tree, tree_mapping)
     update_database_and_tsv(tsv_path, db_path, output_db_path, output_tsv_path, placement_map)
     print("Updates complete. Data saved to", output_db_path, "and", output_tsv_path)
 
