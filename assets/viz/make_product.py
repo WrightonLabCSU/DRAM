@@ -19,7 +19,7 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 import panel as pn
-from bokeh.models import ColorBar, LinearColorMapper
+from bokeh.models import ColorBar, LinearColorMapper, Legend, Plot
 from bokeh.palettes import BuGn, Cividis256
 from bokeh.plotting import figure
 from bokeh.resources import INLINE as INLINE_RESOURCES
@@ -28,7 +28,7 @@ from bokeh.transform import factor_cmap, linear_cmap
 from .definitions import DEFAULT_GROUPBY_COLUMN
 
 
-__authors__ = ["Madeline Scyphers"]
+__authors__ = ["Madeline Scyphers", "Rory Flynn"]
 __copyright__ = "Copyright 2024, Wrighton Lab"
 __license__ = "NA"
 
@@ -114,7 +114,7 @@ TAXONOMY_LEVELS = ["d", "p", "c", "o", "f", "g", "s"]
 LOCATION_TAG = "location"
 
 
-def get_distillate_sheet(form_tag: str, dram_config: dict, logger: logging.Logger):
+def get_distillate_sheet(form_tag: str, dram_config: dict):
     """
     Paths in the config can be complicated. Here is a function that will get
     you the absolute path, the relative path, or whatever. Specifically for
@@ -266,18 +266,6 @@ def make_module_coverage_df(annotation_df, module_nets):
     return coverage_df
 
 
-def make_module_coverage_frame(
-        annotations, module_nets, groupby_column=DEFAULT_GROUPBY_COLUMN
-):
-    # go through each scaffold to check for modules
-    module_coverage_dict = dict()
-    for group, frame in annotations.groupby(groupby_column, sort=False):
-        module_coverage_dict[group] = make_module_coverage_df(frame, module_nets)
-    module_coverage = pd.concat(module_coverage_dict)
-    module_coverage.index = module_coverage.index.set_names(["genome", "module"])
-    return module_coverage.reset_index()
-
-
 def pairwise(iterable):
     """s -> (s0, s1), (s1, s2), (s2, s3), ..."""
     a, b = tee(iterable)
@@ -366,6 +354,17 @@ def get_module_coverage(module_net: nx.DiGraph, genes_present: set):
         max_coverage_missing_genes,
     )
 
+
+def make_module_coverage_frame(
+        annotations, module_nets, groupby_column=DEFAULT_GROUPBY_COLUMN
+):
+    # go through each scaffold to check for modules
+    module_coverage_dict = dict()
+    for group, frame in annotations.groupby(groupby_column, sort=False):
+        module_coverage_dict[group] = make_module_coverage_df(frame, module_nets)
+    module_coverage = pd.concat(module_coverage_dict)
+    module_coverage.index = module_coverage.index.set_names(["genome", "module"])
+    return module_coverage.reset_index()
 
 def make_etc_coverage_df(
         etc_module_df,
@@ -585,81 +584,144 @@ def get_ordered_uniques(seq):
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x) or pd.isna(x))]
 
+
+def make_module_heatmaps(df, x_col="module_name", y_col="genome", c_col="step_coverage"):
+    return [
+        heatmap(df, x_col=x_col, y_col=y_col, c_col=c_col,
+                 tooltip_cols=["genome", "module_name", "steps", "steps_present"],
+                 title="Module",
+                 )]
+
+
+def make_etc_heatmaps(df, x_col="module_name", y_col="genome", c_col="percent_coverage", groupby="complex"):
+    etc_tooltip_cols = ["genome", "module_name", "path_length", "path_length_coverage", "genes", "missing_genes"]
+    etc_charts = []
+    for i, (etc_complex, frame) in enumerate(df.groupby(groupby)):
+        etc_charts.append(
+            heatmap(frame,  x_col=x_col, y_col=y_col, c_col=c_col,
+                     tooltip_cols=etc_tooltip_cols, y_axis_location=None,
+                     title=etc_complex,
+                     )
+        )
+    add_colorbar(etc_charts[-1])
+    return etc_charts
+
+
+def make_functional_heatmaps(df, x_col="function_name", y_col="genome", c_col="present", groupby="category"):
+    func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
+                         "long_function_name", "gene_symbol"]
+    function_charts = []
+    for i, (group, frame) in enumerate(df.groupby(groupby, sort=False)):
+        kw = dict()
+        if i == len(df[groupby].unique()) - 1:
+            kw["rect_kw"] = dict(legend_field=c_col)
+        function_charts.append(
+            heatmap(frame, x_col=x_col, y_col=y_col, c_col=c_col,
+                     tooltip_cols=func_tooltip_cols,
+                     y_axis_location=None,
+                     title=group,
+                     **kw
+                     )
+        )
+    # Easy trick to get legend outside of chart without making a manual legend
+    legend = function_charts[-1].legend[0]  # grab legend from last chart
+    function_charts[-1].legend[:] = []  # remove
+    function_charts[-1].add_layout(legend, place='right')  # place to the outside of chart
+    return function_charts
+
+
+# def add_legend(p: Plot, labels, location="center", side="right"):
+#
+#     legend = Legend(items=[
+#         (label, [glyph]) for label, glyph in zip(labels, p.renderers)
+#     ],
+#         location=location,
+#     )
+#     p.add_layout(legend, side)
+#     return p
+
+
 def make_product_heatmap(
         module_coverage_df,
         etc_coverage_df,
         function_df,
-        genome_order,
         labels):
-    charts = []
-    titles = []
-    module_charts = []
-    module_charts.append(
-        (heatmap(module_coverage_df, x_col="module_name", y_col="genome", c_col="step_coverage",
-                 tooltip_cols=["genome", "module_name", "steps", "steps_present"],
-                 title="Module",
-                 ),
-         "Module")
-    )
-    titles.append("Module")
+    module_charts = make_module_heatmaps(module_coverage_df)
+    # module_charts.append(
+    #     heatmap(module_coverage_df, x_col="module_name", y_col="genome", c_col="step_coverage",
+    #              tooltip_cols=["genome", "module_name", "steps", "steps_present"],
+    #              title="Module",
+    #              )
+    # )
+    etc_charts = make_etc_heatmaps(etc_coverage_df)
 
-    etc_tooltip_cols = ["genome", "module_name", "path_length", "path_length_coverage", "genes", "missing_genes"]
-    etc_charts = []
-    for i, (etc_complex, frame) in enumerate(etc_coverage_df.groupby("complex")):
-        etc_charts.append(
-            (heatmap(frame, x_col="module_name", y_col="genome", c_col="percent_coverage",
-                     tooltip_cols=etc_tooltip_cols, y_axis_location=None,
-                     title=etc_complex,
-                     # margin=(0, 20, 0, 20)
-                     ),
-             etc_complex)
-        )
-        titles.append(etc_complex)
-    add_colorbar(etc_charts[-1][0])
+    # etc_tooltip_cols = ["genome", "module_name", "path_length", "path_length_coverage", "genes", "missing_genes"]
+    # etc_charts = []
+    # for i, (etc_complex, frame) in enumerate(etc_coverage_df.groupby("complex")):
+    #     etc_charts.append(
+    #         heatmap(frame, x_col="module_name", y_col="genome", c_col="percent_coverage",
+    #                  tooltip_cols=etc_tooltip_cols, y_axis_location=None,
+    #                  title=etc_complex,
+    #                  )
+    #     )
+    # add_colorbar(etc_charts[-1])
+    function_charts = make_functional_heatmaps(function_df)
+    # add_legend(function_charts[-1], labels=["True", "False"])
 
-    func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
-                         "long_function_name", "gene_symbol"]
-    function_df["present"] = function_df["present"].astype(str)
-    function_charts = []
-    for i, (group, frame) in enumerate(function_df.groupby("category", sort=False)):
-        kw = dict()
-        if i == len(function_df["category"].unique()) - 1:
-            kw["rect_kw"] = dict(legend_field="present")
-        function_charts.append(
-            (heatmap(frame, x_col="function_name", y_col="genome", c_col="present",
-                     tooltip_cols=func_tooltip_cols,
-                     y_axis_location=None,
-                     # rect_kw=dict(legend_field="present"),
-                     title=group,
-                     **kw
-                     ),
-             group)
-        )
-    l = function_charts[-1][0].legend[0]
-    function_charts[-1][0].legend[:] = []
-    function_charts[-1][0].add_layout(l, 'right')
-
-    charts.append(format_chart_group(chart_group=function_charts))
+    # func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
+    #                      "long_function_name", "gene_symbol"]
+    # function_df["present"] = function_df["present"].astype(str)
+    # function_charts = []
+    # for i, (group, frame) in enumerate(function_df.groupby("category", sort=False)):
+    #     kw = dict()
+    #     if i == len(function_df["category"].unique()) - 1:
+    #         kw["rect_kw"] = dict(legend_field="present")
+    #     function_charts.append(
+    #         heatmap(frame, x_col="function_name", y_col="genome", c_col="present",
+    #                  tooltip_cols=func_tooltip_cols,
+    #                  y_axis_location=None,
+    #                  title=group,
+    #                  **kw
+    #                  )
+    #     )
+    # # Easy trick to get legend outside of chart without making a manual legend
+    # legend = function_charts[-1].legend[0]  # grab legend from last chart
+    # function_charts[-1].legend[:] = []  # remove
+    # function_charts[-1].add_layout(legend, place='right')  # place to the outside of chart
 
     charts = [
-        format_chart_group([bokeh_pane(p, title) for p, title in module_charts]),
-        format_chart_group([bokeh_pane(p, title) for p, title in etc_charts], title="ETC Complexes"),
-        format_chart_group([bokeh_pane(p, title) for p, title in function_charts]),
+        format_chart_group([p for p in module_charts]),
+        format_chart_group([p for p in etc_charts], title="ETC Complexes"),
+        format_chart_group([p for p in function_charts]),
     ]
 
     plot = pn.Row(*charts)
     return plot
 
 
-def bokeh_pane(p, title="", p_kw=None, title_kw=None):
-    p_kw = p_kw or dict()
-    title_kw = title_kw or dict()
 
-    # return pn.pane.Bokeh(p, **p_kw)
-    return pn.Column(
-        # pn.pane.Markdown(f"## {title}", align="center"),
-        pn.Row(pn.pane.Bokeh(p, **p_kw), align="center"),
-    )
+# def heatmap_group(df, tooltip_cols, title, x_col, y_col, c_col, **kwargs):
+#     func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
+#                          "long_function_name", "gene_symbol"]
+#     df["present"] = df["present"].astype(str)
+#     function_charts = []
+#     for i, (group, frame) in enumerate(df.groupby("category", sort=False)):
+#         kw = dict()
+#         if i == len(df["category"].unique()) - 1:
+#             kw["rect_kw"] = dict(legend_field="present")
+#         function_charts.append(
+#             heatmap(frame, x_col="function_name", y_col="genome", c_col="present",
+#                      tooltip_cols=func_tooltip_cols,
+#                      y_axis_location=None,
+#                      title=group,
+#                      **kw
+#                      )
+#         )
+#     # Easy trick to get legend outside of chart without making a manual legend
+#     legend = function_charts[-1].legend[0]  # grab legend from last chart
+#     function_charts[-1].legend[:] = []  # remove
+#     function_charts[-1].add_layout(legend, place='right')  # place to the outside of chart
+#
 
 
 def format_chart_group(chart_group, title=""):
@@ -678,7 +740,8 @@ def add_colorbar(p):
     return p
 
 
-def heatmap(df, x_col, y_col, c_col, tooltip_cols, title="", rect_kw=None, **fig_kwargs, ):
+def heatmap(df, x_col, y_col, c_col, tooltip_cols, title="", rect_kw=None, c_min=0, c_max=1, **fig_kwargs, ):
+
     rect_kw = rect_kw or {}
     df = df.sort_values(by=[y_col], ascending=False)
 
@@ -710,8 +773,9 @@ def heatmap(df, x_col, y_col, c_col, tooltip_cols, title="", rect_kw=None, **fig
 
     if df[c_col].dtype == float:
         palette = tuple(reversed(PALETTE_CONTINUOUS))
-        fill_color = linear_cmap(c_col, palette=palette, low=df[c_col].min(), high=df[c_col].max())
+        fill_color = linear_cmap(c_col, palette=palette, low=c_min, high=c_max)
     else:
+        df[c_col] = df[c_col].astype(str)
         factors = sorted(df[c_col].unique())
         max_factors = max(PALETTE_CATEGORICAL.keys())
         palette = PALETTE_CATEGORICAL[max(len(factors), 3)] if len(factors) <= max_factors else PALETTE_CONTINUOUS
@@ -747,18 +811,12 @@ def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir
     annotation_ids_by_row = annotations.copy()
     annotation_ids_by_row[DBSETS_COL] = db_id_sets
 
-    module_steps_form = get_distillate_sheet(
-        MODULE_STEPS_FORM_TAG, dram_config, logger
-    )
-    etc_module_df = get_distillate_sheet(ETC_MODULE_DF_TAG, dram_config, logger)
-    function_heatmap_form = get_distillate_sheet(
-        FUNCTION_HEATMAP_FORM_TAG, dram_config, logger
-    )
+    module_steps_form = get_distillate_sheet(MODULE_STEPS_FORM_TAG, dram_config)
+    etc_module_df = get_distillate_sheet(ETC_MODULE_DF_TAG, dram_config)
+    function_heatmap_form = get_distillate_sheet(FUNCTION_HEATMAP_FORM_TAG, dram_config)
+
     # make product
     if "bin_taxonomy" in annotations:
-        genome_order = get_ordered_uniques(
-            annotations.sort_values("bin_taxonomy")[groupby_column]
-        )
         # if gtdb format then get phylum and most specific
         if all(
                 [
@@ -780,9 +838,6 @@ def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir
             }
         )
     else:
-        genome_order = get_ordered_uniques(
-            annotations.sort_values(groupby_column)[groupby_column]
-        )
         labels = None
 
     # make module coverage frame
@@ -809,7 +864,6 @@ def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir
         module_coverage_df,
         etc_coverage_df,
         function_df,
-        genome_order,
         labels,
     )
     plot.save(output_dir / "product.html", resources=INLINE_RESOURCES)

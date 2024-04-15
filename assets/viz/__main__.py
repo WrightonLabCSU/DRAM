@@ -28,7 +28,7 @@ from .make_product import main as make_product
 )
 def main(annotations, groupby_column, output_dir):
     """
-    A visualization tool DRAM2
+    A visualization tool for DRAM2
     """
     make_product(
         annotations_tsv_path=annotations,
