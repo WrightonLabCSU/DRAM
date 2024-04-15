@@ -44,11 +44,12 @@ def run_guppy(jplace_file, output_dir):
 
 def extract_tree_and_placements(jplace_file):
     with open(jplace_file, 'r') as file:
+        # Read the JSON data
         data = json.load(file)
+        
+        # Extract tree from .jplace file
+        tree_path = data['tree']
     
-    # Extract tree from .jplace file
-    tree_path = data['tree']
-
     # Load the tree from the file
     tree = load_phylogenetic_tree(tree_path)
 
