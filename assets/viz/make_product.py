@@ -5,6 +5,7 @@ DRAM Visualizations
 
 Script that generates a product visualization from the DRAM output.
 """
+import argparse
 import logging
 import re
 from collections import Counter, defaultdict
@@ -12,9 +13,7 @@ from itertools import tee, chain
 from math import pi
 from pathlib import Path
 from typing import Optional
-import argparse
 
-import click
 import networkx as nx
 import numpy as np
 import pandas as pd
@@ -26,7 +25,6 @@ from bokeh.resources import INLINE as INLINE_RESOURCES
 from bokeh.transform import factor_cmap, linear_cmap
 
 from .definitions import DEFAULT_GROUPBY_COLUMN
-
 
 __authors__ = ["Madeline Scyphers", "Rory Flynn"]
 __copyright__ = "Copyright 2024, Wrighton Lab"
@@ -366,6 +364,7 @@ def make_module_coverage_frame(
     module_coverage.index = module_coverage.index.set_names(["genome", "module"])
     return module_coverage.reset_index()
 
+
 def make_etc_coverage_df(
         etc_module_df,
         annotation_ids_by_row: pd.DataFrame,
@@ -588,9 +587,9 @@ def get_ordered_uniques(seq):
 def make_module_heatmaps(df, x_col="module_name", y_col="genome", c_col="step_coverage"):
     return [
         heatmap(df, x_col=x_col, y_col=y_col, c_col=c_col,
-                 tooltip_cols=["genome", "module_name", "steps", "steps_present"],
-                 title="Module",
-                 )]
+                tooltip_cols=["genome", "module_name", "steps", "steps_present"],
+                title="Module",
+                )]
 
 
 def make_etc_heatmaps(df, x_col="module_name", y_col="genome", c_col="percent_coverage", groupby="complex"):
@@ -598,10 +597,10 @@ def make_etc_heatmaps(df, x_col="module_name", y_col="genome", c_col="percent_co
     etc_charts = []
     for i, (etc_complex, frame) in enumerate(df.groupby(groupby)):
         etc_charts.append(
-            heatmap(frame,  x_col=x_col, y_col=y_col, c_col=c_col,
-                     tooltip_cols=etc_tooltip_cols, y_axis_location=None,
-                     title=etc_complex,
-                     )
+            heatmap(frame, x_col=x_col, y_col=y_col, c_col=c_col,
+                    tooltip_cols=etc_tooltip_cols, y_axis_location=None,
+                    title=etc_complex,
+                    )
         )
     add_colorbar(etc_charts[-1])
     return etc_charts
@@ -617,11 +616,11 @@ def make_functional_heatmaps(df, x_col="function_name", y_col="genome", c_col="p
             kw["rect_kw"] = dict(legend_field=c_col)
         function_charts.append(
             heatmap(frame, x_col=x_col, y_col=y_col, c_col=c_col,
-                     tooltip_cols=func_tooltip_cols,
-                     y_axis_location=None,
-                     title=group,
-                     **kw
-                     )
+                    tooltip_cols=func_tooltip_cols,
+                    y_axis_location=None,
+                    title=group,
+                    **kw
+                    )
         )
     # Easy trick to get legend outside of chart without making a manual legend
     legend = function_charts[-1].legend[0]  # grab legend from last chart
@@ -631,7 +630,6 @@ def make_functional_heatmaps(df, x_col="function_name", y_col="genome", c_col="p
 
 
 def add_legend(p: Plot, labels, location="center", side="right"):
-
     legend = Legend(items=[
         (label, [glyph]) for label, glyph in zip(labels, p.renderers)
     ],
@@ -699,7 +697,6 @@ def make_product_heatmap(
     return plot
 
 
-
 # def heatmap_group(df, tooltip_cols, title, x_col, y_col, c_col, **kwargs):
 #     func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
 #                          "long_function_name", "gene_symbol"]
@@ -741,7 +738,6 @@ def add_colorbar(p):
 
 
 def heatmap(df, x_col, y_col, c_col, tooltip_cols, title="", rect_kw=None, c_min=0, c_max=1, **fig_kwargs, ):
-
     rect_kw = rect_kw or {}
     df = df.sort_values(by=[y_col], ascending=False)
 
@@ -800,7 +796,14 @@ def heatmap(df, x_col, y_col, c_col, tooltip_cols, title="", rect_kw=None, c_min
     return p
 
 
-def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir=None, show=False):
+def main(annotations_tsv_path,
+         groupby_column=DEFAULT_GROUPBY_COLUMN,
+         output_dir=None,
+         module_steps_form: Optional[Path] = None,
+         etc_steps_form: Optional[Path] = None,
+         function_steps_form: Optional[Path] = None,
+         show=False
+         ):
     dram_config = {}
     output_dir = output_dir or Path.cwd().resolve()
     annotations = pd.read_csv(annotations_tsv_path, sep="\t", index_col=0)
@@ -811,9 +814,12 @@ def main(annotations_tsv_path, groupby_column=DEFAULT_GROUPBY_COLUMN, output_dir
     annotation_ids_by_row = annotations.copy()
     annotation_ids_by_row[DBSETS_COL] = db_id_sets
 
-    module_steps_form = get_distillate_sheet(MODULE_STEPS_FORM_TAG, dram_config)
-    etc_module_df = get_distillate_sheet(ETC_MODULE_DF_TAG, dram_config)
-    function_heatmap_form = get_distillate_sheet(FUNCTION_HEATMAP_FORM_TAG, dram_config)
+    module_steps_form = pd.read_csv(module_steps_form or FILES_NAMES[MODULE_STEPS_FORM_TAG], sep="\t")
+    etc_module_df = pd.read_csv(etc_steps_form or FILES_NAMES[ETC_MODULE_DF_TAG], sep="\t")
+    function_heatmap_form = pd.read_csv(function_steps_form or FILES_NAMES[FUNCTION_HEATMAP_FORM_TAG], sep="\t")
+    # module_steps_form = get_distillate_sheet(MODULE_STEPS_FORM_TAG, dram_config)
+    # etc_module_df = get_distillate_sheet(ETC_MODULE_DF_TAG, dram_config)
+    # function_heatmap_form = get_distillate_sheet(FUNCTION_HEATMAP_FORM_TAG, dram_config)
 
     # make product
     if "bin_taxonomy" in annotations:
@@ -878,7 +884,14 @@ if __name__ == "__main__":
     parser.add_argument("--annotations", help="Path to the annotations tsv file")
     parser.add_argument("--groupby_column", help="Column to group by", default=DEFAULT_GROUPBY_COLUMN)
     parser.add_argument("--output_dir", help="Output directory", default=Path.cwd().resolve())
+    parser.add_argument("--module_steps_form", help="Module Step Database TSV",
+                        default=FILES_NAMES[MODULE_STEPS_FORM_TAG])
+    parser.add_argument("--etc_steps_form", help="ETC Step Database TSV", default=FILES_NAMES[ETC_MODULE_DF_TAG])
+    parser.add_argument("--function_steps_form", help="Function Step Database TSV",
+                        default=FILES_NAMES[FUNCTION_HEATMAP_FORM_TAG])
     parser.add_argument("--show", help="Launch as dashboard", action='store_true')
     args = parser.parse_args()
 
-    main(annotations_tsv_path=args.annotations, groupby_column=args.groupby_column, output_dir=args.output_dir, show=args.show)
+    main(annotations_tsv_path=args.annotations, groupby_column=args.groupby_column, output_dir=args.output_dir,
+         module_steps_form=args.module_steps_form, etc_steps_form=args.etc_steps_form,
+         function_steps_form=args.function_steps_form, show=args.show)

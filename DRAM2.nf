@@ -172,12 +172,15 @@ if( !params.profile && !params.rename && params.annotations == "" && params.anno
     error("If you want to distill, you must provide annotations via --annotations <path/to/file>.")
 }
 
+
+/*  TODO Maddie: add product input validations
 if( params.product && !params.call && !params.annotate && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ))
 {
     if( params.annotations == "" && params.distillate == "" ){
-        error("If you want to generate a product, you must either (1) provide annotations via --annotations <path/to/file> and a distillate --distillate <path/to/file> OR (2) use Call, Annotate and Distill to generate these input files.")
+        error("If you want to generate a product, you must either (1) provide annotations via --annotations <path/to/file> (2) use Call, Annotate generate this input file.")
     }
 }
+*/
 
 
 /*
@@ -850,9 +853,11 @@ if( params.product ){
     ch_function_heatmap_form = file(params.function_heatmap_form)
     ch_module_step_form = file(params.module_step_form)
 
+/*  TODO Maddie: we don't use distillate, but do we need some form of this?
     if( distillate != "" ){
         ch_distillate = file(params.distillate).exists() ? file(params.distillate) : error("Error: If using --product <path/to/file>, you must supply a DRAM2-formatted distill.xlsx file. Distill file not found at ${params.distillate}")
     }
+*/
 
 }
 
@@ -1347,13 +1352,10 @@ workflow {
         Product
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */   
-    /*
     if( params.product ){
-        PRODUCT_HEATMAP( ch_final_annots, ch_distillate, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, ch_make_product_script, ch_product_scripts )
+        PRODUCT_HEATMAP( ch_final_annots, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, ch_make_product_script, ch_product_scripts )
 
     }
-    */
-
 
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

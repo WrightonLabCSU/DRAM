@@ -5,7 +5,6 @@ process PRODUCT_HEATMAP {
 
     input:
     path( ch_final_annots, stageAs: "raw-annotations.tsv")
-    path( ch_distillate, stageAs: "distillate.xlsx")
     path( ch_etc_module_form, stageAs: "etc_module_database.tsv" )
     path( ch_function_heatmap_form, stageAs: "unction_heatmap_form.tsv" )
     path( ch_module_step_form, stageAs: "module_step_form.tsv" )
@@ -32,11 +31,10 @@ process PRODUCT_HEATMAP {
     log_file="logs/product.log"
 
     python ${ch_make_product_script} \\
-    --input-target-counts ${target_id_counts} \\
-    --input-etc ${params.etc_mdoule_database} \\
-    --input-module-step ${params.module_step_form} \\
-    --input-function-heatmap ${params.function_heatmap_form} \\
-    --output-file "product.tsv"  >> "\$log_file" 2>&1
+    --annotations $(ch_final_annots) \\
+    --module_steps_form ${ch_module_step_form} \\
+    --etc_steps_form ${ch_etc_module_form} \\
+    --function_steps_form ${ch_function_heatmap_form}
 
     """
 }
