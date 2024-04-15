@@ -6,26 +6,10 @@ import re
 from Bio import Phylo
 
 def find_label_for_edge(tree, edge_number):
-    # Parse the Newick format tree string
-    clade_regex = re.compile(r'(\([^()]+)\)?(:[-+]?[0-9]*\.?[0-9]+)?([,)]{1})')
-    node_regex = re.compile(r'([^():,]+)(:.+)?')
-    nodes = clade_regex.findall(tree)
-    
-    # Traverse the tree to find the label associated with the given edge number
-    for node in nodes:
-        matches = node_regex.findall(node[0])
-        label = matches[0][0]
-        if len(matches[0]) > 1:  # Check if node has edge length
-            edge_length = matches[0][1][1:]  # Remove ':' from edge length
-            if edge_length:
-                edge_length = float(edge_length)
-        else:
-            edge_length = None
-        
-        if edge_length == edge_number:
-            return label
-    
-    return "No matching label found"
+    for clade in tree.find_clades():
+        if str(clade.comment) == str(edge_number):
+            return clade.name, clade.branch_length
+    return "No matching label found", None
 
 def load_phylogenetic_tree(tree_file):
     try:
@@ -38,18 +22,12 @@ def load_phylogenetic_tree(tree_file):
         print(f"Error parsing tree file '{tree_file}': {e}")
         raise
 
-def find_closest_tip_labels(tree, placements):
-    closest_tip_labels = {}
-    for gene_id, edge_number in placements.items():
-        closest_tip_label, edge_length = find_label_for_edge(tree, edge_number)
-        closest_tip_labels[gene_id] = closest_tip_label
-    return closest_tip_labels
-
 def find_label_for_edge(tree, edge_number):
     for clade in tree.find_clades():
         if str(clade.comment) == str(edge_number):
             return clade.name, clade.branch_length
     return "No matching label found", None
+
 def run_guppy(jplace_file, output_dir):
     try:
         os.makedirs(output_dir, exist_ok=True)
@@ -69,6 +47,7 @@ def run_guppy(jplace_file, output_dir):
     except OSError as e:
         print(f"Error creating output directory: {e}")
         raise
+    
 def extract_tree_and_placements(jplace_file):
     with open(jplace_file, 'r') as file:
         data = json.load(file)
@@ -88,7 +67,8 @@ def extract_tree_and_placements(jplace_file):
 def find_closest_tip_labels(tree, placements):
     closest_tip_labels = {}
     for gene_id, edge_number in placements.items():
-        closest_tip_labels[gene_id] = find_label_for_edge(tree, edge_number)
+        closest_tip_label, edge_length = find_label_for_edge(tree, edge_number)
+        closest_tip_labels[gene_id] = closest_tip_label
     return closest_tip_labels
 
 def print_closest_tip_labels(closest_tip_labels):
