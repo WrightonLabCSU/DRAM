@@ -20,16 +20,14 @@ def find_closest_labeled_ancestor(clade, tree):
     # Start with the given clade and move up towards the root
     path = tree.get_path(clade)
     for ancestor in reversed(path):
-        # Check if the ancestor has a name and return it if exists
-        if ancestor.name:
+        # Look for any label that can be considered a valid identifier
+        if ancestor.name and ancestor.name.strip():
             return ancestor.name
-        # If no name, check if there's any other identifiable information
-        elif hasattr(ancestor, 'confidences') and ancestor.confidences:
-            return str(ancestor.confidences[0])
         # Debug: Print out what is being checked
-        print(f"Checked ancestor at {ancestor} with no name or confidence.")
+        print(f"Checked ancestor at {ancestor}, no valid label found.")
 
     return "No labeled ancestor found"
+
 
 
 def extract_placement_details(jplace_data, tree):
