@@ -850,7 +850,7 @@ if( params.product ){
     ch_function_heatmap_form = file(params.function_heatmap_form)
     ch_module_step_form = file(params.module_step_form)
 
-    if( distillate != "" ){
+    if( annotations != "" ){
         ch_distillate = file(params.distillate).exists() ? file(params.distillate) : error("Error: If using --product <path/to/file>, you must supply a DRAM2-formatted distill.xlsx file. Distill file not found at ${params.distillate}")
     }
 
@@ -1347,14 +1347,12 @@ workflow {
         Product
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */   
-    /*
+    
     if( params.product ){
         PRODUCT_HEATMAP( ch_final_annots, ch_distillate, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, ch_make_product_script, ch_product_scripts )
-
+        ch_product_html = PRODUCT_HEATMAP.out.product_html
     }
-    */
-
-
+    
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         Phylogenetic Trees
@@ -1363,7 +1361,7 @@ workflow {
     
     if( params.trees ){
 
-        TREES( ch_final_annots, ch_annotations_sqlite3, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
+        TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
 
     }
     

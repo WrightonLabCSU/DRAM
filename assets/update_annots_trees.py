@@ -1,87 +1,81 @@
 import json
 import sys
-import subprocess
-import os
 import re
+import pandas as pd
 from Bio import Phylo
+from io import StringIO
 
-def find_label_for_edge(tree, edge_number):
-    for clade in tree.find_clades():
-        if str(clade.comment) == str(edge_number):
-            return clade.name, clade.branch_length
-    return "No matching label found", None
+def load_jplace_file(jplace_path):
+    with open(jplace_path, 'r') as file:
+        jplace_data = json.load(file)
+    return jplace_data
 
-def load_phylogenetic_tree(tree_file):
-    try:
-        tree = Phylo.read(tree_file, 'newick')
-        return tree
-    except FileNotFoundError as e:
-        print(f"Error: Tree file '{tree_file}' not found.")
-        raise
-    except Exception as e:
-        print(f"Error parsing tree file '{tree_file}': {e}")
-        raise
+def load_and_parse_tree(tree_data):
+    tree_data = re.sub(r'\{(\d+)\}', r'[&edge=\g<1>]', tree_data)
+    handle = StringIO(tree_data)
+    tree = Phylo.read(handle, "newick")
+    return tree
 
-def run_guppy(jplace_file, output_dir):
-    try:
-        os.makedirs(output_dir, exist_ok=True)
-        
-        # Run guppy tog command to generate tree_with_placements.newick file
-        tree_output_path = os.path.join(output_dir, "tree_with_placements.newick")
-        subprocess.run(['guppy', 'tog', jplace_file, '-o', tree_output_path], check=True)
-        
-        # Run guppy edpl command to generate edpl.csv file
-        edpl_output_path = os.path.join(output_dir, "edpl.csv")
-        subprocess.run(['guppy', 'edpl', '--csv', jplace_file, '-o', edpl_output_path], check=True)
-        
-        return tree_output_path, edpl_output_path
-    except subprocess.CalledProcessError as e:
-        print(f"Error running guppy command: {e}")
-        raise
-    except OSError as e:
-        print(f"Error creating output directory: {e}")
-        raise
+def find_closest_labeled_ancestor(clade, tree):
+    if clade.is_terminal() and clade.name:
+        return clade.name
+    path = tree.get_path(clade)
+    for ancestor in reversed(path):
+        if ancestor.is_terminal() and ancestor.name:
+            return ancestor.name
+    min_distance = float('inf')
+    closest_leaf = None
+    for leaf in tree.get_terminals():
+        distance = tree.distance(clade, leaf)
+        if distance < min_distance and leaf.name:
+            min_distance = distance
+            closest_leaf = leaf.name
+    return closest_leaf if closest_leaf else ""
 
-def extract_tree_and_placements(jplace_file):
-    with open(jplace_file, 'r') as file:
-        # Read the JSON data
-        data = json.load(file)
-        
-        # Extract tree from .jplace file
-        tree_path = data['tree']
-    
-    # Load the tree from the file
-    tree = load_phylogenetic_tree(tree_path)
+def load_tree_mapping(mapping_tsv):
+    df = pd.read_csv(mapping_tsv, sep='\t')
+    return dict(zip(df['gene'], df['call']))
 
-    # Extract placements
-    placements = {}
-    for placement in data['placements']:
-        for gene_info in placement['nm']:
-            gene_name, _ = gene_info
-            placements[gene_name] = placement['p'][0][1]  # Extract edge number
-    
-    return tree, placements
+def extract_placement_details(jplace_data, tree, tree_mapping):
+    placements = jplace_data['placements']
+    placement_map = {}
+    for placement in placements:
+        for placement_detail in placement['p']:
+            edge_num = placement_detail[1]
+            clades = list(tree.find_clades({"comment": f"&edge={edge_num}"}))
+            if clades:
+                clade = clades[0]
+                closest_leaf = find_closest_labeled_ancestor(clade, tree)
+                if closest_leaf and closest_leaf in tree_mapping:
+                    closest_leaf = f"{tree_mapping[closest_leaf]};{closest_leaf}"
+            else:
+                closest_leaf = ""
+            for name, _ in placement['nm']:
+                placement_map[name] = closest_leaf
+    return placement_map
 
-def find_closest_tip_labels(tree, placements):
-    closest_tip_labels = {}
-    for gene_id, edge_number in placements.items():
-        closest_tip_label, edge_length = find_label_for_edge(tree, edge_number)
-        closest_tip_labels[gene_id] = closest_tip_label
-    return closest_tip_labels
+def update_tsv(tsv_path, output_tsv_path, placement_map):
+    df = pd.read_csv(tsv_path, sep='\t')
+    df['tree_verified'] = df['query_id'].map(placement_map).fillna('')
 
-def print_closest_tip_labels(closest_tip_labels):
-    for gene_id, tip_label in closest_tip_labels.items():
-        print(f"Sample: {gene_id}, Closest Tip Label: {tip_label}")
+    # Reorder columns to place 'tree_verified' after 'gene_number'
+    col_order_start = df.columns.tolist()[:df.columns.get_loc('gene_number')+1] + ['tree_verified']
+    col_order_end = [col for col in df.columns if col not in col_order_start]
+    df = df[col_order_start + col_order_end]
 
-def main(jplace_file):
-    output_dir = './output'
-    tree_output_path, _ = run_guppy(jplace_file, output_dir)
-    tree, placements = extract_tree_and_placements(tree_output_path)
-    closest_tip_labels = find_closest_tip_labels(tree, placements)
-    print_closest_tip_labels(closest_tip_labels)
+    df.to_csv(output_tsv_path, sep='\t', index=False)
 
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Usage: python script.py <jplace_file>")
+def main():
+    if len(sys.argv) != 5:
+        print("Usage: python update_annots_trees.py <jplace_path> <tsv_path> <mapping_tsv> <output_tsv_path>")
         sys.exit(1)
-    main(sys.argv[1])
+
+    jplace_path, tsv_path, mapping_tsv, output_tsv_path = sys.argv[1:]
+    jplace_data = load_jplace_file(jplace_path)
+    tree = load_and_parse_tree(jplace_data['tree'])
+    tree_mapping = load_tree_mapping(mapping_tsv)
+    placement_map = extract_placement_details(jplace_data, tree, tree_mapping)
+    update_tsv(tsv_path, output_tsv_path, placement_map)
+
+if __name__ == "__main__":
+    main()
