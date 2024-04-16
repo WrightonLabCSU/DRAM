@@ -15,8 +15,6 @@ dependencies:
   - scipy=1.8.1
   - sqlalchemy=1.4.46
   - barrnap=0.9
-  - altair=4.2.0
-  - networkx=2.8.8
   - ruby=3.1.2
   - parallel=20221122
   - trnascan-se=2.0.12
@@ -30,5 +28,13 @@ dependencies:
   - openpyxl=3.1.2
   - pplacer=1.1.alpha19
   - mafft=7.525
+
+  # visualization packages
+  - click
+  - numpy
+  - networkx>2,<3
+  - panel>1,<2
+  - bokeh>3,<4
+
   - pip:
       - matplotlib==3.8.3
