@@ -1,7 +1,6 @@
 import json
 import sys
 import re
-import sqlite3
 import pandas as pd
 from Bio import Phylo
 from io import StringIO
@@ -58,37 +57,38 @@ def extract_placement_details(jplace_data, tree, tree_mapping):
                 placement_map[name] = closest_leaf
     return placement_map
 
-def update_database_and_tsv(tsv_path, db_path, output_db_path, output_tsv_path, placement_map):
+def update_tsv(tsv_path, output_tsv_path, placement_map):
     # Read TSV into DataFrame
     df = pd.read_csv(tsv_path, sep='\t')
+
     # Map placements to DataFrame
-    df['tree_verified'] = df['query_id'].map(placement_map)
+    df['tree_verified'] = df['query_id'].map(placement_map).fillna('')
+
+    # Define the new order of columns, ensuring 'tree_verified' is after 'gene_number'
+    new_column_order = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank', 'gene_number', 'tree_verified']
     
+    # If there are additional columns, add them to the list in their original order
+    additional_columns = [col for col in df.columns if col not in new_column_order]
+    new_column_order.extend(additional_columns)
+    
+    # Reorder DataFrame according to new column order
+    df = df[new_column_order]
+
     # Write to new TSV
     df.to_csv(output_tsv_path, sep='\t', index=False)
-    
-    # Update SQLite Database
-    conn = sqlite3.connect(db_path)
-    df.to_sql('annotations', conn, if_exists='replace', index=False)
-    conn.close()
-
-    # Export updated DataFrame to new SQLite DB
-    conn_out = sqlite3.connect(output_db_path)
-    df.to_sql('annotations', conn_out, if_exists='replace', index=False)
-    conn_out.close()
 
 def main():
-    if len(sys.argv) != 7:
-        print("Usage: python update_annots_trees.py <jplace_path> <tsv_path> <mapping_tsv> <db_path> <output_db_path> <output_tsv_path>")
+    if len(sys.argv) != 6:
+        print("Usage: python update_annots_trees.py <jplace_path> <tsv_path> <mapping_tsv> <output_tsv_path>")
         return
     
-    jplace_path, tsv_path, mapping_tsv, db_path, output_db_path, output_tsv_path = sys.argv[1:]
+    jplace_path, tsv_path, mapping_tsv, output_tsv_path = sys.argv[1:]
     jplace_data = load_jplace_file(jplace_path)
     tree = load_and_parse_tree(jplace_data['tree'])
     tree_mapping = load_tree_mapping(mapping_tsv)
     placement_map = extract_placement_details(jplace_data, tree, tree_mapping)
-    update_database_and_tsv(tsv_path, db_path, output_db_path, output_tsv_path, placement_map)
-    print("Updates complete. Data saved to", output_db_path, "and", output_tsv_path)
+    update_tsv(tsv_path, output_tsv_path, placement_map)
+    print("Updates complete. Data saved to", output_tsv_path)
 
 if __name__ == "__main__":
     main()

@@ -1353,8 +1353,6 @@ workflow {
         ch_product_html = PRODUCT_HEATMAP.out.product_html
     }
     
-
-
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         Phylogenetic Trees
@@ -1363,7 +1361,7 @@ workflow {
     
     if( params.trees ){
 
-        TREES( ch_final_annots, ch_annotations_sqlite3, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
+        TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
 
     }
     
