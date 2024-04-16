@@ -24,7 +24,10 @@ from bokeh.plotting import figure
 from bokeh.resources import INLINE as INLINE_RESOURCES
 from bokeh.transform import factor_cmap, linear_cmap
 
-from .definitions import DEFAULT_GROUPBY_COLUMN
+try:
+    from .definitions import DEFAULT_GROUPBY_COLUMN
+except ImportError:
+    from definitions import DEFAULT_GROUPBY_COLUMN
 
 __authors__ = ["Madeline Scyphers", "Rory Flynn"]
 __copyright__ = "Copyright 2024, Wrighton Lab"
