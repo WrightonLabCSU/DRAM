@@ -8,12 +8,15 @@ from io import StringIO
 def load_jplace_file(jplace_path):
     with open(jplace_path, 'r') as file:
         jplace_data = json.load(file)
+    print(f"Loaded JPlace data from {jplace_path}")
     return jplace_data
 
 def load_and_parse_tree(tree_data):
+    original_tree_data = tree_data
     tree_data = re.sub(r'\{(\d+)\}', r'[&edge=\g<1>]', tree_data)
     handle = StringIO(tree_data)
     tree = Phylo.read(handle, "newick")
+    print(f"Tree parsed from modified Newick data")
     return tree
 
 def find_closest_labeled_ancestor(clade, tree):
@@ -30,16 +33,18 @@ def find_closest_labeled_ancestor(clade, tree):
         if distance < min_distance and leaf.name:
             min_distance = distance
             closest_leaf = leaf.name
-    return closest_leaf if closest_leaf else ""
+    return closest_leaf if closest_leaf else "No labeled ancestor found"
 
 def load_tree_mapping(mapping_tsv):
-    # Load mapping TSV into a dictionary
     df = pd.read_csv(mapping_tsv, sep='\t')
-    return dict(zip(df['gene'], df['call']))
+    mapping = dict(zip(df['gene'], df['call']))
+    print(f"Loaded tree mapping from {mapping_tsv}")
+    return mapping
 
 def extract_placement_details(jplace_data, tree, tree_mapping):
     placements = jplace_data['placements']
     placement_map = {}
+    print(f"Extracting placement details from JPlace data...")
     for placement in placements:
         for placement_detail in placement['p']:
             edge_num = placement_detail[1]
@@ -48,39 +53,27 @@ def extract_placement_details(jplace_data, tree, tree_mapping):
                 clade = clades[0]
                 closest_leaf = find_closest_labeled_ancestor(clade, tree)
                 if closest_leaf and closest_leaf in tree_mapping:
-                    # Combine tree verified label with additional metadata
                     closest_leaf = f"{tree_mapping[closest_leaf]};{closest_leaf}"
+                elif not closest_leaf:
+                    closest_leaf = "No labeled ancestor found"
             else:
-                closest_leaf = ""
+                closest_leaf = "Clade not found"
                 print(f"No clades found for edge number: {edge_num}")
             for name, _ in placement['nm']:
                 placement_map[name] = closest_leaf
     return placement_map
 
 def update_tsv(tsv_path, output_tsv_path, placement_map):
-    # Read TSV into DataFrame
     df = pd.read_csv(tsv_path, sep='\t')
-
-    # Map placements to DataFrame
+    print(f"Loaded raw annotations from {tsv_path}")
     df['tree_verified'] = df['query_id'].map(placement_map).fillna('')
-
-    # Define the new order of columns, ensuring 'tree_verified' is after 'gene_number'
-    new_column_order = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank', 'gene_number', 'tree_verified']
-    
-    # If there are additional columns, add them to the list in their original order
-    additional_columns = [col for col in df.columns if col not in new_column_order]
-    new_column_order.extend(additional_columns)
-    
-    # Reorder DataFrame according to new column order
-    df = df[new_column_order]
-
-    # Write to new TSV
     df.to_csv(output_tsv_path, sep='\t', index=False)
+    print(f"Updated annotations saved to {output_tsv_path}")
 
 def main():
-    if len(sys.argv) != 6:
+    if len(sys.argv) != 5:
         print("Usage: python update_annots_trees.py <jplace_path> <tsv_path> <mapping_tsv> <output_tsv_path>")
-        return
+        sys.exit(1)
     
     jplace_path, tsv_path, mapping_tsv, output_tsv_path = sys.argv[1:]
     jplace_data = load_jplace_file(jplace_path)
@@ -88,7 +81,6 @@ def main():
     tree_mapping = load_tree_mapping(mapping_tsv)
     placement_map = extract_placement_details(jplace_data, tree, tree_mapping)
     update_tsv(tsv_path, output_tsv_path, placement_map)
-    print("Updates complete. Data saved to", output_tsv_path)
 
 if __name__ == "__main__":
     main()
