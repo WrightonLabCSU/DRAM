@@ -851,8 +851,8 @@ if( params.product ){
     ch_module_step_form = file(params.module_steps_form)
 
 /*  TODO Maddie: we don't use distillate, but do we need some form of this?
-    if( distillate != "" ){
-        ch_distillate = file(params.distillate).exists() ? file(params.distillate) : error("Error: If using --product <path/to/file>, you must supply a DRAM2-formatted distill.xlsx file. Distill file not found at ${params.distillate}")
+    if( params.annotations != "" && params.annotate = 0){
+        ch_final_annots = file(params.annotations).exists() ? file(params.annotations) : error("Error: If using --product, you must supply a DRAM2-formatted distill.xlsx file. Distill file not found at ${params.distillate}")
     }
 */
 
@@ -1256,11 +1256,21 @@ workflow {
             ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
             ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
             
+            // If the user wants to run trees, do it before we count the annotations
+            if( params.trees || params.product ){
+                TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
+            }
+
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
             ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
         }
         else{
+            // If the user wants to run trees, do it before we count the annotations
+            if( params.trees || params.product ){
+                TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
+            }
+
             ch_final_annots = ch_updated_taxa_annots
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
             ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
@@ -1271,6 +1281,7 @@ workflow {
             GENERATE_GFF_GENBANK( ch_collected_fna, params.database_list, ch_final_annots, ch_generate_gff_gbk )
         }
 
+
     }
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1280,7 +1291,7 @@ workflow {
     if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )
     {
         // If the user did not call genes, collect tRNA and rRNA individual files provided by --trnas and --rrnas
-        if( params.call == 0 ){\
+        if( params.call == 0 ){
             if( params.trnas != "" ){
                 TRNA_COLLECT( ch_collected_tRNAs )
                 ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
@@ -1356,18 +1367,6 @@ workflow {
     if( params.product ){
 
         PRODUCT_HEATMAP( ch_final_annots, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, ch_make_product_script, ch_product_scripts )
-
-    }
-
-    /*
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        Phylogenetic Trees
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    */   
-    
-    if( params.trees ){
-
-        TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
 
     }
     
