@@ -28,11 +28,11 @@ from .make_product import main as make_product
     default=Path.cwd()
 )
 @click.option(
-    "--show",
-    "-s",
+    "--dashboard",
+    "-d",
     is_flag=True,
 )
-def main(annotations, groupby_column, output_dir, show):
+def main(annotations, groupby_column, output_dir, dashboard):
     """
     A visualization tool for DRAM2
     """
@@ -40,7 +40,7 @@ def main(annotations, groupby_column, output_dir, show):
         annotations_tsv_path=annotations,
         groupby_column=groupby_column,
         output_dir=output_dir,
-        show=show
+        dashboard=dashboard
     )
 
 
