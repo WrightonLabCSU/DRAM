@@ -1,0 +1,81 @@
+category	subcategory	function_name	function_ids	long_function_name	gene_symbol
+CAZy	CAZy	Polyphenolics	"K05909, AA1, AA2, K00422"	Polyphenolics Cleavage	
+CAZy	CAZy	Crystalline Cellulose	"GH7, GH48, AA10, AA15, AA16, AA9, AA10, AA11, AA13"	Crystalline Cellulose Backbone Cleavage	
+CAZy	CAZy	Amorphous Cellulose	"GH5, GH6, GH7, GH8, GH9, GH10, GH124, GH12, GH44, GH45"	Amorphous Cellulose Backbone Cleavage	
+CAZy	CAZy	Amorphous Cellulose	"GH94, GH1, GH2, GH3, GH5, GH9, GH16, GH116"	Amorphous Cellulose Oligo Cleavage	
+CAZy	CAZy	Mucin	GH101	Mucin Backbone Cleavage	
+CAZy	CAZy	Mucin	"GH27, GH129, GH112, GH109, GH31, GH36"	Mucin Oligo Cleavage	
+CAZy	CAZy	Sulf-Polysachharides	"GH111, GH16, GH82, GH150, GH79, PL29, PL30, PL33, PL8, PL12, PL13, PL15, PL21, PL6, PL37, GH56, GH86"	Sulf-Polysachharides Backbone Cleavage	
+CAZy	CAZy	Sulf-Polysachharides	"PL21, PL37, PL23, PL24, PL25, GH88, PL15, PL6, GH117"	Sulf-Polysachharides Oligo Cleavage	
+CAZy	CAZy	Xyloglucan	"GH5, GH9, GH12, GH16, GH44, GH45, GH48, GH74, AA9"	Xyloglucan Backbone Cleavage (Hemicellulose)	
+CAZy	CAZy	Xyloglucan	"GH31, GH43, GH10, GH2"	Xyloglucan Oligo Cleavage (Hemicellulose)	
+CAZy	CAZy	Starch	"AA13, GH13, GH14, GH57, GH119, GH126"	Starch Backbone Cleavage	
+CAZy	CAZy	Starch	"GH133, GH15, GH97"	Starch Oligo Cleavage	
+CAZy	CAZy	Chitin	"GH18, GH19, GH23, GH73"	Chitin Backbone Cleavage	
+CAZy	CAZy	Chitin	"GH20, GH3, GH5, GH84, GH116, AA10, AA11, AA15, CE4"	Chitin Oligo Cleavage	
+CAZy	CAZy	Pectin	"GH28, PL1, PL2, PL9, PL10, PL11, PL22, PL26, PL3, PL4"	Pectin Backbone Cleavage	
+CAZy	CAZy	Pectin	"GH78, GH106, GH138, GH139, GH143, CE8, GH105, GH4, CE12, GH2"	Pectin Oligo Cleavage	
+CAZy	CAZy	Alpha-galactans	GH166	Alpha-galactans Backbone Cleavage	
+CAZy	CAZy	Alpha-galactans	"GH27, GH110, GH4, GH31, GH36, GH97"	Alpha-galactans Oligo Cleavage	
+CAZy	CAZy	Beta-galactan (pectic galactan)	GH53	Beta-galactan (pectic galactan) Backbone Cleavage	
+CAZy	CAZy	Beta-galactan (pectic galactan)	"GH2, GH35, GH42, GH1, GH59, GH147, GH165"	Beta-galactan (pectic galactan) Oligo Cleavage	
+CAZy	CAZy	Mixed-Linkage glucans	"GH16, GH30, GH17, GH7, GH8, GH9, GH5, GH55, GH64, GH81, GH128, GH152, GH157, GH158"	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)	
+CAZy	CAZy	Mixed-Linkage glucans	"GH3, GH16, GH17, GH55, GH1"	Mixed-Linkage glucans Oligo Cleavage (Hemicellulose)	
+CAZy	CAZy	Xylans	"GH10, GH26, GH8, GH5, GH11, GH30, GH98, GH141"	Xylan Backbone Cleavage (Hemicellulose)	
+CAZy	CAZy	Xylans	"GH39, GH3, GH31, GH52, GH120, GH115, GH67"	Xylan Oligo Cleavage (Hemicellulose)	
+CAZy	CAZy	Beta-mannan	"GH113, GH134, GH26, GH5"	Beta-mannan Backbone Cleavage (Hemicellulose)	
+CAZy	CAZy	Beta-mannan	"GH26,GH130, GH113, CE2, CE17, GH2"	Beta-mannan Oligo Cleavage (Hemicellulose)	
+CAZy	CAZy	Alpha-mannan	"GH99, GH76"	Alpha-mannan Backbone Cleavage (Hemicellulose)	
+CAZy	CAZy	Alpha-mannan	"GH76, GH92, GH38, GH63, GH47, GH125, GH130"	Alpha-mannan Oligo Cleavage (Hemicellulose)	
+CAZy	CAZy	Arabinan	"GH43, GH49"	Arabinan Backbone Cleavage	
+CAZy	CAZy	Arabinan	"GH93, GH43, GH51, GH3, GH54, GH62"	Arabinan Oligo Cleavage	
+CAZy	CAZy	Rhamnose cleavage	"GH78, GH106, GH145, PL24, PL25, PL27, PL28, GH28"	Rhamnose Oligo cleavage	
+CAZy	CAZy	Fucose Cleavage	"GH107, GH139, GH141, GH151, GH29, GH95"	Fucose Oligo Cleavage	
+CAZy	CAZy	Arabinose cleavage	"GH121, GH127, GH137, GH142, GH146, GH54, GH62, GH2"	Arabinose Oligo cleavage	
+Nitrogen metabolism	Nitrification	ammonia => nitrite	EC:1.14.99.39	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	
+Nitrogen metabolism	Nitrification	Bacterial/Archaeal ammonia oxidation	"K10944, K10945, K10946"	amoA; Methane/ammonia monooxygenase subunit A (aka: particulate ammonia monooxygenase) [EC:1.14.99.39] [RN:R00148]	amoA
+Nitrogen metabolism	Nitrification	Bacterial (aerobic-specific) ammonia oxidation	K10535	hao: Hydroxylamine dehydrogenase [EC:1.7.2.6] [RN:R10164]	hao
+Nitrogen metabolism	Nitrification	Bacterial (anaerobic-specific) ammonia oxidation	"K20932, K20933, K20934, K20935"	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	hzs
+Nitrogen metabolism	Nitrification	nitrite=> nitrate	"K00370, K00371"	"nxrA; Nitrite oxidoreductase, alpha subunit [EC:1.7.99.-] [RN:R00978]; nxrB; Nitrite oxidoreductase, beta subunit [EC:1.7.99.-] [RN:R00978]"	
+Nitrogen metabolism	Denitrification	nitrate => nitrite	"K02567, K00370, K00371, K02568"	periplasmic nitrate reductase NapA [EC:1.7.99.-] [RN:R00798] or nitrate reductase 1 NarG [EC:1.7.99.-] [RN:R00798]	
+Nitrogen metabolism	Denitrification	nitrite => nitric oxide	"K00362, K00368, K15864"	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787]	
+Nitrogen metabolism	Denitrification	Dissimilatory nitrite reduction to ammonia (DNRA)	"K03385, K15876"	nrfA; Nitrite reductase (cytochrome c-552) [EC:1.7.2.2] [RN:R05712]; nrfH; cytochrome c nitrite reductase small subunit [EC:1.7.2.2] [RN:R05712]	nrfA
+Nitrogen metabolism	Denitrification	nitric oxide => nitrous oxide	"K04561, K15877"	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]	
+Nitrogen metabolism	Denitrification	nitrous oxide => nitrogen	K00376	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]	
+Nitrogen metabolism	Nitrogen fixation	nitrogen => ammonia	"K02588, K02586"	nitrogenase iron protein [RN:R05185]	
+Nitrogen metabolism	Nitrogen fixation	Nitrogen fixation altennative	K22896	vnfD; Vanadium-dependent nitrogenase alpha chain [EC:1.18.6.2] [RN:R12084]	vnfH
+Sulfur metabolism	Sulfur metabolism	dissimilatory sulfate reduction (and oxidation) sulfate => sulfide	"K11180, K11181"	dissimilatory sulfite reductase alpha subunit [EC:1.8.99.5]	dsrA or dsrB
+Sulfur metabolism	Sulfur metabolism	thiosulfate => sulfite	K08352	thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]	"phsA, psrA"
+Sulfur metabolism	Sulfur metabolism	"Thiosulfate oxidation by SOX complex, thiosulfate => sulfate"	"K17222, K17223, K17224, K17225, K22622, K17226, K17227"		
+Sulfur metabolism	Sulfur metabolism	tetrathionate => thiosulfate	K08357		ttrA
+Other Reductases	Reductases and Electron transport chain components	selenate/Chlorate reduction	K17050	selenate/chlorate reductase subunit alpha	
+Other Reductases	Reductases and Electron transport chain components	TMAO reductase	K07811	trimethylamine-N-oxide reductase (cytochrome c) [EC:1.7.2.3]	
+Other Reductases	Reductases and Electron transport chain components	mercury reduction	EC:1.16.1.1	mercury(II) reductase	
+Other Reductases	Reductases and Electron transport chain components	"arsenate reduction, pt 1"	EC:1.20.4.1	arsenate reductase (glutaredoxin); ArsC (ambiguous)	
+Other Reductases	Reductases and Electron transport chain components	"arsenate reduction, pt 2"	EC:1.20.99.1	arsenate reductase (donor); arsenate:(acceptor) oxidoreductase	
+Photosynthesis	Photosynthesis	Photosystem I	"K02689, K02690, K02691, K02692, K02693, K02694, K08940, K08941, K08942, K08943"	psaA-F; photosystem I P700 chlorophyll a apoprotein A1	
+Photosynthesis	Photosynthesis	Photosystem II	"K02703, K02704, K02705, K02706, K02707, K02708, K08928, K08929"	"psbA, psbD photosystem II reaction center D1 protein [EC:1.10.3.9]"	fhs (formyltetrahydrofolate (THF) synthetase)
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	Key functional gene 	"K00399, K00401, K00402"	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	mcrA
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	"acetate => methane, pt 1"	K01895	acetyl-CoA synthetase [EC:6.2.1.1] [RN:R00235]	
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	"acetate => methane, pt 2"	K00925	acetate kinase [EC:2.7.2.1] [RN:R00315]	ack
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	"acetate => methane, pt 3"	K00625	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	methanol => methane	K04480	mtaB; 5-hydroxybenzimidazolylcobamide Co-methyltransferase	mtaB
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	trimethylamine => dimethylamine	K14083	mttB; trimethylamine corrinoid protein Co-methyltransferase	mttB
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	dimethylamine => monomethylamine	K16178	mtbB; dimethylamine corrinoid protein Co-methyltransferase	mtbB
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	monomethylamine => ammonia	K16176	mtmB; methylamine corrinoid protein Co-methyltransferase	mtmB
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	putative but not defining CO2 => methane	K00200	formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	"methane => methanol, with oxygen (pmo)"	"K10944, K10945, K10946"	"pmoA; Methane/ammonia monooxygenase subunit A (aka: Particulate methane monoxygenase, or subunit Beta) [EC:1.14.18.3] [RN:R09518]"	pmoA
+Methanogenesis and methanotrophy	Methanogenesis and methanotrophy	"methane => methanol, with oxygen (mmo)"	"K16157, K16158, K16159, K16160, K16161, K16162"	"mmoX; Methane monooxygenase component A alpha chain (aka: Soluble methane monooxygenase, or methane hydroxylase) [EC1.14.13.25] [RN:R01142]"	
+SCFA and alcohol conversions	SCFA and alcohol conversions	pyruvate => acetyl CoA v1	K00163	pyruvate dehydrogenase E1 component [EC:1.2.4.1]	
+SCFA and alcohol conversions	SCFA and alcohol conversions	pyruvate => acetyl CoA v2	K00174	"2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit alpha [EC:1.2.7.3, 1.2.7.11]"	
+SCFA and alcohol conversions	SCFA and alcohol conversions	pyruvate => acetylCoA f+ formate v3	K00656	formate C-acetyltransferase [EC:2.3.1.54]	
+SCFA and alcohol conversions	SCFA and alcohol conversions	"acetate, pt 1"	"K00625,K00925"	"phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230], acetate kinase [EC:2.7.2.1] [RN:R00315]"	
+SCFA and alcohol conversions	SCFA and alcohol conversions	"acetate, pt 2"	K01905	acetate---CoA ligase (ADP-forming) subunit alpha	
+SCFA and alcohol conversions	SCFA and alcohol conversions	"acetate, pt 3"	K01067	acetyl-CoA hydrolase [EC:3.1.2.1]	
+SCFA and alcohol conversions	SCFA and alcohol conversions	lactate L	"K00016, K00101"	L-lactate dehydrogenase [EC:1.1.1.27]; L-lactate dehydrogenase (cytochrome) [EC:1.1.2.3]	
+SCFA and alcohol conversions	SCFA and alcohol conversions	lactate D	"K03778, K03777"	"D-lactate dehydrogenase [EC:1.1.1.28]; D-lactate dehydrogenase (quinone) [EC:1.1.5.12], D-lactate dehydrogenase (cytochrome) [EC:1.1.2.4], D-lactate dehydrogenase (cytochrome c-553)"	
+SCFA and alcohol conversions	SCFA and alcohol conversions	"Butyrate, pt 1"	K00634	phosphate butyryltransferase [EC:2.3.1.19]	
+SCFA and alcohol conversions	SCFA and alcohol conversions	"Butyrate, pt 2"	"K00929, K01896"	"butyrate kinase [EC:2.7.2.7], medium-chain acyl-CoA synthetase [EC:6.2.1.2]"	
+SCFA and alcohol conversions	SCFA and alcohol conversions	"Propionate, pt 1"	K19697	propionate kinase [EC:2.7.2.15]	
+SCFA and alcohol conversions	SCFA and alcohol conversions	"Propionate, pt 2"	K01026	propionate CoA-transferase [EC:2.8.3.1]	
+SCFA and alcohol conversions	SCFA and alcohol conversions	Alcohol production 	"K00001, K00121, K04072, K13951, K13952, K13953, K13954, K13980, K18857"	alcohol dehydrogenase [EC:1.1.1.1]	 
