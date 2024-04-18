@@ -811,7 +811,7 @@ def main(annotations_tsv_path,
          module_steps_form: Optional[Path] = None,
          etc_steps_form: Optional[Path] = None,
          function_steps_form: Optional[Path] = None,
-         show=False
+         dashboard=False
          ):
     """
     Make a product visualization
@@ -898,7 +898,7 @@ def main(annotations_tsv_path,
         labels,
     )
     plot.save(output_dir / "product.html", resources=INLINE_RESOURCES)
-    if show:
+    if dashboard:
         plot.show(port=5006)
     product_df.to_csv(output_dir / "product.tsv", sep="\t", index=False)
     logger.info("Completed visualization")
@@ -914,9 +914,9 @@ if __name__ == "__main__":
     parser.add_argument("--etc_steps_form", help="ETC Step Database TSV", default=FILES_NAMES[ETC_MODULE_DF_TAG])
     parser.add_argument("--function_steps_form", help="Function Step Database TSV",
                         default=FILES_NAMES[FUNCTION_HEATMAP_FORM_TAG])
-    parser.add_argument("--show", help="Launch as dashboard", action='store_true')
+    parser.add_argument("--dashboard", help="Launch as dashboard", action='store_true')
     args = parser.parse_args()
 
     main(annotations_tsv_path=args.annotations, groupby_column=args.groupby_column, output_dir=args.output_dir,
          module_steps_form=args.module_steps_form, etc_steps_form=args.etc_steps_form,
-         function_steps_form=args.function_steps_form, show=args.show)
+         function_steps_form=args.function_steps_form, dashboard=args.dashboard)
