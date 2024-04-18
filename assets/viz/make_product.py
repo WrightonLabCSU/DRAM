@@ -5,6 +5,7 @@ DRAM Visualizations
 
 Script that generates a product visualization from the DRAM output.
 """
+from __future__ import annotations
 import argparse
 import logging
 import re
@@ -588,6 +589,7 @@ def get_ordered_uniques(seq):
 
 
 def make_module_heatmaps(df, x_col="module_name", y_col="genome", c_col="step_coverage"):
+    """Make a list of module heatmaps"""
     return [
         heatmap(df, x_col=x_col, y_col=y_col, c_col=c_col,
                 tooltip_cols=["genome", "module_name", "steps", "steps_present"],
@@ -596,6 +598,7 @@ def make_module_heatmaps(df, x_col="module_name", y_col="genome", c_col="step_co
 
 
 def make_etc_heatmaps(df, x_col="module_name", y_col="genome", c_col="percent_coverage", groupby="complex"):
+    """Make a list of etc heatmaps"""
     etc_tooltip_cols = ["genome", "module_name", "path_length", "path_length_coverage", "genes", "missing_genes"]
     etc_charts = []
     for i, (etc_complex, frame) in enumerate(df.groupby(groupby)):
@@ -610,6 +613,7 @@ def make_etc_heatmaps(df, x_col="module_name", y_col="genome", c_col="percent_co
 
 
 def make_functional_heatmaps(df, x_col="function_name", y_col="genome", c_col="present", groupby="category"):
+    """Make a list of function heatmaps"""
     func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
                          "long_function_name", "gene_symbol"]
     function_charts = []
@@ -632,63 +636,42 @@ def make_functional_heatmaps(df, x_col="function_name", y_col="genome", c_col="p
     return function_charts
 
 
-def add_legend(p: Plot, labels, location="center", side="right"):
-    legend = Legend(items=[
-        (label, [glyph]) for label, glyph in zip(labels, p.renderers)
-    ],
-        location=location,
-    )
-    p.add_layout(legend, side)
-    return p
+# Work in progress
+# def add_legend(p: Plot, labels, location="center", side="right"):
+#     legend = Legend(items=[
+#         (label, [glyph]) for label, glyph in zip(labels, p.renderers)
+#     ],
+#         location=location,
+#     )
+#     p.add_layout(legend, side)
+#     return p
 
 
 def make_product_heatmap(
-        module_coverage_df,
-        etc_coverage_df,
-        function_df,
+        module_coverage_df: pd.DataFrame,
+        etc_coverage_df: pd.DataFrame,
+        function_df: pd.DataFrame,
         labels):
+    """
+    Make a product heatmap group from the module_coverage_df, etc_coverage_df, and functional_df
+
+    Parameters
+    ----------
+    module_coverage_df : pd.DataFrame
+        A dataframe of module coverage information
+    etc_coverage_df : pd.DataFrame
+        A dataframe of ETC coverage information
+    function_df : pd.DataFrame
+        A dataframe of functional coverage information
+
+    Returns
+    -------
+    pn.Row
+        A panel row of heatmaps
+    """
     module_charts = make_module_heatmaps(module_coverage_df)
-    # module_charts.append(
-    #     heatmap(module_coverage_df, x_col="module_name", y_col="genome", c_col="step_coverage",
-    #              tooltip_cols=["genome", "module_name", "steps", "steps_present"],
-    #              title="Module",
-    #              )
-    # )
     etc_charts = make_etc_heatmaps(etc_coverage_df)
-
-    # etc_tooltip_cols = ["genome", "module_name", "path_length", "path_length_coverage", "genes", "missing_genes"]
-    # etc_charts = []
-    # for i, (etc_complex, frame) in enumerate(etc_coverage_df.groupby("complex")):
-    #     etc_charts.append(
-    #         heatmap(frame, x_col="module_name", y_col="genome", c_col="percent_coverage",
-    #                  tooltip_cols=etc_tooltip_cols, y_axis_location=None,
-    #                  title=etc_complex,
-    #                  )
-    #     )
-    # add_colorbar(etc_charts[-1])
     function_charts = make_functional_heatmaps(function_df)
-    # add_legend(function_charts[-1], labels=["present"])
-
-    # func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
-    #                      "long_function_name", "gene_symbol"]
-    # function_df["present"] = function_df["present"].astype(str)
-    # function_charts = []
-    # for i, (group, frame) in enumerate(function_df.groupby("category", sort=False)):
-    #     kw = dict()
-    #     if i == len(function_df["category"].unique()) - 1:
-    #         kw["rect_kw"] = dict(legend_field="present")
-    #     function_charts.append(
-    #         heatmap(frame, x_col="function_name", y_col="genome", c_col="present",
-    #                  tooltip_cols=func_tooltip_cols,
-    #                  y_axis_location=None,
-    #                  title=group,
-    #                  **kw
-    #                  )
-    #     )
-    # # Easy trick to get legend outside of chart without making a manual legend
-    # legend = function_charts[-1].legend[0]  # grab legend from last chart
-    # function_charts[-1].legend[:] = []  # remove
-    # function_charts[-1].add_layout(legend, place='right')  # place to the outside of chart
 
     charts = [
         format_chart_group([p for p in module_charts]),
@@ -700,31 +683,22 @@ def make_product_heatmap(
     return plot
 
 
-# def heatmap_group(df, tooltip_cols, title, x_col, y_col, c_col, **kwargs):
-#     func_tooltip_cols = ["genome", "category", "subcategory", ("Function IDs", "@function_ids"), "function_name",
-#                          "long_function_name", "gene_symbol"]
-#     df["present"] = df["present"].astype(str)
-#     function_charts = []
-#     for i, (group, frame) in enumerate(df.groupby("category", sort=False)):
-#         kw = dict()
-#         if i == len(df["category"].unique()) - 1:
-#             kw["rect_kw"] = dict(legend_field="present")
-#         function_charts.append(
-#             heatmap(frame, x_col="function_name", y_col="genome", c_col="present",
-#                      tooltip_cols=func_tooltip_cols,
-#                      y_axis_location=None,
-#                      title=group,
-#                      **kw
-#                      )
-#         )
-#     # Easy trick to get legend outside of chart without making a manual legend
-#     legend = function_charts[-1].legend[0]  # grab legend from last chart
-#     function_charts[-1].legend[:] = []  # remove
-#     function_charts[-1].add_layout(legend, place='right')  # place to the outside of chart
-#
+def format_chart_group(chart_group: list, title: str = ""):
+    """
+    Make a formatted chart group
 
+    Parameters
+    ----------
+    chart_group : list
+        A list of charts
+    title : str
+        The title of the chart group
 
-def format_chart_group(chart_group, title=""):
+    Returns
+    -------
+    pn.Column
+        A panel column of charts
+    """
     if not isinstance(chart_group, list) or isinstance(chart_group, tuple):
         chart_group = [chart_group]
     return pn.Column(
@@ -733,7 +707,10 @@ def format_chart_group(chart_group, title=""):
     )
 
 
-def add_colorbar(p):
+def add_colorbar(p: Plot):
+    """
+    Add a colorbar to a plot
+    """
     color_bar = ColorBar(color_mapper=LinearColorMapper(palette=tuple(reversed(PALETTE_CONTINUOUS)), low=0, high=1),
                          height=HEATMAP_CELL_HEIGHT * 30)
     p.add_layout(color_bar, 'right')
@@ -741,6 +718,35 @@ def add_colorbar(p):
 
 
 def heatmap(df, x_col, y_col, c_col, tooltip_cols, title="", rect_kw=None, c_min=0, c_max=1, **fig_kwargs, ):
+    """
+    Make a heatmap from a dataframe
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The dataframe to make the heatmap from
+    x_col : str
+        The column to use for the x-axis
+    y_col : str
+        The column to use for the y-axis
+    c_col : str
+        The column to use for the color
+    tooltip_cols : list
+        A list of tuples of columns to use for the tooltips
+    title : str
+        The title of the plot
+    rect_kw : dict
+        Keyword arguments for the rect
+    c_min : float
+        The minimum value for the color
+    c_max : float
+        The maximum value for the color
+
+    Returns
+    -------
+    Plot
+        The heatmap plot
+    """
     rect_kw = rect_kw or {}
     df = df.sort_values(by=[y_col], ascending=False)
 
@@ -807,7 +813,26 @@ def main(annotations_tsv_path,
          function_steps_form: Optional[Path] = None,
          show=False
          ):
-    dram_config = {}
+    """
+    Make a product visualization
+
+    Parameters
+    ----------
+    annotations_tsv_path : str
+        The path to the annotations tsv file
+    groupby_column : str
+        The column to group by
+    output_dir : str
+        The output directory
+    module_steps_form : str
+        The module step database tsv
+    etc_steps_form : str
+        The etc step database tsv
+    function_steps_form : str
+        The function step database tsv
+    show : bool
+        Launch as dashboard
+    """
     output_dir = output_dir or Path.cwd().resolve()
     annotations = pd.read_csv(annotations_tsv_path, sep="\t", index_col=0)
 
@@ -820,9 +845,6 @@ def main(annotations_tsv_path,
     module_steps_form = pd.read_csv(module_steps_form or FILES_NAMES[MODULE_STEPS_FORM_TAG], sep="\t")
     etc_module_df = pd.read_csv(etc_steps_form or FILES_NAMES[ETC_MODULE_DF_TAG], sep="\t")
     function_heatmap_form = pd.read_csv(function_steps_form or FILES_NAMES[FUNCTION_HEATMAP_FORM_TAG], sep="\t")
-    # module_steps_form = get_distillate_sheet(MODULE_STEPS_FORM_TAG, dram_config)
-    # etc_module_df = get_distillate_sheet(ETC_MODULE_DF_TAG, dram_config)
-    # function_heatmap_form = get_distillate_sheet(FUNCTION_HEATMAP_FORM_TAG, dram_config)
 
     # make product
     if "bin_taxonomy" in annotations:

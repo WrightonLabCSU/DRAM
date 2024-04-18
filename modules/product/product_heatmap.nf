@@ -8,6 +8,7 @@ process PRODUCT_HEATMAP {
     path( ch_etc_module_form, stageAs: "etc_module_database.tsv" )
     path( ch_function_heatmap_form, stageAs: "function_heatmap_form.tsv" )
     path( ch_module_step_form, stageAs: "module_step_form.tsv" )
+    val(groupby_column)
     //Placeholder for a single product script
     path( ch_make_product_script)
     //Place holder for a directory of product scripts
@@ -24,15 +25,8 @@ process PRODUCT_HEATMAP {
     #    This will prevent issues with files with the same names.
     # ln -s ${ch_product_scripts}/* .
 
-    # Create a log directory if it doesn't exist
-    mkdir -p logs
-
-    # Define the log file path
-    log_file="logs/product.log"
-
-    echo `{python -V}`
-
     python ${ch_make_product_script} \\
+    --groupby_column ${groupby_column} \\
     --annotations ${ch_final_annots} \\
     --module_steps_form ${ch_module_step_form} \\
     --etc_steps_form ${ch_etc_module_form} \\

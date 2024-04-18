@@ -3,12 +3,22 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# nextflow trace logs
+trace*.txt
+
+# DRAM output folder2
+DRAM2_output/
+work/
+
+# Visualization Output Files
+product.html
+product.tsv
+
 containers/*.sif
 test_data/
 nextflow-LOCAL.config
 .nextflow.log*
 .nextflow/history
-work/
 .Rhistory
 .nextflow*
 databases/
