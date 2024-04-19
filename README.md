@@ -261,7 +261,7 @@ Additionally, `--merge-annotations` and `--rename` can be run idenpendently of a
 `nextflow run DRAM2.nf --rename --input_fasta_dir <path/to/fasta/directory/>`
 
 
-3) **Call genes using input fastas (use --rename to rename FASTA headers):**
+2) **Call genes using input fastas (use --rename to rename FASTA headers):**
 
 `nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>`
 
