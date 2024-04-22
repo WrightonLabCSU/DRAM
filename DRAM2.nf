@@ -1257,7 +1257,7 @@ workflow {
 
             // If the user wants to run trees, do it before we count the annotations
             if( !params.no_trees ){
-                TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files )
+                TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
             }
 
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
@@ -1267,7 +1267,7 @@ workflow {
         else{
             // If the user wants to run trees, do it before we count the annotations
             if( !params.no_trees ){
-                TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files )
+                TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
             }
 
             ch_final_annots = ch_updated_taxa_annots
