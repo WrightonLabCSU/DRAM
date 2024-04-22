@@ -611,12 +611,9 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
 }
 
-if( params.trees ) {
-    def validOptionsTrees = ["nar_nxr", "amoa_pmoa"]
+if( !params.no_trees ) {
 
-    if (!validOptionsTrees.contains(params.trees)) {
-        error "Invalid option provided for --trees. Please choose one of the following options: ${validOptionsTrees.join(', ')}"
-    }
+    //Add in option for --add_trees <list of paths to trees refpkg directories>
 
     if( !params.call ){
         if ( params.annotations == "" && params.input_genes == "" ){
