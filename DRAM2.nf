@@ -614,11 +614,21 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 if( !params.no_trees ) {
 
     //Add in option for --add_trees <list of paths to trees refpkg directories>
+    if( params.add_trees != 0 ){
+        ch_add_trees = file(params.add_trees).exists() ? file(params.add_trees) : error("Error: If using --add_trees, you must supply a path to a directory containing each tree subdirectory. Additional trees directory not found at ${params.add_trees}")
+    }
 
     if( !params.call ){
         if ( params.annotations == "" && params.input_genes == "" ){
             error "If you want to run TREES, you must either use --call to call genes or, provide annotations via --annotations and directory of called genes via --input_genes."
         }
+        if( params.add_annotations != ""){
+            ch_add_annots = file(params.add_annotations).exists() ? file(params.add_annotations) : error("Error: If using --add_annotations, you must supply a DRAM-formatted annotations file. Annotations file not found at ${params.add_annotations}")
+        }
+        ch_collected_faa = Channel
+            .fromPath(params.input_genes + params.genes_fmt, checkIfExists: true)
+            .ifEmpty { exit 1, "If you specify --annotations without --input_genes, with the desire to run trees, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
+
     }
 
     ch_tree_data_files = Channel.fromPath(params.tree_data_files)
@@ -1257,7 +1267,7 @@ workflow {
 
             // If the user wants to run trees, do it before we count the annotations
             if( !params.no_trees ){
-                TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
+                TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             }
 
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
@@ -1267,7 +1277,7 @@ workflow {
         else{
             // If the user wants to run trees, do it before we count the annotations
             if( !params.no_trees ){
-                TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts )
+                TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             }
 
             ch_final_annots = ch_updated_taxa_annots
@@ -1282,6 +1292,18 @@ workflow {
 
 
     }
+
+    if(params.annotations != "" && params.input_genes != "" ){
+        if( !params.no_trees ){
+            TREES( ch_add_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
+        }
+
+        ch_final_annots = ch_updated_taxa_annots
+        COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
+        ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+        ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
+    }
+
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         Distill

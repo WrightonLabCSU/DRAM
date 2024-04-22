@@ -8,6 +8,7 @@ process TREES {
     path( ch_collected_proteins )
     path( tree_data_files )
     path( ch_trees_scripts )
+    path( ch_add_trees )
 
     output:
     path("updated-annotations.tsv"), emit: trees_out, optional: true
@@ -18,6 +19,18 @@ process TREES {
     ln -s ${ch_trees_scripts}/*.py .
 
     cp initial-annotations.tsv current-annotations.tsv
+
+    # Symlink additional tree directories if provided
+    if [[ "${params.add_trees}" != "" ]]; then
+        ln -s ${ch_add_trees}/* ${tree_data_files}/
+    fi
+
+    # Append additional tree directories to trees_list
+    if [ -d "${params.add_trees}" ]; then
+        for dir in \$(ls ${params.add_trees}); do
+            trees_list+=";\$dir"
+        done
+    fi
 
     # Split trees_list into an array
     IFS=';' read -ra TREE_OPTIONS <<< "${trees_list}"
@@ -48,7 +61,7 @@ process TREES {
             pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
             
             # Update the annotations using the mapping and the placements
-            python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv \${TREE_MAPPING_FILE} updated-annotations.tsv
+            python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}-tree-mapping.tsv" updated-annotations.tsv
 
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv

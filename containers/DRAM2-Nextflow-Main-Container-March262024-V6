@@ -56,6 +56,7 @@ From: ubuntu:22.04
     conda install -c bioconda prodigal=2.6.3
 
     conda install python=3.10
+    conda install pip
     conda install pandas=1.5.2
     conda install pytest=7.2.0
     conda install scikit-bio=0.5.7
@@ -91,6 +92,20 @@ From: ubuntu:22.04
     conda install matplotlib
 
     conda install pplacer=1.1.alpha19
+
+    conda install seqtk
+
+    conda install bbmap
+
+    conda install mafft=7.525
+
+    conda install openpyxl=3.1.2
+
+    conda install networkx>2,<3
+
+    pip install matplotlib
+
+
 
     # Export miniconda bin just to be safe
     export PATH="/opt/miniconda/bin:$PATH"
