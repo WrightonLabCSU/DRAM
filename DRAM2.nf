@@ -1377,6 +1377,7 @@ workflow {
             }
             else{
                 if( !params.no_trees ){
+                    ch_collected_faa.view()
                     TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
                     ch_trees_updated_annots = TREES.out.updated_annotations
                 }
