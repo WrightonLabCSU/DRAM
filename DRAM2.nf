@@ -1297,7 +1297,14 @@ workflow {
 
     }
 
-    if(params.annotations != "" && params.input_genes != "" ){
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Solo Trees
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+    if(params.annotations != "" && params.input_genes != "" && params.distill_topic == "" && params.distill_ecosystem == "" && params.distill_custom == ""){
+        
         if( !params.no_trees ){
             TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             ch_combined_annotations = TREES.out.updated_annotations
@@ -1358,13 +1365,22 @@ workflow {
                 ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
                 ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
 
+                if( !params.no_trees ){
+                    TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
+                    ch_trees_updated_annots = TREES.out.updated_annotations
+                }
+                ch_final_annots = ch_trees_updated_annots
                 // Count annotations per sample
-                COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script )
+                COUNT_ANNOTATIONS ( ch_trees_updated_annots, ch_count_annots_script, ch_distill_sql_script )
                 ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
                 ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
             }
             else{
-                ch_final_annots = ch_combined_annotations
+                if( !params.no_trees ){
+                    TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
+                    ch_trees_updated_annots = TREES.out.updated_annotations
+                }
+                ch_final_annots = ch_trees_updated_annots
                 // Count annotations per sample
                 COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script )
                 ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
