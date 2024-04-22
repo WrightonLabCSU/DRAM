@@ -614,11 +614,11 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 if( !params.no_trees ) {
 
     //Add in option for --add_trees <list of paths to trees refpkg directories>
-    if( params.add_trees != 0 ){
+    if( params.add_trees ){
         ch_add_trees = file(params.add_trees).exists() ? file(params.add_trees) : error("Error: If using --add_trees, you must supply a path to a directory containing each tree subdirectory. Additional trees directory not found at ${params.add_trees}")
     }
     else    
-    
+
 
     if( !params.call ){
         if ( params.annotations == "" && params.input_genes == "" ){
@@ -643,7 +643,6 @@ if( params.adjectives ){
     ch_adjectives_script = file(params.adjectives_script)
 
 }
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
