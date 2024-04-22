@@ -643,7 +643,7 @@ if( !params.no_trees ) {
 
 if( params.adjectives ){
 
-    ch_adjectives_script = file(params.adjectives_script)
+    ch_adjectives_script = params.adjectives_script
 
 }
 
