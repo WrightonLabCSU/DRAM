@@ -11,7 +11,7 @@ process TREES {
     path( ch_add_trees )
 
     output:
-    path("updated-annotations.tsv"), emit: trees_out, optional: true
+    path("updated-annotations.tsv"), emit: updated_annotations, optional: true
 
     script:
     """        
