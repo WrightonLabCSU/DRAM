@@ -8,7 +8,7 @@ process TREES {
     path( ch_collected_proteins )
     path( tree_data_files )
     path( ch_trees_scripts )
-    path( ch_add_trees )
+    file( ch_add_trees )
 
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
