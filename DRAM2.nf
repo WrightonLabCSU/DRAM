@@ -633,7 +633,7 @@ if( !params.no_trees ) {
         ch_collected_faa = Channel
             .fromPath(params.input_genes + params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotations without --input_genes, with the desire to run trees, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
-
+            .collect()
     }
 
     ch_tree_data_files = Channel.fromPath(params.tree_data_files)
