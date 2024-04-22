@@ -1369,6 +1369,9 @@ workflow {
                     TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
                     ch_trees_updated_annots = TREES.out.updated_annotations
                 }
+                else{
+                    ch_trees_updated_annots = ch_final_annots
+                }
                 ch_final_annots = ch_trees_updated_annots
                 // Count annotations per sample
                 COUNT_ANNOTATIONS ( ch_trees_updated_annots, ch_count_annots_script, ch_distill_sql_script )
@@ -1380,6 +1383,9 @@ workflow {
                     ch_collected_faa.view()
                     TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
                     ch_trees_updated_annots = TREES.out.updated_annotations
+                }
+                else{
+                    ch_trees_updated_annots = ch_final_annots
                 }
                 ch_final_annots = ch_trees_updated_annots
                 // Count annotations per sample
