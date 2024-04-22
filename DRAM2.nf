@@ -617,6 +617,8 @@ if( !params.no_trees ) {
     if( params.add_trees != 0 ){
         ch_add_trees = file(params.add_trees).exists() ? file(params.add_trees) : error("Error: If using --add_trees, you must supply a path to a directory containing each tree subdirectory. Additional trees directory not found at ${params.add_trees}")
     }
+    else    
+    
 
     if( !params.call ){
         if ( params.annotations == "" && params.input_genes == "" ){
