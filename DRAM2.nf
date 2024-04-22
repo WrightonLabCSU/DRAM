@@ -221,6 +221,7 @@ if (params.merge_annotations != "") {
     Parse DRAM2 ANNOTATE input databases
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+default_channel = Channel.fromPath(params.distill_dummy_sheet)
 // Here, if --annotate is present, then parse the input databases and set variables to
 // T/F for each possible database and custom database
 
@@ -592,14 +593,14 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
         if (params.bin_quality != "") {
             ch_bin_quality = file(params.bin_quality).exists() ? file(params.bin_quality) : error("Error: If using --bin_quality, you must supply a formatted input file. Bin quality file not found at ${params.bin_quality}")
         } else {
-            ch_bin_quality = params.distill_dummy_sheet
+            ch_bin_quality = default_channel
         }
 
         /* Check for input Taxa file */
         if (params.taxa != "") {
             ch_taxa = file(params.taxa).exists() ? file(params.taxa) : error("Error: If using --taxa, you must supply a formatted input file. Taxonomy file not found at ${params.taxa}")
         } else {
-            ch_taxa = params.distill_dummy_sheet
+            ch_taxa = default_channel
         }
 
         // Ensure an add_annotations channel is generated if the user specifies --add_annotations
@@ -618,7 +619,7 @@ if( !params.no_trees ) {
         ch_add_trees = file(params.add_trees).exists() ? file(params.add_trees) : error("Error: If using --add_trees, you must supply a path to a directory containing each tree subdirectory. Additional trees directory not found at ${params.add_trees}")
     }
     else{
-        ch_add_trees = params.distill_dummy_sheet
+        ch_add_trees = default_channel
     }    
 
 
@@ -653,7 +654,6 @@ if( params.adjectives ){
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 /* Create the default distill topic and ecosystem channels */
-default_channel = Channel.fromPath(params.distill_dummy_sheet)
 def distill_topic_list = ""
 def distill_ecosystem_list = ""
 def distill_custom_list = ""
@@ -1330,17 +1330,17 @@ workflow {
                 TRNA_COLLECT( ch_collected_tRNAs )
                 ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
             }else{
-                ch_trna_sheet = params.distill_dummy_sheet
+                ch_trna_sheet = default_channel
             }
             if( params.rrnas != "" ){
             RRNA_COLLECT( ch_collected_rRNAs )
                 ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
                 ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
             }else{
-                ch_rrna_sheet = params.distill_dummy_sheet
-                ch_rrna_combined = params.distill_dummy_sheet
+                ch_rrna_sheet = default_channel
+                ch_rrna_combined = default_channel
             }
-            ch_quast_stats = params.distill_dummy_sheet
+            ch_quast_stats = default_channel
         }
         // If the user did not annotate and provided taxa and/or bin quality, add it to annotations.
         if( params.annotate == 0 ){
@@ -1401,6 +1401,7 @@ workflow {
         ch_combined_distill_sheets = COMBINE_DISTILL.out.ch_combined_distill_sheets
 
         // Generate multi-sheet XLSX document containing annotations included in user-specified distillate speadsheets
+
         DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_annotations_sqlite3 )
         ch_distillate = DISTILL.out.distillate
     }
