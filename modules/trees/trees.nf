@@ -26,7 +26,7 @@ process TREES {
         echo "Processing tree: \${tree_option}"
 
         # Determine the search terms file for the current tree
-        KO_LIST="${tree_option}/${tree_option}_search_terms.txt"
+        KO_LIST="\${tree_option}/\${tree_option}_search_terms.txt"
         python parse_annotations.py current-annotations.tsv \${KO_LIST} "extracted_query_ids.txt"
         
         if [ -s "extracted_query_ids.txt" ]; then
