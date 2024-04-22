@@ -1259,8 +1259,8 @@ workflow {
             ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
 
             // If the user wants to run trees, do it before we count the annotations
-            if( params.trees || params.product ){
-                TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
+            if( !params.no_trees ){
+                TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files )
             }
 
             COUNT_ANNOTATIONS ( ch_final_annots, ch_count_annots_script, ch_distill_sql_script  )
@@ -1269,8 +1269,8 @@ workflow {
         }
         else{
             // If the user wants to run trees, do it before we count the annotations
-            if( params.trees || params.product ){
-                TREES( ch_final_annots, params.trees, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, params.nar_nxr_ko_list, params.amoa_pmoa_ko_list )
+            if( !params.no_trees ){
+                TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files )
             }
 
             ch_final_annots = ch_updated_taxa_annots

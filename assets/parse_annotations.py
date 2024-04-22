@@ -4,15 +4,22 @@ import sys
 def extract_query_ids(tsv_path, ko_list):
     df = pd.read_csv(tsv_path, sep='\t')
     
-    # Create a list of gene IDs from the provided ko_list string
+    # Split the ko_list string into terms, separating on semicolons
     ko_terms = ko_list.split(';')
     
-    # Identify columns that end with "_id" but not 'query_id'
+    # Identify columns for gene IDs, EC numbers, and descriptions
     id_columns = [col for col in df.columns if col.endswith('_id') and col != 'query_id']
+    ec_columns = [col for col in df.columns if col.endswith('_EC')]
+    desc_columns = [col for col in df.columns if col.endswith('_description')]
     
-    # Filter DataFrame based on whether any of the id_columns contain any of the ko_terms
-    mask = df[id_columns].apply(lambda x: x.isin(ko_terms)).any(axis=1)
-    filtered_df = df[mask]
+    # Create filters for ID, EC, and description columns
+    id_mask = df[id_columns].apply(lambda x: x.isin(ko_terms)).any(axis=1)
+    ec_mask = df[ec_columns].apply(lambda x: x.isin(ko_terms)).any(axis=1)
+    desc_mask = df[desc_columns].apply(lambda x: x.astype(str).apply(lambda y: any(term in y for term in ko_terms))).any(axis=1)
+    
+    # Combine all masks to filter the DataFrame
+    combined_mask = id_mask | ec_mask | desc_mask
+    filtered_df = df[combined_mask]
     
     return filtered_df[['sample', 'query_id']]
 
