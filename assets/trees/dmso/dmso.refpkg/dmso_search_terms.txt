@@ -1,11 +1,13 @@
-K10944
-ammonia monooxygenase
-amoA
-ammonia oxidation
-nitrification
-methane monooxygenase
-pmoA
-methane oxidation
-methanotroph
-EC: 1.14.18.3
-EC: 1.14.99.39
+K00370
+K00371
+K00374
+nitrate reductase
+nar
+NAR
+narG
+narH
+narI
+narJ
+EC: 1.7.99.4
+EC: 1.7.5.1
+
