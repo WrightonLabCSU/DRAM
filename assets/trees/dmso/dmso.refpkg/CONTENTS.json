@@ -1,0 +1,21 @@
+{
+    "metadata": {
+        "create_date": "2024-04-29 10:00:43",
+        "format_version": "1.1",
+        "locus": "1861"
+    },
+    "files": {
+        "aln_fasta": "RAxML_info.dmso_refs.fasta",
+        "profile": "dmso_refs.fasta.model"
+    },
+    "md5": {
+        "aln_fasta": "12c0b21a0ff6c95019e9223ca0fccd8c",
+        "profile": "1bb403652d42cfcecc14f5be4bc7cb13"
+    },
+    "log": [
+        "Stripped refpkg (removed 0 files)",
+        "Loaded initial files into empty refpkg"
+    ],
+    "rollback": null,
+    "rollforward": null
+}
