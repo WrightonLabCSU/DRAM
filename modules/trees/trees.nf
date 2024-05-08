@@ -55,7 +55,7 @@ process TREES {
             cat extracted_sequences/*.fasta > combined_extracted_sequences.fasta
             
             # Align sequences to the reference alignment
-            mafft --thread ${params.threads} --add combined_extracted_sequences.fasta --reorder trees/\${tree_option}/\${tree_option}.refpkg/nar_nxr_seqs_for_tree_aligned.faa > aligned_sequences.fasta
+            mafft --thread ${params.threads} --add combined_extracted_sequences.fasta --reorder trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}.aln > aligned_sequences.fasta
             
             # Run pplacer
             pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
