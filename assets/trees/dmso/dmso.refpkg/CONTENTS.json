@@ -1,16 +1,21 @@
 {
     "metadata": {
-        "create_date": "2024-04-29 10:00:43",
+        "create_date": "2024-05-09 10:00:43",
         "format_version": "1.1",
         "locus": "1861"
     },
     "files": {
-        "aln_fasta": "RAxML_info.dmso_refs.fasta",
-        "profile": "dmso_refs.fasta.model"
+        "aln_fasta": "dmso.aln",
+        "phylo_model": "dmso_phylo_model.json",
+        "tree": "bipartitionsBranchLabels.dmso_refs.fasta_mode_low.renamed",
+        "tree_stats": "RAxML_info.dmso_refs.fasta"
+
     },
     "md5": {
-        "aln_fasta": "12c0b21a0ff6c95019e9223ca0fccd8c",
-        "profile": "1bb403652d42cfcecc14f5be4bc7cb13"
+        "aln_fasta": "d224231710a0c259103a657c64c25d57",
+        "phylo_model": "",
+        "tree": "5361c603561b6f09392954a43dd33c33",
+        "tree_stats": "12c0b21a0ff6c95019e9223ca0fccd8c"
     },
     "log": [
         "Stripped refpkg (removed 0 files)",
