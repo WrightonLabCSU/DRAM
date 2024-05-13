@@ -1,6 +1,7 @@
 import json
 import xml.etree.ElementTree as ET
 import re
+from collections import defaultdict
 import sys
 
 def parse_jplace(jplace_path):
