@@ -2,6 +2,7 @@ import json
 import sys
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+import re
 
 def parse_jplace(jplace_path):
     with open(jplace_path, 'r') as file:
