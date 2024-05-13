@@ -18,7 +18,9 @@ def color_new_sequences(xml_path, query_ids_path, output_path):
         for clade in element.findall('.//phy:clade', ns):
             name = clade.find('phy:name', ns)
             if name is not None and name.text in query_ids:
-                name.set('color', 'ff0000')  # Set the color to red
+                # Create a new color element for the sequence label
+                color_elem = ET.Element("phy:color", {'r': '255', 'g': '0', 'b': '0'})
+                name.append(color_elem)
             # Recursively color nested clades
             color_labels(clade)
 
