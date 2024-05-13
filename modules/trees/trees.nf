@@ -12,7 +12,7 @@ process TREES {
 
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
-    path("aligned_sequences_colored.xml"), emit: tree_visualization, optional: true
+    path("aligned_sequences.xml"), emit: tree_visualization, optional: true
 
     script:
     """        
@@ -64,15 +64,15 @@ process TREES {
             # Generate visualization using guppy fat without taxonomy
             guppy fat aligned_sequences.jplace -o aligned_sequences.xml --point-mass
             
-            # Color the new sequences in the visualization
-            python color_new_sequences.py aligned_sequences.xml extracted_query_ids.txt aligned_sequences_colored.xml
-            
             # Update the annotations using the mapping and the placements
             python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" updated-annotations.tsv
-
+            
+            # Add placements to the XML tree
+            python update_tree.py aligned_sequences.jplace aligned_sequences.xml aligned_sequences_updated.xml
+            
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
-        else
+        else:
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
     done
