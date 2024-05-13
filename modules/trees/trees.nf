@@ -63,7 +63,7 @@ process TREES {
             pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
             
             # Generate visualization using guppy fat
-            guppy fat -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.jplace -o aligned_sequences.xml
+            guppy fat aligned_sequences.jplace -o aligned_sequences.xml
             
             # Color the new sequences in the visualization
             python color_new_sequences.py aligned_sequences.xml extracted_query_ids.txt aligned_sequences_colored.xml
