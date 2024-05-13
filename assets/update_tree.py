@@ -1,8 +1,7 @@
 import json
-import sys
-import re
 import xml.etree.ElementTree as ET
-from collections import defaultdict
+import re
+import sys
 
 def parse_jplace(jplace_path):
     with open(jplace_path, 'r') as file:
@@ -11,7 +10,7 @@ def parse_jplace(jplace_path):
 
 def parse_tree(tree_newick):
     tree_newick = tree_newick.replace('{', '[').replace('}', ']')
-    root = ET.Element("phyloxml", xmlns="http://www.phyloxml.org", attrib={"xsi:schemaLocation": "http://www.phyloxml.org/1.10/phyloxml.xsd"})
+    root = ET.Element("phyloxml", xmlns="http://www.phyloxml.org")
     phylogeny = ET.SubElement(root, "phylogeny", rooted="true")
     stack = [phylogeny]
     tokens = re.split(r"(\(|\)|,|;)", tree_newick)
@@ -35,28 +34,27 @@ def parse_tree(tree_newick):
             if name:
                 ET.SubElement(stack[-1], "name").text = name
             if branch_length:
-                ET.SubElement(stack[-1], "branch_length").text = branch_length
+                ET.SubElement(stack[-1], "branch_length").text = branch_length.split('[')[0]
     return root
 
 def insert_placements(root, placements):
     edge_map = defaultdict(list)
     for placement in placements:
         for p in placement['p']:
-            edge_num = p[1]
+            edge_num = int(p[1])
             edge_map[edge_num].append(placement['nm'][0][0])
 
     def insert_into_tree(clade):
         for subclade in clade.findall("clade"):
             insert_into_tree(subclade)
-        if clade.find("branch_length") is not None:
-            branch_length = clade.find("branch_length").text
-            if '[' in branch_length and ']' in branch_length:
-                edge = int(branch_length.split('[')[1].split(']')[0])
-                if edge in edge_map:
-                    for seq_name in edge_map[edge]:
-                        new_clade = ET.SubElement(clade, "clade")
-                        ET.SubElement(new_clade, "name").text = seq_name
-                        ET.SubElement(new_clade, "branch_length").text = "0.0"
+        branch_length = clade.find("branch_length")
+        if branch_length is not None:
+            edge = re.search(r'\[(\d+)\]', branch_length.text)
+            if edge and int(edge.group(1)) in edge_map:
+                for seq_name in edge_map[int(edge.group(1))]:
+                    new_clade = ET.SubElement(clade, "clade")
+                    ET.SubElement(new_clade, "name").text = seq_name
+                    ET.SubElement(new_clade, "branch_length").text = "0.0"
 
     insert_into_tree(root.find("phylogeny"))
 
