@@ -1,77 +1,84 @@
-process TREES {
+import json
+import sys
+import re
+import pandas as pd
+from Bio import Phylo
+from io import StringIO
 
-    errorStrategy 'finish'
+def load_jplace_file(jplace_path):
+    with open(jplace_path, 'r') as file:
+        jplace_data = json.load(file)
+    return jplace_data
 
-    input:
-    path( ch_combined_annotations, stageAs: "initial-annotations.tsv" )
-    val( trees_list )
-    path( ch_collected_proteins )
-    path( tree_data_files )
-    path( ch_trees_scripts )
-    file( ch_add_trees )
+def load_and_parse_tree(tree_data):
+    tree_data = re.sub(r'\{(\d+)\}', r'[&edge=\g<1>]', tree_data)
+    handle = StringIO(tree_data)
+    tree = Phylo.read(handle, "newick")
+    return tree
 
-    output:
-    path("updated-annotations.tsv"), emit: updated_annotations, optional: true
+def find_closest_labeled_ancestor(clade, tree):
+    if clade.is_terminal() and clade.name:
+        return clade.name
+    path = tree.get_path(clade)
+    for ancestor in reversed(path):
+        if ancestor.is_terminal() and ancestor.name:
+            return ancestor.name
+    min_distance = float('inf')
+    closest_leaf = None
+    for leaf in tree.get_terminals():
+        distance = tree.distance(clade, leaf)
+        if distance < min_distance and leaf.name:
+            min_distance = distance
+            closest_leaf = leaf.name
+    return closest_leaf if closest_leaf else ""
 
-    script:
-    """        
-    ln -s ${tree_data_files}/* .
-    ln -s ${ch_trees_scripts}/*.py .
+def load_tree_mapping(mapping_tsv):
+    df = pd.read_csv(mapping_tsv, sep='\t')
+    return dict(zip(df['gene'], df['call']))
 
-    cp initial-annotations.tsv current-annotations.tsv
+def extract_placement_details(jplace_data, tree, tree_mapping):
+    placements = jplace_data['placements']
+    placement_map = {}
+    for placement in placements:
+        for placement_detail in placement['p']:
+            edge_num = placement_detail[1]
+            clades = list(tree.find_clades({"comment": f"&edge={edge_num}"}))
+            if clades:
+                clade = clades[0]
+                closest_leaf = find_closest_labeled_ancestor(clade, tree)
+                if closest_leaf:
+                    mapped_value = tree_mapping.get(closest_leaf, "No mapping found")
+                    print(f"{placement['nm'][0][0]} mapped to {mapped_value} (Closest leaf: {closest_leaf})")
+                    closest_leaf = f"{mapped_value};{closest_leaf}"
+            else:
+                closest_leaf = ""
+                print(f"No clades found for edge number: {edge_num}")
+            for name, _ in placement['nm']:
+                placement_map[name] = closest_leaf
+    return placement_map
 
-    # Symlink additional tree directories if provided
-    if [[ "${params.add_trees}" != "" ]]; then
-        ln -s ${ch_add_trees}/* ${tree_data_files}/
-    fi
+def update_tsv(tsv_path, output_tsv_path, placement_map):
+    df = pd.read_csv(tsv_path, sep='\t')
+    df['tree_verified'] = df['query_id'].map(placement_map).fillna('')
 
-    # Append additional tree directories to trees_list
-    if [ -d "${params.add_trees}" ]; then
-        for dir in \$(ls ${params.add_trees}); do
-            trees_list+=";\$dir"
-        done
-    fi
+    # Reorder columns to place 'tree_verified' after 'gene_number'
+    col_order_start = df.columns.tolist()[:df.columns.get_loc('gene_number')+1] + ['tree_verified']
+    col_order_end = [col for col in df.columns if col not in col_order_start]
+    df = df[col_order_start + col_order_end]
 
-    # Split trees_list into an array
-    IFS=';' read -ra TREE_OPTIONS <<< "${trees_list}"
-    
-    for tree_option in "\${TREE_OPTIONS[@]}"; do
-        echo "Processing tree: \${tree_option}"
+    df.to_csv(output_tsv_path, sep='\t', index=False)
 
-        # Determine the search terms file for the current tree
-        KO_LIST="\${tree_option}/\${tree_option}.refpkg/\${tree_option}_search_terms.txt"
-        python parse_annotations.py current-annotations.tsv \${KO_LIST} "extracted_query_ids.txt"
-        
-        if [ -s "extracted_query_ids.txt" ]; then
-            # The file is not empty, proceed with processing
-            
-            # Loop through each line in the output file, extract the corresponding sequence
-            mkdir -p extracted_sequences
-            while IFS=\$'\t' read -r sample query_id; do
-                seqtk subseq \${sample}_called_genes.faa <(echo \${query_id}) > extracted_sequences/\${sample}_\${query_id}.fasta
-            done < extracted_query_ids.txt
-            
-            # Combine all sequences into one file
-            cat extracted_sequences/*.fasta > combined_extracted_sequences.fasta
-            
-            # Align sequences to the reference alignment
-            mafft --thread ${params.threads} --add combined_extracted_sequences.fasta --reorder trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}.aln > aligned_sequences.fasta
-            
-            # Run pplacer
-            pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
-            
-            # Update the annotations using the mapping and the placements
-            python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" updated-annotations.tsv
+def main():
+    if len(sys.argv) != 5:
+        print("Usage: python update_annots_trees.py <jplace_path> <tsv_path> <mapping_tsv> <output_tsv_path>")
+        sys.exit(1)
 
-            # Set the updated annotations as the current for the next tree
-            mv updated-annotations.tsv current-annotations.tsv
-        else
-            echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
-        fi
-    done
+    jplace_path, tsv_path, mapping_tsv, output_tsv_path = sys.argv[1:]
+    jplace_data = load_jplace_file(jplace_path)
+    tree = load_and_parse_tree(jplace_data['tree'])
+    tree_mapping = load_tree_mapping(mapping_tsv)
+    placement_map = extract_placement_details(jplace_data, tree, tree_mapping)
+    update_tsv(tsv_path, output_tsv_path, placement_map)
 
-    # Finalize the process
-    mv current-annotations.tsv updated-annotations.tsv
-
-    """
-}
+if __name__ == "__main__":
+    main()
