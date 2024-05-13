@@ -12,7 +12,7 @@ process TREES {
 
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
-    path("aligned_sequences.xml"), emit: tree_visualization, optional: true
+    path("aligned_sequences.jplace"), emit: tree_placements, optional: true
 
     script:
     """        
@@ -61,14 +61,11 @@ process TREES {
             # Run pplacer
             pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
             
-            # Generate visualization using guppy
-            guppy fat -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.jplace
-            
-            # Move the generated XML to a specific name for output
-            mv aligned_sequences.xml \${tree_option}_aligned_sequences.xml
+            # Generate visualization using guppy tog (translate .jplace to other formats)
+            guppy tog -o aligned_sequences.xml aligned_sequences.jplace
             
             # Update the annotations using the mapping and the placements
-            python update_annots_trees.py current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" placements.csv updated-annotations.tsv
+            python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" placements.csv updated-annotations.tsv
 
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
