@@ -28,7 +28,8 @@ dependencies:
   - openpyxl=3.1.2
   - pplacer=1.1.alpha19
   - mafft=7.525
-  - ipython
+  - ete3
+  - etetoolkit
 
   # visualization packages
   - click
