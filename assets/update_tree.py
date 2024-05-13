@@ -3,8 +3,7 @@ import xml.etree.ElementTree as ET
 import re
 from collections import defaultdict
 import sys
-from ete3
-import Tree, Phyloxml
+from ete3 import Tree, Phyloxml
 
 def parse_jplace(jplace_path):
     with open(jplace_path, 'r') as file:
