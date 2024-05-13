@@ -2,6 +2,7 @@ import json
 import sys
 import re
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 
 def parse_jplace(jplace_path):
     with open(jplace_path, 'r') as file:
@@ -36,6 +37,7 @@ def parse_tree(tree_newick):
     return root
 
 def insert_placements(root, placements):
+    ns = {"phy": "http://www.phyloxml.org"}
     edge_map = defaultdict(list)
     for placement in placements:
         for p in placement['p']:
@@ -45,12 +47,13 @@ def insert_placements(root, placements):
     def insert_into_tree(clade):
         for subclade in clade.findall("phy:clade", namespaces=ns):
             insert_into_tree(subclade)
-        edge = int(clade.find("phy:branch_length", namespaces=ns).text.split('{')[1].split('}')[0])
-        if edge in edge_map:
-            for seq_name in edge_map[edge]:
-                new_clade = ET.SubElement(clade, "phy:clade")
-                ET.SubElement(new_clade, "phy:name").text = seq_name
-                ET.SubElement(new_clade, "phy:branch_length").text = "0.0"
+        if clade.find("phy:branch_length", namespaces=ns) is not None:
+            edge = int(clade.find("phy:branch_length", namespaces=ns).text.split('{')[1].split('}')[0])
+            if edge in edge_map:
+                for seq_name in edge_map[edge]:
+                    new_clade = ET.SubElement(clade, "phy:clade")
+                    ET.SubElement(new_clade, "phy:name").text = seq_name
+                    ET.SubElement(new_clade, "phy:branch_length").text = "0.0"
 
     insert_into_tree(root.find("phy:clade", namespaces=ns))
 

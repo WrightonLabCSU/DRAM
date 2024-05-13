@@ -12,7 +12,7 @@ process TREES {
 
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
-    path("aligned_sequences.xml"), emit: tree_visualization, optional: true
+    path("aligned_sequences_updated.xml"), emit: tree_visualization, optional: true
 
     script:
     """        
