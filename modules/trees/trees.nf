@@ -3,19 +3,19 @@ process TREES {
     errorStrategy 'finish'
 
     input:
-    path( ch_combined_annotations, stageAs: "initial-annotations.tsv" )
-    val( trees_list )
-    path( ch_collected_proteins )
-    path( tree_data_files )
-    path( ch_trees_scripts )
-    file( ch_add_trees )
+    path(ch_combined_annotations, stageAs: "initial-annotations.tsv")
+    val(trees_list)
+    path(ch_collected_proteins)
+    path(tree_data_files)
+    path(ch_trees_scripts)
+    file(ch_add_trees)
 
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences_updated.xml"), emit: tree_visualization, optional: true
 
     script:
-    """        
+    """
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
 
@@ -76,6 +76,5 @@ process TREES {
 
     # Finalize the process
     mv current-annotations.tsv updated-annotations.tsv
-
     """
 }

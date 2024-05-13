@@ -32,8 +32,8 @@ def save_tree_as_phyloxml(tree, output_path):
         file.write(phyloxml)
 
 def main():
-    jplace_path = 'path_to_jplace_file'  # Replace with the actual path
-    output_xml_path = 'path_to_output_xml_file'  # Replace with the actual path
+    jplace_path = 'aligned_sequences.jplace'  # Replace with the actual path if different
+    output_xml_path = 'aligned_sequences_updated.xml'  # Replace with the actual path if different
 
     # Parse the jplace file
     tree_newick, placements = parse_jplace(jplace_path)
