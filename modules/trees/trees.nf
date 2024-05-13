@@ -69,7 +69,7 @@ process TREES {
             
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
-        else:
+        else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
     done
