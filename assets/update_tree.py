@@ -1,8 +1,7 @@
 import json
 import sys
-import xml.etree.ElementTree as ET
-from collections import defaultdict
 import re
+import xml.etree.ElementTree as ET
 
 def parse_jplace(jplace_path):
     with open(jplace_path, 'r') as file:
@@ -12,9 +11,9 @@ def parse_jplace(jplace_path):
 def parse_tree(tree_newick):
     tree_newick = tree_newick.replace('{', '[').replace('}', ']')
     root = ET.Element("phy:phylogeny", rooted="true")
-    tree_element = ET.SubElement(root, "phy:clade")
-    stack = [tree_element]
-    for token in re.split(r"(\(|\)|,|;)", tree_newick):
+    stack = [root]
+    tokens = re.split(r"(\(|\)|,|;)", tree_newick)
+    for token in tokens:
         token = token.strip()
         if not token:
             continue
@@ -28,9 +27,12 @@ def parse_tree(tree_newick):
             clade = ET.SubElement(stack[-1], "phy:clade")
             stack.append(clade)
         else:
-            name, branch_length = token.split(":")
-            stack[-1].append(ET.Element("phy:name", text=name))
-            stack[-1].append(ET.Element("phy:branch_length", text=branch_length))
+            if ':' in token:
+                name, branch_length = token.split(":")
+                ET.SubElement(stack[-1], "phy:name").text = name
+                ET.SubElement(stack[-1], "phy:branch_length").text = branch_length
+            else:
+                ET.SubElement(stack[-1], "phy:name").text = token
     return root
 
 def insert_placements(root, placements):
