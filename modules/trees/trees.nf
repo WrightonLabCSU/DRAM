@@ -61,9 +61,6 @@ process TREES {
             # Run pplacer
             pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
             
-            # Generate visualization using guppy fat without taxonomy
-            guppy fat aligned_sequences.jplace -o aligned_sequences.xml --point-mass
-            
             # Update the annotations using the mapping and the placements
             python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" updated-annotations.tsv
             
