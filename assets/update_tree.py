@@ -50,8 +50,8 @@ def insert_placements(root, placements):
             insert_into_tree(subclade)
         if clade.find("branch_length") is not None:
             branch_length = clade.find("branch_length").text
-            if '{' in branch_length and '}' in branch_length:
-                edge = int(branch_length.split('{')[1].split('}')[0])
+            if '[' in branch_length and ']' in branch_length:
+                edge = int(branch_length.split('[')[1].split(']')[0])
                 if edge in edge_map:
                     for seq_name in edge_map[edge]:
                         new_clade = ET.SubElement(clade, "clade")
