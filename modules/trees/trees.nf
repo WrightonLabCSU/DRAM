@@ -62,8 +62,11 @@ process TREES {
             # Run pplacer
             pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
             
-            # Generate visualization using guppy fat, coloring newly added sequences in red
-            guppy fat --point-mutations aligned_sequences.jplace -o aligned_sequences.xml --ppm '#ff0000'
+            # Generate visualization using guppy fat
+            guppy fat -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.jplace -o aligned_sequences.xml
+            
+            # Color the new sequences in the visualization
+            python color_new_sequences.py aligned_sequences.xml extracted_query_ids.txt aligned_sequences_colored.xml
             
             # Update the annotations using the mapping and the placements
             python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" updated-annotations.tsv
