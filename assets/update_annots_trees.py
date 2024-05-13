@@ -3,17 +3,21 @@ import sys
 
 def load_tree_mapping(mapping_tsv):
     df = pd.read_csv(mapping_tsv, sep='\t')
+    print("Tree Mapping Loaded:")
+    print(df.head())  # Debug: Print the first few rows of the tree mapping file
     return dict(zip(df['gene'], df['call']))
 
 def parse_placement_csv(csv_path, tree_mapping):
     df = pd.read_csv(csv_path)
+    print("Placements CSV Loaded:")
+    print(df.head())  # Debug: Print the first few rows of the placements CSV
     placement_map = {}
     for _, row in df.iterrows():
         read_name = row['name']
-        closest_leaf = row['edge_num']
-        mapped_value = tree_mapping.get(closest_leaf, "No mapping found")
-        placement_map[read_name] = f"{mapped_value};{closest_leaf}"
-        print(f"{read_name} classified as {mapped_value} (Closest Leaf: {closest_leaf})")
+        edge_num = row['edge_num']
+        mapped_value = tree_mapping.get(edge_num, "No mapping found")
+        placement_map[read_name] = f"{mapped_value};{edge_num}"
+        print(f"{read_name} classified as {mapped_value} (Closest Leaf: {edge_num})")  # Debug: Print the classification
     return placement_map
 
 def update_tsv(tsv_path, output_tsv_path, placement_map):
