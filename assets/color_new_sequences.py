@@ -13,27 +13,17 @@ def color_new_sequences(xml_path, query_ids_path, output_path):
     # Define the phyloXML namespace
     ns = {'phy': 'http://www.phyloxml.org'}
 
-    # Function to recursively find all nodes and color the new sequences
-    def color_nodes(element):
+    # Function to color the labels of new sequences
+    def color_labels(element):
         for clade in element.findall('.//phy:clade', ns):
             name = clade.find('phy:name', ns)
             if name is not None and name.text in query_ids:
-                color = ET.Element('phy:color', ns)
-                red = ET.Element('phy:red', ns)
-                green = ET.Element('phy:green', ns)
-                blue = ET.Element('phy:blue', ns)
-                red.text = '255'
-                green.text = '0'
-                blue.text = '0'
-                color.append(red)
-                color.append(green)
-                color.append(blue)
-                clade.append(color)
+                name.set('color', 'ff0000')  # Set the color to red
             # Recursively color nested clades
-            color_nodes(clade)
+            color_labels(clade)
 
     # Start coloring from the root element
-    color_nodes(root)
+    color_labels(root)
 
     # Register namespace
     ET.register_namespace('', "http://www.phyloxml.org")
