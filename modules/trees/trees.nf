@@ -65,7 +65,7 @@ process TREES {
             guppy tog -o aligned_sequences.xml aligned_sequences.jplace
             
             # Update the annotations using the mapping and the placements
-            python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" placements.csv updated-annotations.tsv
+            python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" updated-annotations.tsv
 
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
