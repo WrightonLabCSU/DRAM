@@ -19,10 +19,12 @@ def load_and_parse_tree(tree_data):
 def find_closest_labeled_ancestor(clade, tree):
     if clade.is_terminal() and clade.name:
         return clade.name
+
     path = tree.get_path(clade)
     for ancestor in reversed(path):
         if ancestor.is_terminal() and ancestor.name:
             return ancestor.name
+    
     min_distance = float('inf')
     closest_leaf = None
     for leaf in tree.get_terminals():
@@ -48,10 +50,14 @@ def extract_placement_details(jplace_data, tree, tree_mapping):
                 closest_leaf = find_closest_labeled_ancestor(clade, tree)
                 if closest_leaf and closest_leaf in tree_mapping:
                     closest_leaf = f"{tree_mapping[closest_leaf]};{closest_leaf}"
+                print(f"{clade.name} called as: {closest_leaf}")
             else:
                 closest_leaf = ""
+                print(f"No clades found for edge number: {edge_num}")
             for name, _ in placement['nm']:
                 placement_map[name] = closest_leaf
+                if not closest_leaf:
+                    print(f"Traversal for {name}: {[node.name for node in tree.get_path(clade)]}")
     return placement_map
 
 def update_tsv(tsv_path, output_tsv_path, placement_map):
