@@ -5,19 +5,15 @@ def load_tree_mapping(mapping_tsv):
     df = pd.read_csv(mapping_tsv, sep='\t')
     return dict(zip(df['gene'], df['call']))
 
-def parse_classified_placements(classified_path, tree_mapping):
+def parse_placement_csv(csv_path, tree_mapping):
+    df = pd.read_csv(csv_path)
     placement_map = {}
-    with open(classified_path, 'r') as file:
-        for line in file:
-            parts = line.strip().split('\t')
-            if len(parts) < 5:
-                continue
-            read_name = parts[0]
-            tax_id = parts[3]
-            closest_leaf = tax_id
-            mapped_value = tree_mapping.get(closest_leaf, "No mapping found")
-            placement_map[read_name] = f"{mapped_value};{closest_leaf}"
-            print(f"{read_name} classified as {mapped_value} (Tax ID: {closest_leaf})")
+    for _, row in df.iterrows():
+        read_name = row['name']
+        closest_leaf = row['edge_num']
+        mapped_value = tree_mapping.get(closest_leaf, "No mapping found")
+        placement_map[read_name] = f"{mapped_value};{closest_leaf}"
+        print(f"{read_name} classified as {mapped_value} (Closest Leaf: {closest_leaf})")
     return placement_map
 
 def update_tsv(tsv_path, output_tsv_path, placement_map):
@@ -33,12 +29,12 @@ def update_tsv(tsv_path, output_tsv_path, placement_map):
 
 def main():
     if len(sys.argv) != 5:
-        print("Usage: python update_annots_trees.py <tsv_path> <mapping_tsv> <classified_path> <output_tsv_path>")
+        print("Usage: python update_annots_trees.py <tsv_path> <mapping_tsv> <csv_path> <output_tsv_path>")
         sys.exit(1)
 
-    tsv_path, mapping_tsv, classified_path, output_tsv_path = sys.argv[1:]
+    tsv_path, mapping_tsv, csv_path, output_tsv_path = sys.argv[1:]
     tree_mapping = load_tree_mapping(mapping_tsv)
-    placement_map = parse_classified_placements(classified_path, tree_mapping)
+    placement_map = parse_placement_csv(csv_path, tree_mapping)
     update_tsv(tsv_path, output_tsv_path, placement_map)
 
 if __name__ == "__main__":
