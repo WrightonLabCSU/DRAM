@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "create_date": "2024-05-09 10:00:43",
+        "create_date": "2024-05-13 10:00:00",
         "format_version": "1.1",
         "locus": "1861"
     },
@@ -13,9 +13,9 @@
     },
     "md5": {
         "aln_fasta": "d224231710a0c259103a657c64c25d57",
-        "phylo_model": "",
-        "tree": "5361c603561b6f09392954a43dd33c33",
-        "tree_stats": "12c0b21a0ff6c95019e9223ca0fccd8c"
+        "phylo_model": "0bc512c776715246a24b93391822e0e6",
+        "tree": "7880cd304b5db4792a0544faeddecdac",
+        "tree_stats": "d088fa3c4b149b7ccce5dc3843204c35"
     },
     "log": [
         "Stripped refpkg (removed 0 files)",

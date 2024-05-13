@@ -1,11 +1,11 @@
 {
     "empirical_frequencies": true, 
     "datatype": "AA", 
-    "subs_model": "VT", 
+    "subs_model": "LG", 
     "program": "RAxML version 8.2.9", 
     "ras_model": "gamma", 
     "gamma": {
-        "alpha": 3.603677, 
+        "alpha": 2.776473, 
         "n_cats": 4
     }
 }
