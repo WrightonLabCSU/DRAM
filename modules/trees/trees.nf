@@ -61,7 +61,7 @@ process TREES {
             pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
             
             # Classify placements with guppy
-            guppy classify --mrca-class -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.jplace -o classified_placements.txt
+            guppy classify --mrca-class -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.jplace > classified_placements.txt
 
             # Update the annotations using the classified placements
             python update_annots_trees.py current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" classified_placements.txt updated-annotations.tsv
