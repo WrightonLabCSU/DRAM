@@ -1,8 +1,8 @@
 import json
-import sys
-import re
 import xml.etree.ElementTree as ET
+import re
 from collections import defaultdict
+import sys
 
 def parse_jplace(jplace_path):
     with open(jplace_path, 'r') as file:
