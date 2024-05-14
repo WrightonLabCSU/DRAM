@@ -12,12 +12,20 @@ tree <- read.tree(newick_file)
 # Read the labels to be colored
 labels_to_color <- readLines(labels_file)
 
+# Ensure labels to color are present in the tree
+valid_labels <- tree$tip.label %in% labels_to_color
+
 # Plot the unrooted tree
 png(output_png, width = 1024, height = 1024)
 plot(tree, type = "unrooted", cex = 0.6)
 
 # Color the specified labels
-tiplabels(pch = 19, tip = which(tree$tip.label %in% labels_to_color), col = "red", cex = 1)
-tiplabels(tree$tip.label, tip = which(tree$tip.label %in% labels_to_color), frame = "none", col = "red", adj = c(1,0.5), cex = 0.6)
+colored_tips <- which(tree$tip.label %in% labels_to_color)
+tiplabels(pch = 19, tip = colored_tips, col = "red", cex = 1)
+
+# Add text labels in red for the specified tips
+for (i in colored_tips) {
+  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.6)
+}
 
 dev.off()

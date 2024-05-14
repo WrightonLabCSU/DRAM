@@ -71,13 +71,15 @@ process TREES {
 
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
+
+            # Generate the unrooted tree with colored labels
+            Rscript plot_unrooted_tree.R aligned_sequences.xml extracted_query_ids.txt colored_tree.png
+
         else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
     done
 
-    # Generate the unrooted tree with colored labels
-    Rscript plot_unrooted_tree.R aligned_sequences.xml extracted_query_ids.txt colored_tree.png
 
     # Finalize the process
     mv current-annotations.tsv updated-annotations.tsv
