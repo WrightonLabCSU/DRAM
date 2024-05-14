@@ -19,7 +19,6 @@ process TREES {
     """        
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
-    ln -s ${ch_trees_scripts}/*.R .
     cp initial-annotations.tsv current-annotations.tsv
 
     # Symlink additional tree directories if provided
@@ -64,21 +63,19 @@ process TREES {
             
             # Generate visualization using guppy tog (translate .jplace to other formats)
             guppy tog -o aligned_sequences.xml aligned_sequences.jplace
-            guppy tog -o colored_tree.nwk --newick aligned_sequences.jplace
             
             # Update the annotations using the mapping and the placements
             python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" updated-annotations.tsv
 
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
-
-            # Generate the unrooted tree with colored labels
-            Rscript plot_unrooted_tree.R colored_tree.nwk extracted_query_ids.txt colored_tree.pdf
-
         else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
     done
+
+    # Generate the unrooted tree with colored labels
+    Rscript plot_unrooted_tree.R aligned_sequences.xml extracted_query_ids.txt colored_tree.pdf
 
     # Finalize the process
     mv current-annotations.tsv updated-annotations.tsv

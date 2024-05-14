@@ -1,27 +1,49 @@
+# Load required libraries
 library(ape)
-library(ggtree)
-library(ggplot2)
-library(ggrepel)
 
-args <- commandArgs(trailingOnly = TRUE)
-nwk_file <- args[1]
-labels_file <- args[2]
-output_file <- args[3]
+# Define the input files
+newick_file <- commandArgs(trailingOnly = TRUE)[1]
+labels_file <- commandArgs(trailingOnly = TRUE)[2]
+output_pdf <- commandArgs(trailingOnly = TRUE)[3]
 
-# Read the Newick file
-tree <- read.tree(nwk_file)
+# Read the Newick tree
+tree <- read.tree(newick_file)
 
 # Read the labels to be colored
-labels <- readLines(labels_file)
+labels_to_color_raw <- readLines(labels_file)
 
-# Prepare a data frame for labels to be colored
-colored_labels <- data.frame(label = labels, color = "red", stringsAsFactors = FALSE)
+# Process the labels to extract query IDs
+labels_to_color <- sapply(labels_to_color_raw, function(x) {
+  parts <- unlist(strsplit(x, "\t"))
+  return(parts[2])  # Consider only the second part (query ID)
+})
 
-# Plot the tree
-p <- ggtree(tree, layout = "unrooted") +
-  geom_tiplab(aes(label=label), color="black", size=2, offset=0.02) +
-  geom_tiplab(data=colored_labels, aes(label=label), color="red", size=2, offset=0.02) +
-  theme_tree2()
+# Print the labels to be colored for debugging
+cat("Processed Labels to be colored:\n")
+print(labels_to_color)
 
-# Save to PDF
-ggsave(output_file, p, width = 16, height = 16, units = "in")
+# Print the tree tip labels for debugging
+cat("Tree tip labels:\n")
+print(tree$tip.label)
+
+# Ensure labels to color are present in the tree
+valid_labels <- tree$tip.label %in% labels_to_color
+
+# Print the valid labels for debugging
+cat("Valid labels found in the tree:\n")
+print(tree$tip.label[valid_labels])
+
+# Plot the unrooted tree
+pdf(output_pdf, width = 10, height = 10)  # Export to PDF
+plot(tree, type = "unrooted", cex = 0.6)
+
+# Color the specified labels
+colored_tips <- which(tree$tip.label %in% labels_to_color)
+
+# Add text labels in red for the specified tips without duplicating
+for (i in colored_tips) {
+  tiplabels(pch = 19, tip = i, col = "red", cex = 1)
+  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.6, offset = 0.5)
+}
+
+dev.off()
