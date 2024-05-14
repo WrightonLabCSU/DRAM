@@ -32,7 +32,8 @@ dependencies:
   - r-base
   - r-ape
   - r-ggplot2
-  
+  - r-ggtree
+
   # visualization packages
   - click
   - networkx>2,<3
