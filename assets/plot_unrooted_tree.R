@@ -34,7 +34,7 @@ cat("Valid labels found in the tree:\n")
 print(tree$tip.label[valid_labels])
 
 # Plot the unrooted tree
-png(output_png, width = 1024, height = 1024)
+png(output_png, width = 2024, height = 2024)
 plot(tree, type = "unrooted", cex = 0.6)
 
 # Color the specified labels
