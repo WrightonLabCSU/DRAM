@@ -1,6 +1,8 @@
 import re
 import sys
-from ete3 import Tree, TreeStyle, NodeStyle
+import matplotlib.pyplot as plt
+from Bio import Phylo
+from ete3 import Tree
 
 def clean_newick(newick_file, cleaned_newick_file):
     with open(newick_file, 'r') as infile:
@@ -19,31 +21,25 @@ def color_labels(labels_file, newick_file, output_file, output_svg, output_png):
         labels_to_color = set(line.strip() for line in f)
 
     # Load the cleaned tree from the Newick file
-    tree = Tree(cleaned_newick_file)
+    tree = Phylo.read(cleaned_newick_file, "newick")
 
     # Define the color you want to apply
     color = "red"
 
     # Traverse the tree and color the specified labels
-    for leaf in tree.iter_leaves():
-        if leaf.name in labels_to_color:
-            nstyle = NodeStyle()
-            nstyle["fgcolor"] = color
-            leaf.set_style(nstyle)
+    for clade in tree.find_clades():
+        if clade.name in labels_to_color:
+            clade.color = color
     
     # Save the modified tree to a new Newick file
-    tree.write(outfile=output_file)
+    Phylo.write(tree, output_file, "newick")
 
     # Visualize the tree and save as SVG and PNG
-    ts = TreeStyle()
-    ts.mode = "c"  # Circular mode for unrooted tree
-    ts.show_leaf_name = True
-    ts.scale = 200  # Increase scale for larger image
-    ts.branch_vertical_margin = 10
-
-    # Render the tree to SVG and PNG files without opening a display
-    tree.render(output_svg, tree_style=ts)
-    tree.render(output_png, tree_style=ts, dpi=300)
+    fig = plt.figure(figsize=(15, 15))
+    axes = fig.add_subplot(1, 1, 1)
+    Phylo.draw(tree, axes=axes, do_show=False)
+    plt.savefig(output_svg, format="svg")
+    plt.savefig(output_png, format="png", dpi=300)
 
 if __name__ == "__main__":
     if len(sys.argv) != 6:
