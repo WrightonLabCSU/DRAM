@@ -33,6 +33,7 @@ dependencies:
   - r-ape
   - r-ggplot2
   - bioconductor-ggtree
+  - r-ggrepel
 
   # visualization packages
   - click
