@@ -32,7 +32,7 @@ dependencies:
   - r-base
   - r-ape
   - r-ggplot2
-  - r-ggtree
+  - bioconductor-ggtree
 
   # visualization packages
   - click
