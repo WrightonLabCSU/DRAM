@@ -29,9 +29,8 @@ dependencies:
   - pplacer=1.1.alpha19
   - mafft=7.525
   - ete3
-  - cairo  # for rendering images with ete3
-  - pyqt  # required by ete3
-  - xorg-libx11  # includes xvfb
+  - cairo
+  - pyqt
 
   # visualization packages
   - click

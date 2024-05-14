@@ -13,6 +13,7 @@ process TREES {
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences.jplace"), emit: tree_placements, optional: true
+    path("colored_tree.png"), emit: colored_tree_png, optional: true
 
     script:
     """        
@@ -71,7 +72,7 @@ process TREES {
             mv updated-annotations.tsv current-annotations.tsv
             
             # Color labels and generate unrooted tree
-            xvfb-run -a python color_labels.py labels.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
+            python color_labels.py extracted_query_ids.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
 
         else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
