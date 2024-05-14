@@ -1,7 +1,6 @@
 from Bio import Phylo
 import sys
 import matplotlib.pyplot as plt
-from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, _Matrix
 import networkx as nx
 
 def color_labels(labels_file, newick_file, output_file, output_png, color='red'):
@@ -16,6 +15,8 @@ def color_labels(labels_file, newick_file, output_file, output_png, color='red')
     for clade in tree.find_clades():
         if clade.name in labels_to_color:
             clade.name = f"[&!color={color}]{clade.name}"
+        if clade.name is None:
+            clade.name = f"Unnamed_{id(clade)}"
 
     # Write the modified tree to a new file
     Phylo.write(tree, output_file, 'newick')
