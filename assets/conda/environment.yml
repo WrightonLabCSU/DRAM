@@ -29,7 +29,6 @@ dependencies:
   - pplacer=1.1.alpha19
   - mafft=7.525
   - ete3
-  - itolapi
 
   # visualization packages
   - click
