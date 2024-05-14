@@ -36,7 +36,7 @@ def color_labels(labels_file, newick_file, output_file, output_svg, output_png):
 
     # Visualize the tree and save as SVG and PNG
     ts = TreeStyle()
-    ts.mode = "c"  # Circular mode
+    ts.mode = "c"  # Circular mode for unrooted tree
     ts.show_leaf_name = True
     ts.scale = 200  # Increase scale for larger image
     ts.branch_vertical_margin = 10
