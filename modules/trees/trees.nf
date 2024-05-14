@@ -70,11 +70,8 @@ process TREES {
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
             
-            # Generate a list of labels from extracted_query_ids.txt
-            awk '{print \$2}' extracted_query_ids.txt > labels.txt
-
             # Color labels and generate unrooted tree
-            python color_labels.py labels.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
+            xvfb-run -a python color_labels.py labels.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
 
         else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
