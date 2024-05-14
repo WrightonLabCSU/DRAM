@@ -4,7 +4,7 @@ library(ape)
 # Define the input files
 newick_file <- commandArgs(trailingOnly = TRUE)[1]
 labels_file <- commandArgs(trailingOnly = TRUE)[2]
-output_png <- commandArgs(trailingOnly = TRUE)[3]
+output_pdf <- commandArgs(trailingOnly = TRUE)[3]
 
 # Read the Newick tree
 tree <- read.tree(newick_file)
@@ -34,16 +34,16 @@ cat("Valid labels found in the tree:\n")
 print(tree$tip.label[valid_labels])
 
 # Plot the unrooted tree
-png(output_png, width = 2024, height = 2024)
+pdf(output_pdf, width = 10, height = 10)  # Export to PDF
 plot(tree, type = "unrooted", cex = 0.6)
 
 # Color the specified labels
 colored_tips <- which(tree$tip.label %in% labels_to_color)
-tiplabels(pch = 19, tip = colored_tips, col = "red", cex = 1)
 
-# Add text labels in red for the specified tips
+# Add text labels in red for the specified tips without duplicating
 for (i in colored_tips) {
-  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.6)
+  tiplabels(pch = 19, tip = i, col = "red", cex = 1)
+  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.6, offset = 0.5)
 }
 
 dev.off()
