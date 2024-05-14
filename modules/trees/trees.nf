@@ -1,5 +1,4 @@
 process TREES {
-
     errorStrategy 'finish'
 
     input:
@@ -13,11 +12,10 @@ process TREES {
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences.jplace"), emit: tree_placements, optional: true
-    path("colored_tree.nwk"), emit: colored_tree, optional: true
-    path("colored_tree.png"), emit: colored_tree_png, optional: true
+    path("colored_tree.png"), emit: colored_tree_image, optional: true
 
     script:
-    """        
+    """
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
 
@@ -72,12 +70,11 @@ process TREES {
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
 
-            # Generate a list of newly added sequences from extracted_query_ids.txt
-            awk '{print \$2}' extracted_query_ids.txt > labels.txt
-            
-            # Color the labels of the newly added sequences in the Newick tree and create a PNG
-            python color_labels.py labels.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
+            # Generate a list of labels from extracted_query_ids.txt
+            awk '{print $2}' extracted_query_ids.txt > labels.txt
 
+            # Color labels and generate tree images
+            python color_labels.py labels.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
         else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
@@ -85,6 +82,5 @@ process TREES {
 
     # Finalize the process
     mv current-annotations.tsv updated-annotations.tsv
-
     """
 }
