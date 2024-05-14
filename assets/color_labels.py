@@ -9,7 +9,7 @@ def clean_newick(newick_file, cleaned_newick_file):
     with open(cleaned_newick_file, 'w') as outfile:
         outfile.write(cleaned_data)
 
-def color_labels(labels_file, newick_file, output_file, output_png):
+def color_labels(labels_file, newick_file, output_file, output_svg, output_png):
     # Clean the Newick file
     cleaned_newick_file = "cleaned_" + newick_file
     clean_newick(newick_file, cleaned_newick_file)
@@ -34,20 +34,21 @@ def color_labels(labels_file, newick_file, output_file, output_png):
     # Save the modified tree to a new Newick file
     tree.write(outfile=output_file)
 
-    # Visualize the tree and save as PNG
+    # Visualize the tree and save as SVG and PNG
     ts = TreeStyle()
     ts.mode = "c"  # Circular mode
     ts.show_leaf_name = True
     ts.scale = 200  # Increase scale for larger image
     ts.branch_vertical_margin = 10
 
-    # Render the tree to a PNG file without opening a display
+    # Render the tree to SVG and PNG files without opening a display
+    tree.render(output_svg, tree_style=ts)
     tree.render(output_png, tree_style=ts, dpi=300)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 5:
-        print("Usage: python color_labels.py <labels_file> <newick_file> <output_file> <output_png>")
+    if len(sys.argv) != 6:
+        print("Usage: python color_labels.py <labels_file> <newick_file> <output_file> <output_svg> <output_png>")
         sys.exit(1)
 
-    labels_file, newick_file, output_file, output_png = sys.argv[1:]
-    color_labels(labels_file, newick_file, output_file, output_png)
+    labels_file, newick_file, output_file, output_svg, output_png = sys.argv[1:]
+    color_labels(labels_file, newick_file, output_file, output_svg, output_png)
