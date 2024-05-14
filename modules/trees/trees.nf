@@ -15,7 +15,7 @@ process TREES {
     path("colored_tree.png"), emit: colored_tree_image, optional: true
 
     script:
-    """
+    """        
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
 
@@ -71,7 +71,7 @@ process TREES {
             mv updated-annotations.tsv current-annotations.tsv
 
             # Generate a list of labels from extracted_query_ids.txt
-            awk '{print \$2}' extracted_query_ids.txt > labels.txt
+            awk '{print $2}' extracted_query_ids.txt > labels.txt
 
             # Color labels and generate tree images
             python color_labels.py labels.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
