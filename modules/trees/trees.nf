@@ -13,6 +13,7 @@ process TREES {
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences.jplace"), emit: tree_placements, optional: true
+    path("colored_aligned_sequences.xml"), emit: colored_tree, optional: true
 
     script:
     """        
@@ -69,6 +70,13 @@ process TREES {
 
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
+
+            # Extract the new labels to be colored
+            cut -f2 extracted_query_ids.txt > labels.txt
+
+            # Color the new labels in the XML
+            python color_labels.py labels.txt aligned_sequences.xml colored_aligned_sequences.xml
+
         else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
