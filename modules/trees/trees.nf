@@ -3,19 +3,18 @@ process TREES {
     errorStrategy 'finish'
 
     input:
-    path(ch_combined_annotations, stageAs: "initial-annotations.tsv")
-    val(trees_list)
-    path(ch_collected_proteins)
-    path(tree_data_files)
-    path(ch_trees_scripts)
-    file(ch_add_trees)
+    path( ch_combined_annotations, stageAs: "initial-annotations.tsv" )
+    val( trees_list )
+    path( ch_collected_proteins )
+    path( tree_data_files )
+    path( ch_trees_scripts )
+    file( ch_add_trees )
 
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
-    path("aligned_sequences_updated.xml"), emit: tree_visualization, optional: true
 
     script:
-    """
+    """        
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
 
@@ -61,12 +60,12 @@ process TREES {
             # Run pplacer
             pplacer -j ${task.cpus} -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.fasta
             
+            # Generate visualization with guppy
+            guppy fat -c trees/\${tree_option}/\${tree_option}.refpkg aligned_sequences.jplace -o ${tree_option}_placements.xml
+            
             # Update the annotations using the mapping and the placements
             python update_annots_trees.py aligned_sequences.jplace current-annotations.tsv "trees/\${tree_option}/\${tree_option}.refpkg/\${tree_option}-tree-mapping.tsv" updated-annotations.tsv
-            
-            # Add placements to the XML tree
-            python update_tree.py aligned_sequences.jplace aligned_sequences.xml aligned_sequences_updated.xml
-            
+
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
         else
@@ -76,5 +75,6 @@ process TREES {
 
     # Finalize the process
     mv current-annotations.tsv updated-annotations.tsv
+
     """
 }
