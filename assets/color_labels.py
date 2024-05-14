@@ -42,6 +42,7 @@ def color_labels(labels_file, newick_file, output_file, output_png):
     ts.scale = 20
     ts.branch_vertical_margin = 10
 
+    # Render the tree to a PNG file without opening a display
     tree.render(output_png, tree_style=ts)
 
 if __name__ == "__main__":
