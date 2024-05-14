@@ -13,14 +13,12 @@ process TREES {
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences.jplace"), emit: tree_placements, optional: true
-    path("colored_tree.png"), emit: tree_visualization, optional: true
+    path("colored_tree.pdf"), emit: tree_visualization, optional: true
 
     script:
     """        
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
-    ln -s ${ch_trees_scripts}/*.R .
-
     cp initial-annotations.tsv current-annotations.tsv
 
     # Symlink additional tree directories if provided
