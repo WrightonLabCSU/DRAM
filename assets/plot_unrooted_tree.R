@@ -10,10 +10,16 @@ output_png <- commandArgs(trailingOnly = TRUE)[3]
 tree <- read.tree(newick_file)
 
 # Read the labels to be colored
-labels_to_color <- readLines(labels_file)
+labels_to_color_raw <- readLines(labels_file)
+
+# Process the labels to extract query IDs
+labels_to_color <- sapply(labels_to_color_raw, function(x) {
+  parts <- unlist(strsplit(x, "\t"))
+  return(parts[2])  # Consider only the second part (query ID)
+})
 
 # Print the labels to be colored for debugging
-cat("Labels to be colored:\n")
+cat("Processed Labels to be colored:\n")
 print(labels_to_color)
 
 # Print the tree tip labels for debugging
