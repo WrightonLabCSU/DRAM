@@ -29,9 +29,10 @@ dependencies:
   - openpyxl=3.1.2
   - pplacer=1.1.alpha19
   - mafft=7.525
-  - ete3
-  - cairo
-
+  - r-base
+  - r-ape
+  - r-ggplot2
+  
   # visualization packages
   - click
   - networkx>2,<3
