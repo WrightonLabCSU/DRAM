@@ -71,7 +71,7 @@ process TREES {
             mv updated-annotations.tsv current-annotations.tsv
 
             # Generate a list of labels from extracted_query_ids.txt
-            awk '{print $2}' extracted_query_ids.txt > labels.txt
+            awk '{print \$2}' extracted_query_ids.txt > labels.txt
 
             # Color labels and generate tree images using xvfb-run
             xvfb-run -a python color_labels.py labels.txt aligned_sequences.xml colored_tree.png
