@@ -13,6 +13,7 @@ dependencies:
   - mmseqs2==15.6f452
   - hmmer=3.3.2
   - scipy=1.8.1
+  - numpy>=1.17.3,<1.25.0
   - sqlalchemy=1.4.46
   - barrnap=0.9
   - ruby=3.1.2
@@ -33,10 +34,10 @@ dependencies:
 
   # visualization packages
   - click
-  - numpy
   - networkx>2,<3
   - panel>1,<2
   - bokeh>3,<4
+  # numpy was moved above need to test it with viz
 
   - pip:
       - matplotlib==3.8.3
