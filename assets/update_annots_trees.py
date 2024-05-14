@@ -46,13 +46,12 @@ def extract_placement_details(jplace_data, tree, tree_mapping):
             if clades:
                 clade = clades[0]
                 closest_leaf = find_closest_labeled_ancestor(clade, tree)
-                if closest_leaf:
-                    mapped_value = tree_mapping.get(closest_leaf, "No mapping found")
-                    print(f"{placement['nm'][0][0]} mapped to {mapped_value} (Closest leaf: {closest_leaf})")
-                    closest_leaf = f"{mapped_value};{closest_leaf}"
+                if closest_leaf and closest_leaf in tree_mapping:
+                    closest_leaf = f"{tree_mapping[closest_leaf]};{closest_leaf}"
+                else:
+                    closest_leaf = f"No mapping found;{closest_leaf}"
             else:
-                closest_leaf = ""
-                print(f"No clades found for edge number: {edge_num}")
+                closest_leaf = f"Clade not found;{edge_num}"
             for name, _ in placement['nm']:
                 placement_map[name] = closest_leaf
     return placement_map
