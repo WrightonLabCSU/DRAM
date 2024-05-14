@@ -14,6 +14,7 @@ process TREES {
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences.jplace"), emit: tree_placements, optional: true
     path("colored_tree.nwk"), emit: colored_tree, optional: true
+    path("colored_tree.png"), emit: colored_tree_png, optional: true
 
     script:
     """        
@@ -74,8 +75,8 @@ process TREES {
             # Generate a list of newly added sequences from extracted_query_ids.txt
             awk '{print \$2}' extracted_query_ids.txt > labels.txt
             
-            # Color the labels of the newly added sequences in the Newick tree
-            python color_labels.py labels.txt aligned_sequences.xml colored_tree.nwk
+            # Color the labels of the newly added sequences in the Newick tree and create a PNG
+            python color_labels.py labels.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
 
         else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
