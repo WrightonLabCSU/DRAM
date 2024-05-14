@@ -1,13 +1,35 @@
 import xml.etree.ElementTree as ET
 import sys
+import os
 
 def color_labels(labels_file, xml_file, output_file, color='red'):
     # Read the labels from the text file
     with open(labels_file, 'r') as f:
         labels_to_color = set(line.strip() for line in f)
 
+    # Check if the XML file exists and is not empty
+    if not os.path.isfile(xml_file):
+        print(f"Error: The file {xml_file} does not exist.")
+        return
+    
+    if os.path.getsize(xml_file) == 0:
+        print(f"Error: The file {xml_file} is empty.")
+        return
+    
+    # Read and print the first few lines of the XML file for debugging
+    with open(xml_file, 'r') as f:
+        lines = f.readlines()
+        print("First few lines of the XML file for debugging:")
+        for line in lines[:5]:
+            print(line.strip())
+
     # Parse the XML file
-    tree = ET.parse(xml_file)
+    try:
+        tree = ET.parse(xml_file)
+    except ET.ParseError as e:
+        print(f"Error parsing XML file: {e}")
+        return
+    
     root = tree.getroot()
 
     # Function to add color attribute to a label
