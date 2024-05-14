@@ -30,7 +30,6 @@ dependencies:
   - mafft=7.525
   - ete3
   - cairo
-  - pyqt
 
   # visualization packages
   - click

@@ -74,7 +74,7 @@ process TREES {
             # Color labels and generate unrooted tree
             python color_labels.py extracted_query_ids.txt aligned_sequences.xml colored_tree.nwk colored_tree.png
 
-        else
+        else:
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
     done

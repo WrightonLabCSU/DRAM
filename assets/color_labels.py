@@ -5,7 +5,6 @@ from ete3 import Tree, TreeStyle, NodeStyle
 def clean_newick(newick_file, cleaned_newick_file):
     with open(newick_file, 'r') as infile:
         newick_data = infile.read()
-    # Remove bootstrap values in square brackets
     cleaned_data = re.sub(r'\[\d+\]', '', newick_data)
     with open(cleaned_newick_file, 'w') as outfile:
         outfile.write(cleaned_data)
@@ -39,11 +38,11 @@ def color_labels(labels_file, newick_file, output_file, output_png):
     ts = TreeStyle()
     ts.mode = "c"  # Circular mode
     ts.show_leaf_name = True
-    ts.scale = 20
+    ts.scale = 200  # Increase scale for larger image
     ts.branch_vertical_margin = 10
 
     # Render the tree to a PNG file without opening a display
-    tree.render(output_png, tree_style=ts)
+    tree.render(output_png, tree_style=ts, dpi=300)
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
