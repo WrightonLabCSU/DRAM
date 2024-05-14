@@ -16,6 +16,10 @@ labels_to_color <- readLines(labels_file)
 cat("Labels to be colored:\n")
 print(labels_to_color)
 
+# Print the tree tip labels for debugging
+cat("Tree tip labels:\n")
+print(tree$tip.label)
+
 # Ensure labels to color are present in the tree
 valid_labels <- tree$tip.label %in% labels_to_color
 
