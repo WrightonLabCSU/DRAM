@@ -30,8 +30,7 @@ for (i in 1:length(tree$tip.label)) {
   label <- tree$tip.label[i]
   color <- label_colors[i]
   angle <- ifelse(last_plot$theta[i] > 180, last_plot$theta[i] - 180, last_plot$theta[i])
-  par(srt = angle)
-  text(last_plot$xx[i], last_plot$yy[i], labels = label, pos = 4, cex = 0.6, col = color)
+  text(last_plot$xx[i], last_plot$yy[i], labels = label, pos = 4, cex = 0.6, col = color, srt = angle)
 }
 
 dev.off()
