@@ -20,6 +20,10 @@ print(labels_to_color)
 # Prepare the color vector
 tip_colors <- rep("black", length(tree$tip.label))
 
+# Debug: Print the labels found in the tree
+cat("Valid labels found in the tree:\n")
+print(tree$tip.label)
+
 # Apply red color to the specified labels
 for (i in seq_along(tree$tip.label)) {
   if (tree$tip.label[i] %in% labels_to_color) {
@@ -27,18 +31,18 @@ for (i in seq_along(tree$tip.label)) {
   }
 }
 
-# Debug: Print matching tips
-cat("Matching tips:\n")
-print(tree$tip.label[tip_colors == "red"])
+# Debug: Print the colored tips
+cat("Tips to color (indices):\n")
+print(which(tip_colors == "red"))
 
-# Set plot size and prevent overlapping
+# Set plot size
 pdf(output_pdf, width = 20, height = 20)
 
 # Plot the tree without tip labels to adjust spacing
 plot(tree, type = "unrooted", show.tip.label = FALSE)
 
-# Add tip labels with custom colors and smaller font size to prevent overlapping
-tiplabels(tree$tip.label, frame = "none", adj = c(1, 1), col = tip_colors, cex = 0.5, offset = 0.5)
+# Add tip labels with custom colors and larger font size
+tiplabels(tree$tip.label, frame = "none", adj = c(1, 1), col = tip_colors, cex = 0.7)
 
 # Close the PDF device
 dev.off()

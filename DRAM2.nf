@@ -614,6 +614,10 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
 if( !params.no_trees ) {
 
+    ch_count_annots_script = file(params.count_annots_script)
+    ch_distill_xlsx_script = file(params.distill_xlsx_script)
+    ch_distill_sql_script = file(params.distill_sql_script)
+    
     //Add in option for --add_trees <list of paths to trees refpkg directories>
     if( params.add_trees ){
         ch_add_trees = file(params.add_trees).exists() ? file(params.add_trees) : error("Error: If using --add_trees, you must supply a path to a directory containing each tree subdirectory. Additional trees directory not found at ${params.add_trees}")
@@ -621,6 +625,7 @@ if( !params.no_trees ) {
     else{
         ch_add_trees = default_channel
     }    
+    
 
 
     if( !params.call ){
