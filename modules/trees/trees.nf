@@ -18,6 +18,7 @@ process TREES {
     """        
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
+    ln -s ${ch_trees_scripts}/*.R .
 
     cp initial-annotations.tsv current-annotations.tsv
 
