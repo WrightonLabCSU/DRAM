@@ -34,7 +34,7 @@ cat("Valid labels found in the tree:\n")
 print(tree$tip.label[valid_labels])
 
 # Plot the unrooted tree with larger size
-pdf(output_pdf, width = 20, height = 20)  # Export to PDF with larger size
+pdf(output_pdf, width = 30, height = 30)  # Export to PDF with larger size
 plot(tree, type = "unrooted", cex = 0.8)
 
 # Color the specified labels
@@ -46,7 +46,9 @@ for (i in colored_tips) {
   x_jitter <- runif(1, -0.02, 0.02)
   y_jitter <- runif(1, -0.02, 0.02)
   tiplabels(pch = 19, tip = i, col = "red", cex = 1)
-  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.8, offset = 0.5, x = x_jitter, y = y_jitter)
+  x <- tree$edge.length[i] + x_jitter
+  y <- i + y_jitter
+  text(x, y, tree$tip.label[i], col = "red", pos = 4, cex = 0.8)
 }
 
 dev.off()

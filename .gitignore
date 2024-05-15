@@ -28,3 +28,4 @@ assets/bbmap/*
 assets/bbmap
 assets/bbmap/
 .vscode
+nextflow-local.config
