@@ -1,40 +1,36 @@
-# Load necessary libraries
 library(ape)
 
 # Define the input files
-newick_file <- commandArgs(trailingOnly = TRUE)[1]
-labels_file <- commandArgs(trailingOnly = TRUE)[2]
-output_pdf <- commandArgs(trailingOnly = TRUE)[3]
+args <- commandArgs(trailingOnly = TRUE)
+newick_file <- args[1]
+labels_file <- args[2]
+output_pdf <- args[3]
 
 # Read the Newick tree
 tree <- read.tree(newick_file)
 
 # Read the labels to be colored
-labels_to_color_raw <- readLines(labels_file)
-labels_to_color <- gsub("\\t", " ", labels_to_color_raw)
+labels_to_color <- readLines(labels_file)
 
-# Create a vector of colors for the tip labels
+# Remove tab spaces from labels to color
+labels_to_color <- sub("\t", " ", labels_to_color)
+
+# Set up colors
 tip_colors <- rep("black", length(tree$tip.label))
-tip_colors[tree$tip.label %in% labels_to_color] <- "red"
+names(tip_colors) <- tree$tip.label
 
-# Print out information for debugging
-cat("Tree tip labels:\n")
-print(tree$tip.label)
-cat("\nLabels to color:\n")
-print(labels_to_color)
-cat("\nTip colors:\n")
-print(tip_colors)
+# Color the tips that match the labels
+for (label in labels_to_color) {
+  if (label %in% names(tip_colors)) {
+    tip_colors[label] <- "red"
+  }
+}
 
-# Increase the size of the PDF
-pdf(output_pdf, width = 20, height = 20)  # Increase size to avoid compression
-plot(tree, type = "unrooted", show.tip.label = FALSE)
+# Increase the plot size
+pdf(output_pdf, width = 15, height = 15)
+plot(tree, type = "unrooted", show.tip.label = FALSE, cex = 0.8)
 
-# Use tryCatch to handle errors during plotting
-tryCatch({
-    tiplabels(pch = 16, col = tip_colors, cex = 1.5)
-    tiplabels(tree$tip.label, col = tip_colors, bg = tip_colors, cex = 0.7, adj = 1, offset = 0.5)
-}, error = function(e) {
-    cat("Error during plotting: ", e$message, "\n")
-})
+# Add colored labels
+tiplabels(tree$tip.label, tip = 1:length(tree$tip.label), bg = tip_colors, frame = "none", col = tip_colors, cex = 0.8, adj = 1)
 
 dev.off()
