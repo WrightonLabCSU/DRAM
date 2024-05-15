@@ -1,45 +1,40 @@
-# Load necessary libraries
 library(ape)
-library(phytools)
 
 # Define the input files
-args <- commandArgs(trailingOnly = TRUE)
-newick_file <- args[1]
-labels_file <- args[2]
-output_pdf <- args[3]
+newick_file <- commandArgs(trailingOnly = TRUE)[1]
+labels_file <- commandArgs(trailingOnly = TRUE)[2]
+output_pdf <- commandArgs(trailingOnly = TRUE)[3]
 
 # Read the Newick tree
 tree <- read.tree(newick_file)
 
 # Read the labels to be colored
-labels_to_color <- readLines(labels_file)
+labels_to_color_raw <- readLines(labels_file)
 
-# Prepare the colors for the tip labels
-tip_colors <- rep("black", length(tree$tip.label))
-tip_colors[tree$tip.label %in% labels_to_color] <- "red"
+# Clean and prepare the labels for matching
+labels_to_color <- gsub("\t", "_", labels_to_color_raw)
 
-# Open a PDF device for plotting
-pdf(output_pdf, width = 20, height = 20)
+# Create a vector for label colors, default to black
+label_colors <- rep("black", length(tree$tip.label))
 
-# Plot the tree without labels
-plot(tree, type = "unrooted", show.tip.label = FALSE, edge.width = 1)
+# Color the specified labels in red
+label_colors[tree$tip.label %in% labels_to_color] <- "red"
 
-# Get the last plotted tree
-last_plot <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+# Calculate the angles for the labels
+n_tips <- length(tree$tip.label)
+angles <- 360 * (1:n_tips) / n_tips
+angles <- ifelse(angles > 180, angles - 180, angles)
 
-# Add colored tip labels
-for (i in 1:length(tree$tip.label)) {
-    tip_label <- tree$tip.label[i]
-    x <- last_plot$xx[i]
-    y <- last_plot$yy[i]
-    tip_angle <- atan2(y, x) * 180 / pi
-    angle <- ifelse(tip_angle > 180, tip_angle - 180, tip_angle)
-    if (tip_label %in% labels_to_color) {
-        text(x, y, labels = tip_label, col = "red", srt = angle, adj = 0.5, cex = 0.6)
-    } else {
-        text(x, y, labels = tip_label, col = "black", srt = angle, adj = 0.5, cex = 0.6)
-    }
+# Plot the tree
+pdf(output_pdf, width = 10, height = 10)
+plot(tree, type = "unrooted", show.tip.label = FALSE)
+
+# Add labels with colors and angles
+for (i in 1:n_tips) {
+  label <- tree$tip.label[i]
+  color <- label_colors[i]
+  angle <- angles[i]
+  text(tree$tip[i, 1], tree$tip[i, 2], labels = label, pos = 4, srt = angle, cex = 0.6, col = color)
 }
 
-# Close the PDF device
 dev.off()
