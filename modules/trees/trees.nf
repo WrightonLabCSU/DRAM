@@ -73,7 +73,7 @@ process TREES {
 
             # Color labels and generate PDF
             Rscript color_labels.R aligned_sequences.xml extracted_query_ids.txt colored_tree.pdf
-        else:
+        else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
     done
