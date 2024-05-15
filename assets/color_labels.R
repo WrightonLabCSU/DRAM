@@ -35,14 +35,14 @@ for (i in seq_along(tree$tip.label)) {
 cat("Tip colors set to red:\n")
 print(tree$tip.label[tip_colors == "red"])
 
-# Set plot size (increasing the size)
-pdf(output_pdf, width = 40, height = 40)
+# Set plot size
+pdf(output_pdf, width = 20, height = 20)
 
 # Plot the tree without tip labels to adjust spacing
 plot(tree, type = "unrooted", show.tip.label = FALSE, no.margin = TRUE)
 
-# Add tip labels with custom colors and smaller font size (reducing cex)
-tiplabels(tree$tip.label, frame = "none", adj = c(1, 1), col = tip_colors, cex = 0.5)
+# Add tip labels with custom colors and larger font size
+tiplabels(tree$tip.label, frame = "none", adj = c(1, 1), col = tip_colors, cex = 0.7)
 
 # Close the PDF device
 dev.off()

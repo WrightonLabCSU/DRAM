@@ -14,6 +14,7 @@ process TREES {
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences.jplace"), emit: tree_placements, optional: true
     path("colored_tree.pdf"), emit: colored_tree, optional: true
+    path("colored_tree_python.pdf"), emit: colored_tree_python, optional: true
 
     script:
     """        
@@ -74,6 +75,7 @@ process TREES {
 
             # Color labels and generate PDF
             Rscript color_labels.R aligned_sequences.xml extracted_query_ids.txt colored_tree.pdf
+
         else
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
