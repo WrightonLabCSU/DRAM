@@ -1,57 +1,50 @@
-  [75] "blaze7B-rt-cf-qt_MH_bin-2_k121_1035912_15" 
-  [76] "blaze11-rt-cf-qt_MH_bin-35_k121_167870_2"  
-  [77] "blaze23-rt-cf-qt_MH_bin-8_k121_501691_19"  
-  [78] "blaze7B-rt-cf-qt_MH_bin-29_k121_1242206_10"
-  [79] "blaze22-rt-cf-qt_MH_bin-7_k121_809961_9"   
+# Load required libraries
+library(ape)
+library(ggtree)
+library(ggplot2)
+library(ggrepel)
 
-Command error:
-      rotate
-  
-  Average angle change [1] 0.147309399409057
-  Average angle change [2] 0.155623744117933
-  Average angle change [3] 0.126625980724506
-  Average angle change [4] 0.16382246464418
-  Average angle change [5] 0.12569584526505
-  Error in `geom_segment2()`:
-  ! Problem while computing aesthetics.
-  ℹ Error occurred in the 6th layer.
-  Caused by error:
-  ! object 'node' not found
-  Backtrace:
-       ▆
-    1. ├─ggplot2::ggsave(output_pdf, plot = p, width = 20, height = 20)
-    2. │ ├─grid::grid.draw(plot)
-    3. │ └─ggplot2:::grid.draw.ggplot(plot)
-    4. │   ├─base::print(x)
-    5. │   └─ggplot2:::print.ggplot(x)
-    6. │     ├─ggplot2::ggplot_build(x)
-    7. │     └─ggplot2:::ggplot_build.ggplot(x)
-    8. │       └─ggplot2:::by_layer(...)
-    9. │         ├─rlang::try_fetch(...)
-   10. │         │ ├─base::tryCatch(...)
-   11. │         │ │ └─base (local) tryCatchList(expr, classes, parentenv, handlers)
-   12. │         │ │   └─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])
-   13. │         │ │     └─base (local) doTryCatch(return(expr), name, parentenv, handler)
-   14. │         │ └─base::withCallingHandlers(...)
-   15. │         └─ggplot2 (local) f(l = layers[[i]], d = data[[i]])
-   16. │           └─l$compute_aesthetics(d, plot)
-   17. │             └─ggplot2 (local) compute_aesthetics(..., self = self)
-   18. │               └─base::lapply(aesthetics, eval_tidy, data = data, env = env)
-   19. │                 └─rlang (local) FUN(X[[i]], ...)
-   20. └─base::.handleSimpleError(`<fn>`, "object 'node' not found", base::quote(NULL))
-   21.   └─rlang (local) h(simpleError(msg, call))
-   22.     └─handlers[[1L]](cnd)
-   23.       └─cli::cli_abort(...)
-   24.         └─rlang::abort(...)
-  Warning messages:
-  1: In max(x, na.rm = TRUE) :
-    no non-missing arguments to max; returning -Inf
-  2: In min(x, na.rm = na.rm) :
-    no non-missing arguments to min; returning Inf
-  3: In max(x, na.rm = na.rm) :
-    no non-missing arguments to max; returning -Inf
-  4: In min(x, na.rm = na.rm) :
-    no non-missing arguments to min; returning Inf
-  5: In max(x, na.rm = na.rm) :
-    no non-missing arguments to max; returning -Inf
-  Execution halted
+# Define the input files
+newick_file <- commandArgs(trailingOnly = TRUE)[1]
+labels_file <- commandArgs(trailingOnly = TRUE)[2]
+output_pdf <- commandArgs(trailingOnly = TRUE)[3]
+
+# Read the Newick tree
+tree <- read.tree(newick_file)
+
+# Read the labels to be colored
+labels_to_color_raw <- readLines(labels_file)
+
+# Process the labels to extract query IDs
+labels_to_color <- sapply(labels_to_color_raw, function(x) {
+  parts <- unlist(strsplit(x, "\t"))
+  return(parts[2])  # Consider only the second part (query ID)
+})
+
+# Print the labels to be colored for debugging
+cat("Processed Labels to be colored:\n")
+print(labels_to_color)
+
+# Print the tree tip labels for debugging
+cat("Tree tip labels:\n")
+print(tree$tip.label)
+
+# Ensure labels to color are present in the tree
+valid_labels <- tree$tip.label %in% labels_to_color
+
+# Print the valid labels for debugging
+cat("Valid labels found in the tree:\n")
+print(tree$tip.label[valid_labels])
+
+# Create a data frame to associate labels with their colors
+label_colors <- data.frame(label = tree$tip.label, color = "black")
+label_colors$color[label_colors$label %in% labels_to_color] <- "red"
+
+# Convert the tree to a ggtree object
+p <- ggtree(tree, layout = "daylight") +
+  geom_tiplab(aes(label = label), size = 2, align = TRUE, linesize = 0.5) +
+  geom_tiplab(data = label_colors, aes(label = label, color = I(color)), size = 2, align = TRUE, linesize = 0.5) +
+  geom_text_repel(data = subset(label_colors, color == "red"), aes(label = label), color = "red", size = 2, max.overlaps = 20)
+
+# Save the plot to a PDF file with increased size
+ggsave(output_pdf, plot = p, width = 20, height = 20)
