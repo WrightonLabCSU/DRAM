@@ -1,6 +1,5 @@
-library(ggtree)
-library(ggplot2)
-library(ggrepel)
+# Load required libraries
+library(ape)
 
 # Define the input files
 newick_file <- commandArgs(trailingOnly = TRUE)[1]
@@ -12,30 +11,42 @@ tree <- read.tree(newick_file)
 
 # Read the labels to be colored
 labels_to_color_raw <- readLines(labels_file)
-labels_to_color <- gsub("\t", "", labels_to_color_raw)
 
-# Create a data frame for the labels
-label_data <- data.frame(label = tree$tip.label, color = "black", stringsAsFactors = FALSE)
-label_data$color[label_data$label %in% labels_to_color] <- "red"
+# Process the labels to extract query IDs
+labels_to_color <- sapply(labels_to_color_raw, function(x) {
+  parts <- unlist(strsplit(x, "\t"))
+  return(parts[2])  # Consider only the second part (query ID)
+})
 
-# Ensure no duplicates in the labels
-label_data <- label_data[!duplicated(label_data$label),]
+# Print the labels to be colored for debugging
+cat("Processed Labels to be colored:\n")
+print(labels_to_color)
 
-# Merge the label data with the tree data
-tree_data <- fortify(tree)
-tree_data <- merge(tree_data, label_data, by.x = "label", by.y = "label", all.x = TRUE)
-tree_data$color[is.na(tree_data$color)] <- "black"
+# Print the tree tip labels for debugging
+cat("Tree tip labels:\n")
+print(tree$tip.label)
 
-# Create a ggtree plot
-p <- ggtree(tree, layout = "unrooted") +
-  geom_tiplab(aes(label = label, color = color), size = 2.5, show.legend = FALSE) +
-  scale_color_manual(values = c("black" = "black", "red" = "red")) +
-  theme_tree2() +
-  theme(legend.position = "none") +
-  geom_text_repel(aes(x = x, y = y, label = label, color = color), size = 2.5, show.legend = FALSE, nudge_x = 0.5, nudge_y = 0.5)
+# Ensure labels to color are present in the tree
+valid_labels <- tree$tip.label %in% labels_to_color
 
-# Save the plot to a PDF file
-ggsave(output_pdf, plot = p, width = 30, height = 30)
+# Print the valid labels for debugging
+cat("Valid labels found in the tree:\n")
+print(tree$tip.label[valid_labels])
 
-# Print message
-cat("Colored tree saved to", output_pdf, "\n")
+# Plot the unrooted tree with larger size
+pdf(output_pdf, width = 20, height = 20)  # Export to PDF with larger size
+plot(tree, type = "unrooted", cex = 0.8)
+
+# Color the specified labels
+colored_tips <- which(tree$tip.label %in% labels_to_color)
+
+# Add text labels in red for the specified tips without duplicating
+for (i in colored_tips) {
+  # Apply jitter to avoid overlapping
+  x_jitter <- runif(1, -0.02, 0.02)
+  y_jitter <- runif(1, -0.02, 0.02)
+  tiplabels(pch = 19, tip = i, col = "red", cex = 1)
+  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.8, offset = 0.5, x = x_jitter, y = y_jitter)
+}
+
+dev.off()
