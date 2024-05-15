@@ -32,7 +32,7 @@ p <- ggtree(tree, layout = "unrooted") +
   scale_color_manual(values = c("black" = "black", "red" = "red")) +
   theme_tree2() +
   theme(legend.position = "none") +
-  geom_text_repel(aes(label = label, color = color), size = 2.5, show.legend = FALSE, nudge_x = 0.5, nudge_y = 0.5)
+  geom_text_repel(aes(x = x, y = y, label = label, color = color), size = 2.5, show.legend = FALSE, nudge_x = 0.5, nudge_y = 0.5)
 
 # Save the plot to a PDF file
 ggsave(output_pdf, plot = p, width = 30, height = 30)

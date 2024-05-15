@@ -583,6 +583,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     // Ensure annotations, taxonomy and bin quality channels are set.
     if( params.annotate == 0 ){
         // Set channels for of supporting python scripts - will be moved to container eventually
+        print("HERE")
         ch_count_annots_script = file(params.count_annots_script)
 
         ch_combined_annotations = Channel
