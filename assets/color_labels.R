@@ -1,49 +1,51 @@
-# Load required libraries
 library(ape)
 
 # Define the input files
-newick_file <- commandArgs(trailingOnly = TRUE)[1]
-labels_file <- commandArgs(trailingOnly = TRUE)[2]
-output_pdf <- commandArgs(trailingOnly = TRUE)[3]
+args <- commandArgs(trailingOnly = TRUE)
+newick_file <- args[1]
+labels_file <- args[2]
+output_pdf <- args[3]
+
+# Debug: Print the input arguments
+cat("Newick file:", newick_file, "\n")
+cat("Labels file:", labels_file, "\n")
+cat("Output PDF:", output_pdf, "\n")
 
 # Read the Newick tree
+cat("Reading the Newick tree...\n")
 tree <- read.tree(newick_file)
 
+# Debug: Print the number of tips in the tree
+cat("Number of tips in the tree:", length(tree$tip.label), "\n")
+
 # Read the labels to be colored
+cat("Reading the labels to be colored...\n")
 labels_to_color_raw <- readLines(labels_file)
+labels_to_color <- gsub("\t", "", labels_to_color_raw)
 
-# Process the labels to extract query IDs
-labels_to_color <- sapply(labels_to_color_raw, function(x) {
-  parts <- unlist(strsplit(x, "\t"))
-  return(parts[2])  # Consider only the second part (query ID)
-})
-
-# Print the labels to be colored for debugging
-cat("Processed Labels to be colored:\n")
+# Debug: Print the labels to be colored
+cat("Labels to be colored:\n")
 print(labels_to_color)
 
-# Print the tree tip labels for debugging
-cat("Tree tip labels:\n")
-print(tree$tip.label)
+# Find and match the labels
+cat("Matching the labels...\n")
+matched_labels <- labels_to_color[labels_to_color %in% tree$tip.label]
 
-# Ensure labels to color are present in the tree
-valid_labels <- tree$tip.label %in% labels_to_color
+# Debug: Print the matched labels
+cat("Matched labels:\n")
+print(matched_labels)
 
-# Print the valid labels for debugging
-cat("Valid labels found in the tree:\n")
-print(tree$tip.label[valid_labels])
+# Set the colors for the labels
+label_colors <- ifelse(tree$tip.label %in% matched_labels, "red", "black")
 
-# Plot the unrooted tree
-pdf(output_pdf, width = 10, height = 10)  # Export to PDF
-plot(tree, type = "unrooted", cex = 0.6)
+# Debug: Print the label colors
+cat("Label colors set.\n")
 
-# Color the specified labels
-colored_tips <- which(tree$tip.label %in% labels_to_color)
-
-# Add text labels in red for the specified tips without duplicating
-for (i in colored_tips) {
-  tiplabels(pch = 19, tip = i, col = "red", cex = 1)
-  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.6, offset = 0.5)
-}
-
+# Plot the tree
+cat("Plotting the tree...\n")
+pdf(output_pdf, width = 20, height = 20)
+plot(tree, type = "unrooted", show.tip.label = TRUE, cex = 0.6, label.offset = 0.1)
+tiplabels(tree$tip.label, adj = 1, frame = "none", col = label_colors, cex = 0.6)
 dev.off()
+
+cat("Tree plotting complete. PDF saved as:", output_pdf, "\n")
