@@ -1,3 +1,4 @@
+# Load necessary libraries
 library(ape)
 library(phytools)
 
@@ -11,34 +12,29 @@ output_pdf <- args[3]
 tree <- read.tree(newick_file)
 
 # Read the labels to be colored
-labels_to_color_raw <- readLines(labels_file)
-labels_to_color <- sub(".*\t", "", labels_to_color_raw)  # Extract the second part after tab
+labels_to_color <- readLines(labels_file)
 
-# Plot the tree
-pdf(output_pdf, width = 20, height = 20)  # Increase size for better visibility
-plot(tree, type = "unrooted", show.tip.label = FALSE, cex = 0.6)
+# Prepare the colors for the tip labels
+tip_colors <- rep("black", length(tree$tip.label))
+tip_colors[tree$tip.label %in% labels_to_color] <- "red"
 
-# Define colors
-colors <- rep("black", length(tree$tip.label))
-colors[tree$tip.label %in% labels_to_color] <- "red"
+# Open a PDF device for plotting
+pdf(output_pdf, width = 20, height = 20)
 
-# Function to adjust label positions and avoid overlap
-tiplabels_radiate <- function(tree, labels_to_color, colors, cex = 0.6) {
-  n_tips <- Ntip(tree)
-  angles <- 360 * (1:n_tips / n_tips)
-  radians <- angles * pi / 180
-  
-  for (i in 1:n_tips) {
-    x <- cos(radians[i])
-    y <- sin(radians[i])
-    label <- tree$tip.label[i]
-    color <- colors[i]
-    
-    text(x, y, labels = label, col = color, cex = cex, srt = angles[i], adj = ifelse(angles[i] > 180, 1, 0))
-  }
+# Plot the tree without labels
+plot(tree, type = "unrooted", show.tip.label = FALSE, edge.width = 1)
+
+# Add colored tip labels
+for (i in 1:length(tree$tip.label)) {
+    tip_label <- tree$tip.label[i]
+    tip_angle <- 360 * i / length(tree$tip.label)
+    angle <- ifelse(tip_angle > 180, tip_angle - 180, tip_angle)
+    if (tip_label %in% labels_to_color) {
+        text(x = tree$tip[i, 1], y = tree$tip[i, 2], labels = tip_label, col = "red", srt = angle, adj = 0.5)
+    } else {
+        text(x = tree$tip[i, 1], y = tree$tip[i, 2], labels = tip_label, col = "black", srt = angle, adj = 0.5)
+    }
 }
 
-# Adjust the labels to radiate outwards
-tiplabels_radiate(tree, labels_to_color, colors, cex = 0.6)
-
+# Close the PDF device
 dev.off()
