@@ -1,41 +1,35 @@
-# Load necessary libraries
 library(ape)
-library(phytools)
 
 # Define the input files
-newick_file <- commandArgs(trailingOnly = TRUE)[1]
-labels_file <- commandArgs(trailingOnly = TRUE)[2]
-output_pdf <- commandArgs(trailingOnly = TRUE)[3]
+args <- commandArgs(trailingOnly = TRUE)
+newick_file <- args[1]
+labels_file <- args[2]
+output_pdf <- args[3]
 
 # Read the Newick tree
 tree <- read.tree(newick_file)
 
 # Read the labels to be colored
 labels_to_color_raw <- readLines(labels_file)
-labels_to_color <- gsub("\t", "_", labels_to_color_raw)
+labels_to_color <- sub(".*\t", "", labels_to_color_raw)  # Extract the second part after tab
 
-# Define the color for the specified labels
-color <- "red"
+# Plot the tree
+pdf(output_pdf, width = 20, height = 20)  # Increase size for better visibility
+plot(tree, type = "unrooted", show.tip.label = FALSE, cex = 0.6)
 
-# Adjust the plotting parameters for a larger plot
-pdf(output_pdf, width = 20, height = 20)
+# Define colors
+colors <- rep("black", length(tree$tip.label))
+colors[tree$tip.label %in% labels_to_color] <- "red"
 
-# Plot the tree with radiating tips
-plot(tree, type = "unrooted", show.tip.label = FALSE, cex = 0.8, no.margin = TRUE, edge.width = 2)
+# Adjust the labels to radiate outwards
+tiplabels(text = tree$tip.label, tip = 1:Ntip(tree), 
+          col = colors, cex = 0.6, adj = 1, srt = 90)
 
-# Add tip labels with radiating text
-tiplabels(
-  text = tree$tip.label,
-  adj = c(0.5, 0.5),
-  frame = "none",
-  pos = 4,
-  offset = 0.5,
-  cex = 0.8,
-  font = 2,
-  col = ifelse(tree$tip.label %in% labels_to_color, color, "black")
-)
+# Use ape's tiplabels with angle adjustment
+for (i in 1:Ntip(tree)) {
+  angle <- ifelse(tree$edge.length[i] > 0, tree$edge.length[i], 1)
+  angle <- ifelse(i <= Ntip(tree) / 2, angle * 180 / pi, (angle + pi) * 180 / pi)
+  text(tree$tip.label[i], pos = angle, cex = 0.6, col = colors[i])
+}
 
-# Save the plot to a file
 dev.off()
-
-cat("Plot saved to", output_pdf, "\n")
