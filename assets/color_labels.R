@@ -1,5 +1,8 @@
 # Load required libraries
 library(ape)
+library(ggtree)
+library(ggplot2)
+library(ggrepel)
 
 # Define the input files
 newick_file <- commandArgs(trailingOnly = TRUE)[1]
@@ -33,22 +36,11 @@ valid_labels <- tree$tip.label %in% labels_to_color
 cat("Valid labels found in the tree:\n")
 print(tree$tip.label[valid_labels])
 
-# Plot the unrooted tree with larger size
-pdf(output_pdf, width = 30, height = 30)  # Export to PDF with larger size
-plot(tree, type = "unrooted", cex = 0.8)
+# Convert the tree to a ggtree object
+p <- ggtree(tree, layout = "daylight") + 
+  geom_tiplab(aes(label = label), size = 2, align = TRUE, linesize = 0.5) +
+  geom_tippoint(aes(subset = (label %in% labels_to_color)), color = "red", size = 2) +
+  geom_text_repel(aes(label = label, subset = (label %in% labels_to_color)), color = "red", size = 2)
 
-# Color the specified labels
-colored_tips <- which(tree$tip.label %in% labels_to_color)
-
-# Add text labels in red for the specified tips without duplicating
-for (i in colored_tips) {
-  # Apply jitter to avoid overlapping
-  x_jitter <- runif(1, -0.02, 0.02)
-  y_jitter <- runif(1, -0.02, 0.02)
-  tiplabels(pch = 19, tip = i, col = "red", cex = 1)
-  x <- tree$edge.length[i] + x_jitter
-  y <- i + y_jitter
-  text(x, y, tree$tip.label[i], col = "red", pos = 4, cex = 0.8)
-}
-
-dev.off()
+# Save the plot to a PDF file with increased size
+ggsave(output_pdf, plot = p, width = 20, height = 20)
