@@ -24,15 +24,20 @@ pdf(output_pdf, width = 20, height = 20)
 # Plot the tree without labels
 plot(tree, type = "unrooted", show.tip.label = FALSE, edge.width = 1)
 
+# Get the last plotted tree
+last_plot <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+
 # Add colored tip labels
 for (i in 1:length(tree$tip.label)) {
     tip_label <- tree$tip.label[i]
-    tip_angle <- 360 * i / length(tree$tip.label)
+    x <- last_plot$xx[i]
+    y <- last_plot$yy[i]
+    tip_angle <- atan2(y, x) * 180 / pi
     angle <- ifelse(tip_angle > 180, tip_angle - 180, tip_angle)
     if (tip_label %in% labels_to_color) {
-        text(x = tree$tip[i, 1], y = tree$tip[i, 2], labels = tip_label, col = "red", srt = angle, adj = 0.5)
+        text(x, y, labels = tip_label, col = "red", srt = angle, adj = 0.5, cex = 0.6)
     } else {
-        text(x = tree$tip[i, 1], y = tree$tip[i, 2], labels = tip_label, col = "black", srt = angle, adj = 0.5)
+        text(x, y, labels = tip_label, col = "black", srt = angle, adj = 0.5, cex = 0.6)
     }
 }
 
