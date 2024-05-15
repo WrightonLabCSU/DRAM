@@ -13,6 +13,10 @@ tree <- read.tree(newick_file)
 labels_to_color_raw <- readLines(labels_file)
 labels_to_color <- gsub("\t", "_", labels_to_color_raw) # Replace tabs with underscores
 
+# Debug: Print the labels to be colored
+cat("Labels to be colored:\n")
+print(labels_to_color)
+
 # Prepare the color vector
 tip_colors <- rep("black", length(tree$tip.label))
 
@@ -23,14 +27,18 @@ for (i in seq_along(tree$tip.label)) {
   }
 }
 
-# Set plot size
-pdf(output_pdf, width = 30, height = 30)  # Increase the size to avoid overlapping
+# Debug: Print matching tips
+cat("Matching tips:\n")
+print(tree$tip.label[tip_colors == "red"])
+
+# Set plot size and prevent overlapping
+pdf(output_pdf, width = 20, height = 20)
 
 # Plot the tree without tip labels to adjust spacing
 plot(tree, type = "unrooted", show.tip.label = FALSE)
 
-# Add tip labels with custom colors and larger font size
-tiplabels(tree$tip.label, frame = "none", adj = c(1, 1), col = tip_colors, cex = 0.7, offset = 1)
+# Add tip labels with custom colors and smaller font size to prevent overlapping
+tiplabels(tree$tip.label, frame = "none", adj = c(1, 1), col = tip_colors, cex = 0.5, offset = 0.5)
 
 # Close the PDF device
 dev.off()
