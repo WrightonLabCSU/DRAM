@@ -13,7 +13,7 @@ process TREES {
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences.jplace"), emit: tree_placements, optional: true
-    path("colored_trees.pdf"), emit: colored_tree, optional: true
+    path("colored_tree.pdf"), emit: colored_tree, optional: true
 
     script:
     """        
