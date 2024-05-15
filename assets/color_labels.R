@@ -1,3 +1,4 @@
+# Load necessary libraries
 library(ape)
 
 # Define the input files
@@ -10,43 +11,26 @@ tree <- read.tree(newick_file)
 
 # Read the labels to be colored
 labels_to_color_raw <- readLines(labels_file)
-labels_to_color <- gsub("\t", "_", labels_to_color_raw)
+labels_to_color <- gsub("\t", "_", labels_to_color_raw) # Replace tabs with underscores
 
-# Debug: print the labels to be colored
-cat("Labels to be colored (after replacing tabs with underscores):\n")
-print(labels_to_color)
+# Prepare the color vector
+tip_colors <- rep("black", length(tree$tip.label))
 
-# Define the labels present in the tree
-valid_labels <- tree$tip.label
-
-# Debug: print the valid labels from the tree
-cat("Valid labels found in the tree:\n")
-print(valid_labels)
-
-# Identify the indices of the tips to color
-tips_to_color <- which(valid_labels %in% labels_to_color)
-
-# Debug: print the indices of the tips to color
-cat("Tips to color (indices):\n")
-print(tips_to_color)
-
-# Check if there are tips to color
-if (length(tips_to_color) == 0) {
-  stop("No matching tips found in the tree for coloring.")
+# Apply red color to the specified labels
+for (i in seq_along(tree$tip.label)) {
+  if (tree$tip.label[i] %in% labels_to_color) {
+    tip_colors[i] <- "red"
+  }
 }
 
-# Plot the tree with colored tips
-pdf(output_pdf, width = 20, height = 20)
+# Set plot size
+pdf(output_pdf, width = 30, height = 30)  # Increase the size to avoid overlapping
+
+# Plot the tree without tip labels to adjust spacing
 plot(tree, type = "unrooted", show.tip.label = FALSE)
 
-# Color the tips
-tiplabels(pch = 16, col = "red", tip = tips_to_color)
-tiplabels(text = valid_labels[tips_to_color], tip = tips_to_color, col = "red", adj = 0, cex = 0.5)
+# Add tip labels with custom colors and larger font size
+tiplabels(tree$tip.label, frame = "none", adj = c(1, 1), col = tip_colors, cex = 0.7, offset = 1)
 
-# Add non-colored tip labels
-non_colored_tips <- setdiff(seq_along(valid_labels), tips_to_color)
-if (length(non_colored_tips) > 0) {
-  tiplabels(text = valid_labels[non_colored_tips], tip = non_colored_tips, col = "black", adj = 0, cex = 0.5)
-}
-
+# Close the PDF device
 dev.off()
