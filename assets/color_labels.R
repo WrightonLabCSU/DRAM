@@ -10,10 +10,10 @@ tree <- read.tree(newick_file)
 
 # Read the labels to be colored
 labels_to_color_raw <- readLines(labels_file)
-labels_to_color <- gsub("\t", " ", labels_to_color_raw)
+labels_to_color <- gsub("\t", "_", labels_to_color_raw)
 
 # Debug: print the labels to be colored
-cat("Labels to be colored:\n")
+cat("Labels to be colored (after replacing tabs with underscores):\n")
 print(labels_to_color)
 
 # Define the labels present in the tree
