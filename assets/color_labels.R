@@ -1,51 +1,29 @@
+# Load necessary libraries
 library(ape)
 
 # Define the input files
-args <- commandArgs(trailingOnly = TRUE)
-newick_file <- args[1]
-labels_file <- args[2]
-output_pdf <- args[3]
-
-# Debug: Print the input arguments
-cat("Newick file:", newick_file, "\n")
-cat("Labels file:", labels_file, "\n")
-cat("Output PDF:", output_pdf, "\n")
+newick_file <- commandArgs(trailingOnly = TRUE)[1]
+labels_file <- commandArgs(trailingOnly = TRUE)[2]
+output_pdf <- commandArgs(trailingOnly = TRUE)[3]
 
 # Read the Newick tree
-cat("Reading the Newick tree...\n")
 tree <- read.tree(newick_file)
 
-# Debug: Print the number of tips in the tree
-cat("Number of tips in the tree:", length(tree$tip.label), "\n")
-
 # Read the labels to be colored
-cat("Reading the labels to be colored...\n")
 labels_to_color_raw <- readLines(labels_file)
-labels_to_color <- gsub("\t", "", labels_to_color_raw)
+labels_to_color <- gsub("\\t", " ", labels_to_color_raw)
 
-# Debug: Print the labels to be colored
-cat("Labels to be colored:\n")
-print(labels_to_color)
+# Create a vector of colors for the tip labels
+tip_colors <- rep("black", length(tree$tip.label))
+tip_colors[tree$tip.label %in% labels_to_color] <- "red"
 
-# Find and match the labels
-cat("Matching the labels...\n")
-matched_labels <- labels_to_color[labels_to_color %in% tree$tip.label]
+# Create a new tree object without duplicate labels for the colored tips
+unique_labels <- unique(c(tree$tip.label, labels_to_color))
+tree$tip.label <- unique_labels
 
-# Debug: Print the matched labels
-cat("Matched labels:\n")
-print(matched_labels)
-
-# Set the colors for the labels
-label_colors <- ifelse(tree$tip.label %in% matched_labels, "red", "black")
-
-# Debug: Print the label colors
-cat("Label colors set.\n")
-
-# Plot the tree
-cat("Plotting the tree...\n")
-pdf(output_pdf, width = 20, height = 20)
-plot(tree, type = "unrooted", show.tip.label = TRUE, cex = 0.6, label.offset = 0.1)
-tiplabels(tree$tip.label, adj = 1, frame = "none", col = label_colors, cex = 0.6)
+# Plot the tree with the correct colors and avoid overlapping text
+pdf(output_pdf, width = 15, height = 15)  # Increase size to avoid compression
+plot(tree, type = "unrooted", show.tip.label = FALSE)
+tiplabels(pch = 16, col = tip_colors, cex = 1.5)
+tiplabels(tree$tip.label, col = tip_colors, bg = tip_colors, cex = 0.7, adj = 1, offset = 0.5)
 dev.off()
-
-cat("Tree plotting complete. PDF saved as:", output_pdf, "\n")
