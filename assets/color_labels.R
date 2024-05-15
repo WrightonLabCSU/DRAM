@@ -1,34 +1,36 @@
+# Load necessary libraries
 library(ape)
 
 # Define the input files
-args <- commandArgs(trailingOnly = TRUE)
-newick_file <- args[1]
-labels_file <- args[2]
-output_pdf <- args[3]
+newick_file <- commandArgs(trailingOnly = TRUE)[1]
+labels_file <- commandArgs(trailingOnly = TRUE)[2]
+output_pdf <- commandArgs(trailingOnly = TRUE)[3]
 
 # Read the Newick tree
 tree <- read.tree(newick_file)
 
 # Read the labels to be colored
 labels_to_color_raw <- readLines(labels_file)
-labels_to_color <- sapply(labels_to_color_raw, function(x) strsplit(x, "\t")[[1]][2])
+labels_to_color <- gsub("\t", "_", labels_to_color_raw) # Replace tabs with underscores
 
-# Function to color the labels
-color_labels <- function(tree, labels, color) {
-  is_tip <- tree$edge[, 2] <= length(tree$tip.label)
-  ordered_tips <- tree$tip.label[tree$edge[is_tip, 2]]
-  col <- rep("black", length(ordered_tips))
-  col[ordered_tips %in% labels] <- color
-  return(col)
+# Prepare the color vector
+tip_colors <- rep("black", length(tree$tip.label))
+
+# Apply red color to the specified labels
+for (i in seq_along(tree$tip.label)) {
+  if (tree$tip.label[i] %in% labels_to_color) {
+    tip_colors[i] <- "red"
+  }
 }
 
-# Apply coloring to the labels
-tip_colors <- color_labels(tree, labels_to_color, "red")
+# Set plot size
+pdf(output_pdf, width = 20, height = 20)
 
-# Plot the tree with colored labels
-pdf(output_pdf, width = 16, height = 16)
-plot(tree, type = "unrooted", show.tip.label = TRUE, tip.color = tip_colors, cex = 0.5)
-tiplabels(tree$tip.label[tree$tip.label %in% labels_to_color], tip = which(tree$tip.label %in% labels_to_color), col = "red", frame = "none", cex = 0.5)
+# Plot the tree without tip labels to adjust spacing
+plot(tree, type = "unrooted", show.tip.label = FALSE)
+
+# Add tip labels with custom colors and larger font size
+tiplabels(tree$tip.label, frame = "none", adj = c(1, 1), col = tip_colors, cex = 0.7)
+
+# Close the PDF device
 dev.off()
-
-cat("Tree with colored labels saved to", output_pdf)
