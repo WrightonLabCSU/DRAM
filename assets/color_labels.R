@@ -1,8 +1,5 @@
 # Load required libraries
 library(ape)
-library(ggtree)
-library(ggplot2)
-library(ggrepel)
 
 # Define the input files
 newick_file <- commandArgs(trailingOnly = TRUE)[1]
@@ -36,17 +33,17 @@ valid_labels <- tree$tip.label %in% labels_to_color
 cat("Valid labels found in the tree:\n")
 print(tree$tip.label[valid_labels])
 
-# Create a data frame for tip labels
-tip_labels <- data.frame(
-  label = tree$tip.label,
-  color = ifelse(tree$tip.label %in% labels_to_color, "red", "black")
-)
+# Plot the unrooted tree
+pdf(output_pdf, width = 10, height = 10)  # Export to PDF
+plot(tree, type = "unrooted", cex = 0.6)
 
-# Convert the tree to a ggtree object
-p <- ggtree(tree, layout = "unrooted") +
-  geom_tiplab(aes(label = label), size = 2, align = TRUE, linesize = 0.5) +
-  geom_tiplab(data = subset(tip_labels, color == "red"), aes(label = label), color = "red", size = 2, align = TRUE, linesize = 0.5) +
-  geom_text_repel(data = subset(tip_labels, color == "red"), aes(label = label), color = "red", size = 2, max.overlaps = Inf)
+# Color the specified labels
+colored_tips <- which(tree$tip.label %in% labels_to_color)
 
-# Save the plot to a PDF file with increased size
-ggsave(output_pdf, plot = p, width = 20, height = 20)
+# Add text labels in red for the specified tips without duplicating
+for (i in colored_tips) {
+  tiplabels(pch = 19, tip = i, col = "red", cex = 1)
+  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.6, offset = 0.5)
+}
+
+dev.off()
