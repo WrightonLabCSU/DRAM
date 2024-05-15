@@ -17,13 +17,24 @@ labels_to_color <- gsub("\\t", " ", labels_to_color_raw)
 tip_colors <- rep("black", length(tree$tip.label))
 tip_colors[tree$tip.label %in% labels_to_color] <- "red"
 
-# Create a new tree object without duplicate labels for the colored tips
-unique_labels <- unique(c(tree$tip.label, labels_to_color))
-tree$tip.label <- unique_labels
+# Print out information for debugging
+cat("Tree tip labels:\n")
+print(tree$tip.label)
+cat("\nLabels to color:\n")
+print(labels_to_color)
+cat("\nTip colors:\n")
+print(tip_colors)
 
-# Plot the tree with the correct colors and avoid overlapping text
-pdf(output_pdf, width = 15, height = 15)  # Increase size to avoid compression
+# Increase the size of the PDF
+pdf(output_pdf, width = 20, height = 20)  # Increase size to avoid compression
 plot(tree, type = "unrooted", show.tip.label = FALSE)
-tiplabels(pch = 16, col = tip_colors, cex = 1.5)
-tiplabels(tree$tip.label, col = tip_colors, bg = tip_colors, cex = 0.7, adj = 1, offset = 0.5)
+
+# Use tryCatch to handle errors during plotting
+tryCatch({
+    tiplabels(pch = 16, col = tip_colors, cex = 1.5)
+    tiplabels(tree$tip.label, col = tip_colors, bg = tip_colors, cex = 0.7, adj = 1, offset = 0.5)
+}, error = function(e) {
+    cat("Error during plotting: ", e$message, "\n")
+})
+
 dev.off()
