@@ -1,5 +1,6 @@
-# Load required libraries
-library(ape)
+library(ggtree)
+library(ggplot2)
+library(ggrepel)
 
 # Define the input files
 newick_file <- commandArgs(trailingOnly = TRUE)[1]
@@ -11,39 +12,21 @@ tree <- read.tree(newick_file)
 
 # Read the labels to be colored
 labels_to_color_raw <- readLines(labels_file)
+labels_to_color <- gsub("\t", "", labels_to_color_raw)
 
-# Process the labels to extract query IDs
-labels_to_color <- sapply(labels_to_color_raw, function(x) {
-  parts <- unlist(strsplit(x, "\t"))
-  return(parts[2])  # Consider only the second part (query ID)
-})
+# Create a data frame for the labels
+label_data <- data.frame(label = tree$tip.label, color = "black", stringsAsFactors = FALSE)
+label_data$color[label_data$label %in% labels_to_color] <- "red"
 
-# Print the labels to be colored for debugging
-cat("Processed Labels to be colored:\n")
-print(labels_to_color)
+# Create a ggtree plot
+p <- ggtree(tree, layout = "unrooted") +
+  geom_tiplab(aes(label = label, color = color), size = 2.5, show.legend = FALSE) +
+  scale_color_manual(values = c("black" = "black", "red" = "red")) +
+  theme_tree2() +
+  theme(legend.position = "none")
 
-# Print the tree tip labels for debugging
-cat("Tree tip labels:\n")
-print(tree$tip.label)
+# Save the plot to a PDF file
+ggsave(output_pdf, plot = p, width = 20, height = 20)
 
-# Ensure labels to color are present in the tree
-valid_labels <- tree$tip.label %in% labels_to_color
-
-# Print the valid labels for debugging
-cat("Valid labels found in the tree:\n")
-print(tree$tip.label[valid_labels])
-
-# Plot the unrooted tree
-pdf(output_pdf, width = 10, height = 10)  # Export to PDF
-plot(tree, type = "unrooted", cex = 0.6)
-
-# Color the specified labels
-colored_tips <- which(tree$tip.label %in% labels_to_color)
-
-# Add text labels in red for the specified tips without duplicating
-for (i in colored_tips) {
-  tiplabels(pch = 19, tip = i, col = "red", cex = 1)
-  tiplabels(tree$tip.label[i], tip = i, frame = "none", col = "red", adj = c(1, 0.5), cex = 0.6, offset = 0.5)
-}
-
-dev.off()
+# Print message
+cat("Colored tree saved to", output_pdf, "\n")

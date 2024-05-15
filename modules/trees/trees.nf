@@ -13,13 +13,12 @@ process TREES {
     output:
     path("updated-annotations.tsv"), emit: updated_annotations, optional: true
     path("aligned_sequences.jplace"), emit: tree_placements, optional: true
-    path("colored_tree.pdf"), emit: tree_visualization, optional: true
 
     script:
     """        
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
-    ln -s ${ch_trees_scripts}/*.R .
+
     cp initial-annotations.tsv current-annotations.tsv
 
     # Symlink additional tree directories if provided
@@ -70,13 +69,13 @@ process TREES {
 
             # Set the updated annotations as the current for the next tree
             mv updated-annotations.tsv current-annotations.tsv
-        else
+
+            # Color labels and generate PDF
+            Rscript color_labels.R aligned_sequences.xml extracted_query_ids.txt colored_tree.pdf
+        else:
             echo "No gene IDs of interest found for tree \${tree_option}, skipping sequence extraction and analysis."
         fi
     done
-
-    # Generate the unrooted tree with colored labels
-    Rscript plot_unrooted_tree.R aligned_sequences.xml extracted_query_ids.txt colored_tree.pdf
 
     # Finalize the process
     mv current-annotations.tsv updated-annotations.tsv
