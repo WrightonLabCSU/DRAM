@@ -12,11 +12,23 @@ tree <- read.tree(newick_file)
 labels_to_color_raw <- readLines(labels_file)
 labels_to_color <- gsub("\t", " ", labels_to_color_raw)
 
+# Debug: print the labels to be colored
+cat("Labels to be colored:\n")
+print(labels_to_color)
+
 # Define the labels present in the tree
 valid_labels <- tree$tip.label
 
+# Debug: print the valid labels from the tree
+cat("Valid labels found in the tree:\n")
+print(valid_labels)
+
 # Identify the indices of the tips to color
 tips_to_color <- which(valid_labels %in% labels_to_color)
+
+# Debug: print the indices of the tips to color
+cat("Tips to color (indices):\n")
+print(tips_to_color)
 
 # Check if there are tips to color
 if (length(tips_to_color) == 0) {
@@ -24,7 +36,7 @@ if (length(tips_to_color) == 0) {
 }
 
 # Plot the tree with colored tips
-pdf(output_pdf, width=20, height=20)
+pdf(output_pdf, width = 20, height = 20)
 plot(tree, type = "unrooted", show.tip.label = FALSE)
 
 # Color the tips
