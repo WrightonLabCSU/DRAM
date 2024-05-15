@@ -1,4 +1,5 @@
 library(ape)
+library(phytools)
 
 # Define the input files
 args <- commandArgs(trailingOnly = TRUE)
@@ -21,15 +22,23 @@ plot(tree, type = "unrooted", show.tip.label = FALSE, cex = 0.6)
 colors <- rep("black", length(tree$tip.label))
 colors[tree$tip.label %in% labels_to_color] <- "red"
 
-# Adjust the labels to radiate outwards
-tiplabels(text = tree$tip.label, tip = 1:Ntip(tree), 
-          col = colors, cex = 0.6, adj = 1, srt = 90)
-
-# Use ape's tiplabels with angle adjustment
-for (i in 1:Ntip(tree)) {
-  angle <- ifelse(tree$edge.length[i] > 0, tree$edge.length[i], 1)
-  angle <- ifelse(i <= Ntip(tree) / 2, angle * 180 / pi, (angle + pi) * 180 / pi)
-  text(tree$tip.label[i], pos = angle, cex = 0.6, col = colors[i])
+# Function to adjust label positions and avoid overlap
+tiplabels_radiate <- function(tree, labels_to_color, colors, cex = 0.6) {
+  n_tips <- Ntip(tree)
+  angles <- 360 * (1:n_tips / n_tips)
+  radians <- angles * pi / 180
+  
+  for (i in 1:n_tips) {
+    x <- cos(radians[i])
+    y <- sin(radians[i])
+    label <- tree$tip.label[i]
+    color <- colors[i]
+    
+    text(x, y, labels = label, col = color, cex = cex, srt = angles[i], adj = ifelse(angles[i] > 180, 1, 0))
+  }
 }
+
+# Adjust the labels to radiate outwards
+tiplabels_radiate(tree, labels_to_color, colors, cex = 0.6)
 
 dev.off()
