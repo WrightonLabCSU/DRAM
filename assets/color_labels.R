@@ -36,11 +36,15 @@ valid_labels <- tree$tip.label %in% labels_to_color
 cat("Valid labels found in the tree:\n")
 print(tree$tip.label[valid_labels])
 
+# Create a data frame to associate labels with their colors
+label_colors <- data.frame(label = tree$tip.label, color = "black")
+label_colors$color[label_colors$label %in% labels_to_color] <- "red"
+
 # Convert the tree to a ggtree object
-p <- ggtree(tree, layout = "daylight") + 
+p <- ggtree(tree, layout = "daylight") +
   geom_tiplab(aes(label = label), size = 2, align = TRUE, linesize = 0.5) +
-  geom_tippoint(aes(subset = (label %in% labels_to_color)), color = "red", size = 2) +
-  geom_text_repel(aes(label = label, subset = (label %in% labels_to_color)), color = "red", size = 2)
+  geom_tiplab(data = label_colors, aes(label = label, color = I(color)), size = 2, align = TRUE, linesize = 0.5) +
+  geom_text_repel(data = label_colors[label_colors$color == "red", ], aes(label = label), color = "red", size = 2, max.overlaps = 20)
 
 # Save the plot to a PDF file with increased size
 ggsave(output_pdf, plot = p, width = 20, height = 20)
