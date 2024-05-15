@@ -3,6 +3,7 @@
 # Load necessary libraries
 library(ape)
 library(ggplot2)
+library(ggtree)
 
 # Define the input files
 args <- commandArgs(trailingOnly = TRUE)
@@ -33,9 +34,8 @@ tip_colors[valid_labels] <- "red"
 tip_labels <- data.frame(label = tree$tip.label, color = tip_colors)
 
 # Plot the tree using ggtree
-library(ggtree)
 p <- ggtree(tree, layout = "unrooted") +
-  geom_tiplab(aes(label = label, color = color), data = tip_labels, size = 2, offset = 0.05) +
+  geom_tiplab(aes(label = label, color = color), data = tip_labels, size = 2, offset = 0.05, align = TRUE, linetype = "dotted") +
   scale_color_identity() +
   theme_tree2()
 
