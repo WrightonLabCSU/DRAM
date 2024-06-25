@@ -26,7 +26,7 @@ Upon the decision to implement DRAM2 in Nextflow, a GitHub repository was create
 
 ### GitHub and ReadTheDocs
 
-The DRAM2 GitHub has 3 main branches: 1) main - this branch is to push final working updates to. 2) dev - this is the branch which is actively developed on and is always the most up-to-date. 3) viz branches - these are working branches for the visualization aspects of dram. This documentation will mention work done in the visualization branches but more comprehensive documentation can be found within those branches.
+The DRAM2 GitHub has 3 types branches: 1) main - this branch is to push final working updates to. 2) dev - this is the branch which is actively developed on and is always the most up-to-date. 3) viz branches - these are working branches for the visualization aspects of dram. This documentation will mention work done in the visualization branches but more comprehensive documentation can be found within those branches.
 
 ### Locations on W2 Server
 
@@ -38,12 +38,19 @@ This directory contains various test data within `test_data/`.
 Pulled Repository:
 `DRAM2-NF`
 
-The current container, `DRAM2-Nextflow-Main-Container-March252024-V4.sif`, is within the containers directory. 
+Database location:
+`/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/databases`
+
+Backup database location:
+`/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-database-backup-06252024`
+
+The current Singularity container, `DRAM2-Nextflow-Main-Container-March252024-V4.sif`, is within the containers directory. 
 
 Within this directory there are also various results directories and the databases directory. The databases directory is within the .gitignore. This contains the working versions of the DRAM2 databases - individual annotation databases and the SQL descriptions database.
 
 Central location for Singularity images - there is a location where some containers are housed and the long-term plan would be to set the location within the config files, for the containers, to be here:
 `/home/opt/singularity_containers/`
+Note: This is where COMET Singularity images reside.
 
 ### DRAM2 (Nextflow) Process overview
 
@@ -93,11 +100,29 @@ Currently, there are 13 databases the user may choose to annotate with. Using th
 
 Grouped in with annotation is the ability to output GFF and GENBANK annotation files. The user may specify these on the command-line when running DRAM2 (Nextflow). This will invoke the GENERATE_GFF_GENBANK() process.
 
+Note on reverse best hits (RBH): RBH is only implemented for KEGG however, this portion of the code, within the KEGG annotation process, is commented out as it adds a significant amount of time to run KEGG annotations. This code can be uncommented and used as-is. It is suggested to optimize this process before a release.
+
 ##### Distill
 
 Distill in DRAM2 is the act of reducing an annotations (TSV) file down to annotations of interest. The Wrighton Lab has, in collaboration with other researchers and research groups, to provide expertly-curated distill sheets. These sheets contain gene annotations and other notes and descriptions provided by the expert curators. Distill, like annotation databases, has many options for which distill sheets to use. The user may provide these various sheets/collections of sheets on the command line. A process is initially invoked, COMBINE_DISTILL() which simply collects the sheets the user requested and then subsequently the main DISTILL() process is invoked to generate a distill output. 
 
 The distill output is a multi-sheet XLSX document. The idea is that each desired distill sheet requested will result in a single output sheet in the XLSX document. In addition to these individual output sheets, there is a Genome_Stats sheet, the first output sheet, which lists various genome stats pertaining to each sample provided. This may include rRNA and tRNA information (counts) if the user either provides these or if these were ran previously in the pipeline. Additionally, this may include bin (MAG) taxonomy and bin (MAG) quality. Lastly, if the user did run rRNA and tRNA scans, or provided the file separately with the required command-line options, there will be individual output sheets for each of these in the XLSX document. 
+
+While distill functions correctly it is inefficient and needs optimization. As of now, it relies on brute-force parsing and matching of the input distill sheets and the annotations TSV file.
+
+##### Product
+
+There exists placeholder code for running a product at line 1419. This, at times, has been functional, based on the work done in the viz branches, but has been uncommented until tested and verified.
+
+##### Trees
+
+A more in-depth description of DRAM2 Trees and how to build the trees, is in the documentation file, DRAM2-Trees-Notes.md.
+
+DRAM2 Trees functionality is incorporated into the main DRAM2.nf. Trees is designed to be run be default, unless specified by the user. DRAM2 Trees aims to reconcile annotations which are not able to be reconciled with the databases provided. 
+
+Integration with Distill: While DRAM2 trees works to insert a new column into the annotations TSV file, work needs to be done for distill to recognize these updated annotations and proceed accordingly.
+
+Note on running DRAM2: It is advised, until DRAM2 Trees is complete, to use the command-line option `--no_trees` to skip DRAM2 Trees.
 
 ### Documentation for DRAM2
 
