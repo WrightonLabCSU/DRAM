@@ -28,6 +28,10 @@ Upon the decision to implement DRAM2 in Nextflow, a GitHub repository was create
 
 The DRAM2 GitHub has 3 types branches: 1) main - this branch is to push final working updates to. 2) dev - this is the branch which is actively developed on and is always the most up-to-date. 3) viz branches - these are working branches for the visualization aspects of dram. This documentation will mention work done in the visualization branches but more comprehensive documentation can be found within those branches.
 
+### Documentation for DRAM2
+
+The documentation for DRAM2 (Nextflow) is within the GitHub repository directory `Development-Notes/`. Within this directory there is this document, `Overview.md`, as well as a documents for `Daily-Development-Notes` - a long day-by-day account of DRAM2 development, `DRAM2-Trees` - a description of DRAM2 Trees process, the status of this process and the path forward, `DRAM2-Databases` - a description of the big picture of how DRAM2 will provide pre-built databases, why we want to provide these databases in this format, and an overview of the various plans forward. 
+
 ### Locations on W2 Server
 
 Pulled GitHub repository location and development location:
@@ -51,6 +55,9 @@ Within this directory there are also various results directories and the databas
 Central location for Singularity images - there is a location where some containers are housed and the long-term plan would be to set the location within the config files, for the containers, to be here:
 `/home/opt/singularity_containers/`
 Note: This is where COMET Singularity images reside.
+
+Currently there is a backup of all Singularity images for DRAM2 located at:
+`/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-singularity-container-backups`
 
 ### DRAM2 (Nextflow) Process overview
 
@@ -124,6 +131,3 @@ Integration with Distill: While DRAM2 trees works to insert a new column into th
 
 Note on running DRAM2: It is advised, until DRAM2 Trees is complete, to use the command-line option `--no_trees` to skip DRAM2 Trees.
 
-### Documentation for DRAM2
-
-The documentation for DRAM2 (Nextflow) is within the GitHub repository directory 'Development-Notes`. Within this directory there is this document, `Overview.md`, as well as a documents for `Daily-Development-Notes` - a long day-by-day account of DRAM2 development, `DRAM2-Trees` - a description of DRAM2 Trees process, the status of this process and the path forward, `DRAM2-Databases` - a description of the big picture of how DRAM2 will provide pre-built databases, why we want to provide these databases in this format, and an overview of the various plans forward. 

@@ -8,6 +8,17 @@ W2 location to run DRAM2:
 
 -------
 
+## Required files
+DRAM2 needs both the `DRAM2.nf` file and the `nextflow.config` files within the directory in which you want to run DRAM2 from. 
+
+DRAM2 also needs the directories which are pulled from the GitHub repository. It is assumed by DRAM2 that the user will run DRAM2 from this location and thus links needed files within the GitHub-pulled directories: `assets` and `modules`.
+
+### Running DRAM2 from a different location
+
+It is suggested that there is a central location on the server where the latest GitHub repository files are located. Then, one must update the locations of the assets, modules and Singularity containers within the files, `DRAM2.nf` and `nextflow.config`.
+
+To dop this, and for more info on setting up DRAM2 in general, see the documentation file, `How-To-Setup-W2-Riviera.md`.
+
 ## Description of command-line options:
 
 `nextflow run DRAM2.nf`
