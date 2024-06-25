@@ -101,7 +101,7 @@ If there are errors relating to the location of assets, modules or Singularity c
 
 Follow the instructions above to pull the GitHub page and update the paths for assets, modules and containers.
 
-Follow the instructions on the GitHub to install Nextflow or, if Riviera has been updated to have a Nextflow module, load the Nextflow module.
+Follow the instructions on the GitHub to install Nextflow (can be done with Conda) or, if Riviera has been updated to have a Nextflow module, load the Nextflow module.
 
 The only difference will be that on Riviera, each user will need a copy of the DRAM2 databases and a copy of the Singularity image (Not supported on Riviera, users must use `--profile conda` or `--profile conda_slurm` until Singularity is installed.)
 
