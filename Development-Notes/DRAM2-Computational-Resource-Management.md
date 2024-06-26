@@ -212,3 +212,7 @@ Result: SLURM will submit up to 2 jobs at a time and thus the user will, at most
 It is desired to have memory presets for use on computers with different resources. This will allow the user to tweak less parameters by hand. For example there may be a command-line option for `--memory` where there are 3 options: `laptop`, 'sml_server` and 'lrg_server'. All this would entail is some additional parameters within the `nextflow.config`.
 
 The idea above could also be expanded to include queue size and CPU allocation.
+
+### Profiles
+
+It is suggested to make server-specific profiles. For example, create a W2 profile (default Singularity + SLURM) which has the pertition and time (set to max) presets. This is suggested because SLURM is setup differently on most HPCs and therefore it is hard to generalize the configuration files across multiple servers. As of now, 

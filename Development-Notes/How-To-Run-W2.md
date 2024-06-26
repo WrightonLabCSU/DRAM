@@ -87,6 +87,13 @@ If the user already has a DRAM2 annotations TSV file, in the correct format, the
 
 This option is only present on the last example command. This option allows you to control the total number of SLURM jobs submitted during a given DRAM2 run. This is the easiest way to ensure you limit the consumption of resources on a given server. A queue size of 5 means at a given time, only 5 SLURM jobs will be submitted. Nextflow keeps an internal queue of jobs to submit and the user does not need to be concerned with this. Please see the document, `DRAM2-Computational-Resource-Management.md` for more details on computational resources as DRAM2 can be run at a small scale, queue size = 5, or at an unlimited scale, queue size = 0.
 
+`-with-trace`
+
+This option is a Nextflow-provided option which produces a continuously updated log of DRAM2 processes. This is a good place to check how a run is proceeding and is anything has failed.
+
+`--slurm_node zenith --slurm_queue wrighton-hi`
+
+These are both used to specify the compute node and the SLURM partition. 
 
 -------
 
@@ -98,32 +105,32 @@ To be ran in:
 Super small - Call, Annotate, Distill:
 Has -resume for illustration:
 ```
-nextflow run DRAM2.nf --input_fasta /home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/test_data/subsampled/super_small/ --outdir DRAM2-super-small-test-2-06252024 --threads 10 --call --rename --annotate --use_camper --use_canthyd --distill_topic default --distill_ecosystem 'eng_sys ag' -profile singularity_slurm --no_trees -resume
+nextflow run DRAM2.nf --input_fasta /home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/test_data/subsampled/super_small/ --outdir DRAM2-super-small-test-2-06252024 --threads 10 --call --rename --annotate --use_camper --use_canthyd --distill_topic default --distill_ecosystem 'eng_sys ag' -profile singularity_slurm --no_trees -with-trace --slurm_node zenith --slurm_queue wrighton-hi -resume 
 ```
 
 
 Super small - Call, Annotate, Distill:
 NO resume:
 ```
-nextflow run DRAM2.nf --input_fasta /home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/test_data/subsampled/super_small/ --outdir DRAM2-super-small-test-2-06252024 --threads 10 --call --rename --annotate --use_camper --use_canthyd --distill_topic default --distill_ecosystem 'eng_sys ag' -profile singularity_slurm --no_trees
+nextflow run DRAM2.nf --input_fasta /home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/test_data/subsampled/super_small/ --outdir DRAM2-super-small-test-2-06252024 --threads 10 --call --rename --annotate --use_camper --use_canthyd --distill_topic default --distill_ecosystem 'eng_sys ag' -profile singularity_slurm --no_trees -with-trace --slurm_node zenith --slurm_queue wrighton-hi
 ```
 
 
 Super small - Starting from Annotate:
 ```
-nextflow run DRAM2.nf --input_genes DRAM2-super-small-test-2-06252024/Prodigal_v2.6.3/ --outdir DRAM2-super-small-test-2-ANNOTATE-06252024 --threads 10 --annotate --use_camper --use_canthyd --distill_topic default --distill_ecosystem 'eng_sys ag' -profile singularity_slurm --no_trees 
+nextflow run DRAM2.nf --input_genes DRAM2-super-small-test-2-06252024/Prodigal_v2.6.3/ --outdir DRAM2-super-small-test-2-ANNOTATE-06252024 --threads 10 --annotate --use_camper --use_canthyd --distill_topic default --distill_ecosystem 'eng_sys ag' -profile singularity_slurm --no_trees -with-trace --slurm_node zenith --slurm_queue wrighton-hi
 ```
 
 
 Super small - Starting from Distill:
 ```
-nextflow run DRAM2.nf --annotations DRAM2-super-small-test-2-06252024/RAW/raw-annotations.tsv --outdir DRAM2-super-small-test-2-DISTILL-06252024 --threads 10 --annotate --use_camper --use_canthyd --distill_topic default --distill_ecosystem 'eng_sys ag' -profile singularity_slurm --no_trees 
+nextflow run DRAM2.nf --annotations DRAM2-super-small-test-2-06252024/RAW/raw-annotations.tsv --outdir DRAM2-super-small-test-2-DISTILL-06252024 --threads 10 --annotate --use_camper --use_canthyd --distill_topic default --distill_ecosystem 'eng_sys ag' -profile singularity_slurm --no_trees -with-trace --slurm_node zenith --slurm_queue wrighton-hi
 ```
 
 
 Bigger, subsampled - Call, Annotate, Distill:
 ```
-nextflow run DRAM2.nf --input_fasta /home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/test_data/subsampled/ --outdir DRAM2-super-small-test-2-06252024 --threads 5 --call --rename --annotate --use_kofam --use_kegg --use_dbcan --distill_topic default --distill_ecosystem 'eng_sys ag' --queue_size 5 -profile singularity_slurm -resume --no_trees
+nextflow run DRAM2.nf --input_fasta /home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/test_data/subsampled/ --outdir DRAM2-super-small-test-2-06252024 --threads 5 --call --rename --annotate --use_kofam --use_kegg --use_dbcan --distill_topic default --distill_ecosystem 'eng_sys ag' --queue_size 5 -profile singularity_slurm -resume --no_trees -with-trace --slurm_node zenith --slurm_queue wrighton-hi
 ```
 
 
