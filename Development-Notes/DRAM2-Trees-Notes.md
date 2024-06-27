@@ -1,7 +1,6 @@
 # DRAM2 Trees development notes and background
 
 
-
 ## DRAM2 Trees background and motivation
 
 The purpose of DRAM2 Trees is to reslove differences in genes which have identical annotations. This is not to say these annotations are incorrect, it is to say that the annotation databases are not able to resolve the annotations to the level a user may need to state certain things about the genes they have annotated. 
@@ -12,7 +11,7 @@ DRAM2 Trees is being developed to do exactly this: identify pre-determined gene 
 
 DRAM2 Trees will have pre-built trees for the following types of genes: nar/nxr, dsr, mcra, pmoa/amoa, and hydrogenases.
 
-
+--------
 
 ## DRAM2 Trees development
 
@@ -25,6 +24,8 @@ The current state of DRAM2 Trees is only for the dmso tree and relies only on a 
 As of now, it is one the user to provide the individual trees they want use to correct the annotations. First the user needs to specify they want to run the trees using the command line option: `--trees`. Then, the user may specify the individual trees with `--trees_list`. However, the end goal would be to hard-code `--trees_list` to include all of the various trees.
 
 The TREES() process loops through `--trees_list` and corrects the annotations TSV for each tree that is ran. 
+
+--------
 
 ### How to prepare the REFPKG
 
@@ -57,6 +58,8 @@ The TREES() process loops through `--trees_list` and corrects the annotations TS
 Additional notes:
 
 It is best to ensure the created JSON files align with the already build `dmso` tree package. 
+
+--------
 
 #### Require REFPKG files and folders
 
@@ -139,6 +142,7 @@ Acidovorax delafieldii_NARG	        NarG	Nitrogen reductase
 
 Contains the RAxML log file used to populate the `dmso.refpkg/dmso_phylo_model.json` file.
 
+--------
 
 ### Future development notes
 
