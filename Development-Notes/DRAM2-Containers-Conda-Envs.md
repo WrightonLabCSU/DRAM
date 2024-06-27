@@ -237,3 +237,5 @@ conda = "${params.main_environment}"
 From development of COMET, it was noticed that relying on Nextflow to build the Singularity containers resulted in conflicts across different HPCs, that is W2 and Riviera. Thus, it was decided, in COMET, to pre-build the containers. Within Nextflow you can, instead of linking the `*.yml` recipe files, provide the location to a pre-build Conda environment. However, this means either the user must build these (As is instructed for COMET) or DRAM2 must provide these.
 
 It is suggested to store the Singularity containers, and pre-built Conda environments if that is chosen, on GLOBUS with the databases. Then a given user can pull everything at once. 
+
+For future building of Singularity environments, for speed of building, it is suggested to install Mamba within the recipe files and use Mamba for package installation.

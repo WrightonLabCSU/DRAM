@@ -215,4 +215,4 @@ The idea above could also be expanded to include queue size and CPU allocation.
 
 ### Profiles
 
-It is suggested to make server-specific profiles. For example, create a W2 profile (default Singularity + SLURM) which has the pertition and time (set to max) presets. This is suggested because SLURM is setup differently on most HPCs and therefore it is hard to generalize the configuration files across multiple servers. As of now, 
+It is suggested to make server-specific profiles. For example, create a W2 profile (default Singularity + SLURM) which has the partition and time (set to max) presets. This is suggested because SLURM is setup differently on most HPCs and therefore it is hard to generalize the configuration files across multiple servers. 
