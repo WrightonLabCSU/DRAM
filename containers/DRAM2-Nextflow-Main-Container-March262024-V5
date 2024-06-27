@@ -88,6 +88,8 @@ From: ubuntu:22.04
 
     conda install matplotlib
 
+    conda install bbtools
+
 
     # Export miniconda bin just to be safe
     export PATH="/opt/miniconda/bin:$PATH"
