@@ -132,7 +132,7 @@ Example from the `dmso` tree:
 ```
 gene	                                call	notes
 A_Nitrobacter_hamburgensis_YP_578638  	NxrA	Cytoplasmic Nitrite oxidoreductase
-Acidovorax delafieldii_NARG	            NarG	Nitrogen reductase
+Acidovorax delafieldii_NARG	        NarG	Nitrogen reductase
 ```
 
 `dmso.refpkg/RAxML_info.dmso_refs.fasta`
