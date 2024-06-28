@@ -8,15 +8,14 @@ This document serves as an overview of DRAM2. This will include motivations for 
 -------
 
 ## Table of Contents
-- [DRAM2-Computational-Resource-Management](./Development-Notes/DRAM2-Computational-Resource-Management.md)
-- [DRAM2-Trees-Notes](./Development-Notes/DRAM2-Trees-Notes.md)
-- [DRAM2-Containers-Conda-Envs](./Development-Notes/DRAM2-Containers-Conda-Envs.md)
-- [DRAM2-Databases-Notes](./Development-Notes/DRAM2-Databases-Notes.md)
-- [DRAM2-Nextflow-Profiles](./Development-Notes/DRAM2-Nextflow-Profiles.md)
-- [DRAM2-RW-Daily-Logs](./Development-Notes/DRAM2-RW-Daily-Logs.md)
-- [How-To-Run-W2](./Development-Notes/How-To-Run-W2.md)
-- [How-To-Setup-W2-Riviera](./Development-Notes/How-To-Setup-W2-Riviera.md)
-
+- [DRAM2-Computational-Resource-Management](./DRAM2-Computational-Resource-Management.md)
+- [DRAM2-Trees-Notes](./DRAM2-Trees-Notes.md)
+- [DRAM2-Containers-Conda-Envs](./DRAM2-Containers-Conda-Envs.md)
+- [DRAM2-Databases-Notes](./DRAM2-Databases-Notes.md)
+- [DRAM2-Nextflow-Profiles](./DRAM2-Nextflow-Profiles.md)
+- [DRAM2-RW-Daily-Logs](./DRAM2-RW-Daily-Logs.md)
+- [How-To-Run-W2](./How-To-Run-W2.md)
+- [How-To-Setup-W2-Riviera](./How-To-Setup-W2-Riviera.md
 
 ------
 
