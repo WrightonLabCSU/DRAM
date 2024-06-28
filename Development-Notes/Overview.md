@@ -5,12 +5,28 @@ Created June 24, 2024
 
 This document serves as an overview of DRAM2. This will include motivations for DRAM2 (Rory) as well as motivations for DRAM2 (Nextflow). Additionally, this document will recap the status of both versions of DRAM2 and the progress which was made since development started for Reed Woyda. This document will cover most aspects of DRAM2 but will not contain how to run DRAM2 as this is currently within the GitHub repository main README file.
 
+-------
+
+## Table of Contents
+- [DRAM2-Computational-Resource-Management](./Development-Notes/DRAM2-Computational-Resource-Management.md)
+- [DRAM2-Trees-Notes](./Development-Notes/DRAM2-Trees-Notes.md)
+- [DRAM2-Containers-Conda-Envs](./Development-Notes/DRAM2-Containers-Conda-Envs.md)
+- [DRAM2-Databases-Notes](./Development-Notes/DRAM2-Databases-Notes.md)
+- [DRAM2-Nextflow-Profiles](./Development-Notes/DRAM2-Nextflow-Profiles.md)
+- [DRAM2-RW-Daily-Logs](./Development-Notes/DRAM2-RW-Daily-Logs.md)
+- [How-To-Run-W2](./Development-Notes/How-To-Run-W2.md)
+- [How-To-Setup-W2-Riviera](./Development-Notes/How-To-Setup-W2-Riviera.md)
+
+
+------
 
 ## DRAM2 (Rory) Recap
 
 A version of DRAM2 was initially started by Rory Flynn and the state of this pipeline will be described in this section. This version of DRAM2 was implemented almost entirely in python and was built from the ground up. The documentation for this version of DRAM2 is within the DRAM2-Archived repository within the WrightonLabCSU GitHub page. The documentation consists of the DRAM2-Archived repository and the associated ReadTheDocs documentation within the GitHub repository. Upon testing of DRAM2 in July/August 2023, to understand the current state of its functionality, it was determined that the DRAM2 functions for Call, Annotate, Distill, and Product were functional. It was assumed the Prepare Databases was functional but testing was not performed to further interrogate the status of this functionality. Other DRAM2 processes such as Traits/Adjectives, Trees, Neighborhoods, Strainer and others, were partially implemented but the status of these is unfinished.
 
 Running this version of DRAM2 (Rory) is possible and can be used to call genes, annotate those genes and to generate both distill and product output. However, the state of the remaining functionality described in the help menu is unclear. More in-depth testing is needed to understand the current state of this version of DRAM2. Additionally, there do exist some bugs surrounding conda environment dependency versions. Also, the generation of a product seems to not include CAZY-annotated genes. I was unaware of this until I shared some results from a run and they noted that the expected presence of CAZY annotations, within the product, was missing. 
+
+------
 
 ### DRAM1 Recap, DRAM2 (Rory) Recap and Nextflow Motivations
 
@@ -20,17 +36,25 @@ Initially, the development of DRAM2 was going to proceed with the DRAM2 (Rory) v
 
 Major reasons for re-working DRAM2 in Nextflow was to prevent/preempt two major issues with DRAM1: 1) dependency issues within Conda environments which require a technician to respond to failed tests and issues which require updating Conda environment conflicts and issues. 2) Preparing databases has resulted in a majority of DRAM1-related issues. This issue is mainly due to updates to the databases which are downloaded by the prepare_databases() function of DRAM1. Over time, databases change in size, format and version. Thus, a technician must respond to issues and updates to the included databases to ensure users may prepare these without error. Taken together, a solution to this problem was formulated: 1) Containerize dependencies within Singularity Containers, as well as providing Conda environments as a backup to users who are on HPCs without Singularity installed. These containers will be hosted either on the SyLabs library or via GLOBUS. 2) Provide pre-built databases to users. This results in the need for a dedicated support technician to download and format both the input databases, HMM or MMSeqs, and the descriptions database when updates are made to the included databases. While this is ideal for a user, having the ability to download from GLOBUS the pre-formatted databases and potentially an updated DRAM2, it does put a support burden on the hosting lab. Currently, there is no working Nextflow-based code for the downloading or preparing of the databases. DRAM2 (Nextflow) relies on previously built versions of the databases, and the descriptions database, which were built using DRAM1. A potential path forward would be to rely on DRAM2 (Rory) to build and format these databases and the descriptions database. However, there is some intial code to download the databases, and generate HMM and/or MMSeqs2 databases, but this is in an incomplete state.
 
+------
+
 ## DRAM2 (Nextflow) Recap
 
 Upon the decision to implement DRAM2 in Nextflow, a GitHub repository was created and an initial goal was set to rebuild the DRAM2 base functionality: Call, Annotate and Distill. This initial goal would be a proof-of-concept for implementation in Nextflow and because of this, a decision was made to rely on the DRAM2 (Rory) formatted databases and SQL descriptions database. This will require either: 1) Using the existing DRAM2 (Rory) code to prepare databases in the future, or 2) reusing the previous DRAM2 code for preparing databases or rewriting this code in a Nextflow-based process. 
+
+------
 
 ### GitHub and ReadTheDocs
 
 The DRAM2 GitHub has 3 types branches: 1) main - this branch is to push final working updates to. 2) dev - this is the branch which is actively developed on and is always the most up-to-date. 3) viz branches - these are working branches for the visualization aspects of dram. This documentation will mention work done in the visualization branches but more comprehensive documentation can be found within those branches.
 
+------
+
 ### Documentation for DRAM2
 
 The documentation for DRAM2 (Nextflow) is within the GitHub repository directory `Development-Notes/`. Within this directory there is this document, `Overview.md`, as well as a documents for `Daily-Development-Notes` - a long day-by-day account of DRAM2 development, `DRAM2-Trees` - a description of DRAM2 Trees process, the status of this process and the path forward, `DRAM2-Databases` - a description of the big picture of how DRAM2 will provide pre-built databases, why we want to provide these databases in this format, and an overview of the various plans forward. 
+
+------
 
 ### Locations on W2 Server
 
@@ -59,6 +83,8 @@ Note: This is where COMET Singularity images reside.
 Currently there is a backup of all Singularity images for DRAM2 located at:
 `/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-singularity-container-backups`
 
+------
+
 ### DRAM2 (Nextflow) Process overview
 
 #### DRAM2 Modules, Assets, Containers and Environments
@@ -68,6 +94,8 @@ Modules are individual processes which are invoked through the pipeline. For exa
 Assets are various scripts and configuration files needed to run DRAM2. This contains both Conda and Singularity Profile definitions - both for SLURM-based DRAM2 runs and non-SLURM-based DRAM2 runs. As of now, this is a holding place for all of the individual python, R, Perl, etc., scripts which some processes rely on. These individual files are not ideal the the future goal would be to organize these together into a toolkit which will be placed here and symlinked to each individual process (as it is done now but this is messy and needs to be cleaned up). These are given variable names within the nextflow.config file and are put into channels, in the setup code of DRAM2.nf, based on the users command-line options. Assets also includes the internal directory where DRAM2 Databases is build built. This will be covered more in-depth in the documentation for DRAM2 Databases. Additionally, there are directories for both viz (visualization) and trees (needed input files). 
 
 Containers directory holds the various Singularity containers which DRAM2 relies on. Currently, DRAM2 utilizes a single container, `DRAM2-Nextflow-Main-Container-March252024-V4.sif`. This is located on W2 at: `/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM2-NF/containers` (along with older versions). 
+
+------
 
 #### Main DRAM2.nf script and future plans
 
@@ -89,11 +117,15 @@ Lines 1446 - 1493 hold the various versions, used within the Singularity contain
 
 The main workflow, at lines 952 - 1440, contains all current code for running call, annotate, distill and product. While these are all included in a single workflow, the eventual goal is to separate the various DRAM2 processes (Call, Annotate, Distill, Product, Trees, etc.) into separate workflows. This will highly modularize DRAM2. However, now each DRAM2 process is invoked via the command-line options for call, annotate and distill. 
 
+------
+
 ##### Renaming and calling genes
 
 DRAM2 operates under the assumption that the user is providing individual FASTA files which are denoted as `samples`. It is also assumed that the headers of each individual FASTA file are unique for that given file. If this is not the case, the user may use the `--rename` option to rename the sample FASTA file headers with a unique prefix based on the basename of the sample provided. This name is obtained from the input FASTA file filename. This is performed using BBTools rename.sh script.
 
 Calling genes is essential as coding sequences must be identified before they can be annotated. Prodigal is used for this step. The setup-code ensures the user has provided a path to input fasta files. Prodigal only runs on 1 CPU so this is a step which can be highly parallelized. After gene calling, all of the individual output channels, for each individual sample, are combined and sent to QUAST, to get genome stats, and to rRNA scan and a tRNA scan processes to obtain present rRNA and tRNA genes. Both tRNA and rRNA outputs are collected and formatted in the respective `_COLLECT` processes. 
+
+------
 
 ##### Annotation
 
@@ -109,6 +141,8 @@ Grouped in with annotation is the ability to output GFF and GENBANK annotation f
 
 Note on reverse best hits (RBH): RBH is only implemented for KEGG however, this portion of the code, within the KEGG annotation process, is commented out as it adds a significant amount of time to run KEGG annotations. This code can be uncommented and used as-is. It is suggested to optimize this process before a release.
 
+------
+
 ##### Distill
 
 Distill in DRAM2 is the act of reducing an annotations (TSV) file down to annotations of interest. The Wrighton Lab has, in collaboration with other researchers and research groups, to provide expertly-curated distill sheets. These sheets contain gene annotations and other notes and descriptions provided by the expert curators. Distill, like annotation databases, has many options for which distill sheets to use. The user may provide these various sheets/collections of sheets on the command line. A process is initially invoked, COMBINE_DISTILL() which simply collects the sheets the user requested and then subsequently the main DISTILL() process is invoked to generate a distill output. 
@@ -117,9 +151,13 @@ The distill output is a multi-sheet XLSX document. The idea is that each desired
 
 While distill functions correctly it is inefficient and needs optimization. As of now, it relies on brute-force parsing and matching of the input distill sheets and the annotations TSV file.
 
+------
+
 ##### Product
 
 There exists placeholder code for running a product at line 1419. This, at times, has been functional, based on the work done in the viz branches, but has been uncommented until tested and verified.
+
+------
 
 ##### Trees
 
