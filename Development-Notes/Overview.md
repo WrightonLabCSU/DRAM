@@ -15,7 +15,7 @@ This document serves as an overview of DRAM2. This will include motivations for 
 - [DRAM2-Nextflow-Profiles](./DRAM2-Nextflow-Profiles.md)
 - [DRAM2-RW-Daily-Logs](./DRAM2-RW-Daily-Logs.md)
 - [How-To-Run-W2](./How-To-Run-W2.md)
-- [How-To-Setup-W2-Riviera](./How-To-Setup-W2-Riviera.md
+- [How-To-Setup-W2-Riviera](./How-To-Setup-W2-Riviera.md)
 
 ------
 
