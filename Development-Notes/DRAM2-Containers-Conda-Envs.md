@@ -23,10 +23,10 @@ Singularity containers are essentially a mini operating system in which dependen
 
 ### How are Singularity containers built and how are they referenced in DRAM2
 
-To build a Singularity container, you can use the following command, where `DRAM2-Nextflow-Main-Container-March112024-V4` is the name of your recipe file:
+To build a Singularity container, you can use the following command, where `DRAM2-Nextflow-Main-Container-June282024-V5` is the name of your recipe file:
 
 ```
-sudo singularity build DRAM2-Nextflow-Main-Container-March112024-V4.sif DRAM2-Nextflow-Main-Container-March112024-V4
+sudo singularity build DRAM2-Nextflow-Main-Container-June282024-V5.sif DRAM2-Nextflow-Main-Container-June282024-V5
 ```
 
 *Note: `sudo` is used here to build the container. While Singularity does have a `--fake-root` option, it is advised to use `sudo`. If a user does not have `sudo` privileges on a machine, it is advised to build them locally, where the user has sudo, and upload them to the machine used for DRAM2 development.*
@@ -37,7 +37,7 @@ In the `nextflow.config` file on line 296 we define `main_container` as the buil
 
 ```
     /* Containers and Environments */
-        main_container = "./containers/DRAM2-Nextflow-Main-Container-March252024-V4.sif"
+        main_container = "./containers/DRAM2-Nextflow-Main-Container-June282024-V5.sif"
 ```
 
 Then, `main_container` is subsequently used within the profile definitions:
@@ -239,3 +239,5 @@ From development of COMET, it was noticed that relying on Nextflow to build the 
 It is suggested to store the Singularity containers, and pre-built Conda environments if that is chosen, on GLOBUS with the databases. Then a given user can pull everything at once. 
 
 For future building of Singularity environments, for speed of building, it is suggested to install Mamba within the recipe files and use Mamba for package installation.
+
+Lastly, once DRAM2 is released, and even before, it needs to be ensure that the dependency versions between the Singularity containers and the Conda recipe files match. Or, if this is not possible due to Conda difficulties, the differences must be stated in the help menus and in all documentation.
