@@ -1653,6 +1653,10 @@ def helpMessage() {
         --function_heatmap_form PATH     <path/to/function_heatmap_form.tsv>
                                             override default function heatmap form database TSV
 
+    Tree Option:    
+        --no_trees              OPTION  Will NOT run Trees. (This option is advised as DRAM2 Trees is in development.)
+
+
     General options:
         --outdir                PATH    <path/to/output/directory>
                                             Default: './DRAM2_output/'

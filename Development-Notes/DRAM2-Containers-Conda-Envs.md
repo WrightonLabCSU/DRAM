@@ -240,4 +240,6 @@ It is suggested to store the Singularity containers, and pre-built Conda environ
 
 For future building of Singularity environments, for speed of building, it is suggested to install Mamba within the recipe files and use Mamba for package installation.
 
-Lastly, once DRAM2 is released, and even before, it needs to be ensure that the dependency versions between the Singularity containers and the Conda recipe files match. Or, if this is not possible due to Conda difficulties, the differences must be stated in the help menus and in all documentation.
+Once DRAM2 is released, and even before, it needs to be ensure that the dependency versions between the Singularity containers and the Conda recipe files match. Or, if this is not possible due to Conda difficulties, the differences must be stated in the help menus and in all documentation.
+
+Lastly, Singularity is not as widespread as Docker. It is suggested to create Docker-based profiles and user the built-in Singularity functionality to convert the Singularity containers to Docker containers.
