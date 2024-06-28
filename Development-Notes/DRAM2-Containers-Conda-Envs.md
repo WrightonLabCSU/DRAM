@@ -64,16 +64,6 @@ profiles {
 DRAM2 only has one container! 
 
 DRAM2 `main_container`:
-`DRAM2-Nextflow-Main-Container-March252024-V4.sif`
-
-#### DRAM2 visualization container
-
-DRAM2 visualizations (DRAM2 Product) are being implemented as this documentation is being written. Thus, an updated container was created:
-
-`DRAM2-Nextflow-Main-Container-March262024-V5.sif`
-
-To ensure visualizations (DRAM2 Product) can be performed, the `main_container` value must be updated to:
-
 `DRAM2-Nextflow-Main-Container-March262024-V5.sif`
 
 #### Why only one container
