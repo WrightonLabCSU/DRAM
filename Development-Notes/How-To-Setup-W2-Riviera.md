@@ -15,7 +15,7 @@
 
 **2) Obtain the databases:**
 
-**Option 1:** (recommended) Replace all occurences of `./databases/` using the path to the database backup located on W2 to the `nextflow.config` file.
+**Option 1:** (recommended) Replace all occurrences of `./databases/` using the path to the database backup located on W2 to the `nextflow.config` file.
 
 Example for KEGG database at line 140:
 
@@ -62,7 +62,7 @@ After change:
 
 *Note: This only needs to be done in the event other users are going to run DRAM2 from different locations. That is, a given user wants to run DRAM2 from `xyz/` directory and they copy over the `DRAM2.nf` file and `nextflow.config` file which have been set up through this process for them.*
 
-Change all occurences of `./modules/` within the `DRAM2.nf` file to reflect the location of the `./modules` directory.
+Change all occurrences of `./modules/` within the `DRAM2.nf` file to reflect the location of the `./modules` directory.
 
 **5) Set location of Singularity containers**
 
@@ -103,7 +103,7 @@ Follow the instructions above to pull the GitHub page and update the paths for a
 
 Follow the instructions on the GitHub to install Nextflow (can be done with Conda) or, if Riviera has been updated to have a Nextflow module, load the Nextflow module.
 
-The only difference will be that on Riviera, each user will need a copy of the DRAM2 databases and a copy of the Singularity image (Not supported on Riviera, users must use `--profile conda` or `--profile conda_slurm` until Singularity is installed.)
+The only difference will be that on Riviera, each user will need a copy of the DRAM2 databases and a copy of the Singularity image (Not supported on Riviera, users must use `-profile conda` or `-profile conda_slurm` until Singularity is installed.)
 
 DRAM2 can then be tested the same as above:
 

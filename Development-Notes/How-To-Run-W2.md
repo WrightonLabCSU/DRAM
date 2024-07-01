@@ -39,7 +39,7 @@ This is the desired output directory.
 
 `--threads 10`
 
-This sets the threads used for EACH INDIVIDUAL DRAM2 process. This each sample, for each database to be annotated will use 10 CPUs. However, processes such as HMMSCAN can only use 2 CPUs and thus will only use 2 CPUs. This is only a small explanation of a much larger ability to control resource management and more details are in the document, `DRAM2-Computational-Resource-Management.md`. 
+This sets the threads used for EACH INDIVIDUAL DRAM2 process. This each sample, for each database to be annotated will use 10 CPUs. However, processes such as `HMMSCAN()` can only use 2 CPUs and thus will only use 2 CPUs. This is only a small explanation of a much larger ability to control resource management and more details are in the document, `DRAM2-Computational-Resource-Management.md`. 
 
 `--rename`
 
@@ -55,7 +55,7 @@ Annotate called genes.
 
 `--use_camper --use_canthyd`
 
-Annotate the called genes for each input sample using the CAMPER and Cant-Hyd datbases.
+Annotate the called genes for each input sample using the CAMPER and Cant-Hyd databases.
 
 `--distill_topic default --distill_ecosystem 'eng_sys ag'`
 

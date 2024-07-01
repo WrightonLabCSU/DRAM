@@ -3,7 +3,7 @@
 
 ## DRAM2 Trees background and motivation
 
-The purpose of DRAM2 Trees is to reslove differences in genes which have identical annotations. This is not to say these annotations are incorrect, it is to say that the annotation databases are not able to resolve the annotations to the level a user may need to state certain things about the genes they have annotated. 
+The purpose of DRAM2 Trees is to resolve differences in genes which have identical annotations. This is not to say these annotations are incorrect, it is to say that the annotation databases are not able to resolve the annotations to the level a user may need to state certain things about the genes they have annotated. 
 
 Example: KEGG has a single KO for the genes: narG, narZ, nxrA. This results in the user not knowing which of these genes is actually present within their samples. However, researchers have been able to build phylogenetic trees with sequences of known subunits related to nitrogen reductase. Thus, by placing these sequences, which have identical KEGG KOs, on a tree with know sequences, one can decipher which sequences is which which subunit. 
 
@@ -29,7 +29,7 @@ The TREES() process loops through `--trees_list` and corrects the annotations TS
 
 ### How to prepare the REFPKG
 
-1) Obtain fasta sequences
+1) Obtain FASTA sequences
 
 2) use muscle to align the sequences:
 
@@ -45,7 +45,7 @@ The TREES() process loops through `--trees_list` and corrects the annotations TS
 
 `seqkit stats dmso_refs.fasta.al`
 
-```
+```bash
 #Output:
 #file                format  type     num_seqs  sum_len  min_len  avg_len  max_len
 #dmso_refs.fasta.al  FASTA   Protein        86  160,046    1,861    1,861    1,861
@@ -68,7 +68,7 @@ Individual tree directories must reside within the `./assets/trees/` directory. 
 We will use the `dmso` tree as an example for the file structure.
 
 Here are the contents of the `dmso/dmso.refpkg/` directory:
-```
+```bash
  dmso.refpkg/bipartitionsBranchLabels.dmso_refs.fasta_mode_low.renamed
  dmso.refpkg/CONTENTS.json
  dmso.refpkg/dmso.aln
@@ -98,7 +98,7 @@ Contains the alignment file.
 
 Contains information regarding the phylogenetic tree. For example here is the dmso file:
 
-```
+```bash
 {
     "empirical_frequencies": true, 
     "datatype": "AA", 
@@ -132,7 +132,7 @@ Tab-separated file containing the two required columns, `gene` and `call` respec
 
 Example from the `dmso` tree:
 
-```
+```bash
 gene	                                call	notes
 A_Nitrobacter_hamburgensis_YP_578638  	NxrA	Cytoplasmic Nitrite oxidoreductase
 Acidovorax delafieldii_NARG	        NarG	Nitrogen reductase

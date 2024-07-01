@@ -25,7 +25,7 @@ Singularity containers are essentially a mini operating system in which dependen
 
 To build a Singularity container, you can use the following command, where `DRAM2-Nextflow-Main-Container-June282024-V5` is the name of your recipe file:
 
-```
+```bash
 sudo singularity build DRAM2-Nextflow-Main-Container-June282024-V5.sif DRAM2-Nextflow-Main-Container-June282024-V5
 ```
 
@@ -35,7 +35,7 @@ This command will create a .sif file, which is the Singularity Image Format, con
 
 In the `nextflow.config` file on line 296 we define `main_container` as the built `.sif` container:
 
-```
+```bash
     /* Containers and Environments */
         main_container = "./containers/DRAM2-Nextflow-Main-Container-June282024-V5.sif"
 ```
@@ -43,7 +43,7 @@ In the `nextflow.config` file on line 296 we define `main_container` as the buil
 Then, `main_container` is subsequently used within the profile definitions:
 
 Example of `singularity_slurm` profile referencing the `main_container`:
-```
+```bash
 profiles {
     <...>
     singularity_slurm {
@@ -72,7 +72,7 @@ This is ideal as images can be large in size. As a software grows, and dependenc
 
 Here is an example of installing Conda within a container and performing subsequent installs:
 
-```
+```bash
     # Download and install Miniconda
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
@@ -112,7 +112,7 @@ Thus, recipe files must be provided with the required dependencies.
 
 Here is an example of the `environment-quast.yml` Conda recipe file:
 
-```
+```bash
 name: dram2-quast-env
 channels:
   - conda-forge
@@ -137,7 +137,7 @@ Similar to Singularity containers, Conda recipe files are referenced in the `nex
 
 Example `nextflow.config` at line 297:
 
-```
+```bash
     /* Containers and Environments */
         main_container = "./containers/DRAM2-Nextflow-Main-Container-March252024-V4.sif"
         main_environment = "./assets/conda/environment.yml"
@@ -150,7 +150,7 @@ Then, these vairiable are referenced within the definition.
 
 Example Conda profile definition:
 
-```
+```bash
 profiles {
     conda_slurm {
         includeConfig "${params.conda_slurm_config}"
@@ -171,7 +171,7 @@ Within a given profile configuration file, each DRAM2 process is defined and the
 
 Example portion of profile for Conda + SLURM:
 
-```
+```bash
 process {
     withName: CALL_GENES {
         publishDir = [
@@ -211,12 +211,12 @@ process {
 Here we have the processes CALL_GENES() and QUAST(), each of which use a different Conda recipe file.
 
 QUAST uses:
-```
+```bash
 conda = "${params.quast_environment}"
 ```
 
 While CALL_GENES() uses:
-```
+```bash
 conda = "${params.main_environment}"
 ```
 

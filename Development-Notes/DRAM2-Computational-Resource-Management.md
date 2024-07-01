@@ -58,7 +58,7 @@ Each process is defined within the DRAM2 `nextflow.config` file (or the location
 Here is an example of the HMM_SEARCH() process which is used to query called genes against a given HMM database:
 
 (Taken from `./assets/singularity/singularity_slurm.config`)
-```
+```bash
     withName: HMM_SEARCH {
         publishDir = [
             path: "${params.outdir}/HMM_search",
@@ -100,7 +100,7 @@ Similar to CPU usage. DRAM2 has defaults set for each process based on prior kno
 
 Within the `nextflow.config` there are defaults set for each process based on prior knowledge of each dependent software:
 
-```
+```bash
     /* Memory allocation */
         xsml_job = '200MB'
         sml_job = '12GB'
@@ -119,7 +119,7 @@ This is where Nextflows ability to scale horizontally comes into to play. Back t
 
 Within the `nextflow.config` there are defaults set for each process based on prior knowledge of each dependent software and its computational demands:
 
-```
+```bash
     /* Max forks Options */
         max_forks_single_cpu  = 10
         max_forks_user_cpu = 2
@@ -146,7 +146,7 @@ For a given DRAM2 run the user has the basic ability to set the max number of CP
 
 Within the `nextflow.config` there are defaults set for each process based on prior knowledge of each dependent software:
 
-```
+```bash
     /* Memory allocation */
         xsml_job = '200MB'
         sml_job = '12GB'
@@ -189,7 +189,7 @@ Leaving the maxForks parameters alone.
 
 Instead of typing all of the memory options out on the command-line, the user modifies the `nextflow.config` to reduce the memory allotment to each process:
 
-```
+```bash
     /* Memory allocation */
         xsml_job = '200MB'
         sml_job = '5GB'
