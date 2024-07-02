@@ -233,3 +233,163 @@ For future building of Singularity environments, for speed of building, it is su
 Once DRAM2 is released, and even before, it needs to be ensure that the dependency versions between the Singularity containers and the Conda recipe files match. Or, if this is not possible due to Conda difficulties, the differences must be stated in the help menus and in all documentation.
 
 Lastly, Singularity is not as widespread as Docker. It is suggested to create Docker-based profiles and user the built-in Singularity functionality to convert the Singularity containers to Docker containers.
+
+
+## General Singularity Container information for W2 computational team
+
+**Note: This is general information and presented here as en example. For information on specific containers for DRAM2 and COMET, please see above.
+
+## 1. Introduction to Singularity Images (Containers)
+
+Singularity containers are lightweight, portable environments that encapsulate an application and its dependencies. They are widely used in scientific computing, bioinformatics, and other fields to ensure reproducibility and simplify software deployment.
+
+## 2. Singularity Containers Used
+
+### COMET Images
+
+- **wetlands-assembly-v7.sif**
+  - Description: A wetlands assembly image with a sample name change for coassemblies in 'parse_csv.py'.
+  
+- **comet-support.sif**
+	- Description: Container including samtools, bowtie2, fastqc, multiqc, fastp and sickle.
+  
+- **wetlands-checkm2-2.sif**
+  - Description: Container for running CheckM version 2.
+
+### Gene-Centric Pipeline Images
+- **Gene-Centric-Container.sif**
+  - Description: Base container for the Gene-Centric pipeline.
+  
+- **Gene-Centric-Container-v2.sif**
+  - Description: Container with 'featureCounts' added.
+  
+- **Gene-Centric-Container-v3.sif**
+  - Description: Container with 'prodigal' included.
+  
+- **Gene-Centric-Container-v4.sif**
+  - Description: Container with additional libraries - 'pandas', 'numpy', and 'openpyxl'.
+  
+These containers are also available on the server in `/home/opt/singularity_containers/`.
+
+## 3. Usage in Nextflow Script
+
+The Nextflow script uses these Singularity containers to execute different processes within the pipeline. Each process specifies the container to use. These are defined within the `nextflow.config` file.
+
+For example:
+```groovy
+process {
+    withName: COASSEMBLY {
+        container = "${params.assembly_container}"
+        // Additional process configuration
+    }
+    // Other processes and their container specifications
+}
+```
+
+These container variables are defined at the end of the `params{}` section of the `nextflow.config` (**Example**):
+```groovy
+/* Containers */
+	assembly_container = "/home/opt/singularity_containers/wetlands-assembly-v7.sif"
+	qc_container = "/home/opt/singularity_containers/wetlands-QC-2.sif"
+	qc_bin_container = "/home/opt/singularity_containers/wetlands-Bin-QC-Support-pigz.sif"
+	checkm2_container = "/home/opt/singularity_containers/wetlands-checkm2-2.sif"
+
+```
+
+### How to download <New_Wetlands_Pipeline_Name> Singularity Images (Example)
+There is a script provided within the <New_Wetlands_Pipeline_Name> GitHub `pull_singularity_containers.sh`:
+```bash
+singularity pull --arch amd64 library://wrightonlabcsu/default/wetlands-assembly-v7.sif:sha256.7ef413324def70176e6060f0641d91558b88edb26499c4757ee3e3a7ad46806d
+mv wetlands-assembly-v7.sif_sha256.7ef413324def70176e6060f0641d91558b88edb26499c4757ee3e3a7ad46806d.sif containers/wetlands-assembly-v7.sif
+
+singularity pull --arch amd64 library://wrightonlabcsu/default/wetlands-checkm2-2.sif:sha256.51b7659d2e6ee7a73f99a0b36c8e0dd4ffa4396c83efd3b14d483b16cb679cb4
+mv wetlands-checkm2-2.sif_sha256.51b7659d2e6ee7a73f99a0b36c8e0dd4ffa4396c83efd3b14d483b16cb679cb4.sif containers/wetlands-checkm2-2.sif
+
+
+```
+
+<New_Wetlands_Pipeline_Name> are told within the installation to run this script:
+```bash
+sh ./pull_singularity_containers.sh
+```
+
+## 4. Changing a Singularity Recipe File
+
+To change a Singularity recipe file, follow these steps:
+
+1. Edit the recipe file with the desired changes.
+	1. These recipe files are located on the pipeline's GitHub page within a `containers/` directory.
+2. Save the changes.
+
+## 5. Building a Singularity Image
+
+To build a Singularity image from a recipe file:
+
+1. Use the `singularity build` command:
+   ```bash
+   sudo singularity build <image>.sif <recipe_file>
+```
+
+Note:
+- You need sudo to run this command
+- You cannot use special characters in the names or capital letters when pushing this built image to SyLabs.
+
+## 6. Uploading an Image to Sylabs
+
+Login to SyLabs using the Wrighton Lab's GitHub account:
+- Username: `username`
+- Password: `password`
+
+To upload a Singularity image to Sylabs, you need an access token. If you don't have one, create it following these steps:
+
+1. Go to [Sylabs Dashboard](https://cloud.sylabs.io/dashboard).
+2. Click on "Access Tokens" and create a new access token.
+
+### Access Token (Example, may be expired)
+
+After obtaining an access token, follow these steps to upload the image:
+
+1. Login to SyLabs from the command line:
+```bash
+	singularity remote login --token <Your_Access_Token>
+```
+
+3. Sign the image with your key:
+   ```bash
+   singularity sign <image>.sif
+```
+
+2. Push the image to SyLabs
+```bash
+singularity push <image>.sif library://wrightonlabcsu/default/<image>.sif
+```
+
+## 7. Changing Nextflow Config and pipeline 'pull' script
+
+1. You can change the Nextflow configuration in the `nextflow.config` file. This file contains parameters and settings for the pipeline. Make your desired changes to this file.
+
+For example:
+```groovy
+/* Containers */
+	assembly_container = "/home/opt/singularity_containers/wetlands-assembly-v7.sif"
+	qc_container = "/home/opt/singularity_containers/wetlands-QC-2.sif"
+	qc_bin_container = "/home/opt/singularity_containers/wetlands-Bin-QC-Support-pigz.sif"
+	checkm2_container = "/home/opt/singularity_containers/wetlands-checkm2-2.sif"
+
+```
+
+2. You can change the pipeline's 'pull' script to now pull the updated version of the Singularity image.
+	1. First, navigate to the SyLabs library at: https://cloud.sylabs.io/library/wrightonlabcsu and select the image you want to update.
+	2. Click on  `Pull Command` to view the command to pull the image.
+	   For example:
+```bash
+singularity pull --arch amd64 library://wrightonlabcsu/default/wetlands-assembly-v7.sif:sha256.f431a320317ff0901ed7bcfb48f212d4d437bcca398bfb0bc9c7e982680d1419
+```
+
+3. Using this information, update the rediculously long file name in the 'pull' script.
+   For example:
+ ```bash
+ singularity pull --arch amd64 library://wrightonlabcsu/default/wetlands-assembly-v7.sif:sha256.7ef413324def70176e6060f0641d91558b88edb26499c4757ee3e3a7ad46806d
+mv wetlands-assembly-v7.sif_sha256.7ef413324def70176e6060f0641d91558b88edb26499c4757ee3e3a7ad46806d.sif containers/wetlands-assembly-v7.sif
+
+```
