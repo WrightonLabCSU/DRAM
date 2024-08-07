@@ -864,7 +864,7 @@ if( params.product ){
     ch_make_product_script = file(params.make_product_script)
 
     //This is a placeholder for a directory of Product scripts
-    ch_product_scripts = file(params.make_product_scripts)
+//     ch_product_scripts = file(params.make_product_scripts)
 
 
 
@@ -1419,13 +1419,13 @@ workflow {
         Product
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
-    /*
+
     if( params.product ){
 
         PRODUCT_HEATMAP( ch_final_annots, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, params.groupby_column, ch_make_product_script, ch_product_scripts )
 
     }
-    */
+
 
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

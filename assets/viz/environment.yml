@@ -1,9 +1,0 @@
-name: dram2-viz
-dependencies:
-  - python=3.10
-  - click
-  - pandas
-  - numpy
-  - networkx>2,<3
-  - panel>1,<2
-  - bokeh>3,<4
