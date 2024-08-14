@@ -22,7 +22,7 @@ Some HPCs, like W2, Riviera and Alpine, require users to submit jobs using SLURM
 
 3) `-profile singularity`
    
-  This option relies on the local systems Singularity. Nextflow will create its own Conda environments to run in. 
+  This option relies on the local systems Singularity. This option relies on the local systems Singularity to run the downloaded Singularity container.  
 
 4) `-profile singularity_slurm`
    
