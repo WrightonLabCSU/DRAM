@@ -16,6 +16,7 @@ product.tsv
 
 containers/*.sif
 test_data/
+output/
 nextflow-LOCAL.config
 .nextflow.log*
 .nextflow/history
