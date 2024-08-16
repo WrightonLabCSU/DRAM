@@ -1472,8 +1472,6 @@ def version() {
         Subread             v2.0.6
         XlsxWriter          v3.1.6
         Numpy               v1.26.0
-        Panel               v1.*
-        Bokeh               v3.*
 
     """.stripIndent()
 }
