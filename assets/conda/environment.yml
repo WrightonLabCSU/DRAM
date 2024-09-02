@@ -39,12 +39,7 @@ dependencies:
   - r-stringr
   - r-phytools
 
-  # visualization packages
-  - click
-  - networkx>2,<3
-  - panel>1,<2
-  - bokeh>3,<4
-  # numpy was moved above need to test it with viz
-
   - pip:
       - matplotlib==3.8.3
+      # visualization package
+      - git+https://github.com/WrightonLabCSU/dram2_viz.git

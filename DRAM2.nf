@@ -858,22 +858,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 if( params.product ){
-    //This is just temporary - want these in the containers eventually
-
-    //This is a placeholder for the product python script
     ch_make_product_script = file(params.make_product_script)
-
-    //This is a placeholder for a directory of Product scripts
-    ch_product_scripts = file(params.make_product_scripts)
-
-
-
-    ch_etc_module_form = file(params.etc_steps_form)
-    ch_function_heatmap_form = file(params.function_steps_form)
-    ch_module_step_form = file(params.module_steps_form)
-
-
-
 }
 
 /*
@@ -1419,13 +1404,13 @@ workflow {
         Product
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
-    /*
+
     if( params.product ){
 
-        PRODUCT_HEATMAP( ch_final_annots, ch_etc_module_form, ch_function_heatmap_form, ch_module_step_form, params.groupby_column, ch_make_product_script, ch_product_scripts )
+        PRODUCT_HEATMAP( ch_final_annots, params.groupby_column, ch_make_product_script )
 
     }
-    */
+
 
     /*
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1487,8 +1472,6 @@ def version() {
         Subread             v2.0.6
         XlsxWriter          v3.1.6
         Numpy               v1.26.0
-        Panel               v1.*
-        Bokeh               v3.*
 
     """.stripIndent()
 }

@@ -671,7 +671,6 @@ DRAM2.nf
 - **SciPy** [v1.8.1](https://www.scipy.org/)
 - **SQLAlchemy** [v1.4.46](https://www.sqlalchemy.org/)
 - **Barrnap** [v0.9](https://github.com/tseemann/barrnap)
-- **Altair** [v4.2.0](https://altair-viz.github.io/)
 - **OpenPyXL** [v3.0.10](https://openpyxl.readthedocs.io/en/stable/)
 - **NetworkX** [v2.8.8](https://networkx.org/)
 - **Ruby** [v3.1.2](https://www.ruby-lang.org/en/downloads/)
@@ -737,5 +736,3 @@ Please visit the [Read the Docs page](https://dram2.readthedocs.io/en/latest/ind
 ## Citing DRAM
 The DRAM was published in Nucleic Acids Research in 2020 and is available [here](https://academic.oup.com/nar/article/48/16/8883/5884738). If
 DRAM helps you out in your research, please cite it.
-
-
