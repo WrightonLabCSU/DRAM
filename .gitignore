@@ -30,3 +30,6 @@ assets/bbmap
 assets/bbmap/
 .vscode
 nextflow-local.config
+
+# scratch folder
+scratch/

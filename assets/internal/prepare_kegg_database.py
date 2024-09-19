@@ -8,6 +8,7 @@ from skbio import write as write_sequence, read as read_sequence
 from collections import defaultdict
 import gzip
 import argparse
+from pathlib import Path
 
 
 LOGGER = logging.getLogger("database_processing.log")
@@ -22,10 +23,11 @@ def prepare_databases(
     verbose=True,
 ):
     # setup temp, logging, and db_handler
-    if not path.isdir(output_dir):
-        path.mkdir(parents=True)
-    temporary = path.join(output_dir, "database_files")
-    mkdir(temporary)
+    output_dir = Path(output_dir)
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True)
+    temporary = output_dir / "database_files"
+    temporary.mkdir()
 
     LOGGER.info("Database preparation started")
     LOGGER.info("Processing KEGG database")
@@ -42,7 +44,7 @@ def prepare_databases(
     # Process databases
 
     for k, v in processed_locs.items():
-        final_dest = path.join(output_dir, path.basename(v))
+        final_dest = output_dir / path.basename(v)
         if v != final_dest:
             for db_file in glob("%s*" % v):
                 move(db_file, path.join(output_dir, path.basename(db_file)))
@@ -61,6 +63,7 @@ def process_kegg(
     threads=10,
     verbose=True,
 ):
+    threads = threads or 10  # make sure cli option is >=1 and not None
     if download_date is None:
         download_date = get_iso_date()
     if gene_ko_link_loc is not None:
@@ -78,10 +81,10 @@ def process_kegg(
     create_mmseqs(
         kegg_mod_loc,
         kegg_mmseqs_db,
-        logger,
-        create_index=True,
+        #logger,
+        #create_index=True,
         threads=threads,
-        verbose=verbose,
+        #verbose=verbose,
     )
     LOGGER.info("KEGG database processed")
     return {"kegg": kegg_mmseqs_db}
@@ -97,6 +100,7 @@ def create_mmseqs(fasta_loc, output_loc, threads):
         stderr=subprocess.DEVNULL,
     )
     tmp_dir = path.join(path.dirname(output_loc), "tmp")
+    print(f"Created MMseqs2 database for {fasta_loc}... Now creating index")
     subprocess.run(
         ["mmseqs", "createindex", output_loc, tmp_dir, "--threads", str(threads)],
         check=True,
@@ -110,6 +114,30 @@ def create_mmseqs(fasta_loc, output_loc, threads):
         rmtree(tmp_dir)
         print(f"Removed temporary directory: {tmp_dir}")
 
+# def create_mmseqs(fasta_loc, output_loc, threads):
+#     """Takes a fasta file and makes a mmseqs2 database for use in blast searching and hmm searching with mmseqs2."""
+#     print(f"Creating MMseqs2 database for {fasta_loc}...")
+#     print( ["mmseqs", "createdb", fasta_loc, output_loc])
+#     # subprocess.run(
+#     #     ["mmseqs", "createdb", fasta_loc, output_loc],
+#     #     check=True,
+#     #     stdout=subprocess.DEVNULL,
+#     #     stderr=subprocess.DEVNULL,
+#     # )
+#     tmp_dir = path.join(path.dirname(output_loc), "tmp")
+#     print(["mmseqs", "createindex", output_loc, tmp_dir, "--threads", str(threads)])
+#     # subprocess.run(
+#     #     ["mmseqs", "createindex", output_loc, tmp_dir, "--threads", str(threads)],
+#     #     check=True,
+#     #     stdout=subprocess.DEVNULL,
+#     #     stderr=subprocess.DEVNULL,
+#     # )
+#     print(f"MMseqs2 database created at {output_loc}")
+#
+#     # Remove the temporary directory
+#     # if path.exists(tmp_dir):
+#     #     rmtree(tmp_dir)
+#     #     print(f"Removed temporary directory: {tmp_dir}")
 
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
     """
@@ -152,7 +180,7 @@ def main():
         "--gene_ko_link_loc", type=str, help="Path to the gene KO link file"
     )
     parser.add_argument("--download_date", type=str, help="Date of the KEGG download")
-    parser.add_argument("--threads", type=int, help="Number of threads to use")
+    parser.add_argument("--threads", type=int, help="Number of threads to use", default=10)
     args = parser.parse_args()
 
     prepare_databases(
