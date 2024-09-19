@@ -92,7 +92,7 @@ def process_kegg(
 
 def create_mmseqs(fasta_loc, output_loc, threads):
     """Takes a fasta file and makes a mmseqs2 database for use in blast searching and hmm searching with mmseqs2."""
-    print(f"Creating MMseqs2 database for {fasta_loc}...")
+    LOGGER.info(f"Creating MMseqs2 database for {fasta_loc}...")
     subprocess.run(
         ["mmseqs", "createdb", fasta_loc, output_loc],
         check=True,
@@ -100,44 +100,20 @@ def create_mmseqs(fasta_loc, output_loc, threads):
         stderr=subprocess.DEVNULL,
     )
     tmp_dir = path.join(path.dirname(output_loc), "tmp")
-    print(f"Created MMseqs2 database for {fasta_loc}... Now creating index")
+    LOGGER.info(f"Created MMseqs2 database for {fasta_loc}... Now creating index")
     subprocess.run(
         ["mmseqs", "createindex", output_loc, tmp_dir, "--threads", str(threads)],
         check=True,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
-    print(f"MMseqs2 database created at {output_loc}")
+    LOGGER.info(f"MMseqs2 database created at {output_loc}")
 
     # Remove the temporary directory
     if path.exists(tmp_dir):
         rmtree(tmp_dir)
         print(f"Removed temporary directory: {tmp_dir}")
 
-# def create_mmseqs(fasta_loc, output_loc, threads):
-#     """Takes a fasta file and makes a mmseqs2 database for use in blast searching and hmm searching with mmseqs2."""
-#     print(f"Creating MMseqs2 database for {fasta_loc}...")
-#     print( ["mmseqs", "createdb", fasta_loc, output_loc])
-#     # subprocess.run(
-#     #     ["mmseqs", "createdb", fasta_loc, output_loc],
-#     #     check=True,
-#     #     stdout=subprocess.DEVNULL,
-#     #     stderr=subprocess.DEVNULL,
-#     # )
-#     tmp_dir = path.join(path.dirname(output_loc), "tmp")
-#     print(["mmseqs", "createindex", output_loc, tmp_dir, "--threads", str(threads)])
-#     # subprocess.run(
-#     #     ["mmseqs", "createindex", output_loc, tmp_dir, "--threads", str(threads)],
-#     #     check=True,
-#     #     stdout=subprocess.DEVNULL,
-#     #     stderr=subprocess.DEVNULL,
-#     # )
-#     print(f"MMseqs2 database created at {output_loc}")
-#
-#     # Remove the temporary directory
-#     # if path.exists(tmp_dir):
-#     #     rmtree(tmp_dir)
-#     #     print(f"Removed temporary directory: {tmp_dir}")
 
 def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
     """
