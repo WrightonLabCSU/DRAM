@@ -20,7 +20,6 @@ def prepare_databases(
     gene_ko_link_loc=None,
     kegg_download_date=None,
     threads=10,
-    verbose=True,
 ):
     # setup temp, logging, and db_handler
     output_dir = Path(output_dir)
@@ -38,7 +37,6 @@ def prepare_databases(
         gene_ko_link_loc=gene_ko_link_loc,
         logger=LOGGER,
         threads=threads,
-        verbose=verbose,
         download_date=kegg_download_date,
     )
     # Process databases
@@ -61,7 +59,6 @@ def process_kegg(
     gene_ko_link_loc=None,
     download_date=None,
     threads=10,
-    verbose=True,
 ):
     threads = threads or 10  # make sure cli option is >=1 and not None
     if download_date is None:
@@ -84,7 +81,6 @@ def process_kegg(
         #logger,
         #create_index=True,
         threads=threads,
-        #verbose=verbose,
     )
     LOGGER.info("KEGG database processed")
     return {"kegg": kegg_mmseqs_db}
@@ -165,7 +161,6 @@ def main():
         gene_ko_link_loc=args.gene_ko_link_loc,
         kegg_download_date=args.download_date,
         threads=args.threads,
-        verbose=True,
     )
 
 

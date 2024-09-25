@@ -34,6 +34,8 @@ nextflow.enable.dsl = 2
     Load Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+include { FORMAT_KEGG_DB                                  } from './modules/database/format_kegg_db.nf'
+
 include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
 include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
 include { QUAST                                         } from './modules/call/quast.nf'
@@ -156,6 +158,16 @@ else if ((params.help) || (params.h)){
     exit 0
 }
 
+/* If we are formatting kegg, we do that and then exit the program */
+if ( params.format_kegg ) {
+    ch_format_kegg_db_script = file(params.format_kegg_db_script)
+    ch_kegg_pep = file(params.kegg_pep_loc)
+    ch_kegg_db_output = file(params.kegg_db)
+    ch_gene_ko_link = file(params.gene_ko_link_loc)
+
+    FORMAT_KEGG_DB( ch_kegg_pep, ch_kegg_db_output, ch_gene_ko_link, ch_format_kegg_db_script )
+    exit 0
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
