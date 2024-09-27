@@ -1425,7 +1425,7 @@ workflow {
         DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_annotations_sqlite3 )
         ch_distillate = DISTILL.out.distillate
     }
-    else{  // if not running any distillates, just pass the cli annotations file to the next step
+    else if (params.product) {  // if not running any distillates but still running product, just pass the cli annotations file to the next step
         ch_final_annots = file(params.annotations)
     }
 
