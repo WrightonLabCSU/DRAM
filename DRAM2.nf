@@ -620,7 +620,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
 }
 
-if( !params.no_trees ) {
+if( params.trees ) {
 
     ch_count_annots_script = file(params.count_annots_script)
     ch_distill_xlsx_script = file(params.distill_xlsx_script)
@@ -1290,7 +1290,7 @@ workflow {
             ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
 
             // If the user wants to run trees, do it before we count the annotations
-            if( !params.no_trees ){
+            if( params.trees ){
                 TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             }
 
@@ -1300,7 +1300,7 @@ workflow {
         }
         else{
             // If the user wants to run trees, do it before we count the annotations
-            if( !params.no_trees ){
+            if( params.trees ){
                 TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             }
 
@@ -1325,7 +1325,7 @@ workflow {
     */
     if(params.annotations != "" && params.input_genes != "" && params.distill_topic == "" && params.distill_ecosystem == "" && params.distill_custom == ""){
         
-        if( !params.no_trees ){
+        if( params.trees ){
             TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             ch_combined_annotations = TREES.out.updated_annotations
 
@@ -1385,7 +1385,7 @@ workflow {
                 ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
                 ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
 
-                if( !params.no_trees ){
+                if( params.trees ){
                     TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
                     ch_trees_updated_annots = TREES.out.updated_annotations
                 }
@@ -1399,7 +1399,7 @@ workflow {
                 ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
             }
             else{
-                if( !params.no_trees ){
+                if( params.trees ){
                     ch_collected_faa.view()
                     TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
                     ch_trees_updated_annots = TREES.out.updated_annotations
@@ -1667,7 +1667,7 @@ def helpMessage() {
                                             override default function heatmap form database TSV
 
     Tree Option:    
-        --no_trees              OPTION  Will NOT run Trees. (This option is advised as DRAM2 Trees is in development.)
+        --trees              OPTION  Will run Trees. (This option is not advised as DRAM2 Trees is in development.)
 
 
     General options:
