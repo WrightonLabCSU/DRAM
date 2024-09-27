@@ -158,25 +158,16 @@ else if ((params.help) || (params.h)){
     exit 0
 }
 
-/* If we are formatting kegg, we do that and then exit the program */
-if ( params.format_kegg ) {
-    ch_format_kegg_db_script = file(params.format_kegg_db_script)
-    ch_kegg_pep = file(params.kegg_pep_loc)
-    ch_kegg_db_output = file(params.kegg_db)
-    ch_gene_ko_link = file(params.gene_ko_link_loc)
 
-    FORMAT_KEGG_DB( ch_kegg_pep, ch_kegg_db_output, ch_gene_ko_link, ch_format_kegg_db_script )
-    exit 0
-}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Validate Input parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename", "--product"]
+def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename", "--product", "--format_kegg"]
 
-if ( !params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
+if ( && !params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ) && params.format_kegg == 0 ) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
 }
 
@@ -388,7 +379,12 @@ if( params.annotate ){
     index_mmseqs = "0"
 
     if (annotate_kegg == 1) {
-        ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
+        if ( !params.format_kegg && !file(params.kegg_db).exists() ) {
+            error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
+        }
+        else {
+            ch_kegg_db = file(params.kegg_db)
+        }
         index_mmseqs = "1"
         annotate_list += "${params.kegg_name} "
     }
@@ -869,8 +865,23 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     Create channels for Product processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-if( params.product ){
+if ( params.product ){
     ch_make_product_script = file(params.make_product_script)
+}
+
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Create channels for Formatting Kegg DB
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+if ( params.format_kegg ) {
+    ch_format_kegg_db_script = file(params.format_kegg_db_script)
+    ch_kegg_pep = file(params.kegg_pep_loc)
+    ch_gene_ko_link = file(params.gene_ko_link_loc)
+    if ( params.annotate || annotate_kegg != 1 ) {
+        ch_kegg_db = file(params.kegg_db)
+    }
 }
 
 /*
@@ -957,6 +968,13 @@ if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || pa
 */
 
 workflow {
+
+
+    /* If we are formatting kegg, we do that and then exit the program */
+    if ( params.format_kegg ) {
+        FORMAT_KEGG_DB( ch_kegg_pep, ch_kegg_db, ch_gene_ko_link, ch_format_kegg_db_script )
+        ch_kegg_db = FORMAT_KEGG_DB.out.kegg_db_loc
+    }
 
     /* Rename fasta headers
         Process 1-by-1
