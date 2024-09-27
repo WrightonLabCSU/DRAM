@@ -167,7 +167,7 @@ else if ((params.help) || (params.h)){
 */
 def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename", "--product", "--format_kegg"]
 
-if ( && !params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ) && params.format_kegg == 0 ) {
+if ( !params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ) && params.format_kegg == 0 ) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
 }
 
