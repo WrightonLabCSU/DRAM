@@ -972,8 +972,7 @@ workflow {
 
     /* If we are formatting kegg, we do that and then exit the program */
     if ( params.format_kegg ) {
-        FORMAT_KEGG_DB( ch_kegg_pep, ch_kegg_db, ch_gene_ko_link, ch_format_kegg_db_script )
-        ch_kegg_db = FORMAT_KEGG_DB.out.kegg_db_loc
+        FORMAT_KEGG_DB( ch_kegg_pep, ch_gene_ko_link, ch_format_kegg_db_script )
     }
 
     /* Rename fasta headers

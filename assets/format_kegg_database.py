@@ -16,7 +16,7 @@ LOGGER = logging.getLogger("database_processing.log")
 
 def prepare_databases(
     output_dir,
-    kegg_loc=None,
+    kegg_loc="kegg",
     gene_ko_link_loc=None,
     kegg_download_date=None,
     threads=10,
