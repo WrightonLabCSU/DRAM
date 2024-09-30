@@ -878,12 +878,25 @@ if ( params.product ){
 if ( params.format_kegg ) {
     ch_format_kegg_db_script = file(params.format_kegg_db_script)
     ch_kegg_pep = file(params.kegg_pep_loc).exists() ? file(params.kegg_pep_loc) : error("Error: when using running format_kegg, the kegg_pep_loc file must exists. KEGG pep file not found at ${params.kegg_pep_loc}")
-    if params.gene_ko_link_loc != "" ) {
+    /*
+    if ( params.gene_ko_link_loc != "" ) {
         ch_gene_ko_link = file(params.gene_ko_link_loc).exists() ? file(params.gene_ko_link_loc) : error("Error: If supplying gene_ko_link_loc, the file must exists. Gene-KO link file not found at ${params.gene_ko_link_loc}")
     }
     else {
-        ch_gene_ko_link = []
+        ch_gene_ko_link = ['']
+    
     }
+    */
+    
+    // ch_gene_ko_link = Channel.fromPath(params.gene_ko_link_loc).ifEmpty('NAN FILE')
+    /*
+    if ( params.gene_ko_link_loc != "" ) {
+        ch_gene_ko_link = Channel.fromPath(params.gene_ko_link_loc).ifEmpty('')
+    }
+    else {
+       ch_gene_ko_link = Channel.empty().ifEmpty('')
+    }
+    */
     if ( params.annotate || annotate_kegg != 1 ) {
         ch_kegg_db = file(params.kegg_db)
     }
@@ -983,7 +996,8 @@ workflow {
 
     /* If we are formatting kegg, we do that and then exit the program */
     if ( params.format_kegg ) {
-        FORMAT_KEGG_DB( ch_kegg_pep, ch_gene_ko_link, ch_format_kegg_db_script, kegg_download_date )
+        // FORMAT_KEGG_DB( ch_kegg_pep, ch_gene_ko_link, ch_format_kegg_db_script, kegg_download_date )
+        FORMAT_KEGG_DB( ch_kegg_pep, ch_format_kegg_db_script, kegg_download_date )
     }
 
     /* Rename fasta headers
