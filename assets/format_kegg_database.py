@@ -15,8 +15,8 @@ LOGGER = logging.getLogger("database_processing.log")
 
 
 def prepare_databases(
-    output_dir,
-    kegg_loc="kegg",
+    kegg_loc,
+    output_dir="kegg",
     gene_ko_link_loc=None,
     kegg_download_date=None,
     threads=10,
@@ -35,7 +35,6 @@ def prepare_databases(
         kegg_loc=kegg_loc,
         output_dir=output_dir,
         gene_ko_link_loc=gene_ko_link_loc,
-        logger=LOGGER,
         threads=threads,
         download_date=kegg_download_date,
     )
@@ -55,7 +54,6 @@ def prepare_databases(
 def process_kegg(
     kegg_loc,
     output_dir,
-    logger,
     gene_ko_link_loc=None,
     download_date=None,
     threads=10,
@@ -78,7 +76,6 @@ def process_kegg(
     create_mmseqs(
         kegg_mod_loc,
         kegg_mmseqs_db,
-        #logger,
         #create_index=True,
         threads=threads,
     )
@@ -147,7 +144,7 @@ def get_iso_date():
 def main():
     parser = argparse.ArgumentParser(description="Prepare KEGG database")
     parser.add_argument("--kegg_loc", type=str, help="Path to the KEGG fasta file")
-    parser.add_argument("--output_dir", type=str, help="Path to the output directory")
+    parser.add_argument("--output_dir", type=str, help="Path to the output directory", default="kegg")
     parser.add_argument(
         "--gene_ko_link_loc", type=str, help="Path to the gene KO link file"
     )
