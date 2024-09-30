@@ -63,7 +63,7 @@ def process_kegg(
     threads = threads or 10  # make sure cli option is >=1 and not None
     if download_date is None:
         download_date = get_iso_date()
-    if gene_ko_link_loc is not None:
+    if gene_ko_link_loc is not None and Path(gene_ko_link_loc).exists():
         # add KOs to end of header where KO is not already there
         kegg_mod_loc = path.join(output_dir, "kegg.mod.fa")
         write_sequence(
