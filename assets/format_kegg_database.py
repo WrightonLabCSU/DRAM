@@ -27,6 +27,7 @@ def prepare_databases(
         output_dir.mkdir(parents=True)
     temporary = output_dir / "database_files"
     temporary.mkdir()
+    return
 
     LOGGER.info("Database preparation started")
     LOGGER.info("Processing KEGG database")
@@ -59,7 +60,7 @@ def process_kegg(
     threads=10,
 ):
     threads = threads or 10  # make sure cli option is >=1 and not None
-    if download_date is None:
+    if not download_date:
         download_date = get_iso_date()
     if gene_ko_link_loc is not None and Path(gene_ko_link_loc).exists():
         # add KOs to end of header where KO is not already there
