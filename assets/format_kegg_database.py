@@ -27,7 +27,6 @@ def prepare_databases(
         output_dir.mkdir(parents=True)
     temporary = output_dir / "database_files"
     temporary.mkdir()
-    return
 
     LOGGER.info("Database preparation started")
     LOGGER.info("Processing KEGG database")

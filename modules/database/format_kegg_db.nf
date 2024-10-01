@@ -7,7 +7,7 @@ process FORMAT_KEGG_DB {
     val(kegg_download_date)
 
     output:
-    path( "kegg/" )
+    path( "kegg/*" )
 
     script:
     """
