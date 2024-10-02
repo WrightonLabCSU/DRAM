@@ -34,6 +34,9 @@ nextflow.enable.dsl = 2
     Load Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+include { helpMessage; callHelpMessage; annotateHelpMessage; distillHelpMessage; productHelpMessage; adjectivesHelpMessage; formatKeggHelpMessage; version } from './modules/utils/help.nf'
+include { FORMAT_KEGG_DB                                  } from './modules/database/format_kegg_db.nf'
+
 include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
 include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
 include { QUAST                                         } from './modules/call/quast.nf'
@@ -144,6 +147,12 @@ else if (((params.help || params.h) && params.product) || params.help_product ){
     exit 0
 }
 
+/* Format KEGG DB Help Menu */
+else if (((params.help || params.h) && params.format_kegg) || params.help_format_kegg ){
+    formatKeggHelpMessage()
+    exit 0
+}
+
 /* Options to display the current version */
 else if((params.version) || (params.v)){
     version()
@@ -157,21 +166,28 @@ else if ((params.help) || (params.h)){
 }
 
 
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Validate Input parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename", "--product"]
+def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosystem", "--distill_custom", "--merge_annotations", "--merge_distill", "--rename", "--product", "--format_kegg"]
 
-if ( !params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" )) {
+if ( !params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ) && params.format_kegg == 0 ) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
+
 }
 
 if( !params.profile && params.use_dbset){
     if (!['metabolism_kegg_set', 'metabolism_set', 'adjectives_kegg_set', 'adjectives_set'].contains(params.use_dbset)) {
         error("Invalid parameter '--use_dbset ${params.use_dbset}'. Valid values are 'metabolism_kegg_set', 'metabolism_set', 'adjectives_kegg_set', 'adjectives_set'.")
     }
+}
+
+// If --format_kegg and any other options are present, throw an error
+if ( params.format_kegg && !(params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ))) {
+    error("If you want to format the KEGG database, you must not provide any other options. Format KEGG DB is a standalone process.")
 }
 
 if( !params.profile && !params.rename && params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
@@ -376,7 +392,12 @@ if( params.annotate ){
     index_mmseqs = "0"
 
     if (annotate_kegg == 1) {
-        ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
+        if ( !params.format_kegg && !file(params.kegg_db).exists() ) {
+            error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
+        }
+        else {
+            ch_kegg_db = file(params.kegg_db)
+        }
         index_mmseqs = "1"
         annotate_list += "${params.kegg_name} "
     }
@@ -612,7 +633,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
 }
 
-if( !params.no_trees ) {
+if( params.trees ) {
 
     ch_count_annots_script = file(params.count_annots_script)
     ch_distill_xlsx_script = file(params.distill_xlsx_script)
@@ -857,8 +878,46 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     Create channels for Product processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-if( params.product ){
+if ( params.product ){
     ch_make_product_script = file(params.make_product_script)
+}
+
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Create channels for Formatting Kegg DB
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+if ( params.format_kegg ) {
+    ch_format_kegg_db_script = file(params.format_kegg_db_script)
+    ch_kegg_pep = file(params.kegg_pep_loc).exists() ? file(params.kegg_pep_loc) : error("Error: when using running format_kegg, the kegg_pep_loc file must exists. KEGG pep file not found at ${params.kegg_pep_loc}")
+    /*
+    if ( params.gene_ko_link_loc != "" ) {
+        ch_gene_ko_link = file(params.gene_ko_link_loc).exists() ? file(params.gene_ko_link_loc) : error("Error: If supplying gene_ko_link_loc, the file must exists. Gene-KO link file not found at ${params.gene_ko_link_loc}")
+    }
+    else {
+        ch_gene_ko_link = ['']
+    
+    }
+    */
+    
+    // ch_gene_ko_link = Channel.fromPath(params.gene_ko_link_loc).ifEmpty('NAN FILE')
+    
+    if ( params.gene_ko_link_loc != "" ) {
+        ch_gene_ko_link = Channel.fromPath(params.gene_ko_link_loc).ifEmpty('')
+    }
+    else {
+       ch_gene_ko_link = Channel.empty().ifEmpty('')
+    }
+    if ( params.annotate || annotate_kegg != 1 ) {
+        ch_kegg_db = file(params.kegg_db)
+    }
+    if ( params.kegg_download_date ) {
+        kegg_download_date = params.kegg_download_date
+    }
+    else {
+        kegg_download_date = "''"
+    }
 }
 
 /*
@@ -945,6 +1004,13 @@ if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || pa
 */
 
 workflow {
+
+
+    /* If we are formatting kegg, we do that and then exit the program */
+    if ( params.format_kegg ) {
+        FORMAT_KEGG_DB( ch_kegg_pep, ch_gene_ko_link, ch_format_kegg_db_script, kegg_download_date )
+        return
+    }
 
     /* Rename fasta headers
         Process 1-by-1
@@ -1260,7 +1326,7 @@ workflow {
             ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
 
             // If the user wants to run trees, do it before we count the annotations
-            if( !params.no_trees ){
+            if( params.trees ){
                 TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             }
 
@@ -1270,7 +1336,7 @@ workflow {
         }
         else{
             // If the user wants to run trees, do it before we count the annotations
-            if( !params.no_trees ){
+            if( params.trees ){
                 TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             }
 
@@ -1295,7 +1361,7 @@ workflow {
     */
     if(params.annotations != "" && params.input_genes != "" && params.distill_topic == "" && params.distill_ecosystem == "" && params.distill_custom == ""){
         
-        if( !params.no_trees ){
+        if( params.trees ){
             TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
             ch_combined_annotations = TREES.out.updated_annotations
 
@@ -1355,7 +1421,7 @@ workflow {
                 ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
                 ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
 
-                if( !params.no_trees ){
+                if( params.trees ){
                     TREES( ch_combined_annotations, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
                     ch_trees_updated_annots = TREES.out.updated_annotations
                 }
@@ -1369,7 +1435,7 @@ workflow {
                 ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
             }
             else{
-                if( !params.no_trees ){
+                if( params.trees ){
                     ch_collected_faa.view()
                     TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
                     ch_trees_updated_annots = TREES.out.updated_annotations
@@ -1395,7 +1461,7 @@ workflow {
         DISTILL( ch_final_annots, ch_combined_distill_sheets, ch_annotation_counts, ch_quast_stats, ch_rrna_sheet, ch_rrna_combined, ch_trna_sheet, ch_distill_xlsx_script, ch_annotations_sqlite3 )
         ch_distillate = DISTILL.out.distillate
     }
-    else{  // if not running any distillates, just pass the cli annotations file to the next step
+    else if (params.product) {  // if not running any distillates but still running product, just pass the cli annotations file to the next step
         ch_final_annots = file(params.annotations)
     }
 
@@ -1423,571 +1489,4 @@ workflow {
 
     }
     */
-}
-
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Version menu
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-def version() {
-    log.info"""
-
-    (==(     )==)                 (==(     )==)
-     `-.`. ,',-'                   `-.`. ,',-'
-        _,-'"                         _,-'"
-     ,-',' `.`-.                    ,-',' `.`-.
-    (==(     )==)     DRAM2       (==(     )==)
-     `-.`. ,',-'                    `-.`. ,',-'
-        _,-'"                         _,-'"
-     ,-',' `.`-.                   ,-',' `.`-.
-    (==(     )==)                 (==(     )==)
-                      v2.0.0
-    ===========================================
-
-        Software versions used:
-
-        BBTools             v39.01
-        Bowtie2             v2.5.1
-        Prodigal            v2.6.3
-        Python              v3.10
-        Pandas              v1.5.2
-        Pytest              v7.2.0
-        Scikit-bio          v0.5.7
-        MMseqs2             v14.7e284
-        HMMER               v3.3.2
-        SciPy               v1.8.1
-        SQLAlchemy          v1.4.46
-        Barrnap             v0.9
-        OpenPyXL            v3.0.10
-        NetworkX            v2.8.8
-        Ruby                v3.1.2
-        GNU Parallel        v20221122
-        tRNAscan-SE         v2.0.12
-        Samtools            v1.17
-        CD-HIT              v4.6
-        CoverM              v0.6.1
-        Subread             v2.0.6
-        XlsxWriter          v3.1.6
-        Numpy               v1.26.0
-
-    """.stripIndent()
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Help menus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-def helpMessage() {
-    log.info """
-         (==(     )==)                 (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)     DRAM2       (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)                 (==(     )==)
-                           v2.0.0
-          =========================================
-
-    Reed Woyda. MIT License. Micobial Ecosystems Lab, Colorado State University Fort Collins. 2024 (last updated 2024)
-
-    Description:
-        The purpose of DRAM2 is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation.
-        DRAM2 can be used to call, annotate and distill annotations from input FASTA files.
-        Call, annotate and distill can be run together or, each can be run idependently.
-
-    Bring up help menu:
-        nextflow run DRAM2.nf --help (--h)
-
-    Bring up versions menu:
-        nextflow run DRAM2.nf --version (--v)
-
-    Usage:
-        nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
-
-        Call genes using input fastas (use --rename to rename FASTA headers):
-            nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>
-
-        Annotate called genes using input fastas:
-            nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory>
-
-        Distill using input annotations:
-            nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
-
-        (Combined): Call, annotate and distill input fasta files:
-            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
-
-        (Real) example: (on multiple lines for clarity)
-        nextflow run DRAM2.nf --input_fasta ../test_data/
-            --outdir DRAM2-test-data-Feb012024/
-            --call --rename
-            --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
-            --add_annotations ../test-data/old-DRAM-annotations.tsv
-            --distill_topic 'carbon transport energy' --distill_ecosystem 'eng_sys ag'
-            --distill_custom assets/forms/distill_sheets/test.tsv -resume --slurm_node zenith
-            --trnas ../test-data/trnas.tsv
-            --rrnas ../test-data/rrnas.tsv
-            --bin_quality ../test-data/checkM1-test-data.tsv
-            --taxa ../test-data/gtdbtk.bac120.summary.tsv
-            --generate_gff
-            --generate_gbk
-            --threads 5
-            -with-report -with-trace -with-timeline
-
-    Main DRAM2 Operations:
-        --call      : Call genes using prodigal
-        --annotate  : Annotate called genes using downloaded databases
-        --distill   : Distill the annotations into a multi-sheet distillate.xlsx
-        --product   : Generate a product heatmap of the annotations
-
-    REQUIRED DRAM2 profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                            See SLURM options in full help menu.
-
-    Call options:
-        --call                  OPTION  Call genes on the input FASTA files using Prodigal.
-
-        --input_fasta           PATH    <path/to/fasta/directory/>
-                                            Directory containing input fasta files.
-                                            Default: <./input_fasta/*.fa*>
-
-        --rename                OPTION  Rename FASTA headers based on file name.
-                                            Example: sample1.fa --> (fasta header renamed to) > sample1......
-                                            Why? DRAM2 output is focused on scaffolds/contigs with respect to each provided input sample.
-                                                Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable.
-                                                *If you have already renamed your FASTA headers, do not include '--call'.
-
-        --prodigal_mode         STRING  <single|meta>
-                                            Default: 'single'
-
-        --prodigal_tras_table   NUMBER  (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
-                                            Specify a translation table to use (default: '1').
-
-        --min_contig_len        NUMBER  <number in base pairs>
-                                            Default: '2500'
-
-    Annotate options:
-        --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
-                                            Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
-
-        --use_dbset             STRING  <metabolism_kegg_set|metabolism_set|adjectives_kegg_set|adjectivs set>
-                                            metabolism_kegg_set = kegg, dbcan, merops, pfam, heme
-                                            metabolism_set      = kofam, dbcan, merops, pfam, heme
-                                            adjectives_kegg_set = kegg, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                            adjectives_set      = kofam, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                            *Only one set can be used. Can be used in combination with --use_[db-name]
-
-        --input_genes           PATH    <path/to/called/genes/directory/>
-                                            Directory containing called genes (.faa)
-
-        --add_annotations       PATH    <path/to/old-annoations.tsv>
-                                            Used to add in old annotations to the current run. (See example for format.)
-
-        --generate_gff          OPTION  Will generate an output GFF for each sample based on the raw-annotations.tsv.
-
-        --generate_gbk          OPTION  Will generate an output GBK for each sample based on the raw-annotations.tsv.
-
-    Distill options:
-        --annotations           PATH     <path/to/annotations.tsv>
-                                            Required if you are running distill without --call and --annotate.
-
-        --rrnas                 PATH    <path/to/rRNA.tsv> (See example for format.)
-                                            rRNA information will be included in distill output.
-
-        --trnas                 PATH    <path/to/tRNA.tsv> (See example for format.)
-                                            tRNA information will be included in distill output.
-
-        --bin_quality           PATH    <path/to/bin-quality.tsv> (See example for format.)
-                                            CheckM and CheckM2 compatible.
-
-        --taxa                  PATH    <path/to/bin-taxonomy.tsv>
-                                            Compatible with GTDB. (See example for format.)
-
-        --distill_topic         STRING  <carbon|energy|misc|nitrogen|transport> OR <default = carbon, energy, misc, nitrogen, transport>
-                                            If more than one topic included, they must be enclosed in single quotes
-
-        --distill_ecosystem     STRING  <eng_sys|ag>
-                                            If more than one ecosystem included, they must be enclosed in single quotes
-
-        --distill_custom        STRING  <path/to/custom_distillate.tsv> (See example for format and options.)
-                                            As of now, only one custom distillate may be included.
-
-    Product options:
-        --annotations           PATH     <path/to/annotations.tsv>
-                                            Required if you are running product without --call and --annotate.
-
-        --groupby_column        STRING   Column to to group by in the annotations file for etc and function groupings
-                                            Default: 'fasta'
-
-        --module_steps_form     PATH     <path/to/module_steps_form.tsv>
-                                            override default module steps form database TSV
-
-        --etc_module_form       PATH     <path/to/etc_module_form.tsv>
-                                            override default etc module form database TSV
-
-        --function_heatmap_form PATH     <path/to/function_heatmap_form.tsv>
-                                            override default function heatmap form database TSV
-
-    Tree Option:    
-        --no_trees              OPTION  Will NOT run Trees. (This option is advised as DRAM2 Trees is in development.)
-
-
-    General options:
-        --outdir                PATH    <path/to/output/directory>
-                                            Default: './DRAM2_output/'
-
-        --threads               NUMBER  Number of threads to use for processing.
-                                            Default: '10'
-
-        --slurm_node            string  <node_name>
-                                            Example --slurm_queue c001
-
-        --slurm_queue           string  <slurm partition name>
-                                            Example:  --slurn_queue 'smith-hi,smith-low'
-
-    """.stripIndent()
-}
-
-/* Call Help Menu */
-def callHelpMessage() {
-    log.info """
-         (==(     )==)                 (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)     DRAM2       (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)                 (==(     )==)
-                           v2.0.0
-          =========================================
-    Call description: The purpose of DRAM2 --call is to call genes on input FASTA files.
-
-    Usage:
-
-        Call genes using input fastas:
-            nextflow run DRAM2.nf --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
-
-    REQUIRED DRAM2 profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                            See SLURM options in full help menu.
-
-    Call options:
-        --rename                Rename FASTA headers based on file name.
-                                    Example: sample1.fa --> (fasta header renamed to) > sample1......
-                                    Why? DRAM2 output is focused on scaffolds/contigs with respect to each provided input sample.
-                                        Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable.
-                                        *If you have already renamed your FASTA headers, do not include '--call'.
-
-        --prodigal_mode         STRING  <single|meta>
-                                    Default: 'single'
-
-        --prodigal_tras_table   <1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25>
-                                    Specify a translation table to use (default: '1').
-
-        --min_contig_len        NUMBER  <number in base pairs>
-                                            Default: '2500'
-    Main options:
-        --input_fasta           PATH    <path/to/fasta/directory/>
-                                            Directory containing input fasta files.
-                                            Default: './input_fasta/'
-
-        --outdir                PATH    <path/to/output/directory>
-                                            Default: './DRAM2_output/'
-
-        --threads               NUMBER  Number of threads to use for processing.
-                                            Default: '10'
-
-        --slurm_node            string  <node_name>
-                                            Example --slurm_queue c001
-
-        --slurm_queue           string  <slurm partition name>
-                                            Example:  --slurn_queue 'smith-hi,smith-low'
-    """.stripIndent()
-}
-
-/* Annotate Help Menu */
-def annotateHelpMessage() {
-    log.info """
-         (==(     )==)                 (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)     DRAM2       (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)                 (==(     )==)
-                           v2.0.0
-          =========================================
-    Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
-
-    Usage:
-
-        Annotate called genes using input called genes and the KOFAM database:
-            nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam
-
-        Annotate called genes using input fasta files and the KOFAM database:
-            nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
-
-    REQUIRED DRAM2 profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                            See SLURM options in full help menu.
-
-    Annotate options:
-    --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
-                                        Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
-
-    --use_dbset             STRING  <metabolism_kegg_set|metabolism_set|adjectives_kegg_set|adjectivs set>
-                                        metabolism_kegg_set = kegg, dbcan, merops, pfam, heme
-                                        metabolism_set      = kofam, dbcan, merops, pfam, heme
-                                        adjectives_kegg_set = kegg, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                        adjectives_set      = kofam, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                        *Only one set can be used. Can be used in combination with --use_[db-name]
-
-    --add_annotations       PATH    <path/to/old-annoations.tsv>
-                                        Used to add in old annotations to the current run. (See example for format.)
-
-    --generate_gff          OPTION  Will generate an output GFF for each sample based on the raw-annotations.tsv.
-
-    --generate_gbk          OPTION  Will generate an output GBK for each sample based on the raw-annotations.tsv.
-
-    Main options:
-    --input_fasta           PATH    <path/to/fasta/directory/>
-                                        Directory containing input fasta files.
-                                        Default: './input_fasta/'
-                                        Either '--input_fasta' or '--input_genes' may be used - not both.
-
-    --input_genes           PATH    <path/to/called/genes/directory/>
-                                        Directory containing called genes (.fna)
-                                        Either '--input_fasta' or '--input_genes' may be used - not both.
-
-    --outdir                PATH    <path/to/output/directory/>
-                                        Default: './DRAM2_output/'
-
-    --threads               NUMBER  Number of threads to use for processing.
-                                        Default '10'
-
-    --slurm_node            string  <node_name>
-                                        Example --slurm_queue c001
-
-    --slurm_queue           string  <slurm partition name>
-                                        Example:  --slurn_queue 'smith-hi,smith-low'
-    """.stripIndent()
-}
-
-/* Distill Help Menu */
-def distillHelpMessage() {
-    log.info """
-         (==(     )==)                 (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)     DRAM2       (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)                 (==(     )==)
-                           v2.0.0
-          =========================================
-    Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s).
-                            User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
-                            Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>).
-                            Optional tRNA, rRNA and bin quality may also be provided.
-
-    Usage:
-        nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
-        *Important: if more than one topic or ecosystem is included, they must be enclosed in single quotes. Example: --distill_topic 'carbon transport'
-
-    Example:
-        Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
-            nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
-
-    REQUIRED DRAM2 profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                            See SLURM options in full help menu.
-
-    Distill options:
-        --annotations           PATH     <path/to/annotations.tsv>
-                                            Required if you are running distill without --call and --annotate.
-
-        --rrnas                 PATH    <path/to/rRNA.tsv> (See example for format.)
-                                            rRNA information will be included in distill output.
-
-        --trnas                 PATH    <path/to/tRNA.tsv> (See example for format.)
-                                            tRNA information will be included in distill output.
-
-        --bin_quality           PATH    <path/to/bin-quality.tsv> (See example for format.)
-                                            CheckM and CheckM2 compatible.
-
-        --taxa                  PATH    <path/to/bin-taxonomy.tsv>
-                                            Compatible with GTDB. (See example for format.)
-
-        --distill_topic         STRING  <carbon|energy|misc|nitrogen|transport> OR <default = carbon, energy, misc, nitrogen, transport>
-                                            If more than one topic included, they must be enclosed in single quotes
-
-        --distill_ecosystem     STRING  <eng_sys|ag>
-                                            If more than one ecosystem included, they must be enclosed in single quotes
-
-        --distill_custom        STRING  <path/to/custom_distillate.tsv> (See example for format and options.)
-                                            As of now, only one custom distillate may be included.
-
-    Main options:
-        --outdir                PATH    <path/to/output/directory/>
-                                            Default: './DRAM2_output/'
-
-        --threads               NUMBER  Number of threads to use for processing.
-                                            Default '10'
-
-        --slurm_node            string  <node_name>
-                                            Example --slurm_queue c001
-
-        --slurm_queue           string  <slurm partition name>
-                                            Example:  --slurn_queue 'smith-hi,smith-low'
-    """.stripIndent()
-}
-
-/* Adjectives Help Menu */
-def adjectivesHelpMessage() {
-    log.info """
-         (==(     )==)                 (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)     DRAM2       (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)                 (==(     )==)
-                           v2.0.0
-          =========================================
-    Annotate description: The purpose of DRAM2 '--adjectives' is to evaluate genes and describe their features.
-
-    Usage:
-
-
-    THESE NEED TO BE RE_DONE
-    Adjectives options:
-    --annotations_tsv_path PATH     Location of an annotations.tsv. You don't
-                                    need to use this option if you are using the
-                                    output_dir for dram with a project_config.
-                                    If you use this option, you must also use
-                                    the force flag to bypass the safeguards that
-                                    prevent you from running distill with
-                                    insufficient data.
-    --adjectives_tsv_path PATH      Location of the output adjectives.tsv. if
-                                    you leave this blank the adjectives.tsv file
-                                    will be put in the output directory.
-    -a, --adjectives TEXT           A list of adjectives, by name, to evaluate.
-                                    This limits the number of adjectives that
-                                    are evaluated, and is faster.
-    -p, --plot_adjectives TEXT      A list of adjectives, by name, to plot. This
-                                    limits the number of adjectives that are
-                                    plotted and is probably needed for speed.
-    -g, --plot_genomes TEXT
-    --plot_path PATH                will become a folder of output plots, no
-                                    path no plots.
-    --strainer_tsv PATH             The path for a tsv that will pass to
-                                    strainer to filter genes. The only option at
-                                    this time is ‘pgtb’ for positive genes that
-                                    are on true bugs.
-    --strainer_type PATH            The type of process that should make the
-                                    strainer file.
-    --debug_ids_by_fasta_to_tsv PATH
-                                    This is a tool to debug the list of IDs
-                                    found by DRAM it is mostly for experts.
-    --user_rules_tsv PATH           This is an optional path to a rules file
-                                    with strict formatting. It will overwrite
-                                    the original rules file that is stored with
-                                    the script.
-    --show_rules_path               Show the path to the default rules path.
-    --list_name                     List the names for all adjectives_tsv that
-                                    are available, you can pass these names to
-                                    limit the adjectives that are evaluated
-    --list_id                       List the names for all adjectives_tsv that
-                                    are available, you can pass these names to
-                                    limit the adjectives that are evaluated,
-    Main options:
-    --input_fasta           'path/to/fasta/directory/''
-                                Directory containing input fasta files.
-                                Default: 'input_fasta/'
-    --outdir                'path/to/output/directory/'
-                                Default: 'DRAM2_output/'
-                                Output directory path.
-    --threads               Number of threads to use for processing.
-
-    --slurm_node            string  <node_name>
-                                    Example --slurm_queue c001
-
-    --slurm_queue           string  <slurm partition name>
-                                    Example:  --slurn_queue 'smith-hi,smith-low'
-    """.stripIndent()
-}
-/* Adjectives Help Menu */
-def productHelpMessage() {
-    log.info """
-         (==(     )==)                 (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)     DRAM2       (==(     )==)
-          `-.`. ,',-'                   `-.`. ,',-'
-             _,-'"                         _,-'"
-          ,-',' `.`-.                   ,-',' `.`-.
-         (==(     )==)                 (==(     )==)
-                           v2.0.0
-
-    Product description: The purpose of DRAM2 --product is to generate a product visualization of the annotations
-    and save the output to the output directory.
-
-    Usage:
-        nextflow run DRAM2.nf --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
-
-   Example:
-        Create heatmap product visualization from annotations file and save to output directory:
-            nextflow run DRAM2.nf --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
-
-
-    REQUIRED DRAM2 profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                            Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                            Runs DRAM2 with no scheduling or scheduling via SLURM.
-                                            See SLURM options in full help menu.
-
-    Product options:
-        --annotations           PATH     <path/to/annotations.tsv>
-                                            Required if you are running product without --call and --annotate.
-
-        --groupby_column        STRING   Column to to group by in the annotations file for etc and function groupings
-                                            Default: 'fasta'
-
-        --module_steps_form     PATH     <path/to/module_steps_form.tsv>
-                                            override default module steps form database TSV
-
-        --etc_module_form       PATH     <path/to/etc_module_form.tsv>
-                                            override default etc module form database TSV
-
-        --function_heatmap_form PATH     <path/to/function_heatmap_form.tsv>
-                                            override default function heatmap form database TSV
-
-    Main options:
-        --outdir                PATH    <path/to/output/directory/>
-                                            Default: 'DRAM2_output/'
-                                            Output directory path.
-    """.stripIndent()
 }
