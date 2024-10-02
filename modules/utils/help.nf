@@ -1,10 +1,11 @@
 DNA_HEADER = """
 ===========================================
+                  DRAM2
 (==(     )==)                 (==(     )==)
  `-.`. ,',-'                   `-.`. ,',-'
     _,-'"                         _,-'"
  ,-',' `.`-.                    ,-',' `.`-.
-(==(     )==)     DRAM2       (==(     )==)
+(==(     )==)                  (==(     )==)
  `-.`. ,',-'                    `-.`. ,',-'
     _,-'"                         _,-'"
  ,-',' `.`-.                   ,-',' `.`-.
@@ -327,7 +328,7 @@ Example:
 
 PRODUCT_DESCRIPTION = """
 Product description: The purpose of DRAM2 --product is to generate a product visualization of the annotations
-and save the output to the output directory.
+		     and save the output to the output directory.
 
 Usage:
     nextflow run DRAM2.nf --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
@@ -348,9 +349,9 @@ THIS IS A WORK IN PROGRESS AND IS NOT YET COMPLETE
 
 FORMAT_KEGG_DB_DESCRIPTION = """
 Format KEGG DB description: The purpose of DRAM2 '--format_kegg' is to format the raw KEGG database (pep files)
-for use in DRAM2. Because use of the KEGG database requires a license, the user must download the raw KEGG database
-themselves. Currently this only supports formatting a concatenated version of the KEGG pep files see
-(https://github.com/WrightonLabCSU/DRAM/issues/305) for guidance on how to prepare your pep files for formatting.
+			    for use in DRAM2. Because use of the KEGG database requires a license, the user must download the raw KEGG database
+			    themselves. Currently this only supports formatting a concatenated version of the KEGG pep files see
+			    (https://github.com/WrightonLabCSU/DRAM/issues/305) for guidance on how to prepare your pep files for formatting.
 
 Usage:
     nextflow run DRAM2.nf --format_kegg --kegg_pep_loc <path/to/kegg.pep> --kegg_db <path/to/save/output/kegg_db/to>
@@ -365,7 +366,6 @@ Usage:
 def version() {
 log.info"""
 ${DNA_HEADER}
-
 ${DEPENDENCIES}
 """
 }
@@ -379,128 +379,81 @@ ${DEPENDENCIES}
 def helpMessage() {
 log.info """
 ${DNA_HEADER}
-
 ${LICENSE}
-
 ${MAIN_HELP}
-
 ${REQUIRED_OPTIONS}
-
 ${CALL_OPTIONS}
-
 ${ANNOTATE_OPTIONS}
-
 ${DISTILL_OPTIONS}
-
 ${PRODUCT_OPTIONS}
-
 ${TREE_OPTIONS}
-
 ${FORMAT_KEGG_DB_OPTIONS}
-
 ${GENERAL_OPTIONS}
-
 """
 }
 
 def callHelpMessage() {
 log.info """
 ${DNA_HEADER}
-
 ${LICENSE}
-
 ${CALL_DESCRIPTION}
-
 ${REQUIRED_OPTIONS}
-
 ${CALL_OPTIONS}
-
 ${GENERAL_OPTIONS}
-
 """
 }
 
 def annotateHelpMessage() {
 log.info """
 ${DNA_HEADER}
-
 ${LICENSE}
-
 ${ANNOTATE_DESCRIPTION}
-
 ${REQUIRED_OPTIONS}
-
 ${ANNOTATE_OPTIONS}
-
 ${GENERAL_OPTIONS}
-
 """
 }
 
 def distillHelpMessage() {
 log.info """
 ${DNA_HEADER}
-
 ${LICENSE}
-
 ${DISTILL_DESCRIPTION}
-
 ${REQUIRED_OPTIONS}
-
 ${DISTILL_OPTIONS}
-
 ${GENERAL_OPTIONS}
-
 """
 }
 
 def productHelpMessage() {
 log.info """
 ${DNA_HEADER}
-
 ${LICENSE}
-
 ${PRODUCT_DESCRIPTION}
-
 ${REQUIRED_OPTIONS}
-
 ${PRODUCT_OPTIONS}
-
 ${GENERAL_OPTIONS}
-
 """
 }
 
 def adjectivesHelpMessage() {
 log.info """
 ${DNA_HEADER}
-
 ${LICENSE}
-
 ${ADJECTIVES_DESCRIPTION}
-
 ${REQUIRED_OPTIONS}
-
 ${ADJECTIVES_OPTIONS}
-
 ${GENERAL_OPTIONS}
-
 """
 }
 
 def formatKeggHelpMessage() {
 log.info """
 ${DNA_HEADER}
-
 ${LICENSE}
-
 ${FORMAT_KEGG_DB_DESCRIPTION}
-
 ${REQUIRED_OPTIONS}
-
 ${FORMAT_KEGG_DB_OPTIONS}
-
 ${GENERAL_OPTIONS}
-
 """
 }
