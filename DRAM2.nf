@@ -176,12 +176,18 @@ def validOptions = ["--call", "--annotate", "--distill_topic", "--distill_ecosys
 
 if ( !params.profile && !params.rename && params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ) && params.format_kegg == 0 ) {
     error("Please provide one of the following options: ${validOptions.join(', ')}")
+
 }
 
 if( !params.profile && params.use_dbset){
     if (!['metabolism_kegg_set', 'metabolism_set', 'adjectives_kegg_set', 'adjectives_set'].contains(params.use_dbset)) {
         error("Invalid parameter '--use_dbset ${params.use_dbset}'. Valid values are 'metabolism_kegg_set', 'metabolism_set', 'adjectives_kegg_set', 'adjectives_set'.")
     }
+}
+
+// If --format_kegg and any other options are present, throw an error
+if ( params.format_kegg && !(params.call == 0 && params.annotate == 0 && params.annotations == "" && params.merge_annotations == "" && params.merge_distill == "" && (params.distill_topic == "" || params.distill_ecosystem == "" || params.distill_custom == "" ))) {
+    error("If you want to format the KEGG database, you must not provide any other options. Format KEGG DB is a standalone process.")
 }
 
 if( !params.profile && !params.rename && params.annotations == "" && params.annotate == 0 && (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" )){
@@ -1003,7 +1009,7 @@ workflow {
     /* If we are formatting kegg, we do that and then exit the program */
     if ( params.format_kegg ) {
         FORMAT_KEGG_DB( ch_kegg_pep, ch_gene_ko_link, ch_format_kegg_db_script, kegg_download_date )
-        // FORMAT_KEGG_DB( ch_kegg_pep, ch_format_kegg_db_script, kegg_download_date )
+        return
     }
 
     /* Rename fasta headers
