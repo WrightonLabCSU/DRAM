@@ -7,6 +7,9 @@
 </h1>
 
 
+
+DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic and genomic assembled data (e.g. scaffolds or contigs) or called genes (e.g. nuclotide or amino acid format). 
+=======
 <h1 align="center">
   <strong> ⚠️ To use this repo, you unfortunately need databases prepared by DRAM1 (for now) ⚠️ </strong></br>
 </h1>
@@ -14,7 +17,19 @@
 
 DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes. DRAM2 annotates MAGs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene, and then a distill step to curate these annotations into useful functional categories. DRAM2 was implemented in [Nextflow](https://www.nextflow.io/) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
 
-For more detail on DRAM and how DRAM2 works please see our [paper](https://academic.oup.com/nar/article/48/16/8883/5884738).
+
+DRAM is run in four stages: 
+1) Gene calling - genes are called on user provided scaffolds or contigs 
+2) Gene annotation- genes are annotated with a set of user defined databases 
+3) Distillation - annotations are curated into functional categories
+4) Product generation - interactive visualizations of DRAM output are generated 
+
+DRAM2 was implemented in [Nextflow](https://www.nextflow.io/) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
+
+For more detail on DRAM and how DRAM2 works please see our DRAM products
+[DRAM version 1 publication](https://academic.oup.com/nar/article/48/16/8883/5884738)
+[DRAM in KBase publication](https://pubmed.ncbi.nlm.nih.gov/36857575/)
+[DRAM webinar](https://www.youtube.com/watch?v=-Ky2fz2vw2s)
 
 ### DRAM2 Development Note
 
@@ -255,7 +270,7 @@ Additionally, `--merge-annotations` and `--rename` can be run idenpendently of a
 `nextflow run DRAM2.nf --rename --input_fasta_dir <path/to/fasta/directory/>`
 
 
-3) **Call genes using input fastas (use --rename to rename FASTA headers):**
+2) **Call genes using input fastas (use --rename to rename FASTA headers):**
 
 `nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>`
 
@@ -656,7 +671,6 @@ DRAM2.nf
 - **SciPy** [v1.8.1](https://www.scipy.org/)
 - **SQLAlchemy** [v1.4.46](https://www.sqlalchemy.org/)
 - **Barrnap** [v0.9](https://github.com/tseemann/barrnap)
-- **Altair** [v4.2.0](https://altair-viz.github.io/)
 - **OpenPyXL** [v3.0.10](https://openpyxl.readthedocs.io/en/stable/)
 - **NetworkX** [v2.8.8](https://networkx.org/)
 - **Ruby** [v3.1.2](https://www.ruby-lang.org/en/downloads/)
@@ -722,5 +736,3 @@ Please visit the [Read the Docs page](https://dram2.readthedocs.io/en/latest/ind
 ## Citing DRAM
 The DRAM was published in Nucleic Acids Research in 2020 and is available [here](https://academic.oup.com/nar/article/48/16/8883/5884738). If
 DRAM helps you out in your research, please cite it.
-
-

@@ -1,0 +1,87 @@
+gene	call	notes	info
+A_Nitrobacter_hamburgensis_YP_578638  	NxrA	Cytoplasmic Nitrite oxidoreductase	
+Acidovorax delafieldii_NARG	NarG	Nitrogen reductase	
+ACTB1_Anaeromyxobacter_dehalogenans_YP_002491266	ACTB1	Not sure if we want this	
+ACTB1_Bdellovibrio_bacteriovorus_NP_96849 	ACTB1	Not sure if we want this	
+ACTB1_Candidatus_Koribacter_versatilis_Ellin345_YP_592078	ACTB1	Not sure if we want this	
+ACTB1_Candidatus_Solibacter_usitatus_YP_821785	ACTB1	Not sure if we want this	
+ACTB1_Chloroflexus_aggregans_YP_002464666	ACTB1	Not sure if we want this	
+ACTB1_Cytophaga_hutchinsonii_YP_678817	ACTB1	Not sure if we want this	
+ACTB1_Flavobacterium_psychrophilum_YP_001295304 	ACTB1	Not sure if we want this	
+ACTB1_Gallionella_capsiferriformans_ES_2_YP_003846257	ACTB1	Not sure if we want this	
+ACTB1_Geobacter_metallireducens_GS_15_YP_384764	ACTB1	Not sure if we want this	
+ACTB1_Geobacter_sp_M18_YP_004200644	ACTB1	Not sure if we want this	
+ACTB1_Geobacter_uraniireducens_Rf4_YP_001231524	ACTB1	Not sure if we want this	
+ACTB1_Gluconacetobacter_diazotrophicus_YP_001602862	ACTB1	Not sure if we want this	
+ACTB1_Leptospira_interrogans_serovar_NP_713447 	ACTB1	Not sure if we want this	
+ACTB1_Mariprofundus_ferrooxydans_ZP_01451016	ACTB1	Not sure if we want this	
+ACTB1_Methylobacterium_sp_4_YP_001772545 	ACTB1	Not sure if we want this	
+ACTB1_Nitrosococcus_oceani_YP_343269 	ACTB1	Not sure if we want this	
+ACTB1_Opitutus_terrae_gb_ACB77208	ACTB1	Not sure if we want this	
+ACTB1_Ralstonia_eutropha_YP_298623	ACTB1	Not sure if we want this	
+ACTB1_Rhodothermus_marinus_gb_ABV55245	ACTB1	Not sure if we want this	
+ACTB1_Salinibacter_ruber_emb_CBH25246	ACTB1	Not sure if we want this	
+ACTB1_Sideroxydans_lithotrophicus_ES_1_YP_003523268	ACTB1	Not sure if we want this	
+Alkalilimnicola_ehrlichii_ABI55571	ArxA	Anaerobic arsenite oxidase	
+ArrA_Bacillus_selenitireducens_gb_AAQ19491 	ArrA	Arsenate reductase	
+ArrA_Chrysiogenes_arsenatis_gb_AAU11839	ArrA	Arsenate reductase	
+ArrA_Halarsenatibacter_silvermanii_gb_ACF74513 	ArrA	Arsenate reductase	
+ArrA_Sulfurospirillum_barnesii_gb_AAU11840	ArrA	Arsenate reductase	
+ArrA_Wolinella_succinogenes_NP_906980	ArrA	Arsenate reductase	
+ArxA_Ectothiorhodospira_sp_PHS_1_ZP_09695308 	ArxA	Anaerobic arsenite oxidase	
+B_Caldithrix_abyssi_ZP_09550397 	PsrA;PhsA	Thiosulphate reductase;Thiosulphide reductase	double check
+B_Nitrobacter_hamburgensis_YP_578186	NxrA	Cytoplasmic Nitrite oxidoreductase	
+Beggiatoa_sp_PS_ZP_02000390		Unknown Function	
+DmsA_Actinobacillus_succinogenes_130Z gi|75429943|ref|ZP_00732527.1| 	DmsA	Dimethl sulphoxide reductase	
+DmsA_E_coli_sp_P18775	DmsA	Dimethl sulphoxide reductase	
+DmsA_Haemophilus_influenza_sp_P45004	DmsA	Dimethl sulphoxide reductase	
+Gemmatimonas_aurantiaca_YP_002761548 		Alternative complex III	
+Halorhodospira_halophila_YP_001001949	ArxA	Anaerobic arsenite oxidase	
+Hydrogenobacter_thermophilus_YP_003433365 		Unknown Function	
+Hydrogenobaculum_sp_Y04AAS1_YP_002121006		Unknown Function	
+I_OP1_uncultured_candidate_division_bacterium_BAL57377 		Unknown Function	
+II_OP1_uncultured_candidate_division_UNIPROT_TREMBL_H5SSA4		Unknown Function	
+NarG_Escherichia_coli_NP_415742	NarG	Nitrogen reductase	
+NarG_Halomonas_maura_gb_AAT47523	NarG	Nitrogen reductase	
+NarG_Pseudomonas_fluorescens_gb_AEV63780 	NarG	Nitrogen reductase	
+NarG_Pseudomonas_stutzeri_gb_AAZ43099	NarG	Nitrogen reductase	
+Natrinema_pellirubrum_YP_007282293 		Unknown Function	double check
+Nitrobacter_sp_Nb_311A_ZP_01048070	NxrA	Cytoplasmic Nitrite oxidoreductase	
+Nitrobacter_winogradskyi_gb_ABA05326	NxrA	Cytoplasmic Nitrite oxidoreductase	
+Nitrococcus_mobi_EAR23355 	NxrA	Cytoplasmic Nitrite oxidoreductase	
+NxrA_Candidatus_K_stuttgartiensis_CAJ72445	NxrA	Periplasmic Nitrite oxidoreductase	
+NxrA_planctomycete_KSU_1_ZP_10101005	NxrA	Periplasmic Nitrite oxidoreductase	
+NxrA1_Nitrospira_defluvii_YP_003798853 	NxrA	Periplasmic Nitrite oxidoreductase	
+NxrA2_Nitrospira_defluvii_YP_003798871 	NxrA	Periplasmic Nitrite oxidoreductase	
+PhsA_Wolinella_succinogenes_NP_906934 	PsrA;PhsA	Thiosulphate reductase;Thiosulphide reductase	
+PsrA_Carboxydothermus_hydrogenoformans_YP_361367 	Psra	Thiosulphate reductase	
+PsrA_PhsA_Acidiphilium_cryptum_YP_001233491	PsrA;PhsA	Thiosulphate reductase;Thiosulphide reductase	
+PsrA_PhsA_Archaeoglobus_fulgidus_NP_071207 	PsrA;PhsA	Thiosulphate reductase;Thiosulphide reductase	
+PsrA_PhsA_Geobacter_lovleyi_ZP_01593406 	PsrA;PhsA	Thiosulphate reductase;Thiosulphide reductase	
+PsrA_PhsA_Moorella_thermoacetica_ATCC_YP_429324 	PsrA;PhsA	Thiosulphate reductase;Thiosulphide reductase	
+PsrA_PhsA_Thermosinus_carboxydivorans_ZP_01667237 	PsrA;PhsA	Thiosulphate reductase;Thiosulphide reductase	
+PsrA_PhsA_Thermus_thermophilus_YP_004130 	PsrA;PhsA	Thiosulphate reductase;Thiosulphide reductase	
+PsrA_Wolinella_succinogenes_NP_906381	Psra	Thiosulphate reductase	
+QrcB_delta_proteobacterium_NaphS2_ZP_07200609	QrcB	Not sure if we want this	
+QrcB_Desulfatibacillum_alkenivorans_YP_002430439	QrcB	Not sure if we want this	
+QrcB_Desulfococcus_oleovorans_YP_001530428	QrcB	Not sure if we want this	
+QrcB_Desulfomicrobium_baculatum_YP_003159879	QrcB	Not sure if we want this	
+QrcB_Desulfovibrio_magneticus_YP_002953179 	QrcB	Not sure if we want this	
+QrcB_Desulfovibrio_vulgaris_YP_967712	QrcB	Not sure if we want this	
+QrcB_Syntrophobacter_fumaroxidans_YP_844744	QrcB	Not sure if we want this	
+RBG1_10		Not sure if we want this	
+RBG1_1305		Not sure if we want this	
+RBG1_855		Not sure if we want this	
+TMAO_Citrobacter_youngae_ZP_06352135	TMAO	No info on tree	
+TMAO_E_coli_CAA52095	TMAO	No info on tree	
+TMAO_Photobacterium_profundum_YP_129680 	TMAO	No info on tree	
+TMAO_Salmonella_enterica_gb_AEZ47489	TMAO	No info on tree	
+TMAO_Shewanella_massilia_CAA06851 	TMAO	No info on tree	
+TMAO_Vibrio_vulnificus_YP_004189064	TMAO	No info on tree	
+TtrA_Aeropyrum_pernix_NP_148724 	TrtA	Tetrathionate reductase	
+TtrA_Haemophilus_somnus_gb_ABI25172 	TrtA	Tetrathionate reductase	
+TtrA_Photobacterium_profundum_YP_133039 	TrtA	Tetrathionate reductase	
+TtrA_Pyrobaculum_aerophilum_NP_559177	TrtA	Tetrathionate reductase	
+TtrA_Pyrobaculum_arsenaticum_YP_001152643 	TrtA	Tetrathionate reductase	
+TtrA_Wolinella_succinogenes_NP_907142 	TrtA	Tetrathionate reductase	
+TtrA_Yersinia_enterocolitica_YP_001005907	TrtA	Tetrathionate reductase	

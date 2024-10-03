@@ -8,11 +8,11 @@ channels:
 dependencies:
   - python=3.10
   - pandas=1.5.2
-  - pytest=7.2.0
   - scikit-bio=0.5.7
   - mmseqs2==15.6f452
   - hmmer=3.3.2
   - scipy=1.8.1
+  - numpy=1.26.4
   - sqlalchemy=1.4.46
   - barrnap=0.9
   - ruby=3.1.2
@@ -22,19 +22,28 @@ dependencies:
   - prodigal=2.6.3
   - samtools=1.17
   - bowtie2=2.5.1
-  - seqtk
+  - quast=5.2.0
   - ncurses
   - bbmap
   - openpyxl=3.1.2
   - pplacer=1.1.alpha19
   - mafft=7.525
 
-  # visualization packages
-  - click
-  - numpy
-  - networkx>2,<3
-  - panel>1,<2
-  - bokeh>3,<4
+  # R packages
+  - r-base
+  - r-ape
+  - r-ggplot2
+  - bioconductor-ggtree
+  - r-ggrepel
+  - r-dplyr
+  - r-data.table
+  - r-stringr
+  - r-phytools
+  - seqtk
+
+  # Shell tools
+  - bbtools  # for rename.sh
 
   - pip:
-      - matplotlib==3.8.3
+      # visualization package
+      - git+https://github.com/WrightonLabCSU/dram-viz.git

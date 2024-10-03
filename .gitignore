@@ -14,8 +14,14 @@ work/
 product.html
 product.tsv
 
+# Singularity images
 containers/*.sif
+# Saved Docker images and compressed images
+containers/*.tar
+containers/*.tar.gz
+
 test_data/
+output/
 nextflow-LOCAL.config
 .nextflow.log*
 .nextflow/history
@@ -28,3 +34,7 @@ assets/bbmap/*
 assets/bbmap
 assets/bbmap/
 .vscode
+nextflow-local.config
+
+# scratch folder
+scratch/

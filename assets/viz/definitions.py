@@ -1,1 +1,0 @@
-DEFAULT_GROUPBY_COLUMN = "fasta"
