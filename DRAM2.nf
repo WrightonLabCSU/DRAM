@@ -873,15 +873,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 
 }
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Create channels for Product processes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-if ( params.product ){
-    ch_make_product_script = file(params.make_product_script)
-}
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1473,7 +1464,7 @@ workflow {
 
     if( params.product ){
 
-        PRODUCT_HEATMAP( ch_final_annots, params.groupby_column, ch_make_product_script )
+        PRODUCT_HEATMAP( ch_final_annots, params.groupby_column )
 
     }
 

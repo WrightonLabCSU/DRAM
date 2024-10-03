@@ -1,3 +1,9 @@
+# This Dockerfile is used to build the DRAM2 container image
+# This image references files in the assets directory
+# so the Docker build context should be the root of the repository
+# The Dockerfile is run from the root of the repository with the following command:
+# <sudo> docker build -t dram-<version> -f containers/Dockerfile .
+
 # Use miniconda3 as the base image
 FROM continuumio/miniconda3
 
@@ -10,7 +16,6 @@ ENV LC_ALL=en_US.UTF-8
 
 # Label the image
 LABEL maintainer="<mescyphers@gmail.com>"
-
 
 # Make the /opt directory and its contents writable
 RUN chmod 777 /opt && chmod 777 /opt/*
@@ -25,12 +30,8 @@ RUN apt-get update && apt-get install -y \
     r-base-core \
     build-essential
 
-# Install required R packages
-RUN R --slave -e 'install.packages("tidyverse", repos="https://cloud.r-project.org/")'
-
 # Copy necessary files into the image
-#COPY ../assets/bbmap /opt
-COPY environment.yml /opt/environment.yml
+COPY ../assets/conda/environment.yml /opt/environment.yml
 
 # Create conda environment
 RUN conda update conda \

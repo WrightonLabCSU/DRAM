@@ -46,4 +46,4 @@ dependencies:
 
   - pip:
       # visualization package
-      - git+https://github.com/WrightonLabCSU/dram2_viz.git
+      - git+https://github.com/WrightonLabCSU/dram-viz.git
