@@ -23,6 +23,7 @@ dependencies:
   - prodigal=2.6.3
   - samtools=1.17
   - bowtie2=2.5.1
+  - matplotlib=3.8.3
   - seqtk
   - ncurses
   - bbmap
@@ -40,6 +41,5 @@ dependencies:
   - r-phytools
 
   - pip:
-      - matplotlib==3.8.3
       # visualization package
-      - git+https://github.com/WrightonLabCSU/dram2_viz.git
+      - git+https://github.com/WrightonLabCSU/dram2_viz.git      - git+https://github.com/WrightonLabCSU/dram2_viz.git

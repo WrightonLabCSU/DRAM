@@ -11,9 +11,6 @@ ENV LC_ALL=en_US.UTF-8
 # Label the image
 LABEL maintainer="<mescyphers@gmail.com>"
 
-# Copy necessary files into the image
-#COPY ../assets/bbmap /opt
-COPY environment.yml /opt/environment.yml
 
 # Make the /opt directory and its contents writable
 RUN chmod 777 /opt && chmod 777 /opt/*
@@ -24,12 +21,16 @@ RUN apt-get update && apt-get install -y \
     bzip2 \
     git \
     pigz \
-    openjdk-11-jre \
+    openjdk-17-jre \
     r-base-core \
     build-essential
 
 # Install required R packages
 RUN R --slave -e 'install.packages("tidyverse", repos="https://cloud.r-project.org/")'
+
+# Copy necessary files into the image
+#COPY ../assets/bbmap /opt
+COPY environment.yml /opt/environment.yml
 
 # Create conda environment
 RUN conda update conda \
