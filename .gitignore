@@ -14,7 +14,12 @@ work/
 product.html
 product.tsv
 
+# Singularity images
 containers/*.sif
+# Saved Docker images and compressed images
+containers/*.tar
+containers/*.tar.gz
+
 test_data/
 output/
 nextflow-LOCAL.config
