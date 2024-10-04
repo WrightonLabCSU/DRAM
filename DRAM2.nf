@@ -514,7 +514,7 @@ if( params.rename || params.call ){
     ch_generate_gene_locs_script = file(params.generate_gene_locs_script)
 
     // If calling genes, then create a channel called ch_input_fastas.
-    if ( params.input_fasta ) {
+    if ( params.input_fasta != "" ) {
         ch_input_fastas = Channel
             .fromPath(params.input_fasta + params.fasta_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
