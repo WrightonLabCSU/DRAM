@@ -34,83 +34,83 @@ nextflow.enable.dsl = 2
     Load Modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { helpMessage; callHelpMessage; annotateHelpMessage; distillHelpMessage; productHelpMessage; adjectivesHelpMessage; formatKeggHelpMessage; version } from './modules/utils/help.nf'
-include { FORMAT_KEGG_DB                                  } from './modules/database/format_kegg_db.nf'
+include { helpMessage; callHelpMessage; annotateHelpMessage; distillHelpMessage; productHelpMessage; adjectivesHelpMessage; formatKeggHelpMessage; version } from "${projectDir}/modules/utils/help.nf"
+include { FORMAT_KEGG_DB                                  } from "${projectDir}/modules/database/format_kegg_db.nf"
 
-include { RENAME_FASTA                                  } from './modules/call/rename_fasta.nf'
-include { CALL_GENES                                    } from './modules/call/call_genes_prodigal.nf'
-include { QUAST                                         } from './modules/call/quast.nf'
-include { QUAST_COLLECT                                 } from './modules/call/quast_collect.nf'
+include { RENAME_FASTA                                  } from "${projectDir}/modules/call/rename_fasta.nf"
+include { CALL_GENES                                    } from "${projectDir}/modules/call/call_genes_prodigal.nf"
+include { QUAST                                         } from "${projectDir}/modules/call/quast.nf"
+include { QUAST_COLLECT                                 } from "${projectDir}/modules/call/quast_collect.nf"
 
-include { TRNA_SCAN                                     } from './modules/annotate/trna_scan.nf'
-include { RRNA_SCAN                                     } from './modules/annotate/rrna_scan.nf'
-include { TRNA_COLLECT                                  } from './modules/annotate/trna_collect.nf'
-include { RRNA_COLLECT                                  } from './modules/annotate/rrna_collect.nf'
-include { ADD_TAXA                                      } from './modules/annotate/add_taxa.nf'
-include { ADD_BIN_QUALITY                               } from './modules/annotate/add_bin_quality.nf'
+include { TRNA_SCAN                                     } from "${projectDir}/modules/annotate/trna_scan.nf"
+include { RRNA_SCAN                                     } from "${projectDir}/modules/annotate/rrna_scan.nf"
+include { TRNA_COLLECT                                  } from "${projectDir}/modules/annotate/trna_collect.nf"
+include { RRNA_COLLECT                                  } from "${projectDir}/modules/annotate/rrna_collect.nf"
+include { ADD_TAXA                                      } from "${projectDir}/modules/annotate/add_taxa.nf"
+include { ADD_BIN_QUALITY                               } from "${projectDir}/modules/annotate/add_bin_quality.nf"
 
-include { MMSEQS_INDEX                                  } from './modules/annotate/mmseqs_index.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL          } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER         } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL         } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD        } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG           } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF         } from './modules/annotate/mmseqs_search.nf'
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM           } from './modules/annotate/mmseqs_search.nf'
+include { MMSEQS_INDEX                                  } from "${projectDir}/modules/annotate/mmseqs_index.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from "${projectDir}/modules/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL          } from "${projectDir}/modules/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER         } from "${projectDir}/modules/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL         } from "${projectDir}/modules/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD        } from "${projectDir}/modules/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG           } from "${projectDir}/modules/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF         } from "${projectDir}/modules/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM           } from "${projectDir}/modules/annotate/mmseqs_search.nf"
 
-include { ADD_SQL_DESCRIPTIONS as SQL_UNIREF            } from './modules/annotate/add_sql_descriptions.nf'
-include { ADD_SQL_DESCRIPTIONS as SQL_VIRAL             } from './modules/annotate/add_sql_descriptions.nf'
-include { ADD_SQL_DESCRIPTIONS as SQL_MEROPS            } from './modules/annotate/add_sql_descriptions.nf'
-include { ADD_SQL_DESCRIPTIONS as SQL_KEGG              } from './modules/annotate/add_sql_descriptions.nf'
-include { ADD_SQL_DESCRIPTIONS as SQL_PFAM              } from './modules/annotate/add_sql_descriptions.nf'
+include { ADD_SQL_DESCRIPTIONS as SQL_UNIREF            } from "${projectDir}/modules/annotate/add_sql_descriptions.nf"
+include { ADD_SQL_DESCRIPTIONS as SQL_VIRAL             } from "${projectDir}/modules/annotate/add_sql_descriptions.nf"
+include { ADD_SQL_DESCRIPTIONS as SQL_MEROPS            } from "${projectDir}/modules/annotate/add_sql_descriptions.nf"
+include { ADD_SQL_DESCRIPTIONS as SQL_KEGG              } from "${projectDir}/modules/annotate/add_sql_descriptions.nf"
+include { ADD_SQL_DESCRIPTIONS as SQL_PFAM              } from "${projectDir}/modules/annotate/add_sql_descriptions.nf"
 
-include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_KOFAM                  } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from "${projectDir}/modules/annotate/hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_KOFAM                  } from "${projectDir}/modules/annotate/parse_hmmsearch.nf"
 
-include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_DBCAN                  } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from "${projectDir}/modules/annotate/hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_DBCAN                  } from "${projectDir}/modules/annotate/parse_hmmsearch.nf"
 
-include { HMM_SEARCH as HMM_SEARCH_VOG                  } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_VOG                    } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_VOG                  } from "${projectDir}/modules/annotate/hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_VOG                    } from "${projectDir}/modules/annotate/parse_hmmsearch.nf"
 
-include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_CAMPER                 } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from "${projectDir}/modules/annotate/hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_CAMPER                 } from "${projectDir}/modules/annotate/parse_hmmsearch.nf"
 
-include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_CANTHYD                } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from "${projectDir}/modules/annotate/hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_CANTHYD                } from "${projectDir}/modules/annotate/parse_hmmsearch.nf"
 
-include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_SULFUR                 } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from "${projectDir}/modules/annotate/hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_SULFUR                 } from "${projectDir}/modules/annotate/parse_hmmsearch.nf"
 
-include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from './modules/annotate/hmmsearch.nf'
-include { PARSE_HMM as PARSE_HMM_FEGENIE                } from './modules/annotate/parse_hmmsearch.nf'
+include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from "${projectDir}/modules/annotate/hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "${projectDir}/modules/annotate/parse_hmmsearch.nf"
 
-include { GENERIC_HMM_FORMATTER                         } from './modules/annotate/generic_hmm_formatter.nf'
-include { KEGG_HMM_FORMATTER                            } from './modules/annotate/kegg_hmm_formatter.nf'
-include { KOFAM_HMM_FORMATTER                           } from './modules/annotate/kofam_hmm_formatter.nf'
-include { DBCAN_HMM_FORMATTER                           } from './modules/annotate/dbcan_hmm_formatter.nf'
-include { VOG_HMM_FORMATTER                             } from './modules/annotate/vog_hmm_formatter.nf'
-include { CAMPER_HMM_FORMATTER                          } from './modules/annotate/camper_hmm_formatter.nf'
-include { CANTHYD_HMM_FORMATTER                         } from './modules/annotate/canthyd_hmm_formatter.nf'
-include { SULFUR_HMM_FORMATTER                          } from './modules/annotate/sulfur_hmm_formatter.nf'
-include { FEGENIE_HMM_FORMATTER                         } from './modules/annotate/fegenie_hmm_formatter.nf'
+include { GENERIC_HMM_FORMATTER                         } from "${projectDir}/modules/annotate/generic_hmm_formatter.nf"
+include { KEGG_HMM_FORMATTER                            } from "${projectDir}/modules/annotate/kegg_hmm_formatter.nf"
+include { KOFAM_HMM_FORMATTER                           } from "${projectDir}/modules/annotate/kofam_hmm_formatter.nf"
+include { DBCAN_HMM_FORMATTER                           } from "${projectDir}/modules/annotate/dbcan_hmm_formatter.nf"
+include { VOG_HMM_FORMATTER                             } from "${projectDir}/modules/annotate/vog_hmm_formatter.nf"
+include { CAMPER_HMM_FORMATTER                          } from "${projectDir}/modules/annotate/camper_hmm_formatter.nf"
+include { CANTHYD_HMM_FORMATTER                         } from "${projectDir}/modules/annotate/canthyd_hmm_formatter.nf"
+include { SULFUR_HMM_FORMATTER                          } from "${projectDir}/modules/annotate/sulfur_hmm_formatter.nf"
+include { FEGENIE_HMM_FORMATTER                         } from "${projectDir}/modules/annotate/fegenie_hmm_formatter.nf"
 
-include { GENE_LOCS                                     } from './modules/annotate/gene_locs.nf'
+include { GENE_LOCS                                     } from "${projectDir}/modules/annotate/gene_locs.nf"
 
-include { COMBINE_ANNOTATIONS                           } from './modules/annotate/combine_annotations.nf'
-include { COUNT_ANNOTATIONS                             } from './modules/annotate/count_annotations.nf'
-include { ADD_ANNOTATIONS                               } from './modules/annotate/add_annotations.nf'
-include { MERGE_ANNOTATIONS                             } from './modules/annotate/merge_annotations.nf'
-include { GENERATE_GFF_GENBANK                          } from './modules/annotate/generate_gff_genbank.nf'
+include { COMBINE_ANNOTATIONS                           } from "${projectDir}/modules/annotate/combine_annotations.nf"
+include { COUNT_ANNOTATIONS                             } from "${projectDir}/modules/annotate/count_annotations.nf"
+include { ADD_ANNOTATIONS                               } from "${projectDir}/modules/annotate/add_annotations.nf"
+include { MERGE_ANNOTATIONS                             } from "${projectDir}/modules/annotate/merge_annotations.nf"
+include { GENERATE_GFF_GENBANK                          } from "${projectDir}/modules/annotate/generate_gff_genbank.nf"
 
-include { COMBINE_DISTILL                               } from './modules/distill/combine_distill.nf'
-include { DISTILL                                       } from './modules/distill/distill.nf'
+include { COMBINE_DISTILL                               } from "${projectDir}/modules/distill/combine_distill.nf"
+include { DISTILL                                       } from "${projectDir}/modules/distill/distill.nf"
 
 // This is a placeholder Product process
-include { PRODUCT_HEATMAP                               } from './modules/product/product_heatmap.nf'
+include { PRODUCT_HEATMAP                               } from "${projectDir}/modules/product/product_heatmap.nf"
 
-include { TREES                                         } from './modules/trees/trees.nf'
+include { TREES                                         } from "${projectDir}/modules/trees/trees.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -514,7 +514,7 @@ if( params.rename || params.call ){
     ch_generate_gene_locs_script = file(params.generate_gene_locs_script)
 
     // If calling genes, then create a channel called ch_input_fastas.
-    if ( params.input_fasta ) {
+    if ( params.input_fasta != "" ) {
         ch_input_fastas = Channel
             .fromPath(params.input_fasta + params.fasta_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
