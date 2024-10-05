@@ -29,7 +29,7 @@ DRAM2 Call is used to generate called genes from input FASTA files.
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --call 
+        nextflow run DRAM2 --call
 
 `Prodigal v2.6.3 <https://github.com/hyattpd/Prodigal>` is utilized here to generate output ``*.fna``, ``*.faa``, and ``*.gff`` files.
 
@@ -46,7 +46,7 @@ DRAM2 Annotate is used to generate annotations from called genes using both `HMM
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --annotate <options>
+        nextflow run DRAM2 --annotate <options>
 
 Annotate relies on the user to download pre-formatted databases. Additionally the user can provide pre-formatted custom databases as well.
 
@@ -63,7 +63,7 @@ DRAM2 Distill is used to distill down the annotations using expertly-curated dis
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf .... --distill_topic <option> --distill_ecosystem <option> --distill_custom <option>
+        nextflow run DRAM2 .... --distill_topic <option> --distill_ecosystem <option> --distill_custom <option>
 
 Toolkits
 --------
@@ -110,7 +110,7 @@ Generate GFF and GBK:
 
         .. code-block:: bash
 
-            nextflow run DRAM2.nf .... --generate_gff --generate_gbk
+            nextflow run DRAM2 .... --generate_gff --generate_gbk
 
 
 Strain:
@@ -122,7 +122,7 @@ Strain:
 
         .. code-block:: bash
 
-            nextflow run DRAM2.nf .... --strain <options>
+            nextflow run DRAM2 .... --strain <options>
 
 Merge and Add annotations:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -131,9 +131,9 @@ Merge and Add annotations:
 
         .. code-block:: bash
 
-            nextflow run DRAM2.nf --merge_annotations <options>
+            nextflow run DRAM2 --merge_annotations <options>
 
-            nextflow run DRAM2.nf .... --add_annotations <options>
+            nextflow run DRAM2 .... --add_annotations <options>
 
 
 Topic Toolkit
@@ -142,7 +142,7 @@ Topic Toolkit
 
         .. code-block:: bash
 
-            nextflow run DRAM2.nf .... --distill_topic <options>
+            nextflow run DRAM2 .... --distill_topic <options>
 
     Current list of available Distill Topics:
 
@@ -166,7 +166,7 @@ Ecosystem Toolkit
 
         .. code-block:: bash
 
-            nextflow run DRAM2.nf .... --distill_ecosystem <options>
+            nextflow run DRAM2 .... --distill_ecosystem <options>
 
     Current list of available Distill Ecosystems:
 
@@ -233,6 +233,3 @@ Consensus pathways:
 ~~~~~~~~~~~~~~~~~~~
 
     <description>
-
-
-

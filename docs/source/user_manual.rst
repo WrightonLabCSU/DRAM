@@ -5,13 +5,13 @@ DRAM2 provides various commands for calling genes, annotating called genes, and 
 
 .. code-block:: bash
 
-    nextflow run DRAM2.nf --help (--h)
+    nextflow run DRAM2 --help (--h)
 
-    nextflow run DRAM2.nf --version (--v)
+    nextflow run DRAM2 --version (--v)
 
     Example:
 
-    nextflow run DRAM2.nf --input_fasta ../test_data/ 
+    nextflow run DRAM2 --input_fasta ../test_data/
         --outdir DRAM2-test-data-Feb012024/ 
         --call --rename 
         --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur 
@@ -31,7 +31,7 @@ Bring up help menu(s)
 ----------------------------
 .. code-block:: bash
 
-    nextflow run DRAM2.nf --help (--h)
+    nextflow run DRAM2 --help (--h)
 
 
 Bring up versions menu
@@ -39,7 +39,7 @@ Bring up versions menu
 .. code-block:: bash
 
 
-    nextflow run DRAM2.nf --version (--v)
+    nextflow run DRAM2 --version (--v)
 
 
 ----------------------------------------------------------------------------------------------------------------------------
@@ -135,31 +135,31 @@ The usage of DRAM2 involves various commands and options, as outlined below:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --rename --call --annotate --use_<database(s)> --distill_topic <distillate(s)>
+        nextflow run DRAM2 --rename --call --annotate --use_<database(s)> --distill_topic <distillate(s)>
 
 - To call genes using input FASTA files and optionally rename the FASTA headers, use:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>
+        nextflow run DRAM2 --call --rename --input_fasta_dir <path/to/fasta/directory/>
 
 - To annotate called genes using input FASTA files, use:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory>
+        nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory>
 
 - To distill annotations using input annotation files, use:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
+        nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
 - For a more realistic example with multiple options, see:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf 
+        nextflow run DRAM2
             --input_fasta ../test_data/ 
             --outdir DRAM2-test-data-Feb012024/ 
             --call --rename 
@@ -192,7 +192,7 @@ Usage
 To call genes using input FASTA files, use the following command:
 .. code-block:: bash
 
-    nextflow run DRAM2.nf --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
+    nextflow run DRAM2 --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
 
 REQUIRED DRAM2 profile options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -238,10 +238,10 @@ To annotate called genes, use one of the following commands:
 .. code-block:: bash
 
     Annotate called genes using input called genes and the KOFAM database:
-    nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam
+    nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory> --use_kofam
 
     Annotate called genes using input fasta files and the KOFAM database:
-    nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+    nextflow run DRAM2 --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
 
 REQUIRED DRAM2 profile options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -297,7 +297,7 @@ Usage
 To distill annotations, use the following command:
 .. code-block:: bash
 
-    nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
+    nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
 
 *Important: if more than one topic or ecosystem is included, they must be enclosed in single quotes. Example: --distill_topic 'carbon transport'*
 
@@ -306,7 +306,7 @@ Example
 Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
 .. code-block:: bash
 
-    nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
+    nextflow run DRAM2 --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
 
 REQUIRED DRAM2 profile options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

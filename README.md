@@ -1,26 +1,18 @@
 <p align="center">
-  <img src="assets/images/DRAM2_large.png" width="600" height="600">
+  <img src="assets/images/DRAM2_large.png" width="600" height="600" alt="DRAM2 logo">
 </p>
 
-<h1 align="center">
-  <strong> ⚠️ DRAM2 is currently under active development and usage is at your own risk. ⚠️ </strong></br>
-</h1>
-
+## ⚠️ DRAM2 is currently under active development and usage is at your own risk. ⚠️
 
 
 DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic and genomic assembled data (e.g. scaffolds or contigs) or called genes (e.g. nuclotide or amino acid format). 
-=======
-<h1 align="center">
-  <strong> ⚠️ To use this repo, you unfortunately need databases prepared by DRAM1 (for now) ⚠️ </strong></br>
-</h1>
-
 
 DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes. DRAM2 annotates MAGs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene, and then a distill step to curate these annotations into useful functional categories. DRAM2 was implemented in [Nextflow](https://www.nextflow.io/) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
 
 
 DRAM is run in four stages: 
 1) Gene calling - genes are called on user provided scaffolds or contigs 
-2) Gene annotation- genes are annotated with a set of user defined databases 
+2) Gene annotation - genes are annotated with a set of user defined databases 
 3) Distillation - annotations are curated into functional categories
 4) Product generation - interactive visualizations of DRAM output are generated 
 
@@ -33,9 +25,7 @@ For more detail on DRAM and how DRAM2 works please see our DRAM products
 
 ### DRAM2 Development Note
 
-The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1.
-- Future updates will include:
-  - Pre-formatted annotation and description databases avaiable via [GLOBUS](https://www.globus.org/).
+The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM 1.
 
 ----------
 
@@ -59,30 +49,68 @@ For further documentation, tutorials and background information, please visit th
 <a name="install"></a>
 ## Installation
 
-### Option 1: Conda Environment
+### Requirements 
 
-1) Clone the DRAM2 GitHub Repository
-2) Download pre-formatted databases
-3) [Install Anaconda/Miniconda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
-2) [Install Nextflow >= v23.04.2.5870](https://www.nextflow.io/docs/latest/getstarted.html)
-
-### Option 2: Singularity Container
-
-1) Clone the DRAM2 GitHub Repository
-2) [Install Singularity >= v3.7.0](https://docs.sylabs.io/guides/3.0/user-guide/installation.html) (to pull Singualrity images from SyLabs).
-3) Download Singularity container
-4) Download pre-formatted databases
-5) [Install Nextflow >= v23.04.2.5870](https://www.nextflow.io/docs/latest/getstarted.html)
+* Nextflow >= v23.04.2.5870
+* Some form of Conda or a Nextflow supported Container Runtime that can run Docker Images (Apptainer, Singularity CE, Docker, Podman, Sarus, etc.)
+* Docker image file (if using a Container Runtime)
+* DRAM databases (preformatted and downloaded via Globus, or with KEGG, formatted by the user)
 
 
-#### General Instructions:
+### General Instructions:
 
-```
-git clone https://github.com/WrightonLabCSU/DRAM2.git
-cd DRAM2
-./pull_singularity_containers.py
-./pull_databases_full.py
-```
+1) If you do not have Nextflow installed, please follow the instructions [from their documentation page](https://www.nextflow.io/docs/stable/install.html).
+
+2) Choose if you want to install DRAM2 using Conda or a container runtime (Apptainer, Singularity CE, Docker, Podman, Sarus, etc.).
+    - If you choose to use Conda, you will need to have Conda installed on your system. Miniconda is a good option for this because it is lightweight and easy to install. You can find the installation instructions [here](https://docs.anaconda.com/miniconda/miniconda-install/).
+    - If you choose to use a container runtime, you will need to have the container runtime installed on your system. Apptainer is a good option for this, it is the modern and open-source version of Singularity. You can find the installation instructions [here](https://apptainer.org/docs/admin/main/installation.html) but any of the listed above should work.
+
+3) Create a DRAM2 directory to store the DRAM2 files and the nextflow configuration file:
+
+    ```
+    mkdir DRAM2
+    cd DRAM2
+    ```
+
+4) Download the DRAM2 data from Globus in this DRAM2 directory. This is a large download (> 500 GB) and will take some time. 
+    - You can find the data [here](https://app.globus.org/file-manager?origin_id=97ed64b9-dea0-4eb5-a7e0-0b50ac94e889). UUID: 97ed64b9-dea0-4eb5-a7e0-0b50ac94e889 You will need a Globus account to access and download the data.
+    - The download consists of a database folder that contains all the preformatted databases with the description database. As well as a containers folder that contains the docker image to be ran with your container runtime. 
+    - There is also a default nextflow.config file that users can modify to fit their needs. By default, this is the directory structure for the databases and container in relation to the launchDir (DRAM2 directory) that is expected, but this can be changed in the nextflow.config file if the nextflow.config is in the launch directory.
+
+5) You can use nextflow to install and update DRAM2 by running the following command anywhere on your system:
+
+    ```
+    nextflow pull https://github.com/WrightonLabCSU/DRAM2 -user <your-github-username>
+    ```
+   
+    Because DRAM2 is still in a private repository, you will need to use the `-user` flag to pull the repository. This will prompt you to enter your GitHub personal access token. 
+
+    Then to run DRAM2, you can use the following command:
+
+    ```
+    nextflow run DRAM2 <options>
+    ```
+   
+    You can update DRAM2 running the pull command again.
+
+### Important Installation Notes:
+
+Nextflow installs all nextflow pipeline scripts by default in the `$HOME/.nextflow/assets/WrightonLabCSU/DRAM2` directory, allowing nextflow to centralize install and update management. If you are running DRAM2 on a shared system, you may wish to install DRAM2 in a shared directory. DRAM2's actual pipeline scripts are very small and if multiple users are running DRAM2 on the same system, having them each install their own copy of DRAM2 does not take up a lot of space, but it does make it easier to manage updates and versions. 
+
+Two ways to install DRAM2 in a shared directory are:
+
+1) Where nextflow installs all of its scripts when you do `nextflow pull` is defined in the environment variable `NXF_HOME`, which if not set defaults to `$HOME/.nextflow`. You can set this to a shared directory such as `/home/nextflow` and then run `nextflow pull` to install DRAM2 in that shared directory. This will install all nextflow scripts in that shared directory. You may or may not want to install all nextflow scripts in a shared directory, so this may not be the best option.
+
+2) In the launch directory `nextflow.config`, you can add a section that tells nextflow to set `NXF_HOME` for the DRAM2 pipeline. This will only set `NXF_HOME` for the DRAM2 pipeline and not for all nextflow pipelines. This is the best option if you only want to set `NXF_HOME` for the DRAM2 pipeline. At the top of your `nextflow.config` file, you could add something like:
+
+    ```
+    env {
+        NXF_HOME='$PWD'
+    }
+    ```
+
+    This will set `NXF_HOME` to the DRAM2 directory for the DRAM2 pipeline only.
+
 
 ### Important Computation Notes:
 
@@ -200,62 +228,7 @@ DRAM2 databases, unlike DRAM1 databases, will be pre-formatted and hosted online
     - (4.5G)
 
 <a name="database-sets"></a>
-#### DRAM2 Database (sets)
-**Big set**
-- Includes all medium databases + UniRef 
-- Excludes KEGG*
-- 
-`./pull_databases_full.py`
-OR
-Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
 
-**Routine Set**
-- Includes: dbCAN, Kofam, MEROPS, Viral, CAMPER, CANT-HYD, FeGenie, Sulfur, Methyl, Pfam, VOGDB
-- Excludes KEGG*
-- Excludes UniRef
-  
-`./pull_databases_routine.py`
-OR
-Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
-
-**Minimal Set** 
-- Includes: <TBD>
-
-`./pull_databases_minimal.py`
-OR
-Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
-
-
-##### KEGG download and format
-
-A [subscription](https://www.kegg.jp/kegg/download/) is required to download the [kegg](https://www.genome.jp/kegg/) database.
-If you have a subscription and would like to use KEGG you will need to 1) download the KEGG <blank> file, 2) run the `format-KEGG-DRAM2.py script` to format the KEGG database for DRAM2 and 3) place the formatted database files in the appropriate location.
-
-[Download](https://www.kegg.jp/kegg/download/) the amino acid FASTA file (`*.pep`) downloaded from KEGG. This can be any of the gene fasta files that are provided by the KEGG FTP server or a concatenated version of them. 
-
-Run the `format-KEGG-DRAM2.sh` script:
-`./format-KEGG-DRAM2.py <path-to-downloaded-kegg.pep>`
-
---------
-
-<a name="database-descriptions"></a>
-#### DRAM2 Descriptions Database
-
-**Big set**
-- Includes Uniref and KEGG
-  
-`./pull_descriptions_full.py`
-OR
-Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
-
-**Routine Set**
-- Excludes Uniref and KEGG
-  
-`./pull_descriptions_routine.py`
-OR
-Follow these instructions to pull manually via [GLOBUS](https://www.globus.org/).
-
---------
 
 <a name="exampleusage"></a>
 ## Example usage
@@ -267,42 +240,42 @@ Additionally, `--merge-annotations` and `--rename` can be run idenpendently of a
 
 1) **Rename fasta headers based on input sample file names:**
 
-`nextflow run DRAM2.nf --rename --input_fasta_dir <path/to/fasta/directory/>`
+`nextflow run DRAM2 --rename --input_fasta_dir <path/to/fasta/directory/>`
 
 
 2) **Call genes using input fastas (use --rename to rename FASTA headers):**
 
-`nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>`
+`nextflow run DRAM2 --call --rename --input_fasta_dir <path/to/fasta/directory/>`
 
     
 3) **Annotate called genes using input called genes and the KOFAM database:**
 
-`nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam`
+`nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory> --use_kofam`
 
 
 4) **Annotate called genes using input fasta files and the KOFAM database:**
 
-`nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam`
+`nextflow run DRAM2 --annotate --input_fasta <path/to/called/genes/directory> --use_kofam`
 
 
 5) **Merge verious existing annotations files together (Must be generated using DRAM2.):**
 
-`nextflow run DRAM2.nf --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>`
+`nextflow run DRAM2 --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>`
 
 
 6) **Distill using input annotations:**
 
-`nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>`
+`nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>`
 
 
 7) **(Combined): Call, annotate and distill input fasta files:**
 
-`nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>`
+`nextflow run DRAM2 --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>`
 
 
 8) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:**
 
-`nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
+`nextflow run DRAM2 --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
 
 
 9) **"Real-world" example using the test data provided in this repository:**
@@ -343,28 +316,28 @@ DRAM2.nf
         Call, annotate and distill can be run together or, each can be run idependently. 
 
     Bring up help menu:
-        nextflow run DRAM2.nf --help (--h)
+        nextflow run DRAM2 --help (--h)
 
     Bring up versions menu:
-        nextflow run DRAM2.nf --version (--v)      
+        nextflow run DRAM2 --version (--v)      
 
     Usage:
-        nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+        nextflow run DRAM2 --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
         Call genes using input fastas (use --rename to rename FASTA headers):
-            nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>
+            nextflow run DRAM2 --call --rename --input_fasta_dir <path/to/fasta/directory/>
 
         Annotate called genes using input fastas:
-            nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory>
+            nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory>
 
         Distill using input annotations:
-            nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
+            nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
         (Combined): Call, annotate and distill input fasta files:
-            nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+            nextflow run DRAM2 --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
         (Real) example: (on multiple lines for clarity)
-        nextflow run DRAM2.nf --input_fasta ../test_data/ 
+        nextflow run DRAM2 --input_fasta ../test_data/ 
             --outdir DRAM2-test-data-Feb012024/ 
             --call --rename 
             --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur 
@@ -483,7 +456,7 @@ DRAM2.nf
     Usage:
 
         Call genes using input fastas:
-            nextflow run DRAM2.nf --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
+            nextflow run DRAM2 --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
     
     REQUIRED DRAM2 profile options:
         -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
@@ -535,10 +508,10 @@ DRAM2.nf
     Usage:
 
         Annotate called genes using input called genes and the KOFAM database:
-            nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam
+            nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory> --use_kofam
         
         Annotate called genes using input fasta files and the KOFAM database:
-            nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+            nextflow run DRAM2 --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
     
     REQUIRED DRAM2 profile options:
         -profile            STRING  <conda, conda_slurm, singularity, singularity_conda>
@@ -600,12 +573,12 @@ DRAM2.nf
                             Optional tRNA, rRNA and bin quality may also be provided.
     
     Usage:
-        nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
+        nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
         *Important: if more than one topic or ecosystem is included, they must be enclosed in single quotes. Example: --distill_topic 'carbon transport'
     
     Example:
         Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
-            nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
+            nextflow run DRAM2 --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
     
     REQUIRED DRAM2 profile options:
         -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
@@ -655,34 +628,6 @@ DRAM2.nf
         -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
         -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
 -----------
-
-<a name="software"></a>
-### Software Used
-
-- **BBTools** [v39.01](https://jgi.doe.gov/data-and-tools/bbtools/)
-- **Bowtie2** [v2.5.1](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
-- **Prodigal** [v2.6.3](https://github.com/hyattpd/Prodigal)
-- **Python** [v3.10](https://www.python.org/downloads/release/python-3100/)
-- **Pandas** [v1.5.2](https://pandas.pydata.org/pandas-docs/version/1.5.2/)
-- **Pytest** [v7.2.0](https://docs.pytest.org/en/7.2.x/)
-- **Scikit-bio** [v0.5.7](http://scikit-bio.org/)
-- **MMseqs2** [v14.7e284](https://github.com/soedinglab/MMseqs2)
-- **HMMER** [v3.3.2](http://hmmer.org/)
-- **SciPy** [v1.8.1](https://www.scipy.org/)
-- **SQLAlchemy** [v1.4.46](https://www.sqlalchemy.org/)
-- **Barrnap** [v0.9](https://github.com/tseemann/barrnap)
-- **OpenPyXL** [v3.0.10](https://openpyxl.readthedocs.io/en/stable/)
-- **NetworkX** [v2.8.8](https://networkx.org/)
-- **Ruby** [v3.1.2](https://www.ruby-lang.org/en/downloads/)
-- **GNU Parallel** [v20221122](https://www.gnu.org/software/parallel/)
-- **tRNAscan-SE** [v2.0.12](http://lowelab.ucsc.edu/tRNAscan-SE/)
-- **Samtools** [v1.17](http://www.htslib.org/)
-- **CD-HIT** [v4.6](http://weizhong-lab.ucsd.edu/cd-hit/)
-- **CoverM** [v0.6.1](https://github.com/wwood/CoverM)
-- **Subread** [v2.0.6](http://subread.sourceforge.net/)
-- **XlsxWriter** [v3.1.6](https://xlsxwriter.readthedocs.io/)
-- **Numpy** [v1.26.0](https://numpy.org/)
-
 ------
 
 <a name="tipsandtricks"></a>
@@ -697,16 +642,38 @@ In Nextflow DSL2, the `-resume` option offers a powerful feature that allows you
 These Nextflow tips and tricks demonstrate how the `-resume` option can optimize your workflow, save time, and improve the reusability of previously computed data.
 
 **How the resume option does NOT work:**
-- <examples>
+- <examples> TODO: Add examples of how it won't work
+
+Every CLI option in DRAM2 shown above or from `nextflow run DRAM2 --help` can be set in the `nextflow.config` file. This can be useful for setting default options or for setting options that are the same for every run. For example, if you always want to use the `--use_uniref` option, you can set this in the `nextflow.config` file and it will be used for every run by setting in the params section of the `nextflow.config` file:
+
+    ```
+    params {
+        use_uniref = true
+        // or use_uniref = 1
+    }
+    ```
+
+If you are always running `--annotate`, you can set this in the `nextflow.config` file and it will be used for every run by setting in the params section of the `nextflow.config` file:
+
+    ```
+    params {
+        annotate = true
+        // or annotate = 1
+    }
+    ```
+
+
+Nextflow will use the `nextflow.config` file in the launch directory by default. If you want to use a different `nextflow.config` file, you can specify it on the command line with the `-c` option:
+
+    ```
+    nextflow run DRAM2 -c /path/to/some_config_file.config
+    ```
+
+If this is done, the `some_config_file.config` file will only override the options in the `nextflow.config` file in the launch directory that are defined in the `some_config_file.config` file. All other options will be taken from the `nextflow.config` file in the launch directory. 
+
+This can be useful if you have a set of options that you want to use for a specific run, but you want to keep the default options for all other runs. This can also be useful in a shared user environment where you want to keep your options separate from other users.
 
 --------
-
-<a name="systemrequirements"></a>
-## System Requirements
-**EDIT**
-
-### Storage space for databases, database descriptions and potentially a Singualrity container
-Depending on which databases you download, and if you choose to use Singularity or Conda, you will need adequate storage space on your machine.
 
 ### Resource Management
 
