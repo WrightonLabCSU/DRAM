@@ -58,28 +58,28 @@ Description:
     Call, annotate and distill can be run together or, each can be run idependently.
 
 Bring up help menu:
-    nextflow run DRAM2.nf --help (--h)
+    nextflow run DRAM2 --help (--h)
 
 Bring up versions menu:
-    nextflow run DRAM2.nf --version (--v)
+    nextflow run DRAM2 --version (--v)
 
 Usage:
-    nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+    nextflow run DRAM2 --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
     Call genes using input fastas (use --rename to rename FASTA headers):
-        nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>
+        nextflow run DRAM2 --call --rename --input_fasta_dir <path/to/fasta/directory/>
 
     Annotate called genes using input fastas:
-        nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory>
+        nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory>
 
     Distill using input annotations:
-        nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
+        nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
     (Combined): Call, annotate and distill input fasta files:
-        nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+        nextflow run DRAM2 --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
     (Real) example: (on multiple lines for clarity)
-    nextflow run DRAM2.nf --input_fasta ../test_data/
+    nextflow run DRAM2 --input_fasta ../test_data/
         --outdir DRAM2-test-data-Feb012024/
         --call --rename
         --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
@@ -296,7 +296,7 @@ Call description: The purpose of DRAM2 --call is to call genes on input FASTA fi
 Usage:
 
     Call genes using input fastas:
-        nextflow run DRAM2.nf --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
+        nextflow run DRAM2 --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
 """
 
 ANNOTATE_DESCRIPTION = """
@@ -305,10 +305,10 @@ Annotate description: The purpose of DRAM2 '--annotate' is to annotate called ge
 Usage:
 
     Annotate called genes using input called genes and the KOFAM database:
-        nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam
+        nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory> --use_kofam
 
     Annotate called genes using input fasta files and the KOFAM database:
-        nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+        nextflow run DRAM2 --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
 """
 
 DISTILL_DESCRIPTION = """
@@ -318,12 +318,12 @@ Distill description:    The purpose of DRAM2 --distill is to distill down annota
                         Optional tRNA, rRNA and bin quality may also be provided.
 
 Usage:
-    nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
+    nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
     *Important: if more than one topic or ecosystem is included, they must be enclosed in single quotes. Example: --distill_topic 'carbon transport'
 
 Example:
     Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
-        nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
+        nextflow run DRAM2 --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
 """
 
 PRODUCT_DESCRIPTION = """
@@ -331,11 +331,11 @@ Product description: The purpose of DRAM2 --product is to generate a product vis
 		     and save the output to the output directory.
 
 Usage:
-    nextflow run DRAM2.nf --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
+    nextflow run DRAM2 --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
 
 Example:
     Create heatmap product visualization from annotations file and save to output directory:
-        nextflow run DRAM2.nf --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
+        nextflow run DRAM2 --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
 """
 
 ADJECTIVES_DESCRIPTION = """
@@ -354,7 +354,7 @@ Format KEGG DB description: The purpose of DRAM2 '--format_kegg' is to format th
 			    (https://github.com/WrightonLabCSU/DRAM/issues/305) for guidance on how to prepare your pep files for formatting.
 
 Usage:
-    nextflow run DRAM2.nf --format_kegg --kegg_pep_loc <path/to/kegg.pep> --kegg_db <path/to/save/output/kegg_db/to>
+    nextflow run DRAM2 --format_kegg --kegg_pep_loc <path/to/kegg.pep> --kegg_db <path/to/save/output/kegg_db/to>
 """
 
 /*
