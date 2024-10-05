@@ -9,7 +9,6 @@ DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for a
 
 DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes. DRAM2 annotates MAGs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene, and then a distill step to curate these annotations into useful functional categories. DRAM2 was implemented in [Nextflow](https://www.nextflow.io/) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
 
-
 DRAM is run in four stages: 
 1) Gene calling - genes are called on user provided scaffolds or contigs 
 2) Gene annotation - genes are annotated with a set of user defined databases 
@@ -27,35 +26,33 @@ For more detail on DRAM and how DRAM2 works please see our DRAM products
 
 The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM 1.
 
-----------
-
 ## Documentation
 For further documentation, tutorials and background information, please visit the [Read the Docs page](https://dram2.readthedocs.io/en/latest/index.html).
- 
-----------
 
 ## Quick links
 
-- [Installation](#install)
-- [Databases](#databases)
-- [Example command-line usage](#exampleusage)
-- [All command-line options](#options)
-- [Software versions](#software)
-- [Cool Nextflow Tips and Tricks](#tipsandtricks)
-- [System Requirements](#systemrequirements)
-  
-----------
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [General Instructions](#general-instructions)
+- [Important Installation Notes](#important-computation-notes)
+- [Important Computation Notes](#important-computation-notes)
+- [Which is Better?](#which-is-better)
+- [DRAM2 Databases](#dram2-databases)
+- [Example command-line usage](#example-usage)
+- [All command-line options](#command-line-options)
+- [Cool Nextflow Tips and Tricks](#nextflow-tips-and-tricks)
+- [Resource Management](#resource-management)
+- [Summary](#summary)
+- [Citation](#citing-dram)
 
-<a name="install"></a>
 ## Installation
 
-### Requirements 
+### Requirements
 
 * Nextflow >= v23.04.2.5870
 * Some form of Conda or a Nextflow supported Container Runtime that can run Docker Images (Apptainer, Singularity CE, Docker, Podman, Sarus, etc.)
 * Docker image file (if using a Container Runtime)
 * DRAM databases (preformatted and downloaded via Globus, or with KEGG, formatted by the user)
-
 
 ### General Instructions:
 
@@ -168,14 +165,11 @@ DRAM2 utilizes either Conda or Singularity for dependency management and the use
 - Installation Complexity: Can be trickier to install compared to Conda environments.
 - Storage Space: May consume more storage space.
 
-#### Summary
-
 Conda is recommended for its ease of use and versatility across different programming languages.
 Singularity excels in ensuring reproducibility and compatibility in high-performance computing environments.
 
 ---------
 
-<a name="databases"></a>
 ## DRAM2 Databases
 
 DRAM2 databases, unlike DRAM1 databases, will be pre-formatted and hosted online. Users of DRAM2 will need to:
@@ -230,7 +224,6 @@ DRAM2 databases, unlike DRAM1 databases, will be pre-formatted and hosted online
 <a name="database-sets"></a>
 
 
-<a name="exampleusage"></a>
 ## Example usage
 
 DRAM2 apps Call, Annotate and Distill can all be run at once or alternatively, each app can be run individualy (assuming you provide the required input data for each app).
@@ -305,7 +298,6 @@ DRAM2.nf
 
 -------
 
-<a name="options"></a>
 ## Command-line Options
 
 ### General Command-line Options
@@ -630,7 +622,6 @@ DRAM2.nf
 -----------
 ------
 
-<a name="tipsandtricks"></a>
 ### Nextflow Tips and Tricks
 
 In Nextflow DSL2, the `-resume` option offers a powerful feature that allows you to efficiently manage and modify your workflow runs. It enables you to resume a run after it has finished, make changes to parameters, and reuse previously generated data, enhancing the flexibility and reusability of your workflow. Here are some common scenarios where the `-resume` option comes in handy:
@@ -687,8 +678,7 @@ Horizontal scaling refers to the ability to distribute computational tasks acros
 
 By utilizing horizontal scaling, Nextflow can efficiently manage and execute workflows that require significant computational resources, such as those involved in genomic data analysis. This enables DRAM2 to process large datasets and complex analyses in a timely manner, making it suitable for a wide range of research and bioinformatics applications.
 
-#### Summary
---------
+## Summary
 
 DRAM2 comes with configuration files which have the option to change how many "things" can happen at a time in the pipeline.
 
