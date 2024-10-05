@@ -109,6 +109,8 @@ Two ways to install DRAM2 in a shared directory are:
     This will set `NXF_HOME` to the DRAM2 directory for the DRAM2 pipeline only.
 
 
+You will be able to run DRAM2 from anywhere, not just the directory you downloaded your data and config too with the command `nextflow run DRAM2`, but if it is anywhere other than where the nextflow.config file is located, you will need to specify the path to the nextflow.config file with the `-c` flag.
+
 ### Important Computation Notes:
 
 DRAM2 utilizes either Conda or Singularity for dependency management and the user MUST choose one of the following options on execution of any DRAM2 command
