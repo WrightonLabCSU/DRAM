@@ -7,7 +7,7 @@ Let's breakdown the DRAM2 output for each module based on this example command:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --rename --call --annotate --use_kegg --distill_topic <distillate(s)>
+        nextflow run DRAM2 --rename --call --annotate --use_kegg --distill_topic <distillate(s)>
 
 ------------------
 

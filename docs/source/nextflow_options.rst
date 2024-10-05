@@ -8,7 +8,7 @@ Example Command
 
 .. code-block:: bash
 
-    nextflow run DRAM2.nf --rename --call --annotate --use_<database(s)> --distill_topic <distillate(s)>
+    nextflow run DRAM2 --rename --call --annotate --use_<database(s)> --distill_topic <distillate(s)>
 
 Options Breakdown
 ^^^^^^^^^^^^^^^^^

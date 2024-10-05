@@ -14,49 +14,49 @@ Example command-line usage
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --rename --input_fasta_dir <path/to/fasta/directory/>
+        nextflow run DRAM2 --rename --input_fasta_dir <path/to/fasta/directory/>
 
 2. Call genes using input fastas (use --rename to rename FASTA headers.:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --call --rename --input_fasta_dir <path/to/fasta/directory/>
+        nextflow run DRAM2 --call --rename --input_fasta_dir <path/to/fasta/directory/>
 
 3. Annotate called genes using input called genes and the KOFAM database:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --annotate --input_genes <path/to/called/genes/directory> --use_kofam
+        nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory> --use_kofam
 
 4. Annotate called genes using input fasta files and the KOFAM database:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+        nextflow run DRAM2 --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
 
 5. Merge various existing annotations files together (Must be generated using DRAM2..:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>
+        nextflow run DRAM2 --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>
 
 6. Distill using input annotations:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
+        nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
 7. (Combined): Call, annotate and distill input fasta files:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --rename --call --annotate --use_<database(s) --distill_topic <distillate(s.>
+        nextflow run DRAM2 --rename --call --annotate --use_<database(s) --distill_topic <distillate(s.>
 
 8. Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:
 
     .. code-block:: bash
 
-        nextflow run DRAM2.nf --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam
+        nextflow run DRAM2 --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam
 
 9. "Real-world" example using the test data provided in this repository:
 
