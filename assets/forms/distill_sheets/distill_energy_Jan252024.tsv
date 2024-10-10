@@ -1,0 +1,703 @@
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	potential_amg
+K13811	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00958	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00860	adenylylsulfate kinase [EC:2.7.1.25] [RN:R00509]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00955	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00957	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00956	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00390	phosphoadenosine phosphosulfate reductase [EC:1.8.4.8] [RN:R02021]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00380	sulfite reductase (NADPH) [EC:1.8.1.2] [RN:R00858]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00381	sulfite reductase (NADPH) [EC:1.8.1.2] [RN:R00858]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00392	sulfite reductase (ferredoxin) [EC:1.8.7.1] [RN:R00859]	Assimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K17222	soxA; sulfur-oxidizing protein SoxA	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	Energy	Sulfur		TRUE
+K17223	soxX; sulfur-oxidizing protein SoxX	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	Energy	Sulfur		TRUE
+K17224	soxB; sulfur-oxidizing protein SoxB	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	Energy	Sulfur		TRUE
+K17225	soxC; S-disulfanyl-L-cysteine oxidoreductase SoxC [EC:1.8.2.6]	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	Energy	Sulfur		TRUE
+K22622	soxD; S-disulfanyl-L-cysteine oxidoreductase SoxD [EC:1.8.2.6]	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	Energy	Sulfur		TRUE
+K17226	soxY; sulfur-oxidizing protein SoxY	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	Energy	Sulfur		TRUE
+K17227	soxZ; sulfur-oxidizing protein SoxZ	Thiosulfate oxidation by SOX complex, thiosulfate => sulfate	Energy	Sulfur		TRUE
+K00956	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	Dissimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00957	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	Dissimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00958	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	Dissimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00394	adenylylsulfate reductase [EC:1.8.99.2] [RN:R08553]	Dissimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K00395	adenylylsulfate reductase [EC:1.8.99.2] [RN:R08553]	Dissimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K11180	sulfite reductase, dissimilatory-type [EC:1.8.99.5] [RN:R00861]	Dissimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K11181	sulfite reductase, dissimilatory-type [EC:1.8.99.5] [RN:R00861]	Dissimilatory sulfate reduction, sulfate => H2S	Energy	Sulfur		TRUE
+K08352	thiosulfate reductase / polysulfide reductase chain A [EC:1.8.5.5]		Energy	Sulfur		TRUE
+K01011	rhodanase		Energy	Sulfur		TRUE
+K08357	tetrathionate => thiosulfate		Energy	Sulfur		TRUE
+K02703	psbA; photosystem II reaction center D1 protein [EC:1.10.3.9]	Photosystem II	Energy	Photosynthesis		TRUE
+K02706	psbD; photosystem II reaction center D2 protein [EC:1.10.3.9]	Photosystem II	Energy	Photosynthesis		TRUE
+K02705	psbC; photosystem II CP43 chlorophyll apoprotein	Photosystem II	Energy	Photosynthesis		TRUE
+K02704	psbB; photosystem II CP47 chlorophyll apoprotein	Photosystem II	Energy	Photosynthesis		TRUE
+K02707	psbE; photosystem II cytochrome b559 subunit alpha	Photosystem II	Energy	Photosynthesis		TRUE
+K02708	psbF; photosystem II cytochrome b559 subunit beta	Photosystem II	Energy	Photosynthesis		TRUE
+K02635	cytochrome b6	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02637	cytochrome b6-f complex subunit 4	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02634	apocytochrome f	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02636	cytochrome b6-f complex iron-sulfur subunit	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02642	cytochrome b6-f complex subunit 6	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02643	cytochrome b6-f complex subunit 7	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K03689	cytochrome b6-f complex subunit 8	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02640	cytochrome b6-f complex subunit 5	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02689	psaA; photosystem I P700 chlorophyll a apoprotein A1	Photosystem I	Energy	Photosynthesis		TRUE
+K02690	psaB; photosystem I P700 chlorophyll a apoprotein A2	Photosystem I	Energy	Photosynthesis		TRUE
+K02691	psaC; photosystem I subunit VII	Photosystem I	Energy	Photosynthesis		TRUE
+K02692	psaD; photosystem I subunit II	Photosystem I	Energy	Photosynthesis		TRUE
+K02693	psaE; photosystem I subunit IV	Photosystem I	Energy	Photosynthesis		TRUE
+K02694	psaF; photosystem I subunit III	Photosystem I	Energy	Photosynthesis		TRUE
+K00281	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
+K00283	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
+K00605	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
+K00382	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
+K02437	glycine cleavage system [RN:R01221]	Photorespiration	Energy	Photosynthesis		TRUE
+K08928	pufL; photosynthetic reaction center L subunit	Anoxygenic photosystem II	Energy	Photosynthesis		TRUE
+K08929	pufM; photosynthetic reaction center M subunit	Anoxygenic photosystem II	Energy	Photosynthesis		TRUE
+K08940	pscA; photosystem P840 reaction center large subunit	Anoxygenic photosystem I	Energy	Photosynthesis		TRUE
+K08941	pscB; photosystem P840 reaction center iron-sulfur protein	Anoxygenic photosystem I	Energy	Photosynthesis		TRUE
+K08942	pscC; photosystem P840 reaction center cytochrome c551	Anoxygenic photosystem I	Energy	Photosynthesis		TRUE
+K08943	pscD; photosystem P840 reaction center protein PscD	Anoxygenic photosystem I	Energy	Photosynthesis		TRUE
+K02638	plastocyanin	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02639	ferredoxin	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K02641	ferredoxin--NADP+ reductase	Cytochrome b6f complex	Energy	Photosynthesis		TRUE
+K00412	CYTB; ubiquinol-cytochrome c reductase cytochrome b subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K00413	CYC1; ubiquinol-cytochrome c reductase cytochrome c1 subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K00410	fbcH; ubiquinol-cytochrome c reductase cytochrome b/c1 subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K00411	UQCRFS1; ubiquinol-cytochrome c reductase iron-sulfur subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K03886	MQCRA; menaquinol-cytochrome c reductase iron-sulfur subunit [EC:1.10.2.-]	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K03887	MQCRB; menaquinol-cytochrome c reductase cytochrome b subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K03888	MQCRC; menaquinol-cytochrome c reductase cytochrome b/c subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K03890	qcrA; ubiquinol-cytochrome c reductase iron-sulfur subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K03891	qcrB; ubiquinol-cytochrome c reductase cytochrome b subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K03889	qcrC; ubiquinol-cytochrome c reductase cytochrome c subunit	Cytochrome bc1 complex respiratory unit	Energy	Oxygen		TRUE
+K00412	CYTB; ubiquinol-cytochrome c reductase cytochrome b subunit	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00413	CYC1; ubiquinol-cytochrome c reductase cytochrome c1 subunit	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00410	FBCH; ubiquinol-cytochrome c reductase cytochrome b/c1 subunit	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00411	UQCRFS1; ubiquinol-cytochrome c reductase iron-sulfur subunit	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00414	QCR1; ubiquinol-cytochrome c reductase core subunit 1	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00415	QCR2; ubiquinol-cytochrome c reductase core subunit 2	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00416	QCR6; ubiquinol-cytochrome c reductase subunit 6	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00417	QCR7; ubiquinol-cytochrome c reductase subunit 7	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00418	QCR8; ubiquinol-cytochrome c reductase subunit 8	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00419	QCR9; ubiquinol-cytochrome c reductase subunit 9	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00420	QCR10; ubiquinol-cytochrome c reductase subunit 10	Cytochrome bc1 complex	Energy	Oxygen		TRUE
+K00425	cytochrome bd ubiquinol oxidase subunit I [EC:1.10.3.14]	Cytochrome bd ubiquinol oxidase	Energy	Oxygen		TRUE
+K00426	cytochrome bd ubiquinol oxidase subunit II [EC:1.10.3.14]	Cytochrome bd ubiquinol oxidase	Energy	Oxygen		TRUE
+K00424	cydX; cytochrome bd-I ubiquinol oxidase subunit X [EC:1.10.3.14]	Cytochrome bd ubiquinol oxidase	Energy	Oxygen		TRUE
+K22501	appX; cytochrome bd-II ubiquinol oxidase subunit AppX [EC:1.10.3.14]	Cytochrome bd ubiquinol oxidase	Energy	Oxygen		TRUE
+K02257	COX10; protoheme IX farnesyltransferase [EC:2.5.1.-]	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02262	COX3; cytochrome c oxidase subunit 3	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02256	COX1; cytochrome c oxidase subunit 1 [EC:1.9.3.1]	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02261	COX2; cytochrome c oxidase subunit 2	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02263	COX4; cytochrome c oxidase subunit 4	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02264	COX5A; cytochrome c oxidase subunit 5a	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02265	COX5B; cytochrome c oxidase subunit 5b	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02266	COX6A; cytochrome c oxidase subunit 6a	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02267	COX6B; cytochrome c oxidase subunit 6b	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02268	COX6C; cytochrome c oxidase subunit 6c	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02269	COX7; cytochrome c oxidase subunit 7	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02270	COX7A; cytochrome c oxidase subunit 7a	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02271	COX7B; cytochrome c oxidase subunit 7b	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02272	COX7C; cytochrome c oxidase subunit 7c	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02273	COX8; cytochrome c oxidase subunit 8	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02258	COX11; cytochrome c oxidase assembly protein subunit 11	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02259	COX15; cytochrome c oxidase assembly protein subunit 15	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02260	COX17; cytochrome c oxidase assembly protein subunit 17	Cytochrome c oxidase	Energy	Oxygen		TRUE
+K02275	coxB; cytochrome c oxidase subunit II [EC:1.9.3.1]	Cytochrome c oxidase, prokaryotes	Energy	Oxygen		TRUE
+K02274	coxA; cytochrome c oxidase subunit I [EC:1.9.3.1]	Cytochrome c oxidase, prokaryotes	Energy	Oxygen		TRUE
+K02276	coxC; cytochrome c oxidase subunit III [EC:1.9.3.1]	Cytochrome c oxidase, prokaryotes	Energy	Oxygen		TRUE
+K15408	coxAC; cytochrome c oxidase subunit I+III [EC:1.9.3.1]	Cytochrome c oxidase, prokaryotes	Energy	Oxygen		TRUE
+K02277	coxD; cytochrome c oxidase subunit IV [EC:1.9.3.1]	Cytochrome c oxidase, prokaryotes	Energy	Oxygen		TRUE
+K00404	ccoN; cb-type cytochrome c oxidase subunit I [EC:1.9.3.1]	Cytochrome c oxidase, cbb3-type	Energy	Oxygen		TRUE
+K00405	ccoO; cb-type cytochrome c oxidase subunit II	Cytochrome c oxidase, cbb3-type	Energy	Oxygen		TRUE
+K15862	ccoNO; cbb3-type cytochrome c oxidase subunit I/II	Cytochrome c oxidase, cbb3-type	Energy	Oxygen		TRUE
+K00407	ccoQ; cb-type cytochrome c oxidase subunit IV	Cytochrome c oxidase, cbb3-type	Energy	Oxygen		TRUE
+K00406	ccoP; cb-type cytochrome c oxidase subunit III	Cytochrome c oxidase, cbb3-type	Energy	Oxygen		TRUE
+K02827	qoxB; cytochrome aa3-600 menaquinol oxidase subunit I [EC:1.10.3.12]	Cytochrome aa3-600 menaquinol oxidase	Energy	Oxygen		TRUE
+K02826	qoxA; cytochrome aa3-600 menaquinol oxidase subunit II [EC:1.10.3.12]	Cytochrome aa3-600 menaquinol oxidase	Energy	Oxygen		TRUE
+K02828	qoxC; cytochrome aa3-600 menaquinol oxidase subunit III [EC:1.10.3.12]	Cytochrome aa3-600 menaquinol oxidase	Energy	Oxygen		TRUE
+K02829	qoxD; cytochrome aa3-600 menaquinol oxidase subunit IV [EC:1.10.3.12]	Cytochrome aa3-600 menaquinol oxidase	Energy	Oxygen		TRUE
+K02297	cyoA; cytochrome o ubiquinol oxidase subunit II [EC:1.10.3.10]	Cytochrome o ubiquinol oxidase	Energy	Oxygen		TRUE
+K02298	cyoB; cytochrome o ubiquinol oxidase subunit I [EC:1.10.3.10]	Cytochrome o ubiquinol oxidase	Energy	Oxygen		TRUE
+K02299	cyoC; cytochrome o ubiquinol oxidase subunit III	Cytochrome o ubiquinol oxidase	Energy	Oxygen		TRUE
+K02300	cyoD; cytochrome o ubiquinol oxidase operon protein cyoD	Cytochrome o ubiquinol oxidase	Energy	Oxygen		TRUE
+K00937	polyphosphate kinase ???	Cytochrome d ubiquinol oxidase	Energy	Oxygen		TRUE
+K20932	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	Nitrification, ammonia => nitrite	Energy	Nitrogen		TRUE
+K20933	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	Nitrification, ammonia => nitrite	Energy	Nitrogen		TRUE
+K20934	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	Nitrification, ammonia => nitrite	Energy	Nitrogen		TRUE
+K20935	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	Nitrification, ammonia => nitrite	Energy	Nitrogen		TRUE
+K02588	nitrogenase iron protein [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen		TRUE
+K02586	nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen		TRUE
+K02591	nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen		TRUE
+K00531	nitrogenase delta subunit [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen		TRUE
+K22896	vanadium-dependent nitrogenase [EC:1.18.6.2] [RN:R12084]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen		TRUE
+K22897	vanadium-dependent nitrogenase [EC:1.18.6.2] [RN:R12084]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen		TRUE
+K22898	vanadium nitrogenase delta subunit [EC:1.18.6.2] [RN:R12084]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen		TRUE
+K22899	vanadium nitrogenase iron protein [RN:R12084]	Nitrogen fixation, nitrogen => ammonia	Energy	Nitrogen		TRUE
+K10944	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Nitrification, ammonia => nitrite	Energy	Nitrogen		TRUE
+K10945	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Nitrification, ammonia => nitrite	Energy	Nitrogen		TRUE
+K10946	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Nitrification, ammonia => nitrite	Energy	Nitrogen		TRUE
+K10535	hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	Nitrification, ammonia => nitrite	Energy	Nitrogen		TRUE
+K00370	nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K00371	nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K00374	nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K02567	periplasmic nitrate reductase NapA [EC:1.7.99.-] [RN:R00798]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K02568	cytochrome c-type protein NapB [RN:R00798]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K00368	nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K15864	nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K04561	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K02305	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K15877	fungal nitric oxide reductase [EC:1.7.1.14] [RN:R02492 R09446 R09808 R09809]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K00376	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]	Denitrification, nitrate => nitrogen	Energy	Nitrogen		TRUE
+K00370	respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K00371	respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K00374	respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K02567	dissimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K02568	dissimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K00362	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K00363	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K03385	respiratory nitrite reductase [EC:1.7.2.2] [RN:R05712]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K15876	respiratory nitrite reductase [EC:1.7.2.2] [RN:R05712]	Dissimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K00367	assimilatory nitrate reductase [EC:1.7.7.2] [RN:R00791]	Assimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K10534	nitrate reductase (NAD(P)H) [EC:1.7.1.1 1.7.1.2 1.7.1.3] [RN:R00794 R00796]	Assimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K00372	assimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	Assimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K00360	assimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	Assimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K00366	assimilatory nitrite reductase [EC:1.7.7.1] [RN:R00790]	Assimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K17877	assimilatory nitrite reductase [EC:1.7.1.4] [RN:R00787 R00789]	Assimilatory nitrate reduction, nitrate => ammonia	Energy	Nitrogen		TRUE
+K02575	NRT; MFS transporter, NNP family, nitrate/nitrite transporter	Nitrate assimilation	Energy	Nitrogen		TRUE
+K10944	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
+K10945	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
+K10946	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
+K10535	hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
+K00370	nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
+K00371	nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	Complete nitrification, comammox, ammonia => nitrite => nitrate	Energy	Nitrogen		TRUE
+K20935	hdh; hydrazine dehydrogenase	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K20932	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K20933	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K20934	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K20935	hzs; Hydrazine synthase subunit (aka: hzsC) [EC:1.7.2.7] [RN:R09799]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K10535	hox, hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K00368	nir, nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K15864	nir, nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K00370	nxr, nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+K00371	nxr, nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	nitrite + ammonia => nitrogen	Energy	Nitrogen	nitrite + ammonia => nitrogen	TRUE
+EC:1.16.1.1	mercury(II) reductase	Mercury	Energy	Metal Reduction		TRUE
+EC:1.20.4.1	arsenate reductase (glutaredoxin); ArsC (ambiguous)	Arsenate	Energy	Metal Reduction		TRUE
+EC:1.20.99.1	arsenate reductase (donor); arsenate:(acceptor) oxidoreductase	Arsenate	Energy	Metal Reduction		TRUE
+K17050	selenate/chlorate reductase subunit alpha[EC:1.97.1.9 1.97.1.1]	Selenate/Chlorate	Energy	Metal Reduction		TRUE
+K00436	NAD-reducing hydrogenase large subunit [EC:1.12.1.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K00437	[NiFe] hydrogenase large subunit [EC:1.12.2.1]	hydrogenase	Energy	Hydrogenases		TRUE
+K00440	coenzyme F420 hydrogenase subunit alpha [EC:1.12.98.1]	hydrogenase	Energy	Hydrogenases		TRUE
+K00441	coenzyme F420 hydrogenase subunit beta [EC:1.12.98.1]	hydrogenase	Energy	Hydrogenases		TRUE
+K00442	coenzyme F420 hydrogenase subunit delta	hydrogenase	Energy	Hydrogenases		TRUE
+K00443	coenzyme F420 hydrogenase subunit gamma [EC:1.12.98.1]	hydrogenase	Energy	Hydrogenases		TRUE
+K00532	ferredoxin hydrogenase [EC:1.12.7.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K00533	ferredoxin hydrogenase large subunit [EC:1.12.7.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K00534	ferredoxin hydrogenase small subunit [EC:1.12.7.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K05586	bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K05587	bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K05588	bidirectional [NiFe] hydrogenase diaphorase subunit [EC:7.1.1.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K06441	ferredoxin hydrogenase gamma subunit [EC:1.12.7.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K06862	energy-converting hydrogenase B subunit Q	hydrogenase	Energy	Hydrogenases		TRUE
+K13942	5,10-methenyltetrahydromethanopterin hydrogenase [EC:1.12.98.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K14068	methanophenazine hydrogenase, large subunit [EC:1.12.98.3]	hydrogenase	Energy	Hydrogenases		TRUE
+K14069	methanophenazine hydrogenase, cytochrome b subunit [EC:1.12.98.3]	hydrogenase	Energy	Hydrogenases		TRUE
+K14070	methanophenazine hydrogenase [EC:1.12.98.3]	hydrogenase	Energy	Hydrogenases		TRUE
+K14086	ech hydrogenase subunit A	hydrogenase	Energy	Hydrogenases		TRUE
+K14087	ech hydrogenase subunit B	hydrogenase	Energy	Hydrogenases		TRUE
+K14088	ech hydrogenase subunit C	hydrogenase	Energy	Hydrogenases		TRUE
+K14089	ech hydrogenase subunit D	hydrogenase	Energy	Hydrogenases		TRUE
+K14090	ech hydrogenase subunit E	hydrogenase	Energy	Hydrogenases		TRUE
+K14091	ech hydrogenase subunit F	hydrogenase	Energy	Hydrogenases		TRUE
+K14092	energy-converting hydrogenase A subunit A	hydrogenase	Energy	Hydrogenases		TRUE
+K14093	energy-converting hydrogenase A subunit B	hydrogenase	Energy	Hydrogenases		TRUE
+K14094	energy-converting hydrogenase A subunit C	hydrogenase	Energy	Hydrogenases		TRUE
+K14095	energy-converting hydrogenase A subunit D	hydrogenase	Energy	Hydrogenases		TRUE
+K14096	energy-converting hydrogenase A subunit E	hydrogenase	Energy	Hydrogenases		TRUE
+K14097	energy-converting hydrogenase A subunit F	hydrogenase	Energy	Hydrogenases		TRUE
+K14098	energy-converting hydrogenase A subunit G	hydrogenase	Energy	Hydrogenases		TRUE
+K14099	energy-converting hydrogenase A subunit H	hydrogenase	Energy	Hydrogenases		TRUE
+K14100	energy-converting hydrogenase A subunit I	hydrogenase	Energy	Hydrogenases		TRUE
+K14101	energy-converting hydrogenase A subunit J	hydrogenase	Energy	Hydrogenases		TRUE
+K14102	energy-converting hydrogenase A subunit K	hydrogenase	Energy	Hydrogenases		TRUE
+K14103	energy-converting hydrogenase A subunit L	hydrogenase	Energy	Hydrogenases		TRUE
+K14104	energy-converting hydrogenase A subunit M	hydrogenase	Energy	Hydrogenases		TRUE
+K14105	energy-converting hydrogenase A subunit N	hydrogenase	Energy	Hydrogenases		TRUE
+K14106	energy-converting hydrogenase A subunit O	hydrogenase	Energy	Hydrogenases		TRUE
+K14107	energy-converting hydrogenase A subunit P	hydrogenase	Energy	Hydrogenases		TRUE
+K14108	energy-converting hydrogenase A subunit Q	hydrogenase	Energy	Hydrogenases		TRUE
+K14109	energy-converting hydrogenase A subunit R	hydrogenase	Energy	Hydrogenases		TRUE
+K14110	energy-converting hydrogenase B subunit A	hydrogenase	Energy	Hydrogenases		TRUE
+K14111	energy-converting hydrogenase B subunit B	hydrogenase	Energy	Hydrogenases		TRUE
+K14112	energy-converting hydrogenase B subunit C	hydrogenase	Energy	Hydrogenases		TRUE
+K14113	energy-converting hydrogenase B subunit D	hydrogenase	Energy	Hydrogenases		TRUE
+K14114	energy-converting hydrogenase B subunit E	hydrogenase	Energy	Hydrogenases		TRUE
+K14115	energy-converting hydrogenase B subunit F	hydrogenase	Energy	Hydrogenases		TRUE
+K14116	energy-converting hydrogenase B subunit G	hydrogenase	Energy	Hydrogenases		TRUE
+K14117	energy-converting hydrogenase B subunit H	hydrogenase	Energy	Hydrogenases		TRUE
+K14118	energy-converting hydrogenase B subunit I	hydrogenase	Energy	Hydrogenases		TRUE
+K14119	energy-converting hydrogenase B subunit J	hydrogenase	Energy	Hydrogenases		TRUE
+K14120	energy-converting hydrogenase B subunit K	hydrogenase	Energy	Hydrogenases		TRUE
+K14121	energy-converting hydrogenase B subunit L	hydrogenase	Energy	Hydrogenases		TRUE
+K14122	energy-converting hydrogenase B subunit M	hydrogenase	Energy	Hydrogenases		TRUE
+K14123	energy-converting hydrogenase B subunit N	hydrogenase	Energy	Hydrogenases		TRUE
+K14124	energy-converting hydrogenase B subunit O	hydrogenase	Energy	Hydrogenases		TRUE
+K14125	energy-converting hydrogenase B subunit P	hydrogenase	Energy	Hydrogenases		TRUE
+K14126	F420-non-reducing hydrogenase large subunit [EC:1.12.99.- 1.8.98.5]	hydrogenase	Energy	Hydrogenases		TRUE
+K14127	F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.12.99.- 1.8.98.5 1.8.98.6]	hydrogenase	Energy	Hydrogenases		TRUE
+K14128	F420-non-reducing hydrogenase small subunit [EC:1.12.99.- 1.8.98.5]	hydrogenase	Energy	Hydrogenases		TRUE
+K17992	NADP-reducing hydrogenase subunit HndB [EC:1.12.1.3]	hydrogenase	Energy	Hydrogenases		TRUE
+K18005	[NiFe] hydrogenase diaphorase moiety large subunit [EC:1.12.1.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K18006	[NiFe] hydrogenase diaphorase moiety small subunit [EC:1.12.1.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K18007	NAD-reducing hydrogenase small subunit [EC:1.12.1.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K18008	[NiFe] hydrogenase small subunit [EC:1.12.2.1]	hydrogenase	Energy	Hydrogenases		TRUE
+K18016	membrane-bound hydrogenase subunit alpha [EC:1.12.7.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K18017	membrane-bound hydrogenase subunit beta [EC:1.12.7.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K18023	membrane-bound hydrogenase subunit mbhJ [EC:1.12.7.2]	hydrogenase	Energy	Hydrogenases		TRUE
+K18330	NADP-reducing hydrogenase subunit HndA [EC:1.12.1.3]	hydrogenase	Energy	Hydrogenases		TRUE
+K18331	NADP-reducing hydrogenase subunit HndC [EC:1.12.1.3]	hydrogenase	Energy	Hydrogenases		TRUE
+K18332	NADP-reducing hydrogenase subunit HndD [EC:1.12.1.3]	hydrogenase	Energy	Hydrogenases		TRUE
+K19640	putative two-component system protein, hydrogenase maturation factor HypX/HoxX	hydrogenase	Energy	Hydrogenases		TRUE
+K23548	uptake hydrogenase small subunit [EC:1.12.99.6]	hydrogenase	Energy	Hydrogenases		TRUE
+K23549	uptake hydrogenase large subunit [EC:1.12.99.6]	hydrogenase	Energy	Hydrogenases		TRUE
+K00249	acyl-CoA dehydrogenase [EC:1.3.8.7] [RN:R04432]	Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	Energy	Electron transport Chain		TRUE
+K07511	enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03045]	Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	Energy	Electron transport Chain		TRUE
+K07514	enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03045]	Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	Energy	Electron transport Chain		TRUE
+K07515	enoyl-CoA hydratase [EC:4.2.1.17] [RN:R03045]	Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	Energy	Electron transport Chain		TRUE
+K14729	multifunctional beta-oxidation protein [EC:4.2.1.-] [RN:R03045]	Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	Energy	Electron transport Chain		TRUE
+K05605	3-hydroxyisobutyryl-CoA hydrolase [EC:3.1.2.4] [RN:R03157 R03158]	Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	Energy	Electron transport Chain		TRUE
+K23146	3-hydroxypropionate dehydrogenase [EC:1.1.1.59] [RN:R01608]	Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	Energy	Electron transport Chain		TRUE
+K00140	malonate-semialdehyde dehydrogenase (acetylating) [EC:1.2.1.18] [RN:R00740]	Malonate semialdehyde pathway, propanoyl-CoA => acetyl-CoA	Energy	Electron transport Chain		TRUE
+K00330	nuoA; NADH-quinone oxidoreductase subunit A [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00331	nuoB; NADH-quinone oxidoreductase subunit B [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00332	nuoC; NADH-quinone oxidoreductase subunit C [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00333	nuoD; NADH-quinone oxidoreductase subunit D [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K13378	nuoCD; NADH-quinone oxidoreductase subunit C/D [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K13380	nuoBCD; NADH-quinone oxidoreductase subunit B/C/D [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00334	nuoE; NADH-quinone oxidoreductase subunit E [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00335	nuoF; NADH-quinone oxidoreductase subunit F [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00336	nuoG; NADH-quinone oxidoreductase subunit G [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00337	nuoH; NADH-quinone oxidoreductase subunit H [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00338	nuoI; NADH-quinone oxidoreductase subunit I [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00339	nuoJ; NADH-quinone oxidoreductase subunit J [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00340	nuoK; NADH-quinone oxidoreductase subunit K [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00341	nuoL; NADH-quinone oxidoreductase subunit L [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00342	nuoM; NADH-quinone oxidoreductase subunit M [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K15863	nuoLM; NADH-quinone oxidoreductase subunit L/M [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00343	nuoN; NADH-quinone oxidoreductase subunit N [EC:7.1.1.2]	NADH:quinone oxidoreductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K05574	ndhC; NAD(P)H-quinone oxidoreductase subunit 3 [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05582	ndhK; NAD(P)H-quinone oxidoreductase subunit K [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05581	ndhJ; NAD(P)H-quinone oxidoreductase subunit J [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05579	ndhH; NAD(P)H-quinone oxidoreductase subunit H [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05572	ndhA; NAD(P)H-quinone oxidoreductase subunit 1 [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05580	ndhI; NAD(P)H-quinone oxidoreductase subunit I [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05578	ndhG; NAD(P)H-quinone oxidoreductase subunit 6 [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05576	ndhE; NAD(P)H-quinone oxidoreductase subunit 4L [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05577	ndhF; NAD(P)H-quinone oxidoreductase subunit 5 [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05575	ndhD; NAD(P)H-quinone oxidoreductase subunit 4 [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05573	ndhB; NAD(P)H-quinone oxidoreductase subunit 2 [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05583	ndhL; NAD(P)H-quinone oxidoreductase subunit L [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05584	ndhM; NAD(P)H-quinone oxidoreductase subunit M [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K05585	ndhN; NAD(P)H-quinone oxidoreductase subunit N [EC:7.1.1.2]	NAD(P)H:quinone oxidoreductase, chloroplasts and cyanobacteria	Energy	Electron transport Chain		TRUE
+K00236	SDHC; succinate dehydrogenase (ubiquinone) cytochrome b560 subunit	Succinate dehydrogenase (ubiquinone)	Energy	Electron transport Chain		TRUE
+K00237	SDHD; succinate dehydrogenase (ubiquinone) membrane anchor subunit	Succinate dehydrogenase (ubiquinone)	Energy	Electron transport Chain		TRUE
+K00234	SDHA; succinate dehydrogenase (ubiquinone) flavoprotein subunit [EC:1.3.5.1]	Succinate dehydrogenase (ubiquinone)	Energy	Electron transport Chain		TRUE
+K00235	SDHB; succinate dehydrogenase (ubiquinone) iron-sulfur subunit [EC:1.3.5.1]	Succinate dehydrogenase (ubiquinone)	Energy	Electron transport Chain		TRUE
+K00241	sdhC; succinate dehydrogenase cytochrome b556 subunit	Succinate dehydrogenase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00242	sdhD; succinate dehydrogenase membrane anchor subunit	Succinate dehydrogenase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00239	sdhA; succinate dehydrogenase flavoprotein subunit [EC:1.3.5.1]	Succinate dehydrogenase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00240	sdhB; succinate dehydrogenase iron-sulfur subunit [EC:1.3.5.1]	Succinate dehydrogenase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00244	frdA; fumarate reductase flavoprotein subunit [EC:1.3.5.4]	Fumarate reductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00245	frdB; fumarate reductase iron-sulfur subunit [EC:1.3.5.4]	Fumarate reductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00246	frdC; fumarate reductase subunit C	Fumarate reductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00247	frdD; fumarate reductase subunit D	Fumarate reductase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02111	ATPF1A; F-type H+-transporting ATPase subunit alpha [EC:3.6.3.14]	F-type ATPase, prokaryotes and chloroplasts	Energy	Electron transport Chain		TRUE
+K02112	ATPF1B; F-type H+-transporting ATPase subunit beta [EC:3.6.3.14]	F-type ATPase, prokaryotes and chloroplasts	Energy	Electron transport Chain		TRUE
+K02113	ATPF1D; F-type H+-transporting ATPase subunit delta	F-type ATPase, prokaryotes and chloroplasts	Energy	Electron transport Chain		TRUE
+K02114	ATPF1E; F-type H+-transporting ATPase subunit epsilon	F-type ATPase, prokaryotes and chloroplasts	Energy	Electron transport Chain		TRUE
+K02115	ATPF1G, atpG	F-type ATPase, prokaryotes and chloroplasts	Energy	Electron transport Chain		TRUE
+K02108	ATPF0A; F-type H+-transporting ATPase subunit a	F-type ATPase, prokaryotes and chloroplasts	Energy	Electron transport Chain		TRUE
+K02109	ATPF0B; F-type H+-transporting ATPase subunit b	F-type ATPase, prokaryotes and chloroplasts	Energy	Electron transport Chain		TRUE
+K02110	ATPF0C; F-type H+-transporting ATPase subunit c	F-type ATPase, prokaryotes and chloroplasts	Energy	Electron transport Chain		TRUE
+K02117	ATPVA; V/A-type H+-transporting ATPase subunit A [EC:3.6.3.14]	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02118	ATPVB; V/A-type H+-transporting ATPase subunit B	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02119	ATPVC; V/A-type H+-transporting ATPase subunit C	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02120	ATPVD; V/A-type H+-transporting ATPase subunit D	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02121	ATPVE; V/A-type H+-transporting ATPase subunit E	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02122	ATPVF; V/A-type H+-transporting ATPase subunit F	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02107	ATPVG; V/A-type H+-transporting ATPase subunit G/H	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02123	ATPVI; V/A-type H+-transporting ATPase subunit I	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K02124	ATPVK; V/A-type H+-transporting ATPase subunit K	V/A-type ATPase, prokaryotes	Energy	Electron transport Chain		TRUE
+K00346	Na+-transporting NADH:ubiquinone oxidoreductase subunit A [EC:1.6.5.-]	Na+-transporting NADH:ubiquinone oxidoreductase-	Energy	Electron transport Chain		TRUE
+K00347	Na+-transporting NADH:ubiquinone oxidoreductase subunit B [EC:1.6.5.-]	Na+-transporting NADH:ubiquinone oxidoreductase-	Energy	Electron transport Chain		TRUE
+K00348	Na+-transporting NADH:ubiquinone oxidoreductase subunit C [EC:1.6.5.-]	Na+-transporting NADH:ubiquinone oxidoreductase-	Energy	Electron transport Chain		TRUE
+K00349	Na+-transporting NADH:ubiquinone oxidoreductase subunit D [EC:1.6.5.-]	Na+-transporting NADH:ubiquinone oxidoreductase-	Energy	Electron transport Chain		TRUE
+K00350	Na+-transporting NADH:ubiquinone oxidoreductase subunit E [EC:1.6.5.-]	Na+-transporting NADH:ubiquinone oxidoreductase-	Energy	Electron transport Chain		TRUE
+K00351	Na+-transporting NADH:ubiquinone oxidoreductase subunit F [EC:1.6.5.-]	Na+-transporting NADH:ubiquinone oxidoreductase-	Energy	Electron transport Chain		TRUE
+K05565	multicomponent Na+:H+ antiporter subunit A	Multicomponent Na+/H+ antiporter	Energy	Electron transport Chain		TRUE
+K05568	multicomponent Na+:H+ antiporter subunit D	Multicomponent Na+/H+ antiporter	Energy	Electron transport Chain		TRUE
+K05567	multicomponent Na+:H+ antiporter subunit C	Multicomponent Na+/H+ antiporter	Energy	Electron transport Chain		TRUE
+K05566	multicomponent Na+:H+ antiporter subunit B	Multicomponent Na+/H+ antiporter	Energy	Electron transport Chain		TRUE
+K05571	multicomponent Na+:H+ antiporter subunit G	Multicomponent Na+/H+ antiporter	Energy	Electron transport Chain		TRUE
+K05570	multicomponent Na+:H+ antiporter subunit F	Multicomponent Na+/H+ antiporter	Energy	Electron transport Chain		TRUE
+K05569	multicomponent Na+:H+ antiporter subunit E	Multicomponent Na+/H+ antiporter	Energy	Electron transport Chain		TRUE
+K03616	electron transport complex protein RnfB	RNF complex	Energy	Electron transport Chain		TRUE
+K03617	electron transport complex protein RnfA	RNF complex	Energy	Electron transport Chain		TRUE
+K03613	electron transport complex protein RnfE	RNF complex	Energy	Electron transport Chain		TRUE
+K03612	electron transport complex protein RnfG	RNF complex	Energy	Electron transport Chain		TRUE
+K03614	electron transport complex protein RnfD	RNF complex	Energy	Electron transport Chain		TRUE
+K03615	electron transport complex protein RnfC	RNF complex	Energy	Electron transport Chain		TRUE
+K03878	ND1; NADH-ubiquinone oxidoreductase chain 1 [EC:7.1.1.2]	NADH:ubiquinone oxidoreductase, mitochondria	Energy	Electron transport Chain		TRUE
+K03879	ND2; NADH-ubiquinone oxidoreductase chain 2 [EC:7.1.1.2]	NADH:ubiquinone oxidoreductase, mitochondria	Energy	Electron transport Chain		TRUE
+K03880	ND3; NADH-ubiquinone oxidoreductase chain 3 [EC:7.1.1.2]	NADH:ubiquinone oxidoreductase, mitochondria	Energy	Electron transport Chain		TRUE
+K03881	ND4; NADH-ubiquinone oxidoreductase chain 4 [EC:7.1.1.2]	NADH:ubiquinone oxidoreductase, mitochondria	Energy	Electron transport Chain		TRUE
+K03882	ND4L; NADH-ubiquinone oxidoreductase chain 4L [EC:7.1.1.2]	NADH:ubiquinone oxidoreductase, mitochondria	Energy	Electron transport Chain		TRUE
+K03883	ND5; NADH-ubiquinone oxidoreductase chain 5 [EC:7.1.1.2]	NADH:ubiquinone oxidoreductase, mitochondria	Energy	Electron transport Chain		TRUE
+K03884	ND6; NADH-ubiquinone oxidoreductase chain 6 [EC:7.1.1.2]	NADH:ubiquinone oxidoreductase, mitochondria	Energy	Electron transport Chain		TRUE
+K03934	NDUFS1; NADH dehydrogenase (ubiquinone) Fe-S protein 1 [EC:7.1.1.2 1.6.99.3]	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03935	NDUFS2; NADH dehydrogenase (ubiquinone) Fe-S protein 2 [EC:7.1.1.2 1.6.99.3]	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03936	NDUFS3; NADH dehydrogenase (ubiquinone) Fe-S protein 3 [EC:7.1.1.2 1.6.99.3]	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03937	NDUFS4; NADH dehydrogenase (ubiquinone) Fe-S protein 4	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03938	NDUFS5; NADH dehydrogenase (ubiquinone) Fe-S protein 5	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03939	NDUFS6; NADH dehydrogenase (ubiquinone) Fe-S protein 6	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03940	NDUFS7; NADH dehydrogenase (ubiquinone) Fe-S protein 7 [EC:7.1.1.2 1.6.99.3]	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03941	NDUFS8; NADH dehydrogenase (ubiquinone) Fe-S protein 8 [EC:7.1.1.2 1.6.99.3]	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03942	NDUFV1; NADH dehydrogenase (ubiquinone) flavoprotein 1 [EC:7.1.1.2 1.6.99.3]	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03943	NDUFV2; NADH dehydrogenase (ubiquinone) flavoprotein 2 [EC:7.1.1.2 1.6.99.3]	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03944	NDUFV3; NADH dehydrogenase (ubiquinone) flavoprotein 3	NADH dehydrogenase (ubiquinone) Fe-S protein/flavoprotein complex, mitochondria	Energy	Electron transport Chain		TRUE
+K03945	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 1	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03946	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 2	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03947	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 3	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03948	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 4	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03949	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 5	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03950	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 6	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03951	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 7	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03952	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 8	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03953	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 9	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03954	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 10	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03955	NADH dehydrogenase (ubiquinone) 1 alpha/beta subcomplex 1	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03956	NADH-ubiquinone oxidoreductase subunit	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K11352	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 12	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K11353	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex 13	NADH dehydrogenase (ubiquinone) 1 alpha subcomplex	Energy	Electron transport Chain		TRUE
+K03957	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 1	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03958	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 2	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03959	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 3	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03960	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 4	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03961	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 5	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03962	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 6	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03963	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 7	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03964	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 8	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03965	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 9	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03966	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 10	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K11351	NADH dehydrogenase (ubiquinone) 1 beta subcomplex 11	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03967	NADH dehydrogenase (ubiquinone) 1 subcomplex unknown 1	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K03968	NADH dehydrogenase (ubiquinone) 1 subcomplex unknown 2	NADH dehydrogenase (ubiquinone) 1 beta subcomplex	Energy	Electron transport Chain		TRUE
+K02132	ATPeF1A; F-type H+-transporting ATPase subunit alpha	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02133	ATPeF1B; F-type H+-transporting ATPase subunit beta [EC:3.6.3.14]	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02136	ATPeF1G; F-type H+-transporting ATPase subunit gamma	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02134	ATPeF1D; F-type H+-transporting ATPase subunit delta	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02135	ATPeF1E; F-type H+-transporting ATPase subunit epsilon	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02137	ATPeF0O; F-type H+-transporting ATPase subunit O	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02126	ATPeF0A; F-type H+-transporting ATPase subunit a	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02127	ATPeF0B; F-type H+-transporting ATPase subunit b	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02128	ATPeF0C; F-type H+-transporting ATPase subunit c	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02138	ATPeFD; F-type H+-transporting ATPase subunit d	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02129	ATPeF0E; F-type H+-transporting ATPase subunit e	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K01549	TIM11; F-type H+-transporting ATP synthase subunit e	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02130	ATPeF0F; F-type H+-transporting ATPase subunit f	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02139	ATPeFF; F-type H+-transporting ATPase subunit f	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02140	ATPeFG; F-type H+-transporting ATPase subunit g	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02141	ATPeFH; F-type H+-transporting ATPase subunit h	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02131	ATPeF0F6; F-type H+-transporting ATPase subunit 6	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02142	ATPeFJ; F-type H+-transporting ATPase subunit j	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02143	ATPeFK; F-type H+-transporting ATPase subunit k	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02125	ATPeF08; F-type H+-transporting ATPase subunit 8	F-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02145	ATPeV1A; V-type H+-transporting ATPase subunit A [EC:3.6.3.14]	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02147	ATPeV1B; V-type H+-transporting ATPase subunit B	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02148	ATPeV1C; V-type H+-transporting ATPase subunit C	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02149	ATPeV1D; V-type H+-transporting ATPase subunit D	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02150	ATPeV1E; V-type H+-transporting ATPase subunit E	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02151	ATPeV1F; V-type H+-transporting ATPase subunit F	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02152	ATPeV1G; V-type H+-transporting ATPase subunit G	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02144	ATPeV1H; V-type H+-transporting ATPase subunit H	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02154	ATPeV0A; V-type H+-transporting ATPase subunit a	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K03661	ATPeV0B; V-type H+-transporting ATPase 21kDa proteolipid subunit	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02155	ATPeV0C; V-type H+-transporting ATPase 16kDa proteolipid subunit	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02146	ATPeV0D; V-type H+-transporting ATPase subunit d	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K02153	ATPeV0E; V-type H+-transporting ATPase subunit e	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K03662	ATPeVS1; V-type H+-transporting ATPase S1 subunit	V-type ATPase, eukaryotes	Energy	Electron transport Chain		TRUE
+K16954	mtsA; methylthiol:coenzyme M methyltransferase [EC:2.1.1.251]	Methanogenesis, methanethiol => methane	Energy	C1-methane		TRUE
+K14080	[methyl-Co(III) methanol-specific corrinoid protein]:coenzyme M methyltransferase [EC:2.1.1.246] [RN:R09098]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K04480	methanol---5-hydroxybenzimidazolylcobamide Co-methyltransferase [EC:2.1.1.90] [RN:R09098]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K14081	methanol corrinoid protein [RN:R09098]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K00399	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K00401	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K00402	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K22480	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K22481	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K22482	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K03388	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K03389	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K03390	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K08264	heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K08265	heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K14127	F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.8.98.5 1.8.98.6] [RN:R11943 R11944]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K14126	F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K14128	F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K22516	formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K00125	formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	Methanogenesis, methanol => methane	Energy	C1-methane		TRUE
+K00925	acetate kinase [EC:2.7.2.1] [RN:R00315]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00625	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K13788	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K01895	acetyl-CoA synthetase [EC:6.2.1.1] [RN:R00235]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00193	acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R09096]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00197	acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R09096]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00194	acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R09096]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00577	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00578	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00579	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00580	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00581	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00582	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00583	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00584	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00399	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00401	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00402	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K22480	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K22481	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K22482	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K03388	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K03389	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K03390	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K08264	heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K08265	heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K14127	F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.8.98.5 1.8.98.6] [RN:R11943 R11944]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K14126	F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K14128	F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K22516	formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K00125	formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	Methanogenesis, acetate => methane	Energy	C1-methane		TRUE
+K14082	mtbA; [methyl-Co(III) methylamine-specific corrinoid protein]:coenzyme M methyltransferase [EC:2.1.1.247] [RN:R09998]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K16177	mtmC; monomethylamine corrinoid protein [RN:R09998]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K16176	mtmB; methylamine---corrinoid protein Co-methyltransferase [EC:2.1.1.248] [RN:R09998]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K16179	mtbC; dimethylamine corrinoid protein [RN:R09999]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K16178	mtbB; dimethylamine---corrinoid protein Co-methyltransferase [EC:2.1.1.249] [RN:R09999]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K14084	mttC; trimethylamine corrinoid protein [RN:R09124]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K14083	mttB; trimethylamine---corrinoid protein Co-methyltransferase [EC:2.1.1.250] [RN:R09124]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K00399	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K00401	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K00402	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K22480	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K22481	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K22482	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K03388	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K03389	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K03390	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K08264	heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K08265	heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K14127	F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.8.98.5 1.8.98.6] [RN:R11943 R11944]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K14126	F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K14128	F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K22516	formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K00125	formate dehydrogenase (coenzyme F420) [EC:1.8.98.6] [RN:R11944]	Methanogenesis, methylamine/dimethylamine/trimethylamine => methane	Energy	C1-methane		TRUE
+K00200	formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00201	formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00202	formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00203	formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K11261	formylmethanofuran dehydrogenase [EC:1.2.99.5] [RN:R03015]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00205	4Fe-4S ferredoxin	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K11260	4Fe-4S ferredoxin	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00204	4Fe-4S ferredoxin	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00672	formylmethanofuran--tetrahydromethanopterin N-formyltransferase [EC:2.3.1.101] [RN:R03390]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K01499	methenyltetrahydromethanopterin cyclohydrolase [EC:3.5.4.27] [RN:R03464]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00319	methylenetetrahydromethanopterin dehydrogenase [EC:1.5.99.9] [RN:R04456]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K13942	5,10-methenyltetrahydromethanopterin hydrogenase [EC:1.12.98.2] [RN:R04455]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00320	coenzyme F420-dependent N5,N10-methenyltetrahydromethanopterin reductase [EC:1.5.99.11] [RN:R04464]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00577	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00578	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00579	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00580	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00581	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00582	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00583	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00584	tetrahydromethanopterin S-methyltransferase [EC:2.1.1.86] [RN:R04347]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00399	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00401	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00402	methyl-coenzyme M reductase [EC:2.8.4.1] [RN:R04541]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K22480	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K22481	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K22482	heterodisulfide reductase 1 [EC:1.8.7.3] [RN:R11931]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K03388	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K03389	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K03390	heterodisulfide reductase 2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6] [RN:R11928 R11931 R11943 R11944]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K08264	heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K08265	heterodisulfide reductase [EC:1.8.98.1] [RN:R04540]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K14127	F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.8.98.5 1.8.98.6] [RN:R11943 R11944]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K14126	F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K14128	F420-non-reducing hydrogenase [EC:1.8.98.5] [RN:R11943]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K22516	formate dehydrogenase (coenzyme F420) [EC1.8.98.6] [RN:R11944]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K00125	formate dehydrogenase (coenzyme F420) [EC1.8.98.6] [RN:R11944]	Methanogenesis, CO2 => methane	Energy	C1-methane		TRUE
+K07811	trimethylamine-N-oxide reductase (cytochrome c) [EC:1.7.2.3]	TMAO	Energy	C1		TRUE
+K00855	phosphoribulokinase [EC:2.7.1.19] [RN:R01523]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K01601	ribulose-bisphosphate carboxylase [EC:4.1.1.39] [RN:R00024]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K01602	ribulose-bisphosphate carboxylase [EC:4.1.1.39] [RN:R00024]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K00927	phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K05298	glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K00150	glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K00134	glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K01623	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K01624	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K03841	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K02446	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K11532	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K01086	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K04041	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K00615	transketolase [EC:2.2.1.1] [RN:R01067 R01641]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K01100	sedoheptulose-bisphosphatase [EC:3.1.3.37] [RN:R01845]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K01807	ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K01808	ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	Reductive pentose phosphate cycle (Calvin cycle)	Energy	C1		TRUE
+K00855	phosphoribulokinase [EC:2.7.1.19] [RN:R01523]	Reductive pentose phosphate cycle, ribulose-5P => glyceraldehyde-3P	Energy	C1		TRUE
+K01601	ribulose-bisphosphate carboxylase [EC:4.1.1.39] [RN:R00024]	Reductive pentose phosphate cycle, ribulose-5P => glyceraldehyde-3P	Energy	C1		TRUE
+K01602	ribulose-bisphosphate carboxylase [EC:4.1.1.39] [RN:R00024]	Reductive pentose phosphate cycle, ribulose-5P => glyceraldehyde-3P	Energy	C1		TRUE
+K00927	phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	Reductive pentose phosphate cycle, ribulose-5P => glyceraldehyde-3P	Energy	C1		TRUE
+K05298	glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	Reductive pentose phosphate cycle, ribulose-5P => glyceraldehyde-3P	Energy	C1		TRUE
+K00150	glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	Reductive pentose phosphate cycle, ribulose-5P => glyceraldehyde-3P	Energy	C1		TRUE
+K00134	glyceraldehyde-3-phosphate dehydrogenase (phosphorylating) [EC:1.2.1.13 1.2.1.59 1.2.1.12] [RN:R01061 R01063]	Reductive pentose phosphate cycle, ribulose-5P => glyceraldehyde-3P	Energy	C1		TRUE
+K01623	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K01624	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01068 R01829]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K03841	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K02446	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K11532	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K01086	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K04041	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R00762]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K00615	transketolase [EC:2.2.1.1] [RN:R01067 R01641]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K01100	sedoheptulose-bisphosphatase [EC:3.1.3.37] [RN:R01845]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K01807	ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K01808	ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	Reductive pentose phosphate cycle, glyceraldehyde-3P => ribulose-5P	Energy	C1		TRUE
+K00169	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00170	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00171	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00172	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K03737	pyruvate-ferredoxin/flavodoxin oxidoreductase [EC:1.2.7.1 1.2.7.-] [RN:R01196 R10866]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01007	pyruvate,water dikinase [EC:2.7.9.2] [RN:R00199]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01006	pyruvate,orthophosphate dikinase [EC:2.7.9.1] [RN:R00206]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01595	phosphoenolpyruvate carboxylase [EC:4.1.1.31] [RN:R00345]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01959	pyruvate carboxylase subunit A [EC:6.4.1.1] [RN:R00344]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01960	pyruvate carboxylase subunit A [EC:6.4.1.1] [RN:R00344]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01958	pyruvate carboxylase subunit A [EC:6.4.1.1] [RN:R00344]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00024	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01676	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01679	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01677	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01678	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00239	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00240	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00241	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00242	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00244	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00245	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00246	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00247	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K18556	NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K18557	NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K18558	NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K18559	NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K18560	NADH-dependent fumarate reductase [EC:1.3.1.6] [RN:R00402]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01902	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01903	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00174	2-oxoglutarate:ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00175	2-oxoglutarate:ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00177	2-oxoglutarate:ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00176	2-oxoglutarate:ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K00031	isocitrate dehydrogenase [EC:1.1.1.42] [RN:R00267]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01681	aconitate hydratase [EC:4.2.1.3] [RN:R01900 R01325]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K01682	aconitate hydratase [EC:4.2.1.3] [RN:R01900 R01325]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K15230	ATP-citrate lyase [EC:2.3.3.8] [RN:R00352]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K15231	ATP-citrate lyase [EC:2.3.3.8] [RN:R00352]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K15232	citryl-CoA synthetase [EC:6.2.1.18] [RN:R01322]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K15233	citryl-CoA synthetase [EC:6.2.1.18] [RN:R01322]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K15234	citryl-CoA lyase [EC:4.1.3.34] [RN:R00354]	Reductive citrate cycle (Arnon-Buchanan cycle)	Energy	C1		TRUE
+K10944	methane/ammonia monooxygenase [EC:1.14.18.3] [RN:R09518]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K10945	methane/ammonia monooxygenase [EC:1.14.18.3] [RN:R09518]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K10946	methane/ammonia monooxygenase [EC:1.14.18.3] [RN:R09518]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K16157	methane monooxygenase component A [EC:1.14.13.25] [RN:R01142]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K16158	methane monooxygenase component A [EC:1.14.13.25] [RN:R01142]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K16159	methane monooxygenase component A [EC:1.14.13.25] [RN:R01142]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K16160	methane monooxygenase regulatory protein B [RN:R01142]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K16161	methane monooxygenase component C [EC:1.14.13.25] [RN:R01142]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K16162	methane monooxygenase component D [RN:R01142]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K14028	methanol dehydrogenase [EC:1.1.2.7] [RN:R01146]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K14029	methanol dehydrogenase [EC:1.1.2.7] [RN:R01146]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K17066	alcohol oxidase [EC:1.1.3.13] [RN:R00608]	Methane oxidation, methanotroph, methane => formaldehyde	Energy	C1		TRUE
+K08097	phosphosulfolactate synthase [EC:4.4.1.19] [RN:R07476]	Coenzyme M biosynthesis	Energy	C1		TRUE
+K05979	2-phosphosulfolactate phosphatase [EC:3.1.3.71] [RN:R05789]	Coenzyme M biosynthesis	Energy	C1		TRUE
+K05884	L-2-hydroxycarboxylate dehydrogenase (NAD+) [EC:1.1.1.337] [RN:R07136]	Coenzyme M biosynthesis	Energy	C1		TRUE
+K13039	sulfopyruvate decarboxylase [EC:4.1.1.79] [RN:R05774]	Coenzyme M biosynthesis	Energy	C1		TRUE
+K06034	sulfopyruvate decarboxylase [EC:4.1.1.79] [RN:R05774]	Coenzyme M biosynthesis	Energy	C1		TRUE
+K00169	pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K00170	pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K00171	pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K00172	pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K01007	pyruvate, water dikinase [EC:2.7.9.2] [RN:R00199]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K01595	phosphoenolpyruvate carboxylase [EC:4.1.1.31] [RN:R00345]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K00024	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K01676	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K01677	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K01678	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K00239	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K00240	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K00241	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K18860	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K01902	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K01903	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K15038	succinyl-CoA reductase [EC:1.2.1.76] [RN:R09280]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K15017	succinyl-CoA reductase [EC:1.2.1.76] [RN:R09280]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K14465	succinate semialdehyde reductase (NADPH) [EC:1.1.1.-] [RN:R09281]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K14467	4-hydroxybutyrate---CoA ligase (AMP-forming) [EC:6.2.1.40] [RN:R09279]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K18861	4-hydroxybutyrate---CoA ligase (AMP-forming) [EC:6.2.1.40] [RN:R09279]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K14534	4-hydroxybutyryl-CoA dehydratase [EC:4.2.1.120] [RN:R10782]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K15016	3-hydroxybutyryl-CoA dehydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K00626	acetyl-CoA C-acetyltransferase [EC:2.3.1.9] [RN:R00238]	Dicarboxylate-hydroxybutyrate cycle	Energy	C1		TRUE
+K01964	acetyl-CoA/propionyl-CoA carboxylase [EC:6.4.1.2 6.4.1.3] [RN:R00742 R01859]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15037	biotin carboxyl carrier protein [RN:R00742 R01859]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15036	acetyl-CoA/propionyl-CoA carboxylase [EC:6.4.1.2 6.4.1.3] [RN:R00742 R01859]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15017	malonyl-CoA reductase (NADPH) [EC:1.2.1.75] [RN:R00740]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15039	3-hydroxypropionate dehydrogenase (NADP+) [EC:1.1.1.298] [RN:R09289]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15018	3-hydroxypropionyl-coenzyme A synthetase [EC:6.2.1.36] [RN:R09286]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15019	3-hydroxypropionyl-coenzyme A dehydratase [EC:4.2.1.116] [RN:R03045]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15020	acryloyl-coenzyme A reductase [EC:1.3.1.84] [RN:R00919]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K05606	methylmalonyl-CoA epimerase [EC:5.1.99.1] [RN:R02765]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K01848	methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K01849	methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15038	succinyl-coA reductase [EC:1.2.1.76] [RN:R09280]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K14465	succinate semialdehyde reductase [EC:1.1.1.-] [RN:R09281]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K14466	4-hydroxybutyrate---CoA ligase (AMP-forming) [EC:6.2.1.40] [RN:R09279]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K18861	4-hydroxybutyrate---CoA ligase (AMP-forming) [EC:6.2.1.40] [RN:R09279]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K14534	4-hydroxybutyryl-CoA dehydratase / vinylacetyl-CoA-Delta-isomerase [EC:4.2.1.120 5.3.3.3] [RN:R10782]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K15016	3-hydroxybutyryl-CoA dehydratase / 3-hydroxyacyl-CoA dehydrogenase [EC:4.2.1.17 1.1.1.35] [RN:R03026 R01975]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K00626	acetyl-CoA C-acetyltransferase [EC:2.3.1.9] [RN:R00238]	Hydroxypropionate-hydroxybutylate cycle	Energy	C1		TRUE
+K08691	malyl-CoA/(S)-citramalyl-CoA lyase [EC:4.1.3.24 4.1.3.25] [RN:R00473 R00934 R00237]	3-Hydroxypropionate bi-cycle	Energy	C1		TRUE
+K14449	2-methylfumaryl-CoA hydratase [EC:4.2.1.148] [RN:R05076]	3-Hydroxypropionate bi-cycle	Energy	C1		TRUE
+K14470	2-methylfumaryl-CoA isomerase [EC:5.4.1.3] [RN:R09283]	3-Hydroxypropionate bi-cycle	Energy	C1		TRUE
+K09709	3-methylfumaryl-CoA hydratase [EC:4.2.1.153] [RN:R09282]	3-Hydroxypropionate bi-cycle	Energy	C1		TRUE
+K00198	carbon-monoxide dehydrogenase [EC:1.2.7.4] [RN:R07157]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K05299	formate dehydrogenase [EC:1.17.1.10] [RN:R00134]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K15022	formate dehydrogenase [EC:1.17.1.10] [RN:R00134]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K01938	formate--tetrahydrofolate ligase [EC:6.3.4.3] [RN:R00943]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K01491	methylenetetrahydrofolate dehydrogenase (NADP+) / methenyltetrahydrofolate cyclohydrolase [EC:1.5.1.5 3.5.4.9] [RN:R01655 R01220]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K00297	methylenetetrahydrofolate reductase (NADPH) [EC:1.5.1.20] [RN:R07168]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K15023	5-methyltetrahydrofolate corrinoid/iron sulfur protein methyltransferase [EC:2.1.1.258] [RN:R02289]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K14138	acetyl-CoA synthase [EC:2.3.1.169] [RN:R08433]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K00197	acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R10243]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K00194	acetyl-CoA decarbonylase/synthase complex [EC:2.3.1.-] [RN:R10243]	Reductive acetyl-CoA pathway (Wood-Ljungdahl pathway)	Energy	C1		TRUE
+K11212	LPPG:FO 2-phospho-L-lactate transferase [EC:2.7.8.28] [RN:R09398]	F420 biosynthesis	Energy	C1		TRUE
+K12234	coenzyme F420-0:L-glutamate ligase / coenzyme F420-1:gamma-L-glutamate ligase [EC:6.3.2.31 6.3.2.34] [RN:R09399 R09400]	F420 biosynthesis	Energy	C1		TRUE
+K00192	cdhA; anaerobic carbon-monoxide dehydrogenase, CODH/ACS complex subunit alpha [EC:1.2.7.4] [RN:R07157]	Acetyl-CoA pathway, CO2 => acetyl-CoA	Energy	C1		TRUE
+K00195	cdhB; anaerobic carbon-monoxide dehydrogenase, CODH/ACS complex subunit epsilon [RN:R07157]	Acetyl-CoA pathway, CO2 => acetyl-CoA	Energy	C1		TRUE
+K00193	cdhC; acetyl-CoA decarbonylase/synthase, CODH/ACS complex subunit beta [EC:2.3.1.169] [RN:R09096 R10219]	Acetyl-CoA pathway, CO2 => acetyl-CoA	Energy	C1		TRUE
+K00197	cdhE; acetyl-CoA decarbonylase/synthase, CODH/ACS complex subunit gamma [EC:2.1.1.245] [RN:R09096 R10219]	Acetyl-CoA pathway, CO2 => acetyl-CoA	Energy	C1		TRUE
+K00194	cdhD; acetyl-CoA decarbonylase/synthase, CODH/ACS complex subunit delta [EC:2.1.1.245] [RN:R09096 R10219]	Acetyl-CoA pathway, CO2 => acetyl-CoA	Energy	C1		TRUE
+K00196	carbon-monoxide dehydrogenase iron sulfur subunit	Acetyl-CoA pathway	Energy	C1		TRUE
+K03518	carbon-monoxide dehydrogenase small subunit	Acetyl-CoA pathway	Energy	C1		TRUE
+K03519	carbon-monoxide dehydrogenase medium subunit	Acetyl-CoA pathway	Energy	C1		TRUE
+K03520	carbon-monoxide dehydrogenase large subunit	Acetyl-CoA pathway	Energy	C1		TRUE

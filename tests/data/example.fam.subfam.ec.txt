@@ -1,6 +1,0 @@
-# Copyright disclosure: This data is parsed from webpages of www.cazy.org. It is not acurate data
-AA10	AAF22274.1	3.2.1.78
-AA10	AAF96709.1	1.14.99.53
-AA10	AAO80225.1	1.14.99.54
-AA11	AAU22121.1	1.14.99.55
-AA12	AAU39477.1	1.14.99.56

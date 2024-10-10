@@ -1,0 +1,650 @@
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	potential_amg
+K02981	small subunit ribosomal protein S2e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02985	small subunit ribosomal protein S3e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02984	small subunit ribosomal protein S3Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02987	small subunit ribosomal protein S4e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02989	small subunit ribosomal protein S5e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02991	small subunit ribosomal protein S6e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02993	small subunit ribosomal protein S7e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02995	small subunit ribosomal protein S8e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02997	small subunit ribosomal protein S9e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02947	small subunit ribosomal protein S10e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02949	small subunit ribosomal protein S11e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02951	small subunit ribosomal protein S12e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02953	small subunit ribosomal protein S13e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02955	small subunit ribosomal protein S14e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02958	small subunit ribosomal protein S15e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02957	small subunit ribosomal protein S15Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02960	small subunit ribosomal protein S16e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02962	small subunit ribosomal protein S17e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02964	small subunit ribosomal protein S18e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02966	small subunit ribosomal protein S19e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02969	small subunit ribosomal protein S20e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02971	small subunit ribosomal protein S21e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02973	small subunit ribosomal protein S23e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02974	small subunit ribosomal protein S24e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02975	small subunit ribosomal protein S25e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02976	small subunit ribosomal protein S26e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02978	small subunit ribosomal protein S27e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02977	small subunit ribosomal protein S27Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02979	small subunit ribosomal protein S28e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02980	small subunit ribosomal protein S29e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02983	small subunit ribosomal protein S30e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02998	small subunit ribosomal protein SAe	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02925	large subunit ribosomal protein L3e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02930	large subunit ribosomal protein L4e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02932	large subunit ribosomal protein L5e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02934	large subunit ribosomal protein L6e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02937	large subunit ribosomal protein L7e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02936	large subunit ribosomal protein L7Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02938	large subunit ribosomal protein L8e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02940	large subunit ribosomal protein L9e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02866	large subunit ribosomal protein L10e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02865	large subunit ribosomal protein L10Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02868	large subunit ribosomal protein L11e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02870	large subunit ribosomal protein L12e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02873	large subunit ribosomal protein L13e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02872	large subunit ribosomal protein L13Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02875	large subunit ribosomal protein L14e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02877	large subunit ribosomal protein L15e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02880	large subunit ribosomal protein L17e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02883	large subunit ribosomal protein L18e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02882	large subunit ribosomal protein L18Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02885	large subunit ribosomal protein L19e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02889	large subunit ribosomal protein L21e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02891	large subunit ribosomal protein L22e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02894	large subunit ribosomal protein L23e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02893	large subunit ribosomal protein L23Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02896	large subunit ribosomal protein L24e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02898	large subunit ribosomal protein L26e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02901	large subunit ribosomal protein L27e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02900	large subunit ribosomal protein L27Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02903	large subunit ribosomal protein L28e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02905	large subunit ribosomal protein L29e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02908	large subunit ribosomal protein L30e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02910	large subunit ribosomal protein L31e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02912	large subunit ribosomal protein L32e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02915	large subunit ribosomal protein L34e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02918	large subunit ribosomal protein L35e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02917	large subunit ribosomal protein L35Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02920	large subunit ribosomal protein L36e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02922	large subunit ribosomal protein L37e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02921	large subunit ribosomal protein L37Ae	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02923	large subunit ribosomal protein L38e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02924	large subunit ribosomal protein L39e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02927	large subunit ribosomal protein L40e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02928	large subunit ribosomal protein L41e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02929	large subunit ribosomal protein L44e	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02941	large subunit ribosomal protein LP0	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02942	large subunit ribosomal protein LP1	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02943	large subunit ribosomal protein LP2	Ribosome, eukaryotes	MISC	Information systems		TRUE
+K02946	small subunit ribosomal protein S10	Ribosome, bacteria	MISC	Information systems		TRUE
+K02906	large subunit ribosomal protein L3	Ribosome, bacteria	MISC	Information systems		TRUE
+K02926	large subunit ribosomal protein L4	Ribosome, bacteria	MISC	Information systems		TRUE
+K02892	large subunit ribosomal protein L23	Ribosome, bacteria	MISC	Information systems		TRUE
+K02886	large subunit ribosomal protein L2	Ribosome, bacteria	MISC	Information systems		TRUE
+K02965	small subunit ribosomal protein S19	Ribosome, bacteria	MISC	Information systems		TRUE
+K02890	large subunit ribosomal protein L22	Ribosome, bacteria	MISC	Information systems		TRUE
+K02982	small subunit ribosomal protein S3	Ribosome, bacteria	MISC	Information systems		TRUE
+K02878	large subunit ribosomal protein L16	Ribosome, bacteria	MISC	Information systems		TRUE
+K02904	large subunit ribosomal protein L29	Ribosome, bacteria	MISC	Information systems		TRUE
+K02961	small subunit ribosomal protein S17	Ribosome, bacteria	MISC	Information systems		TRUE
+K02874	large subunit ribosomal protein L14	Ribosome, bacteria	MISC	Information systems		TRUE
+K02895	large subunit ribosomal protein L24	Ribosome, bacteria	MISC	Information systems		TRUE
+K02931	large subunit ribosomal protein L5	Ribosome, bacteria	MISC	Information systems		TRUE
+K02954	small subunit ribosomal protein S14	Ribosome, bacteria	MISC	Information systems		TRUE
+K02994	small subunit ribosomal protein S8	Ribosome, bacteria	MISC	Information systems		TRUE
+K02933	large subunit ribosomal protein L6	Ribosome, bacteria	MISC	Information systems		TRUE
+K02881	large subunit ribosomal protein L18	Ribosome, bacteria	MISC	Information systems		TRUE
+K02988	small subunit ribosomal protein S5	Ribosome, bacteria	MISC	Information systems		TRUE
+K02907	large subunit ribosomal protein L30	Ribosome, bacteria	MISC	Information systems		TRUE
+K02876	large subunit ribosomal protein L15	Ribosome, bacteria	MISC	Information systems		TRUE
+K02919	large subunit ribosomal protein L36	Ribosome, bacteria	MISC	Information systems		TRUE
+K02952	small subunit ribosomal protein S13	Ribosome, bacteria	MISC	Information systems		TRUE
+K02948	small subunit ribosomal protein S11	Ribosome, bacteria	MISC	Information systems		TRUE
+K02986	small subunit ribosomal protein S4	Ribosome, bacteria	MISC	Information systems		TRUE
+K02879	large subunit ribosomal protein L17	Ribosome, bacteria	MISC	Information systems		TRUE
+K02871	large subunit ribosomal protein L13	Ribosome, bacteria	MISC	Information systems		TRUE
+K02996	small subunit ribosomal protein S9	Ribosome, bacteria	MISC	Information systems		TRUE
+K02992	small subunit ribosomal protein S7	Ribosome, bacteria	MISC	Information systems		TRUE
+K02950	small subunit ribosomal protein S12	Ribosome, bacteria	MISC	Information systems		TRUE
+K07590	large subunit ribosomal protein L7A	Ribosome, bacteria	MISC	Information systems		TRUE
+K02935	large subunit ribosomal protein L7/L12	Ribosome, bacteria	MISC	Information systems		TRUE
+K02864	large subunit ribosomal protein L10	Ribosome, bacteria	MISC	Information systems		TRUE
+K02863	large subunit ribosomal protein L1	Ribosome, bacteria	MISC	Information systems		TRUE
+K02867	large subunit ribosomal protein L11	Ribosome, bacteria	MISC	Information systems		TRUE
+K02967	small subunit ribosomal protein S2	Ribosome, bacteria	MISC	Information systems		TRUE
+K02956	small subunit ribosomal protein S15	Ribosome, bacteria	MISC	Information systems		TRUE
+K02916	large subunit ribosomal protein L35	Ribosome, bacteria	MISC	Information systems		TRUE
+K02887	large subunit ribosomal protein L20	Ribosome, bacteria	MISC	Information systems		TRUE
+K02914	large subunit ribosomal protein L34	Ribosome, bacteria	MISC	Information systems		TRUE
+K02939	large subunit ribosomal protein L9	Ribosome, bacteria	MISC	Information systems		TRUE
+K02963	small subunit ribosomal protein S18	Ribosome, bacteria	MISC	Information systems		TRUE
+K02990	small subunit ribosomal protein S6	Ribosome, bacteria	MISC	Information systems		TRUE
+K02888	large subunit ribosomal protein L21	Ribosome, bacteria	MISC	Information systems		TRUE
+K02899	large subunit ribosomal protein L27	Ribosome, bacteria	MISC	Information systems		TRUE
+K02902	large subunit ribosomal protein L28	Ribosome, bacteria	MISC	Information systems		TRUE
+K02913	large subunit ribosomal protein L33	Ribosome, bacteria	MISC	Information systems		TRUE
+K02911	large subunit ribosomal protein L32	Ribosome, bacteria	MISC	Information systems		TRUE
+K02909	large subunit ribosomal protein L31	Ribosome, bacteria	MISC	Information systems		TRUE
+K02897	large subunit ribosomal protein L25	Ribosome, bacteria	MISC	Information systems		TRUE
+K02959	small subunit ribosomal protein S16	Ribosome, bacteria	MISC	Information systems		TRUE
+K02884	large subunit ribosomal protein L19	Ribosome, bacteria	MISC	Information systems		TRUE
+K02968	small subunit ribosomal protein S20	Ribosome, bacteria	MISC	Information systems		TRUE
+K02945	small subunit ribosomal protein S1	Ribosome, bacteria	MISC	Information systems		TRUE
+K02970	small subunit ribosomal protein S21	Ribosome, bacteria	MISC	Information systems		TRUE
+K02946	small subunit ribosomal protein S10	Ribosome, archaea	MISC	Information systems		TRUE
+K02906	large subunit ribosomal protein L3	Ribosome, archaea	MISC	Information systems		TRUE
+K02930	large subunit ribosomal protein L4e	Ribosome, archaea	MISC	Information systems		TRUE
+K02892	large subunit ribosomal protein L23	Ribosome, archaea	MISC	Information systems		TRUE
+K02886	large subunit ribosomal protein L2	Ribosome, archaea	MISC	Information systems		TRUE
+K02965	small subunit ribosomal protein S19	Ribosome, archaea	MISC	Information systems		TRUE
+K02890	large subunit ribosomal protein L22	Ribosome, archaea	MISC	Information systems		TRUE
+K02982	small subunit ribosomal protein S3	Ribosome, archaea	MISC	Information systems		TRUE
+K02904	large subunit ribosomal protein L29	Ribosome, archaea	MISC	Information systems		TRUE
+K02961	small subunit ribosomal protein S17	Ribosome, archaea	MISC	Information systems		TRUE
+K02874	large subunit ribosomal protein L14	Ribosome, archaea	MISC	Information systems		TRUE
+K02895	large subunit ribosomal protein L24	Ribosome, archaea	MISC	Information systems		TRUE
+K02987	small subunit ribosomal protein S4e	Ribosome, archaea	MISC	Information systems		TRUE
+K02931	large subunit ribosomal protein L5	Ribosome, archaea	MISC	Information systems		TRUE
+K02954	small subunit ribosomal protein S14	Ribosome, archaea	MISC	Information systems		TRUE
+K02994	small subunit ribosomal protein S8	Ribosome, archaea	MISC	Information systems		TRUE
+K02933	large subunit ribosomal protein L6	Ribosome, archaea	MISC	Information systems		TRUE
+K02912	large subunit ribosomal protein L32e	Ribosome, archaea	MISC	Information systems		TRUE
+K02885	large subunit ribosomal protein L19e	Ribosome, archaea	MISC	Information systems		TRUE
+K02881	large subunit ribosomal protein L18	Ribosome, archaea	MISC	Information systems		TRUE
+K02988	small subunit ribosomal protein S5	Ribosome, archaea	MISC	Information systems		TRUE
+K02907	large subunit ribosomal protein L30	Ribosome, archaea	MISC	Information systems		TRUE
+K02876	large subunit ribosomal protein L15	Ribosome, archaea	MISC	Information systems		TRUE
+K02952	small subunit ribosomal protein S13	Ribosome, archaea	MISC	Information systems		TRUE
+K02948	small subunit ribosomal protein S11	Ribosome, archaea	MISC	Information systems		TRUE
+K02986	small subunit ribosomal protein S4	Ribosome, archaea	MISC	Information systems		TRUE
+K02883	large subunit ribosomal protein L18e	Ribosome, archaea	MISC	Information systems		TRUE
+K02871	large subunit ribosomal protein L13	Ribosome, archaea	MISC	Information systems		TRUE
+K02996	small subunit ribosomal protein S9	Ribosome, archaea	MISC	Information systems		TRUE
+K02992	small subunit ribosomal protein S7	Ribosome, archaea	MISC	Information systems		TRUE
+K02950	small subunit ribosomal protein S12	Ribosome, archaea	MISC	Information systems		TRUE
+K02936	large subunit ribosomal protein L7Ae	Ribosome, archaea	MISC	Information systems		TRUE
+K02979	small subunit ribosomal protein S28e	Ribosome, archaea	MISC	Information systems		TRUE
+K02896	large subunit ribosomal protein L24e	Ribosome, archaea	MISC	Information systems		TRUE
+K02869	large subunit ribosomal protein L12	Ribosome, archaea	MISC	Information systems		TRUE
+K02864	large subunit ribosomal protein L10	Ribosome, archaea	MISC	Information systems		TRUE
+K02863	large subunit ribosomal protein L1	Ribosome, archaea	MISC	Information systems		TRUE
+K02867	large subunit ribosomal protein L11	Ribosome, archaea	MISC	Information systems		TRUE
+K02967	small subunit ribosomal protein S2	Ribosome, archaea	MISC	Information systems		TRUE
+K02956	small subunit ribosomal protein S15	Ribosome, archaea	MISC	Information systems		TRUE
+K02978	small subunit ribosomal protein S27e	Ribosome, archaea	MISC	Information systems		TRUE
+K02929	large subunit ribosomal protein L44e	Ribosome, archaea	MISC	Information systems		TRUE
+K02877	large subunit ribosomal protein L15e	Ribosome, archaea	MISC	Information systems		TRUE
+K02984	small subunit ribosomal protein S3Ae	Ribosome, archaea	MISC	Information systems		TRUE
+K02991	small subunit ribosomal protein S6e	Ribosome, archaea	MISC	Information systems		TRUE
+K02974	small subunit ribosomal protein S24e	Ribosome, archaea	MISC	Information systems		TRUE
+K02977	small subunit ribosomal protein S27Ae	Ribosome, archaea	MISC	Information systems		TRUE
+K02962	small subunit ribosomal protein S17e	Ribosome, archaea	MISC	Information systems		TRUE
+K02910	large subunit ribosomal protein L31e	Ribosome, archaea	MISC	Information systems		TRUE
+K02924	large subunit ribosomal protein L39e	Ribosome, archaea	MISC	Information systems		TRUE
+K02866	large subunit ribosomal protein L10e	Ribosome, archaea	MISC	Information systems		TRUE
+K02889	large subunit ribosomal protein L21e	Ribosome, archaea	MISC	Information systems		TRUE
+K02922	large subunit ribosomal protein L37e	Ribosome, archaea	MISC	Information systems		TRUE
+K02921	large subunit ribosomal protein L37Ae	Ribosome, archaea	MISC	Information systems		TRUE
+K02995	small subunit ribosomal protein S8e	Ribosome, archaea	MISC	Information systems		TRUE
+K02966	small subunit ribosomal protein S19e	Ribosome, archaea	MISC	Information systems		TRUE
+K02927	large subunit ribosomal protein L40e	Ribosome, archaea	MISC	Information systems		TRUE
+K02944	large subunit ribosomal protein LX	Ribosome, archaea	MISC	Information systems		TRUE
+K02976	small subunit ribosomal protein S26e	Ribosome, archaea	MISC	Information systems		TRUE
+K02975	small subunit ribosomal protein S25e	Ribosome, archaea	MISC	Information systems		TRUE
+K02983	small subunit ribosomal protein S30e	Ribosome, archaea	MISC	Information systems		TRUE
+K02873	large subunit ribosomal protein L13e	Ribosome, archaea	MISC	Information systems		TRUE
+K02917	large subunit ribosomal protein L35Ae	Ribosome, archaea	MISC	Information systems		TRUE
+K02928	large subunit ribosomal protein L41e	Ribosome, archaea	MISC	Information systems		TRUE
+K02915	large subunit ribosomal protein L34e	Ribosome, archaea	MISC	Information systems		TRUE
+K02875	large subunit ribosomal protein L14e	Ribosome, archaea	MISC	Information systems		TRUE
+K02908	large subunit ribosomal protein L30e	Ribosome, archaea	MISC	Information systems		TRUE
+K00764	amidophosphoribosyltransferase [EC:2.4.2.14] [RN:R01072]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01945	phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K11787	phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K11788	phosphoribosylamine--glycine ligase [EC:6.3.4.13] [RN:R04144]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K13713	fusion protein PurCD [EC:6.3.2.6 6.3.4.13] [RN:R04144 R04591]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K00601	phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K11175	phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K08289	phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01492	phosphoribosylglycinamide formyltransferase [EC:2.1.2.2] [RN:R04325]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01952	phosphoribosylformylglycinamidine synthase [EC:6.3.5.3] [RN:R04463]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01933	phosphoribosylformylglycinamidine cyclo-ligase [EC:6.3.3.1] [RN:R04208]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01587	phosphoribosylaminoimidazole carboxylase [EC:4.1.1.21] [RN:R04209]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K11808	phosphoribosylaminoimidazole carboxylase [EC:4.1.1.21] [RN:R04209]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01589	5-(carboxyamino)imidazole ribonucleotide synthase [EC:6.3.4.18] [RN:R07405]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01588	5-(carboxyamino)imidazole ribonucleotide mutase [EC:5.4.99.18] [RN:R07404]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01923	phosphoribosylaminoimidazole-succinocarboxamide synthase [EC:6.3.2.6] [RN:R04591]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K01756	adenylosuccinate lyase [EC:4.3.2.2] [RN:R04559]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K00602	phosphoribosylaminoimidazolecarboxamide formyltransferase / IMP cyclohydrolase [EC:2.1.2.3 3.5.4.10] [RN:R04560 R01127]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K06863	5-formaminoimidazole-4-carboxamide-1-(beta)-D-ribofuranosyl 5'-monophosphate synthetase [EC:6.3.4.23] [RN:R06975]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K11176	IMP cyclohydrolase [EC:3.5.4.10] [RN:R01127]	Inosine monophosphate biosynthesis, PRPP + glutamine => IMP	MISC	Information systems	Nucleotide	TRUE
+K00088	IMP dehydrogenase [EC:1.1.1.205] [RN:R01130]	Guanine ribonucleotide biosynthesis IMP => GDP,GTP	MISC	Information systems	Nucleotide	TRUE
+K01951	GMP synthase [EC:6.3.5.2] [RN:R01230 R01231]	Guanine ribonucleotide biosynthesis IMP => GDP,GTP	MISC	Information systems	Nucleotide	TRUE
+K00942	guanylate kinase [EC:2.7.4.8] [RN:R00332]	Guanine ribonucleotide biosynthesis IMP => GDP,GTP	MISC	Information systems	Nucleotide	TRUE
+K00940	nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R00330]	Guanine ribonucleotide biosynthesis IMP => GDP,GTP	MISC	Information systems	Nucleotide	TRUE
+K00873	pyruvate kinase [EC:2.7.1.40] [RN:R00430]	Guanine ribonucleotide biosynthesis IMP => GDP,GTP	MISC	Information systems	Nucleotide	TRUE
+K12406	pyruvate kinase [EC:2.7.1.40] [RN:R00430]	Guanine ribonucleotide biosynthesis IMP => GDP,GTP	MISC	Information systems	Nucleotide	TRUE
+K00844	hexokinase [EC:2.7.1.1] [RN:R01786]	Nucleotide sugar biosynthesis, glucose => UDP-glucose	MISC	Information systems	Nucleotide	TRUE
+K00845	glucokinase [EC:2.7.1.2] [RN:R01786]	Nucleotide sugar biosynthesis, glucose => UDP-glucose	MISC	Information systems	Nucleotide	TRUE
+K12407	glucokinase [EC:2.7.1.2] [RN:R01786]	Nucleotide sugar biosynthesis, glucose => UDP-glucose	MISC	Information systems	Nucleotide	TRUE
+K00886	polyphosphate glucokinase [EC:2.7.1.63] [RN:R02189]	Nucleotide sugar biosynthesis, glucose => UDP-glucose	MISC	Information systems	Nucleotide	TRUE
+K01835	phosphoglucomutase [EC:5.4.2.2] [RN:R00959]	Nucleotide sugar biosynthesis, glucose => UDP-glucose	MISC	Information systems	Nucleotide	TRUE
+K00963	UTP--glucose-1-phosphate uridylyltransferase [EC:2.7.7.9] [RN:R00289]	Nucleotide sugar biosynthesis, glucose => UDP-glucose	MISC	Information systems	Nucleotide	TRUE
+K00849	galactokinase [EC:2.7.1.6] [RN:R01092]	Nucleotide sugar biosynthesis, galactose => UDP-galactose	MISC	Information systems	Nucleotide	TRUE
+K00965	UDPglucose--hexose-1-phosphate uridylyltransferase [EC:2.7.7.12] [RN:R00955]	Nucleotide sugar biosynthesis, galactose => UDP-galactose	MISC	Information systems	Nucleotide	TRUE
+K01939	adenylosuccinate synthase [EC:6.3.4.4] [RN:R01135]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K01756	adenylosuccinate lyase [EC:4.3.2.2] [RN:R01083]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K00939	adenylate kinase [EC:2.7.4.3] [RN:R00127]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K18532	adenylate kinase [EC:2.7.4.3] [RN:R00127]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K18533	adenylate kinase [EC:2.7.4.3] [RN:R00127]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K00944	nucleoside-triphosphate--adenylate kinase [EC:2.7.4.10] [RN:R00333]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K00940	nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R00124]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K00873	pyruvate kinase [EC:2.7.1.40] [RN:R00200]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K12406	pyruvate kinase [EC:2.7.1.40] [RN:R00200]	Adenine ribonucleotide biosynthesis, IMP => ADP,ATP	MISC	Information systems	Nucleotide	TRUE
+K11540	carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K11541	carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K01465	dihydroorotase [EC:3.5.2.3] [RN:R01993]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K01954	carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K01955	carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K01956	carbamoyl-phosphate synthase [EC:6.3.5.5] [RN:R00575]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K00609	aspartate carbamoyltransferase [EC:2.1.3.2] [RN:R01397]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K00610	aspartate carbamoyltransferase [EC:2.1.3.2] [RN:R01397]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K00608	aspartate carbamoyltransferase [EC:2.1.3.2] [RN:R01397]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K00226	dihydroorotate dehydrogenase [EC:1.3.98.1] [RN:R01867]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K00254	dihydroorotate dehydrogenase [EC:1.3.5.2] [RN:R01868]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K17828	dihydroorotate dehydrogenase [EC:1.3.1.14] [RN:R01869]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K13421	orotate phosphoribosyltransferase [EC:2.4.2.10] [RN:R01870]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K00762	orotate phosphoribosyltransferase [EC:2.4.2.10] [RN:R01870]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K01591	orotidine-5'-phosphate decarboxylase [EC:4.1.1.23] [RN:R00965]	Uridine monophosphate biosynthesis, glutamine (+ PRPP) => UMP	MISC	Information systems	Nucleotide	TRUE
+K13800	cytidylate kinase [EC:2.7.4.14] [RN:R00158]	Pyrimidine ribonucleotide biosynthesis, UMP => UDP/UTP,CDP/CTP	MISC	Information systems	Nucleotide	TRUE
+K13809	cytidylate kinase [EC:2.7.4.14] [RN:R00158]	Pyrimidine ribonucleotide biosynthesis, UMP => UDP/UTP,CDP/CTP	MISC	Information systems	Nucleotide	TRUE
+K00945	cytidylate kinase [EC:2.7.4.14] [RN:R00158]	Pyrimidine ribonucleotide biosynthesis, UMP => UDP/UTP,CDP/CTP	MISC	Information systems	Nucleotide	TRUE
+K13799	cytidylate kinase [EC:2.7.4.14] [RN:R00158]	Pyrimidine ribonucleotide biosynthesis, UMP => UDP/UTP,CDP/CTP	MISC	Information systems	Nucleotide	TRUE
+K00940	nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R00156]	Pyrimidine ribonucleotide biosynthesis, UMP => UDP/UTP,CDP/CTP	MISC	Information systems	Nucleotide	TRUE
+K18533	nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R00156]	Pyrimidine ribonucleotide biosynthesis, UMP => UDP/UTP,CDP/CTP	MISC	Information systems	Nucleotide	TRUE
+K01937	CTP synthase [EC:6.3.4.2] [RN:R00571 R00573]	Pyrimidine ribonucleotide biosynthesis, UMP => UDP/UTP,CDP/CTP	MISC	Information systems	Nucleotide	TRUE
+K00524	ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K00525	ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K00526	ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K10807	ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K10808	ribonucleoside-diphosphate reductase [EC:1.17.4.1] [RN:R02024]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K00940	nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R02326 R02093]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K18533	nucleoside-diphosphate kinase [EC:2.7.4.6] [RN:R02326 R02093]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K00527	ribonucleoside-triphosphate reductase [EC:1.17.4.2 1.1.98.6] [RN:R02022 R11636]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K21636	ribonucleoside-triphosphate reductase [EC:1.17.4.2 1.1.98.6] [RN:R02022 R11636]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K01494	dCTP deaminase [EC:3.5.4.13] [RN:R02325]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K01520	dUTP pyrophosphatase [EC:3.6.1.23] [RN:R02100]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K00560	thymidylate synthase [EC:2.1.1.45] [RN:R02101]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K13998	thymidylate synthase [EC:2.1.1.45] [RN:R02101]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K00943	dTMP kinase [EC:2.7.4.9] [RN:R02094]	Pyrimidine deoxyribonuleotide biosynthesis, CDP/CTP => dCDP/dCTP,dTDP/dTTP	MISC	Information systems	Nucleotide	TRUE
+K00963	UGP2; Glc-1P -> UDP-Glc [EC:2.7.7.9]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
+K01784	GALE; UDP-Glc -> UDP-Gal [EC:5.1.3.2]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
+K00972	UAP1; GlcNAc-1P -> UDP-GlcNAc [EC:2.7.7.23]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
+K00012	UGDH; UDP-Glc -> UDP-GlcA [EC:1.1.1.22]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
+K08678	UXS1; UDP-GlcA -> UDP-Xyl [EC:4.1.1.35]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
+K00966	GMPP; Man-1P -> GDP-Man [EC:2.7.7.13]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
+K00971	GMPP; Man-1P -> GDP-Man [EC:2.7.7.13]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
+K01905	6.2.1.13, acetate---CoA ligase (ADP-forming) subunit alpha	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K01067	acetyl-CoA hydrolase [EC:3.1.2.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K00101	L-lactate dehydrogenase (cytochrome) [EC:1.1.2.3]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K03777	D-lactate dehydrogenase (quinone) [EC:1.1.5.12]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K00634	phosphate butyryltransferase [EC:2.3.1.19]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K00929	butyrate kinase [EC:2.7.2.7]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K01896	medium-chain acyl-CoA synthetase [EC:6.2.1.2]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K19697	propionate kinase [EC:2.7.2.15]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K01026	propionate CoA-transferase [EC:2.8.3.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K18857	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K13980	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K13953	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K13952	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K13951	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K04072	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K00121	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K01661	naphthoate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K01851	salicylate biosynthesis isochorismate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K01911	O-succinylbenzoic acid--CoA ligase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K02361	isochorismate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K02548	1,4-dihydroxy-2-naphthoate octaprenyltransferase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K02549	O-succinylbenzoate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K02551	2-succinyl-5-enolpyruvyl-6-hydroxy-3-cyclohexene-1-carboxylate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K02552	menaquinone-specific isochorismate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K03183	demethylmenaquinone methyltransferase / 2-methoxy-6-polyprenyl-1,4-benzoquinol methylase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K08680	2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxylate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K12073	1,4-dihydroxy-2-naphthoyl-CoA hydrolase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K19222	1,4-dihydroxy-2-naphthoyl-CoA hydrolase	Menaquinone biosynthesis	MISC	MISC		TRUE
+K00568	2-polyprenyl-6-hydroxyphenyl methylase / 3-demethylubiquinone-9 3-methyltransferase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K03179	4-hydroxybenzoate polyprenyltransferase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K03181	chorismate--pyruvate lyase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K03182	4-hydroxy-3-polyprenylbenzoate decarboxylase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K03183	demethylmenaquinone methyltransferase / 2-methoxy-6-polyprenyl-1,4-benzoquinol methylase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K03184	2-octaprenyl-3-methyl-6-methoxy-1,4-benzoquinol hydroxylase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K03185	2-octaprenyl-6-methoxyphenol hydroxylase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K03186	4-hydroxy-3-polyprenylbenzoate decarboxylase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K18240	chorismate lyase / 3-hydroxybenzoate synthase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K18800	2-octaprenylphenol hydroxylase	Ubiquinone biosynthesis	MISC	MISC		TRUE
+K22225	ahbAB; siroheme decarboxylase [RN:R12000]	Heme biosynthesis, archaea, siroheme => heme	MISC	MISC		TRUE
+K22226	ahbC; 12,18-didecarboxysiroheme decarboxylase [RN:R12001]	Heme biosynthesis, archaea, siroheme => heme	MISC	MISC		TRUE
+K22227	ahbD; heme synthase [RN:R12002]	Heme biosynthesis, archaea, siroheme => heme	MISC	MISC		TRUE
+K00232	acyl-CoA oxidase [EC:1.3.3.6] [RN:R07934 R07950]	beta-Oxidation, peroxisome, VLCFA	MISC	MISC		TRUE
+K12405	(3R)-3-hydroxyacyl-CoA dehydrogenase / enoyl-CoA hydratase 2 [EC:1.1.1.- 4.2.1.119] [RN:R07935 R07936 R07951 R07952]	beta-Oxidation, peroxisome, VLCFA	MISC	MISC		TRUE
+K07513	acetyl-CoA acyltransferase 1 [EC:2.3.1.16] [RN:R07937 R07953]	beta-Oxidation, peroxisome, VLCFA	MISC	MISC		TRUE
+K08764	sterol carrier protein 2 [EC:2.3.1.176] [RN:R07937 R07953]	beta-Oxidation, peroxisome, VLCFA	MISC	MISC		TRUE
+K10214	3alpha,7alpha,12alpha-trihydroxy-5beta-cholestanoyl-CoA 24-hydroxylase [EC:1.17.99.3] [RN:R08735 R08740]	beta-Oxidation, peroxisome, tri/dihydroxycholestanoyl-CoA => choloyl/chenodeoxycholoyl-CoA	MISC	MISC		TRUE
+K12405	(3R)-3-hydroxyacyl-CoA dehydrogenase / 3a,7a,12a-trihydroxy-5b-cholest-24-enoyl-CoA hydratase [EC:1.1.1.- 4.2.1.107] [RN:R04813 R04812 R04809 R04810]	beta-Oxidation, peroxisome, tri/dihydroxycholestanoyl-CoA => choloyl/chenodeoxycholoyl-CoA	MISC	MISC		TRUE
+K08764	sterol carrier protein 2 [EC:2.3.1.176] [RN:R03719 R04811]	beta-Oxidation, peroxisome, tri/dihydroxycholestanoyl-CoA => choloyl/chenodeoxycholoyl-CoA	MISC	MISC		TRUE
+K00643	5-aminolevulinate synthase [EC:2.3.1.37] [RN:R00830]	Heme biosynthesis, animals and fungi, glycine => heme	MISC	MISC		TRUE
+K01698	porphobilinogen synthase [EC:4.2.1.24] [RN:R00036]	Heme biosynthesis, animals and fungi, glycine => heme	MISC	MISC		TRUE
+K01749	hydroxymethylbilane synthase [EC:2.5.1.61] [RN:R00084]	Heme biosynthesis, animals and fungi, glycine => heme	MISC	MISC		TRUE
+K01719	uroporphyrinogen-III synthase [EC:4.2.1.75] [RN:R03165]	Heme biosynthesis, animals and fungi, glycine => heme	MISC	MISC		TRUE
+K01599	uroporphyrinogen decarboxylase [EC:4.1.1.37] [RN:R03197]	Heme biosynthesis, animals and fungi, glycine => heme	MISC	MISC		TRUE
+K00228	coproporphyrinogen III oxidase [EC:1.3.3.3] [RN:R03220]	Heme biosynthesis, animals and fungi, glycine => heme	MISC	MISC		TRUE
+K00231	protoporphyrinogen/coproporphyrinogen III oxidase [EC:1.3.3.4] [RN:R03222]	Heme biosynthesis, animals and fungi, glycine => heme	MISC	MISC		TRUE
+K01772	protoporphyrin/coproporphyrin ferrochelatase [EC:4.99.1.1] [RN:R00310]	Heme biosynthesis, animals and fungi, glycine => heme	MISC	MISC		TRUE
+K00012	UDPglucose 6-dehydrogenase [EC:1.1.1.22] [RN:R00286]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K12447	UDP-sugar pyrophosphorylase [EC:2.7.7.64] [RN:R01381]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K16190	glucuronokinase [EC:2.7.1.43] [RN:R01476]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K00699	glucuronosyltransferase [EC:2.4.1.17] [RN:R01383]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K01195	beta-glucuronidase [EC:3.2.1.31] [RN:R01478]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K14756	beta-glucuronidase [EC:3.2.1.31] [RN:R01478]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K00002	alcohol dehydrogenase (NADP+) [EC:1.1.1.2] [RN:R01481]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K13247	L-gulonate 3-dehydrogenase [EC:1.1.1.45] [RN:R02640]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K03331	L-xylulose reductase [EC:1.1.1.10] [RN:R01904]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K05351	D-xylulose reductase [EC:1.1.1.9] [RN:R01896]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K00008	L-iditol 2-dehydrogenase [EC:1.1.1.14] [RN:R01896]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K00854	xylulokinase [EC:2.7.1.17] [RN:R01639]	Glucuronate pathway (uronate pathway)	MISC	MISC		TRUE
+K02399	flagella synthesis protein FlgN	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone		TRUE
+K02413	flagellar FliJ protein	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone		TRUE
+K02422	flagellar protein FliS	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone		TRUE
+K02423	flagellar protein FliT	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone		TRUE
+K02386	flagella basal body P-ring formation protein FlgA	Flagellar Assembly	MISC	Flagellar cytoplasmic chaperone		TRUE
+K02406	flagellin	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02407	flagellar hook-associated protein 2	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02397	flagellar hook-associated protein 3 FlgL	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02396	flagellar hook-associated protein 1 FlgK	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02414	flagellar hook-length control protein FliK	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02389	flagellar basal-body rod modification protein FlgD	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02390	flagellar hook protein FlgE	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02391	flagellar basal-body rod protein FlgF	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02392	flagellar basal-body rod protein FlgG	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02393	flagellar L-ring protein precursor FlgH	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02394	flagellar P-ring protein precursor FlgI	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02387	flagellar basal-body rod protein FlgB	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02388	flagellar basal-body rod protein FlgC	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02408	flagellar hook-basal body complex protein FliE	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02409	flagellar M-ring protein FliF	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02410	flagellar motor switch protein FliG	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02416	flagellar motor switch protein FliM	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02417	flagellar motor switch protein FliN/FliY	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02400	flagellar biosynthesis protein FlhA	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02401	flagellar biosynthetic protein FlhB	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02411	flagellar assembly protein FliH	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02412	flagellum-specific ATP synthase [EC:7.4.2.8]	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02418	flagellar protein FliO/FliZ	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02419	flagellar biosynthetic protein FliP	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02420	flagellar biosynthetic protein FliQ	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02421	flagellar biosynthetic protein FliR	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K13820	flagellar biosynthetic protein FliR/FlhB	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02556	chemotaxis protein MotA	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K02557	chemotaxis protein MotB	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K21217	sodium-type polar flagellar protein MotX	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K21218	sodium-type flagellar protein MotY	Flagellar Assembly	MISC	Flagella Structure		TRUE
+K10616	cymAa; p-cymene methyl-monooxygenase [EC:1.14.15.25] [RN:R05266]	Cymene degradation, p-cymene => p-cumate	MISC	hydrocarbon degradation		TRUE
+K18293	cymAb; p-cymene methyl-monooxygenase electron transfer component [EC:1.18.1.3]	Cymene degradation, p-cymene => p-cumate	MISC	hydrocarbon degradation		TRUE
+K10617	cymB; p-cumic alcohol dehydrogenase [RN:R05232]	Cymene degradation, p-cymene => p-cumate	MISC	hydrocarbon degradation		TRUE
+K10618	cymC; p-cumic aldehyde dehydrogenase [RN:R05235]	Cymene degradation, p-cymene => p-cumate	MISC	hydrocarbon degradation		TRUE
+K01885	glutamyl-tRNA synthetase [EC:6.1.1.17] [RN:R05578]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K14163	glutamyl-tRNA synthetase [EC:6.1.1.17] [RN:R05578]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K02492	glutamyl-tRNA reductase [EC:1.2.1.70] [RN:R04109]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K01845	glutamate-1-semialdehyde 2,1-aminomutase [EC:5.4.3.8] [RN:R02272]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K01698	porphobilinogen synthase [EC:4.2.1.24] [RN:R00036]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K01749	hydroxymethylbilane synthase [EC:2.5.1.61] [RN:R00084]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K01719	uroporphyrinogen-III synthase [EC:4.2.1.75] [RN:R03165]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K13542	uroporphyrinogen-III synthase [EC:4.2.1.75] [RN:R03165]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K13543	uroporphyrinogen-III synthase [EC:4.2.1.75] [RN:R03165]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K02302	uroporphyrin-III C-methyltransferase [EC:2.1.1.107] [RN:R03194]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K00589	uroporphyrin-III C-methyltransferase [EC:2.1.1.107] [RN:R03194]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K02303	uroporphyrin-III C-methyltransferase [EC:2.1.1.107] [RN:R03194]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K02496	uroporphyrin-III C-methyltransferase [EC:2.1.1.107] [RN:R03194]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K02304	precorrin-2 dehydrogenase [EC:1.3.1.76] [RN:R03947]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K03794	sirohydrochlorin ferrochelatase [EC:4.99.1.4] [RN:R02864]	Siroheme biosynthesis, glutamate => siroheme	MISC	Antibiotic Resistance		TRUE
+K05599	anthranilate 1,2-dioxygenase [EC:1.14.12.1] [RN:R00823 R00825]	Anthranilate degradation, anthranilate => catechol	MISC	hydrocarbon degradation		TRUE
+K05600	anthranilate 1,2-dioxygenase [EC:1.14.12.1] [RN:R00823 R00825]	Anthranilate degradation, anthranilate => catechol	MISC	hydrocarbon degradation		TRUE
+K11311	anthranilate 1,2-dioxygenase [EC:1.14.12.1] [RN:R00823 R00825]	Anthranilate degradation, anthranilate => catechol	MISC	hydrocarbon degradation		TRUE
+K16319	anthranilate 1,2-dioxygenase [EC:1.14.12.1]	Anthranilate degradation, anthranilate => catechol	MISC	hydrocarbon degradation		TRUE
+K16320	anthranilate 1,2-dioxygenase [EC:1.14.12.1]	Anthranilate degradation, anthranilate => catechol	MISC	hydrocarbon degradation		TRUE
+K18248	anthranilate 1,2-dioxygenase [EC:1.14.12.1]	Anthranilate degradation, anthranilate => catechol	MISC	hydrocarbon degradation		TRUE
+K18249	anthranilate 1,2-dioxygenase [EC:1.14.12.1]	Anthranilate degradation, anthranilate => catechol	MISC	hydrocarbon degradation		TRUE
+K18242	salicylate 5-hydroxylase [EC:1.14.13.172] [RN:R07709 R07710]	Salicylate degradation, salicylate => gentisate	MISC	hydrocarbon degradation		TRUE
+K18243	salicylate 5-hydroxylase [EC:1.14.13.172] [RN:R07709 R07710]	Salicylate degradation, salicylate => gentisate	MISC	hydrocarbon degradation		TRUE
+K14578	salicylate 5-hydroxylase [EC:1.14.13.172] [RN:R07709 R07710]	Salicylate degradation, salicylate => gentisate	MISC	hydrocarbon degradation		TRUE
+K14581	salicylate 5-hydroxylase [EC:1.14.13.172] [RN:R07709 R07710]	Salicylate degradation, salicylate => gentisate	MISC	hydrocarbon degradation		TRUE
+K02302	cysG; uroporphyrin-III C-methyltransferase / precorrin-2 dehydrogenase / sirohydrochlorin ferrochelatase [EC:2.1.1.107 1.3.1.76 4.99.1.4]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K02304	MET8; precorrin-2 dehydrogenase / sirohydrochlorin ferrochelatase [EC:1.3.1.76 4.99.1.4]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K02190	cbiK; sirohydrochlorin cobaltochelatase [EC:4.99.1.3]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K03795	cbiX; sirohydrochlorin cobaltochelatase [EC:4.99.1.3]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K22011	cfbA; sirohydrochlorin cobalto/nickelchelatase [EC:4.99.1.3 4.99.1.11]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K03394	cobI-cbiL; precorrin-2/cobalt-factor-2 C20-methyltransferase [EC:2.1.1.130 2.1.1.151]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K13540	cobIJ; precorrin-2 C20-methyltransferase / precorrin-3B C17-methyltransferase [EC:2.1.1.130 2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K05934	E2.1.1.131, cobJ, cbiH; precorrin-3B C17-methyltransferase [EC:2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K13540	cobIJ; precorrin-2 C20-methyltransferase / precorrin-3B C17-methyltransferase [EC:2.1.1.130 2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K13541 	cbiGH-cobJ; cobalt-precorrin 5A hydrolase / precorrin-3B C17-methyltransferase [EC:3.7.1.12 2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K21479	cbiH60; cobalt-factor III methyltransferase [EC:2.1.1.272]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K05936	cobM, cbiF; precorrin-4/cobalt-precorrin-4 C11-methyltransferase [EC:2.1.1.133 2.1.1.271]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K02189	cbiG; cobalt-precorrin 5A hydrolase [EC:3.7.1.12]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K13541	cbiGH-cobJ; cobalt-precorrin 5A hydrolase / precorrin-3B C17-methyltransferase [EC:3.7.1.12 2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K02188	cbiD; cobalt-precorrin-5B (C1)-methyltransferase [EC:2.1.1.195]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K05895	cobK-cbiJ; precorrin-6A/cobalt-precorrin-6A reductase [EC:1.3.1.54 1.3.1.106]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K02191	cbiT; cobalt-precorrin-6B (C15)-methyltransferase [EC:2.1.1.196]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K03399	cbiE; cobalt-precorrin-7 (C5)-methyltransferase [EC:2.1.1.289]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K06042	cobH-cbiC; precorrin-8X/cobalt-precorrin-8 methylmutase [EC:5.4.99.61 5.4.99.60]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K02224	cobB-cbiA; cobyrinic acid a,c-diamide synthase [EC:6.3.5.9 6.3.5.11]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	anaerobic corrin ring synthesis		TRUE
+K03394	cobI-cbiL; precorrin-2/cobalt-factor-2 C20-methyltransferase [EC:2.1.1.130 2.1.1.151]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K13540	cobIJ; precorrin-2 C20-methyltransferase / precorrin-3B C17-methyltransferase [EC:2.1.1.130 2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K02229	cobG; precorrin-3B synthase [EC:1.14.13.83]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K13540 	cobIJ; precorrin-2 C20-methyltransferase / precorrin-3B C17-methyltransferase [EC:2.1.1.130 2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K05934	E2.1.1.131, cobJ, cbiH; precorrin-3B C17-methyltransferase [EC:2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K13541	cbiGH-cobJ; cobalt-precorrin 5A hydrolase / precorrin-3B C17-methyltransferase [EC:3.7.1.12 2.1.1.131]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K05936	cobM, cbiF; precorrin-4/cobalt-precorrin-4 C11-methyltransferase [EC:2.1.1.133 2.1.1.271]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K02228	cobF; precorrin-6A synthase [EC:2.1.1.152]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K05895	cobK-cbiJ; precorrin-6A/cobalt-precorrin-6A reductase [EC:1.3.1.54 1.3.1.106]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K00595	cobL; precorrin-6Y C5,15-methyltransferase (decarboxylating) [EC:2.1.1.132]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K06042	cobH-cbiC; precorrin-8X/cobalt-precorrin-8 methylmutase [EC:5.4.99.61 5.4.99.60]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K02224	cobB-cbiA; cobyrinic acid a,c-diamide synthase [EC:6.3.5.9 6.3.5.11]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K02230	cobN; cobaltochelatase CobN [EC:6.6.1.2]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K09882	cobS; cobaltochelatase CobS [EC:6.6.1.2]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K09883	cobT; cobaltochelatase CobT [EC:6.6.1.2]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	aerobic corrin ring synthesis		TRUE
+K13786	cobR; cob(II)yrinic acid a,c-diamide reductase [EC:1.16.8.1]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	ADO-CBL synthesis		TRUE
+K00798	MMAB, pduO; cob(I)alamin adenosyltransferase [EC:2.5.1.17]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K19221	cobA, btuR; cob(I)alamin adenosyltransferase [EC:2.5.1.17]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02232	cobQ, cbiP; adenosylcobyric acid synthase [EC:6.3.5.10]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02225	cobC1, cobC; cobalamin biosynthetic protein	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02227	cbiB, cobD; adenosylcobinamide-phosphate synthase [EC:6.3.1.10]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02227	cbiB, cobD; adenosylcobinamide-phosphate synthase [EC:6.3.1.10]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02231	cobP, cobU; adenosylcobinamide kinase / adenosylcobinamide-phosphate guanylyltransferase [EC:2.7.1.156 2.7.7.62]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K19712	cobY; adenosylcobinamide-phosphate guanylyltransferase [EC:2.7.7.62]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02233	E2.7.8.26, cobS, cobV; adenosylcobinamide-GDP ribazoletransferase [EC:2.7.8.26]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K13786	cobR; cob(II)yrinic acid a,c-diamide reductase [EC:1.16.8.1]	Cobalamin biosynthesis, precorrin2 => cobinamide	MISC	ADO-CBL synthesis		TRUE
+K00798	MMAB, pduO; cob(I)alamin adenosyltransferase [EC:2.5.1.17]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K19221	cobA, btuR; cob(I)alamin adenosyltransferase [EC:2.5.1.17]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02232	cobQ, cbiP; adenosylcobyric acid synthase [EC:6.3.5.10]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02225	cobC1, cobC; cobalamin biosynthetic protein CobC	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02227	cbiB, cobD; adenosylcobinamide-phosphate synthase [EC:6.3.1.10]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02231	cobP, cobU; adenosylcobinamide kinase / adenosylcobinamide-phosphate guanylyltransferase [EC:2.7.1.156 2.7.7.62]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02231	cobP, cobU; adenosylcobinamide kinase / adenosylcobinamide-phosphate guanylyltransferase [EC:2.7.1.156 2.7.7.62]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K19712	cobY; adenosylcobinamide-phosphate guanylyltransferase [EC:2.7.7.62]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K02233	E2.7.8.26, cobS, cobV; adenosylcobinamide-GDP ribazoletransferase [EC:2.7.8.26]	Cobalamin biosynthesis, cobinamide => cobalamin	MISC	ADO-CBL synthesis		TRUE
+K07016	csm1, cas10; CRISPR-associated protein Csm1	Type III signiture cas proteins	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19138	csm2; CRISPR-associated protein Csm2	Subtype III-A factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K09002	csm3; CRISPR-associated protein Csm3	Subtype III-A factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19139	csm4; CRISPR-associated protein Csm4	Subtype III-A factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19140	csm5; CRISPR-associated protein Csm5	Subtype III-A factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K07061	cmr1; CRISPR-associated protein Cmr1	Subtype III-B factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19076	cmr2, cas10; CRISPR-associated protein Cmr2	Subtype III-B factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K09127	cmr3; CRISPR-associated protein Cmr3	Subtype III-B factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K09000	cmr4; CRISPR-associated protein Cmr4	Subtype III-B factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19141	cmr5; CRISPR-associated protein Cmr5	Subtype III-B factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19142	cmr6; CRISPR-associated protein Cmr6	Subtype III-B factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19143	csx1; CRISPR-associated protein Csx1	Subtype III-U factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19144	csx3; CRISPR-associated protein Csx3	Subtype III-U factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19145	csx16; CRISPR-associated protein Csx16	Subtype III-U factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K19146	csaX; CRISPR-associated protein CsaX	Subtype III-U factors	MISC	CRISPR	Type III CRISPR-Cas system	FALSE
+K09952	csn1, cas9; CRISPR-associated endonuclease Csn1 [EC:3.1.-.-]	Type II signiture cas proteins	MISC	CRISPR	Type II CRISPR-Cas system	FALSE
+K19137	csn2; CRISPR-associated protein Csn2	Subtype II-A factors	MISC	CRISPR	Type II CRISPR-Cas system	FALSE
+K07464	cas4; CRISPR-associated exonuclease Cas4 [EC:3.1.12.1]	Subtype II-B factors	MISC	CRISPR	Type II CRISPR-Cas system	FALSE
+K07012	cas3; CRISPR-associated endonuclease/helicase Cas3 [EC:3.1.-.- 3.6.4.-]	Type I signiture cas proteins	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K07475	cas3; CRISPR-associated endonuclease Cas3-HD [EC:3.1.-.-]	Type I signiture cas proteins	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19085	csa1; CRISPR-associated protein Csa1	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19074	csa2; CRISPR-associated protein Csa2	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K07725	csa3; CRISPR-associated protein Csa3	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19086	csa4, cas8a2; CRISPR-associated protein Csa4	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19087	csa5; CRISPR-associated protein Csa5	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19088	cst1, cas8a; CRISPR-associated protein Cst1	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19075	cst2, cas7; CRISPR-associated protein Cst2	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K07464	cas4; CRISPR-associated exonuclease Cas4 [EC:3.1.12.1]	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19089	cas5a_b_c; CRISPR-associated protein Cas5a/b/c	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19090	cas5t; CRISPR-associated protein Cas5t	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19091	cas6; CRISPR-associated endoribonuclease Cas6 [EC:3.1.-.-]	Subtype I-A factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19114	csh1; CRISPR-associated protein Csh1	Subtype I-B factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19115	csh2; CRISPR-associated protein Csh2	Subtype I-B factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K07464	cas4; CRISPR-associated exonuclease Cas4 [EC:3.1.12.1]	Subtype I-B factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19116	cas5h; CRISPR-associated protein Cas5h	Subtype I-B factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19117	csd1, cas8c; CRISPR-associated protein Csd1	Subtype I-C factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19118	csd2, cas7; CRISPR-associated protein Csd2	Subtype I-C factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K07464	cas4; CRISPR-associated exonuclease Cas4 [EC:3.1.12.1]	Subtype I-C factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19119	cas5d; CRISPR-associated protein Cas5d	Subtype I-C factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19120	csc1; CRISPR-associated protein Csc1	Subtype I-D factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19121	csc2; CRISPR-associated protein Csc2	Subtype I-D factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19122	csc3; CRISPR-associated protein Csc3	Subtype I-D factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K07464	cas4; CRISPR-associated exonuclease Cas4 [EC:3.1.12.1]	Subtype I-D factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19091	cas6; CRISPR-associated endoribonuclease Cas6 [EC:3.1.-.-]	Subtype I-D factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19123	casA, cse1; CRISPR system Cascade subunit CasA	Subtype I-E factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19046	casB, cse2; CRISPR system Cascade subunit CasB	Subtype I-E factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19124	casC, cse4; CRISPR system Cascade subunit CasC	Subtype I-E factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19125	casD, cse5; CRISPR system Cascade subunit CasD	Subtype I-E factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19126	casE, cse3; CRISPR system Cascade subunit CasE	Subtype I-E factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19127	csy1; CRISPR-associated protein Csy1	Subtype I-F factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19128	csy2; CRISPR-associated protein Csy2	Subtype I-F factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19129	csy3; CRISPR-associated protein Csy3	Subtype I-F factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19130	csy4, cas6f; CRISPR-associated endonuclease Csy4 [EC:3.1.-.-]	Subtype I-F factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19131	csb1; CRISPR-associated protein Csb1	Subtype I-U factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19132	csb2; CRISPR-associated protein Csb2	Subtype I-U factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19133	csb3; CRISPR-associated protein Csb3	Subtype I-U factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19134	csx10; CRISPR-associated protein Csx10	Subtype I-U factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19135	csx14; CRISPR-associated protein Csx14	Subtype I-U factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K19136	csx17; CRISPR-associated protein Csx17	Subtype I-U factors	MISC	CRISPR	Type I CRISPR-Cas system	FALSE
+K01872	AARS; alanyl-tRNA synthetase [EC:6.1.1.7]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01887	RARS; arginyl-tRNA synthetase [EC:6.1.1.19]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01893	NARS; asparaginyl-tRNA synthetase [EC:6.1.1.22]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K22503	DARS; aspartyl-tRNA synthetase [EC:6.1.1.12]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01876	DARS2; aspartyl-tRNA synthetase [EC:6.1.1.12]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01883	CARS; cysteinyl-tRNA synthetase [EC:6.1.1.16]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01886	QARS; glutaminyl-tRNA synthetase [EC:6.1.1.18]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01885	EARS; glutamyl-tRNA synthetase [EC:6.1.1.17]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01880	GARS; glycyl-tRNA synthetase [EC:6.1.1.14]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01892	HARS; histidyl-tRNA synthetase [EC:6.1.1.21]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01870	IARS; isoleucyl-tRNA synthetase [EC:6.1.1.5]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01869	LARS; leucyl-tRNA synthetase [EC:6.1.1.4]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K04567	KARS; lysyl-tRNA synthetase, class II [EC:6.1.1.6]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01874	MARS; methionyl-tRNA synthetase [EC:6.1.1.10]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01889	FARSA; phenylalanyl-tRNA synthetase alpha chain [EC:6.1.1.20]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01890	FARSB; phenylalanyl-tRNA synthetase beta chain [EC:6.1.1.20]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01881	PARS; prolyl-tRNA synthetase [EC:6.1.1.15]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01875	SARS; seryl-tRNA synthetase [EC:6.1.1.11]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01868	TARS; threonyl-tRNA synthetase [EC:6.1.1.3]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01867	WARS; tryptophanyl-tRNA synthetase [EC:6.1.1.2]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01866	YARS; tyrosyl-tRNA synthetase [EC:6.1.1.1]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K01873	VARS; valyl-tRNA synthetase [EC:6.1.1.9]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K14163	EPRS; bifunctional glutamyl/prolyl-tRNA synthetase [EC:6.1.1.17 6.1.1.15]	Aminoacyl-tRNA biosynthesis, eukaryotes	MISC	Information systems		FALSE
+K03006	RPB1; DNA-directed RNA polymerase II subunit RPB1 [EC:2.7.7.6]	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03010	RPB2; DNA-directed RNA polymerase II subunit RPB2 [EC:2.7.7.6]	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03011	RPB3; DNA-directed RNA polymerase II subunit RPB3	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03008	RPB11; DNA-directed RNA polymerase II subunit RPB11	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03012	RPB4; DNA-directed RNA polymerase II subunit RPB4	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03015	RPB7; DNA-directed RNA polymerase II subunit RPB7	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03017	RPB9; DNA-directed RNA polymerase II subunit RPB9	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03013	RPB5; DNA-directed RNA polymerases I, II, and III subunit RPABC1	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03014	RPB6; DNA-directed RNA polymerases I, II, and III subunit RPABC2	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03016	RPB8; DNA-directed RNA polymerases I, II, and III subunit RPABC3	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03009	RPB12; DNA-directed RNA polymerases I, II, and III subunit RPABC4	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03007	RPB10; DNA-directed RNA polymerases I, II, and III subunit RPABC5	RNA polymerase II, eukaryotes	MISC	Information systems		FALSE
+K03018	RPC1; DNA-directed RNA polymerase III subunit RPC1 [EC:2.7.7.6]	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03021	RPC2; DNA-directed RNA polymerase III subunit RPC2 [EC:2.7.7.6]	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03027	RPC40; DNA-directed RNA polymerases I and III subunit RPAC1	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03020	RPC19; DNA-directed RNA polymerases I and III subunit RPAC2	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03023	RPC82; DNA-directed RNA polymerase III subunit RPC3	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03026	RPC53; DNA-directed RNA polymerase III subunit RPC4	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K14721	RPC37; DNA-directed RNA polymerase III subunit RPC5	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03025	RPC34; DNA-directed RNA polymerase III subunit RPC6	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03024	RPC31; DNA-directed RNA polymerase III subunit RPC7	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03022	RPC25; DNA-directed RNA polymerase III subunit RPC8	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03019	RPC11; DNA-directed RNA polymerase III subunit RPC10	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03013	RPB5; DNA-directed RNA polymerases I, II, and III subunit RPABC1	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03014	RPB6; DNA-directed RNA polymerases I, II, and III subunit RPABC2	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03016	RPB8; DNA-directed RNA polymerases I, II, and III subunit RPABC3	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03009	RPB12; DNA-directed RNA polymerases I, II, and III subunit RPABC4	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K03007	RPB10; DNA-directed RNA polymerases I, II, and III subunit RPABC5	RNA polymerase III, eukaryotes	MISC	Information systems		FALSE
+K02999	RPA1; DNA-directed RNA polymerase I subunit RPA1 [EC:2.7.7.6]	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03002	RPA2; DNA-directed RNA polymerase I subunit RPA2 [EC:2.7.7.6]	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03027	RPC40; DNA-directed RNA polymerases I and III subunit RPAC1	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03020	RPC19; DNA-directed RNA polymerases I and III subunit RPAC2	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03000	RPA12; DNA-directed RNA polymerase I subunit RPA12	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03001	RPA14; DNA-directed RNA polymerase I subunit RPA14	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03003	RPA34; DNA-directed RNA polymerase I subunit RPA34	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03004	RPA43; DNA-directed RNA polymerase I subunit RPA43	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03005	RPA49; DNA-directed RNA polymerase I subunit RPA49	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03013	RPB5; DNA-directed RNA polymerases I, II, and III subunit RPABC1	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03014	RPB6; DNA-directed RNA polymerases I, II, and III subunit RPABC2	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03016	RPB8; DNA-directed RNA polymerases I, II, and III subunit RPABC3	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03009	RPB12; DNA-directed RNA polymerases I, II, and III subunit RPABC4	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03007	RPB10; DNA-directed RNA polymerases I, II, and III subunit RPABC5	RNA polymerase I, eukaryotes	MISC	Information systems		FALSE
+K03040	rpoA; DNA-directed RNA polymerase subunit alpha [EC:2.7.7.6]	RNA polymerase, bacteria	MISC	Information systems		FALSE
+K03043	rpoB; DNA-directed RNA polymerase subunit beta [EC:2.7.7.6]	RNA polymerase, bacteria	MISC	Information systems		FALSE
+K03046	rpoC; DNA-directed RNA polymerase subunit beta' [EC:2.7.7.6]	RNA polymerase, bacteria	MISC	Information systems		FALSE
+K13797	rpoBC; DNA-directed RNA polymerase subunit beta-beta' [EC:2.7.7.6]	RNA polymerase, bacteria	MISC	Information systems		FALSE
+K03060	rpoZ; DNA-directed RNA polymerase subunit omega [EC:2.7.7.6]	RNA polymerase, bacteria	MISC	Information systems		FALSE
+K03048	rpoE; DNA-directed RNA polymerase subunit delta	RNA polymerase, bacteria	MISC	Information systems		FALSE
+K03042	rpoA2; DNA-directed RNA polymerase subunit A [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03041	rpoA1; DNA-directed RNA polymerase subunit A' [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03044	rpoB1; DNA-directed RNA polymerase subunit B' [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03045	rpoB2; DNA-directed RNA polymerase subunit B [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K13798	rpoB; DNA-directed RNA polymerase subunit B [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03053	rpoH; DNA-directed RNA polymerase subunit H [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03055	rpoK; DNA-directed RNA polymerase subunit K [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03058	rpoN; DNA-directed RNA polymerase subunit N [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03047	rpoD; DNA-directed RNA polymerase subunit D [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03049	rpoE1; DNA-directed RNA polymerase subunit E [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03050	rpoE2; DNA-directed RNA polymerase subunit E [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03056	rpoL; DNA-directed RNA polymerase subunit L [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03059	rpoP; DNA-directed RNA polymerase subunit P [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03051	rpoF; DNA-directed RNA polymerase subunit F [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03052	rpoG; DNA-directed RNA polymerase subunit G [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K03054	rpoI; DNA-directed RNA polymerase subunit I [EC:2.7.7.6]	RNA polymerase, archaea	MISC	Information systems		FALSE
+K02337	dnaE; DNA polymerase III subunit alpha [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K03763	polC; DNA polymerase III subunit alpha, Gram-positive type [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02342	dnaQ; DNA polymerase III subunit epsilon [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K14159	rnhA-dnaQ; ribonuclease HI / DNA polymerase III subunit epsilon [EC:3.1.26.4 2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02345	holE; DNA polymerase III subunit theta [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02338	dnaN; DNA polymerase III subunit beta [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02340	holA; DNA polymerase III subunit delta [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02341	holB; DNA polymerase III subunit delta' [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02343	dnaX; DNA polymerase III subunit gamma/tau [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02339	holC; DNA polymerase III subunit chi [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02344	holD; DNA polymerase III subunit psi [EC:2.7.7.7]	DNA polymerase III complex, bacteria	MISC	Information systems		FALSE
+K02320	POLA1; DNA polymerase alpha, subunit A [EC:2.7.7.7]	DNA polymerase alpha / primase complex	MISC	Information systems		FALSE
+K02321	POLA2; DNA polymerase alpha, subunit B [EC:2.7.7.7]	DNA polymerase alpha / primase complex	MISC	Information systems		FALSE
+K02685	PRI2; DNA primase large subunit [EC:2.7.7.-]	DNA polymerase alpha / primase complex	MISC	Information systems		FALSE
+K02684	PRI1; DNA primase small subunit [EC:2.7.7.-]	DNA polymerase alpha / primase complex	MISC	Information systems		FALSE
+K02327	POLD1; DNA polymerase delta, subunit A [EC:2.7.7.7]	DNA polymerase delta complex	MISC	Information systems		FALSE
+K02328	POLD2; DNA polymerase delta, subunit B [EC:2.7.7.7]	DNA polymerase delta complex	MISC	Information systems		FALSE
+K03504	POLD3; DNA polymerase delta, subunit C [EC:2.7.7.7]	DNA polymerase delta complex	MISC	Information systems		FALSE
+K03505	POLD4; DNA polymerase delta, subunit D [EC:2.7.7.7]	DNA polymerase delta complex	MISC	Information systems		FALSE
+K02324	POLE1; DNA polymerase epsilon, subunit A [EC:2.7.7.7]	DNA polymerase epsilon complex	MISC	Information systems		FALSE
+K02325	POLE2; DNA Polymerase epsilon, subunit B [EC:2.7.7.7]	DNA polymerase epsilon complex	MISC	Information systems		FALSE
+K02326	POLE3; DNA Polymerase epsilon, subunit C [EC:2.7.7.7]	DNA polymerase epsilon complex	MISC	Information systems		FALSE
+K03506	POLE4; DNA polymerase epsilon, subunit D [EC:2.7.7.7]	DNA polymerase epsilon complex	MISC	Information systems		FALSE
+K02322	DPB1; DNA polymerase II large subunit [EC:2.7.7.7]	DNA polymerase II complex, archaea	MISC	Information systems		FALSE
+K02323	DPB2; DNA polymerase II small subunit [EC:2.7.7.7]	DNA polymerase II complex, archaea	MISC	Information systems		FALSE
+K15342	cas1; CRISP-associated protein Cas1	Universal Cas proteins	MISC	CRISPR		FALSE
+K09951	cas2; CRISPR-associated protein Cas2	Universal Cas proteins	MISC	CRISPR		FALSE

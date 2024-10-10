@@ -1,0 +1,11 @@
+{
+    "empirical_frequencies": true, 
+    "datatype": "AA", 
+    "subs_model": "WAG", 
+    "program": "RAxML version 7.7.2", 
+    "ras_model": "gamma", 
+    "gamma": {
+        "alpha": 1.530755, 
+        "n_cats": 4
+    }
+}

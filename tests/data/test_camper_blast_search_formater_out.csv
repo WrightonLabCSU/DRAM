@@ -1,5 +1,0 @@
-qId,CAMPER_hits,CAMPER_rank,CAMPER_bitScore,CAMPER_id,CAMPER_definition,CAMPER_search_type
-20100900_E1D_13_c_000000004207_31,D00013;Edl,A,200,D00013,EDL; END lactonizing enzyme,blast
-20100900_E1D_13_c_000000004192_54,D00013;Edl,B,120,D00013,EDL; END lactonizing enzyme,blast
-20100900_E1D_13_c_000000004221_30,D00014;CarE,A,301,D00014,CarE;electron transfer flavoprotein B,blast
-20100900_E1D_13_c_000000004302_7,D00014;CarE,B,240,D00014,CarE;electron transfer flavoprotein B,blast

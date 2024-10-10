@@ -1,0 +1,1178 @@
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory
+K07093	phoX, Alkaline phosphatase X	organic P mineralization	ag	Phosphorus	
+K09474	phoN, Acid phosphatase class A	organic P mineralization	ag	Phosphorus	
+K03788	aphA, Acid phosphatase class B	organic P mineralization	ag	Phosphorus	
+K01078	olpA Acid phosphatase class C	organic P mineralization	ag	Phosphorus	
+K01093	appA, 4-phytase	organic P mineralization	ag	Phosphorus	
+K01083	3-phytase	organic P mineralization	ag	Phosphorus	
+K06166	phnG, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06165	phnH, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06164	phnI, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06163	phnJ, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K05781	phnK, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K05780	phnL, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06162	phnM, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K01507	ppa, Inorganic pyrophosphatase	inorganic P solubuiliation	ag	Phosphorus	
+K01514	ppx, Exopolyphosphatase	inorganic P solubuiliation	ag	Phosphorus	
+K00937	ppk1, Polyphosphate kinase	inorganic P solubuiliation	ag	Phosphorus	
+K00117	gcd, Quinoprotein glucose dehydrogenase	inorganic P solubuiliation	ag	Phosphorus	
+K06137	pqqC, Pyrroloquinoline quinone synthase C	inorganic P solubuiliation	ag	Phosphorus	
+K07657	phoB, Phosphate regulon response regulator	P-starvation response regulation	ag	Phosphorus	
+K07636	phoR, Phosphate regulon sensor histidine kinase	P-starvation response regulation	ag	Phosphorus	
+K02039	phoU, PhoR/phoB inhibitor protein	P-starvation response regulation	ag	Phosphorus	
+K01430	ureA, urease subunit gamma	Urea Degradation	ag	Nitrogen 	
+K01429	ureB, urease subunit beta	Urea Degradation	ag	Nitrogen 	
+K01428	ureC, urease subunit alpha (largest aplha unit of protein structure)	Urea Degradation	ag	Nitrogen 	
+K00368	nir= nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	nitrite + ammonia => nitrogen	ag	Nitrogen 	
+K00370	nxr= nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	nitrite + ammonia => nitrogen	ag	Nitrogen 	
+K00371	nxr= nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	nitrite + ammonia => nitrogen	ag	Nitrogen 	
+K10535	hox= hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	nitrite + ammonia => nitrogen	ag	Nitrogen 	
+K15864	nir= nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	nitrite + ammonia => nitrogen	ag	Nitrogen 	
+K00360	assimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	Assimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K00366	assimilatory nitrite reductase [EC:1.7.7.1] [RN:R00790]	Assimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K00372	assimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	Assimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K00370	nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	Complete nitrification= comammox= ammonia => nitrite => nitrate	ag	Nitrogen 	
+K00371	nitrite oxidoreductase [EC:1.7.99.4] [RN:R00798]	Complete nitrification= comammox= ammonia => nitrite => nitrate	ag	Nitrogen 	
+K10535	hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	Complete nitrification= comammox= ammonia => nitrite => nitrate	ag	Nitrogen 	
+K10944	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Complete nitrification= comammox= ammonia => nitrite => nitrate	ag	Nitrogen 	
+K10945	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Complete nitrification= comammox= ammonia => nitrite => nitrate	ag	Nitrogen 	
+K10946	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Complete nitrification= comammox= ammonia => nitrite => nitrate	ag	Nitrogen 	
+K00368	nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K00370	nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K00371	nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K00374	nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K00376	nitrous-oxide reductase [EC:1.7.2.4] [RN:R02804]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K02305	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K02567	periplasmic nitrate reductase NapA [EC:1.7.99.-] [RN:R00798]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K02568	cytochrome c-type protein NapB [RN:R00798]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K04561	nitric oxide reductase [EC:1.7.2.5] [RN:R00294]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K15864	nitrite reductase (NO-forming) [EC:1.7.2.1] [RN:R00783 R00785]	Denitrification= nitrate => nitrogen	ag	Nitrogen 	
+K00362	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K00363	respiratory nitrite reductase [EC:1.7.1.15] [RN:R00787]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K00370	respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K00371	respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K00374	respiratory nitrate reductase 1 [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K02567	dissimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K02568	dissimilatory nitrate reductase [EC:1.7.99.-] [RN:R00798]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K03385	respiratory nitrite reductase [EC:1.7.2.2] [RN:R05712]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K15876	respiratory nitrite reductase [EC:1.7.2.2] [RN:R05712]	Dissimilatory nitrate reduction= nitrate => ammonia	ag	Nitrogen 	
+K02575	NRT; MFS transporter= NNP family= nitrate/nitrite transporter	Nitrate assimilation	ag	Nitrogen 	
+K10535	hydroxylamine oxidase [EC:1.7.2.6] [RN:R10164]	Nitrification= ammonia => nitrite	ag	Nitrogen 	
+K10944	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Nitrification= ammonia => nitrite	ag	Nitrogen 	
+K10945	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Nitrification= ammonia => nitrite	ag	Nitrogen 	
+K10946	ammonia monooxygenase [EC:1.14.99.39] [RN:R00148]	Nitrification= ammonia => nitrite	ag	Nitrogen 	
+K00531	nitrogenase delta subunit [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen	
+K02586	nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen	
+K02588	nitrogenase iron protein [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen	
+K02591	nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen	
+K22896	vanadium-dependent nitrogenase [EC:1.18.6.2] [RN:R12084]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen	
+K22897	vanadium-dependent nitrogenase [EC:1.18.6.2] [RN:R12084]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen	
+K22898	vanadium nitrogenase delta subunit [EC:1.18.6.2] [RN:R12084]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen	
+K22899	vanadium nitrogenase iron protein [RN:R12084]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen	
+K00466	tryptophan 2-monooxygenase [EC:1.13.12.3],iaaM	IAA production	ag	Plant Growth Regulators	IAA Production: route 1, step 1
+K21801	indoleacetamid hydrolase [EC:3.5.1.4],iaaH	IAA production	ag	Plant Growth Regulators	IAA Production: route 1, step 2
+K14265	tryptophan aminotransferase [EC:2.6.1.27],Tam1	IAA production	ag	Plant Growth Regulators	IAA Production: route 2, step 1
+K04103	indolepyruvate decarboxylase [EC:4.1.1.74],ipdC	IAA production	ag	Plant Growth Regulators	IAA Production: route 2, step 2
+K11817	indole-3-acetaldehyde oxidase [EC:1.2.3.7],AAO1_2	IAA production	ag	Plant Growth Regulators	IAA Production: route 2, step 3
+K01593	aromatic-L-amino-acid/L-tryptophan decarboxylase,DDC	IAA production	ag	Plant Growth Regulators	IAA Production: route 3, step 1
+K11182	diamine oxidase [EC:1.4.3.22],AOC1	IAA production	ag	Plant Growth Regulators	IAA Production: route 3, step 2
+K00128	aldehyde dehydrogenase (NAD+) [EC:1.2.1.3],ALDH	IAA production	ag	Plant Growth Regulators	IAA Production: route 3, step 3
+K11812	tryptophan N-monooxygenase [EC:1.14.14.156],CYP79B1_2	IAA production	ag	Plant Growth Regulators	IAA Production: route 4, step 1
+K11868	indoleacetaldoxime dehydratase [EC:4.99.1.6],CYP71A13	IAA production	ag	Plant Growth Regulators	IAA Production: route 4, step 2
+K01501	nitrilase [EC:3.5.5.1]	IAA production	ag	Plant Growth Regulators	IAA Production: route 4, step 3
+K03334	L-amino-acid oxidase [EC:1.4.3.2],IL4I1	IAA production	ag	Plant Growth Regulators	IAA Production: route 2, step 1
+K16903	L-tryptophan---pyruvate aminotransferase [EC:2.6.1.99], TAA1	IAA production	ag	Plant Growth Regulators	IAA Production: route 2, step 2
+K00274	monoamine oxidase [EC:1.4.3.4], MAO	IAA production	ag	Plant Growth Regulators	IAA Production: route 3, step 2
+K01851	isochorismate synthase [EC: 5.4.4.2]	Salicylate Production	ag	Plant Growth Regulators	Salicylate Production: route 1, step 1
+K04782	isochorismate pyruvate lyase [EC: 4.2.99.21]	Salicylate Production	ag	Plant Growth Regulators	Salicylate Production: route 1, step 2
+unknown	benzoyl-CoA 2-hydroxylate (Nt) [EC: 1.14.14.-]	Salicylate Production	ag	Plant Growth Regulators	Salicylate Production: route 2, step 1
+unknown	no enzyme known in salicylate biosynthesis II [EC: 3.1.2.-]	Salicylate Production	ag	Plant Growth Regulators	Salicylate Production: route 2, step 2
+K00480	salicylate monooxygenase [EC: 1.14.13.1]	Salicylate Degradation	ag	Plant Growth Regulators	Salicylate Degradation: route 1
+K18242	salicylate-5-hydroxylase large subunit [EC: 1.14.13.172]	Salicylate Degradation	ag	Plant Growth Regulators	Salicylate Degradation: route 2
+K18243	salicylate-5-hydroxylase small subunit [EC: 1.14.13.172]	Salicylate Degradation	ag	Plant Growth Regulators	Salicylate Degradation: route 2
+4.1.1.91	salicylate decarboxylase [EC: 4.1.1.91]	Salicylate Degradation	ag	Plant Growth Regulators	Salicylate Degradation: route 3
+K24408	salicyl-CoA synthase [EC 6.2.1.65]	Salicylate Degradation	ag	Plant Growth Regulators	Salicylate Degradation: route 4, step 1
+K21684	salicylyl-CoA 5-hydroxylate [EC 1.14.13.209]	Salicylate Degradation	ag	Plant Growth Regulators	Salicylate Degradation: route 4, step 2
+spontaneous	spontaneous	Salicylate Degradation	ag	Plant Growth Regulators	Salicylate Degradation: route 4, step 3
+K00450	gentisate 1:2-dioxygenase [EC 1.13.11.4]	Salicylate Degradation	ag	Plant Growth Regulators	Salicylate Degradation: route 4, step 4
+A1A	pepsin A (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+A02	HIV-1 retropepsin (human immunodeficiency virus 1)	Extracellular Peptidases	ag	Nitrogen 	
+A08	signal peptidase II (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+A11	Copia transposon peptidase (Drosophila melanogaster)	Extracellular Peptidases	ag	Nitrogen 	
+A24	type 4 prepilin peptidase 1 (Pseudomonas aeruginosa)	Extracellular Peptidases	ag	Nitrogen 	
+A26	omptin (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+A28A	DNA-damage inducible protein 1 (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+A28B	skin SASPase (Mus musculus)	Extracellular Peptidases	ag	Nitrogen 	
+A32	PerP peptidase (Caulobacter crescentus)	Extracellular Peptidases	ag	Nitrogen 	
+C1A	papain (Carica papaya)	Extracellular Peptidases	ag	Nitrogen 	
+C1B	bleomycin hydrolase (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+C02	calpain-2 (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+C10	streptopain (Streptococcus pyogenes)	Extracellular Peptidases	ag	Nitrogen 	
+C11	clostripain (Clostridium histolyticum)	Extracellular Peptidases	ag	Nitrogen 	
+C110	kyphoscoliosis peptidase (Mus musculus)	Extracellular Peptidases	ag	Nitrogen 	
+C113	IgdE peptidase (Streptococcus suis)	Extracellular Peptidases	ag	Nitrogen 	
+C13	"	legumain (Canavalia ensiformis)"	Extracellular Peptidases	ag	Nitrogen 	
+C14A	caspase-1 (Rattus norvegicus)	Extracellular Peptidases	ag	Nitrogen 	
+C14B	metacaspase Yca1 (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+C15	pyroglutamyl-peptidase I (Bacillus amyloliquefaciens)	Extracellular Peptidases	ag	Nitrogen 	
+C19	ubiquitin-specific peptidase 14 (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+C25	gingipain RgpA (Porphyromonas gingivalis)	Extracellular Peptidases	ag	Nitrogen 	
+C26	"	gamma-glutamyl hydrolase (Rattus norvegicus)"	Extracellular Peptidases	ag	Nitrogen 	
+C39	bacteriocin-processing peptidase (Pediococcus acidilactici)	Extracellular Peptidases	ag	Nitrogen 	
+C40	dipeptidyl-peptidase VI (Lysinibacillus sphaericus)	Extracellular Peptidases	ag	Nitrogen 	
+C44	amidophosphoribosyltransferase precursor (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+C45	acyl-coenzyme A:6-aminopenicillanic acid acyl-transferase precursor (Penicillium chrysogenum)	Extracellular Peptidases	ag	Nitrogen 	
+C46	hedgehog protein (Drosophila melanogaster)	Extracellular Peptidases	ag	Nitrogen 	
+C47	staphopain A (Staphylococcus aureus)	Extracellular Peptidases	ag	Nitrogen 	
+C51	D-alanyl-glycyl peptidase (Staphylococcus aureus)	Extracellular Peptidases	ag	Nitrogen 	
+C56	PfpI peptidase (Pyrococcus furiosus)	Extracellular Peptidases	ag	Nitrogen 	
+C59	penicillin V acylase precursor (Lysinibacillus sphaericus)	Extracellular Peptidases	ag	Nitrogen 	
+C60A	sortase A (Staphylococcus aureus)	Extracellular Peptidases	ag	Nitrogen 	
+C60B	sortase B (Staphylococcus aureus)	Extracellular Peptidases	ag	Nitrogen 	
+C66	IdeS peptidase (Streptococcus pyogenes)	Extracellular Peptidases	ag	Nitrogen 	
+C69	dipeptidase A (Lactobacillus helveticus)	Extracellular Peptidases	ag	Nitrogen 	
+C82A	L,D-transpeptidase (Enterococcus faecium)	Extracellular Peptidases	ag	Nitrogen 	
+C83	gamma-glutamylcysteine dipeptidyltranspeptidase (Nostoc sp. PCC 7120)	Extracellular Peptidases	ag	Nitrogen 	
+C89	acid ceramidase precursor (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+C93	LapG peptidase (Pseudomonas fluorescens)	Extracellular Peptidases	ag	Nitrogen 	
+G01	"	scytalidoglutamic peptidase (Scytalidium lignicolum)"	Extracellular Peptidases	ag	Nitrogen 	
+M01	aminopeptidase N (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+M02	angiotensin-converting enzyme peptidase unit 1 (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+M3A	thimet oligopeptidase (Rattus norvegicus)	Extracellular Peptidases	ag	Nitrogen 	
+M3B	oligopeptidase F (Lactococcus lactis)	Extracellular Peptidases	ag	Nitrogen 	
+M04	thermolysin (Bacillus thermoproteolyticus)	Extracellular Peptidases	ag	Nitrogen 	
+M05	mycolysin (Streptomyces cacaoi)	Extracellular Peptidases	ag	Nitrogen 	
+M06	immune inhibitor A peptidase (Bacillus thuringiensis)	Extracellular Peptidases	ag	Nitrogen 	
+M07	"	snapalysin (Streptomyces lividans)"	Extracellular Peptidases	ag	Nitrogen 	
+M08	leishmanolysin (Leishmania major)	Extracellular Peptidases	ag	Nitrogen 	
+M9A	collagenase V (Vibrio alginolyticus)	Extracellular Peptidases	ag	Nitrogen 	
+M9B	bacterial collagenase H (Clostridium histolyticum)	Extracellular Peptidases	ag	Nitrogen 	
+M10A	"	matrix metallopeptidase-1 (Homo sapiens)"	Extracellular Peptidases	ag	Nitrogen 	
+M10B	serralysin (Serratia marcescens)	Extracellular Peptidases	ag	Nitrogen 	
+M10C	fragilysin (Bacteroides fragilis)	Extracellular Peptidases	ag	Nitrogen 	
+M11	gametolysin (Chlamydomonas reinhardtii)	Extracellular Peptidases	ag	Nitrogen 	
+M12A	astacin (Astacus astacus)	Extracellular Peptidases	ag	Nitrogen 	
+M12B	adamalysin (Crotalus adamanteus)	Extracellular Peptidases	ag	Nitrogen 	
+M13	neprilysin (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+M14A	carboxypeptidase A1 (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+M14B	carboxypeptidase E (Bos taurus)	Extracellular Peptidases	ag	Nitrogen 	
+M14C	gamma-D-glutamyl--meso-diaminopimelate peptidase I (Lysinibacillus sphaericus)	Extracellular Peptidases	ag	Nitrogen 	
+M14D	cytosolic carboxypeptidase 6 (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+M17	leucyl aminopeptidase 3 (Bos taurus)	Extracellular Peptidases	ag	Nitrogen 	
+M18	aminopeptidase I (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+M19	"	membrane dipeptidase (Homo sapiens)"	Extracellular Peptidases	ag	Nitrogen 	
+M20A	glutamate carboxypeptidase (Pseudomonas sp.)	Extracellular Peptidases	ag	Nitrogen 	
+M20B	peptidase T (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+M20C	Xaa-His dipeptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+M20D	carboxypeptidase Ss1 (Sulfolobus solfataricus)	Extracellular Peptidases	ag	Nitrogen 	
+M20F	carnosine dipeptidase II (Mus musculus)	Extracellular Peptidases	ag	Nitrogen 	
+M30	hyicolysin (Staphylococcus hyicus)	Extracellular Peptidases	ag	Nitrogen 	
+M32	carboxypeptidase Taq (Thermus aquaticus)	Extracellular Peptidases	ag	Nitrogen 	
+M34	anthrax lethal factor (Bacillus anthracis)	Extracellular Peptidases	ag	Nitrogen 	
+M35	deuterolysin (Aspergillus flavus)	Extracellular Peptidases	ag	Nitrogen 	
+M36	fungalysin (Aspergillus fumigatus)	Extracellular Peptidases	ag	Nitrogen 	
+M38	"	isoaspartyl dipeptidase (Escherichia coli)"	Extracellular Peptidases	ag	Nitrogen 	
+M41	FtsH peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+M42	glutamyl aminopeptidase (Lactococcus lactis)	Extracellular Peptidases	ag	Nitrogen 	
+M43A	cytophagalysin (Cytophaga sp.)	Extracellular Peptidases	ag	Nitrogen 	
+M43B	pappalysin-1 (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+M44	pox virus metallopeptidase (Vaccinia virus)	Extracellular Peptidases	ag	Nitrogen 	
+M48A	Ste24 peptidase (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+M48B	HtpX peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+M48C	Oma1 peptidase (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+M50A	sporulation factor SpoIVFB (Bacillus subtilis)	Extracellular Peptidases	ag	Nitrogen 	
+M50B	sporulation factor SpoIVFB (Bacillus subtilis)	Extracellular Peptidases	ag	Nitrogen 	
+M54	archaelysin (Methanocaldococcus jannaschii)	Extracellular Peptidases	ag	Nitrogen 	
+M55	D-aminopeptidase DppA (Bacillus subtilis)	Extracellular Peptidases	ag	Nitrogen 	
+M56	BlaR1 peptidase (Staphylococcus aureus)	Extracellular Peptidases	ag	Nitrogen 	
+M57	prtB g.p. (Myxococcus xanthus)	Extracellular Peptidases	ag	Nitrogen 	
+M60	enhancin (Lymantria dispar nucleopolyhedrovirus)	Extracellular Peptidases	ag	Nitrogen 	
+M61	glycyl aminopeptidase (Sphingomonas capsulata)	Extracellular Peptidases	ag	Nitrogen 	
+M64	IgA peptidase (Clostridium ramosum)	Extracellular Peptidases	ag	Nitrogen 	
+M66	StcE peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+M72	peptidyl-Asp metallopeptidase (Pseudomonas aeruginosa)	Extracellular Peptidases	ag	Nitrogen 	
+M73	camelysin (Bacillus cereus)	Extracellular Peptidases	ag	Nitrogen 	
+M74	murein endopeptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+M75	imelysin (Pseudomonas aeruginosa)	Extracellular Peptidases	ag	Nitrogen 	
+M76	Atp23 peptidase (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+M78	ImmA peptidase (Bacillus subtilis)	Extracellular Peptidases	ag	Nitrogen 	
+M79		Extracellular Peptidases	ag	Nitrogen 	
+M81	microcystinase MlrC (Sphingomonas sp. ACM-3962)	Extracellular Peptidases	ag	Nitrogen 	
+M82	"	PrsW peptidase (Bacillus subtilis)"	Extracellular Peptidases	ag	Nitrogen 	
+M84	MpriBi peptidase (Bacillus intermedius)	Extracellular Peptidases	ag	Nitrogen 	
+M85	NleC peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+M86	PghP gamma-polyglutamate hydrolase (Bacillus phage phiNIT1)	Extracellular Peptidases	ag	Nitrogen 	
+M88	IMPa peptidase (Pseudomonas aeruginosa)	Extracellular Peptidases	ag	Nitrogen 	
+M93	BACCAC_01431 g.p. and similar (Bacteroides caccae)	Extracellular Peptidases	ag	Nitrogen 	
+M96		Extracellular Peptidases	ag	Nitrogen 	
+M97	EcxAB peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+M98	"	YghJ g.p. (Escherichia coli)"	Extracellular Peptidases	ag	Nitrogen 	
+N04	Tsh-associated self-cleaving domain and similar (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+N10	intein-containing replicative DNA helicase precursor (Synechocystis sp. PCC 6803)	Extracellular Peptidases	ag	Nitrogen 	
+N11	intein-containing chloroplast ATP-dependent peptide lyase (Chlamydomonas eugametos)	Extracellular Peptidases	ag	Nitrogen 	
+P01	"	DmpA aminopeptidase (Ochrobactrum anthropi)"	Extracellular Peptidases	ag	Nitrogen 	
+S1A	chymotrypsin A (Bos taurus)	Extracellular Peptidases	ag	Nitrogen 	
+S1B	glutamyl endopeptidase I (Staphylococcus aureus)	Extracellular Peptidases	ag	Nitrogen 	
+S1C	DegP peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S1D	lysyl endopeptidase (Achromobacter lyticus)	Extracellular Peptidases	ag	Nitrogen 	
+S1E	streptogrisin A (Streptomyces griseus)	Extracellular Peptidases	ag	Nitrogen 	
+S10	carboxypeptidase Y (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+S11	D-Ala-D-Ala carboxypeptidase A (Geobacillus stearothermophilus)	Extracellular Peptidases	ag	Nitrogen 	
+S12	D-Ala-D-Ala carboxypeptidase B (Streptomyces lividans)	Extracellular Peptidases	ag	Nitrogen 	
+S13	D-Ala-D-Ala peptidase C (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S14	peptidase Clp (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S15	Xaa-Pro dipeptidyl-peptidase (Lactococcus lactis)	Extracellular Peptidases	ag	Nitrogen 	
+S16	Lon-A peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S24	repressor LexA (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S26A	signal peptidase I (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S26B	signalase 21 kDa component (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+S26C	TraF peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S33	prolyl aminopeptidase (Neisseria gonorrhoeae)	Extracellular Peptidases	ag	Nitrogen 	
+S37	PS-10 peptidase (Streptomyces lividans)	Extracellular Peptidases	ag	Nitrogen 	
+S41A	C-terminal processing peptidase-1 (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S41B	tricorn core peptidase (Thermoplasma acidophilum)	Extracellular Peptidases	ag	Nitrogen 	
+S45	penicillin G acylase precursor (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S46	dipeptidyl-peptidase 7 (Porphyromonas gingivalis)	Extracellular Peptidases	ag	Nitrogen 	
+S49	signal peptide peptidase A (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S49B	protein C (bacteriophage lambda)	Extracellular Peptidases	ag	Nitrogen 	
+S49C	archaean signal peptide peptidase 1 (Pyrococcus horikoshii)	Extracellular Peptidases	ag	Nitrogen 	
+S50	infectious pancreatic necrosis birnavirus Vp4 peptidase (infectious pancreatic necrosis virus)	Extracellular Peptidases	ag	Nitrogen 	
+S51	dipeptidase E (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+S53	sedolisin (Pseudomonas sp. 101)	Extracellular Peptidases	ag	Nitrogen 	
+S54	rhomboid-1 (Drosophila melanogaster)	Extracellular Peptidases	ag	Nitrogen 	
+S55	SpoIVB peptidase (Bacillus subtilis)	Extracellular Peptidases	ag	Nitrogen 	
+S59	nucleoporin 145 (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+S66	murein tetrapeptidase LD-carboxypeptidase (Pseudomonas aeruginosa)	Extracellular Peptidases	ag	Nitrogen 	
+S73	gpO peptidase (Enterobacteria phage P2)	Extracellular Peptidases	ag	Nitrogen 	
+T01	archaean proteasome, beta component (Thermoplasma acidophilum)	Extracellular Peptidases	ag	Nitrogen 	
+T02	glycosylasparaginase precursor (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+T03	gamma-glutamyltransferase 1 (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+T05	ornithine acetyltransferase precursor (Saccharomyces cerevisiae)	Extracellular Peptidases	ag	Nitrogen 	
+T07	CwpV self-cleaving threonine peptidase (Clostridium difficile)	Extracellular Peptidases	ag	Nitrogen 	
+U32	collagenase (Porphyromonas gingivalis)	Extracellular Peptidases	ag	Nitrogen 	
+U62		Extracellular Peptidases	ag	Nitrogen 	
+U69	AIDA-I self-cleaving autotransporter protein (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+U72	Dop isopeptidase (Mycobacterium tuberculosis)	Extracellular Peptidases	ag	Nitrogen 	
+U73		Extracellular Peptidases	ag	Nitrogen 	
+U74	family U74 unassigned peptidases	Extracellular Peptidases	ag	Nitrogen 	
+A22	presenilin 1 (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+A05	thermopsin (Sulfolobus acidocaldarius)	Extracellular Peptidases	ag	Nitrogen 	
+S60	lactoferrin (Homo sapiens)	Extracellular Peptidases	ag	Nitrogen 	
+M67	PSMD14 peptidase (Saccharomyces cerev	Extracellular Peptidases	ag	Nitrogen 	
+A37	sso1175 g.p. (Sulfolobus solfataricus)	Extracellular Peptidases	ag	Nitrogen 	
+A31	HybD peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
+K01183	chiA1, chitinase A1; [EC:3.2.1.14]	Chitin Degredation 	ag	Nitrogen 	
+K20547  	chiB, basic endochitinase	Chitin Degredation 	ag	Nitrogen 	
+K01183	chiC, chitinase	Chitin Degredation 	ag	Nitrogen 	
+K21713  	lytic chitin monoxygenase [EC:1.14.99.53]	Chitin Degredation 	ag	Nitrogen 	
+GH110	GH110 alpha-galactosidase (EC 3.2.1.22); alpha-1,3-galactosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage
+GH27	GH27 alpha-galactosidase (EC 3.2.1.22); alpha-N-acetylgalactosaminidase (EC 3.2.1.49); isomalto-dextranase (EC 3.2.1.94); beta-L-arabinopyranosidase (EC 3.2.1.88); galactan:galactan galactosyltransferase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage, Mucin Oligo Cleavage
+GH36	GH36 alpha-galactosidase (EC 3.2.1.22); alpha-N-acetylgalactosaminidase (EC 3.2.1.49); stachyose synthase (EC 2.4.1.67); raffinose synthase (EC 2.4.1.82)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage, Mucin Oligo Cleavage
+GH99	GH99 glycoprotein endo-alpha-1,2-mannosidase (EC 3.2.1.130); mannan endo-1,2-alpha-mannanase (3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-mannan Backbone Cleavage (Hemicellulose)
+GH76	GH76 alpha-1,6-mannanase (EC 3.2.1.101); alpha-glucosidase (EC 3.2.1.20)	Glycoside Hydrolases	ag	CAZY	Alpha-mannan Backbone Cleavage (Hemicellulose), Alpha-mannan Oligo Cleavage (Hemicellulose)
+GH125	GH125 exo-alpha-1,6-mannosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-mannan Oligo Cleavage (Hemicellulose)
+GH38	GH38 alpha-mannosidase (EC 3.2.1.24); mannosyl-oligosaccharide alpha-1,2-mannosidase (EC 3.2.1.113); mannosyl-oligosaccharide alpha-1,3-1,6-mannosidase (EC 3.2.1.114); alpha-2-O-mannosylglycerate hydrolase (EC 3.2.1.170); mannosyl-oligosaccharide alpha-1,3-mannosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-mannan Oligo Cleavage (Hemicellulose)
+GH47	GH47 alpha-mannosidase (EC 3.2.1.113)	Glycoside Hydrolases	ag	CAZY	Alpha-mannan Oligo Cleavage (Hemicellulose)
+GH63	GH63 processing alpha-glucosidase (EC 3.2.1.106); alpha-1,3-glucosidase (EC 3.2.1.84); alpha-glucosidase (EC 3.2.1.20); mannosylglycerate alpha-mannosidase / mannosylglycerate hydrolase (EC 3.2.1.170); glucosylglycerate hydrolase (EC 3.2.1.208)	Glycoside Hydrolases	ag	CAZY	Alpha-mannan Oligo Cleavage (Hemicellulose)
+GH92	GH92 mannosyl-oligosaccharide alpha-1,2-mannosidase (EC 3.2.1.113); mannosyl-oligosaccharide alpha-1,3-mannosidase (EC 3.2.1.-); mannosyl-oligosaccharide alpha-1,6-mannosidase (EC 3.2.1.-); alpha-mannosidase (EC 3.2.1.24); alpha-1,2-mannosidase (EC 3.2.1.-); alpha-1,3-mannosidase (EC 3.2.1.-); alpha-1,4-mannosidase (EC 3.2.1.-); mannosyl-1-phosphodiester alpha-1,P-mannosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-mannan Oligo Cleavage (Hemicellulose)
+GH130	GH130 beta-1,4-mannosylglucose phosphorylase (EC 2.4.1.281); beta-1,4-mannooligosaccharide phosphorylase (EC 2.4.1.319); beta-1,4-mannosyl-N-acetyl-glucosamine phosphorylase (EC 2.4.1.320); beta-1,2-mannobiose phosphorylase (EC 2.4.1.-); beta-1,2-oligomannan phosphorylase (EC 2.4.1.-); beta-1,2-mannosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-mannan Oligo Cleavage (Hemicellulose), Beta-mannan Oligo Cleavage (Hemicellulose)
+GH124	GH124 endoglucanase (EC 3.2.1.4)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage
+GH6	GH6 endoglucanase (EC 3.2.1.4); cellobiohydrolase (EC 3.2.1.91)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage
+GH9	GH9 endoglucanase (EC 3.2.1.4); endo-beta-1,3(4)-glucanase / lichenase-laminarinase (EC 3.2.1.6); beta-glucosidase (EC 3.2.1.21); lichenase / endo-beta-1,3-1,4-glucanase (EC 3.2.1.73); exo-beta-1,4-glucanase / cellodextrinase (EC 3.2.1.74); cellobiohydrolase (EC 3.2.1.91); xyloglucan-specific endo-beta-1,4-glucanase / endo-xyloglucanase (EC 3.2.1.151); exo-beta-glucosaminidase (EC 3.2.1.165)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage, Amorphous Cellulose Oligo Cleavage, Xyloglucan Backbone Cleavage (Hemicellulose), Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+GH5	GH5 endo-beta-1,4-glucanase / cellulase (EC 3.2.1.4); endo-beta-1,4-xylanase (EC 3.2.1.8); beta-glucosidase (EC 3.2.1.21); beta-mannosidase (EC 3.2.1.25); beta-glucosylceramidase (EC 3.2.1.45); glucan beta-1,3-glucosidase (EC 3.2.1.58); licheninase (EC 3.2.1.73); exo-beta-1,4-glucanase / cellodextrinase (EC 3.2.1.74); glucan endo-1,6-beta-glucosidase (EC 3.2.1.75); mannan endo-beta-1,4-mannosidase (EC 3.2.1.78); cellulose beta-1,4-cellobiosidase (EC 3.2.1.91); steryl beta-glucosidase (EC 3.2.1.104); endoglycoceramidase (EC 3.2.1.123); chitosanase (EC 3.2.1.132); beta-primeverosidase (EC 3.2.1.149); xyloglucan-specific endo-beta-1,4-glucanase (EC 3.2.1.151); endo-beta-1,6-galactanase (EC 3.2.1.164); hesperidin 6-O-alpha-L-rhamnosyl-beta-glucosidase (EC 3.2.1.168); beta-1,3-mannanase (EC 3.2.1.-); arabinoxylan-specific endo-beta-1,4-xylanase (EC 3.2.1.-); mannan transglycosylase (EC 2.4.1.-); lichenase / endo-beta-1,3-1,4-glucanase (EC 3.2.1.73); beta-glycosidase (EC 3.2.1.-); endo-beta-1,3-glucanase / laminarinase (EC 3.2.1.39); beta-N-acetylhexosaminidase (EC 3.2.1.52); chitosanase (EC 3.2.1.132); beta-D-galactofuranosidase (EC 3.2.1.146);	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage, Amorphous Cellulose Oligo Cleavage, Xyloglucan Backbone Cleavage (Hemicellulose), Xylan Backbone Cleavage (Hemicellulose), Beta-mannan Backbone Cleavage (Hemicellulose), Mixed-Linkage glucans Backbone Cleavage (Hemicellulose), Chitin Oligo Cleavage
+GH8	GH8 chitosanase (EC 3.2.1.132); cellulase (EC 3.2.1.4); licheninase (EC 3.2.1.73); endo-1,4-beta-xylanase (EC 3.2.1.8); reducing-end-xylose releasing exo-oligoxylanase (EC 3.2.1.156)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage, Xylan Backbone Cleavage (Hemicellulose), Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+GH12	GH12 endoglucanase (EC 3.2.1.4); xyloglucan hydrolase (EC 3.2.1.151); beta-1,3-1,4-glucanase (EC 3.2.1.73); xyloglucan endotransglycosylase (EC 2.4.1.207)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage, Xyloglucan Backbone Cleavage (Hemicellulose)
+GH44	GH44 endoglucanase (EC 3.2.1.4); xyloglucanase (EC 3.2.1.151)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage, Xyloglucan Backbone Cleavage (Hemicellulose)
+GH45	GH45 endoglucanase (EC 3.2.1.4); xyloglucan-specific endo-beta-1,4-glucanase / endo-xyloglucanase (EC 3.2.1.151); endo-beta-1,4-mannanase (EC 3.2.1.78)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage, Xyloglucan Backbone Cleavage (Hemicellulose)
+GH10	GH10 endo-1,4-beta-xylanase (EC 3.2.1.8); endo-1,3-beta-xylanase (EC 3.2.1.32); tomatinase (EC 3.2.1.-); xylan endotransglycosylase (EC 2.4.2.-); endo-beta-1,4-glucanase (EC 3.2.1.4)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Backbone Cleavage, Xyloglucan Oligo Cleavage (Hemicellulose), Xylan Backbone Cleavage (Hemicellulose)
+GH94	GH94 cellobiose phosphorylase (EC 2.4.1.20); laminaribiose phosphorylase (EC 2.4.1.31); cellodextrin phosphorylase (EC 2.4.1.49); chitobiose phosphorylase (EC 2.4.1.-); cyclic beta-1,2-glucan synthase (EC 2.4.1.-); cellobionic acid phosphorylase (EC 2.4.1.321); beta-1,2-oligoglucan phosphorylase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Oligo Cleavage
+GH116	GH116 beta-glucosidase (EC 3.2.1.21); beta-xylosidase (EC 3.2.1.37); acid beta-glucosidase/beta-glucosylceramidase (EC 3.2.1.45); beta-N-acetylglucosaminidase (EC 3.2.1.52)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Oligo Cleavage, Chitin Oligo Cleavage
+GH1	GH1 beta-glucosidase (EC 3.2.1.21); beta-galactosidase (EC 3.2.1.23); beta-mannosidase (EC 3.2.1.25); beta-glucuronidase (EC 3.2.1.31); beta-xylosidase (EC 3.2.1.37); beta-D-fucosidase (EC 3.2.1.38); phlorizin hydrolase (EC 3.2.1.62); exo-beta-1,4-glucanase (EC 3.2.1.74); 6-phospho-beta-galactosidase (EC 3.2.1.85); 6-phospho-beta-glucosidase (EC 3.2.1.86); strictosidine beta-glucosidase (EC 3.2.1.105); lactase (EC 3.2.1.108); amygdalin beta-glucosidase (EC 3.2.1.117); prunasin beta-glucosidase (EC 3.2.1.118); vicianin hydrolase (EC 3.2.1.119); raucaffricine beta-glucosidase (EC 3.2.1.125); thioglucosidase (EC 3.2.1.147); beta-primeverosidase (EC 3.2.1.149); isoflavonoid 7-O-beta-apiosyl-beta-glucosidase (EC 3.2.1.161); ABA-specific beta-glucosidase (EC 3.2.1.175); DIMBOA beta-glucosidase (EC 3.2.1.182); beta-glycosidase (EC 3.2.1.-); hydroxyisourate hydrolase (EC 3.-.-.-)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Oligo Cleavage, Mixed-Linkage glucans Oligo Cleavage (Hemicellulose), Beta-galactan (pectic galactan) Oligo Cleavage
+GH3	GH3 beta-glucosidase (EC 3.2.1.21); xylan 1,4-beta-xylosidase (EC 3.2.1.37); beta-glucosylceramidase (EC 3.2.1.45); beta-N-acetylhexosaminidase (EC 3.2.1.52); alpha-L-arabinofuranosidase (EC 3.2.1.55); glucan 1,3-beta-glucosidase (EC 3.2.1.58); glucan 1,4-beta-glucosidase (EC 3.2.1.74); isoprimeverose-producing oligoxyloglucan hydrolase (EC 3.2.1.120); coniferin beta-glucosidase (EC 3.2.1.126); exo-1,3-1,4-glucanase (EC 3.2.1.-); beta-N-acetylglucosaminide phosphorylases (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Oligo Cleavage, Xylan Oligo Cleavage (Hemicellulose), Mixed-Linkage glucans Oligo Cleavage (Hemicellulose), Arabinan Oligo Cleavage, Chitin Oligo Cleavage
+GH16	GH16 xyloglucan:xyloglucosyltransferase (EC 2.4.1.207); keratan-sulfate endo-1,4-beta-galactosidase (EC 3.2.1.103); endo-1,3-beta-glucanase / laminarinase (EC 3.2.1.39); endo-1,3(4)-beta-glucanase (EC 3.2.1.6); licheninase (EC 3.2.1.73); beta-agarase (EC 3.2.1.81); kappa;-carrageenase (EC 3.2.1.83); xyloglucanase (EC 3.2.1.151); endo-beta-1,3-galactanase (EC 3.2.1.181); [retaining] beta-porphyranase (EC 3.2.1.178); hyaluronidase (EC 3.2.1.35); endo-beta-1,4-galactosidase (EC 3.2.1.-); chitin beta-1,6-glucanosyltransferase (EC 2.4.1.-); beta-transglycosidase (EC 2.4.1.-); beta-glycosidase (EC 3.2.1.-); endo-beta-1,3-galactanase (EC 3.2.1.181)	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Oligo Cleavage, Xyloglucan Backbone Cleavage (Hemicellulose), Mixed-Linkage glucans Backbone Cleavage (Hemicellulose), Mixed-Linkage glucans Oligo Cleavage (Hemicellulose), Sulf-Polysachharides Backbone Cleavage
+GH2	GH2 beta-galactosidase (EC 3.2.1.23) ; beta-mannosidase (EC 3.2.1.25); beta-glucuronidase (EC 3.2.1.31); alpha-L-arabinofuranosidase (EC 3.2.1.55); mannosylglycoprotein endo-beta-mannosidase (EC 3.2.1.152); exo-beta-glucosaminidase (EC 3.2.1.165); alpha-L-arabinopyranosidase (EC 3.2.1.-); beta-galacturonidase (EC 3.2.1.-); beta-xylosidase (EC 3.2.1.37); beta-D-galactofuranosidase (EC 3.2.1.146);	Glycoside Hydrolases	ag	CAZY	Amorphous Cellulose Oligo Cleavage, Xyloglucan Oligo Cleavage (Hemicellulose), Beta-mannan Oligo Cleavage (Hemicellulose), Pectin Oligo Cleavage, Beta-galactan (pectic galactan) Oligo Cleavage, Arabinose Oligo cleavage
+GH49	GH49 dextranase (EC 3.2.1.11); isopullulanase (EC 3.2.1.57); dextran 1,6-alpha-isomaltotriosidase (EC 3.2.1.95); sulfated arabinan endo-1,4-beta-L-arabinanase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Arabinan Backbone Cleavage
+GH51	GH51 endoglucanase (EC 3.2.1.4); endo-beta-1,4-xylanase (EC 3.2.1.8); beta-xylosidase (EC 3.2.1.37); alpha-L-arabinofuranosidase (EC 3.2.1.55); lichenase / endo-beta-1,3-1,4-glucanase (EC 3.2.1.73)	Glycoside Hydrolases	ag	CAZY	Arabinan Oligo Cleavage
+GH54	GH54 alpha-L-arabinofuranosidase (EC 3.2.1.55); beta-xylosidase (EC 3.2.1.37).	Glycoside Hydrolases	ag	CAZY	Arabinan Oligo Cleavage
+GH62	GH62 alpha-L-arabinofuranosidase (EC 3.2.1.55)	Glycoside Hydrolases	ag	CAZY	Arabinan Oligo Cleavage
+GH93	GH93 exo-alpha-L-1,5-arabinanase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Arabinan Oligo Cleavage
+GH121	GH121 beta-L-arabinobiosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Arabinose Oligo cleavage
+GH127	GH127 beta-L-arabinofuranosidase (EC 3.2.1.185); 3-C-carboxy-5-deoxy-L-xylose (aceric acid) hydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Arabinose Oligo cleavage
+GH137	GH137 beta-L-arabinofuranosidase (EC 3.2.1.185)	Glycoside Hydrolases	ag	CAZY	Arabinose Oligo cleavage
+GH142	GH142 beta-L-arabinofuranosidase (EC 3.2.1.185)	Glycoside Hydrolases	ag	CAZY	Arabinose Oligo cleavage
+GH146	GH146 beta-L-arabinofuranosidase (EC 3.2.1.185)	Glycoside Hydrolases	ag	CAZY	Arabinose Oligo cleavage
+GH53	GH53 endo-beta-1,4-galactanase (EC 3.2.1.89).	Glycoside Hydrolases	ag	CAZY	Beta-galactan (pectic galactan) Backbone Cleavage
+GH147	GH147 beta-galactosidase (EC 3.2.1.23)	Glycoside Hydrolases	ag	CAZY	Beta-galactan (pectic galactan) Oligo Cleavage
+GH165	GH165 beta-galactosidase (EC 3.2.1.23)	Glycoside Hydrolases	ag	CAZY	Beta-galactan (pectic galactan) Oligo Cleavage
+GH35	GH35 beta-galactosidase (EC 3.2.1.23); exo-beta-glucosaminidase (EC 3.2.1.165); exo-beta-1,4-galactanase (EC 3.2.1.-); beta-1,3-galactosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Beta-galactan (pectic galactan) Oligo Cleavage
+GH42	GH42 beta-galactosidase (EC 3.2.1.23); alpha-L-arabinopyranosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Beta-galactan (pectic galactan) Oligo Cleavage
+GH59	GH59 beta-galactosidase (EC 3.2.1.23); galactocerebrosidase (EC 3.2.1.46)	Glycoside Hydrolases	ag	CAZY	Beta-galactan (pectic galactan) Oligo Cleavage
+GH134	GH134 endo-beta-1,4-mannanase (EC 3.2.1.78);	Glycoside Hydrolases	ag	CAZY	Beta-mannan Backbone Cleavage (Hemicellulose)
+GH113	GH113 beta-mannanase (EC 3.2.1.78)	Glycoside Hydrolases	ag	CAZY	Beta-mannan Backbone Cleavage (Hemicellulose), Beta-mannan Oligo Cleavage (Hemicellulose)
+CE2	CE2 acetyl xylan esterase (EC 3.1.1.72).	Carbohydrate Esterases	ag	CAZY	Beta-mannan Oligo Cleavage (Hemicellulose)
+GH18	GH18 chitinase (EC 3.2.1.14); lysozyme (EC 3.2.1.17); endo-beta-N-acetylglucosaminidase (EC 3.2.1.96); peptidoglycan hydrolase with endo-beta-N-acetylglucosaminidase specificity (EC 3.2.1.-); Nod factor hydrolase (EC 3.2.1.-); xylanase inhibitor; concanavalin B; narbonin	Glycoside Hydrolases	ag	CAZY	Chitin Backbone Cleavage
+GH19	GH19 chitinase (EC 3.2.1.14); lysozyme (EC 3.2.1.17)	Glycoside Hydrolases	ag	CAZY	Chitin Backbone Cleavage
+GH23	GH23 lysozyme type G (EC 3.2.1.17); peptidoglycan lyase (EC 4.2.2.n1) also known in the literature as peptidoglycan lytic transglycosylase; chitinase (EC 3.2.1.14)	Glycoside Hydrolases	ag	CAZY	Chitin Backbone Cleavage
+GH73	GH73 lysozyme (EC 3.2.1.17); mannosyl-glycoprotein endo-beta-N-acetylglucosaminidase (EC 3.2.1.96); peptidoglycan hydrolase with endo-beta-N-acetylglucosaminidase specificity (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Chitin Backbone Cleavage
+CE4	CE4 acetyl xylan esterase (EC 3.1.1.72); chitin deacetylase (EC 3.5.1.41); chitooligosaccharide deacetylase (EC 3.5.1.-); peptidoglycan GlcNAc deacetylase (EC 3.5.1.-); peptidoglycan N-acetylmuramic acid deacetylase (EC 3.5.1.-).	Carbohydrate Esterases	ag	CAZY	Chitin Oligo Cleavage
+GH20	GH20 beta-hexosaminidase (EC 3.2.1.52); lacto-N-biosidase (EC 3.2.1.140); beta-1,6-N-acetylglucosaminidase (EC 3.2.1.-); beta-6-SO3-N-acetylglucosaminidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Chitin Oligo Cleavage
+GH84	GH84 N-acetyl beta-glucosaminidase (EC 3.2.1.52); hyaluronidase (EC 3.2.1.35); [protein]-3-O-(GlcNAc)-L-Ser/Thr beta-N-acetylglucosaminidase (EC 3.2.1.169)	Glycoside Hydrolases	ag	CAZY	Chitin Oligo Cleavage
+AA16	AA16 Lytic cellulose monooxygenase (C1-hydroxylating) (EC 1.14.99.54)	Auxiliary Activities	ag	CAZY	Crystalline Cellulose Backbone Cleavage
+GH7	GH7 endo-beta-1,4-glucanase (EC 3.2.1.4); reducing end-acting cellobiohydrolase (EC 3.2.1.176); chitosanase (EC 3.2.1.132); endo-beta-1,3-1,4-glucanase (EC 3.2.1.73)	Glycoside Hydrolases	ag	CAZY	Crystalline Cellulose Backbone Cleavage, Amorphous Cellulose Backbone Cleavage, Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+AA11	AA11 proteins are copper-dependent lytic polysaccharide monooxygenases (LPMOs); cleavage of chitin chains with oxidation of C-1 has been demonstrated for a AA11 LPMO from Aspergillus oryzae;	Auxiliary Activities	ag	CAZY	Crystalline Cellulose Backbone Cleavage, Chitin Oligo Cleavage
+AA15	AA15 lytic cellulose monooxygenase (C1-hydroxylating) (EC 1.14.99.54); lytic chitin monooxygenase (EC 1.14.99.53)	Auxiliary Activities	ag	CAZY	Crystalline Cellulose Backbone Cleavage, Chitin Oligo Cleavage
+AA10	AA10 (formerly CBM33) proteins are copper-dependent lytic polysaccharide monooxygenases (LPMOs); some proteins have been shown to act on chitin, others on cellulose; lytic cellulose monooxygenase (C1-hydroxylating) (EC 1.14.99.54); lytic cellulose monooxygenase (C4-dehydrogenating)(EC 1.14.99.56); lytic chitin monooxygenase (EC 1.14.99.53)	Auxiliary Activities	ag	CAZY	Crystalline Cellulose Backbone Cleavage, Crystalline Cellulose Backbone Cleavage, Chitin Oligo Cleavage
+AA13	AA13 proteins are copper-dependent lytic polysaccharide monooxygenases (LPMOs); cleavage of starch with oxidation of C-1 at the site of cleavage has been demonstrated for the LPMO encoded by gene NCU08746 from Neurospora crassa;	Auxiliary Activities	ag	CAZY	Crystalline Cellulose Backbone Cleavage, Starch Backbone Cleavage
+AA9	AA9 (formerly GH61) proteins are copper-dependent lytic polysaccharide monooxygenases (LPMOs); cleavage of cellulose chains with oxidation of carbons C1 and/or C4 and C-6); lytic cellulose monooxygenase (C1-hydroxylating) (EC 1.14.99.54); lytic cellulose monooxygenase (C4-dehydrogenating) (EC 1.14.99.56)	Auxiliary Activities	ag	CAZY	Crystalline Cellulose Backbone Cleavage, Xyloglucan Backbone Cleavage (Hemicellulose)
+GH48	GH48 reducing end-acting cellobiohydrolase (EC 3.2.1.176); endo-beta-1,4-glucanase (EC 3.2.1.4); chitinase (EC 3.2.1.14)	Glycoside Hydrolases	ag	CAZY	Crystalline Cellulose Backbone Cleavage, Xyloglucan Backbone Cleavage (Hemicellulose)
+GH107	GH107 sulfated fucan endo-1,4-fucanase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Fucose Oligo Cleavage
+GH151	GH151 alpha-L-fucosidase (EC 3.2.1.51)	Glycoside Hydrolases	ag	CAZY	Fucose Oligo Cleavage
+GH29	GH29 alpha-L-fucosidase (EC 3.2.1.51); alpha-1,3/1,4-L-fucosidase (EC 3.2.1.111)	Glycoside Hydrolases	ag	CAZY	Fucose Oligo Cleavage
+GH95	GH95 alpha-L-fucosidase (EC 3.2.1.51); alpha-1,2-L-fucosidase (EC 3.2.1.63); alpha-L-galactosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Fucose Oligo Cleavage
+GH152	GH152 beta-1,3-glucanase (EC 3.2.1.39)	Glycoside Hydrolases	ag	CAZY	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+GH157	GH157 endo-beta-1,3-glucanase (EC 3.2.1.39); endo-beta-1,3-glucanase / laminarinase (EC 3.2.1.39)	Glycoside Hydrolases	ag	CAZY	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+GH158	GH158 endo-beta-1,3-glucanase (EC 3.2.1.39)	Glycoside Hydrolases	ag	CAZY	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+GH64	GH64 beta-1,3-glucanase (EC 3.2.1.39)	Glycoside Hydrolases	ag	CAZY	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+GH81	GH81 endo-beta-1,3-glucanase (EC 3.2.1.39)	Glycoside Hydrolases	ag	CAZY	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+GH17	GH17 glucan endo-1,3-beta-glucosidase (EC 3.2.1.39); glucan 1,3-beta-glucosidase (EC 3.2.1.58); licheninase (EC 3.2.1.73); ABA-specific beta-glucosidase (EC 3.2.1.175); beta-1,3-glucanosyltransglycosylase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose), Mixed-Linkage glucans Oligo Cleavage (Hemicellulose)
+GH55	GH55 exo-beta-1,3-glucanase (EC 3.2.1.58); endo-beta-1,3-glucanase (EC 3.2.1.39)	Glycoside Hydrolases	ag	CAZY	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose), Mixed-Linkage glucans Oligo Cleavage (Hemicellulose)
+GH128	GH128 beta-1,3-glucanase (EC 3.2.1.39)	Glycoside Hydrolases	ag	CAZY	Mixed-Linkage glucans Backbone Cleavage (Hemicellulose), Rhamnose Oligo cleavage
+GH101	GH101 endo-alpha-N-acetylgalactosaminidase (EC 3.2.1.97)	Glycoside Hydrolases	ag	CAZY	Mucin Backbone Cleavage
+GH109	GH109 alpha-N-acetylgalactosaminidase (EC 3.2.1.49)	Glycoside Hydrolases	ag	CAZY	Mucin Oligo Cleavage
+GH112	GH112 lacto-N-biose phosphorylase or galacto-N-biose phosphorylase (EC 2.4.1.211); D-galactosyl-beta-1,4-L-rhamnose phosphorylase (EC 2.4.1.247); galacto-N-biose/lacto-N-biose phosphorylase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	Mucin Oligo Cleavage
+GH129	GH129 alpha-N-acetylgalactosaminidase (EC 3.2.1.49);	Glycoside Hydrolases	ag	CAZY	Mucin Oligo Cleavage
+GH28	GH28 polygalacturonase (EC 3.2.1.15); alpha-L-rhamnosidase (EC 3.2.1.40); exo-polygalacturonase (EC 3.2.1.67); exo-polygalacturonosidase (EC 3.2.1.82); rhamnogalacturonase (EC 3.2.1.171); rhamnogalacturonan alpha-1,2-galacturonohydrolase (EC 3.2.1.173); endo-xylogalacturonan hydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Pectin Backbone Cleavage
+PL1	PL1 pectate lyase (EC 4.2.2.2); exo-pectate lyase (EC 4.2.2.9); pectin lyase (EC 4.2.2.10).	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+PL10	PL10 pectate lyase (EC 4.2.2.2)	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+PL11	PL11 rhamnogalacturonan endolyase (EC 4.2.2.23); rhamnogalacturonan exolyase (EC 4.2.2.24)	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+PL2	PL2 pectate lyase (EC 4.2.2.2); exo-polygalacturonate lyase (EC 4.2.2.9).	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+PL22	PL22 oligogalacturonate lyase / oligogalacturonide lyase (EC 4.2.2.6)	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+PL26	PL26 rhamnogalacturonan exolyase (EC 4.2.2.24).	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+PL3	PL3 pectate lyase (EC 4.2.2.2).	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+PL4	PL4 rhamnogalacturonan endolyase (EC 4.2.2.23).	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+PL9	PL9 pectate lyase (EC 4.2.2.2); exopolygalacturonate lyase (EC 4.2.2.9); thiopeptidoglycan lyase (EC 4.2.2.-).	Polysaccharide Lyases	ag	CAZY	Pectin Backbone Cleavage
+CE12	CE12 pectin acetylesterase (EC 3.1.1.-); rhamnogalacturonan acetylesterase (EC 3.1.1.-); acetyl xylan esterase (EC 3.1.1.72)	Carbohydrate Esterases	ag	CAZY	Pectin Oligo Cleavage
+CE8	CE8 pectin methylesterase (EC 3.1.1.11).	Carbohydrate Esterases	ag	CAZY	Pectin Oligo Cleavage
+GH105	GH105 unsaturated rhamnogalacturonyl hydrolase (EC 3.2.1.172); d-4,5-unsaturated beta-glucuronyl hydrolase (EC 3.2.1.-); d-4,5-unsaturated alpha-galacturonidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Pectin Oligo Cleavage
+GH138	GH138 alpha-galacturonidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Pectin Oligo Cleavage
+GH143	GH143 2-keto-3-deoxy-D-lyxo-heptulosaric acid hydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Pectin Oligo Cleavage
+GH4	GH4 maltose-6-phosphate glucosidase (EC 3.2.1.122); alpha-glucosidase (EC 3.2.1.20); alpha-galactosidase (EC 3.2.1.22); 6-phospho-beta-glucosidase (EC 3.2.1.86); alpha-glucuronidase (EC 3.2.1.139); alpha-galacturonase (EC 3.2.1.67); palatinase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Pectin Oligo Cleavage, Alpha-galactans Oligo Cleavage
+GH139	GH139 alpha-2-O-Me-L-fucosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Pectin Oligo Cleavage, Fucose Oligo Cleavage
+GH106	GH106 alpha-L-rhamnosidase (EC 3.2.1.40); rhamnogalacturonan alpha-L-rhamnohydrolase (EC 3.2.1.174)	Glycoside Hydrolases	ag	CAZY	Pectin Oligo Cleavage, Rhamnose Oligo cleavage
+GH78	GH78 alpha-L-rhamnosidase (EC 3.2.1.40); rhamnogalacturonan alpha-L-rhamnohydrolase (EC 3.2.1.174); L-Rhap-alpha-1,3-D-Apif -specific alpha-1,3-L-rhamnosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Pectin Oligo Cleavage, Rhamnose Oligo cleavage
+AA1	AA1 Laccase / p-diphenol:oxygen oxidoreductase / ferroxidase (EC 1.10.3.2); ; ferroxidase (EC 1.10.3.-); Laccase-like multicopper oxidase (EC 1.10.3.-)	Auxiliary Activities	ag	CAZY	Polyphenolics Cleavage
+AA2	AA2 manganese peroxidase (EC 1.11.1.13); versatile peroxidase (EC 1.11.1.16); lignin peroxidase (EC 1.11.1.14); peroxidase (EC 1.11.1.-)	Auxiliary Activities	ag	CAZY	Polyphenolics Cleavage
+AA4	AA4 vanillyl-alcohol oxidase (EC 1.1.3.38)	Auxiliary Activities	ag	CAZY	Polyphenolics Cleavage
+GH145	GH145 L-Rhalpha-alpha-1,4-GlcA alpha-L-rhamnohydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Rhamnose Oligo cleavage
+PL27	PL27 L-rhamnose-alpha-1,4-D-glucuronate lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	Rhamnose Oligo cleavage
+PL28	PL28 ulvan lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	Rhamnose Oligo cleavage
+GH119	GH119 alpha-amylase (EC 3.2.1.1)	Glycoside Hydrolases	ag	CAZY	Starch Backbone Cleavage
+GH126	GH126 alpha-amylase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Starch Backbone Cleavage
+GH13	GH13 alpha-amylase (EC 3.2.1.1); pullulanase (EC 3.2.1.41); cyclomaltodextrin glucanotransferase (EC 2.4.1.19); cyclomaltodextrinase (EC 3.2.1.54); trehalose-6-phosphate hydrolase (EC 3.2.1.93); oligo-alpha-glucosidase (EC 3.2.1.10); maltogenic amylase (EC 3.2.1.133); neopullulanase (EC 3.2.1.135); alpha-glucosidase (EC 3.2.1.20); maltotetraose-forming alpha-amylase (EC 3.2.1.60); isoamylase (EC 3.2.1.68); glucodextranase (EC 3.2.1.70); maltohexaose-forming alpha-amylase (EC 3.2.1.98); maltotriose-forming alpha-amylase (EC 3.2.1.116); branching enzyme (EC 2.4.1.18); trehalose synthase (EC 5.4.99.16); 4-alpha-glucanotransferase (EC 2.4.1.25); maltopentaose-forming alpha-amylase (EC 3.2.1.-) ; amylosucrase (EC 2.4.1.4) ; sucrose phosphorylase (EC 2.4.1.7); malto-oligosyltrehalose trehalohydrolase (EC 3.2.1.141); isomaltulose synthase (EC 5.4.99.11); malto-oligosyltrehalose synthase (EC 5.4.99.15); amylo-alpha-1,6-glucosidase (EC 3.2.1.33); alpha-1,4-glucan: phosphate alpha-maltosyltransferase (EC 2.4.99.16); 6'-P-sucrose phosphorylase (EC 2.4.1.-); amino acid transporter	Glycoside Hydrolases	ag	CAZY	Starch Backbone Cleavage
+GH14	GH14 beta-amylase (EC 3.2.1.2)	Glycoside Hydrolases	ag	CAZY	Starch Backbone Cleavage
+GH57	GH57 alpha-amylase (EC 3.2.1.1); alpha-galactosidase (EC 3.2.1.22); amylopullulanase (EC 3.2.1.41); cyclomaltodextrinase (EC 3.2.1.54); branching enzyme (EC 2.4.1.18); 4-alpha-glucanotransferase (EC 2.4.1.25)	Glycoside Hydrolases	ag	CAZY	Starch Backbone Cleavage
+GH133	GH133 amylo-alpha-1,6-glucosidase (EC 3.2.1.33);	Glycoside Hydrolases	ag	CAZY	Starch Oligo Cleavage
+GH15	GH15 glucoamylase (EC 3.2.1.3); glucodextranase (EC 3.2.1.70); alpha,alpha-trehalase (EC 3.2.1.28); dextran dextrinase (EC 2.4.1.2)	Glycoside Hydrolases	ag	CAZY	Starch Oligo Cleavage
+GH97	GH97 glucoamylase (EC 3.2.1.3); alpha-glucosidase (EC 3.2.1.20); alpha-galactosidase (EC 3.2.1.22)	Glycoside Hydrolases	ag	CAZY	Starch Oligo Cleavage, Alpha-galactans Oligo Cleavage
+GH111	GH111 keratan sulfate hydrolase (endo-beta-N-acetylglucosaminidase) (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+GH150	GH150 l-carrageenase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+GH56	GH56 hyaluronidase (EC 3.2.1.35); chondroitin hydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+GH79	GH79 beta-glucuronidase (EC 3.2.1.31); hyaluronoglucuronidase (EC 3.2.1.36); heparanase (EC 3.2.1.166); baicalin beta-glucuronidase (EC 3.2.1.167); beta-4-O-methyl-glucuronidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+GH82	GH82 Iota;-carrageenase (EC 3.2.1.157)	Glycoside Hydrolases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+GH86	GH86 beta-agarase (EC 3.2.1.81); beta-porphyranase (EC 3.2.1.178)	Glycoside Hydrolases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+PL12	PL12 heparin-sulfate lyase (EC 4.2.2.8)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+PL13	PL13 heparin lyase (EC 4.2.2.7)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+PL29	PL29 hyaluronate lyase (EC 4.2.2.1); chondroitin-sulfate ABC endolyase (EC 4.2.2.20); dermatan sulfate lyase (4.2.2.-); dermatan sulfate lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+PL30	PL30 hyaluronate lyase (EC 4.2.2.1)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+PL33	PL33 hyaluronate lyase (EC 4.2.2.1); gellan lyase (EC 4.2.2.25); chondroitin sulfate lyase (EC 4.2.2.20)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+PL37	PL37 chondroitin-sulfate ABC endolyase (EC 4.2.2.20); heparin-sulfate lyase / heparin lyase III (EC 4.2.2.8); ulvan lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+PL8	PL8 hyaluronate lyase (EC 4.2.2.1); chondroitin AC lyase (EC 4.2.2.5); xanthan lyase (EC 4.2.2.12); chondroitin ABC lyase (EC 4.2.2.20)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage
+PL15	PL15 oligo-alginate lyase (EC 4.2.2.-); alginate lyase (EC 4.2.2.3)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage, Sulf-Polysachharides Oligo Cleavage
+PL21	PL21 heparin lyase (EC 4.2.2.7); heparin-sulfate lyase (EC 4.2.2.8); acharan-sulfate lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage, Sulf-Polysachharides Oligo Cleavage
+PL6	PL6 alginate lyase (EC 4.2.2.3); chondroitinase B (EC 4.2.2.19); MG-specific alginate lyase (EC 4.2.2.-); poly(alpha-L-guluronate) lyase / G-specific alginate lyase (EC 4.2.2.11);	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Backbone Cleavage, Sulf-Polysachharides Oligo Cleavage
+GH117	GH117 alpha-1,3-L-neoagarooligosaccharide hydrolase (EC 3.2.1.-); alpha-1,3-L-neoagarobiase / neoagarobiose hydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Sulf-Polysachharides Oligo Cleavage
+GH88	GH88 d-4,5-unsaturated beta-glucuronyl hydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Sulf-Polysachharides Oligo Cleavage
+PL23	PL23 chondroitin lyase (EC 4.2.2.-);	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Oligo Cleavage
+PL24	PL24 ulvan lyase (EC 4.2.2.-).	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Oligo Cleavage, Rhamnose Oligo cleavage
+PL25	PL25 ulvan lyase (EC 4.2.2.-).	Polysaccharide Lyases	ag	CAZY	Sulf-Polysachharides Oligo Cleavage, Rhamnose Oligo cleavage
+GH11	GH11 endo-beta-1,4-xylanase (EC 3.2.1.8); endo-beta-1,3-xylanase (EC 3.2.1.32)	Glycoside Hydrolases	ag	CAZY	Xylan Backbone Cleavage (Hemicellulose)
+GH98	GH98 blood-group endo-beta-1,4-galactosidase (EC 3.2.1.102); blood group A- and B-cleaving endo-beta-1,4-galactosidase (EC 3.2.1.-); endo-beta-1,4-xylanase (EC 3.2.1.8); endo-beta-1,4-xylanase (EC 3.2.1.8)	Glycoside Hydrolases	ag	CAZY	Xylan Backbone Cleavage (Hemicellulose)
+GH26	GH26 beta-mannanase (EC 3.2.1.78); exo-beta-1,4-mannobiohydrolase (EC 3.2.1.100); beta-1,3-xylanase (EC 3.2.1.32); lichenase / endo-beta-1,3-1,4-glucanase (EC 3.2.1.73); mannobiose-producing exo-beta-mannanase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Xylan Backbone Cleavage (Hemicellulose), Beta-mannan Backbone Cleavage (Hemicellulose), Beta-mannan Oligo Cleavage (Hemicellulose)
+GH141	GH141 alpha-L-fucosidase (EC 3.2.1.51); xylanase (EC 3.2.1.8)	Glycoside Hydrolases	ag	CAZY	Xylan Backbone Cleavage (Hemicellulose), Fucose Oligo Cleavage
+GH30	GH30 endo-beta-1,4-xylanase (EC 3.2.1.8); beta-glucosidase (3.2.1.21); beta-glucuronidase (EC 3.2.1.31); beta-xylosidase (EC 3.2.1.37); beta-fucosidase (EC 3.2.1.38); glucosylceramidase (EC 3.2.1.45); beta-1,6-glucanase (EC 3.2.1.75); glucuronoarabinoxylan endo-beta-1,4-xylanase (EC 3.2.1.136); endo-beta-1,6-galactanase (EC:3.2.1.164); [reducing end] beta-xylosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Xylan Backbone Cleavage (Hemicellulose), Mixed-Linkage glucans Backbone Cleavage (Hemicellulose)
+GH115	GH115 xylan alpha-1,2-glucuronidase (3.2.1.131); alpha-(4-O-methyl)-glucuronidase (3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Xylan Oligo Cleavage (Hemicellulose)
+GH120	GH120 beta-xylosidase (EC 3.2.1.37)	Glycoside Hydrolases	ag	CAZY	Xylan Oligo Cleavage (Hemicellulose)
+GH39	GH39 alpha-L-iduronidase (EC 3.2.1.76); beta-xylosidase (EC 3.2.1.37).	Glycoside Hydrolases	ag	CAZY	Xylan Oligo Cleavage (Hemicellulose)
+GH52	GH52 beta-xylosidase (EC 3.2.1.37).	Glycoside Hydrolases	ag	CAZY	Xylan Oligo Cleavage (Hemicellulose)
+GH67	GH67 alpha-glucuronidase (EC 3.2.1.139); xylan alpha-1,2-glucuronidase (EC 3.2.1.131)	Glycoside Hydrolases	ag	CAZY	Xylan Oligo Cleavage (Hemicellulose)
+GH74	GH74 endoglucanase (EC 3.2.1.4); oligoxyloglucan reducing end-specific cellobiohydrolase (EC 3.2.1.150); xyloglucanase (EC 3.2.1.151)	Glycoside Hydrolases	ag	CAZY	Xyloglucan Backbone Cleavage (Hemicellulose)
+GH43	GH43 beta-xylosidase (EC 3.2.1.37); alpha-L-arabinofuranosidase (EC 3.2.1.55); xylanase (EC 3.2.1.8); alpha-1,2-L-arabinofuranosidase (EC 3.2.1.-); exo-alpha-1,5-L-arabinofuranosidase (EC 3.2.1.-); [inverting] exo-alpha-1,5-L-arabinanase (EC 3.2.1.-); beta-1,3-xylosidase (EC 3.2.1.-); [inverting] exo-alpha-1,5-L-arabinanase (EC 3.2.1.-); [inverting] endo-alpha-1,5-L-arabinanase (EC 3.2.1.99); exo-beta-1,3-galactanase (EC 3.2.1.145); beta-D-galactofuranosidase (EC 3.2.1.146)	Glycoside Hydrolases	ag	CAZY	Xyloglucan Oligo Cleavage (Hemicellulose), Arabinan Backbone Cleavage, Arabinan Oligo Cleavage
+GH31	GH31 alpha-glucosidase (EC 3.2.1.20); alpha-galactosidase (EC 3.2.1.22); alpha-mannosidase (EC 3.2.1.24); alpha-1,3-glucosidase (EC 3.2.1.84); sucrase-isomaltase (EC 3.2.1.48) (EC 3.2.1.10); alpha-xylosidase (EC 3.2.1.177); alpha-glucan lyase (EC 4.2.2.13); isomaltosyltransferase (EC 2.4.1.-); oligosaccharide alpha-1,4-glucosyltransferase (EC 2.4.1.161); sulfoquinovosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Xyloglucan Oligo Cleavage (Hemicellulose), Xylan Oligo Cleavage (Hemicellulose), Alpha-galactans Oligo Cleavage, Alpha-galactans Oligo Cleavage, Mucin Oligo Cleavage
+AA	Lytic polygalacturonic acid monooxygenase (C4-hydroxylating) (EC 1.14.99.-)	Auxiliary Activities	ag	CAZY	
+AA0	AA0	Auxiliary Activities	ag	CAZY	
+AA12	AA12 The pyrroloquinoline quinone-dependent oxidoreductase activity was demonstrated for the CC1G_09525 protein of Coprinopsis cinerea.	Auxiliary Activities	ag	CAZY	
+AA14	AA14 proteins are copper-dependent lytic polysaccharide monooxygenases (LPMOs); cleavage of xylan with oxidation of C-1 has been demonstrated for two AA14 LPMOs from Trametes coccinea (Pycnoporus coccineus); lytic xylan monooxygenase / xylan oxidase (glycosidic bond-cleaving) (EC 1.-.-.-)	Auxiliary Activities	ag	CAZY	
+AA3	AA3 cellobiose dehydrogenase (EC 1.1.99.18); glucose 1-oxidase (EC 1.1.3.4); aryl alcohol oxidase (EC 1.1.3.7); alcohol oxidase (EC 1.1.3.13); pyranose oxidase (EC 1.1.3.10)	Auxiliary Activities	ag	CAZY	
+AA5	AA5 Oxidase with oxygen as acceptor (EC 1.1.3.-); galactose oxidase (EC 1.1.3.9); glyoxal oxidase (EC 1.2.3.15); alcohol oxidase (EC 1.1.3.13)	Auxiliary Activities	ag	CAZY	
+AA6	AA6 1,4-benzoquinone reductase (EC. 1.6.5.6)	Auxiliary Activities	ag	CAZY	
+AA7	AA7 glucooligosaccharide oxidase (EC 1.1.3.-); chitooligosaccharide oxidase (EC 1.1.3.-)	Auxiliary Activities	ag	CAZY	
+AA8	AA8 Iron reductase domain	Auxiliary Activities	ag	CAZY	
+CE0	CE0 See below.	Carbohydrate Esterases	ag	CAZY	
+CE1	CE1 acetyl xylan esterase (EC 3.1.1.72); cinnamoyl esterase (EC 3.1.1.-); feruloyl esterase (EC 3.1.1.73); carboxylesterase (EC 3.1.1.1); S-formylglutathione hydrolase (EC 3.1.2.12); diacylglycerol O-acyltransferase (EC 2.3.1.20); trehalose 6-O-mycolyltransferase (EC 2.3.1.122)	Carbohydrate Esterases	ag	CAZY	
+CE10	CE10 arylesterase (EC 3.1.1.-); carboxyl esterase (EC 3.1.1.3); acetylcholinesterase (EC 3.1.1.7); cholinesterase (EC 3.1.1.8); sterol esterase (EC 3.1.1.13); brefeldin A esterase (EC 3.1.1.-).	Carbohydrate Esterases	ag	CAZY	
+CE11	CE11 UDP-3-0-acyl N-acetylglucosamine deacetylase (EC 3.5.1.108).	Carbohydrate Esterases	ag	CAZY	
+CE13	CE13 pectin acetylesterase (EC 3.1.1.-)	Carbohydrate Esterases	ag	CAZY	
+CE14	CE14 N-acetyl-1-D-myo-inosityl-2-amino-2-deoxy-alpha-D-glucopyranoside deacetylase (EC 3.5.1.89); diacetylchitobiose deacetylase (EC 3.5.1.-); mycothiol S-conjugate amidase (EC 3.5.1.-)	Carbohydrate Esterases	ag	CAZY	
+CE15	CE15 4-O-methyl-glucuronoyl methylesterase (EC 3.1.1.-)	Carbohydrate Esterases	ag	CAZY	
+CE16	CE16 acetylesterase (EC 3.1.1.6) active on various carbohydrate acetyl esters	Carbohydrate Esterases	ag	CAZY	
+CE18	N-acetylgalactosamine deacetylase (EC 3.5.1.-)	Carbohydrate Esterases	ag	CAZY	
+CE19		Carbohydrate Esterases	ag	CAZY	
+CE20		Carbohydrate Esterases	ag	CAZY	
+CE3	CE3 acetyl xylan esterase (EC 3.1.1.72).	Carbohydrate Esterases	ag	CAZY	
+CE5	CE5 acetyl xylan esterase (EC 3.1.1.72); cutinase (EC 3.1.1.74)	Carbohydrate Esterases	ag	CAZY	
+CE6	CE6 acetyl xylan esterase (EC 3.1.1.72).	Carbohydrate Esterases	ag	CAZY	
+CE7	CE7 acetyl xylan esterase (EC 3.1.1.72); cephalosporin-C deacetylase (EC 3.1.1.41).	Carbohydrate Esterases	ag	CAZY	
+CE9	CE9 N-acetylglucosamine 6-phosphate deacetylase (EC 3.5.1.25); N-acetylglucosamine 6-phosphate deacetylase (EC 3.5.1.80)	Carbohydrate Esterases	ag	CAZY	
+CBM0	CBM0 Carbohydrate-binding modules not yet assigned to a family.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM1	CBM1 Modules of approx. 40 residues found almost exclusively in fungi. The cellulose-binding function has been demonstrated in many cases, and appears to be mediated by three aromatic residues separated by about 10.4 angstrom and which form a flat surface. The only non-fungal occurence of CBM1 is in an algal non-hydrolytic polysaccharide-binding protein which is composed of four repeated CBM1 modules. Binding to chitin has been demonstrated in one case.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM10	CBM10 Modules of approx. 50 residues. The cellulose-binding function has been demonstrated in one case.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM11	CBM11 Modules of approx. 180-200 residues. The CBM11 of Clotridium thermocellum Cel26A-Cel5E has been shown to bind both beta-1,4-glucan and beta-1,3-1,4-mixed linked glucans.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM12	CBM12 Modules of approx. 40-60 residues. The majority of these modules is found among chitinases where the function is chitin-binding. Distantly related to the CBM5 family.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM13	CBM13 Modules of approx. 150 residues which always appear as a threefold internal repeat. The only apparent exception to this, xylanase II of Actinomadura sp. FC7 (GenBank U08894), is in fact not completely sequenced. These modules were first identified in several plant lectins such as ricin or agglutinin of Ricinus communis which bind galactose residues. The three-dimensional structure of a plant lectin has been determined and displays a pseudo-threefold symmetry in accord with the observed sequence threefold repeat. These modules have since been found in a number of other proteins of various functions including glycoside hydrolases and glycosyltransferases. While in the plant lectins this module binds mannose, binding to xylan has been demonstrated in the Streptomyces lividans xylanase A and arabinofuranosidase B. Binding to GalNAc has been shown for the corresponding module of GalNAc transferase 4. For the other proteins, the binding specificity of these modules has not been established. The pseudo three-fold symmetry of the CBM13 module has now been confirmed in the 3-D structure of the intact, two-domain, xylanase of Streptomyces olivaceoviridis.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM14	CBM14 Modules of approx. 70 residues. The chitin-binding function has been demonstrated in several cases. These modules are found attached to a number of chitinase catalytic domains, but also in non-catalytic proteins either in isolation or as multiple repeats; chitin binding (EC IIa.chitin)	Carbohydrate-Binding Modules	ag	CAZY	
+CBM15	CBM15 Binding to xylan and xylooligosaccharides has been demonstrated in the case of Xyn10C of Cellvibrio mixtus.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM16	CBM16 Carbohydrate-binding module 16. Binding to cellulose and glucomannan demonstrated [B. Bae et al (2008) J Biol Chem. 283:12415-25 (PMID: 18025086)]	Carbohydrate-Binding Modules	ag	CAZY	
+CBM17	CBM17 Modules of approx. 200 residues. Binding to amorphous cellulose, cellooligosaccharides and derivatized cellulose has been demonstrated.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM18	CBM18 Modules of approx. 40 residues. The chitin-binding function has been demonstrated in many cases. These modules are found attached to a number of chitinase catalytic domains, but also in non-catalytic proteins either in isolation or as multiple repeats.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM19	CBM19 Modules of 60-70 residues with chitin-binding function.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM2	CBM2 Modules of approx. 100 residues and which are found in a large number of bacterial enzymes. The cellulose-binding function has been demonstrated in many cases. Several of these modules have been shown to also bind chitin or xylan.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM20	CBM20 The granular starch-binding function has been demonstrated in several cases. Interact strongly with cyclodextrins. Often designated as starch-binding domains (SBD).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM21	CBM21 Modules of approx. 100 residues. The granular starch-binding function has been demonstrated in one case. Sometimes designated as starch-binding domains (SBD).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM22	CBM22 A xylan binding function has been demonstrated in several cases and affinity with mixed beta-1,3/beta-1,4-glucans in one. In several cases a thermostabilizing effect has also been seen.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM23	CBM23 Mannan-binding function demonstrated in one case.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM24	CBM24 alpha-1,3-glucan (mutan)-binding function demonstrated in two cases (PMID:10636904)	Carbohydrate-Binding Modules	ag	CAZY	
+CBM25	CBM25 Starch-binding function demonstrated in one case.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM26	CBM26 Starch-binding function demonstrated in two cases.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM27	CBM27 Mannan-binding function demonstrated in two cases	Carbohydrate-Binding Modules	ag	CAZY	
+CBM28	CBM28 The module from the endo-1,4-glucanase of Bacillus sp. 1139 binds to non-crystalline cellulose, cellooligosaccharides, and beta-(1,3)(1,4)-glucans	Carbohydrate-Binding Modules	ag	CAZY	
+CBM29	CBM29 Binding to mannan/glucomannan has been demonstrated.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM3	CBM3 Modules of approx. 150 residues found in bacterial enzymes. The cellulose-binding function has been demonstrated in many cases. In one instance binding to chitin has been reported.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM30	CBM30 Binding to cellulose has been demonstrated for the N-terminal module of Fibrobacter succinogenes CelF.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM31	CBM31 Binding to beta-1,3-xylan has been demonstrated for the C-terminal module of the beta-1,3-xylanase of Alcaligenes sp. XY234.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM32	CBM32 Binding to galactose and lactose has been demonstrated for the module of Micromonospora viridifaciens sialidase (PMID: 16239725). Binding to polygalacturonic acid has been shown for a Yersinia member (PMID: 17292916). Binding to LacNAc (beta-D-galactosyl-1,4-beta-D-N-acetylglucosamine) has been shown for an N-acetylglucosaminidase from Clostridium perfingens (PMID: 16990278).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM33	CBM33 Copper-dependent lytic polysaccharide monooxygenases now reclassified in family AA10	Carbohydrate-Binding Modules	ag	CAZY	
+CBM34	CBM34 Modules of approx. 120 residues. Granular starch-binding function has been demonstrated in the case of Thermoactinomyces vulgaris R-47 ‚Äö√†√∂‚àö¬©¬¨¬®¬¨¬±-amylase 1 (TVAI).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM35	CBM35 Modules of approx. 130 residues. A module that is conserved in three Cellvibrio xylan-degrading enzymes binds to xylan and the interaction is calcium dependent, while a module from a Cellvibrio mannanase binds to decorated soluble mannans and mannooligosaccharides. A module in a Phanerochaete chrysosporium galactan 1,3-beta-galactosidase binds to beta-galactan.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM36	CBM36 Modules of approx. 120-130 residues displaying structural similarities to CBM6 modules. The only CBM36 currently characterised, that from Paenbacillus polymyxa xylanase 43A, shows calcium-dependent binding of xylans and xylooligosaccharides. X-ray crystallography shows that there is a direct interaction between calcium and ligand.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM37	CBM37 Modules of approx. 100 residues, conserved in numerous R. albus polysaccharide-degrading enzymes and other proteins from this bacterium. Several members of CBM37 have been shown to exhibit rather broad binding specificity to xylan, chitin, microcrystalline and phosphoric-acid swollen cellulose, as well as more heterogeneous substrates, such as alfalfa cell walls, banana stem and wheat straw.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM38	CBM38 The inulin-binding function has been demonstrated in the case of the cycloinulo-oligosaccharide fructanotransferase from Paenibacillus macerans (Bacillus macerans) by Lee et al. (2004) FEMS Microbiol Lett 234:105-10. (PMID:15109727).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM39	CBM39 Modules generally found at the N-terminus of a GH16 module (itself frequently lacking a catalytic machinery) and more seldomly in isolation. The beta-1,3-glucan binding function has been demonstrated, along with binding to lipopolysaccharide and lipoteichoic acid.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM4	CBM4 Modules of approx. 150 residues found in bacterial enzymes. Binding of these modules has been demonstrated with xylan, beta-1,3-glucan, beta-1,3-1,4-glucan, beta-1,6-glucan and amorphous cellulose but not with crystalline cellulose.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM40	CBM40 Modules of approx. 200 residues, found at the N-terminus of GH33 sialidases. Can also be found inserted in the beta-propeller of GH33 sialidases. The sialic acid binding function has been demonstrated for the N-terminal CBM40 of Vibrio cholerae sialidase (Moustafa et al. (2004) J Biol Chem 279:40819-26) (PMID: 15226294).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM41	CBM41 Modules of approx. 100 residues found in primarily in bacterial pullulanases. The N-terminal module from Thermotoga maritima Pul13 has been shown to bind to the alpha-glucans amylose, amylopectin, pullulan, and oligosaccharide fragments derived from these polysaccharides (Lammerts van Bueren et al. (2004) Biochemistry 43:15633-42) (PMID: 15581376).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM42	CBM42 Modules of approx. 160 residues found mostly at the C-terminus of GH54 catalytic domains. Binding to arabinofuranose (present in arabinoxylan) has been demonstrated.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM43	CBM43 Modules of approx. 90-100 residues found at the C-terminus of GH17 or GH72 enzymatic modules and also sometimes isolated. CBM43 modules sometimes carry a C-terminal membrane anchor. The beta-1,3-glucan binding function has been demonstrated with the olive pollen protein Ole e 10.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM44	CBM44 The C-terminal CBM44 module of the Clostridium thermocellum enzyme has been demonstrated to bind equally well cellulose and xyloglucan	Carbohydrate-Binding Modules	ag	CAZY	
+CBM45	CBM45 Modules of approx. 100 residues, found at the N-terminus of plastidial alpha-amylases and of alpha-glucan, water dikinases. Starch-binding activity demonstrated in the case of potato alpha-glucan, water dikinase.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM46	CBM46 Modules of approx. 100 residues, found at the C-terminus of several GH5 cellulases. Cellulose-binding function demonstrated in one case.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM47	CBM47 Modules of approx 150 residues. Fucose-binding activity demonstrated	Carbohydrate-Binding Modules	ag	CAZY	
+CBM48	CBM48 Modules of approx. 100 residues with glycogen-binding function, appended to GH13 modules. Also found in the beta subunit (glycogen-binding) of AMP-activated protein kinases (AMPK)	Carbohydrate-Binding Modules	ag	CAZY	
+CBM49	CBM49 Modules of approx. 100 residues found at the C-terminus of plant GH9 enzymes. Distantly related to CBM2 modules. Binding to crystalline cellulose demonstrated in the case of Solanum lycopersicum Cel8 enzyme (SlCel9C1).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM5	CBM5 Modules of approx. 60 residues found in bacterial enzymes. Chitin-binding described in several cases. Distantly related to the CBM12 family.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM50	CBM50 Modules of approx. 50 residues found attached to various enzymes from families GH18, GH19, GH23, GH24, GH25 and GH73, i.e. enzymes cleaving either chitin or peptidoglycan. Binding to chitopentaose demonstrated in the case of Pteris ryukyuensis chitinase A [Ohnuma T et al. (2008) J. Biol. Chem. 283:5178-87 (PMID: 18083709)]. CBM50 modules are also found in a multitude of other enzymes targeting the petidoglycan such as peptidases and amidases. These enzymes are not reported in the list below.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM51	CBM51 Modules of approx. 150 residues found attached to various enzymes from families GH2, GH27, GH31, GH95, GH98 and GH101 . Binding to galactose and to blood group A/B-antigens demonstrated in the case of C. perfringens GH95CBM51 and GH98CBM51 respectively [Gregg KJ et al. (2008) J. Biol. Chem. 283:12604-13 PMID: 18292090].	Carbohydrate-Binding Modules	ag	CAZY	
+CBM52	CBM52 Modules of approx. 60 residues attached to a few GH81 enzymes but present in other proteins. Binding to beta-1,3-glucan demonstrated for Schizosaccharomyces pombe 972h- endo-1,3-beta-glucanase Eng1 [Martin-Quadrado et al., Mol. Microbiol. (2008) 69:188-200 PMID:18466295]	Carbohydrate-Binding Modules	ag	CAZY	
+CBM53	CBM53 Starch-binding function demonstrated by Valdez et al. (2008) [PMID: 18260645]	Carbohydrate-Binding Modules	ag	CAZY	
+CBM54	CBM54 Binding to xylan, yeast cell wall glucan and chitin shown in Dvortsov et al., Microbiology UK (2009) in press.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM55	CBM55 Binding to chitin demonstrated in the case of the CBM55 of Entamoeba histolytica chitinase (Van Dellen et al. (2002) Infect Immun. 70:3259‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àö‚à´3263; PMID: 12011021).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM56	CBM56 beta-1,3-glucan binding function demonstrated by Yamamoto et al. (1998) FEBS Letters 433:41-43 [PMID: 9738929]	Carbohydrate-Binding Modules	ag	CAZY	
+CBM57	CBM57 Created from reading Schallus et al (2008) Mol Biol Cell. 19:3404-3414 [PMID: 18524852] and finding related domains attached to various glycosidases.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM58	CBM58 The CBM58 module of the Bacteroides thetaiotaomicron SusG protein has been shown to bind maltoheptaose	Carbohydrate-Binding Modules	ag	CAZY	
+CBM59	CBM59 Binding to mannan, xylan, and cellulose demonstrated for the CBM59 of ManF-X10 xylanase from an environmental genomic DNA library (Li et al. (2009) World Journal of Microbiology and Biotechnology 25:2071-2078; doi:10.1007/s11274-009-0111-6)	Carbohydrate-Binding Modules	ag	CAZY	
+CBM6	CBM6 Modules of approx. 120 residues. The cellulose-binding function has been demonstrated in one case on amorphous cellulose and beta-1,4-xylan. Some of these modules also bind beta-1,3-glucan, beta-1,3-1,4-glucan, and beta-1,4-glucan.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM60	CBM60 Modules of approx 120 residues usually found appended to xylanases. The xylan-binding function and the relatedness (circular permutation) to family CBM36 has been demonstrated [PMID: 20659893].	Carbohydrate-Binding Modules	ag	CAZY	
+CBM61	CBM61 Modules of approx. 150 residues found appended to GH16, GH30, GH31, GH43, GH53 and GH66 catalytic domains. A beta-1,4-galactan binding function has been demonstrated for the CBM61 of Thermotoga maritima GH53 galactanase [PMID: 20826814].	Carbohydrate-Binding Modules	ag	CAZY	
+CBM62	CBM62 The CBM62 module of Clostridium thermocellum Cthe_2193 protein binds galactose moieties found on xyloglucan, arabinogalactan and galactomannan.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM63	CBM63 The CBM63 module of Bacillus subtilis expansin EXLX1 has been shown to bind cellulose.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM64	CBM64 Module found at C-term of several Spirochaeta thermophila proteins. Binding to cellulose shown by Angelov, Loderer, Pompei Liebl (2011) AEM, 77:5483-5489 [PMID - 21685171]	Carbohydrate-Binding Modules	ag	CAZY	
+CBM65	CBM65 CBM65A and CBM65B, derived from Eubacterium cellulosolvens endoglucanase EcCel5A, bind to a range of beta-glucans but, uniquely, display significant preference for xyloglucan	Carbohydrate-Binding Modules	ag	CAZY	
+CBM66	CBM66 The CBM66 module, derived from the Bacillus subtilis exo-acting beta-fructosidase SacC, targets the terminal fructoside residue of fructans.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM67	CBM67 Fujimoto et al. [PMID : 23486481] disclosed the L-rhamnose binding activity and 3-D structure of the CBM67 of Streptomyces avermitilis alpha-L-rhamnosidase (SaRha78A);	Carbohydrate-Binding Modules	ag	CAZY	
+CBM68	CBM68 Binding to maltotriose and maltotetraose shown for the pullulanase of Anoxybacillus sp. LM18-11. Binding function derived from crystal structure and deletion of the CBM, which showed reduced specific activity and increased Km value compared to the wild type enzyme.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM69	CBM69 starch-binding function demonstrated in one case; distantly related to families CBM20 and CBM48	Carbohydrate-Binding Modules	ag	CAZY	
+CBM7	CBM7 Deleted entry	Carbohydrate-Binding Modules	ag	CAZY	
+CBM70	CBM70 The hyaluronan-specific binding function of the N-terminal CBM70 module of Streptococcus pneumoniae hyaluronate lyase has been demonstrated.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM71	CBM71 The two CBM71s of S. pneumoniae BgaA bind lactose and LacNAc.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM72	CBM72 Modules of 130-180 residues found at the C-terminus glycoside hydrolases from various families, sometimes as tandem repeats. The CBM72 found on an endoglucanase from an uncultivated microorganism was found to bind a broad spectrum of polysaccharides including soluble and insoluble cellulose, beta-1,3/1,4-mixed linked glucans, xylan, and beta-mannan [PMID=26765840].	Carbohydrate-Binding Modules	ag	CAZY	
+CBM73	CBM73 Modules of approx 65 residues found on various enzymes active of chitin. Chitin-binding function demonstrated for the Cellvibrio japonicus CjLPMO10A protein.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM74	CBM74 Modules of approx. 300 residues appended to several alpha-amylases. The starch-binding function has been demonstrated for the CBM74 appended to the GH13 alpha-amylase of Microbacterium aureum B8.A	Carbohydrate-Binding Modules	ag	CAZY	
+CBM75	CBM75 Modules of 290 residues appended to GH43_16 enzymes. So far found exclusively in Ruminococci. The xyloglucan-binding function was demonstrated for the R. flavefaciens protein.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM76	CBM76 Modules of approx. 170 residues appended to GH44 enzymes. So far found exclusively in Ruminococci. Broad specificity binding to beta-glucans demontsrated for the R. flavefaciens module, which binds xyloglucan, glucomannan, and barley beta-glucan.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM77	CBM77 Pectin binding modules of approx. 110 residues. The Ruminococcus flavefaciens CBM77 was shown to bind various pectins of low degree of esterification.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM78	CBM78 Modules of approx. 150 residues appended to the C-terminus of GH5 and GH26 enzymes. So far found exclusively in Ruminococcal enzymes. The R. flavefaciens module has been shown to bind decorated beta-1,4-glucans with a preference for xyloglucan.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM79	CBM79 Modules of approx. 130 residues found so far only in ruminococcal proteins. Binding to various beta-glucans was shown for the R. flavefaciens GH9 enzyme.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM8	CBM8 The cellulose-binding module from a cellulase of the slime mold Dictyostelium discoideum has been experimentally shown to bind cellulose.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM80	CBM80 Modules of approx. 90 residues found so far only in ruminococcal enzymes of families GH5 or GH26. Broad specificity for beta-glycans (xyloglucan, glucomannan, galactomannan, barley beta-glucan).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM81	CBM81 Small family of modules of approx. 100 residues, appended to GH5_2 enzymes. So far found exclusively in a few gammaproteobacteria. The CBM81 from an uncultivated species was shown to have binding affinity for beta-1,4-, beta-1,3,-glucans, xyloglucan, avicel and cellooligosaccharides.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM82	CBM82 The boundaries, structure and starch-binding function of the CBM82 module of Eubacterium rectale Amy13K have been reported by Cockburn and coworkers in Molec. Microbiol. (2017) (PMID=29139580)	Carbohydrate-Binding Modules	ag	CAZY	
+CBM83	CBM83 The boundaries, structure and starch-binding function of the CBM83 module of Eubacterium rectale Amy13K have been reported by Cockburn and coworkers in Molec. Microbiol. (2017) (PMID=29139580)	Carbohydrate-Binding Modules	ag	CAZY	
+CBM84	CBM84 Modules of approx. 140 aminoacids appended to enzymes of different families of CAZymes. A xanthan-binding function was reported for the GH9 xanthanase of Paenibacillus nanensis by Moroz et al. ACS Catal., 2018, 8 (7), pp 6021-6034.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM85	CBM85	Carbohydrate-Binding Modules	ag	CAZY	
+CBM86		Carbohydrate-Binding Modules	ag	CAZY	
+CBM87	Binding to alpha-1,4-N-acetylgalactosamine-rich regions of galactosaminogalactan	Carbohydrate-Binding Modules	ag	CAZY	
+CBM88	Binding to terminal galactose in galactoxyloglucan and galactomannan	Carbohydrate-Binding Modules	ag	CAZY	
+CBM89		Carbohydrate-Binding Modules	ag	CAZY	
+CBM9	CBM9 Modules of approx. 170 residues found so far only in xylanases. The cellulose-binding function has been demonstrated in one case.	Carbohydrate-Binding Modules	ag	CAZY	
+CBM90	Modules of approx 110 residues appended to PL24 and PL28 ulvan lyases; ulvan-binding function demonstrated for the CBM90 module of PL28 ulvan lyase from Nonlabens ulvanivorans	Carbohydrate-Binding Modules	ag	CAZY	
+CBM91	Binding to xylans (birchwood and oat spelt)	Carbohydrate-Binding Modules	ag	CAZY	
+GH0	GH0 Glycoside hydrolases not yet assigned to a family.	Glycoside Hydrolases	ag	CAZY	
+GH100	GH100 alkaline and neutral invertase (EC 3.2.1.26)	Glycoside Hydrolases	ag	CAZY	
+GH102	GH102 peptidoglycan lytic transglycosylase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH103	GH103 peptidoglycan lytic transglycosylase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH104	GH104 peptidoglycan lytic transglycosylase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH108	GH108 N-acetylmuramidase (EC 3.2.1.17)	Glycoside Hydrolases	ag	CAZY	
+GH114	GH114 endo-alpha-1,4-polygalactosaminidase (EC 3.2.1.109)	Glycoside Hydrolases	ag	CAZY	
+GH118	GH118 beta-agarase (EC 3.2.1.81)	Glycoside Hydrolases	ag	CAZY	
+GH122	GH122 alpha-glucosidase (EC 3.2.1.20)	Glycoside Hydrolases	ag	CAZY	
+GH123	GH123 beta-N-acetylgalactosaminidase (EC 3.2.1.53); glycosphingolipid beta-N-acetylgalactosaminidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH131	GH131 broad specificity exo-beta-1,3/1,6-glucanase with endo-beta-1,4-glucanase activity (EC 3.2.1.-);	Glycoside Hydrolases	ag	CAZY	
+GH132	GH132 Activity on beta-1,3-glucan (curdlan) shown for the Aspergillus fumigatus Sun4 protein; activity on laminarioligosaccharides shown for Aspergillus fumigatus Sun4 protein and Candida albicans Sun41 protein; transglycosylation activity reported in PMID 23508952.	Glycoside Hydrolases	ag	CAZY	
+GH135	GH135 alpha-1,4-galactosaminogalactan hydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH136	GH136 lacto-N-biosidase (EC 3.2.1.140)	Glycoside Hydrolases	ag	CAZY	
+GH140	GH140 apiosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH144	GH144 endo-beta-1,2-glucanase (EC 3.2.1.71); beta-1,2-glucooligosaccharide sophorohydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH148	GH148 beta-1,3-glucanase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH149	GH149 beta-1,3-glucan phosphorylase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH153	GH153 poly-beta-1,6-D-glucosamine hydrolase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH154	GH154 beta-glucuronidase (3.2.1.31)	Glycoside Hydrolases	ag	CAZY	
+GH155	GH155 Deleted family!	Glycoside Hydrolases	ag	CAZY	
+GH156	GH156 exo-alpha-sialidase (EC 3.2.1.18);	Glycoside Hydrolases	ag	CAZY	
+GH159	GH159 beta-D-galactofuranosidase (EC 3.2.1.146)	Glycoside Hydrolases	ag	CAZY	
+GH160	GH160 endo-beta-1,4-galactosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH161	GH161 beta-1,3-glucan phosphorylase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH162	GH162 endo-beta-1,2-glucanase (EC 3.2.1.71)	Glycoside Hydrolases	ag	CAZY	
+GH163	GH163 endo-beta-N-acetylglucosaminidase cleaving GlcNAc-beta-1,2-Man (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH164	GH164 beta-mannosidase (EC 3.2.1.25); beta-mannosidase (EC 3.2.1.25)	Glycoside Hydrolases	ag	CAZY	
+GH167	beta-carrageenase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH168	endo-alpha-(1,3)-L-fucanase (EC 3.2.1.211)	Glycoside Hydrolases	ag	CAZY	
+GH169	beta-glucuronidase (EC 3.2.1.31); beta-1,4-D-glucuronidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH170	6-phospho-N-acetylmuramidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH171	peptidoglycan beta-N-acetylmuramidase (EC 3.2.1.92)	Glycoside Hydrolases	ag	CAZY	
+GH172	difructose-anhydride-I synthase (EC 4.2.1.179 (old 3.2.1.134)); alpha-D-Arabinofuranosidase (EC 3.2.1.-); alpha-D-Fructofuranosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH173	beta-galactosidase (EC 3.2.1.23)	Glycoside Hydrolases	ag	CAZY	
+GH21	GH21 Deleted family!	Glycoside Hydrolases	ag	CAZY	
+GH22	GH22 lysozyme type C (EC 3.2.1.17); lysozyme type i (EC 3.2.1.17); alpha-lactalbumin	Glycoside Hydrolases	ag	CAZY	
+GH24	GH24 lysozyme (EC 3.2.1.17)	Glycoside Hydrolases	ag	CAZY	
+GH25	GH25 lysozyme (EC 3.2.1.17)	Glycoside Hydrolases	ag	CAZY	
+GH32	GH32 invertase (EC 3.2.1.26); endo-inulinase (EC 3.2.1.7); beta-2,6-fructan 6-levanbiohydrolase (EC 3.2.1.64); endo-levanase (EC 3.2.1.65); exo-inulinase (EC 3.2.1.80); fructan beta-(2,1)-fructosidase/1-exohydrolase (EC 3.2.1.153); fructan beta-(2,6)-fructosidase/6-exohydrolase (EC 3.2.1.154); sucrose:sucrose 1-fructosyltransferase (EC 2.4.1.99); fructan:fructan 1-fructosyltransferase (EC 2.4.1.100); sucrose:fructan 6-fructosyltransferase (EC 2.4.1.10); fructan:fructan 6G-fructosyltransferase (EC 2.4.1.243); levan fructosyltransferase (EC 2.4.1.-); [retaining] sucrose:sucrose 6-fructosyltransferase (6-SST) (EC 2.4.1.-); cycloinulo-oligosaccharide fructanotransferase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH33	GH33 sialidase or neuraminidase (EC 3.2.1.18); trans-sialidase (EC 2.4.1.-); anhydrosialidase (EC 4.2.2.15); Kdo hydrolase (EC 3.2.1.-); 2-keto-3-deoxynononic acid hydrolase / KDNase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH34	GH34 sialidase or neuraminidase (EC 3.2.1.18)	Glycoside Hydrolases	ag	CAZY	
+GH37	GH37 alpha,alpha-trehalase (EC 3.2.1.28).	Glycoside Hydrolases	ag	CAZY	
+GH40	GH40 Deleted family!	Glycoside Hydrolases	ag	CAZY	
+GH41	GH41 Deleted family!	Glycoside Hydrolases	ag	CAZY	
+GH46	GH46 chitosanase (EC 3.2.1.132)	Glycoside Hydrolases	ag	CAZY	
+GH50	GH50 beta-agarase (EC 3.2.1.81).	Glycoside Hydrolases	ag	CAZY	
+GH58	GH58 endo-N-acetylneuraminidase or endo-sialidase (EC 3.2.1.129)	Glycoside Hydrolases	ag	CAZY	
+GH60	GH60 Deleted family!	Glycoside Hydrolases	ag	CAZY	
+GH61	GH61 Copper-dependent lytic polysaccharide monooxygenases now reclassified in family AA9	Glycoside Hydrolases	ag	CAZY	
+GH65	GH65 alpha,alpha-trehalase (EC 3.2.1.28); maltose phosphorylase (EC 2.4.1.8); trehalose phosphorylase (EC 2.4.1.64); kojibiose phosphorylase (EC 2.4.1.230); trehalose-6-phosphate phosphorylase (EC 2.4.1.216); nigerose phosphorylase (EC 2.4.1.279); 3-O-alpha-glucopyranosyl-L-rhamnose phosphorylase (EC 2.4.1.282); 2-O-alpha-glucopyranosylglycerol: phosphate beta-glucosyltransferase (EC 2.4.1.-); alpha-glucosyl-1,2-beta-galactosyl-L-hydroxylysine alpha-glucosidase (EC 3.2.1.107)	Glycoside Hydrolases	ag	CAZY	
+GH66	GH66 cycloisomaltooligosaccharide glucanotransferase (EC 2.4.1.248); dextranase (EC 3.2.1.11).	Glycoside Hydrolases	ag	CAZY	
+GH68	GH68 levansucrase (EC 2.4.1.10); beta-fructofuranosidase (EC 3.2.1.26); inulosucrase (EC 2.4.1.9).	Glycoside Hydrolases	ag	CAZY	
+GH69	GH69 Deleted: now family PL16	Glycoside Hydrolases	ag	CAZY	
+GH70	GH70 dextransucrase (EC 2.4.1.5); alternansucrase (EC 2.4.1.140); reuteransucrase (EC 2.4.1.-); alpha-4,6-glucanotransferase (EC 2.4.1.-); alpha-1,2-branched dextransucrase (EC 2.4.1.-); alpha-4,3-glucanotransferase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH71	GH71 alpha-1,3-glucanase (EC 3.2.1.59).	Glycoside Hydrolases	ag	CAZY	
+GH72	GH72 beta-1,3-glucanosyltransglycosylase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH75	GH75 chitosanase (EC 3.2.1.132)	Glycoside Hydrolases	ag	CAZY	
+GH77	GH77 amylomaltase or 4-alpha-glucanotransferase (EC 2.4.1.25)	Glycoside Hydrolases	ag	CAZY	
+GH80	GH80 chitosanase (EC 3.2.1.132)	Glycoside Hydrolases	ag	CAZY	
+GH83	GH83 neuraminidase (EC 3.2.1.18)	Glycoside Hydrolases	ag	CAZY	
+GH85	GH85 endo-beta-N-acetylglucosaminidase (EC 3.2.1.96)	Glycoside Hydrolases	ag	CAZY	
+GH87	GH87 mycodextranase (EC 3.2.1.61); alpha-1,3-glucanase (EC 3.2.1.59)	Glycoside Hydrolases	ag	CAZY	
+GH89	GH89 alpha-N-acetylglucosaminidase (EC 3.2.1.50)	Glycoside Hydrolases	ag	CAZY	
+GH90	GH90 endorhamnosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH91	GH91 inulin lyase [DFA-I-forming] (EC 4.2.2.17); inulin lyase [DFA-III-forming] (EC 4.2.2.18); difructofuranose 1,2':2,3' dianhydride hydrolase [DFA-IIIase] (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
+GH96	GH96 alpha-agarase (EC 3.2.1.158)	Glycoside Hydrolases	ag	CAZY	
+GT0	GT0 Glycosyltransferases not yet assigned to a family	GlycosylTransferases	ag	CAZY	
+GT1	GT1 UDP-glucuronosyltransferase (EC 2.4.1.17); zeatin O-beta-xylosyltransferase (EC 2.4.2.40); 2-hydroxyacylsphingosine 1-beta-galactosyltransferase (EC 2.4.1.45); N-acylsphingosine galactosyltransferase (EC 2.4.1.47); flavonol 3-O-glucosyltransferase (EC 2.4.1.91); anthocyanidin 3-O-glucosyltransferase (EC 2.4.1.115); sinapate 1-glucosyltransferase (EC 2.4.1.120); indole-3-acetate beta-glucosyltransferase (EC 2.4.1.121); flavonol L-rhamnosyltransferase (EC 2.4.1.159); sterol glucosyltransferase (EC 2.4.1.173); UDP-Glc: 4-hydroxybenzoate 4-O-beta-glucosyltransferase (EC 2.4.1.194); zeatin O-beta-glucosyltransferase (EC 2.4.1.203); limonoid glucosyltransferase (EC 2.4.1.210); UDP-GlcA: baicalein 7-O-beta-glucuronosyltransferase (EC 2.4.1.253); UDP-Glc: chalcone 4‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ¬¨¬®‚Äö√¢¬ß-O-beta-glucosyltransferase (EC 2.4.1.286); ecdysteroid UDP-glucosyltransferase (EC 2.4.1.-); salicylic acid beta-glucosyltransferase (EC 2.4.1.-); anthocyanin 3-O-galactosyltransferase (EC 2.4.1.-); anthocyanin 5-O-glucosyltransferase (EC 2.4.1.-); dTDP-beta-2-deoxy-L-fucose: alpha-L-2-deoxyfucosyltransferase (EC 2.4.1.-); UDP-beta-L-rhamnose: alpha-L-rhamnosyltransferase (EC 2.4.1.-); zeaxanthin glucosyltransferase (EC 2.4.1.-); flavone 8-C-glycosyltransferase	GlycosylTransferases	ag	CAZY	
+GT10	GT10 galactoside alpha-1,3/1,4-L-fucosyltransferase (EC 2.4.1.65); galactoside alpha-1,3-L-fucosyltransferase (EC 2.4.1.152); glycoprotein alpha-1,3-L-fucosyltransferase (EC 2.4.1.214)	GlycosylTransferases	ag	CAZY	
+GT100	GT100 alpha-sialyltransferase (EC 2.4.99.-)	GlycosylTransferases	ag	CAZY	
+GT101	GT101 glucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT102	GT102 dTDP-beta-L-Rhap : O-antigen-polysaccharide alpha-1,3-L-rhamnosyltransferase (EC 2.4.1.289)	GlycosylTransferases	ag	CAZY	
+GT103	GT103 UDP-GlcpNAc: O-antigen-polysaccharide beta-1,4-N-acetylglucosaminyltransferase (EC 2.4.1.56)	GlycosylTransferases	ag	CAZY	
+GT104	GT104 dTDP-beta-L-Rhap : arginine alpha-L-rhamnosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT105	GT105 Dol-P-Man: protein alpha-mannosyltransferase (EC 2.4.1.109); Dol-P-Man:protein mannosyltransferase (EC 2.4.1.109)	GlycosylTransferases	ag	CAZY	
+GT106	GT106 UDP-beta-L-rhamnose:rhamnogalacturonan I 4-alpha-rhamnosyltransferase (EC 2.4.1.351)	GlycosylTransferases	ag	CAZY	
+GT107	GT107 CMP-beta-KDO: beta-2,4-KDO transferase (EC 2.4.99.-); CMP-beta-KDO: beta-2,7-KDO transferase (EC 2.4.99.-)	GlycosylTransferases	ag	CAZY	
+GT108	GDP-alpha-D-Manp: beta-1,2-D-mannosyltransferase (EC 2.4.1.374)	GlycosylTransferases	ag	CAZY	
+GT109	UDP-GalNAc: beta-1,4-N-acetylgalactosaminyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT11	GT11 GDP-L-Fuc: galactoside alpha-1,2-L-fucosyltransferase (EC 2.4.1.69); GDP-L-Fuc: beta-LacNac alpha-1,3-L-fucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT110	galactoside alpha-1,3/1,4-L-fucosyltransferase (EC 2.4.1.65); galactoside alpha-1,3-L-fucosyltransferase (EC 2.4.1.152); glycoprotein alpha-1,3-L-fucosyltransferase (EC 2.4.1.214)	GlycosylTransferases	ag	CAZY	
+GT111	UDP-Galf: beta-1,3-galactofuranosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT112	ADP-glyceromannoheptose: glycoprotein O-heptosyltransferase (EC 2.4.99.-)	GlycosylTransferases	ag	CAZY	
+GT113	Glucosyltransferase (2.4.1.-); Hexosyltransferase (2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT114	beta-xylosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT115	UDP-GlcNAc: Dol-PP-GlcNAc beta-GlcNAc-transferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT12	GT12 [N-acetylneuraminyl]-galactosylglucosylceramide N-acetylgalactosaminyltransferase (EC 2.4.1.92).	GlycosylTransferases	ag	CAZY	
+GT13	GT13 alpha-1,3-mannosyl-glycoprotein beta-1,2-N-acetylglucosaminyltransferase (EC 2.4.1.101)	GlycosylTransferases	ag	CAZY	
+GT14	GT14 beta-1,3-galactosyl-O-glycosyl-glycoprotein beta-1,6-N-acetylglucosaminyltransferase (EC 2.4.1.102); N-acetyllactosaminide beta-1,6-N-acetylglucosaminyltransferase (EC 2.4.1.150); protein O-beta-xylosyltransferase (EC 2.4.2.26); UDP-GlcA:arabinogalactan beta-glucuronosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT15	GT15 glycolipid 2-alpha-mannosyltransferase (EC 2.4.1.131); GDP-Man: alpha-1,2-mannosyltransferase (EC 2.4.1.-).	GlycosylTransferases	ag	CAZY	
+GT16	GT16 alpha-1,6-mannosyl-glycoprotein beta-1,2-N-acetylglucosaminyltransferase (EC 2.4.1.143).	GlycosylTransferases	ag	CAZY	
+GT17	GT17 beta-1,4-mannosyl-glycoprotein beta-1,4-N-acetylglucosaminyltransferase (EC 2.4.1.144).	GlycosylTransferases	ag	CAZY	
+GT18	GT18 alpha-1,3(6)-mannosylglycoprotein beta-1,6-N-acetyl-glucosaminyltransferase (EC 2.4.1.155).	GlycosylTransferases	ag	CAZY	
+GT19	GT19 lipid-A-disaccharide synthase (EC 2.4.1.182).	GlycosylTransferases	ag	CAZY	
+GT2	GT2 cellulose synthase (EC 2.4.1.12); chitin synthase (EC 2.4.1.16); dolichyl-phosphate beta-D-mannosyltransferase (EC 2.4.1.83); dolichyl-phosphate beta-glucosyltransferase (EC 2.4.1.117); N-acetylglucosaminyltransferase (EC 2.4.1.-); N-acetylgalactosaminyltransferase (EC 2.4.1.-); hyaluronan synthase (EC 2.4.1.212); chitin oligosaccharide synthase (EC 2.4.1.-); beta-1,3-glucan synthase (EC 2.4.1.34); beta-1,4-mannan synthase (EC 2.4.1.-); beta-mannosylphosphodecaprenol-mannooligosaccharide alpha-1,6-mannosyltransferase (EC 2.4.1.199); UDP-Galf: rhamnopyranosyl-N-acetylglucosaminyl-PP-decaprenol beta-1,4/1,5-galactofuranosyltransferase (EC 2.4.1.287); UDP-Galf: galactofuranosyl-galactofuranosyl-rhamnosyl-N-acetylglucosaminyl-PP-decaprenol beta-1,5/1,6-galactofuranosyltransferase (EC 2.4.1.288); dTDP-L-Rha: N-acetylglucosaminyl-PP-decaprenol alpha-1,3-L-rhamnosyltransferase (EC 2.4.1.289)	GlycosylTransferases	ag	CAZY	
+GT20	GT20 alpha,alpha-trehalose-phosphate synthase [UDP-forming] (EC 2.4.1.15); Glucosylglycerol-phosphate synthase (EC 2.4.1.213); trehalose-6-P phosphatase (EC 3.1.3.12); [retaining] GDP-valeniol: validamine 7-phosphate valeniolyltransferase (EC 2.-.-.-)	GlycosylTransferases	ag	CAZY	
+GT21	GT21 UDP-Glc: ceramide beta-glucosyltransferase (EC 2.4.1.80).	GlycosylTransferases	ag	CAZY	
+GT22	GT22 Dol-P-Man: Man6GlcNAc2-PP-Dol alpha-1,2-mannosyltransferase (EC 2.4.1.259); Dol-P-Man: Man8GlcNAc2-PP-Dol alpha-1,2-mannosyltransferase (EC 2.4.1.261); Dol-P-Man: Man2-GlcNAc-phosphatidylinositol alpha-1,2-mannosyltransferase (EC 2.4.1.-); Dol-P-Man: Man3-GlcNAc-phosphatidylinositol alpha-1,2-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT23	GT23 N-acetyl-beta-D-glucosaminide alpha-1,6-L-fucosyltransferase (EC 2.4.1.68); chitin-oligosaccharide alpha-1,6-L-fucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT24	GT24 UDP-Glc: glycoprotein alpha-glucosyltransferase (EC 2.4.1.-).	GlycosylTransferases	ag	CAZY	
+GT25	GT25 lipopolysaccharide beta-1,4-galactosyltransferase (EC 2.4.1.-); beta-1,3-glucosyltransferase (EC 2.4.1.-); beta-1,2-glucosyltransferase (EC 2.4.1.-); beta-1,2-galactosyltransferase (EC 2.4.1.-); LPS beta-1,4-galactosyltransferase (EC 2.4.1.-); occidiofungin beta-xylosyltransferase (EC 2.4.2.-); UDP-Gal:procollagen beta-galactosyltransferase (EC 2.4.1.50)	GlycosylTransferases	ag	CAZY	
+GT26	GT26 UDP-ManNAcA: beta-N-acetyl mannosaminuronyltransferase (EC 2.4.1.-); UDP-ManNAc: beta-N-acetyl-mannosaminyltransferase (EC 2.4.1.-); UDP-Glc: beta-1,4-glucosyltransferase (EC 2.4.1.-); beta-1,4-galactosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT27	GT27 polypeptide alpha-N-acetylgalactosaminyltransferase (EC 2.4.1.41)	GlycosylTransferases	ag	CAZY	
+GT28	GT28 1,2-diacylglycerol 3-beta-galactosyltransferase (EC 2.4.1.46); 1,2-diacylglycerol 3-beta-glucosyltransferase (EC 2.4.1.157); UDP-GlcNAc: Und-PP-MurAc-pentapeptide beta-N-acetylglucosaminyltransferase (EC 2.4.1.227); digalactosyldiacylglycerol synthase (EC 2.4.1.241)	GlycosylTransferases	ag	CAZY	
+GT29	GT29 sialyltransferase (EC 2.4.99.-); beta-galactoside alpha-2,6-sialyltransferase (EC 2.4.99.1); alpha-N-acetylgalactosaminide alpha-2,6-sialyltransferase (EC 2.4.99.3); beta-galactoside alpha-2,3-sialyltransferase (EC 2.4.99.4); N-acetyllactosaminide alpha-2,3-sialyltransferase (EC 2.4.99.6); (alpha-N-acetyl-neuraminyl-2,3-beta-galactosyl-1,3)-N-acetylgalactosaminide alpha-2,6-sialyltransferase (EC 2.4.99.7); alpha-N-acetyl-neuraminide alpha-2,8-sialyltransferase (EC 2.4.99.8); lactosylceramide alpha-2,3-sialyltransferase (EC 2.4.99.9)	GlycosylTransferases	ag	CAZY	
+GT3	GT3 glycogen synthase (EC 2.4.1.11).	GlycosylTransferases	ag	CAZY	
+GT30	GT30 CMP-beta-KDO: alpha-3-deoxy-D-manno-octulosonic-acid (KDO) transferase (EC 2.4.99.-).	GlycosylTransferases	ag	CAZY	
+GT31	GT31 N-acetyllactosaminide beta-1,3-N-acetylglucosaminyltransferase (EC 2.4.1.149); Glycoprotein-N-acetylgalactosamine 3-beta-galactosyltransferase (EC 2.4.1.122); fucose-specific beta-1,3-N-acetylglucosaminyltransferase (EC 2.4.1.-); globotriosylceramide beta-1,3-GalNAc transferase (EC 2.4.1.79); chondroitin synthase (beta-1,3-GlcUA and beta-1,4-GalNAc transferase (EC 2.4.1.175); chondroitin beta-1,3-glucuronyltransferase (EC 2.4.1.226); chondroitin beta-1,4-N-acetylgalactosaminyltransferase (EC 2.4.1.-); UDP-Gal: beta-galactosylxylosylprotein beta-1,3-galactosyltransferase (EC 2.4.1.134); UDP-GlcNAc: O-fucosylpeptide beta-1,3-N-acetylglucosaminyltransferase (EC 2.4.1.222)	GlycosylTransferases	ag	CAZY	
+GT32	GT32 alpha-1,6-mannosyltransferase (EC 2.4.1.-); alpha-1,4-N-acetylglucosaminyltransferase (EC 2.4.1.-); alpha-1,4-N-acetylgalactosaminyltransferase (EC 2.4.1.-); GDP-Man: inositol-phosphorylceramide transferase (EC 2.4.1.-); UDP-Gal: beta-galactoside alpha-1,4-galactosyltransferase (EC 2.4.1.-); UDP-Gal: lactose/N-acetyl-lactosamine alpha-1,4-galactosyltransferase (EC 2.4.1.-); UDP-Glc: protein alpha-glucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT33	GT33 GDP-Man: chitobiosyldiphosphodolichol beta-mannosyltransferase (EC 2.4.1.142).	GlycosylTransferases	ag	CAZY	
+GT34	GT34 UDP-Gal: galactomannan alpha-1,6-galactosyltransferase (EC 2.4.1.-); UDP-Xyl: xyloglucan alpha-1,6-xylosyltransferase (EC 2.4.2.39); alpha-1,2-galactosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT35	GT35 glycogen or starch phosphorylase (EC 2.4.1.1).	GlycosylTransferases	ag	CAZY	
+GT36	GT36 Deleted: now family GH94	GlycosylTransferases	ag	CAZY	
+GT37	GT37 galactoside 2-L-fucosyltransferase (EC 2.4.1.69)	GlycosylTransferases	ag	CAZY	
+GT38	GT38 polysialyltransferase (EC 2.4.-.-)	GlycosylTransferases	ag	CAZY	
+GT39	GT39 Dol-P-Man: protein alpha-mannosyltransferase (EC 2.4.1.109)	GlycosylTransferases	ag	CAZY	
+GT4	GT4 sucrose synthase (EC 2.4.1.13); sucrose-phosphate synthase (EC 2.4.1.14); alpha-glucosyltransferase (EC 2.4.1.52); lipopolysaccharide N-acetylglucosaminyltransferase (EC 2.4.1.56); phosphatidylinositol alpha-mannosyltransferase (EC 2.4.1.57); GDP-Man: Man1GlcNAc2-PP-dolichol alpha-1,3-mannosyltransferase (EC 2.4.1.132); GDP-Man: Man3GlcNAc2-PP-dolichol/Man4GlcNAc2-PP-dolichol alpha-1,2-mannosyltransferase (EC 2.4.1.131); digalactosyldiacylglycerol synthase (EC 2.4.1.141); 1,2-diacylglycerol 3-glucosyltransferase (EC 2.4.1.157); diglucosyl diacylglycerol synthase (EC 2.4.1.208); trehalose phosphorylase (EC 2.4.1.231); NDP-Glc: alpha-glucose alpha-glucosyltransferase / alpha,alpha-trehalose synthase (EC 2.4.1.245); GDP-Man: Man2GlcNAc2-PP-dolichol alpha-1,6-mannosyltransferase (EC 2.4.1.257); UDP-GlcNAc: 2-deoxystreptamine alpha-N-acetylglucosaminyltransferase (EC 2.4.1.283); UDP-GlcNAc: ribostamycin alpha-N-acetylglucosaminyltransferase (EC 2.4.1.285); UDP-Gal alpha-galactosyltransferase (EC 2.4.1.-); UDP-Xyl alpha-xylosyltransferase (EC 2.4.2.-); UDP-GlcA alpha-glucuronyltransferase (EC 2.4.1.-); UDP-Glc alpha-glucosyltransferase (EC 2.4.1.-); UDP-GalNAc: GalNAc-PP-Und alpha-1,3-N-acetylgalactosaminyltransferase (EC 2.4.1.306); UDP-GalNAc: N,N'-diacetylbacillosaminyl-PP-Und alpha-1,3-N-acetylgalactosaminyltransferase (EC 2.4.1.290); ADP-dependent alpha-maltose-1-phosphate synthase (2.4.1.342)	GlycosylTransferases	ag	CAZY	
+GT40	GT40 beta-1,3-galactofuranosyltransferases (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT41	GT41 UDP-GlcNAc: peptide beta-N-acetylglucosaminyltransferase (EC 2.4.1.255); UDP-Glc: peptide N-beta-glucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT42	GT42 CMP-NeuAc alpha-2,3-sialyltransferase (EC 2.4.99.-)	GlycosylTransferases	ag	CAZY	
+GT43	GT43 beta-glucuronyltransferase (EC 2.4.1.135); UDP-Xyl: xylan beta-1,4-xylosyltransferase (EC 2.4.2.-)	GlycosylTransferases	ag	CAZY	
+GT44	GT44 UDP-Glc: alpha-glucosyltransferase (EC 2.4.1.-); UDP-GlcNAc: alpha-N-acetylglucosaminyltransferase (EC 2.4.1.-).	GlycosylTransferases	ag	CAZY	
+GT45	GT45 alpha-N-acteylglucosaminyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT46	GT46 Deleted	GlycosylTransferases	ag	CAZY	
+GT47	GT47 heparan beta-glucuronyltransferase (EC 2.4.1.225); xyloglucan beta-galactosyltransferase (EC 2.4.1.-); heparan synthase (EC 2.4.1.-); arabinan alpha-L-arabinosyltransferase (EC 2.4.2.-).	GlycosylTransferases	ag	CAZY	
+GT48	GT48 1,3-beta-glucan synthase (EC 2.4.1.34)	GlycosylTransferases	ag	CAZY	
+GT49	GT49 beta-1,3-N-acetylglucosaminyltransferase (EC 2.4.1.-).	GlycosylTransferases	ag	CAZY	
+GT5	GT5 UDP-Glc: glycogen glucosyltransferase (EC 2.4.1.11); ADP-Glc: starch glucosyltransferase (EC 2.4.1.21); NDP-Glc: starch glucosyltransferase (EC 2.4.1.242); UDP-Glc: alpha-1,3-glucan synthase (EC 2.4.1.183) UDP-Glc: alpha-1,4-glucan synthase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT50	GT50 Dol-P-Man alpha-1,4-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT51	GT51 murein polymerase (EC 2.4.1.129).	GlycosylTransferases	ag	CAZY	
+GT52	GT52 alpha-2,3-sialyltransferase (EC 2.4.99.4); alpha-glucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT53	GT53 UDP-L-Ara: alpha-L-arabinosyltransferase (EC 2.4.2.-)	GlycosylTransferases	ag	CAZY	
+GT54	GT54 UDP-GlcNAc: alpha-1,3-D-mannoside beta-1,4-N-acetylglucosaminyltransferase (EC 2.4.1.145)	GlycosylTransferases	ag	CAZY	
+GT55	GT55 GDP-Man: mannosyl-3-phosphoglycerate synthase (EC 2.4.1.217)	GlycosylTransferases	ag	CAZY	
+GT56	GT56 TDP-Fuc4NAc: lipid II Fuc4NAc transferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT57	GT57 Dol-P-Glc: alpha-1,3-glucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT58	GT58 Dol-P-Man: Man5GlcNAc2-PP-Dol alpha-1,3-mannosyltransferase (EC 2.4.1.258)	GlycosylTransferases	ag	CAZY	
+GT59	GT59 Dol-P-Glc: Glc2Man9GlcNAc2-PP-Dol alpha-1,2-glucosyltransferase (EC 2.4.1.256)	GlycosylTransferases	ag	CAZY	
+GT6	GT6 alpha-1,3-galactosyltransferase (EC 2.4.1.87); alpha-1,3 N-acetylgalactosaminyltransferase (EC 2.4.1.40); alpha-galactosyltransferase (EC 2.4.1.37); globoside alpha-N-acetylgalactosaminyltransferase (EC 2.4.1.88).	GlycosylTransferases	ag	CAZY	
+GT60	GT60 UDP-GlcNAc: polypeptide alpha-N-acetylglucosaminyltransferase (EC 2.4.1.-); UDP-GlcNAc: hydroxyproline polypeptide alpha-N-acetylglucosaminyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT61	GT61 beta-1,2-xylosyltransferase (EC 2.4.2.38) ; protein O-beta-N-acetylglucosaminyltransferase (EC 2.4.1.94) ; xylan alpha-1,3-arabinofuranosyltransferase (EC 2.4.2.-) ;	GlycosylTransferases	ag	CAZY	
+GT62	GT62 alpha-1,2-mannosyltransferase (EC 2.4.1.-); alpha-1,6-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT63	GT63 UDP-Glc: DNA beta-glucosyltransferase (EC 2.4.1.27)	GlycosylTransferases	ag	CAZY	
+GT64	GT64 UDP-GlcNAc: heparan alpha-N-acetylhexosaminyltransferase (EC 2.4.1.224)	GlycosylTransferases	ag	CAZY	
+GT65	GT65 GDP-Fuc: protein O-alpha-fucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT66	GT66 dolichyl-diphosphooligosaccharide‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àöœÄprotein glycotransferase (EC 2.4.99.18); undecaprenyl-diphosphooligosaccharide‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àöœÄprotein glycotransferase (EC 2.4.99.19)	GlycosylTransferases	ag	CAZY	
+GT67	GT67 UDP-Gal: phosphoglycan beta-1,3-galactosyltransferase 1 (SCG1) (EC 2.4.1.-); UDP-GlcNAc beta-1,2-N-acetylglucosaminyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT68	GT68 GDP-Fuc: protein O-alpha-fucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT69	GT69 GDP-Man: alpha-1,3-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT7	GT7 lactose synthase (EC 2.4.1.22); beta-N-acetylglucosaminyl-glycopeptide beta-1,4-galactosyltransferase (EC 2.4.1.38); N-acetyllactosamine synthase (EC 2.4.1.90); xylosylprotein beta-4-galactosyltransferase (EC 2.4.1.133); UDP-Gal: neolactotriaosylceramide beta-1,4-galactosyltransferase (EC 2.4.1.275); beta-1,4-N-acetylglucosaminyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT70	GT70 UDP-GlcA: beta-glucuronosyltransferase (EC 2.4.1.17)	GlycosylTransferases	ag	CAZY	
+GT71	GT71 alpha-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT72	GT72 UDP-Glc: DNA alpha-glucosyltransferase (EC 2.4.1.26)	GlycosylTransferases	ag	CAZY	
+GT73	GT73 CMP-beta-KDO: alpha-3-deoxy-D-manno-octulosonic-acid (KDO) transferase (EC 2.4.99.-).	GlycosylTransferases	ag	CAZY	
+GT74	GT74 alpha-1,2-L-fucosyltransferase (EC 2.4.1.69)	GlycosylTransferases	ag	CAZY	
+GT75	GT75 UDP-Glc: self-glucosylating beta-glucosyltransferase (EC 2.4.1.-); UDP-L-arabinopyranose mutase (EC 5.4.99.-)	GlycosylTransferases	ag	CAZY	
+GT76	GT76 Dol-P-Man: alpha-1,6-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT77	GT77 alpha-xylosyltransferase (EC 2.4.2.39); alpha-1,3-galactosyltransferase (EC 2.4.1.37); arabinosyltransferase (EC 2.4.2.-); arabinosyltransferase (EC 2.4.2.-)	GlycosylTransferases	ag	CAZY	
+GT78	GT78 GDP-Man: alpha-mannosyltransferase (mannosylglycerate synthase) (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT79	GT79 GDP-D-Ara: phosphoglycan alpha-1,2-D-arabinopyranosyltransferase 1 (EC 2.4.2.-)	GlycosylTransferases	ag	CAZY	
+GT8	GT8 lipopolysaccharide alpha-1,3-galactosyltransferase (EC 2.4.1.44); UDP-Glc: (glucosyl)lipopolysaccharide alpha-1,2-glucosyltransferase (EC 2.4.1.-); lipopolysaccharide glucosyltransferase 1 (EC 2.4.1.58); glycogenin glucosyltransferase (EC 2.4.1.186); inositol 1-alpha-galactosyltransferase (galactinol synthase) (EC 2.4.1.123); homogalacturonan alpha-1,4-galacturonosyltransferase (EC 2.4.1.43); UDP-GlcA: xylan alpha-glucuronyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT80	GT80 beta-galactoside alpha-2,6-sialyltransferase (EC 2.4.99.1); beta-galactoside alpha-2,3-sialyltransferase (EC 2.4.99.4)	GlycosylTransferases	ag	CAZY	
+GT81	GT81 NDP-Glc: glucosyl-3-phosphoglycerate synthase (EC 2.4.1.-); NDP-Man: mannosyl-3-phosphoglycerate synthase (EC 2.4.1.-);	GlycosylTransferases	ag	CAZY	
+GT82	GT82 UDP-GalNAc: beta-1,4-N-acetylgalactosaminyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT83	GT83 undecaprenyl phosphate-alpha-L-Ara4N: 4-amino-4-deoxy-beta-L-arabinosyltransferase (EC 2.4.2.43); dodecaprenyl phosphate-beta-galacturonic acid: lipopolysaccharide core alpha-galacturonosyl transferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT84	GT84 cyclic beta-1,2-glucan synthase (EC 2.4.1.-);	GlycosylTransferases	ag	CAZY	
+GT85	GT85 beta-D-arabinofuranosyl monophosphoryldecaprenol: galactan alpha-D-arabinofuranosyltransferase (EC 2.4.2.-)	GlycosylTransferases	ag	CAZY	
+GT86	GT86 Deleted.	GlycosylTransferases	ag	CAZY	
+GT87	GT87 polyprenol-P-Man: alpha-1,2-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT88	GT88 UDP-Glc: alpha-glucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT89	GT89 beta-D-arabinofuranosyl-1-monophosphoryldecaprenol : arabinan beta-1,2-arabinofuranosyltransferase (EC 2.4.2.-)	GlycosylTransferases	ag	CAZY	
+GT9	GT9 lipopolysaccharide N-acetylglucosaminyltransferase (EC 2.4.1.56); heptosyltransferase (EC 2.4.-.-).	GlycosylTransferases	ag	CAZY	
+GT90	GT90 UDP-Xyl: (mannosyl) glucuronoxylomannan/galactoxylomannan beta-1,2-xylosyltransferase (EC 2.4.2.-); UDP-Glc: protein O-beta-glucosyltransferase (EC 2.4.1.-); UDP-Xyl: protein O-beta-xylosyltransferase (EC 2.4.2.-)	GlycosylTransferases	ag	CAZY	
+GT91	GT91 beta-1,2-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT92	GT92 UDP-Gal: N-glycan core alpha-1,6-fucoside beta-1,4-galactosyltransferase (EC 2.4.1.-); UDP-Gal: beta-galactoside beta-1,4-galactosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT93	GT93 UDP-GluA : alpha-glucuronyltransferase (EC 2.4.1.-) involved in GAG polymerization	GlycosylTransferases	ag	CAZY	
+GT94	GT94 GDP-Man: GlcA-beta-1,2-Man-alpha-1,3-Glc-beta-1,4-Glc-alpha-1-PP-undecaprenol beta-1,4-mannosyltransferase (2.4.1.251)	GlycosylTransferases	ag	CAZY	
+GT95	GT95 UDP-beta-L-Araf:hydroxyproline beta-L-arabinofuranosyltransferase (EC 2.4.2.-);	GlycosylTransferases	ag	CAZY	
+GT96	GT96 UDP-Gal: peptidyl serine alpha-galactosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT97	GT97 CMP-Neu5Ac:alpha-galactoside alpha-2,6-sialyltransferase (EC 2.4.99.-); CMP-Neu5Ac:alpha-glucoside alpha-2,6-sialyltransferase (EC 2.4.99.-);	GlycosylTransferases	ag	CAZY	
+GT98	GT98 Dol-P-Man : protein [tryptophan] alpha-C-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
+GT99	GT99 CMP-beta-KDO 3-deoxy-beta-D-manno-oct-2-ulosonic acid transferase (EC 2.4.99.-)	GlycosylTransferases	ag	CAZY	
+PL0	PL0 Polysaccharide lyases not yet assigned to a family.	Polysaccharide Lyases	ag	CAZY	
+PL14	PL14 alginate lyase (EC 4.2.2.3); exo-oligoalginate lyase (EC 4.2.2.26); beta-1,4-glucuronan lyase (EC 4.2.2.14)	Polysaccharide Lyases	ag	CAZY	
+PL16	PL16 hyaluronan lyase (EC 4.2.2.1).	Polysaccharide Lyases	ag	CAZY	
+PL17	PL17 alginate lyase (EC 4.2.2.3); oligoalginate lyase (EC 4.2.2.26)	Polysaccharide Lyases	ag	CAZY	
+PL18	PL18 alginate lyase (EC 4.2.2.3); poly(alpha-L-guluronate) lyase / G-specific alginate lyase (EC 4.2.2.11); MG-specific alginate lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	
+PL19	PL19 Deleted: now family GH91	Polysaccharide Lyases	ag	CAZY	
+PL20	PL20 endo-beta-1,4-glucuronan lyase (EC 4.2.2.14)	Polysaccharide Lyases	ag	CAZY	
+PL31	PL31 endo-beta-1,4-glucuronan lyase (EC 4.2.2.14)	Polysaccharide Lyases	ag	CAZY	
+PL32	PL32 poly(beta-mannuronate) lyase / M-specific alginate lyase (EC 4.2.2.3)	Polysaccharide Lyases	ag	CAZY	
+PL34	PL34 alginate lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	
+PL35	PL35 chondroitin lyase / chondroitinase (EC 4.2.2.-); chondroitin AC lyase (EC 4.2.2.5)	Polysaccharide Lyases	ag	CAZY	
+PL36	PL36 poly(beta-mannuronate) lyase / M-specific alginate lyase (EC 4.2.2.3)	Polysaccharide Lyases	ag	CAZY	
+PL38	endo-_-1,4-glucuronan lyase (EC 4.2.2.14)	Polysaccharide Lyases	ag	CAZY	
+PL39	alginate lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	
+PL40	ulvan lyase (EC 4.2.2.-)	Polysaccharide Lyases	ag	CAZY	
+PL41	alginate lyase (EC 4.2.2.3)	Polysaccharide Lyases	ag	CAZY	
+PL42	L-rhamnose-_-1,4-D-glucuronate lyase (EC 4.2.2.-); L-Rh_-_-1,4-GlcA _-L-rhamnohydrolase (EC 3.2.1.-)	Polysaccharide Lyases	ag	CAZY	
+PL5	PL5 alginate lyase (EC 4.2.2.3).	Polysaccharide Lyases	ag	CAZY	
+PL7	PL7 poly(beta-mannuronate) lyase / M-specific alginate lyase (EC 4.2.2.3); alpha-L-guluronate lyase / G-specific alginate lyase (EC 4.2.2.11); poly-(MG)-lyase / MG-specific alginate lyase (EC 4.2.2.-); endo-beta-1,4-glucuronan lyase (EC 4.2.2.14)	Polysaccharide Lyases	ag	CAZY	
+K00024	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00025	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00026	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00030	isocitrate dehydrogenase [EC:1.1.1.42 1.1.1.41] [RN:R01899 R00268 R00267 R00709]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00031	isocitrate dehydrogenase [EC:1.1.1.42 1.1.1.41] [RN:R01899 R00268 R00267 R00709]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00116	malate dehydrogenase (quinone) [EC:1.1.5.4] [RN:R00361]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00164	2-oxoglutarate dehydrogenase complex [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00174	2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit alpha [EC:1.2.7.3 1.2.7.11] [RN:R01197]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00175	2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit beta [EC:1.2.7.3 1.2.7.11] [RN:R01197]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00176	2-oxoglutarate ferredoxin oxidoreductase subunit delta [EC:1.2.7.3] [RN:R01197]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00177	2-oxoglutarate ferredoxin oxidoreductase subunit gamma [EC:1.2.7.3] [RN:R01197]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00234	succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00235	succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00236	succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00237	succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00239	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00240	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00241	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00242	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00244	fumarate reductase [EC:1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00245	fumarate reductase [EC:1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00246	fumarate reductase [EC:1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00247	fumarate reductase [EC:1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00382	2-oxoglutarate dehydrogenase complex [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00658	2-oxoglutarate dehydrogenase complex [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01647	citrate synthase [EC:2.3.3.1] [RN:R00351]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01676	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01677	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01678	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01679	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01681	aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900 R01324]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01682	aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900 R01324]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01899	succinyl-CoA synthetase [EC:6.2.1.4 6.2.1.5] [RN:R00405 R00432 R00727]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01900	succinyl-CoA synthetase [EC:6.2.1.4 6.2.1.5] [RN:R00405 R00432 R00727]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01902	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K01903	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K05942	citrate (Re)-synthase [EC:2.3.3.3] [RN:R00351]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K18118	succinyl-CoA:acetate CoA-transferase [EC:2.8.3.18] [RN:R10343]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K18859	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K18860	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle (TCA cycle, Krebs cycle)	ag	central carbon	TCA
+K00030	isocitrate dehydrogenase [EC:1.1.1.42 1.1.1.41] [RN:R01899 R00268 R00267 R00709]	Citrate cycle, first carbon oxidation, oxaloacetate => 2-oxoglutarate	ag	central carbon	TCA
+K00031	isocitrate dehydrogenase [EC:1.1.1.42 1.1.1.41] [RN:R01899 R00268 R00267 R00709]	Citrate cycle, first carbon oxidation, oxaloacetate => 2-oxoglutarate	ag	central carbon	TCA
+K01647	citrate synthase [EC:2.3.3.1] [RN:R00351]	Citrate cycle, first carbon oxidation, oxaloacetate => 2-oxoglutarate	ag	central carbon	TCA
+K01681	aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900 R01324]	Citrate cycle, first carbon oxidation, oxaloacetate => 2-oxoglutarate	ag	central carbon	TCA
+K01682	aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900 R01324]	Citrate cycle, first carbon oxidation, oxaloacetate => 2-oxoglutarate	ag	central carbon	TCA
+K05942	citrate (Re)-synthase [EC:2.3.3.3] [RN:R00351]	Citrate cycle, first carbon oxidation, oxaloacetate => 2-oxoglutarate	ag	central carbon	TCA
+K00024	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00025	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00026	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00116	malate dehydrogenase (quinone) [EC:1.1.5.4] [RN:R00361]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00164	2-oxoglutarate dehydrogenase [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00174	2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit alpha [EC:1.2.7.3 1.2.7.11] [RN:R01197]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00175	2-oxoglutarate/2-oxoacid ferredoxin oxidoreductase subunit beta [EC:1.2.7.3 1.2.7.11] [RN:R01197]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00176	2-oxoglutarate ferredoxin oxidoreductase subunit delta [EC:1.2.7.3] [RN:R01197]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00177	2-oxoglutarate ferredoxin oxidoreductase subunit gamma [EC:1.2.7.3] [RN:R01197]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00234	succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00235	succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00236	succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00237	succinate dehydrogenase [EC:1.3.5.1] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00239	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00240	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00241	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00242	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00244	fumarate reductase [EC:1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00245	fumarate reductase [EC:1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00246	fumarate reductase [EC:1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00247	fumarate reductase [EC:1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00382	2-oxoglutarate dehydrogenase [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00658	2-oxoglutarate dehydrogenase [EC:1.2.4.2 2.3.1.61 1.8.1.4] [RN:R00621 R03316 R02570 R07618]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K01676	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K01677	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K01678	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K01679	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K01899	succinyl-CoA synthetase [EC:6.2.1.4 6.2.1.5] [RN:R00405 R00432 R00727]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K01900	succinyl-CoA synthetase [EC:6.2.1.4 6.2.1.5] [RN:R00405 R00432 R00727]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K01902	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K01903	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K18118	succinyl-CoA:acetate CoA-transferase [EC:2.8.3.18] [RN:R10343]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K18859	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K18860	succinate dehydrogenase / fumarate reductase [EC:1.3.5.1 1.3.5.4] [RN:R02164]	Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate	ag	central carbon	TCA
+K00024	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00169	pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00170	pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00171	pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00172	pyruvate ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00174	2-oxoglutarate ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00175	2-oxoglutarate ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00176	2-oxoglutarate ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00177	2-oxoglutarate ferredoxin oxidoreductase [EC:1.2.7.3] [RN:R01197]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K01677	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K01678	fumarate hydratase [EC:4.2.1.2] [RN:R01082]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K01902	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K01903	succinyl-CoA synthetase [EC:6.2.1.5] [RN:R00405]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K01959	pyruvate carboxylase [EC:6.4.1.1] [RN:R00344]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K01960	pyruvate carboxylase [EC:6.4.1.1] [RN:R00344]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K18209	fumarate reductase (CoM/CoB) [EC:1.3.4.1] [RN:R10660]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K18210	fumarate reductase (CoM/CoB) [EC:1.3.4.1] [RN:R10660]	Incomplete reductive citrate cycle, acetyl-CoA => oxoglutarate	ag	central carbon	TCA
+K00027	malate dehydrogenase (oxaloacetate-decarboxylating)	TCA /Reductive TCA	ag	central carbon	TCA
+K00041	tagaturonate reductase [EC:1.1.1.58] [RN:R02555]	D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	ag	central carbon	glycolysis
+K00874	2-dehydro-3-deoxygluconokinase [EC:2.7.1.45] [RN:R01541]	D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	ag	central carbon	glycolysis
+K01625	2-dehydro-3-deoxy-phosphogluconate aldolase [EC:4.1.2.14] [RN:R05605]	D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	ag	central carbon	glycolysis
+K01685	altronate hydrolase [EC:4.2.1.7] [RN:R01540]	D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	ag	central carbon	glycolysis
+K01812	glucuronate isomerase [EC:5.3.1.12] [RN:R01983]	D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	ag	central carbon	glycolysis
+K16849	altronate hydrolase [EC:4.2.1.7] [RN:R01540]	D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	ag	central carbon	glycolysis
+K16850	altronate hydrolase [EC:4.2.1.7] [RN:R01540]	D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	ag	central carbon	glycolysis
+K17463	2-dehydro-3-deoxy-phosphogluconate aldolase [EC:4.1.2.14] [RN:R05605]	D-Galacturonate degradation (bacteria), D-galacturonate => pyruvate + D-glyceraldehyde 3P	ag	central carbon	glycolysis
+K00134	glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12] [RN:R01061]	D-galactonate degradation, De Ley-Doudoroff pathway, D-galactonate => glycerate-3P	ag	central carbon	glycolysis
+K00883	2-dehydro-3-deoxygalactonokinase [EC:2.7.1.58] [RN:R03387]	D-galactonate degradation, De Ley-Doudoroff pathway, D-galactonate => glycerate-3P	ag	central carbon	glycolysis
+K00927	phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	D-galactonate degradation, De Ley-Doudoroff pathway, D-galactonate => glycerate-3P	ag	central carbon	glycolysis
+K01631	2-dehydro-3-deoxyphosphogalactonate aldolase [EC:4.1.2.21] [RN:R01064]	D-galactonate degradation, De Ley-Doudoroff pathway, D-galactonate => glycerate-3P	ag	central carbon	glycolysis
+K01684	galactonate dehydratase [EC:4.2.1.6] [RN:R03033]	D-galactonate degradation, De Ley-Doudoroff pathway, D-galactonate => glycerate-3P	ag	central carbon	glycolysis
+K00036	glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363] [RN:R02736 R10907]	Entner-Doudoroff pathway, glucose-6P => glyceraldehyde-3P + pyruvate	ag	central carbon	glycolysis
+K01057	6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	Entner-Doudoroff pathway, glucose-6P => glyceraldehyde-3P + pyruvate	ag	central carbon	glycolysis
+K01625	2-dehydro-3-deoxyphosphogluconate aldolase [EC:4.1.2.14] [RN:R05605]	Entner-Doudoroff pathway, glucose-6P => glyceraldehyde-3P + pyruvate	ag	central carbon	glycolysis
+K01690	phosphogluconate dehydratase [EC:4.2.1.12] [RN:R02036]	Entner-Doudoroff pathway, glucose-6P => glyceraldehyde-3P + pyruvate	ag	central carbon	glycolysis
+K07404	6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	Entner-Doudoroff pathway, glucose-6P => glyceraldehyde-3P + pyruvate	ag	central carbon	glycolysis
+K00849	galactokinase [EC:2.7.1.6] [RN:R01092]	Galactose degradation, Leloir pathway, galactose => alpha-D-glucose-1P	ag	central carbon	glycolysis
+K00965	UDPglucose--hexose-1-phosphate uridylyltransferase [EC:2.7.7.12] [RN:R00955]	Galactose degradation, Leloir pathway, galactose => alpha-D-glucose-1P	ag	central carbon	glycolysis
+K01784	UDP-glucose 4-epimerase [EC:5.1.3.2] [RN:R00291]	Galactose degradation, Leloir pathway, galactose => alpha-D-glucose-1P	ag	central carbon	glycolysis
+K01785	aldose 1-epimerase [EC:5.1.3.3] [RN:R10619]	Galactose degradation, Leloir pathway, galactose => alpha-D-glucose-1P	ag	central carbon	glycolysis
+K00134	glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K00150	glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K00927	phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01086	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01596	phosphoenolpyruvate carboxykinase [EC:4.1.1.32 4.1.1.49] [RN:R00431 R00726 R00341]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01610	phosphoenolpyruvate carboxykinase [EC:4.1.1.32 4.1.1.49] [RN:R00431 R00726 R00341]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01622	fructose 1,6-bisphosphate aldolase/phosphatase [EC:4.1.2.13 3.1.3.11] [RN:R01070 R04780]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01623	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01624	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01689	enolase [EC:4.2.1.11] [RN:R00658]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01803	triosephosphate isomerase (TIM) [EC:5.3.1.1] [RN:R01015]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K01834	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K02446	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K03841	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K04041	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K11532	fructose-1,6-bisphosphatase [EC:3.1.3.11] [RN:R04780]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K11645	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K15633	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K15634	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K15635	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Gluconeogenesis, oxaloacetate => fructose-6P	ag	central carbon	glycolysis
+K00134	glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00150	glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00844	hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00845	hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00850	6-phosphofructokinase [EC:2.7.1.11] [RN:R04779]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00873	pyruvate kinase [EC:2.7.1.40] [RN:R00200]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00886	polyphosphate glucokinase [EC:2.7.1.63] [RN:R02189]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00918	ADP-dependent phosphofructokinase [EC:2.7.1.146] [RN:R09084]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00927	phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K01623	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K01624	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K01689	enolase [EC:4.2.1.11] [RN:R00658]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K01803	triosephosphate isomerase [EC:5.3.1.1] [RN:R01015]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K01810	glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K01834	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K06859	glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K08074	K00918 ADP-dependent glucokinase [EC:2.7.1.147] [RN:R09085]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K11389	glyceraldehyde-3-phosphate dehydrogenase (ferredoxin) [EC:1.2.7.6] [RN:R07159]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K11645	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K12406	pyruvate kinase [EC:2.7.1.40] [RN:R00200]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K12407	hexokinase/glucokinase [EC:2.7.1.1 2.7.1.2] [RN:R01786]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K13810	glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K15633	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K15634	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K15635	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K15916	glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K16305	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K16306	fructose-bisphosphate aldolase [EC:4.1.2.13] [RN:R01070]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K16370	6-phosphofructokinase [EC:2.7.1.11] [RN:R04779]	Glycolysis (Embden-Meyerhof pathway), glucose => pyruvate	ag	central carbon	glycolysis
+K00134	glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K00150	glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12 1.2.1.59] [RN:R01061 R01063]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K00873	pyruvate kinase [EC:2.7.1.40] [RN:R00200]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K00927	phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K01689	enolase [EC:4.2.1.11] [RN:R00658]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K01803	triosephosphate isomerase [EC:5.3.1.1] [RN:R01015]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K01834	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K11389	glyceraldehyde-3-phosphate dehydrogenase (ferredoxin) [EC:1.2.7.6] [RN:R07159]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K12406	pyruvate kinase [EC:2.7.1.40] [RN:R00200]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K15633	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K15634	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K15635	phosphoglycerate mutase [EC:5.4.2.11 5.4.2.12] [RN:R01518]	Glycolysis, core module involving three-carbon compounds	ag	central carbon	glycolysis
+K00024	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Glyoxylate cycle	ag	central carbon	glycolysis
+K00025	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Glyoxylate cycle	ag	central carbon	glycolysis
+K00026	malate dehydrogenase [EC:1.1.1.37] [RN:R00342]	Glyoxylate cycle	ag	central carbon	glycolysis
+K01637	isocitrate lyase [EC:4.1.3.1] [RN:R00479]	Glyoxylate cycle	ag	central carbon	glycolysis
+K01638	malate synthase [EC:2.3.3.9] [RN:R00472]	Glyoxylate cycle	ag	central carbon	glycolysis
+K01647	citrate synthase [EC:2.3.3.1] [RN:R00351]	Glyoxylate cycle	ag	central carbon	glycolysis
+K01681	aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900]	Glyoxylate cycle	ag	central carbon	glycolysis
+K01682	aconitate hydratase [EC:4.2.1.3] [RN:R01325 R01900]	Glyoxylate cycle	ag	central carbon	glycolysis
+K19282	bifunctional (S)-malyl-CoA lyase/thioesterase [EC:4.1.3.24 3.1.2.30] [RN:R00473 R10612]	Glyoxylate cycle	ag	central carbon	glycolysis
+K03738	aldehyde:ferredoxin oxidoreductase [EC:1.2.7.5] [RN:R08571]	Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	ag	central carbon	glycolysis
+K05308	gluconate/galactonate dehydratase [EC:4.2.1.140] [RN:R01538 R03033]	Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	ag	central carbon	glycolysis
+K11395	2-dehydro-3-deoxy-phosphogluconate/2-dehydro-3-deoxy-6-phosphogalactonate aldolase [EC:4.1.2.55] [RN:R08570 R10616]	Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	ag	central carbon	glycolysis
+K18020	glyceraldehyde dehydrogenase large subunit [EC:1.2.99.8] [RN:R10324]	Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	ag	central carbon	glycolysis
+K18021	glyceraldehyde dehydrogenase large subunit [EC:1.2.99.8] [RN:R10324]	Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	ag	central carbon	glycolysis
+K18022	glyceraldehyde dehydrogenase large subunit [EC:1.2.99.8] [RN:R10324]	Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	ag	central carbon	glycolysis
+K18127	2-dehydro-3-deoxy-D-gluconate aldolase [EC:4.1.2.51] [RN:R08570 R10616]	Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	ag	central carbon	glycolysis
+K18128	glyceraldehyde dehydrogenase [EC:1.2.1.89] [RN:R10615]	Non-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate	ag	central carbon	glycolysis
+K00131	glyceraldehyde-3-phosphate dehydrogenase (NADP+) [EC:1.2.1.9] [RN:R01058]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate => glycerate-3P	ag	central carbon	glycolysis
+K00134	glyceraldehyde 3-phosphate dehydrogenase [EC:1.2.1.12] [RN:R01061]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate => glycerate-3P	ag	central carbon	glycolysis
+K00874	2-dehydro-3-deoxygluconokinase [EC:2.7.1.45] [RN:R01541]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate => glycerate-3P	ag	central carbon	glycolysis
+K00927	phosphoglycerate kinase [EC:2.7.2.3] [RN:R01512]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate => glycerate-3P	ag	central carbon	glycolysis
+K01625	2-dehydro-3-deoxyphosphogluconate aldolase [EC:4.1.2.14] [RN:R05605]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate => glycerate-3P	ag	central carbon	glycolysis
+K05308	gluconate dehydratase [EC:4.2.1.140] [RN:R01538]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate => glycerate-3P	ag	central carbon	glycolysis
+K18978	glyceraldehyde-3-phosphate dehydrogenase [NAD(P)+] [EC:1.2.1.90] [RN:R01058 R10860]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate => glycerate-3P	ag	central carbon	glycolysis
+K00131	glyceraldehyde-3-phosphate dehydrogenase (NADP+) [EC:1.2.1.9] [RN:R01058]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate-3P	ag	central carbon	glycolysis
+K05308	gluconate dehydratase [EC:4.2.1.140] [RN:R01538 R03033]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate-3P	ag	central carbon	glycolysis
+K11395	2-dehydro-3-deoxyphosphogluconate aldolase [EC:4.1.2.55] [RN:R05605 R01064]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate-3P	ag	central carbon	glycolysis
+K18126	2-dehydro-3-deoxygluconokinase [EC:2.7.1.178] [RN:R01541 R03387]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate-3P	ag	central carbon	glycolysis
+K18978	glyceraldehyde-3-phosphate dehydrogenase [NAD(P)+] [EC:1.2.1.90] [RN:R01058 R10860]	Semi-phosphorylative Entner-Doudoroff pathway, gluconate/galactonate => glycerate-3P	ag	central carbon	glycolysis
+K00948	ribose-phosphate pyrophosphokinase [EC:2.7.6.1] [RN:R01049]	PRPP biosynthesis, ribose 5P => PRPP	ag	central carbon	pentose pathway
+K01053	gluconolactonase	Pentose phosphate pathway	ag	central carbon	pentose pathway
+K00033	6-phosphogluconate dehydrogenase [EC:1.1.1.44 1.1.1.343] [RN:R01528 R10221]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K00036	glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363 1.1.1.388] [RN:R02736 R10907]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K00615	transketolase [EC:2.2.1.1] [RN:R01641]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K00616	transaldolase [EC:2.2.1.2] [RN:R01827]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K01057	6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K01783	ribulose-phosphate 3-epimerase [EC:5.1.3.1] [RN:R01529]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K01807	ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K01808	ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K01810	glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740 R02739]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K06859	glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740 R02739]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K07404	6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K13810	glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740 R02739]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K13937	hexose-6-phosphate dehydrogenase [EC:1.1.1.47 3.1.1.31] [RN:R02736 R02035]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K15916	glucose-6-phosphate isomerase [EC:5.3.1.9] [RN:R02740 R02739]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K19243	glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363 1.1.1.388] [RN:R02736 R10907]	Pentose phosphate pathway (Pentose phosphate cycle)	ag	central carbon	pentose pathway
+K01807	ribose 5-phosphate isomerase A [EC:5.3.1.6] [RN:R01056]	Pentose phosphate pathway, archaea, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K08093	3-hexulose-6-phosphate synthase [EC:4.1.2.43] [RN:R05338]	Pentose phosphate pathway, archaea, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K08094	6-phospho-3-hexuloisomerase [EC:5.3.1.27] [RN:R09780]	Pentose phosphate pathway, archaea, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K13812	3-hexulose-6-phosphate synthase [EC:4.1.2.43] [RN:R05338]	Pentose phosphate pathway, archaea, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K13831	6-phospho-3-hexuloisomerase [EC:5.3.1.27] [RN:R09780]	Pentose phosphate pathway, archaea, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K00615	transketolase [EC:2.2.1.1] [RN:R01830 R01641]	Pentose phosphate pathway, non-oxidative phase, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K00616	transaldolase [EC:2.2.1.2] [RN:R01827]	Pentose phosphate pathway, non-oxidative phase, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K01783	ribulose-phosphate 3-epimerase [EC:5.1.3.1] [RN:R01529]	Pentose phosphate pathway, non-oxidative phase, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K01807	ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	Pentose phosphate pathway, non-oxidative phase, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K01808	ribose 5-phosphate isomerase [EC:5.3.1.6] [RN:R01056]	Pentose phosphate pathway, non-oxidative phase, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K13810	transaldolase [EC:2.2.1.2] [RN:R01827]	Pentose phosphate pathway, non-oxidative phase, fructose 6P => ribose 5P	ag	central carbon	pentose pathway
+K00033	6-phosphogluconate dehydrogenase [EC:1.1.1.44 1.1.1.343] [RN:R01528 R10221]	Pentose phosphate pathway, oxidative phase, glucose 6P => ribulose 5P	ag	central carbon	pentose pathway
+K00036	glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363 1.1.1.388] [RN:R02736 R10907]	Pentose phosphate pathway, oxidative phase, glucose 6P => ribulose 5P	ag	central carbon	pentose pathway
+K01057	6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	Pentose phosphate pathway, oxidative phase, glucose 6P => ribulose 5P	ag	central carbon	pentose pathway
+K07404	6-phosphogluconolactonase [EC:3.1.1.31] [RN:R02035]	Pentose phosphate pathway, oxidative phase, glucose 6P => ribulose 5P	ag	central carbon	pentose pathway
+K13937	hexose-6-phosphate dehydrogenase [EC:1.1.1.47 3.1.1.31] [RN:R02736 R02035]	Pentose phosphate pathway, oxidative phase, glucose 6P => ribulose 5P	ag	central carbon	pentose pathway
+K19243	glucose-6-phosphate 1-dehydrogenase [EC:1.1.1.49 1.1.1.363 1.1.1.388] [RN:R02736 R10907]	Pentose phosphate pathway, oxidative phase, glucose 6P => ribulose 5P	ag	central carbon	pentose pathway
+K16242	dmpN; phenol hydroxylase P3 protein [EC:1.14.13.-] [RN:R10042 R10043]	Benzene degradation, benzene => catechol	ag	hydrocarbon degradation	
+K16243	dmpL; Phenol hydroxylase P1 protein [RN:R10042 R10043]	Benzene degradation, benzene => catechol	ag	hydrocarbon degradation	
+K16244	dmpM; phenol hydroxylase P2 protein [RN:R10042 R10043]	Benzene degradation, benzene => catechol	ag	hydrocarbon degradation	
+K16245	dmpO; phenol hydroxylase P4 protein [RN:R10042 R10043]	Benzene degradation, benzene => catechol	ag	hydrocarbon degradation	
+K16246	dmpP; phenol hydroxylase P5 protein [RN:R10042 R10043]	Benzene degradation, benzene => catechol	ag	hydrocarbon degradation	
+K16249	dmpK; phenol hydroxylase P0 protein [RN:R10042 R10043]	Benzene degradation, benzene => catechol	ag	hydrocarbon degradation	
+K03268	benzene/toluene dioxygenase subunit alpha [EC:1.14.12.3 1.14.12.11] [RN:R03543 R03559]	Benzene/toluene degradation, benzene => catechol / toluene => 3-methylcatechol	ag	hydrocarbon degradation	
+K16268	benzene/toluene dioxygenase subunit alpha [EC:1.14.12.3 1.14.12.11] [RN:R03543 R03559]	Benzene/toluene degradation, benzene => catechol / toluene => 3-methylcatechol	ag	hydrocarbon degradation	
+K16269	cis-1,2-dihydrobenzene-1,2-diol dehydrogenase [EC:1.3.1.19] [RN:R00812 R04088]	Benzene/toluene degradation, benzene => catechol / toluene => 3-methylcatechol	ag	hydrocarbon degradation	
+K18089	benzene/toluene dioxygenase subunit alpha [EC:1.14.12.3 1.14.12.11] [RN:R03543 R03559]	Benzene/toluene degradation, benzene => catechol / toluene => 3-methylcatechol	ag	hydrocarbon degradation	
+K18090	benzene/toluene dioxygenase subunit alpha [EC:1.14.12.3 1.14.12.11] [RN:R03543 R03559]	Benzene/toluene degradation, benzene => catechol / toluene => 3-methylcatechol	ag	hydrocarbon degradation	
+K05549	benzoate/toluate 1,2-dioxygenase [EC:1.14.12.10 1.14.12.-] [RN:R05621 R05290 R05428 R05665]	Benzoate degradation, benzoate => catechol / methylbenzoate => methylcatechol	ag	hydrocarbon degradation	
+K05550	benzoate/toluate 1,2-dioxygenase [EC:1.14.12.10 1.14.12.-] [RN:R05621 R05290 R05428 R05665]	Benzoate degradation, benzoate => catechol / methylbenzoate => methylcatechol	ag	hydrocarbon degradation	
+K05783	1,6-dihydroxycyclohexa-2,4-diene-1-carboxylate dehydrogenase [EC:1.3.1.25] [RN:R00813 R05292 R05314 R05309]	Benzoate degradation, benzoate => catechol / methylbenzoate => methylcatechol	ag	hydrocarbon degradation	
+K05784	benzoate/toluate 1,2-dioxygenase [EC:1.14.12.10 1.14.12.-] [RN:R05621 R05290 R05428 R05665]	Benzoate degradation, benzoate => catechol / methylbenzoate => methylcatechol	ag	hydrocarbon degradation	
+K04116	aliA; cyclohexanecarboxylate-CoA ligase [EC:6.2.1.-] [RN:R05620]	Benzoate degradation, cyclohexanecarboxylic acid =>pimeloyl-CoA	ag	hydrocarbon degradation	
+K04117	aliB; cyclohexanecarboxyl-CoA dehydrogenase [EC:1.3.99.-] [RN:R05619]	Benzoate degradation, cyclohexanecarboxylic acid =>pimeloyl-CoA	ag	hydrocarbon degradation	
+K07534	badK; cyclohex-1-ene-1-carboxyl-CoA hydratase [EC:4.2.1.-] [RN:R05600]	Benzoate degradation, cyclohexanecarboxylic acid =>pimeloyl-CoA	ag	hydrocarbon degradation	
+K07535	badH; 2-hydroxycyclohexanecarboxyl-CoA dehydrogenase [EC:1.1.1.-] [RN:R05582]	Benzoate degradation, cyclohexanecarboxylic acid =>pimeloyl-CoA	ag	hydrocarbon degradation	
+K07536	badI; 2-ketocyclohexanecarboxyl-CoA hydrolase [EC:3.1.2.-] [RN:R05592]	Benzoate degradation, cyclohexanecarboxylic acid =>pimeloyl-CoA	ag	hydrocarbon degradation	
+K04112	benzoyl-CoA reductase [EC:1.3.7.8] [RN:R02451]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K04113	benzoyl-CoA reductase [EC:1.3.7.8] [RN:R02451]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K04114	benzoyl-CoA reductase [EC:1.3.7.8] [RN:R02451]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K04115	benzoyl-CoA reductase [EC:1.3.7.8] [RN:R02451]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K07537	cyclohexa-1,5-dienecarbonyl-CoA hydratase [EC:4.2.1.100] [RN:R05597]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K07538	6-hydroxycyclohex-1-ene-1-carboxyl-CoA dehydrogenase [EC:1.1.1.368] [RN:R05581]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K07539	6-oxo-cyclohex-1-ene-carbonyl-CoA hydrolase [EC:3.7.1.21] [RN:R05594]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K19515	benzoyl-CoA reductase [EC:1.3.-.-] [RN:R10961]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K19516	benzoyl-CoA reductase [EC:1.3.-.-] [RN:R10961]	Benzoyl-CoA degradation, benzoyl-CoA => 3-hydroxypimeloyl-CoA	ag	hydrocarbon degradation	
+K00462	biphenyl-2,3-diol 1,2-dioxygenase [EC:1.13.11.39] [RN:R03462 R05245]	Biphenyl degradation, biphenyl => 2-oxopent-4-enoate + benzoate	ag	hydrocarbon degradation	
+K08689	biphenyl 2,3-dioxygenase [EC:1.14.12.18] [RN:R05263 R05264 R05261 R05262]	Biphenyl degradation, biphenyl => 2-oxopent-4-enoate + benzoate	ag	hydrocarbon degradation	
+K08690	cis-2,3-dihydrobiphenyl-2,3-diol dehydrogenase [EC:1.3.1.56] [RN:R05239 R05241]	Biphenyl degradation, biphenyl => 2-oxopent-4-enoate + benzoate	ag	hydrocarbon degradation	
+K10222	2,6-dioxo-6-phenylhexa-3-enoate hydrolase [EC:3.7.1.8] [RN:R02606 R05359]	Biphenyl degradation, biphenyl => 2-oxopent-4-enoate + benzoate	ag	hydrocarbon degradation	
+K15750	biphenyl 2,3-dioxygenase [EC:1.14.12.18] [RN:R05263 R05264 R05261 R05262]	Biphenyl degradation, biphenyl => 2-oxopent-4-enoate + benzoate	ag	hydrocarbon degradation	
+K18087	biphenyl 2,3-dioxygenase [EC:1.14.12.18] [RN:R05263 R05264 R05261 R05262]	Biphenyl degradation, biphenyl => 2-oxopent-4-enoate + benzoate	ag	hydrocarbon degradation	
+K18088	biphenyl 2,3-dioxygenase [EC:1.14.12.18] [RN:R05263 R05264 R05261 R05262]	Biphenyl degradation, biphenyl => 2-oxopent-4-enoate + benzoate	ag	hydrocarbon degradation	
+K15751	carbazole 1,9a-dioxygenase [EC:1.14.12.22] [RN:R05414 R09512]	Carbazole degradation, carbazole => 2-oxopent-4-enoate + anthranilate	ag	hydrocarbon degradation	
+K15752	carbazole 1,9a-dioxygenase [EC:1.14.12.22] [RN:R05414 R09512]	Carbazole degradation, carbazole => 2-oxopent-4-enoate + anthranilate	ag	hydrocarbon degradation	
+K15753	carbazole 1,9a-dioxygenase [EC:1.14.12.22] [RN:R05414 R09512]	Carbazole degradation, carbazole => 2-oxopent-4-enoate + anthranilate	ag	hydrocarbon degradation	
+K15754	2'-aminobiphenyl-2,3-diol 1,2-dioxygenase [EC:1.13.11.-] [RN:R05415]	Carbazole degradation, carbazole => 2-oxopent-4-enoate + anthranilate	ag	hydrocarbon degradation	
+K15755	2'-aminobiphenyl-2,3-diol 1,2-dioxygenase [EC:1.13.11.-] [RN:R05415]	Carbazole degradation, carbazole => 2-oxopent-4-enoate + anthranilate	ag	hydrocarbon degradation	
+K15756	2-hydroxy-6-oxo-6-(2'-aminophenyl)hexa-2, 4-dienoate hydrolase [EC:3.7.1.13] [RN:R05365]	Carbazole degradation, carbazole => 2-oxopent-4-enoate + anthranilate	ag	hydrocarbon degradation	
+K00446	catechol 2,3-dioxygenase [EC:1.13.11.2] [RN:R00816 R05295]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K01617	4-oxalocrotonate decarboxylase [EC:4.1.1.77] [RN:R02602 R05374]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K01666	4-hydroxy 2-oxovalerate aldolase [EC:4.1.3.39] [RN:R00750]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K01821	4-oxalocrotonate tautomerase [EC:5.3.2.6] [RN:R03966 R05389]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K02554	2-keto-4-pentenoate hydratase [EC:4.2.1.80] [RN:R02601]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K04073	acetaldehyde dehydrogenase [EC:1.2.1.10] [RN:R00228]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K07104	catechol 2,3-dioxygenase [EC:1.13.11.2] [RN:R00816 R05295]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K10216	2-hydroxymuconate-semialdehyde hydrolase [EC:3.7.1.9] [RN:R02604 R05865]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K10217	2-hydroxymuconate-6-semialdehyde dehydrogenase [EC:1.2.1.85] [RN:R02762 R05353]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K18364	2-oxopent-4-enoate/cis-2-oxohex-4-enoate hydratase [EC:4.2.1.80 4.2.1.132] [RN:R02601 R05864]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K18365	4-hydroxy-2-oxovalerate/4-hydroxy-2-oxohexanoate aldolase [EC:4.1.3.39 4.1.3.43] [RN:R00750 R05298]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K18366	acetaldehyde/propanal dehydrogenase [EC:1.2.1.10 1.2.1.87] [RN:R00228 R09097]	Catechol meta-cleavage, catechol => acetyl-CoA / 4-methylcatechol => propanoyl-CoA	ag	hydrocarbon degradation	
+K01055	3-oxoadipate enol-lactonase [EC:3.1.1.24] [RN:R02991]	Catechol ortho-cleavage, catechol => 3-oxoadipate	ag	hydrocarbon degradation	
+K01856	muconate cycloisomerase [EC:5.5.1.1] [RN:R06989]	Catechol ortho-cleavage, catechol => 3-oxoadipate	ag	hydrocarbon degradation	
+K03381	catechol 1,2-dioxygenase [EC:1.13.11.1] [RN:R00817]	Catechol ortho-cleavage, catechol => 3-oxoadipate	ag	hydrocarbon degradation	
+K03464	muconolactone D-isomerase [EC:5.3.3.4] [RN:R06990]	Catechol ortho-cleavage, catechol => 3-oxoadipate	ag	hydrocarbon degradation	
+K14727	oxoadipate enol-lactonase / 4-carboxymuconolactone decarboxylase [EC:3.1.1.24 4.1.1.44]	Catechol ortho-cleavage, catechol => 3-oxoadipate	ag	hydrocarbon degradation	
+K10619	cmtA; p-cumate 2,3-dioxygenase [EC:1.14.12.25] [RN:R05247]	Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	ag	hydrocarbon degradation	
+K10620	cmtB; 2,3-dihydroxy-2,3-dihydro-p-cumate dehydrogenase [EC:1.3.1.58] [RN:R05240]	Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	ag	hydrocarbon degradation	
+K10621	cmtC; 2,3-dihydroxy-p-cumate-3,4-dioxygenase [EC:1.13.11.-] [RN:R05248]	Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	ag	hydrocarbon degradation	
+K10622	cmtD; HCOMODA decarboxylase [EC:4.1.1.-] [RN:R05377]	Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	ag	hydrocarbon degradation	
+K10623	cmtE; HOMODA hydrolase [EC:3.7.1.-] [RN: R05364]	Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	ag	hydrocarbon degradation	
+K16303	cmtA; p-cumate 2,3-dioxygenase [EC:1.14.12.25] [RN:R05247]	Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	ag	hydrocarbon degradation	
+K16304	cmtA; p-cumate 2,3-dioxygenase [EC:1.14.12.25] [RN:R05247]	Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	ag	hydrocarbon degradation	
+K18227	cmtA; p-cumate 2,3-dioxygenase [EC:1.14.12.25] [RN:R05247]	Cumate degradation, p-cumate => 2-oxopent-4-enoate + 2-methylpropanoate	ag	hydrocarbon degradation	
+K18102	L-galactonate dehydratase [EC:4.2.1.146] [RN:R10532]	D-Galacturonate degradation (fungi), D-galacturonate => glycerol	ag	hydrocarbon degradation	
+K18103	L-threo-3-deoxy-hexylosonate aldolase [EC:4.1.2.54] [RN:R10550]	D-Galacturonate degradation (fungi), D-galacturonate => glycerol	ag	hydrocarbon degradation	
+K18106	D-galacturonate reductase [EC:1.1.1.-] [RN:R07676 R10565]	D-Galacturonate degradation (fungi), D-galacturonate => glycerol	ag	hydrocarbon degradation	
+K18107	L-glyceraldehyde reductase [EC:1.1.1.372] [RN:R10563]	D-Galacturonate degradation (fungi), D-galacturonate => glycerol	ag	hydrocarbon degradation	
+K19634	D-galacturonate reductase [EC:1.1.1.365] [RN:R07676]	D-Galacturonate degradation (fungi), D-galacturonate => glycerol	ag	hydrocarbon degradation	
+K00151	5-carboxymethyl-2-hydroxymuconic-semialdehyde dehydrogenase [EC:1.2.1.60] [RN:R04418]	Homoprotocatechuate degradation, homoprotocatechuate => 2-oxohept-3-enedioate	ag	hydrocarbon degradation	
+K00455	3,4-dihydroxyphenylacetate 2,3-dioxygenase [EC:1.13.11.15] [RN:R03303]	Homoprotocatechuate degradation, homoprotocatechuate => 2-oxohept-3-enedioate	ag	hydrocarbon degradation	
+K01826	5-carboxymethyl-2-hydroxymuconate isomerase [EC:5.3.3.10][RN:R04379]	Homoprotocatechuate degradation, homoprotocatechuate => 2-oxohept-3-enedioate	ag	hydrocarbon degradation	
+K05921	5-oxopent-3-ene-1,2,5-tricarboxylate decarboxylase / 2-hydroxyhepta-2,4-diene-1,7-dioate isomerase [EC:4.1.1.68 5.3.3.-] [RN:R04380 R04134]	Homoprotocatechuate degradation, homoprotocatechuate => 2-oxohept-3-enedioate	ag	hydrocarbon degradation	
+K10219	2-hydroxy-4-carboxymuconate semialdehyde hemiacetal dehydrogenase [EC:1.1.1.312] [RN:R04418]	Homoprotocatechuate degradation, homoprotocatechuate => 2-oxohept-3-enedioate	ag	hydrocarbon degradation	
+K00152	salicylaldehyde dehydrogenase [EC:1.2.1.65] [RN:R02941]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K14578	nahA; naphthalene 1,2-dioxygenase [EC:1.14.12.12] [RN:R02968]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K14579	nahA; naphthalene 1,2-dioxygenase [EC:1.14.12.12] [RN:R02968]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K14580	nahA; naphthalene 1,2-dioxygenase [EC:1.14.12.12] [RN:R02968]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K14581	nahA; naphthalene 1,2-dioxygenase [EC:1.14.12.12] [RN:R02968]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K14582	nahB; cis-1,2-dihydro-1,2-dihydroxynaphthalene/dibenzothiophene dihydrodiol dehydrogenase [EC:1.3.1.29] [RN:R04115]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K14583	1,2-dihydroxynaphthalene dioxygenase [EC:1.13.11.56] [RN:R04117]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K14584	2-hydroxychromene-2-carboxylate isomerase [EC:5.99.1.4] [RN:R05137]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K14585	trans-o-hydroxybenzylidenepyruvate hydratase-aldolase [EC:4.1.2.45] [RN:R05136]	Naphthalene degradation, naphthalene => salicylate	ag	hydrocarbon degradation	
+K04102	4,5-dihydroxyphthalate decarboxylase [EC:4.1.1.55] [RN:R01635]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18067	phthalate 4,5-cis-dihydrodiol dehydrogenase [EC:1.3.1.64] [RN:R05275]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18068	phthalate 4,5-dioxygenase [EC:1.14.12.7] [RN:R03630]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18069	phthalate 4,5-dioxygenase [EC:1.14.12.7] [RN:R03630]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18251	phtA; phthalate 3,4-dioxygenase [EC:1.14.12.-] [RN:R09227]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18252	phtA; phthalate 3,4-dioxygenase [EC:1.14.12.-] [RN:R09227]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18253	phtA; phthalate 3,4-dioxygenase [EC:1.14.12.-] [RN:R09227]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18254	phtA; phthalate 3,4-dioxygenase [EC:1.14.12.-] [RN:R09227]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18255	phtB; phthalate 3,4-cis-dihydrodiol dehydrogenase [EC:1.3.1.-] [RN:R09228]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18256	phtC; 3,4-dihydroxyphthalate decarboxylase [EC:4.1.1.69] [RN:R01634]	Phthalate degradation, phthalate => protocatechuate	ag	hydrocarbon degradation	
+K18074	K18075,K18077 terephthalate 1,2-dioxygenase [EC:1.14.12.15] [RN:R05148]	Terephthalate degradation, terephthalate => 3,4-dihydroxybenzoate	ag	hydrocarbon degradation	
+K18075	tphA3	Terephthalate degradation, terephthalate => 3,4-dihydroxybenzoate	ag	hydrocarbon degradation	
+K18076	1,2-dihydroxy-3,5-cyclohexadiene-1,4-dicarboxylate dehydrogenase [EC:1.3.1.53] [RN:R01633]	Terephthalate degradation, terephthalate => 3,4-dihydroxybenzoate	ag	hydrocarbon degradation	
+K18077	tphA1	Terephthalate degradation, terephthalate => 3,4-dihydroxybenzoate	ag	hydrocarbon degradation	
+K07540	benzylsuccinate synthase [EC:4.1.99.11] [RN:R05598]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K07543	benzylsuccinate CoA-transferase subunit [EC:2.8.3.15] [RN:R05588]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K07544	benzylsuccinate CoA-transferase subunit [EC:2.8.3.15] [RN:R05588]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K07545	bbsG; (R)-benzylsuccinyl-CoA dehydro genase [EC:1.3.8.3] [RN:R05584]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K07546	bbsH; E-phenylitaconyl-CoA hydratase [EC:4.2.1.-] [RN:R05599]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K07547	2-[hydroxy(phenyl)methyl]-succinyl-CoA dehydrogenase [EC:1.1.1.35] [RN:R05575]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K07548	2-[hydroxy(phenyl)methyl]-succinyl-CoA dehydrogenase [EC:1.1.1.35] [RN:R05575]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K07549	benzoylsuccinyl-CoA thiolase [EC:2.3.1.-] [RN:R05587]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K07550	benzoylsuccinyl-CoA thiolase [EC:2.3.1.-] [RN:R05587]	Toluene degradation, anaerobic, toluene => benzoyl-CoA	ag	hydrocarbon degradation	
+K00055	xylB; aryl-alcohol dehydrogenase [EC:1.1.1.90] [RN:R01763]	Toluene degradation, toluene => benzoate	ag	hydrocarbon degradation	
+K00141	xylC; benzaldehyde dehydrogenase (NAD) [EC:1.2.1.28] [RN:R01419]	Toluene degradation, toluene => benzoate	ag	hydrocarbon degradation	
+K15760	toluene monooxygenase system [EC:1.14.13.-] [RN:R02550]	Toluene degradation, toluene => benzoate	ag	hydrocarbon degradation	
+K15761	toluene monooxygenase system [EC:1.14.13.-] [RN:R02550]	Toluene degradation, toluene => benzoate	ag	hydrocarbon degradation	
+K15762	toluene monooxygenase system [EC:1.14.13.-] [RN:R02550]	Toluene degradation, toluene => benzoate	ag	hydrocarbon degradation	
+K15763	toluene monooxygenase system [EC:1.14.13.-] [RN:R02550]	Toluene degradation, toluene => benzoate	ag	hydrocarbon degradation	
+K15764	toluene monooxygenase system [EC:1.14.13.-] [RN:R02550]	Toluene degradation, toluene => benzoate	ag	hydrocarbon degradation	
+K15765	toluene monooxygenase system [EC:1.14.13.-] [RN:R02550]	Toluene degradation, toluene => benzoate	ag	hydrocarbon degradation	
+K00529	3-phenylpropionate/cinnamic acid dioxygenase [EC:1.14.12.19] [RN:R06783]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K01666	4-hydroxy 2-oxovalerate aldolase [EC:4.1.3.39] [RN:R00750]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K02554	2-keto-4-pentenoate hydratase [EC:4.2.1.80] [RN:R02601]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K04073	acetaldehyde dehydrogenase [EC:1.2.1.10] [RN:R00228]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K05708	3-phenylpropionate/cinnamic acid dioxygenase [EC:1.14.12.19] [RN:R06783]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K05709	3-phenylpropionate/cinnamic acid dioxygenase [EC:1.14.12.19] [RN:R06783]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K05710	3-phenylpropionate/cinnamic acid dioxygenase [EC:1.14.12.19] [RN:R06783]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K05711	2,3-dihydroxy-2,3-dihydrophenylpropionate dehydrogenase [EC:1.3.1.87] [RN:R06785]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K05712	mhpA; 3-(3-hydroxy-phenyl)propionate hydroxylase [EC:1.14.13.127] [RN:R06787]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K05713	2,3-dihydroxyphenylpropionate 1,2-dioxygenase [EC:1.13.11.16] [RN:R06788]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K05714	2-hydroxy-6-ketonona-2,4-dienedioic acid hydrolase [EC:3.7.1.14] [RN:R06789]	Trans-cinnamate degradation, trans-cinnamate => acetyl-CoA	ag	hydrocarbon degradation	
+K00055	E1.1.1.90; aryl-alcohol dehydrogenase [EC:1.1.1.90] [RN:R05282 R05348 R05347]	Xylene degradation, xylene => methylbenzoate	ag	hydrocarbon degradation	
+K00141	xylC; benzaldehyde dehydrogenase (NAD) [EC:1.2.1.28] [RN:R05289 R05663 R05664]	Xylene degradation, xylene => methylbenzoate	ag	hydrocarbon degradation	
+K15757	xylM; xylene monooxygenase [EC:1.14.13.-] [RN:R05288 R05442 R05443]	Xylene degradation, xylene => methylbenzoate	ag	hydrocarbon degradation	
+K15758	xylene monooxygenase electron transfer component [EC:1.18.1.3]	Xylene degradation, xylene => methylbenzoate	ag	hydrocarbon degradation	
+K04099	desB, galA; gallate dioxygenase [EC:1.13.11.57]	aerobic gallate degradation	ag	hydrocarbon degradation	
+1.3.1.57	phloroglucinol reductase	anaerobic gallate degradation, gallate => 3-hydroxybutanoyl-CoA	ag	hydrocarbon degradation	
+1.97.1.2	pyrogallol transhydroxylase	anaerobic gallate degradation, gallate => 3-hydroxybutanoyl-CoA	ag	hydrocarbon degradation	
+K22958	lpdC; gallate decarboxylase subunit C [EC:4.1.1.59]	anaerobic gallate degradation, gallate => 3-hydroxybutanoyl-CoA	ag	hydrocarbon degradation	
+K22959	lpdB; gallate decarboxylase subunit B	anaerobic gallate degradation, gallate => 3-hydroxybutanoyl-CoA	ag	hydrocarbon degradation	
+K22960	lpdD; gallate decarboxylase subunit D	anaerobic gallate degradation, gallate => 3-hydroxybutanoyl-CoA	ag	hydrocarbon degradation	
+K10759	tannase [EC:3.1.1.20]	hydrolyzable tannin degradation => gallate	ag	hydrocarbon degradation	
+K03862	vanA; vanillate monooxygenase [EC:1.14.13.82]	lignin subunit degradation	ag	hydrocarbon degradation	
+K03863	vanB; vanillate monooxygenase ferredoxin subunit	lignin subunit degradation	ag	hydrocarbon degradation	
+K15060	ligX; 5,5'-dehydrodivanillate O-demethylase	lignin subunit degradation	ag	hydrocarbon degradation	
+K15061	ligZ; OH-DDVA oxygenase	lignin subunit degradation	ag	hydrocarbon degradation	
+K15062	ligY; OH-DDVA meta-cleavage compound hydrolase	lignin subunit degradation	ag	hydrocarbon degradation	
+K15063	ligW; 5-carboxyvanillate decarboxylase	lignin subunit degradation	ag	hydrocarbon degradation	
+K15064	desA; syringate O-demethylase [EC:2.1.1.-]	lignin subunit degradation	ag	hydrocarbon degradation	
+K15065	desZ; 3-O-methylgallate 3,4-dioxygenase [EC:1.13.11.-]	lignin subunit degradation	ag	hydrocarbon degradation	
+K15066	ligM; vanillate/3-O-methylgallate O-demethylase [EC:2.1.1.341]	lignin subunit degradation	ag	hydrocarbon degradation	
+K23526	gcoA; aromatic O-demethylase, cytochrome P450 subunit [EC:1.14.14.-]	lignin subunit degradation	ag	hydrocarbon degradation	
+K23527	gcoB; aromatic O-demethylase, reductase subunit [EC:1.6.2.-]	lignin subunit degradation	ag	hydrocarbon degradation	
+k21802	vdh; vanillin dehydrogenase [EC:1.2.1.67]	lignin subunit degradation	ag	hydrocarbon degradation	
+K00448	pcaG; protocatechuate 3,4-dioxygenase, alpha subunit [EC:1.13.11.3]	protocatechuate degradation, protocatechuate => 3-oxoadipate	ag	hydrocarbon degradation	
+K00449	pcaH; protocatechuate 3,4-dioxygenase, beta subunit [EC:1.13.11.3]	protocatechuate degradation, protocatechuate => 3-oxoadipate	ag	hydrocarbon degradation	
+K01607	pcaC; 4-carboxymuconolactone decarboxylase [EC:4.1.1.44]	protocatechuate degradation, protocatechuate => 3-oxoadipate	ag	hydrocarbon degradation	
+K01857	pcaB; 3-carboxy-cis,cis-muconate cycloisomerase [EC:5.5.1.2]	protocatechuate degradation, protocatechuate => 3-oxoadipate	ag	hydrocarbon degradation	
+K14727	pcaL; 3-oxoadipate enol-lactonase / 4-carboxymuconolactone decarboxylase [EC:3.1.1.24 4.1.1.44]	protocatechuate degradation, protocatechuate => 3-oxoadipate	ag	hydrocarbon degradation	
+K04100	ligaA; protocatechuate 4,5-dioxygenase, alpha chain [EC:1.13.11.8]	protocatechuate degradation, protocatechuate => oxaloacteate + pyruvate	ag	hydrocarbon degradation	
+K04101	ligB; protocatechuate 4,5-dioxygenase, beta chain [EC:1.13.11.8]	protocatechuate degradation, protocatechuate => oxaloacteate + pyruvate	ag	hydrocarbon degradation	
+K10218	ligK; 4-hydroxy-4-methyl-2-oxoglutarate aldolase [EC:4.1.3.17]	protocatechuate degradation, protocatechuate => oxaloacteate + pyruvate	ag	hydrocarbon degradation	
+K10219	ligC; 2-hydroxy-4-carboxymuconate semialdehyde hemiacetal dehydrogenase [EC:1.1.1.312]	protocatechuate degradation, protocatechuate => oxaloacteate + pyruvate	ag	hydrocarbon degradation	
+K10220	ligJ; 4-oxalmesaconate hydratase [EC:4.2.1.83]	protocatechuate degradation, protocatechuate => oxaloacteate + pyruvate	ag	hydrocarbon degradation	
+K10221	ligI; 2-pyrone-4,6-dicarboxylate lactonase [EC:3.1.1.57]	protocatechuate degradation, protocatechuate => oxaloacteate + pyruvate	ag	hydrocarbon degradation	
+K16514	galD; 4-oxalomesaconate tautomerase [EC:5.3.2.8]	protocatechuate degradation, protocatechuate => oxaloacteate + pyruvate	ag	hydrocarbon degradation	
+K00625	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	Phosphate acetyltransferase-acetate kinase pathway, acetyl-CoA => acetate	ag	pyruvate metabolism	
+K00925	acetate kinase [EC:2.7.2.1] [RN:R00315]	Phosphate acetyltransferase-acetate kinase pathway, acetyl-CoA => acetate	ag	pyruvate metabolism	
+K13788	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	Phosphate acetyltransferase-acetate kinase pathway, acetyl-CoA => acetate	ag	pyruvate metabolism	
+K15024	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	Phosphate acetyltransferase-acetate kinase pathway, acetyl-CoA => acetate	ag	pyruvate metabolism	
+K01847	methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K01848	methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K01849	methylmalonyl-CoA mutase [EC:5.4.99.2] [RN:R00833]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K01964	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K01965	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K01966	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K05606	methylmalonyl-CoA/ethylmalonyl-CoA epimerase [EC:5.1.99.1] [RN:R02765]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K11263	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K15036	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K15037	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K18472	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K19312	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K22568	propionyl-CoA carboxylase [EC:6.4.1.3] [RN:R01859]	Propanoyl-CoA metabolism, propanoyl-CoA => succinyl-CoA	ag	pyruvate metabolism	
+K00161	pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00162	pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00163	pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00169	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00170	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00171	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00172	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00382	pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00627	pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K03737	pyruvate:ferredoxin oxidoreductase [EC:1.2.7.1] [RN:R01196]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K13997	pyruvate dehydrogenase complex [EC:1.2.4.1 2.3.1.12 1.8.1.4] [RN:R00209]	Pyruvate oxidation, pyruvate => acetyl-CoA	ag	pyruvate metabolism	
+K00001	alcohol dehydrogenase	fermentation-	ag	pyruvate metabolism	
+K00016	L-lactate dehydrogenase	fermentation-	ag	pyruvate metabolism	
+K00132	acetaldehyde dehydrogenase (acetylating)	fermentation-	ag	pyruvate metabolism	
+K03778	D-lactate dehydrogenase	fermentation-	ag	pyruvate metabolism	
+K13954	alcohol dehydrogenase	fermentation-	ag	pyruvate metabolism	
+K00074	3-hydroxybutyryl-CoA dehydrogenase	pyruvate metabolism	ag	pyruvate metabolism	
+K00656	formate acetyltransferase (pyruvate-formate lyase )	pyruvate metabolism	ag	pyruvate metabolism	
+K01512	acylphosphatase	pyruvate metabolism	ag	pyruvate metabolism	
+K04069	pyruvate formate lyase activating enzyme	pyruvate metabolism	ag	pyruvate metabolism	
+K04070	putative pyruvate formate lyase activating enzyme	pyruvate metabolism	ag	pyruvate metabolism	
+K01812	glucuronate isomerase	Pentose and glucuronate interconversions	ag	sugar utilization (woodcroft)	galacturonic acid degradation
+K00422	polyphenol oxidase	polyphenols	ag		Polyphenolics Cleavage
+K05810	polyphenol oxidase	polyphenols	ag		Polyphenolics Cleavage
+K05909	polyphenol oxidase	polyphenols	ag		Polyphenolics Cleavage

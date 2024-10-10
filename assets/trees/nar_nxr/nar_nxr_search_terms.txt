@@ -1,0 +1,13 @@
+K00370
+K00371
+K00374
+nitrate reductase
+nar
+NAR
+narG
+narH
+narI
+narJ
+EC: 1.7.99.4
+EC: 1.7.5.1
+

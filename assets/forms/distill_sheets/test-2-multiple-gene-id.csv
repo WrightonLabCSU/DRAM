@@ -1,0 +1,24 @@
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	level	Candy-bars
+CE1, CE4	Multi-test	Multi-test	EC_test			high	skor
+CE1,CE9	Multi-test	Multi-test	EC_test			high	skor
+CE1;GH2	Multi-test	Multi-test	EC_test			high	skor
+CE1; GH31	Multi-test	Multi-test	EC_test			high	CANDY-BARS
+CE1	single-test	Multi-test	EC_test			high	CANDY-BARS
+CE4	single-test	Multi-test	EC_test			high	CANDY-BARS
+GH2	single-test	Multi-test	EC_test			high	CANDY-BARS
+EC:4.1.1.19	single-test	complete match	EC_test			med	snickers
+EC:6.1.1.21	single-test	complete match	EC_test			low	milkyway
+EC:3.1.3.100	single-test	complete match	EC_test			high	Kit-kat bar
+EC:3.4.11.6, EC:4.1.1.19	Multi-test	complete match	EC_test			high	skor
+EC:1.8.98.5;EC:1.8.98.6	Multi-test	complete match	EC_test			med	snickers
+EC:1.-	Single-test	Partial-match	EC_test			med	snickers
+EC:2.-	Single-test	Partial-match	EC_test			med	snickers
+EC:3.-	Single-test	Partial-match	EC_test			med	snickers
+EC:4.-	Single-test	Partial-match	EC_test			med	snickers
+EC:5.-	Single-test	Partial-match	EC_test			med	snickers
+EC:6.-	Single-test	Partial-match	EC_test			med	snickers
+EC:7.-	Single-test	Partial-match	EC_test			med	snickers
+EC:1.-; EC:2.-	Multi-test	Partial-match	EC_test			med	snickers
+EC:1.2.-; EC:2.1.-	Multi-test	Partial-match	EC_test			med	snickers
+EC:1.2.-	Single-test	Partial-match	EC_test			med	snickers
+EC:2.1.-	Single-test	Partial-match	EC_test			med	snickers

@@ -1,0 +1,178 @@
+gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	fasta
+K25220	MtxB; Quaternary amine methyltransferase (Glycine betaine methyltransferase, MtgB) [EC:2.1.1.376]	QA demethylation	METHYL	Catabolism	Anaerobic	
+METHYL_0001	MtgC; Quaternary amine/glycine betaine corrinoid binding protein	QA demethylation	METHYL	Catabolism	Anaerobic	MtgC_DSY3155_Desulfitobacterium_hafniense_Q24SP8;MV8465_Methanolobus_vulcani_b1d_corrinoid_mtgC_homolog_WP_154809803.1
+METHYL_0002	MtgA; Quaternary amine/glycine betaine specific methylcorrinoid:THF methyltransferase	QA demethylation	METHYL	Catabolism	Anaerobic	MtgA_DSY3157_Desulfitobacterium_hafniense_Y51_substrate_glycine_betaine_corrinoid:THF_Q24SP6-1
+METHYL_0003	MV8460; methanogenic glycine betaine:corrinoid methyltransferase	QA demethylation	METHYL	Catabolism	Anaerobic	MV8460_methanogenic_Methanolobus_vulcani_b1d_substrate_glycine_betaine_WP_154809802.1
+METHYL_0004	MV8465; methanogenic glycine betaine corrinoid binding protein	QA demethylation	METHYL	Catabolism	Anaerobic	MV8465_Methanolobus_vulcani_b1d_corrinoid_mtgC_homolog_WP_154809803.1
+K14080	MV10360; methanogenic glycine betaine specific methylcorrinoid:CoM methyltransferase [EC:2.1.1.377]	QA demethylation	METHYL	Catabolism	Anaerobic	
+METHYL_0005	MV10335/RamM; methanogenic corrinoid-protein reductive activase	QA demethylation	METHYL	Catabolism	Anaerobic	MV10335_methanogenic_Methanolobus_vulcani_b1d_substrate_glycine_betaine_acrtivase_ramM
+METHYL_0006	MtpB; proline betaine:corrinoid methyltransferase	QA demethylation	METHYL	Catabolism	Anaerobic	MtpB_proline_betaine:corrinoid_methyltransferase_Eubacterium_limosum_ATCC_8486
+METHYL_0007	MtcB: L-carnitine:corrinoid methyltransferase	QA demethylation	METHYL	Catabolism	Anaerobic	MtcB_L-carnitine:corrinoid_methyltransferase_Eubacterium_limosum_ATCC_8486
+METHYL_0008	MtyB; gamma-butyrobetaine:corrinoid methyltransferase	QA demethylation	METHYL	Catabolism	Anaerobic	MtyB_gamma-butyrobetaine:corrinoid_methyltransferase_Eubacterium_limosum_ATCC_8486
+METHYL_0009	MtqC; quaternary amine promiscuous corrinoid binding protein	QA demethylation	METHYL	Catabolism	Anaerobic	MtqC_promiscuous_QA_corrinoid_Carnitine_ProlineBetaine_Butyrobetaine_Eubacterium_limosum_ATCC_8486
+METHYL_0010	MtqA; quaternary amine promiscuous methylcorrinoid:THF methyltransferase	QA demethylation	METHYL	Catabolism	Anaerobic	MtqA_promiscuous_corrinoid:THF_MT_Carnitine_ProlineBetaine_Butyrobetaine_Eubacterium_limosum_ATCC_8486
+METHYL_0011	RamQ; quaternary amine promiscuous corrinoid protein reductive activase	QA demethylation	METHYL	Catabolism	Anaerobic	RamQ_promiscuous_MtqC_activase_Carnitine_ProlineBetaine_Butyrobetaine_Eubacterium_limosum_ATCC_8486
+K01599	uroporphyrinogen decarboxylase [EC:4.1.1.37] [RN:R03197] (methyltransferase homolog/frequent mis-annotation)	Heme biosynthesis, animals and fungi, glycine => heme	METHYL	Catabolism	Anaerobic	
+K14083	MttB/MtxB; Trimethylamine methyltransferase [EC:2.1.1.250], potentially a quaternary amine enzyme if lacking pyrrolysine	QA demethylation	METHYL	Catabolism	Anaerobic	
+K14084	MttC; trimethylamine corrinoid binding protein [EC:2.1.1.247]	QA demethylation	METHYL	Catabolism	Anaerobic	
+K16178	MtbB; dimethylamine methyltransferase	DMA demethylation	METHYL	Catabolism	Anaerobic	
+K16179	MtbC; dimethylamine corrinoid binding protein	DMA demethylation	METHYL	Catabolism	Anaerobic	
+K16176	MtmB; monomethylamine methyltransferase	MMA demethylation	METHYL	Catabolism	Anaerobic	
+K16177	MtmC; monomethylamine corrinoid binding protein	MMA demethylation	METHYL	Catabolism	Anaerobic	
+K14082	MtbA; methylamine methylcorrinoid:CoM methyltransferase [EC:2.1.1.247]	Methylamine:CoM methyltransfer	METHYL	Catabolism	Anaerobic	
+METHYL_0012	RamA; methylamine corrinoid binding protein reductive activase	Methylamine:CoM methyltransfer	METHYL	Catabolism	Anaerobic	RamA;_methylamine_corrinoid_binding_protein_reductive_activase_Methanosarcina_barkeri
+K16180	PylB; Methylornithine synthase [EC:5.4.99.58]	Pyrrolysine biosynthesis	METHYL	Amino Acid Biosynthesis	Cofactor/Other_biosynthesis	
+K16181	PylC; Pyrrolysine synthetase [EC:6.3.2.59]	Pyrrolysine biosynthesis	METHYL	Amino Acid Biosynthesis	Cofactor/Other_biosynthesis	
+K16182	PylD; Pyrrolysine synthase [EC:1.4.1.-]	Pyrrolysine biosynthesis	METHYL	Amino Acid Biosynthesis	Cofactor/Other_biosynthesis	
+K11627	PylS; pyrrolysyl-tRNA synthetase [EC:6.1.1.26]	Pyrrolysine biosynthesis	METHYL	Amino Acid Biosynthesis	Cofactor/Other_biosynthesis	
+K14239	PylT; tRNA-pyl	Pyrrolysine biosynthesis	METHYL	Amino Acid Biosynthesis	Cofactor/Other_biosynthesis	
+K02302	CysG; uroporphyrin-III C-methyltransferase/precorrin-2 dehydrogenase/sirohydrochlorin ferrochelatase [ec:2.1.1.107;1.3.1.76;4.99.1.4]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K24866	SirC; preccorin-2 dehydrogenase [EC:1.3.1.76]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02303	CobAM; uroporphyrin-III C-methyltransferase [EC:2.1.1.107]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K22011	CfbA; sirohydrochlorin cobalto/nickelchelatase [EC:4.99.1.3;4.99.1.110]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K03795	CbiX; sirohydrochlorin cobaltochelatase [ED:4.99.1.3]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02190	CbiX; sirohydrochlorin cobaltochelatase [ED:4.99.1.3]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K03394	CobI, CbiL; precorrin-2/cobalt-factor-2 C20-methyltransferase [EC:2.1.1.130;2.1.1.151]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K21479	CbiH60; cobalt-factor-III methyltransferase	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K05934	CobJ, CibH; precorrin-3B C17-methyltransferase/cobalt-factor-III methyltransferase [EC:2.1.1.131;2.1.1.272]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K13541	CbiGH, CobJ; cobalt-precorrin 5A hydrolase/cobalt-factor-III methyltransferase/precorrin-3B C17 methyltransferase [ec:3.7.1.12;2.1.1.272;2.1.1.131]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K05936	CobM, CbiF; precorrin-4/cobalt-precorrin-4 C11-methyltransferase [EC 2.1.1.133;2.1.1.271]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02189	CbiG; cobalt-precorrin 5A hydrolase [EC:3.7.1.12]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02188	CbiD; cobalt-precorrin 5B hydrolase (C1) methyltransferase [EC:2.1.1.195]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K05895	CobK-CbiJ; precorrin-6A/cobalt-precorrin 6A reductase [EC:1.3.1.54;1.3.1.106]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02192	CbiT; cobalt-precorrin-6B (C15)-methyltransferase[EC:2.1.1.196]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K00595	CobL, CbiET; precorrin-6B C5, 15-methyltransferase/cobalt-precorrin-6B C5,C15-methyltransferase [EC:2.1.1.132,2.1.1.289,2.1.1.196]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02232	cobQ, cbiP; adenosylcobyric acid synthase [EC:6.3.5.10]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02231	CobP, CobU; adenosylcobinamide kinase/adenosylcobinamide phosphate guanylyltransferase [EC:2.7.1.156;2.7.7.62]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02233	E2.7.8.26, cobS, cobV; adenosylcobinamide-GDP ribazoletransferase [EC:2.7.8.26]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K00798	MMAB, pduO; cob(I)alamin adenosyltransferase [EC:2.5.1.17]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K19221	cobA, btuR; cob(I)alamin adenosyltransferase [EC:2.5.1.17]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K19712	cobY; adenosylcobinamide-phosphate guanylyltransferase [EC:2.7.7.62]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02227	cbiB, cobD; adenosylcobinamide-phosphate synthase [EC:6.3.1.10]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02225	cobC1, cobC; cobalamin biosynthetic protein	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K13786	cobR; cob(II)yrinic acid a,c-diamide reductase [EC:1.16.8.1]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K03399	CbiE; cobalt-precorrin-7 (C5)-methyltransferase [EC 2.1.1.289]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K06042	CobH, CbiC; precorrin-8X/cobalt-precorrin08 methylmutase [EC:5.4.99.61]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02224	CobB, CbiA; cobyrinic acid a,c-diamide synthase [EC:6.3.5.9;6.2.5.11]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K13540	CobIJ; precorrin-2 C20-methyltransferase/precorrin-3B C17-methyltransferase [EC:2.1.1.130;2.1.1.131]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02229	CobG; precorrin 3B synthase [EC:1.14.13.83]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02228	CobF; precorrin-6A synthase [EC:2.1.1.152]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02230	CobN; cobaltochelatase [EC:6.6.1.2]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K09882	CobS; cobaltochelatase [EC:6.6.1.2]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K09883	CobT; cobaltochelatase [EC:6.6.1.2]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02226	CobC, PhpB; alpha-ribazole phosphatase [EC:3.1.3.73]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K22316	RhnA, CobC; ribonuclease h/adenosylcobalamin/alpha-ribazole phosphatase [EC:3.1.26.4;3.1.3.73]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K00768	CobU, CobT; nicotinate-nucleotide-dimethylbenzimidazole phosphoribosyltransferase [EC:2.4.2.21]	Cobalamin biosynthesis	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K16092	BtuB; vitamin-B12 transporter	Cobalamin uptake	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K06073	BtuC; vitamin-B12 transport system permease protein	Cobalamin uptake	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K06074	BtuD; vitamin-B12 transport system-ATP binding protein [EC:7.6.2.8]	Cobalamin uptake	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K25028	BtuD; vitamin-B12 transport system-ATP binding protein [EC:7.6.2.8]	Cobalamin uptake	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K00432	BtuE; vitamin-B12 transport system - periplasmic protein	Cobalamin uptake	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K06858	BtuF; vitamin-B12 transport system-substrate binding protein	Cobalamin uptake	METHYL	Cofactors	Cofactor/Other_biosynthesis	
+K02168	BetTS; choline/glycine/proline betaine transport protein	QA transporter	METHYL	Transporter	Transport	
+K03451	TC.BCT; choline/carnitine/betaine/glycine/BCCT transporter 	QA transporter	METHYL	Transporter	Transport	
+K05020	OpuD, BetL; glycine-betaine transporter	QA transporter	METHYL	Transporter	Transport	
+K03762	ProP; Proline/betaine MFS transporter, PPII, proline permease II	QA transporter	METHYL	Transporter	Transport	
+K03607	ProQ; proline/betaine (ProP effector)	QA transporter	METHYL	Transporter	Transport	
+K02000	ProV; glycine-betaine/proline transport system ATP binding protein [EC:7.6.2.9]	QA transporter	METHYL	Transporter	Transport	
+K02001	ProW; glycine-betaine/proline transport system permease protein	QA transporter	METHYL	Transporter	Transport	
+K02002	ProX; glycine-betaine/proline transport system substrate binding protein	QA transporter	METHYL	Transporter	Transport	
+K05845	OpuC; Osmoprotectant transport system substrate binding protein	QA transporter	METHYL	Transporter	Transport	
+K05846	OpuBD; Osmoprotectant transport system permease	QA transporter	METHYL	Transporter	Transport	
+K05847	OpuA; Osmoprotectant transport system ATP-binding protein [EC:7.6.2.9]	QA transporter	METHYL	Transporter	Transport	
+K18896	GSMT; glycine/sarcosine N-methyltransferase [EC:2.1.1.156]	QA transporter	METHYL	Transporter	Aerobic	
+K18897	SDMT; sarcosine/dimethylglycine N-methyltransferase [EC:2.1.1.157]	QA transporter	METHYL	Transporter	Aerobic	
+K22443	YeaW; carnitine/QA-promiscuous monooxygenase subunit, YeaW [ED 1.14.13.239]	QA cleavage to TMA	METHYL	Catabolism	Aerobic	
+K22444	YeaX carnitine/QA-promiscuous monooxygenase reductase subunit [EC 1.14.13.239]	QA cleavage to TMA	METHYL	Catabolism	Aerobic	
+K22443	CntA; carnitine rieske-type oxygenase [EC:1.14.13.239]	QA cleavage to TMA	METHYL	Catabolism	Aerobic	
+K22444	CntB; carnitine rieske-type reductase [EC:1.14.13.239]	QA cleavage to TMA	METHYL	Catabolism	Aerobic	
+K20038	CutC; choline trimethylamine lysae [EC:4.3.99.4]	QA cleavage to TMA	METHYL	Catabolism	Anaerobic	
+K20037	CutD; glycyl-radical activating enzyme [EC:1.97.1.-]	QA cleavage to TMA	METHYL	Catabolism	Anaerobic	
+K01066	aes; actyl esterase (potentially HocS from Pseuodmonas); [EC:3.1.1.28]	Acylcarnitine -> carnitine	METHYL	Catabolism		
+K05245	CaiT; L-carnitine/gamma-butyrobetaine antiporter	Cai operon	METHYL	Carnitine reduction	Anaerobic	
+K08297	CaiA; crotonobetainly-CoA dehydrogenase [EC:1.3.8.13]	Cai operon	METHYL	Carnitine reduction	Anaerobic	
+K08298	CaiB; L-carnitine CoA-transferase [EC:2.8.3.21]	Cai operon	METHYL	Carnitine reduction	Anaerobic	
+K02182	CaiC; carnitine-CoA ligase [EC:6.2.1.48]	Cai operon	METHYL	Carnitine reduction	Anaerobic	
+K08299	CaiD; crotonobetainyl-CoA hydratase [EC:4.2.1.149]	Cai operon	METHYL	Carnitine reduction	Anaerobic	
+K08279	CaiE; carnitine operon protein	Cai operon	METHYL	Carnitine reduction	Anaerobic	
+K08277	CaiF; tanscriptional activator	Cai operon	METHYL	Carnitine reduction	Anaerobic	
+K03521	FixA; electron transfer flavoprotein beta subunit	Fix operon	METHYL	Carnitine reduction	Anaerobic	
+K03522	FixB; electron transfer flavoprotein alpha subunit	Fix operon	METHYL	Carnitine reduction	Anaerobic	
+K00313	FixC; electron transfer flavoprotein-quinone oxidoreductase [EC:1.5.5.-]	Fix operon	METHYL	Carnitine reduction	Anaerobic	
+K03855	FixX; ferredoxin-like protein	Fix operon	METHYL	Carnitine reduction	Anaerobic	
+K00548	metH; cobalamin-dependent methionine synthase [EC:2.1.1.13]	Methionine Biosynthesis	METHYL	Amino Acid Biosynthesis		
+K00471	BBOX1; gamma-butyrobetaine hydroxylase/dioxygenase [EC:1.14.11.1]	Butyrobetaine -> Carnitine -> Glycine betaine	METHYL	Catabolism	Aerobic	
+METHYL_0013	BcoA; gamma-butyrobetainyl-CoA synthetase	Butyrobetaine -> Carnitine -> Glycine betaine	METHYL	Catabolism	Aerobic	BcoAB;_gamma-butyrobetainyl-CoA_synthetase
+METHYL_0014	BcoD; crotonobetainyl-CoA hydratase	Butyrobetaine -> Carnitine -> Glycine betaine	METHYL	Catabolism	Aerobic	BcoD;_crotonobetainyl-CoA_hydratase _Sinorhizobium_meliloti_Emergencia_timonensis
+METHYL_0015	BcoE; carnitine dehydrogenase	Butyrobetaine -> Carnitine -> Glycine betaine	METHYL	Catabolism	Aerobic	BcoEF;_carnitine_dehydrogenase/thioesterase_Sinorhizobium_meliloti_Emergencia_timonensis
+METHYL_0016	BcoG; BKACE enzyme	Butyrobetaine -> Carnitine -> Glycine betaine	METHYL	Catabolism	Aerobic	BcoG;_BKACE_enzyme _Sinorhizobium_meliloti_Emergencia_timonensis
+METHYL_0017	BcoF; thioesterase	Butyrobetaine -> Carnitine -> Glycine betaine	METHYL	Catabolism	Aerobic	BcoEF;_carnitine_dehydrogenase/thioesterase_Sinorhizobium_meliloti_Emergencia_timonensis
+METHYL_0018	BbuA; acyl-CoA dehydrogenase	Butyrobetaine -> TMA	METHYL	Catabolism	Anaerobic	BbuA;_acyl-CoA_dehydrogenase_Emergencia_timonensis
+METHYL_0019	BbuB; class III CoA transferase	Butyrobetaine -> TMA	METHYL	Catabolism	Anaerobic	BbuB;_class_III_CoA_transferase _Emergencia_timonensis
+METHYL_0020	BbuC; class III CoA transferase	Butyrobetaine -> TMA	METHYL	Catabolism	Anaerobic	BbuC;_class_III_CoA_transferase _Emergencia_timonensis
+METHYL_0021	BbuD; 2[4Fe-4S] ferredoxin	Butyrobetaine -> TMA	METHYL	Catabolism	Anaerobic	BbuD;_2[4Fe-4S]_ferredoxin_Emergencia_timonensis
+METHYL_0022	BbuE; BCCT transporter	Butyrobetaine -> TMA	METHYL	Catabolism	Anaerobic	BbuE;_BCCT_transporter _Emergencia_timonensis
+METHYL_0023	BbuF; CoA thiosesterase	Butyrobetaine -> TMA	METHYL	Catabolism	Anaerobic	BbuF;_CoA_thiosesterase_Emergencia_timonensis\
+K00108	BetA; choline dehydrogenase [EC:1.1.99.1]	Choline -> Glycine betaine	METHYL	Catabolism	Aerobic	
+K00130	BetB; betaine-aldehyde dehydrogenase [EC:1.2.1.8]	Choline -> Glycine betaine	METHYL	Catabolism	Aerobic	
+1.1.1.254	DchH; D-carnitine dehydrogenase [EC1.1.1.254]	Carnitine -> Glycine betaine	METHYL	Catabolism	Aerobic	
+K17735	LcdH, CdhA; L-carnitine dehydrogenase [EC:1.1.1.108]	Carnitine -> Glycine betaine	METHYL	Catabolism	Aerobic	
+METHYL_0024	BmoA; glycine betaine monooxygenase	Glycine betaine -> dimethylglycine -> -> glycine	METHYL	Catabolism	Aerobic	BmoA;_glycine_betaine_monooxygenase_Chromohalobacter_salexigens_DSM3403
+METHYL_0025	BmoB; glycine betaine NADH-dependent flavin reductase	Glycine betaine -> dimethylglycine -> -> glycine	METHYL	Catabolism	Aerobic	BmoB;_glycine_betaine_NADH-dependent_flavin_reductase_Chromohalobacter_salexigens_DSM3403
+K00479	GbcA; glycine betaine demehthylae, subunit A	Glycine betaine -> dimethylglycine -> -> glycine	METHYL	Catabolism	Aerobic	
+K21832	GbcB; glycine betaine demethylase, subunit B	Glycine betaine -> dimethylglycine -> -> glycine	METHYL	Catabolism	Aerobic	
+K00544	BHMT; betaine-homocysteine methyltransferase [EC:2.1.1.5]	Glycine betaine -> dimethylglycine -> -> glycine	METHYL	Catabolism	Aerobic	
+K24003	Stc2; stachydrine N-demethylase	Proline betaine --> N-methylproline	METHYL	Catabolism	Aerobic	
+K22551	hpba; N-methyl-L-proline demethylase [EC:1.5.3.-]	Proline betaine --> N-methylproline -> proline	METHYL	Catabolism	Aerobic	
+K21579	GrdH; betaine reductase complex component B subunit beta [EC:1.21.4.4]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K21578	GrdI; betaine reductase complex component B subunit alpha [EC:1.21.4.4]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K10670	GrdA; glycine/sarcosine/betaine reductase complex component A [EC:1.21.4.2;1.21.4.3;1.21.4.4]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K21576	GrdD; glycine/sarcosine/betaine reductase complex component C subunit alpha [EC:1.21.4.2;1.21.4.3;1.21.4.4]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K21577	GrdC;  glycine/sarcosine/betaine reductase complex component C subunit beta [EC:1.21.4.2;1.21.4.3;1.21.4.4]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K10672	GrdB; glycine reductase complex component B subunit gamma [EC:1.21.4.2]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K10671	GrdE; glycine reductase complex component B subunit alpha and beta [EC:1.21.4.2]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K21584	GrdF; sarcosine reductase complex component B subunit beta [EC:1.21.4.3]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K21583	GrdG; sarcosine reductase complex component B subunit alpha [EC:1.21.4.3]	Glycine betaine -> TMA	METHYL	Catabolism	Aerobic	
+K15229	MauB; methylamine dehydrogenase heavy chain [EC:1.4.9.1]	Methylamine catabolism	METHYL	Catabolism		
+K15228	MauB; methylamine dehydrogenase light chain [EC:1.4.9.1]	Methylamine catabolism	METHYL	Catabolism		
+K00317	dmd, tmd; dimethylamine/trimethylamine dehydrogenase [EC:1.5.8.1/2]	Methylamine catabolism	METHYL	Catabolism		
+K18277	Tmm;  trimethylamine monooxygenase [EC:1.14.13.148]	Methylamine catabolism	METHYL	Catabolism		
+K07811	TorA;  trimethylamine N-oxide reductase [ec:1.7.2.3]	Methylamine catabolism	METHYL	Catabolism		
+14.1.2.32	trimethylamine N-oxide aldolase [EC:4.1.2.32]	Methylamine catabolism	METHYL	Catabolism		
+K22081	MgsA; methylamine-glutamate N-methyltransferase subunit A [EC:2.1.1.21]	Methylamine catabolism	METHYL	Catabolism		
+K08685	QhpA; quinohemoprotein amine dehydrogenase/methylamine dehydrogenase [EC:1.4.9.1]	Methylamine catabolism	METHYL	Catabolism		
+K21310	MddA; methanethiol S-methyltransferase [EC:2.1.1.334]	Methylsulfur methylotrophy	METHYL	Catabolism		
+2.1.1.251	MtsA; methylsulfide (DMS, MMPA) methyltransferase [EC:2.1.1.251]	Methylsulfur methylotrophy	METHYL	Catabolism		
+METHYL_0026	MtsB; methylsulfide (DMS, MMPA) corrinoid binding protein	Methylsulfur methylotrophy	METHYL	Catabolism		MtsB_corrinoid_protein_Methanosarcina_barkeri_Q48925-1;MtsB_Mx_luminyensis_WP_019177442.1
+METHYL_0027	dimethylsulfide:corrinoid methyltransferase, MtsD	Methylsulfur methylotrophy	METHYL	Catabolism		MtsD_MA0859_Methanosarcina_acetivorans_C2A_Q8TSD9-1
+METHYL_0028	methanethiol:corrinoid methyltransferase, MtsF	Methylsulfur methylotrophy	METHYL	Catabolism		MtsF_MA4384_Methanosarcina_acetivorans_C2A_Q8THX4
+METHYL_0029	methylsulfur-compound:corrinoid methyltransferase, MtsH	Methylsulfur methylotrophy	METHYL	Catabolism		MtsH_MA4558_Methanosarcina_acetivorans_C2A_Q8THF9-1
+METHYL_0030	methylmercaptopropionate:corrinoid methyltransferase (MT1/2), MtpA	Methylsulfur methylotrophy	METHYL	Catabolism		MtpA_MA_4165_methylmercaptopropionate:corrinoid_methyltransferase_Methanosarcina_acetivorans
+METHYL_0031	methylmercaptopropionate corrinoid binding protein, MtpC	Methylsulfur methylotrophy	METHYL	Catabolism		MtpC_MA_4164_Methanosarcina_acetivorans_C2A_Q8TII5
+METHYL_0032	RamS; reductive activase	Methylsulfur methylotrophy	METHYL	Catabolism		RamS_MA0489_Methanosarcina_acetivorans_c2a_Q8TSE9
+K04480	MtaB; methanol:corrinoid methyltransferase [EC:2.1.1.90]	Methoxy methylotrophy	METHYL	Catabolism		
+K14081	MtaC; methanol corrinoid binding protein	Methoxy methylotrophy	METHYL	Catabolism		
+K14080	MtaA; methanol specific methylcorrinoid:CoM methyltransferase [EC:2.1.1.246]	Methoxy methylotrophy	METHYL	Catabolism		
+PF01208	MtvB; vanillate methyltransferase/O-demethytlase	Methoxy methylotrophy	METHYL	Catabolism		
+METHYL_0033	MtvC; vanillate/O-demethylase corrinoid binding protein	Methoxy methylotrophy	METHYL	Catabolism		MtvC_vanilate_corrinoid/methoxy_corrinoid_Syntrophaceticus_schinkii_A0A0B7MDG8-1;MtvC_Moorella_thermoacetica_Q2RLG8
+METHYL_0034	MtvA; vanillate/O-demethylse specific methylcorrinoid:THF methyltransferase	Methoxy methylotrophy	METHYL	Catabolism		MtvA;_vanillate/O-demethylse_specific_methylcorrinoid:THF_methyltransferase uncultured_Treponema
+O87604	OdmB; vanillate methyltransferase [PFAM:O87604]	Methoxy methylotrophy	METHYL	Catabolism		
+METHYL_0035	vanillate corrinoid binding protein, OdmA	Methoxy methylotrophy	METHYL	Catabolism		OdmA_vanillate_corrinoid_Acetobacterium_dehalogenans_O87603-1
+PF00809	OdmD; vanillate specific methylcorrinoid:THF methyltransferase	Methoxy methylotrophy	METHYL	Catabolism		
+PF14574	Odmc; methoxy-specific reductivase activase/Activating Enzyme 	Methoxy methylotrophy	METHYL	Catabolism		
+PF00111	Odmc; methoxy-specific reductivase activase/Activating Enzyme 	Methoxy methylotrophy	METHYL	Catabolism		
+PF17651	Odmc; methoxy-specific reductivase activase/Activating Enzyme 	Methoxy methylotrophy	METHYL	Catabolism		
+METHYL_0036	VdmB; veratrole corrinoid methyltransferase	Methoxy methylotrophy	METHYL	Catabolism		VdmB_veratrole_corrinoid_methyltransferase_Acetobacterium_dehalogenans_Q6W001-1
+METHYL_0037	VdmA; veratole corrinoid binding protein 	Methoxy methylotrophy	METHYL	Catabolism		Vdma_veratrole_corrinoid_Acetobacterium_dehalogenans_Q6W002-1
+METHYL_0038	VdmD; veratrole specific methylcorrinoid:THF methyltransferase	Methoxy methylotrophy	METHYL	Catabolism		VdmD;_veratrole_specific_methylcorrinoid:THF_methyltransferase_Acetobacterium_dehalogenans_Q6W003
+METHYL_0039	SECO (secoisolariciresinol) corrinoid methyltransferase, E. limosum ZL-II, ELI_2003	Methoxy methylotrophy	METHYL	Catabolism		SECO_secoisolariciresinol_corrinoid_methyltransferase,_E._limosum_ZL-II,_ELI_2003
+METHYL_0040	SECO (secoisolariciresinol) corrinoid binding protein, E. limosum ZL-II, ELI_2004	Methoxy methylotrophy	METHYL	Catabolism		SECO_secoisolariciresinol_corrinoid_E._limosum_ZL-II,_ELI_2004
+METHYL_0041	SECO (secoisolariciresinol) methylcorrinoid:THF, E. limosum ZL-II, ELI_2005	Methoxy methylotrophy	METHYL	Catabolism		SECO_(secoisolariciresinol)_methylcorrinoid:THF,_E._limosum_ZL-II,_ELI_2005
+METHYL_0042	SECO corrinoid binding protein reductive activase/AE,E. limosum ZL-II, ELI_0370	Methoxy methylotrophy	METHYL	Catabolism		SECO_corrinoid_binding_protein_reductive_activase/AE,E._limosum_ZL-II,_ELI_0370
+PF01208	MtoB; methoxy corrinoid methyltransferase	Methoxy methylotrophy	METHYL	Catabolism		
+METHYL_0043	MtoC; methoxy corrinoid binding protein	Methoxy methylotrophy	METHYL	Catabolism		MtoC_AF_0006_Archaeoglobus_fulgidus_DSM_4304_AAB91221.1;MtoC_Archaeoglobus_fulgidus_DSM_4304_methoxy_compounds_including_2-methoxyphenol_AAB91218.1_NCBI_mtac2
+METHYL_0044	MtoA; methoxy specific methylcorrinoid:H4MPT methyltranferase (AF_0009)	Methoxy methylotrophy	METHYL	Catabolism		MtoA_or_mtrH_AF_0009_Archaeoglobus_fulgidus_DSM_4304_WP_010877523.1;MtoA;_methoxy_specific_methylcorrinoid:H4MPT_methyltranferase_(AF_0009) _Archaeoglobus_fulgidus_DSM_4304_ AAB91219.1
+METHYL_0045	O-demethylase D. hafniense DCB2, methyltransferase Dhaf_4610	Methoxy methylotrophy	METHYL	Catabolism		O-demethylase_D._hafniense_DCB2_corrinoid_dep_MT_Dhaf_4610_including_vanillate_isovanillate_syringate_guaiacol_methylchloride
+METHYL_0046	O-demethylase D. hafniense DCB2, corrinoiding binding protien, Dhaf_4611	Methoxy methylotrophy	METHYL	Catabolism		O-demethylase_D._hafniense_DCB2_corrinoid_Dhaf_4611_including_vanillate_isovanillate_syringate_guaiacol_methylchloride
+METHYL_0047	O-demethylase D. hafniense DCB2, methylcorrinoid:THF methyltransferase, Dhaf_4612	Methoxy methylotrophy	METHYL	Catabolism		O-demethylase_D._hafniense_DCB2,_methylcorrinoid:THF_methyltransferase,_Dhaf_4612
+METHYL_0048	reductivase activase, D. hafniense DCB2, AE, Dhaf_2573	Methoxy methylotrophy	METHYL	Catabolism		reductivase_activase,_D._hafniense_DCB2,_AE,_Dhaf_2573

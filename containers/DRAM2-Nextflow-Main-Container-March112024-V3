@@ -1,0 +1,94 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Maintainer Your Name reedwoyda@gmail.com
+
+%environment
+    # Set environment variables, if needed
+    export PATH="/opt/miniconda/bin:$PATH"
+
+%files
+
+    ../assets/bbmap /opt
+
+%post
+    chmod 777 /opt
+    chmod 777 /opt/*
+    export TZ='America/Denver'
+    export DEBIAN_FRONTEND=noninteractive
+
+
+    # Update the package index and install required dependencies
+    apt-get update && apt-get install -y \
+    wget \
+    bzip2 \
+    python3-pip \
+    git \
+    pigz \
+    openjdk-11-jre \
+    r-base-core \
+    build-essential
+
+    # Export filetype
+    export LC_CTYPE=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
+
+
+    # Install required R packages
+    R --slave -e 'install.packages("tidyverse", repos="https://cloud.r-project.org/")'
+
+    # Download and install Miniconda
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
+    export PATH="/opt/miniconda/bin:$PATH"
+
+    # Add conda channels
+    conda config --add channels anaconda
+    conda config --add channels conda-forge
+    conda config --add channels defaults
+    conda config --add channels bioconda
+    conda config --add channels r
+    conda update -n base -c defaults conda
+
+    conda install -c bioconda prodigal=2.6.3
+
+    conda install python=3.10
+    conda install pandas=1.5.2
+    conda install pytest=7.2.0
+    conda install scikit-bio=0.5.7
+    conda install mmseqs2==15.6f452
+    conda install hmmer=3.3.2
+    conda install scipy=1.8.1
+    conda install sqlalchemy=1.4.46
+    conda install barrnap=0.9
+    conda install altair=4.2.0
+    conda install openpyxl=3.0.10
+    conda install networkx=2.8.8
+    conda install ruby=3.1.2
+    conda install parallel=20221122    
+    conda install trnascan-se=2.0.12
+    conda install -c conda-forge biopython=1.83
+
+    # Commented out if conda install into base does not work
+    #conda create -n trnascan python=3.10 -y 
+    #conda install -n trnascan bioconda::trnascan-se=2.0.12
+
+    # Conda Env with python 3.10 for samtools and bowtie
+    conda create -n support python=3.10 -y
+
+    conda install -n support samtools=1.17 -y
+    
+    conda install -n support bowtie2=2.5.1 -y
+
+    conda install -n support -c conda-forge ncurses
+
+    conda install -n support -c bioconda quast=5.2.0
+
+    # Export miniconda bin just to be safe
+    export PATH="/opt/miniconda/bin:$PATH"
+
+    # Clean up
+    apt-get clean
+
+

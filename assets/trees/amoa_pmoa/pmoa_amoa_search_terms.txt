@@ -1,0 +1,11 @@
+K10944
+ammonia monooxygenase
+amoA
+ammonia oxidation
+nitrification
+methane monooxygenase
+pmoA
+methane oxidation
+methanotroph
+EC: 1.14.18.3
+EC: 1.14.99.39

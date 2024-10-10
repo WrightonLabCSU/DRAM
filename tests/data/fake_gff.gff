@@ -1,8 +1,0 @@
-##gff-version  3
-NC_001422.1	Prodigal_v2.6.3	CDS	51	221	3.3	+	0	ID=1_1;
-NC_001422.1	Prodigal_v2.6.3	CDS	390	848	54.2	+	0	ID=1_2;
-NC_001422.1	Prodigal_v2.6.3	CDS	848	964	15.0	+	0	ID=1_3;
-NC_001422.1	Prodigal_v2.6.3	CDS	1001	2284	134.2	+	0	ID=1_4;
-NC_001422.1	Prodigal_v2.6.3	CDS	2395	2922	46.7	+	0	ID=1_5;
-NC_001422.1	Prodigal_v2.6.3	CDS	2931	3917	135.9	+	0	ID=1_6;
-NC_001422.1	Prodigal_v2.6.3	CDS	3981	5384	128.0	+	0	ID=1_7;

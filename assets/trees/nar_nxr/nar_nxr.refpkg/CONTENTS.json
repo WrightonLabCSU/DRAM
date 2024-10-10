@@ -1,0 +1,25 @@
+{
+    "files": {
+        "aln_fasta": "nar_nxr_seqs_for_tree_aligned.faa", 
+        "phylo_model": "phylo_modelNQB2rG.json", 
+        "tree": "nar_nxr.tre", 
+        "tree_stats": "RAxML_info.nxr_nar_raxml"
+    }, 
+    "rollback": null, 
+    "log": [
+        "Stripped refpkg (removed 0 files)", 
+        "Loaded initial files into empty refpkg"
+    ], 
+    "metadata": {
+        "create_date": "2022-08-01 19:38:05", 
+        "format_version": "1.1", 
+        "locus": "16s_rRNA"
+    }, 
+    "rollforward": null, 
+    "md5": {
+        "aln_fasta": "e8299c2a452284b846fbe1954d731e61", 
+        "phylo_model": "8ddf52f289613477eb526cf7accab5f0", 
+        "tree": "21dd28b872d3f481dee55388c088ebc0", 
+        "tree_stats": "0dd942d28693dd101dbc1c19e8e95c30"
+    }
+}

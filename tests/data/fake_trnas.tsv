@@ -1,5 +1,0 @@
-fasta	Name	tRNA #	Begin	End	Type	Codon	Score	Note
-Cytophaga_hutchinsonii_ATCC_33406	Cytophaga_hutchinsonii_ATCC_33406_NC_008255.1	1	178917	178989	Gly	GCC	78.1
-Cytophaga_hutchinsonii_ATCC_33406	Cytophaga_hutchinsonii_ATCC_33406_NC_008255.1	2	179045	179130	Leu	TAA	64.5
-other_organismii	other_organismii_scaffold_1	16	3615655	3615583	Gly	TCC	74.2
-other_organismii	other_organismii_scaffold_1	22	3325851	3325769	Tyr	GTA	41.5	pseudo

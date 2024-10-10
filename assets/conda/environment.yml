@@ -1,0 +1,49 @@
+name: dram2-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - agbiome
+
+dependencies:
+  - python=3.10
+  - pandas=1.5.2
+  - scikit-bio=0.5.7
+  - mmseqs2==15.6f452
+  - hmmer=3.3.2
+  - scipy=1.8.1
+  - numpy=1.26.4
+  - sqlalchemy=1.4.46
+  - barrnap=0.9
+  - ruby=3.1.2
+  - parallel=20221122
+  - trnascan-se=2.0.12
+  - biopython=1.83
+  - prodigal=2.6.3
+  - samtools=1.17
+  - bowtie2=2.5.1
+  - quast=5.2.0
+  - ncurses
+  - bbmap
+  - openpyxl=3.1.2
+  - pplacer=1.1.alpha19
+  - mafft=7.525
+
+  # R packages
+  - r-base
+  - r-ape
+  - r-ggplot2
+  - bioconductor-ggtree
+  - r-ggrepel
+  - r-dplyr
+  - r-data.table
+  - r-stringr
+  - r-phytools
+  - seqtk
+
+  # Shell tools
+  - bbtools  # for rename.sh
+
+  - pip:
+      # visualization package
+      - git+https://github.com/WrightonLabCSU/dram-viz.git

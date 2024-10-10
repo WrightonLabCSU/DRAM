@@ -1,0 +1,14 @@
+name: dram2-quast-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - agbiome
+
+dependencies:
+  - python>=3.8
+  - pandas
+  - openpyxl=3.1.2
+  - quast=5.2.0
+  - pip:
+      - matplotlib==3.8.3
