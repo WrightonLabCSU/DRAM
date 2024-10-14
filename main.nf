@@ -18,6 +18,125 @@
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Internal DRAM parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+/* Help menu and version */
+params.help = 0
+params.h = 0
+params.help_call = 0
+params.help_annotate = 0
+params.help_distill = 0
+params.help_adjectives = 0
+params.help_product = 0
+params.help_format_kegg = 0
+params.v = 0
+params.version = 0
+
+/* Rename input fasta headers option */
+params.rename = 0
+
+// THESE 2 MIGHT NOT DO ANYTHING ANYTMORE. FIGURE THAT OUT
+/* Data type of input fasta */
+params.data_type = "genomic"
+/* sequence_type option for fasta: nuc or prot or nucleotide or protein */
+params.sequence_type = "n"
+
+/* Formatting database CLI */
+params.format_kegg = 0
+
+/* Distill options */
+// I DONT THINK THIS DOES ANYTHING ANYTMORE. FIGURE THAT OUT
+params.merge_distill = ""
+/* internal flag */
+params.distill_flag = 0
+
+/* Distill sheets */
+/* Dummy sheet */
+params.distill_dummy_sheet = "${projectDir}/assets/forms/distill_sheets/dummy.tsv"
+
+/* Topic */
+params.distill_carbon_sheet = "${projectDir}/assets/forms/distill_sheets/distill_carbon_Jan252024.tsv"
+params.distill_energy_sheet = "${projectDir}/assets/forms/distill_sheets/distill_energy_Jan252024.tsv"
+params.distill_misc_sheet = "${projectDir}/assets/forms/distill_sheets/distill_misc_Jan252024.tsv"
+params.distill_nitrogen_sheet = "${projectDir}/assets/forms/distill_sheets/distill_nitrogen_Jan252024.tsv"
+params.distill_transport_sheet = "${projectDir}/assets/forms/distill_sheets/distill_transport_Jan252024.tsv"
+params.distill_camper_sheet = "${projectDir}/assets/forms/distill_sheets/distill_camper_Feb122024.tsv"
+
+/* Ecosystem */
+params.distill_eng_sys_sheet = "${projectDir}/assets/forms/distill_sheets/distill_eng_sys_Jan252024.tsv"
+params.distill_ag_sheet = "${projectDir}/assets/forms/distill_sheets/distill_ag_Jan252024.tsv"
+
+/* Additional forms */
+params.module_step_form = "${projectDir}/assets/forms/module_step_form.20220928.tsv"
+params.function_heatmap_form = "${projectDir}/assets/forms/function_heatmap_form.20220928.tsv"
+params.etc_module_database = "${projectDir}/assets/forms/etc_module_database.20220928.tsv"
+params.amg_database = "${projectDir}/assets/forms/amg_database.20220928.tsv"
+
+/* Supporting scripts TEMPORARY - will be put into containers or within repo */
+/* Annotation foramtting scripts */
+params.parse_hmmsearch_script = "${projectDir}/assets/parse_hmmsearch.py"
+params.kegg_formatter_script = "${projectDir}/assets/kegg_hmm_formatter.py"
+params.kofam_hmm_formatter_script = "${projectDir}/assets/kofam_hmm_formatter.py"
+params.dbcan_hmm_formatter_script = "${projectDir}/assets/dbcan_hmm_formatter.py"
+params.canthyd_hmm_formatter_script = "${projectDir}/assets/canthyd_hmm_formatter.py"
+params.vog_hmm_formatter_script = "${projectDir}/assets/vog_hmm_formatter.py"
+params.camper_hmm_formatter_script = "${projectDir}/assets/camper_hmm_formatter.py"
+params.sulfur_hmm_formatter_script = "${projectDir}/assets/sulfur_hmm_formatter.py"
+params.fegenie_hmm_formatter_script = "${projectDir}/assets/fegenie_hmm_formatter.py"
+
+/* Annotation mmseqs and SQL related scripts */
+params.mmseqs_add_descriptions_script = "${projectDir}/assets/mmseqs_add_descriptions.py"
+params.sql_parser_script = "${projectDir}/assets/sql_add_descriptions.py"
+params.mmseqs_rbh_filter_script = "${projectDir}/assets/rbh_mmseqs_filter.py"
+params.format_kegg_db_script = "${projectDir}/assets/format_kegg_database.py"
+
+/* GFF and GBK generation script */
+params.ch_generate_gff_gbk_script = "${projectDir}/assets/generate_gff_genbank.py"
+
+/* Call genes related scripts */
+params.generate_gene_locs_script = "${projectDir}/assets/generate_gene_loc_tsv.py"
+params.called_genes_loc_script_faa = "${projectDir}/assets/generate_faa_gene_loc_tsv.py"
+
+/* Combining annotations scripts */
+params.combine_annotations_script = "${projectDir}/assets/combine_annotations.py"
+params.count_annots_script = "${projectDir}/assets/count_annotations.py"
+
+/* Distill related scripts */
+params.distill_xlsx_script = "${projectDir}/assets/distill_xlsx.py"
+params.distill_sql_script = "${projectDir}/assets/distill_sql.py"
+
+/* Product related scripts */
+params.make_product_pkg = "dram_viz"
+
+/* Phylogenetic Trees Options */
+// Move to nextflow.config when ready
+params.trees = 0
+params.add_trees = 0
+params.trees = 0
+params.trees_list = "dmso"
+//trees_list = "nar_nxr;dsr;mcra;amoa_pmoa;hydrogenase"
+params.add_trees = ""
+params.tree_data_files = "${projectDir}/assets/trees/"
+params.trees_scripts = "${projectDir}/assets"
+
+/* Adjectives Options */
+// Move to nextflow.config when ready
+params.adjectives = 0
+params.adjectives_script = "${projectDir}/assets/adjectives/adjectives.py"
+
+/* Containers and Environments */
+params.main_environment = "${projectDir}/assets/conda/environment.yml"
+params.quast_environment = "${projectDir}/assets/conda/environment-quast.yml"
+params.conda_slurm_config = "${projectDir}/assets/conda/conda_slurm.config"
+params.conda_config = "${projectDir}/assets/conda/conda.config"
+params.singularity_slurm_config = "${projectDir}/assets/singularity/singularity_slurm.config"
+params.singularity_config = "${projectDir}/assets/singularity/singularity.config"
+
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Enable Nextflow DSL2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
