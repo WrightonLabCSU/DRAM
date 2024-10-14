@@ -1,23 +1,18 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    DRAM2: DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes.
+    DRAM: DRAM (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Homepage of project
-    homePage = https://github.com/WrightonLabCSU/DRAM2
+    homePage = https://github.com/WrightonLabCSU/DRAM
 
-    Author of DRAM2 Nextflow pipeline
-    author = Reed Woyda, Rory Flynn
+    Author of DRAM Nextflow pipeline
+    author = Rory M Flynn, Kelly C. Wrighton, Mikayla Borton, Reed Woyda, Madeline Scyphers
     institution = Colorado State University - Wrighton Lab - Microbial Ecosystems Lab
 
     Description of project
-    description = DRAM2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes.
+    description = DRAM (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes.
 
-    Main pipeline script
-    mainScript = DRAM2.nf
-
-    version
-    v2.0.0
 ----------------------------------------------------------------------------------------
 */
 
@@ -86,7 +81,7 @@ include { PARSE_HMM as PARSE_HMM_SULFUR                 } from "${projectDir}/mo
 include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from "${projectDir}/modules/annotate/hmmsearch.nf"
 include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "${projectDir}/modules/annotate/parse_hmmsearch.nf"
 
-include { GENERIC_HMM_FORMATTER                         } from "${projectDir}/modules/annotate/generic_hmm_formatter.nf"
+include { GENERIC_HMM_FORMATTER                         } from "${projectDir}/modules/annotate/generic_hmm_formatter.nf"  // TODO, This has hard coded paths on the server to the python file. Need to fix this.
 include { KEGG_HMM_FORMATTER                            } from "${projectDir}/modules/annotate/kegg_hmm_formatter.nf"
 include { KOFAM_HMM_FORMATTER                           } from "${projectDir}/modules/annotate/kofam_hmm_formatter.nf"
 include { DBCAN_HMM_FORMATTER                           } from "${projectDir}/modules/annotate/dbcan_hmm_formatter.nf"
@@ -234,7 +229,7 @@ if (params.merge_annotations != "") {
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse DRAM2 ANNOTATE input databases
+    Parse DRAM ANNOTATE input databases
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 default_channel = Channel.fromPath(params.distill_dummy_sheet)
@@ -914,13 +909,13 @@ if ( params.format_kegg ) {
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Print run info to command line
-        Various run info for various DRAM2 options
+        Various run info for various DRAM options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 // This is just a catch-all for now - NEED to generate others for various options
 if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || params.distill_custom =="" || params.distill_topic =="" )){
     log.info """
-            DRAM2 Nextflow
+            $workflow.manifest.name Nextflow
             ===================================
             fastas       : ${params.input_fasta}
             outdir       : ${params.outdir}
@@ -932,7 +927,7 @@ if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || pa
             .stripIndent()
 }else if( params.call && params.annotate && (params.distill_ecosystem !="" || params.distill_custom !="" || params.distill_topic !="" )){
     log.info """
-            DRAM2 Nextflow
+            $workflow.manifest.name Nextflow
             ===================================
             fastas       : ${params.input_fasta}
             outdir       : ${params.outdir}
@@ -950,7 +945,7 @@ if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || pa
             .stripIndent()
 }else if( !params.call && params.annotate && (params.distill_ecosystem !="" || params.distill_custom !="" || params.distill_topic !="" )){
     log.info """
-            DRAM2 Nextflow
+            $workflow.manifest.name Nextflow
             ===================================
             fastas       : ${params.input_fasta}
             outdir       : ${params.outdir}
@@ -966,7 +961,7 @@ if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || pa
             .stripIndent()
 }else if( params.call == 0 && params.annotate == 0 && (params.distill_ecosystem !="" || params.distill_custom !="" || params.distill_topic !="" )){
     log.info """
-            DRAM2 Nextflow
+            $workflow.manifest.name Nextflow
             ===================================
             annotations  : ${params.annotations}
             outdir       : ${params.outdir}

@@ -1,4 +1,9 @@
-"""General utilitys, avalible to all dram2 tools"""
+"""
+*Old DRAM v1/early v2 DB utils code*
+
+
+General utility, available to all dram tools
+"""
 import subprocess
 from dataclasses import dataclass
 from urllib.request import urlopen, urlretrieve
@@ -280,4 +285,3 @@ def get_ordered_uniques(seq):
     seen = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x) or pd.isna(x))]
-

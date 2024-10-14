@@ -1,4 +1,6 @@
 """
+*DRAM v1/early v2 DB description builder script*
+
 Contains most of the backend for the DRAM_setup.py script, used to setup databases for each user.
 """
 from os import path, mkdir

@@ -1,3 +1,4 @@
+// This isn't used in the current version, but we need to fix the absolute paths in the script block
 process GENERIC_HMM_FORMATTER {
     
     input:

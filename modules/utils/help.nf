@@ -10,7 +10,7 @@ DNA_HEADER = """
     _,-'"                         _,-'"
  ,-',' `.`-.                   ,-',' `.`-.
 (==(     )==)                 (==(     )==)
-                  $$workflow.manifest.version
+                  $workflow.manifest.version
 ===========================================
 """
 
@@ -45,42 +45,42 @@ DEPENDENCIES = """
 LICENSE = "MIT License. Micobial Ecosystems Lab, Colorado State University Fort Collins. 2024 (last updated 2024)"
 
 REQUIRED_OPTIONS = """
-REQUIRED DRAM2 profile options:
+REQUIRED $workflow.manifest.name profile options:
     -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM2 either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM2 with no scheduling or scheduling via SLURM.
+                                        Runs $workflow.manifest.name either using Conda (must be installed) or Singularity (must be installed).
+                                        Runs $workflow.manifest.name with no scheduling or scheduling via SLURM.
                                         See SLURM options in full help menu.
 """
 MAIN_HELP = """
 Description:
-    The purpose of DRAM2 is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation.
-    DRAM2 can be used to call, annotate and distill annotations from input FASTA files.
+    The purpose of $workflow.manifest.name is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation.
+    $workflow.manifest.name can be used to call, annotate and distill annotations from input FASTA files.
     Call, annotate and distill can be run together or, each can be run idependently.
 
 Bring up help menu:
-    nextflow run DRAM2 --help (--h)
+    nextflow run $workflow.name --help (--h)
 
 Bring up versions menu:
-    nextflow run DRAM2 --version (--v)
+    nextflow run $workflow.name --version (--v)
 
 Usage:
-    nextflow run DRAM2 --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+    nextflow run $workflow.name --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
     Call genes using input fastas (use --rename to rename FASTA headers):
-        nextflow run DRAM2 --call --rename --input_fasta_dir <path/to/fasta/directory/>
+        nextflow run $workflow.name --call --rename --input_fasta_dir <path/to/fasta/directory/>
 
     Annotate called genes using input fastas:
-        nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory>
+        nextflow run $workflow.name --annotate --input_genes <path/to/called/genes/directory>
 
     Distill using input annotations:
-        nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
+        nextflow run $workflow.name --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
     (Combined): Call, annotate and distill input fasta files:
-        nextflow run DRAM2 --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+        nextflow run $workflow.name --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
     (Real) example: (on multiple lines for clarity)
-    nextflow run DRAM2 --input_fasta ../test_data/
-        --outdir DRAM2-test-data-Feb012024/
+    nextflow run $workflow.name --input_fasta ../test_data/
+        --outdir $workflow.manifest.name-test-data-Feb012024/
         --call --rename
         --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
         --add_annotations ../test-data/old-DRAM-annotations.tsv
@@ -95,12 +95,12 @@ Usage:
         --threads 5
         -with-report -with-trace -with-timeline
 
-Main DRAM2 Operations:
+Main $workflow.manifest.name Operations:
     --call        : Call genes using prodigal
     --annotate    : Annotate called genes using downloaded databases
     --distill     : Distill the annotations into a multi-sheet distillate.xlsx
     --product     : Generate a product heatmap of the annotations
-    --format_kegg : Format KEGG database for use in DRAM2. Standalone operation, will exit after completion.
+    --format_kegg : Format KEGG database for use in $workflow.manifest.name. Standalone operation, will exit after completion.
 """
 
 CALL_OPTIONS = """
@@ -113,7 +113,7 @@ Call options:
 
     --rename                OPTION  Rename FASTA headers based on file name.
                                         Example: sample1.fa --> (fasta header renamed to) > sample1......
-                                        Why? DRAM2 output is focused on scaffolds/contigs with respect to each provided input sample.
+                                        Why? $workflow.manifest.name output is focused on scaffolds/contigs with respect to each provided input sample.
                                             Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable.
                                             *If you have already renamed your FASTA headers, do not include '--call'.
 
@@ -208,12 +208,12 @@ Product options:
 
 TREE_OPTIONS = """
 Tree options:
-    --trees              OPTION  Will run Trees. (This option is not advised as DRAM2 Trees is in development.)
+    --trees              OPTION  Will run Trees. (This option is not advised as $workflow.manifest.name Trees is in development.)
 """
 
 FORMAT_KEGG_DB_OPTIONS = """
 Format KEGG Database options:
-    --format_kegg_db                    Format KEGG database for use in DRAM2. Standalone operation, will exit after completion.
+    --format_kegg_db                    Format KEGG database for use in $workflow.manifest.name. Standalone operation, will exit after completion.
 
     --kegg_pep_loc        PATH    <path/to/kegg.pep>
                                         Path to and of the gene fasta files that are provided by the
@@ -223,7 +223,7 @@ Format KEGG Database options:
     --kegg_db            PATH    <path/to/kegg_db>
                                         Output path to the KEGG database directory. This is where the
                                         formatted KEGG database will be stored. Default: `${params.kegg_db}`
-                                        relative to DRAM2 directory.
+                                        relative to $workflow.manifest.name directory.
     --kegg_download_date STRING  <YYYY-MM-DD>
                                         The date the KEGG database was downloaded. If not provided, the
                                         current date will be used.
@@ -278,7 +278,7 @@ Adjectives options:
 GENERAL_OPTIONS = """
 General options:
     --outdir                PATH    <path/to/output/directory>
-                                        Default: './DRAM2_output/'
+                                        Default: './DRAM_output/'
 
     --threads               NUMBER  Number of threads to use for processing.
                                         Default: `${params.threads}`
@@ -291,55 +291,55 @@ General options:
 """
 
 CALL_DESCRIPTION = """
-Call description: The purpose of DRAM2 --call is to call genes on input FASTA files.
+Call description: The purpose of $workflow.manifest.name --call is to call genes on input FASTA files.
 
 Usage:
 
     Call genes using input fastas:
-        nextflow run DRAM2 --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
+        nextflow run $workflow.manifest.name --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
 """
 
 ANNOTATE_DESCRIPTION = """
-Annotate description: The purpose of DRAM2 '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
+Annotate description: The purpose of $workflow.manifest.name '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
 
 Usage:
 
     Annotate called genes using input called genes and the KOFAM database:
-        nextflow run DRAM2 --annotate --input_genes <path/to/called/genes/directory> --use_kofam
+        nextflow run $workflow.manifest.name --annotate --input_genes <path/to/called/genes/directory> --use_kofam
 
     Annotate called genes using input fasta files and the KOFAM database:
-        nextflow run DRAM2 --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+        nextflow run $workflow.manifest.name --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
 """
 
 DISTILL_DESCRIPTION = """
-Distill description:    The purpose of DRAM2 --distill is to distill down annotations based on curated distillation summary form(s).
+Distill description:    The purpose of $workflow.manifest.name --distill is to distill down annotations based on curated distillation summary form(s).
                         User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
                         Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>).
                         Optional tRNA, rRNA and bin quality may also be provided.
 
 Usage:
-    nextflow run DRAM2 --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
+    nextflow run $workflow.manifest.name --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
     *Important: if more than one topic or ecosystem is included, they must be enclosed in single quotes. Example: --distill_topic 'carbon transport'
 
 Example:
     Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
-        nextflow run DRAM2 --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
+        nextflow run $workflow.manifest.name --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
 """
 
 PRODUCT_DESCRIPTION = """
-Product description: The purpose of DRAM2 --product is to generate a product visualization of the annotations
+Product description: The purpose of $workflow.manifest.name --product is to generate a product visualization of the annotations
 		     and save the output to the output directory.
 
 Usage:
-    nextflow run DRAM2 --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
+    nextflow run $workflow.manifest.name --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
 
 Example:
     Create heatmap product visualization from annotations file and save to output directory:
-        nextflow run DRAM2 --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
+        nextflow run $workflow.manifest.name --product --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/>
 """
 
 ADJECTIVES_DESCRIPTION = """
-Annotate description: The purpose of DRAM2 '--adjectives' is to evaluate genes and describe their features.
+Annotate description: The purpose of $workflow.manifest.name '--adjectives' is to evaluate genes and describe their features.
 
 Usage:
     TO BE ADDED LATER
@@ -348,13 +348,13 @@ THIS IS A WORK IN PROGRESS AND IS NOT YET COMPLETE
 """
 
 FORMAT_KEGG_DB_DESCRIPTION = """
-Format KEGG DB description: The purpose of DRAM2 '--format_kegg' is to format the raw KEGG database (pep files)
-			    for use in DRAM2. Because use of the KEGG database requires a license, the user must download the raw KEGG database
+Format KEGG DB description: The purpose of $workflow.manifest.name '--format_kegg' is to format the raw KEGG database (pep files)
+			    for use in $workflow.manifest.name. Because use of the KEGG database requires a license, the user must download the raw KEGG database
 			    themselves. Currently this only supports formatting a concatenated version of the KEGG pep files see
 			    (https://github.com/WrightonLabCSU/DRAM/issues/305) for guidance on how to prepare your pep files for formatting.
 
 Usage:
-    nextflow run DRAM2 --format_kegg --kegg_pep_loc <path/to/kegg.pep> --kegg_db <path/to/save/output/kegg_db/to>
+    nextflow run $workflow.manifest.name --format_kegg --kegg_pep_loc <path/to/kegg.pep> --kegg_db <path/to/save/output/kegg_db/to>
 """
 
 /*

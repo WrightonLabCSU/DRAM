@@ -6,8 +6,9 @@ __pycache__/
 # nextflow trace logs
 trace*.txt
 
-# DRAM output folder2
+# DRAM output folders
 DRAM2_output/
+DRAM_output/
 work/
 
 # Visualization Output Files

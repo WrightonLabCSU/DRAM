@@ -45,7 +45,7 @@ def process_dbcan(db_dir):
     return data, skipped_lines
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate descriptions database for DRAM2.")
+    parser = argparse.ArgumentParser(description="Generate descriptions database for DRAM.")
     parser.add_argument('--db_dir', required=True, help="Directory containing the database subdirectories.")
     parser.add_argument('--output_db', required=True, help="Path to the output SQLite database.")
     parser.add_argument('--log', required=True, help="Path to the log file.")

@@ -1,4 +1,4 @@
-# This Dockerfile is used to build the DRAM2 container image
+# This Dockerfile is used to build the DRAM container image
 # This image references files in the assets directory
 # so the Docker build context should be the root of the repository
 # The Dockerfile is run from the root of the repository with the following command:
@@ -38,11 +38,11 @@ RUN conda update conda \
     && conda env create -f /opt/environment.yml
 
 # Add conda environment to PATH
-ENV PATH /opt/conda/envs/dram2-env/bin:$PATH
-ENV CONDA_DEFAULT_ENV dram2-env
+ENV PATH /opt/conda/envs/dram-env/bin:$PATH
+ENV CONDA_DEFAULT_ENV dram-env
 
 # Activate conda environment
-RUN echo "conda activate dram2-env" >> ~/.bashrc
+RUN echo "conda activate dram-env" >> ~/.bashrc
 
 # Clean up
 RUN apt-get clean

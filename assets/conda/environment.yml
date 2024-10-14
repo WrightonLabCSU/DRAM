@@ -1,4 +1,4 @@
-name: dram2-env
+name: dram-env
 channels:
   - conda-forge
   - bioconda
