@@ -68,12 +68,13 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
     - You can find the data [here](https://app.globus.org/file-manager?origin_id=97ed64b9-dea0-4eb5-a7e0-0b50ac94e889). UUID: 97ed64b9-dea0-4eb5-a7e0-0b50ac94e889 You will need a Globus account to access and download the data.
     - The download consists of a database folder that contains all the preformatted databases with the description database. As well as a containers folder that contains the docker image to be ran with your container runtime. 
 
-5) DRAM by default looks for the databases and container image relative to the launch directory, if you would like to change this, change where you want to store the DRAM data, or other configuration options such as what container runtime you are using, SLURM options, etc. you can download this defaults configuration file to customize your DRAM run.
+5) DRAM by default looks for the databases and container image relative to the launch directory, if you would like to change this, change where you want to store the DRAM data, or other configuration options such as what container runtime you are using, SLURM options, customize or add other profile options, etc. you can download this defaults configuration file to customize your DRAM run.
 
     ```
-    curl -o nextflow.config https://raw.githubusercontent.com/WrightonLabCSU/DRAM/refs/heads/dev/assets/configs/nextflow.config
+    curl -o nextflow.config https://raw.githubusercontent.com/WrightonLabCSU/DRAM/refs/heads/dev/nextflow.config
     ```
 
+    If you don't download the nextflow.config file, DRAM will run with the default settings, but you can still override options on the command line.
 
 6) You can use nextflow to install and update DRAM by running the following command anywhere on your system:
 
