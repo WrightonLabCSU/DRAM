@@ -1,4 +1,9 @@
-"""Tool to parse the rules tsv, and make a graph."""
+"""
+*Old DRAM v1/early v2 code*
+
+
+Tool to parse the rules tsv, and make a graph.
+"""
 import re
 import os
 from pathlib import Path

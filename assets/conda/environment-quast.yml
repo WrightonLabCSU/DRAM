@@ -1,4 +1,4 @@
-name: dram2-quast-env
+name: dram-quast-env
 channels:
   - conda-forge
   - bioconda
