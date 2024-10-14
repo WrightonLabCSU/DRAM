@@ -1,6 +1,8 @@
+CONDA_ENV_DEPS = file(params.main_environment).text.split('dependencies:')[1]
+
 DNA_HEADER = """
 ===========================================
-                  $workflow.manifest.name
+                   $workflow.manifest.name
 (==(     )==)                 (==(     )==)
  `-.`. ,',-'                   `-.`. ,',-'
     _,-'"                         _,-'"
@@ -10,36 +12,14 @@ DNA_HEADER = """
     _,-'"                         _,-'"
  ,-',' `.`-.                   ,-',' `.`-.
 (==(     )==)                 (==(     )==)
-                  $workflow.manifest.version
+                   $workflow.manifest.version
 ===========================================
 """
 
 DEPENDENCIES = """
     Software versions used:
 
-    BBTools             v39.01
-    Bowtie2             v2.5.1
-    Prodigal            v2.6.3
-    Python              v3.10
-    Pandas              v1.5.2
-    Pytest              v7.2.0
-    Scikit-bio          v0.5.7
-    MMseqs2             v14.7e284
-    HMMER               v3.3.2
-    SciPy               v1.8.1
-    SQLAlchemy          v1.4.46
-    Barrnap             v0.9
-    OpenPyXL            v3.0.10
-    NetworkX            v2.8.8
-    Ruby                v3.1.2
-    GNU Parallel        v20221122
-    tRNAscan-SE         v2.0.12
-    Samtools            v1.17
-    CD-HIT              v4.6
-    CoverM              v0.6.1
-    Subread             v2.0.6
-    XlsxWriter          v3.1.6
-    Numpy               v1.26.0
+    $CONDA_ENV_DEPS
 """
 
 LICENSE = "MIT License. Micobial Ecosystems Lab, Colorado State University Fort Collins. 2024 (last updated 2024)"
@@ -58,28 +38,28 @@ Description:
     Call, annotate and distill can be run together or, each can be run idependently.
 
 Bring up help menu:
-    nextflow run $workflow.name --help (--h)
+    nextflow run $workflow.manifest.name --help (--h)
 
 Bring up versions menu:
-    nextflow run $workflow.name --version (--v)
+    nextflow run $workflow.manifest.name --version (--v)
 
 Usage:
-    nextflow run $workflow.name --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+    nextflow run $workflow.manifest.name --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
     Call genes using input fastas (use --rename to rename FASTA headers):
-        nextflow run $workflow.name --call --rename --input_fasta_dir <path/to/fasta/directory/>
+        nextflow run $workflow.manifest.name --call --rename --input_fasta_dir <path/to/fasta/directory/>
 
     Annotate called genes using input fastas:
-        nextflow run $workflow.name --annotate --input_genes <path/to/called/genes/directory>
+        nextflow run $workflow.manifest.name --annotate --input_genes <path/to/called/genes/directory>
 
     Distill using input annotations:
-        nextflow run $workflow.name --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
+        nextflow run $workflow.manifest.name --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 
     (Combined): Call, annotate and distill input fasta files:
-        nextflow run $workflow.name --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
+        nextflow run $workflow.manifest.name --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
     (Real) example: (on multiple lines for clarity)
-    nextflow run $workflow.name --input_fasta ../test_data/
+    nextflow run $workflow.manifest.name --input_fasta ../test_data/
         --outdir $workflow.manifest.name-test-data-Feb012024/
         --call --rename
         --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
