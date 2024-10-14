@@ -18,6 +18,14 @@
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Enable Nextflow DSL2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+nextflow.enable.dsl = 2
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Internal DRAM parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -125,23 +133,6 @@ params.trees_scripts = "${projectDir}/assets"
 // Move to nextflow.config when ready
 params.adjectives = 0
 params.adjectives_script = "${projectDir}/assets/adjectives/adjectives.py"
-
-/* Containers and Environments */
-params.main_environment = "${projectDir}/assets/conda/environment.yml"
-params.quast_environment = "${projectDir}/assets/conda/environment-quast.yml"
-params.conda_slurm_config = "${projectDir}/assets/conda/conda_slurm.config"
-params.conda_config = "${projectDir}/assets/conda/conda.config"
-params.singularity_slurm_config = "${projectDir}/assets/singularity/singularity_slurm.config"
-params.singularity_config = "${projectDir}/assets/singularity/singularity.config"
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Enable Nextflow DSL2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

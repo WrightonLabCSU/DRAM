@@ -83,7 +83,7 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
 
     (Once DRAM v2 is out of development, the `-r dev` will be removed and the command will be `nextflow pull WrightonLabCSU/DRAM`)
 
-    You can install or update DRAM by rerunning the pull command,
+    You can update DRAM by rerunning the pull command,
 
     ```
     nextflow pull DRAM
