@@ -167,25 +167,22 @@ def read_join_pep_kff(paths:tuple):
     return np.array([pep_ids, pep_out], dtype=object)
 
 
-def main(pep_loc, output_file):
-    organisms = [i for i in get_file_sets(pep_loc)]
-    global logging
-    if logging.error.counter > 0:
-        logging.critical("The program will end execution because there may be errors in downloading.")
-        raise ValueError("System exiting see logs for why.")
-    with Pool(30) as pool:
-        pep = np.concatenate(pool.map(read_join_pep_kff, organisms), axis=1, dtype=object)
-    ids=pep[0,:]
-    unique_ids, indices = np.unique(ids, return_index=True)
-    pep_out=pep[1,indices]
-    logging.info("%s", f"The number of non unique organisms is: {len(ids) - len(pep_out)}")
-    with open(output_file, 'a') as outFile:
-        SeqIO.write(pep_out, outFile, 'fasta')
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Remove duplicates from KEGG pep files")
     parser.add_argument("--pep_loc", type=str, help="Path to the KEGG pep files parent dir", default=join("ftp.kegg.net", "kegg", "genes", "organisms"))
     parser.add_argument("--output_file", type=str, help="Path to the output file", default="kegg-all-orgs_unique_reheader.pep")
     args = parser.parse_args()
 
-    main(pep_loc=args.pep_loc, output_file=args.output_file)
+    organisms = [i for i in get_file_sets(args.pep_loc)]
+    if logging.error.counter > 0:
+        logging.critical("The program will end execution because there may be errors in downloading.")
+        raise ValueError("System exiting see logs for why.")
+    with Pool(30) as pool:
+        pep = np.concatenate(pool.map(read_join_pep_kff, organisms), axis=1, dtype=object)
+
+    ids=pep[0,:]
+    unique_ids, indices = np.unique(ids, return_index=True)
+    pep_out=pep[1,indices]
+    logging.info("%s", f"The number of non unique organisms is: {len(ids) - len(pep_out)}")
+    with open(args.output_file, 'a') as outFile:
+        SeqIO.write(pep_out, outFile, 'fasta')
