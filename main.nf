@@ -1086,8 +1086,28 @@ if( params.annotate && params.call == "" && (params.distill_ecosystem =="" || pa
 
             """
             .stripIndent()
+}else if( params.format_kegg )){
+    log.info """
+            $workflow.manifest.name Nextflow
+            ===================================
+            format_kegg_db     : ${params.format_kegg_db}
+            kegg_pep_loc       : ${params.kegg_pep_loc}
+            gene_ko_link_loc   : ${params.gene_ko_link_loc}
+            kegg_db            : ${params.kegg_db}
+            kegg_download_date : ${params.kegg_download_date}
+            threads            : ${params.threads}
+            """
+            .stripIndent()
 }
 
+// Print CLI command to log
+log.info """
+
+$workflow.manifest.name called with the following:
+    $workflow.commandLine
+
+"""
+.stripIndent()
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
