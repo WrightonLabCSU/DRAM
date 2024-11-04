@@ -122,10 +122,8 @@ params.make_product_pkg = "dram_viz"
 // Move to nextflow.config when ready
 params.trees = 0
 params.add_trees = 0
-params.trees = 0
 params.trees_list = "dmso"
 //trees_list = "nar_nxr;dsr;mcra;amoa_pmoa;hydrogenase"
-params.add_trees = ""
 params.tree_data_files = "${projectDir}/assets/trees/"
 params.trees_scripts = "${projectDir}/assets"
 
@@ -635,7 +633,7 @@ if( params.rename || params.call ){
     // If calling genes, then create a channel called ch_input_fastas.
     if ( params.input_fasta != "" ) {
         ch_input_fastas = Channel
-            .fromPath(params.input_fasta + params.fasta_fmt, checkIfExists: true)
+            .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
     } else {
         ch_input_fastas = Channel
@@ -664,7 +662,7 @@ if( params.annotate ){
     if( params.call == 0 ){
         // Set ch_input_genes
         ch_called_proteins = Channel
-            .fromPath(params.input_genes + params.genes_fmt, checkIfExists: true)
+            .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
             .map {
                 sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
@@ -775,7 +773,7 @@ if( params.trees ) {
             .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene fasta files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
 
         ch_collected_faa = Channel
-            .fromPath(params.input_genes + params.genes_fmt, checkIfExists: true)
+            .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotations without --input_genes, with the desire to run trees, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
             .collect()
     }
