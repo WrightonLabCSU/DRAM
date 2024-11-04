@@ -250,12 +250,12 @@ Additionally, `--merge-annotations` and `--rename` can be run idenpendently of a
 
 1) **Rename fasta headers based on input sample file names:**
 
-`nextflow run DRAM --rename --input_fasta_dir <path/to/fasta/directory/>`
+`nextflow run DRAM --rename --input_fasta <path/to/fasta/directory/>`
 
 
 2) **Call genes using input fastas (use --rename to rename FASTA headers):**
 
-`nextflow run DRAM --call --rename --input_fasta_dir <path/to/fasta/directory/>`
+`nextflow run DRAM --call --rename --input_fasta <path/to/fasta/directory/>`
 
     
 3) **Annotate called genes using input called genes and the KOFAM database:**
@@ -285,7 +285,7 @@ Additionally, `--merge-annotations` and `--rename` can be run idenpendently of a
 
 8) **Call and Annotate genes using input fastas and KOFAM database. Distill using the default topic and the AG ecosystem:**
 
-`nextflow run DRAM --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
+`nextflow run DRAM --input_fasta <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic default --distill_ecosystem ag --threads <threads> --use_kofam`
 
 
 9) **"Real-world" example using the test data provided in this repository:**
@@ -334,7 +334,7 @@ DRAM
         nextflow run DRAM --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
         Call genes using input fastas (use --rename to rename FASTA headers):
-            nextflow run DRAM --call --rename --input_fasta_dir <path/to/fasta/directory/>
+            nextflow run DRAM --call --rename --input_fasta <path/to/fasta/directory/>
 
         Annotate called genes using input fastas:
             nextflow run DRAM --annotate --input_genes <path/to/called/genes/directory>
@@ -465,7 +465,7 @@ DRAM
     Usage:
 
         Call genes using input fastas:
-            nextflow run DRAM --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
+            nextflow run DRAM --call --input_fasta <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
     
     REQUIRED DRAM profile options:
         -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
@@ -587,7 +587,7 @@ DRAM
     
     Example:
         Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
-            nextflow run DRAM --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
+            nextflow run DRAM --input_fasta <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
     
     REQUIRED DRAM profile options:
         -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
