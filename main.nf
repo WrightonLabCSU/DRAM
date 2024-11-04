@@ -1,6 +1,6 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    DRAM: DRAM (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic assembled genomes.
+    DRAM: DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Homepage of project
@@ -458,6 +458,20 @@ if( params.use_dbset == "adjectives_set" ){
 //  channels for the various annotation databases
     def annotate_list = ""
 
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Defaults for all processes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+ch_distill_sql_script = file(params.distill_sql_script)
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    specific process stuff
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
 if( params.annotate ){
     //This is just temporary - want these in the containers eventually
     ch_combine_annot_script = file(params.combine_annotations_script)
@@ -685,7 +699,6 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     distill_flag = "on"
     // Set channels for supporting python scripts - will be moved to container eventually
     ch_distill_xlsx_script = file(params.distill_xlsx_script)
-    ch_distill_sql_script = file(params.distill_sql_script)
 
     // Ensure rRNA and tRNA channels are populated if the user is not calling genes
     if( params.call == 0 ){
@@ -742,8 +755,7 @@ if( params.trees ) {
 
     ch_count_annots_script = file(params.count_annots_script)
     ch_distill_xlsx_script = file(params.distill_xlsx_script)
-    ch_distill_sql_script = file(params.distill_sql_script)
-    
+
     //Add in option for --add_trees <list of paths to trees refpkg directories>
     if( params.add_trees ){
         ch_add_trees = file(params.add_trees).exists() ? file(params.add_trees) : error("Error: If using --add_trees, you must supply a path to a directory containing each tree subdirectory. Additional trees directory not found at ${params.add_trees}")

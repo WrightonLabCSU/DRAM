@@ -47,7 +47,7 @@ Usage:
     nextflow run $workflow.manifest.name --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
 
     Call genes using input fastas (use --rename to rename FASTA headers):
-        nextflow run $workflow.manifest.name --call --rename --input_fasta_dir <path/to/fasta/directory/>
+        nextflow run $workflow.manifest.name --call --rename --input_fasta <path/to/fasta/directory/>
 
     Annotate called genes using input fastas:
         nextflow run $workflow.manifest.name --annotate --input_genes <path/to/called/genes/directory>
@@ -276,7 +276,7 @@ Call description: The purpose of $workflow.manifest.name --call is to call genes
 Usage:
 
     Call genes using input fastas:
-        nextflow run $workflow.manifest.name --call --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
+        nextflow run $workflow.manifest.name --call --input_fasta <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
 """
 
 ANNOTATE_DESCRIPTION = """
@@ -303,7 +303,7 @@ Usage:
 
 Example:
     Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
-        nextflow run $workflow.manifest.name --input_fasta_dir <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
+        nextflow run $workflow.manifest.name --input_fasta <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
 """
 
 PRODUCT_DESCRIPTION = """
