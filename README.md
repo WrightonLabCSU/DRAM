@@ -8,9 +8,15 @@ For more detail on DRAM and how DRAM works please see our [paper](https://academ
 
 For information on how DRAM is changing, please read the most recent [release notes](https://github.com/WrightonLabCSU/DRAM/releases/latest).
 
-### DRAM2 Development Note
+### DRAM v2 Development Note
 
-The DRAM development team is actively working on DRAM2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM1. Features requested for DRAM1 will be added to DRAM2, to the best of our ability and as appropriate.  We will continue to fix bugs and assist the user community in troubleshooting DRAM1, and support will not end for a long time yet, but the 1.4 release cycle will be the last.
+The DRAM development team is actively working on DRAM v2. We do not anticipate adding any additional functionality to DRAM, i.e. DRAM v1. Features requested for DRAM1 will be added to DRAM v2, to the best of our ability and as appropriate. 
+
+#### DRAM v2 Public Beta
+
+DRAM v2 is now open for public beta testing. You can try out DRAM v2 by heading over to the dev branch of this [repository](https://github.com/WrightonLabCSU/DRAM/tree/dev)
+
+DRAM v2 was implemented in [Nextflow](https://www.nextflow.io) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
 
 ## Getting Started Part 1: Installation
 
