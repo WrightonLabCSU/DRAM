@@ -16,8 +16,8 @@ LOGGER = logging.getLogger("database_processing.log")
 
 def prepare_databases(
     kegg_loc,
+    gene_ko_link_loc,
     output_dir="kegg",
-    gene_ko_link_loc=None,
     kegg_download_date=None,
     threads=10,
 ):
@@ -144,18 +144,26 @@ def get_iso_date():
 def main():
     parser = argparse.ArgumentParser(description="Prepare KEGG database")
     parser.add_argument("--kegg_loc", type=str, help="Path to the KEGG fasta file")
-    parser.add_argument("--output_dir", type=str, help="Path to the output directory", default="kegg")
     parser.add_argument(
         "--gene_ko_link_loc", type=str, help="Path to the gene KO link file"
     )
-    parser.add_argument("--download_date", type=str, help="Date of the KEGG download")
+    parser.add_argument(
+        "--skip_gene_ko_link", type=bool, help="Skip gene KO link processing. If not passed in, `--gene_ko_link_loc` is required", default=False
+    )
+    parser.add_argument("--output_dir", type=str, help="Path to the output directory", default="kegg")
+    parser.add_argument("--download_date", type=str, help="Date of the KEGG download, if not included, will use today's date")
     parser.add_argument("--threads", type=int, help="Number of threads to use", default=10)
     args = parser.parse_args()
+    
+    if not args.skip_gene_ko_link and not args.gene_ko_link_loc:
+        parser.error("If `--skip_gene_ko_link` is not passed in, `--gene_ko_link_loc` is required")
+    if args.skip_gene_ko_link and args.gene_ko_link_loc:
+        parser.error("If `--skip_gene_ko_link` is passed in, `--gene_ko_link_loc` is not allowed")
 
     prepare_databases(
         kegg_loc=args.kegg_loc,
-        output_dir=args.output_dir,
         gene_ko_link_loc=args.gene_ko_link_loc,
+        output_dir=args.output_dir,
         kegg_download_date=args.download_date,
         threads=args.threads,
     )
