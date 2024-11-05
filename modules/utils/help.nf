@@ -200,6 +200,7 @@ Format KEGG Database options:
                                         KEGG FTP server or a concatenated version of them
     --gene_ko_link_loc    PATH    <path/to/genes_ko_link>
                                         Path to the genes_ko_link file downloaded from KEGG
+                                        
     --kegg_db            PATH    <path/to/kegg_db>
                                         Output path to the KEGG database directory. This is where the
                                         formatted KEGG database will be stored. Default: `${params.kegg_db}`

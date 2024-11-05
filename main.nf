@@ -139,6 +139,7 @@ params.adjectives_script = "${projectDir}/assets/adjectives/adjectives.py"
 */
 include { helpMessage; callHelpMessage; annotateHelpMessage; distillHelpMessage; productHelpMessage; adjectivesHelpMessage; formatKeggHelpMessage; version } from "${projectDir}/modules/utils/help.nf"
 include { FORMAT_KEGG_DB                                  } from "${projectDir}/modules/database/format_kegg_db.nf"
+include { CAT_KEGG_PEP                                  } from "${projectDir}/modules/database/cat_kegg_pep.nf"
 
 include { RENAME_FASTA                                  } from "${projectDir}/modules/call/rename_fasta.nf"
 include { CALL_GENES                                    } from "${projectDir}/modules/call/call_genes_prodigal.nf"
@@ -996,7 +997,7 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
 */
 if ( params.format_kegg ) {
     ch_format_kegg_db_script = file(params.format_kegg_db_script)
-    ch_kegg_pep = file(params.kegg_pep_loc).exists() ? file(params.kegg_pep_loc) : error("Error: when using running format_kegg, the kegg_pep_loc file must exists. KEGG pep file not found at ${params.kegg_pep_loc}")
+    ch_kegg_pep = file(params.kegg_pep_loc)
     /*
     if ( params.gene_ko_link_loc != "" ) {
         ch_gene_ko_link = file(params.gene_ko_link_loc).exists() ? file(params.gene_ko_link_loc) : error("Error: If supplying gene_ko_link_loc, the file must exists. Gene-KO link file not found at ${params.gene_ko_link_loc}")
@@ -1023,6 +1024,12 @@ if ( params.format_kegg ) {
     }
     else {
         kegg_download_date = "''"
+    }
+    if ( params.kegg_pep_root_dir ) {
+        ch_kegg_pep_root_dir =  file(params.kegg_pep_root_dir)
+    }
+    else {
+        ch_kegg_pep_root_dir = "''"
     }
 }
 
@@ -1114,6 +1121,14 @@ workflow {
 
     /* If we are formatting kegg, we do that and then exit the program */
     if ( params.format_kegg ) {
+        if ( params.kegg_pep_root_dir != "" ) {
+            CAT_KEGG_PEP( file(params.kegg_pep_root_dir) )
+            ch_kegg_pep = CAT_KEGG_PEP.out.kegg_pep
+        }
+
+        if ( !ch_kegg_pep.exists() ) {
+            error("Error: when using running format_kegg, the kegg_pep_loc file must exists. KEGG pep file not found at ${params.kegg_pep_loc}")
+        }
         FORMAT_KEGG_DB( ch_kegg_pep, ch_gene_ko_link, ch_format_kegg_db_script, kegg_download_date )
         return
     }
