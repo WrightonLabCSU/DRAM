@@ -193,13 +193,14 @@ Tree options:
 
 FORMAT_KEGG_DB_OPTIONS = """
 Format KEGG Database options:
-    --format_kegg_db                    Format KEGG database for use in $workflow.manifest.name. Standalone operation, will exit after completion.
+    --format_kegg                      Format KEGG database for use in $workflow.manifest.name. Standalone operation, will exit after completion.
 
     --kegg_pep_loc        PATH    <path/to/kegg.pep>
                                         Path to and of the gene fasta files that are provided by the
                                         KEGG FTP server or a concatenated version of them
     --gene_ko_link_loc    PATH    <path/to/genes_ko_link>
                                         Path to the genes_ko_link file downloaded from KEGG
+
     --kegg_db            PATH    <path/to/kegg_db>
                                         Output path to the KEGG database directory. This is where the
                                         formatted KEGG database will be stored. Default: `${params.kegg_db}`
@@ -207,6 +208,9 @@ Format KEGG Database options:
     --kegg_download_date STRING  <YYYY-MM-DD>
                                         The date the KEGG database was downloaded. If not provided, the
                                         current date will be used.
+    --skip_gene_ko_link  OPTION         Skip the gene_ko_link file. If you are using an older version of KEGG that does 
+                                        supply the gene_ko_link file you can use this option to skip the gene_ko_link 
+                                        file. Otherwise, the gene_ko_link file is required.
 """
 
 ADJECTIVES_OPTIONS = """
