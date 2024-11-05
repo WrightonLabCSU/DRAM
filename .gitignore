@@ -29,8 +29,8 @@ nextflow-LOCAL.config
 .Rhistory
 .nextflow*
 databases/
-assets/forms/kofam*
-assets/forms/*hmm*
+bin/forms/kofam*
+bin/forms/*hmm*
 assets/bbmap/*
 assets/bbmap
 assets/bbmap/

@@ -62,58 +62,58 @@ params.distill_flag = 0
 
 /* Distill sheets */
 /* Dummy sheet */
-params.distill_dummy_sheet = "${projectDir}/assets/forms/distill_sheets/dummy.tsv"
+params.distill_dummy_sheet = "${projectDir}/bin/forms/distill_sheets/dummy.tsv"
 
 /* Topic */
-params.distill_carbon_sheet = "${projectDir}/assets/forms/distill_sheets/distill_carbon_Jan252024.tsv"
-params.distill_energy_sheet = "${projectDir}/assets/forms/distill_sheets/distill_energy_Jan252024.tsv"
-params.distill_misc_sheet = "${projectDir}/assets/forms/distill_sheets/distill_misc_Jan252024.tsv"
-params.distill_nitrogen_sheet = "${projectDir}/assets/forms/distill_sheets/distill_nitrogen_Jan252024.tsv"
-params.distill_transport_sheet = "${projectDir}/assets/forms/distill_sheets/distill_transport_Jan252024.tsv"
-params.distill_camper_sheet = "${projectDir}/assets/forms/distill_sheets/distill_camper_Feb122024.tsv"
+params.distill_carbon_sheet = "${projectDir}/bin/forms/distill_sheets/distill_carbon_Jan252024.tsv"
+params.distill_energy_sheet = "${projectDir}/bin/forms/distill_sheets/distill_energy_Jan252024.tsv"
+params.distill_misc_sheet = "${projectDir}/bin/forms/distill_sheets/distill_misc_Jan252024.tsv"
+params.distill_nitrogen_sheet = "${projectDir}/bin/forms/distill_sheets/distill_nitrogen_Jan252024.tsv"
+params.distill_transport_sheet = "${projectDir}/bin/forms/distill_sheets/distill_transport_Jan252024.tsv"
+params.distill_camper_sheet = "${projectDir}/bin/forms/distill_sheets/distill_camper_Feb122024.tsv"
 
 /* Ecosystem */
-params.distill_eng_sys_sheet = "${projectDir}/assets/forms/distill_sheets/distill_eng_sys_Jan252024.tsv"
-params.distill_ag_sheet = "${projectDir}/assets/forms/distill_sheets/distill_ag_Jan252024.tsv"
+params.distill_eng_sys_sheet = "${projectDir}/bin/forms/distill_sheets/distill_eng_sys_Jan252024.tsv"
+params.distill_ag_sheet = "${projectDir}/bin/forms/distill_sheets/distill_ag_Jan252024.tsv"
 
 /* Additional forms */
-params.module_step_form = "${projectDir}/assets/forms/module_step_form.20220928.tsv"
-params.function_heatmap_form = "${projectDir}/assets/forms/function_heatmap_form.20220928.tsv"
-params.etc_module_database = "${projectDir}/assets/forms/etc_module_database.20220928.tsv"
-params.amg_database = "${projectDir}/assets/forms/amg_database.20220928.tsv"
+params.module_step_form = "${projectDir}/bin/forms/module_step_form.20220928.tsv"
+params.function_heatmap_form = "${projectDir}/bin/forms/function_heatmap_form.20220928.tsv"
+params.etc_module_database = "${projectDir}/bin/forms/etc_module_database.20220928.tsv"
+params.amg_database = "${projectDir}/bin/forms/amg_database.20220928.tsv"
 
 /* Supporting scripts TEMPORARY - will be put into containers or within repo */
 /* Annotation foramtting scripts */
-params.parse_hmmsearch_script = "${projectDir}/assets/parse_hmmsearch.py"
-params.kegg_formatter_script = "${projectDir}/assets/kegg_hmm_formatter.py"
-params.kofam_hmm_formatter_script = "${projectDir}/assets/kofam_hmm_formatter.py"
-params.dbcan_hmm_formatter_script = "${projectDir}/assets/dbcan_hmm_formatter.py"
-params.canthyd_hmm_formatter_script = "${projectDir}/assets/canthyd_hmm_formatter.py"
-params.vog_hmm_formatter_script = "${projectDir}/assets/vog_hmm_formatter.py"
-params.camper_hmm_formatter_script = "${projectDir}/assets/camper_hmm_formatter.py"
-params.sulfur_hmm_formatter_script = "${projectDir}/assets/sulfur_hmm_formatter.py"
-params.fegenie_hmm_formatter_script = "${projectDir}/assets/fegenie_hmm_formatter.py"
+params.parse_hmmsearch_script = "${projectDir}/bin/parse_hmmsearch.py"
+params.kegg_formatter_script = "${projectDir}/bin/kegg_hmm_formatter.py"
+params.kofam_hmm_formatter_script = "${projectDir}/bin/kofam_hmm_formatter.py"
+params.dbcan_hmm_formatter_script = "${projectDir}/bin/dbcan_hmm_formatter.py"
+params.canthyd_hmm_formatter_script = "${projectDir}/bin/canthyd_hmm_formatter.py"
+params.vog_hmm_formatter_script = "${projectDir}/bin/vog_hmm_formatter.py"
+params.camper_hmm_formatter_script = "${projectDir}/bin/camper_hmm_formatter.py"
+params.sulfur_hmm_formatter_script = "${projectDir}/bin/sulfur_hmm_formatter.py"
+params.fegenie_hmm_formatter_script = "${projectDir}/bin/fegenie_hmm_formatter.py"
 
 /* Annotation mmseqs and SQL related scripts */
-params.mmseqs_add_descriptions_script = "${projectDir}/assets/mmseqs_add_descriptions.py"
-params.sql_parser_script = "${projectDir}/assets/sql_add_descriptions.py"
-params.mmseqs_rbh_filter_script = "${projectDir}/assets/rbh_mmseqs_filter.py"
-params.format_kegg_db_script = "${projectDir}/assets/format_kegg_database.py"
+params.mmseqs_add_descriptions_script = "${projectDir}/bin/mmseqs_add_descriptions.py"
+params.sql_parser_script = "${projectDir}/bin/sql_add_descriptions.py"
+params.mmseqs_rbh_filter_script = "${projectDir}/bin/rbh_mmseqs_filter.py"
+params.format_kegg_db_script = "${projectDir}/bin/format_kegg_database.py"
 
 /* GFF and GBK generation script */
-params.ch_generate_gff_gbk_script = "${projectDir}/assets/generate_gff_genbank.py"
+params.ch_generate_gff_gbk_script = "${projectDir}/bin/generate_gff_genbank.py"
 
 /* Call genes related scripts */
-params.generate_gene_locs_script = "${projectDir}/assets/generate_gene_loc_tsv.py"
-params.called_genes_loc_script_faa = "${projectDir}/assets/generate_faa_gene_loc_tsv.py"
+params.generate_gene_locs_script = "${projectDir}/bin/generate_gene_loc_tsv.py"
+params.called_genes_loc_script_faa = "${projectDir}/bin/generate_faa_gene_loc_tsv.py"
 
 /* Combining annotations scripts */
-params.combine_annotations_script = "${projectDir}/assets/combine_annotations.py"
-params.count_annots_script = "${projectDir}/assets/count_annotations.py"
+params.combine_annotations_script = "${projectDir}/bin/combine_annotations.py"
+params.count_annots_script = "${projectDir}/bin/count_annotations.py"
 
 /* Distill related scripts */
-params.distill_xlsx_script = "${projectDir}/assets/distill_xlsx.py"
-params.distill_sql_script = "${projectDir}/assets/distill_sql.py"
+params.distill_xlsx_script = "${projectDir}/bin/distill_xlsx.py"
+params.distill_sql_script = "${projectDir}/bin/distill_sql.py"
 
 /* Product related scripts */
 params.make_product_pkg = "dram_viz"
@@ -124,8 +124,8 @@ params.trees = 0
 params.add_trees = 0
 params.trees_list = "dmso"
 //trees_list = "nar_nxr;dsr;mcra;amoa_pmoa;hydrogenase"
-params.tree_data_files = "${projectDir}/assets/trees/"
-params.trees_scripts = "${projectDir}/assets"
+params.tree_data_files = "${projectDir}/bin/trees/"
+params.trees_scripts = "${projectDir}/bin"
 
 /* Adjectives Options */
 // Move to nextflow.config when ready
@@ -869,41 +869,41 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     }
 
     if (distill_carbon == "1") {
-        ch_distill_carbon = file(params.distill_carbon_sheet).exists() ? file(params.distill_carbon_sheet) : error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_carbon = file(params.distill_carbon_sheet).exists() ? file(params.distill_carbon_sheet) : error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./bin/forms/distill_sheets.")
 
     } else{
         ch_distill_carbon = default_channel
     }
     if (distill_energy == "1") {
-        ch_distill_energy = file(params.distill_energy_sheet).exists() ? file(params.distill_energy_sheet) : error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_energy = file(params.distill_energy_sheet).exists() ? file(params.distill_energy_sheet) : error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./bin/forms/distill_sheets.")
 
     } else{
         ch_distill_energy = default_channel
     }
 
     if (distill_misc == "1") {
-        ch_distill_misc = file(params.distill_misc_sheet).exists() ? file(params.distill_misc_sheet) : error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_misc = file(params.distill_misc_sheet).exists() ? file(params.distill_misc_sheet) : error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./bin/forms/distill_sheets.")
 
     } else{
         ch_distill_misc = default_channel
     }
 
     if (distill_nitrogen == "1") {
-        ch_distill_nitrogen = file(params.distill_nitrogen_sheet).exists() ? file(params.distill_nitrogen_sheet) : error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_nitrogen = file(params.distill_nitrogen_sheet).exists() ? file(params.distill_nitrogen_sheet) : error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./bin/forms/distill_sheets.")
 
     } else{
         ch_distill_nitrogen = default_channel
     }
 
     if (distill_transport == "1") {
-        ch_distill_transport = file(params.distill_transport_sheet).exists() ? file(params.distill_transport_sheet) : error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_transport = file(params.distill_transport_sheet).exists() ? file(params.distill_transport_sheet) : error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./bin/forms/distill_sheets.")
 
     } else{
         ch_distill_transport = default_channel
     }
 
     if (distill_camper == "1") {
-        ch_distill_camper = file(params.distill_camper_sheet).exists() ? file(params.distill_camper_sheet) : error("Error: If using --distill_topic camper, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_camper = file(params.distill_camper_sheet).exists() ? file(params.distill_camper_sheet) : error("Error: If using --distill_topic camper, you must have the preformatted distill sheets in ./bin/forms/distill_sheets.")
 
     } else{
         ch_distill_camper = default_channel
@@ -936,14 +936,14 @@ if (params.distill_topic != "" || params.distill_ecosystem != "" || params.disti
     }
 
     if (distill_eng_sys == "1") {
-        ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./bin/forms/distill_sheets.")
 
     } else{
         ch_distill_eng_sys = default_channel
     }
 
     if (distill_ag == "1") {
-        ch_distill_ag = file(params.distill_ag_sheet).exists() ? file(params.distill_ag_sheet) : error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+        ch_distill_ag = file(params.distill_ag_sheet).exists() ? file(params.distill_ag_sheet) : error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./bin/forms/distill_sheets.")
 
     } else{
         ch_distill_ag = default_channel

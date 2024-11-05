@@ -65,7 +65,7 @@ Usage:
         --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur
         --add_annotations ../test-data/old-DRAM-annotations.tsv
         --distill_topic 'carbon transport energy' --distill_ecosystem 'eng_sys ag'
-        --distill_custom assets/forms/distill_sheets/test.tsv -resume --slurm_node zenith
+        --distill_custom bin/forms/distill_sheets/test.tsv -resume --slurm_node zenith
         --trnas ../test-data/trnas.tsv
         --rrnas ../test-data/rrnas.tsv
         --bin_quality ../test-data/checkM1-test-data.tsv
