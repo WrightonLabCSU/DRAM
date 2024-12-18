@@ -1,7 +1,7 @@
-import argparse
 import pandas as pd
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import click
 
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -86,16 +86,15 @@ def combine_annotations(annotation_files, output_file, threads):
     combined_data.to_csv(output_file, index=False, sep='\t')
     logging.info(f"Combined annotations saved to {output_file}, with corrected gene numbers.")
 
+@click.command()
+@click.option('--annotations', '-a', multiple=True, required=True,
+              help='List of annotation files and sample names, alternating.')
+@click.option('--threads', '-t', default=4, type=int, help='Number of threads for parallel processing.')
+@click.option('--output', '-o', required=True, help='Output file path for the combined annotations.')
+def main(annotations, threads, output):
+    """Combine annotation files with ranks and avoid duplicating specific columns."""
+    combine_annotations(annotations, output, threads)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Combine annotation files with ranks and avoid duplicating specific columns.")
-    parser.add_argument("--annotations", nargs='+', help="List of annotation files and sample names, alternating.")
-    parser.add_argument("--threads", help="Number of threads for parallel processing", type=int, default=4)
-    parser.add_argument("--output", help="Output file path for the combined annotations.")
-    args = parser.parse_args()
-
-    if args.annotations and args.output:
-        combine_annotations(args.annotations, args.output, args.threads)
-    else:
-        logging.error("Missing required arguments. Use --help for usage information.")
+    main()

@@ -1,5 +1,5 @@
-import argparse
 import pandas as pd
+import click
 
 def count_annotations(input_file, output_file):
     # Read the data from the input file
@@ -26,9 +26,13 @@ def count_annotations(input_file, output_file):
     # Save the resulting table to a TSV file
     table.to_csv(output_file, sep='\t')
 
+@click.command()
+@click.argument('input_file')
+@click.argument('output_file')
+def main(input_file, output_file):
+    """Count occurrences of gene_ids and EC numbers for each sample."""
+    count_annotations(input_file, output_file)
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Count occurrences of gene_ids and EC numbers for each sample.")
-    parser.add_argument("input_file", help="Input file path")
-    parser.add_argument("output_file", help="Output file path")
-    args = parser.parse_args()
-    count_annotations(args.input_file, args.output_file)
+    main()

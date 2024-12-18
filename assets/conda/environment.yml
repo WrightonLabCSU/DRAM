@@ -28,6 +28,7 @@ dependencies:
   - openpyxl=3.1.2
   - pplacer=1.1.alpha19
   - mafft=7.525
+  - click<9
 
   # R packages
   - r-base
@@ -44,6 +45,7 @@ dependencies:
   # Shell tools
   - bbtools  # for rename.sh
 
+  - pip
   - pip:
       # visualization package
       - git+https://github.com/WrightonLabCSU/dram-viz.git
