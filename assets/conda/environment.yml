@@ -29,6 +29,7 @@ dependencies:
   - pplacer=1.1.alpha19
   - mafft=7.525
   - click<9
+  - cloup<4
 
   # R packages
   - r-base
