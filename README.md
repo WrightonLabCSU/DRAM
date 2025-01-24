@@ -389,7 +389,7 @@ DRAM
         --prodigal_mode         STRING  <single|meta>
                                             Default: 'single'
 
-        --prodigal_tras_table   NUMBER  (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
+        --prodigal_trans_table   NUMBER  (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
                                             Specify a translation table to use (default: '1').
                                     
         --min_contig_len        NUMBER  <number in base pairs>
@@ -483,7 +483,7 @@ DRAM
         --prodigal_mode         STRING  <single|meta>
                                     Default: 'single'
 
-        --prodigal_tras_table   <1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25>
+        --prodigal_trans_table   <1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25>
                                     Specify a translation table to use (default: '1').
                                     
         --min_contig_len        NUMBER  <number in base pairs>
