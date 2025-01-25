@@ -42,6 +42,7 @@ from bin.config import Config
 from bin.utils import split_shell_command
 import bin.format_kegg_database as format_kegg_database
 import bin.rename
+import bin.call
 
 
 def main(**kwargs):
@@ -77,7 +78,13 @@ def main(**kwargs):
 
 
 def call(config: Config):
-    
+    bin.call.main(
+        fastas=config.input_fasta,
+        output_dir=config.output_dir,
+        min_contig_len=config.min_contig_len,
+        prodigal_mode=config.prodigal_mode,
+        prodigal_trans_table=config.prodigal_trans_table
+    )
     
 
 
