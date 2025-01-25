@@ -35,6 +35,9 @@ def write_tsv(output_file, gene_locations):
         for query_name, start_pos, stop_pos in gene_locations:
             tsv.write(f"{query_name}\t{start_pos}\t{stop_pos}\n")
 
+
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python generate_fna_gene_loc_tsv.py <input_fna_file> <output_tsv_file>")

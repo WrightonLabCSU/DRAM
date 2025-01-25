@@ -2,13 +2,18 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 from pathlib import Path
 import datetime as dt
+from typing import Iterator
+
 
 
 @dataclass
 class Config:
     # General Options
-    
-    output_dir: Path = field(default_factory=lambda: Path.cwd() / f"DRAM_output.{dt.datetime.now().strftime('%Y%m%dT%H%M%S')}")
+
+    output_dir: Path = field(
+        default_factory=lambda: Path.cwd()
+        / f"DRAM_output.{dt.datetime.now().strftime('%Y%m%dT%H%M%S')}"
+    )
     input_fasta: Path = field(default_factory=lambda: Path.cwd() / "input_fasta")
     fasta_fmt: str = "*.f*"
     fastas: Path = None
@@ -57,10 +62,27 @@ class Config:
     kegg_download_date: Optional[str] = None
     skip_gene_ko_link: bool = False
 
-
     def __post_init__(self):
-        if not self.fastas:  # if fastas is not set, infer from input_fasta and fasta_fmt
+        if (
+            not self.fastas
+        ):  # if fastas is not set, infer from input_fasta and fasta_fmt
+            self.set_fastas_loc(
+                Path(self.input_fasta) / self.fasta_fmt
+            )
             self.fastas = Path(self.input_fasta) / self.fasta_fmt
+        # ensure input_fasta and fasta_fmt are derived from fastas and not the defaults
+        self.input_fasta = self.fastas.parent
+        self.fasta_fmt = self.fastas.name
+
+    @property
+    def fastas_glob(self) -> Iterator[Path]:
+        return (self.fastas.parent).glob(  # The parent directory of the input path
+            self.fastas.name  # Glob for all files matching the input pattern
+        )
+
+    def set_fastas_loc(self, fastas: Path):  # We use a setter instead of a property because the config is a dataclass, and doesn't play nice with private vars
+        """Update the fastas location and update input_fasta and fasta_fmt accordingly."""
+        self.fastas = fastas
         # ensure input_fasta and fasta_fmt are derived from fastas and not the defaults
         self.input_fasta = self.fastas.parent
         self.fasta_fmt = self.fastas.name

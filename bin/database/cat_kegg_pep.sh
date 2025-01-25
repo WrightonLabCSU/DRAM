@@ -2,8 +2,7 @@
 
 #set -o errexit  # exit  on error
 #set -o pipefail  # enable pipe fail to prevent things like `error here | true` always succeeding
-#[[ "${DEBUG}" == 'true' ]] && set -o xtrace  # print every line in debug
-set -o xtrace
+[[ "${DEBUG}" == 'true' ]] && set -o xtrace  # print every line in debug
 
 
 kegg_pep_root_dir=$1

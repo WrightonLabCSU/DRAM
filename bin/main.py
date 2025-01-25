@@ -73,6 +73,12 @@ def main(**kwargs):
 
     if config.rename:
         bin.rename.main(input_fastas=config.input_fasta, output_dir=config.output_dir)
+        config.set_fastas_loc(config.output_dir / "processed_inputs/*.f*")
+
+
+def call(config: Config):
+    
+    
 
 
 def format_kegg(config: Config):
