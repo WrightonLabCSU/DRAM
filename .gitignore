@@ -22,6 +22,11 @@ containers/*.tar
 containers/*.tar.gz
 
 test_data/
+data/
+results/
+testing/
+testing*
+null/
 output/
 nextflow-LOCAL.config
 .nextflow.log*
