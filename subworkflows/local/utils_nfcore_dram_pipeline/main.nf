@@ -16,7 +16,7 @@ include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
-include { RENAME_FASTA              } from "${projectDir}/modules/local/rename/rename_fasta.nf"
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,30 +67,6 @@ workflow PIPELINE_INITIALISATION {
     )
 
     //
-    // Create channel from input fasta
-    //
-
-    Channel
-        .fromPath(file(input_fasta) / fasta_fmt, checkIfExists: true)
-            .ifEmpty { exit 1, "Cannot find any fasta files matching: ${input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
-            .set { ch_fasta }
-    
-    ch_fasta.map {
-        sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-        tuple(sampleName, it)
-    }.set{ch_fasta}
-
-
-    //
-    // Rename fasta headers, Process 1-by-1, if required
-    // 
-
-    if( params.rename ) {
-        RENAME_FASTA( ch_fasta )
-        ch_fasta = RENAME_FASTA.out.renamed_fasta
-    }
-
-    //
     // Create channel from input file provided through params.input
     //
 
@@ -115,8 +91,6 @@ workflow PIPELINE_INITIALISATION {
     //     .set { ch_samplesheet }
 
     emit:
-    // samplesheet = ch_samplesheet
-    fasta       = ch_fasta  // channel: [ val(sample name), path(fasta) ]
     versions    = ch_versions
 }
 
