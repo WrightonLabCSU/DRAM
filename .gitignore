@@ -27,7 +27,7 @@ results/
 testing/
 testing*
 null/
-output/
+output*
 nextflow-LOCAL.config
 .nextflow.log*
 .nextflow/history
