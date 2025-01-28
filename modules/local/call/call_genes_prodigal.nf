@@ -4,9 +4,10 @@ process CALL_GENES {
 
     tag { sample }
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     tuple val( sample ), path( fasta )
-    path( ch_called_genes_loc_script )
 
     output:
     tuple val( sample ), path( "${sample}_called_genes.fna" ), emit: prodigal_fna, optional: true
@@ -42,7 +43,7 @@ process CALL_GENES {
             echo "Sample ${sample} - Warning: called genes GFF file is empty or does not exist."
             # Consider managing absent output files for downstream processes here
         else
-            python ${ch_called_genes_loc_script} "${sample}_called_genes.gff" > "${sample}_called_genes_table.tsv"
+            generate_gene_loc_tsv.py "${sample}_called_genes.gff" > "${sample}_called_genes_table.tsv"
         fi
     fi
     """

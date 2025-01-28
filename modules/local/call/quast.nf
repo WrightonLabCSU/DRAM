@@ -2,6 +2,8 @@ process QUAST {
 
     errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     path (collected_fasta_gff)
 

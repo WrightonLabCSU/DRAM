@@ -32,6 +32,175 @@
                 }
             }
         },
+        "genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Reference genome related files and options required for the workflow.",
+            "required": ["input_fasta"],
+            "properties": {
+                "input_fasta": {
+                    "type": "string",
+                    "format": "path",
+                    "exits": "true",
+                    "description": "Path to FASTA directory",
+                    "help_text": "This parameter is *mandatory*.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "fasta_fmt": {
+                    "type": "string",
+                    "default": "*.f*",
+                    "description": "Input format for the FASTA file.",
+                    "fa_icon": "fas fa-plus"
+                },
+                "input_genes": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Directory containing called genes. Only used when not running call. This allows you to provide pre-called genes to the pipeline."
+                },
+                "genes_fmt": {
+                    "type": "string",
+                    "default": "*.faa",
+                    "description": "Input format for the Genes file.",
+                    "fa_,icon": "fas fa-plus"
+                }
+            },
+            "oneOf": [
+                { "required": ["call"], "not": { "required": ["input_genes"] } },
+                { "required": ["input_genes"], "not": { "required": ["call"] } },
+                {
+                    "allOf": [
+                        {
+                            "not": {"required": ["call"]}
+                        },
+                        {
+                            "not": {"required": ["input_genes"]}
+                        }
+                    ]
+                }
+            ]
+        },
+        "call_prodigal_options": {
+            "title": "Call Prodigal Options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Call genes on the input FASTA files using Prodigal.",
+            "required": ["input_fasta"],
+            "properties": {
+                "call": {
+                    "type": "boolean",
+                    "description": "Whether to call genes on the input FASTA files using Prodigal."
+                },
+                "rename": {
+                    "type": "boolean",
+                    "description": "Rename FASTA headers based on file name. Example: sample1.fa --> (fasta header renamed to) > sample1......  Why? DRAM output is focused on scaffolds/contigs with respect to each provided input sample. Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable. *If you have already renamed your FASTA headers, do not include with '--call'."
+                },
+                "prodigal_mode": {
+                    "type": "string",
+                    "description": "Mode for Prodigal gene calling.",
+                    "default": "single",
+                    "enum": ["single", "meta"]
+                },
+                "prodigal_trans_table": {
+                    "type": "number",
+                    "description": "Translation table to use.",
+                    "default": 11,
+                    "enum": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+                },
+                "min_contig_len": {
+                    "type": "number",
+                    "description": "Minimum contig length in base pairs.",
+                    "default": 2500
+                }
+            },
+            "dependentRequired": {
+                "call": ["input_fasta"]
+            }
+        },
+        "annotate_options": {
+            "title": "Annotate Options",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "properties": {
+                "annotate": {
+                    "type": "boolean",
+                    "description": "Annotate called genes using downloaded databases."
+                },
+                "use_camper": {
+                    "type": "boolean",
+                    "description": "Use the CAMPer database for annotation."
+                },
+                "use_canthyd": {
+                    "type": "boolean",
+                    "description": "Use the Cant_Hyd database for annotation."
+                },
+                "use_dbcan": {
+                    "type": "boolean",
+                    "description": "Use the DBCan database for annotation."
+                },
+                "use_fegenie": {
+                    "type": "boolean",
+                    "description": "Use the FeGenie database for annotation."
+                },
+                "use_kegg": {
+                    "type": "boolean",
+                    "description": "Use the KEGG database for annotation."
+                },
+                "use_kofam": {
+                    "type": "boolean",
+                    "description": "Use the Kofam database for annotation."
+                },
+                "use_merops": {
+                    "type": "boolean",
+                    "description": "Use the MEROPS database for annotation."
+                },
+                "use_methyl": {
+                    "type": "boolean",
+                    "description": "Use the Methyl database for annotation."
+                },
+                "use_heme": {
+                    "type": "boolean",
+                    "description": "Use the Heme database for annotation."
+                },
+                "use_pfam": {
+                    "type": "boolean",
+                    "description": "Use the PFAM database for annotation."
+                },
+                "use_sulfur": {
+                    "type": "boolean",
+                    "description": "Use the Sulfur database for annotation."
+                },
+                "use_uniref": {
+                    "type": "boolean",
+                    "description": "Use the UniRef database for annotation."
+                },
+                "use_dbset": {
+                    "type": "string",
+                    "description": "Specify database set to use.",
+                    "enum": [
+                        "metabolism_kegg_set",
+                        "metabolism_set",
+                        "adjectives_kegg_set",
+                        "adjectives_set"
+                    ]
+                },
+                "add_annotations": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to old annotations to add to the current run."
+                },
+                "generate_gff": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Generate GFF output for each sample."
+                },
+                "generate_gbk": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Generate GBK output for each sample."
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -80,50 +249,6 @@
                 }
             }
         },
-        "reference_genome_options": {
-            "title": "Reference genome options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
-            "required": ["input_fasta"],
-            "properties": {
-                "input_fasta": {
-                    "type": "string",
-                    "format": "path",
-                    "exits": "true",
-                    "description": "Path to FASTA directory",
-                    "help_text": "This parameter is *mandatory*.",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "fasta_fmt": {
-                    "type": "string",
-                    "default": "*.f*",
-                    "description": "Input format for the FASTA file.",
-                    "fa_icon": "fas fa-plus"
-                }
-            }
-        },
-        "call_prodigal_options": {
-            "title": "Call Prodigal Options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Call genes on the input FASTA files using Prodigal.",
-            "required": ["input_fasta"],
-            "properties": {
-                "call": {
-                    "type": "boolean",
-                    "description": "Whether to call genes on the input FASTA files using Prodigal."
-                },
-                "rename": {
-                    "type": "boolean",
-                    "description": "Rename FASTA headers based on file name. Example: sample1.fa --> (fasta header renamed to) > sample1......  Why? DRAM output is focused on scaffolds/contigs with respect to each provided input sample. Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable. *If you have already renamed your FASTA headers, do not include with '--call'."
-                }
-            },
-            "dependentRequired": {
-                "call": ["input_fasta"]
-            }
-        },
-
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -227,7 +352,13 @@
             "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/$defs/reference_genome_options"
+            "$ref": "#/$defs/genome_options"
+        },
+        {
+            "$ref": "#/$defs/call_prodigal_options"
+        },
+        {
+            "$ref": "#/$defs/annotate_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

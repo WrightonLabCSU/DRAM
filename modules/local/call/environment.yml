@@ -1,0 +1,25 @@
+name: dram-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - agbiome
+
+dependencies:
+  - python=3.10
+  - pandas=1.5.2
+  - scikit-bio=0.5.7
+  - hmmer=3.3.2
+  - scipy=1.8.1
+  - numpy=1.26.4
+  - barrnap=0.9
+  - ruby=3.1.2
+  - parallel=20221122
+  - trnascan-se=2.0.12
+  - biopython=1.83
+  - prodigal=2.6.3
+  - samtools=1.17
+  - bowtie2=2.5.1
+  - quast=5.2.0
+  - bbmap
+  - openpyxl=3.1.2

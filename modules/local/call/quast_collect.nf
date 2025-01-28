@@ -2,6 +2,8 @@ process QUAST_COLLECT {
 
     errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     file quast_tsv_files
 
