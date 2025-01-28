@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 # Load necessary libraries
 library(ape)
 

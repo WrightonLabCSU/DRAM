@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 
 def parse_prodigal_output(prod_out_file):

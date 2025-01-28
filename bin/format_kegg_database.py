@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from os import path, mkdir
 from datetime import datetime
 from shutil import move, rmtree

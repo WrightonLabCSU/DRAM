@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import argparse
 import csv
 from collections import defaultdict
