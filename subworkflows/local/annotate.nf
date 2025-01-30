@@ -11,12 +11,8 @@
 include { CALL_GENES                                    } from "${projectDir}/modules/local/call/call_genes_prodigal.nf"
 include { QUAST                                         } from "${projectDir}/modules/local/call/quast.nf"
 include { QUAST_COLLECT                                 } from "${projectDir}/modules/local/call/quast_collect.nf"
-include { MMSEQS_INDEX                                  } from "${projectDir}/modules/local/annotate/mmseqs_index.nf"
-include { MMSEQS_SEARCH                                 } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
 include { GENE_LOCS                                     } from "${projectDir}/modules/local/annotate/gene_locs.nf"
-include { ADD_SQL_DESCRIPTIONS                          } from "${projectDir}/modules/local/annotate/add_sql_descriptions.nf"
-include { HMM_SEARCH                                    } from "${projectDir}/modules/local/annotate/hmmsearch.nf"
-include { PARSE_HMM                                     } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
+
 include { GENERIC_HMM_FORMATTER                         } from "${projectDir}/modules/local/annotate/generic_hmm_formatter.nf"  // TODO, This has hard coded paths on the server to the python file. Need to fix this.
 include { KEGG_HMM_FORMATTER                            } from "${projectDir}/modules/local/annotate/kegg_hmm_formatter.nf"
 include { KOFAM_HMM_FORMATTER                           } from "${projectDir}/modules/local/annotate/kofam_hmm_formatter.nf"
@@ -26,6 +22,40 @@ include { CAMPER_HMM_FORMATTER                          } from "${projectDir}/mo
 include { CANTHYD_HMM_FORMATTER                         } from "${projectDir}/modules/local/annotate/canthyd_hmm_formatter.nf"
 include { SULFUR_HMM_FORMATTER                          } from "${projectDir}/modules/local/annotate/sulfur_hmm_formatter.nf"
 include { FEGENIE_HMM_FORMATTER                         } from "${projectDir}/modules/local/annotate/fegenie_hmm_formatter.nf"
+
+include { MMSEQS_INDEX                                  } from "${projectDir}/modules/local/annotate/mmseqs_index.nf"
+
+// NextFlow only process with the same name in the same workflow, so either alias it or include it a different workflow
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL          } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER         } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL         } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD        } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG           } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF         } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM           } from "${projectDir}/modules/local/annotate/mmseqs_search.nf"
+
+include { ADD_SQL_DESCRIPTIONS as SQL_UNIREF            } from "${projectDir}/modules/local/annotate/add_sql_descriptions.nf"
+include { ADD_SQL_DESCRIPTIONS as SQL_VIRAL             } from "${projectDir}/modules/local/annotate/add_sql_descriptions.nf"
+include { ADD_SQL_DESCRIPTIONS as SQL_MEROPS            } from "${projectDir}/modules/local/annotate/add_sql_descriptions.nf"
+include { ADD_SQL_DESCRIPTIONS as SQL_KEGG              } from "${projectDir}/modules/local/annotate/add_sql_descriptions.nf"
+include { ADD_SQL_DESCRIPTIONS as SQL_PFAM              } from "${projectDir}/modules/local/annotate/add_sql_descriptions.nf"
+
+include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from "${projectDir}/modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from "${projectDir}/modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_VOG                  } from "${projectDir}/modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from "${projectDir}/modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from "${projectDir}/modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from "${projectDir}/modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from "${projectDir}/modules/local/annotate/hmmsearch.nf"
+
+include { PARSE_HMM as PARSE_HMM_KOFAM                  } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_DBCAN                  } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_VOG                    } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_CAMPER                 } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_CANTHYD                } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_SULFUR                 } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,21 +128,21 @@ workflow ANNOTATE {
     // KEGG annotation
     if (params.use_kegg) {
         ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH( ch_combined_query_locs_kegg, ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.kegg_name )
-        ch_kegg_unformatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.kegg_name )
+        ch_kegg_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
 
-        ADD_SQL_DESCRIPTIONS(ch_kegg_unformatted, params.kegg_name, ch_sql_descriptions_db)
-        ch_kegg_formatted = ADD_SQL_DESCRIPTIONS.out.sql_formatted_hits
+        SQL_KEGG(ch_kegg_unformatted, params.kegg_name, ch_sql_descriptions_db)
+        ch_kegg_formatted = SQL_KEGG.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_kegg_formatted)
     }
     // KOFAM annotation
     if (params.use_kofam) {
-        HMM_SEARCH ( ch_called_proteins, params.kofam_e_value, ch_kofam_db )
-        ch_kofam_hmms = HMM_SEARCH.out.hmm_search_out
+        HMM_SEARCH_KOFAM ( ch_called_proteins, params.kofam_e_value, ch_kofam_db )
+        ch_kofam_hmms = HMM_SEARCH_KOFAM.out.hmm_search_out
 
-        PARSE_HMM ( ch_kofam_hmms )
-        ch_kofam_parsed = PARSE_HMM.out.parsed_hmm
+        PARSE_HMM_KOFAM ( ch_kofam_hmms )
+        ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
         ch_combined_hits_locs_kofam = ch_kofam_parsed.join(ch_gene_locs)
         KOFAM_HMM_FORMATTER ( ch_combined_hits_locs_kofam, params.kofam_top_hit, ch_kofam_list )
@@ -123,22 +153,22 @@ workflow ANNOTATE {
     // PFAM annotation
     if (params.use_pfam) {
         ch_combined_query_locs_pfam = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH( ch_combined_query_locs_pfam, ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.pfam_name )
-        ch_pfam_unformatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        MMSEQS_SEARCH_PFAM( ch_combined_query_locs_pfam, ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.pfam_name )
+        ch_pfam_unformatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
 
-        ADD_SQL_DESCRIPTIONS(ch_pfam_unformatted, params.pfam_name, ch_sql_descriptions_db)
-        ch_pfam_formatted = ADD_SQL_DESCRIPTIONS.out.sql_formatted_hits
+        SQL_PFAM(ch_pfam_unformatted, params.pfam_name, ch_sql_descriptions_db)
+        ch_pfam_formatted = SQL_PFAM.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_pfam_formatted)
     }
     // dbCAN annotation
     if  (params.use_dbcan) {
 
-        HMM_SEARCH ( ch_called_proteins, params.dbcan_e_value , ch_dbcan_db)
-        ch_dbcan_hmms = HMM_SEARCH.out.hmm_search_out
+        HMM_SEARCH_DBCAN ( ch_called_proteins, params.dbcan_e_value , ch_dbcan_db)
+        ch_dbcan_hmms = HMM_SEARCH_DBCAN.out.hmm_search_out
 
-        PARSE_HMM ( ch_dbcan_hmms )
-        ch_dbcan_parsed = PARSE_HMM.out.parsed_hmm
+        PARSE_HMM_DBCAN ( ch_dbcan_hmms )
+        ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
         ch_combined_hits_locs_dbcan = ch_dbcan_parsed.join(ch_gene_locs)
         DBCAN_HMM_FORMATTER ( ch_combined_hits_locs_dbcan, params.dbcan_top_hit, params.dbcan_name, ch_sql_descriptions_db )
@@ -149,11 +179,11 @@ workflow ANNOTATE {
     // CAMPER annotation
     if (params.use_camper) {
         // HMM
-        HMM_SEARCH ( ch_called_proteins, params.camper_e_value , ch_camper_hmm_db)
-        ch_camper_hmms = HMM_SEARCH.out.hmm_search_out
+        HMM_SEARCH_CAMPER ( ch_called_proteins, params.camper_e_value , ch_camper_hmm_db)
+        ch_camper_hmms = HMM_SEARCH_CAMPER.out.hmm_search_out
 
-        PARSE_HMM ( ch_camper_hmms )
-        ch_camper_parsed = PARSE_HMM.out.parsed_hmm
+        PARSE_HMM_CAMPER ( ch_camper_hmms )
+        ch_camper_parsed = PARSE_HMM_CAMPER.out.parsed_hmm
 
         ch_combined_hits_locs_camper = ch_camper_parsed.join(ch_gene_locs)
         CAMPER_HMM_FORMATTER ( ch_combined_hits_locs_camper, params.camper_top_hit, ch_camper_hmm_list )
@@ -163,18 +193,18 @@ workflow ANNOTATE {
 
         // MMseqs
         ch_combined_query_locs_camper = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH( ch_combined_query_locs_camper, ch_camper_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_camper_mmseqs_list, params.camper_name )
-        ch_camper_mmseqs_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        MMSEQS_SEARCH_CAMPER( ch_combined_query_locs_camper, ch_camper_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_camper_mmseqs_list, params.camper_name )
+        ch_camper_mmseqs_formatted = MMSEQS_SEARCH_CAMPER.out.mmseqs_search_formatted_out
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
     }
     // FeGenie annotation
     if (params.use_fegenie) {
-        HMM_SEARCH ( ch_called_proteins,  params.fegenie_e_value, ch_fegenie_db )
-        ch_fegenie_hmms = HMM_SEARCH.out.hmm_search_out
+        HMM_SEARCH_FEGENIE ( ch_called_proteins,  params.fegenie_e_value, ch_fegenie_db )
+        ch_fegenie_hmms = HMM_SEARCH_FEGENIE.out.hmm_search_out
 
-        PARSE_HMM ( ch_fegenie_hmms )
-        ch_fegenie_parsed = PARSE_HMM.out.parsed_hmm
+        PARSE_HMM_FEGENIE ( ch_fegenie_hmms )
+        ch_fegenie_parsed = PARSE_HMM_FEGENIE.out.parsed_hmm
 
         ch_combined_hits_locs_fegenie = ch_fegenie_parsed.join(ch_gene_locs)
         FEGENIE_HMM_FORMATTER ( ch_combined_hits_locs_fegenie )
@@ -184,8 +214,8 @@ workflow ANNOTATE {
     // Methyl annotation
     if (params.use_methyl) {
         ch_combined_query_locs_methyl = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH( ch_combined_query_locs_methyl, ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.methyl_name )
-        ch_methyl_mmseqs_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        MMSEQS_SEARCH_METHYL( ch_combined_query_locs_methyl, ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.methyl_name )
+        ch_methyl_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_mmseqs_formatted)
     }
@@ -193,17 +223,17 @@ workflow ANNOTATE {
     if (params.use_canthyd) {
         // MMseqs
         ch_combined_query_locs_canthyd = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH( ch_combined_query_locs_canthyd, ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_canthyd_mmseqs_list, params.canthyd_name )
-        ch_canthyd_mmseqs_formatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        MMSEQS_SEARCH_CANTHYD( ch_combined_query_locs_canthyd, ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_canthyd_mmseqs_list, params.canthyd_name )
+        ch_canthyd_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD.out.mmseqs_search_formatted_out
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_mmseqs_formatted)
 
         //HMM
-        HMM_SEARCH ( ch_called_proteins, params.canthyd_e_value , ch_canthyd_hmm_db)
-        ch_canthyd_hmms = HMM_SEARCH.out.hmm_search_out
+        HMM_SEARCH_CANTHYD ( ch_called_proteins, params.canthyd_e_value , ch_canthyd_hmm_db)
+        ch_canthyd_hmms = HMM_SEARCH_CANTHYD.out.hmm_search_out
 
-        PARSE_HMM ( ch_canthyd_hmms )
-        ch_canthyd_parsed = PARSE_HMM.out.parsed_hmm
+        PARSE_HMM_CANTHYD ( ch_canthyd_hmms )
+        ch_canthyd_parsed = PARSE_HMM_CANTHYD.out.parsed_hmm
 
         ch_combined_hits_locs_canthyd = ch_canthyd_parsed.join(ch_gene_locs)
         CANTHYD_HMM_FORMATTER ( ch_combined_hits_locs_canthyd, params.canthyd_top_hit, ch_canthyd_hmm_list )
@@ -214,11 +244,11 @@ workflow ANNOTATE {
     }
     // Sulfur annotation
     if (params.use_sulfur) {
-        HMM_SEARCH ( ch_called_proteins,  params.sulfur_e_value, ch_sulfur_db )
-        ch_sulfur_hmms = HMM_SEARCH.out.hmm_search_out
+        HMM_SEARCH_SULFUR ( ch_called_proteins,  params.sulfur_e_value, ch_sulfur_db )
+        ch_sulfur_hmms = HMM_SEARCH_SULFUR.out.hmm_search_out
 
-        PARSE_HMM ( ch_sulfur_hmms )
-        ch_sulfur_parsed = PARSE_HMM.out.parsed_hmm
+        PARSE_HMM_SULFUR ( ch_sulfur_hmms )
+        ch_sulfur_parsed = PARSE_HMM_SULFUR.out.parsed_hmm
 
         ch_combined_hits_locs_sulfur = ch_sulfur_parsed.join(ch_gene_locs)
         SULFUR_HMM_FORMATTER ( ch_combined_hits_locs_sulfur )
@@ -229,32 +259,32 @@ workflow ANNOTATE {
     // MEROPS annotation
     if (params.use_merops) {
         ch_combined_query_locs_merops = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH( ch_combined_query_locs_merops, ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.merops_name )
-        ch_merops_unformatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        MMSEQS_SEARCH_MEROPS( ch_combined_query_locs_merops, ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.merops_name )
+        ch_merops_unformatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
 
-        ADD_SQL_DESCRIPTIONS(ch_merops_unformatted, params.merops_name, ch_sql_descriptions_db)
-        ch_merops_formatted = ADD_SQL_DESCRIPTIONS.out.sql_formatted_hits
+        SQL_MEROPS(ch_merops_unformatted, params.merops_name, ch_sql_descriptions_db)
+        ch_merops_formatted = SQL_MEROPS.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
     }
     // Uniref annotation
     if (params.use_uniref) {
         ch_combined_query_locs_uniref = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH( ch_combined_query_locs_uniref, ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.uniref_name )
-        ch_uniref_unformatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        MMSEQS_SEARCH_UNIREF( ch_combined_query_locs_uniref, ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.uniref_name )
+        ch_uniref_unformatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
 
-        ADD_SQL_DESCRIPTIONS(ch_uniref_unformatted, params.uniref_name, ch_sql_descriptions_db)
-        ch_uniref_formatted = ADD_SQL_DESCRIPTIONS.out.sql_formatted_hits
+        SQL_UNIREF(ch_uniref_unformatted, params.uniref_name, ch_sql_descriptions_db)
+        ch_uniref_formatted = SQL_UNIREF.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
     }
     // VOGdb annotation
     if (params.use_vogdb) {
-        HMM_SEARCH ( ch_called_proteins, params.vog_e_value , ch_vogdb_db )
-        ch_vog_hmms = HMM_SEARCH.out.hmm_search_out
+        HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , ch_vogdb_db )
+        ch_vog_hmms = HMM_SEARCH_VOG.out.hmm_search_out
 
-        PARSE_HMM ( ch_vog_hmms )
-        ch_vog_parsed = PARSE_HMM.out.parsed_hmm
+        PARSE_HMM_VOG ( ch_vog_hmms )
+        ch_vog_parsed = PARSE_HMM_VOG.out.parsed_hmm
 
         ch_combined_hits_locs_vog = ch_vog_parsed.join(ch_gene_locs)
         VOG_HMM_FORMATTER ( ch_combined_hits_locs_vog, params.vog_top_hit, params.vogdb_name, ch_sql_descriptions_db )
@@ -265,11 +295,11 @@ workflow ANNOTATE {
     // Viral annotation
     if (params.use_viral) {
         ch_combined_query_locs_viral = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH( ch_combined_query_locs_viral, ch_viral_db, params.bit_score_threshold,  params.rbh_bit_score_threshold,ch_dummy_sheet, params.viral_name )
-        ch_viral_unformatted = MMSEQS_SEARCH.out.mmseqs_search_formatted_out
+        MMSEQS_SEARCH_VIRAL( ch_combined_query_locs_viral, ch_viral_db, params.bit_score_threshold,  params.rbh_bit_score_threshold,ch_dummy_sheet, params.viral_name )
+        ch_viral_unformatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
 
-        ADD_SQL_DESCRIPTIONS(ch_viral_unformatted, params.viral_name, ch_sql_descriptions_db)
-        ch_viral_formatted = ADD_SQL_DESCRIPTIONS.out.sql_formatted_hits
+        SQL_VIRAL(ch_viral_unformatted, params.viral_name, ch_sql_descriptions_db)
+        ch_viral_formatted = SQL_VIRAL.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)
     }
@@ -304,65 +334,65 @@ workflow DB_CHANNEL_SETUP {
         index_mmseqs = true
     }
 
-    if (params.use_kofam == 1) {
+    if (params.use_kofam) {
         ch_kofam_db = file(params.kofam_db).exists() ? file(params.kofam_db) : error("Error: If using --annotate, you must supply prebuilt databases. KOFAM database file not found at ${params.kofam_db}")
     }
 
-    if (params.use_dbcan == 1) {
+    if (params.use_dbcan) {
         ch_dbcan_db = file(params.dbcan_db).exists() ? file(params.dbcan_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN database file not found at ${params.dbcan_db}")
     }
 
-    if (params.use_camper == 1) {
+    if (params.use_camper) {
         ch_camper_hmm_db = file(params.camper_hmm_db).exists() ? file(params.camper_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER HMM database file not found at ${params.camper_hmm_db}")
         ch_camper_mmseqs_db = file(params.camper_mmseqs_db).exists() ? file(params.camper_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER MMseqs2 database file not found at ${params.camper_mmseqs_db}")
         index_mmseqs = true
         ch_camper_mmseqs_list = file(params.camper_mmseqs_list)
     }
 
-    if (params.use_merops == 1) {
+    if (params.use_merops) {
         ch_merops_db = file(params.merops_db).exists() ? file(params.merops_db) : error("Error: If using --annotate, you must supply prebuilt databases. MEROPS database file not found at ${params.merops_db}")
         index_mmseqs = true
     }
 
-    if (params.use_pfam == 1) {
+    if (params.use_pfam) {
         ch_pfam_mmseqs_db = file(params.pfam_mmseq_db).exists() ? file(params.pfam_mmseq_db) : error("Error: If using --annotate, you must supply prebuilt databases. PFAM database file not found at ${params.pfam_mmseq_db}")
         index_mmseqs = true
     }
 
-    if (params.use_heme == 1) {
+    if (params.use_heme) {
         ch_heme_db = file(params.heme_db).exists() ? file(params.heme_db) : error("Error: If using --annotate, you must supply prebuilt databases. HEME database file not found at ${params.heme_db}")
     }
 
-    if (params.use_sulfur == 1) {
+    if (params.use_sulfur) {
         ch_sulfur_db = file(params.sulfur_db).exists() ? file(params.sulfur_db) : error("Error: If using --annotate, you must supply prebuilt databases. SULURR database file not found at ${params.sulfur_db}")
     }
 
-    if (params.use_uniref == 1) {
+    if (params.use_uniref) {
         ch_uniref_db = file(params.uniref_db).exists() ? file(params.uniref_db) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
         index_mmseqs = true
     }
 
-    if (params.use_methyl == 1) {
+    if (params.use_methyl) {
         ch_methyl_db = file(params.methyl_db).exists() ? file(params.methyl_db) : error("Error: If using --annotate, you must supply prebuilt databases. METHYL database file not found at ${params.methyl_db}")
         index_mmseqs = true
     }
 
-    if (params.use_fegenie == 1) {
+    if (params.use_fegenie) {
         ch_fegenie_db = file(params.fegenie_db).exists() ? file(params.fegenie_db) : error("Error: If using --annotate, you must supply prebuilt databases. FEGENIE database file not found at ${params.fegenie_db}")
     }
 
-    if (params.use_canthyd == 1) {
+    if (params.use_canthyd) {
         ch_canthyd_hmm_db = file(params.canthyd_hmm_db).exists() ? file(params.canthyd_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD HMM database file not found at ${params.canthyd_hmm_db}")
         ch_canthyd_mmseqs_db = file(params.canthyd_mmseqs_db).exists() ? file(params.canthyd_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD MMseqs database file not found at ${params.canthyd_mmseqs_db}")
         index_mmseqs = true
         ch_canthyd_mmseqs_list = file(params.canthyd_mmseqs_list)
     }
 
-    if (params.use_vogdb == 1) {
+    if (params.use_vogdb) {
         ch_vogdb_db = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
     }
 
-    if (params.use_viral == 1) {
+    if (params.use_viral) {
         ch_viral_db = file(params.viral_db).exists() ? file(params.viral_db) : error("Error: If using --annotate, you must supply prebuilt databases. viral database file not found at ${params.viral_db}")
         index_mmseqs = true
     }
