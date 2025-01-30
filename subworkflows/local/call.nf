@@ -56,4 +56,7 @@ workflow CALL {
 
     emit:
     ch_quast_stats
+    ch_gene_locs  // channel: [ val(sample name), path(gene_locs_tsv) ]
+    ch_called_genes // channel: [ val(sample name), path(called_genes_file.fna) ]
+    ch_called_proteins  // channel: [ val(sample name), path(called_proteins_file.faa) ]
 }

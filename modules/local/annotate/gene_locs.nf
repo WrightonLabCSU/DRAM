@@ -13,9 +13,6 @@ process GENE_LOCS {
     script:
 
     """
-
-
-    python generate_faa_gene_loc_tsv.py ${genes} "${sample}_called_genes_table.tsv"
-
+    generate_faa_gene_loc_tsv.py ${genes} "${sample}_called_genes_table.tsv"
     """
 }

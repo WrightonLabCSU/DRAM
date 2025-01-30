@@ -10,7 +10,9 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["outdir"],
+            "required": [
+                "outdir"
+            ],
             "properties": {
                 "outdir": {
                     "type": "string",
@@ -37,7 +39,9 @@
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
-            "required": ["input_fasta"],
+            "required": [
+                "input_fasta"
+            ],
             "properties": {
                 "input_fasta": {
                     "type": "string",
@@ -63,18 +67,50 @@
                     "default": "*.faa",
                     "description": "Input format for the Genes file.",
                     "fa_,icon": "fas fa-plus"
+                },
+                "merge_annotations": {
+                    "type": "string",
+                    "format": "path",
+                    "exits": "true",
+                    "description": "Path to directory pointing to DRAM annotation to merge into one file. To be ran as a separate process."
                 }
             },
             "oneOf": [
-                { "required": ["call"], "not": { "required": ["input_genes"] } },
-                { "required": ["input_genes"], "not": { "required": ["call"] } },
+                {
+                    "required": [
+                        "call"
+                    ],
+                    "not": {
+                        "required": [
+                            "input_genes"
+                        ]
+                    }
+                },
+                {
+                    "required": [
+                        "input_genes", "annotate"
+                    ],
+                    "not": {
+                        "required": [
+                            "call"
+                        ]
+                    }
+                },
                 {
                     "allOf": [
                         {
-                            "not": {"required": ["call"]}
+                            "not": {
+                                "required": [
+                                    "call"
+                                ]
+                            }
                         },
                         {
-                            "not": {"required": ["input_genes"]}
+                            "not": {
+                                "required": [
+                                    "input_genes"
+                                ]
+                            }
                         }
                     ]
                 }
@@ -85,7 +121,9 @@
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Call genes on the input FASTA files using Prodigal.",
-            "required": ["input_fasta"],
+            "required": [
+                "input_fasta"
+            ],
             "properties": {
                 "call": {
                     "type": "boolean",
@@ -99,22 +137,53 @@
                     "type": "string",
                     "description": "Mode for Prodigal gene calling.",
                     "default": "single",
-                    "enum": ["single", "meta"]
+                    "enum": [
+                        "single",
+                        "meta"
+                    ]
                 },
                 "prodigal_trans_table": {
                     "type": "number",
                     "description": "Translation table to use.",
-                    "default": 11,
-                    "enum": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+                    "default": 11.0,
+                    "enum": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25
+                    ]
                 },
                 "min_contig_len": {
                     "type": "number",
                     "description": "Minimum contig length in base pairs.",
-                    "default": 2500
+                    "default": 2500.0
                 }
             },
             "dependentRequired": {
-                "call": ["input_fasta"]
+                "call": [
+                    "input_fasta"
+                ]
             }
         },
         "annotate_options": {
@@ -174,29 +243,27 @@
                     "type": "boolean",
                     "description": "Use the UniRef database for annotation."
                 },
-                "use_dbset": {
-                    "type": "string",
-                    "description": "Specify database set to use.",
-                    "enum": [
-                        "metabolism_kegg_set",
-                        "metabolism_set",
-                        "adjectives_kegg_set",
-                        "adjectives_set"
-                    ]
-                },
                 "add_annotations": {
                     "type": "string",
                     "format": "file-path",
                     "description": "Path to old annotations to add to the current run."
                 },
+                "bit_score_threshold": {
+                    "type": "number",
+                    "description": "Minimum BitScore of search to retain hits')",
+                    "default": 60.0
+                },
+                "rbh_bit_score_threshold": {
+                    "type": "number",
+                    "description": "Minimum BitScore of reverse best hits to retain hits",
+                    "default": 350.0
+                },
                 "generate_gff": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Generate GFF output for each sample."
                 },
                 "generate_gbk": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Generate GBK output for each sample."
                 }
             }
@@ -256,6 +323,11 @@
             "description": "Less common options for the pipeline, typically set in a config file.",
             "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
             "properties": {
+                "threads": {
+                    "type": "integer",
+                    "default": 10,
+                    "hidden": true
+                },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
@@ -268,7 +340,14 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
+                    "enum": [
+                        "symlink",
+                        "rellink",
+                        "link",
+                        "copy",
+                        "copyNoFollow",
+                        "move"
+                    ],
                     "hidden": true
                 },
                 "email_on_fail": {
@@ -342,6 +421,10 @@
                     "type": "string",
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+                    "hidden": true
+                },
+                "distill_dummy_sheet": {
+                    "type": "string",
                     "hidden": true
                 }
             }

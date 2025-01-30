@@ -245,7 +245,7 @@ DRAM v2 databases, unlike DRAM v1 databases, will be pre-formatted and hosted on
 
 DRAM apps Call, Annotate and Distill can all be run at once or alternatively, each app can be run individually (assuming you provide the required input data for each app).
 
-Additionally, `--merge-annotations` and `--rename` can be run idenpendently of any other apps. 
+Additionally, `--merge_annotations` and `--rename` can be run idenpendently of any other apps. 
 
 
 1) **Rename fasta headers based on input sample file names:**
