@@ -227,10 +227,6 @@
                     "type": "boolean",
                     "description": "Use the Methyl database for annotation."
                 },
-                "use_heme": {
-                    "type": "boolean",
-                    "description": "Use the Heme database for annotation."
-                },
                 "use_pfam": {
                     "type": "boolean",
                     "description": "Use the PFAM database for annotation."
