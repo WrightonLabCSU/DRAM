@@ -17,6 +17,7 @@ include { CALL                   } from "${projectDir}/subworkflows/local/call.n
 include { COLLECT_RNA            } from "${projectDir}/subworkflows/local/collect_rna.nf"
 include { MERGE                  } from "${projectDir}/subworkflows/local/merge.nf"
 include { ANNOTATE               } from "${projectDir}/subworkflows/local/annotate.nf"
+include { ADD_AND_COMBINE        } from "${projectDir}/subworkflows/local/add_and_combine.nf"
 
 
 /*
@@ -58,13 +59,17 @@ workflow DRAM {
         ch_quast_stats = default_channel
         ch_gene_locs = default_channel
         ch_called_proteins = default_channel
+        ch_collected_fna = default_channel
 
         if (params.call){
             CALL( ch_fasta )
             ch_quast_stats = CALL.out.ch_quast_stats
             ch_gene_locs = CALL.out.ch_gene_locs
             ch_called_proteins = CALL.out.ch_called_proteins
+            ch_collected_fna = CALL.out.ch_collected_fna
 
+        } else{
+            
         }
 
         // TODO: Simplify this when we implement distill
@@ -73,6 +78,17 @@ workflow DRAM {
         }
         if (params.annotate){
             ANNOTATE( ch_fasta, ch_gene_locs, ch_called_proteins, default_channel )
+            
+        }
+        if (params.annotate || params.distill_topic || params.distill_ecosystem || params.distill_custom){
+            if (params.annotate){
+                ch_combined_annotations = ANNOTATE.out.ch_combined_annotations
+            } else {
+                ch_combined_annotations = Channel
+                    .fromPath(params.annotations, checkIfExists: true)
+                    .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
+            }
+            ADD_AND_COMBINE( ch_combined_annotations )
         }
     }
 

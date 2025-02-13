@@ -68,6 +68,12 @@
                     "description": "Input format for the Genes file.",
                     "fa_,icon": "fas fa-plus"
                 },
+                "genes_fna_fmt": {
+                    "type": "string",
+                    "default": "*.fna",
+                    "description": "Input format for the Genes fna file. Only needed if you are not running call and you are passing `--generate_gff` or `--generate_gbk`.",
+                    "fa_,icon": "fas fa-plus"
+                },
                 "merge_annotations": {
                     "type": "string",
                     "format": "path",
@@ -88,7 +94,8 @@
                 },
                 {
                     "required": [
-                        "input_genes", "annotate"
+                        "input_genes",
+                        "annotate"
                     ],
                     "not": {
                         "required": [
@@ -242,7 +249,20 @@
                 "add_annotations": {
                     "type": "string",
                     "format": "file-path",
+                    "exists": true,
                     "description": "Path to old annotations to add to the current run."
+                },
+                "taxa": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to bin taxonomy tsv. Compatible with GTDB."
+                },
+                "bin_quality": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to bin quality tsv. CheckM and CheckM2 compatible."
                 },
                 "bit_score_threshold": {
                     "type": "number",
@@ -261,6 +281,19 @@
                 "generate_gbk": {
                     "type": "boolean",
                     "description": "Generate GBK output for each sample."
+                }
+            }
+        },
+        "distill_options": {
+            "title": "Distill Options",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "properties": {
+                "annotations": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to annotations tsv to distill. Required if running without annotate"
                 }
             }
         },
