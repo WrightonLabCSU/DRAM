@@ -149,4 +149,9 @@ workflow ADD_AND_COMBINE {
         GENERATE_GFF_GENBANK( ch_collected_fna, params.database_list, ch_final_annots )
     }
 
+    emit:
+    ch_final_annots
+    ch_annotation_counts
+    ch_annotations_sqlite3
+
 }
