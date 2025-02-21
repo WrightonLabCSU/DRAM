@@ -8,7 +8,6 @@ process DBCAN_HMM_FORMATTER {
 
     input:
     tuple val( sample ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
-    val( top_hit )
     val(db_name)
     file(ch_sql_descriptions_db)
 

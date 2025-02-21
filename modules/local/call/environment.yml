@@ -1,9 +1,6 @@
-name: dram-env
 channels:
   - conda-forge
   - bioconda
-  - defaults
-  - agbiome
 
 dependencies:
   - python=3.10

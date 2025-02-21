@@ -41,7 +41,7 @@ workflow DRAM {
 
     default_channel = Channel.fromPath(params.distill_dummy_sheet)
     ch_fasta = getFastaChannel(params.input_fasta, params.fasta_fmt)
-
+    distill_flag = (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "")
 
 
     def distill_topic_list = ""
@@ -56,10 +56,10 @@ workflow DRAM {
     distill_transport = "0"
     distill_camper = "0"
 
-    if (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "") {
+    if (distill_flag) {
         if (params.distill_topic != "") {
             def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport', 'camper']
-            def topics = params.distill_topic.split()
+            def topics = params.distill_topic.split(',')
 
             topics.each { topic ->
                 if (!validTopics.contains(topic)) {
@@ -255,6 +255,8 @@ workflow DRAM {
     // Pipeline steps
     //
 
+    
+
     if( params.rename ) {
         RENAME_FASTA( ch_fasta )
         ch_fasta = RENAME_FASTA.out.renamed_fasta
@@ -278,15 +280,15 @@ workflow DRAM {
             
         }
 
-        // TODO: Simplify this when we implement distill
-        if (params.call || params.distill_topic || params.distill_ecosystem || params.distill_custom){
-            COLLECT_RNA( ch_fasta, default_channel )
-        }
         if (params.annotate){
             ANNOTATE( ch_fasta, ch_gene_locs, ch_called_proteins, default_channel )
             
         }
-        if (params.annotate || params.distill_topic || params.distill_ecosystem || params.distill_custom){
+
+        if (params.call || distill_flag){
+            COLLECT_RNA( ch_fasta )
+        }
+        if (params.annotate || distill_flag){
             if (params.annotate){
                 ch_combined_annotations = ANNOTATE.out.ch_combined_annotations
             } else {
@@ -297,7 +299,7 @@ workflow DRAM {
             ADD_AND_COUNT( ch_combined_annotations )
 
             
-            if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
+            if( distill_flag ){
 
                 DISTILL(
                     ch_distill_carbon,

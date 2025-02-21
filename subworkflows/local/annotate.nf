@@ -83,6 +83,21 @@ workflow ANNOTATE {
     ch_canthyd_hmm_list = file(params.cant_hyd_hmm_list)
 
 
+    kegg_name = "kegg"
+    dbcan_name = "dbcan"
+    kofam_name = "kofam"
+    merops_name = "merops"
+    viral_name = "viral"
+    camper_name = "camper"
+    canthyd_name = "cant_hyd"
+    fegenie_name = "fegenie"
+    sulfur_name = "sulfur"
+    methyl_name = "methyl"
+    uniref_name = "uniref"
+    pfam_name = "pfam"
+    vogdb_name = "vogdb"
+
+
     if (!params.call) {
         ch_called_proteins = Channel
             .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
@@ -108,10 +123,10 @@ workflow ANNOTATE {
     // KEGG annotation
     if (params.use_kegg) {
         ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, DB_CHANNEL_SETUP.out.ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.kegg_name )
+        MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, DB_CHANNEL_SETUP.out.ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, kegg_name )
         ch_kegg_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
 
-        SQL_KEGG(ch_kegg_unformatted, params.kegg_name, ch_sql_descriptions_db)
+        SQL_KEGG(ch_kegg_unformatted, kegg_name, ch_sql_descriptions_db)
         ch_kegg_formatted = SQL_KEGG.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_kegg_formatted)
@@ -125,7 +140,7 @@ workflow ANNOTATE {
         ch_kofam_parsed = PARSE_HMM_KOFAM.out.parsed_hmm
 
         ch_combined_hits_locs_kofam = ch_kofam_parsed.join(ch_gene_locs)
-        KOFAM_HMM_FORMATTER ( ch_combined_hits_locs_kofam, params.kofam_top_hit, ch_kofam_list )
+        KOFAM_HMM_FORMATTER ( ch_combined_hits_locs_kofam, ch_kofam_list )
         ch_kofam_formatted = KOFAM_HMM_FORMATTER.out.kofam_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_kofam_formatted)
@@ -133,10 +148,10 @@ workflow ANNOTATE {
     // PFAM annotation
     if (params.use_pfam) {
         ch_combined_query_locs_pfam = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_PFAM( ch_combined_query_locs_pfam, DB_CHANNEL_SETUP.out.ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.pfam_name )
+        MMSEQS_SEARCH_PFAM( ch_combined_query_locs_pfam, DB_CHANNEL_SETUP.out.ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, pfam_name )
         ch_pfam_unformatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
 
-        SQL_PFAM(ch_pfam_unformatted, params.pfam_name, ch_sql_descriptions_db)
+        SQL_PFAM(ch_pfam_unformatted, pfam_name, ch_sql_descriptions_db)
         ch_pfam_formatted = SQL_PFAM.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_pfam_formatted)
@@ -151,7 +166,7 @@ workflow ANNOTATE {
         ch_dbcan_parsed = PARSE_HMM_DBCAN.out.parsed_hmm
 
         ch_combined_hits_locs_dbcan = ch_dbcan_parsed.join(ch_gene_locs)
-        DBCAN_HMM_FORMATTER ( ch_combined_hits_locs_dbcan, params.dbcan_top_hit, params.dbcan_name, ch_sql_descriptions_db )
+        DBCAN_HMM_FORMATTER ( ch_combined_hits_locs_dbcan, dbcan_name, ch_sql_descriptions_db )
         ch_dbcan_formatted = DBCAN_HMM_FORMATTER.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
@@ -166,14 +181,14 @@ workflow ANNOTATE {
         ch_camper_parsed = PARSE_HMM_CAMPER.out.parsed_hmm
 
         ch_combined_hits_locs_camper = ch_camper_parsed.join(ch_gene_locs)
-        CAMPER_HMM_FORMATTER ( ch_combined_hits_locs_camper, params.camper_top_hit, ch_camper_hmm_list )
+        CAMPER_HMM_FORMATTER ( ch_combined_hits_locs_camper, ch_camper_hmm_list )
         ch_camper_hmm_formatted = CAMPER_HMM_FORMATTER.out.camper_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_camper_hmm_formatted)
 
         // MMseqs
         ch_combined_query_locs_camper = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_CAMPER( ch_combined_query_locs_camper, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_list, params.camper_name )
+        MMSEQS_SEARCH_CAMPER( ch_combined_query_locs_camper, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_list, camper_name )
         ch_camper_mmseqs_formatted = MMSEQS_SEARCH_CAMPER.out.mmseqs_search_formatted_out
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
@@ -194,7 +209,7 @@ workflow ANNOTATE {
     // Methyl annotation
     if (params.use_methyl) {
         ch_combined_query_locs_methyl = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_METHYL( ch_combined_query_locs_methyl, DB_CHANNEL_SETUP.out.ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.methyl_name )
+        MMSEQS_SEARCH_METHYL( ch_combined_query_locs_methyl, DB_CHANNEL_SETUP.out.ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, methyl_name )
         ch_methyl_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_mmseqs_formatted)
@@ -203,7 +218,7 @@ workflow ANNOTATE {
     if (params.use_canthyd) {
         // MMseqs
         ch_combined_query_locs_canthyd = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_CANTHYD( ch_combined_query_locs_canthyd, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_list, params.canthyd_name )
+        MMSEQS_SEARCH_CANTHYD( ch_combined_query_locs_canthyd, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_list, canthyd_name )
         ch_canthyd_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD.out.mmseqs_search_formatted_out
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_mmseqs_formatted)
@@ -216,7 +231,7 @@ workflow ANNOTATE {
         ch_canthyd_parsed = PARSE_HMM_CANTHYD.out.parsed_hmm
 
         ch_combined_hits_locs_canthyd = ch_canthyd_parsed.join(ch_gene_locs)
-        CANTHYD_HMM_FORMATTER ( ch_combined_hits_locs_canthyd, params.canthyd_top_hit, ch_canthyd_hmm_list )
+        CANTHYD_HMM_FORMATTER ( ch_combined_hits_locs_canthyd, ch_canthyd_hmm_list )
         ch_canthyd_hmm_formatted = CANTHYD_HMM_FORMATTER.out.canthyd_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_hmm_formatted)
@@ -239,10 +254,10 @@ workflow ANNOTATE {
     // MEROPS annotation
     if (params.use_merops) {
         ch_combined_query_locs_merops = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_MEROPS( ch_combined_query_locs_merops, DB_CHANNEL_SETUP.out.ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.merops_name )
+        MMSEQS_SEARCH_MEROPS( ch_combined_query_locs_merops, DB_CHANNEL_SETUP.out.ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, merops_name )
         ch_merops_unformatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
 
-        SQL_MEROPS(ch_merops_unformatted, params.merops_name, ch_sql_descriptions_db)
+        SQL_MEROPS(ch_merops_unformatted, merops_name, ch_sql_descriptions_db)
         ch_merops_formatted = SQL_MEROPS.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
@@ -250,10 +265,10 @@ workflow ANNOTATE {
     // Uniref annotation
     if (params.use_uniref) {
         ch_combined_query_locs_uniref = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_UNIREF( ch_combined_query_locs_uniref, DB_CHANNEL_SETUP.out.ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, params.uniref_name )
+        MMSEQS_SEARCH_UNIREF( ch_combined_query_locs_uniref, DB_CHANNEL_SETUP.out.ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, ch_dummy_sheet, uniref_name )
         ch_uniref_unformatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
 
-        SQL_UNIREF(ch_uniref_unformatted, params.uniref_name, ch_sql_descriptions_db)
+        SQL_UNIREF(ch_uniref_unformatted, uniref_name, ch_sql_descriptions_db)
         ch_uniref_formatted = SQL_UNIREF.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
@@ -267,7 +282,7 @@ workflow ANNOTATE {
         ch_vog_parsed = PARSE_HMM_VOG.out.parsed_hmm
 
         ch_combined_hits_locs_vog = ch_vog_parsed.join(ch_gene_locs)
-        VOG_HMM_FORMATTER ( ch_combined_hits_locs_vog, params.vog_top_hit, params.vogdb_name, ch_sql_descriptions_db )
+        VOG_HMM_FORMATTER ( ch_combined_hits_locs_vog, vogdb_name, ch_sql_descriptions_db )
         ch_vog_formatted = VOG_HMM_FORMATTER.out.vog_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_vog_formatted)
@@ -275,10 +290,10 @@ workflow ANNOTATE {
     // Viral annotation
     if (params.use_viral) {
         ch_combined_query_locs_viral = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_VIRAL( ch_combined_query_locs_viral, DB_CHANNEL_SETUP.out.ch_viral_db, params.bit_score_threshold,  params.rbh_bit_score_threshold,ch_dummy_sheet, params.viral_name )
+        MMSEQS_SEARCH_VIRAL( ch_combined_query_locs_viral, DB_CHANNEL_SETUP.out.ch_viral_db, params.bit_score_threshold,  params.rbh_bit_score_threshold,ch_dummy_sheet, viral_name )
         ch_viral_unformatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
 
-        SQL_VIRAL(ch_viral_unformatted, params.viral_name, ch_sql_descriptions_db)
+        SQL_VIRAL(ch_viral_unformatted, viral_name, ch_sql_descriptions_db)
         ch_viral_formatted = SQL_VIRAL.out.sql_formatted_hits
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)

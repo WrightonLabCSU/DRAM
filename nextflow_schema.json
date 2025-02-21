@@ -10,9 +10,6 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-                "outdir"
-            ],
             "properties": {
                 "outdir": {
                     "type": "string",
@@ -39,9 +36,6 @@
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
-            "required": [
-                "input_fasta"
-            ],
             "properties": {
                 "input_fasta": {
                     "type": "string",
@@ -80,57 +74,14 @@
                     "exits": "true",
                     "description": "Path to directory pointing to DRAM annotation to merge into one file. To be ran as a separate process."
                 }
-            },
-            "oneOf": [
-                {
-                    "required": [
-                        "call"
-                    ],
-                    "not": {
-                        "required": [
-                            "input_genes"
-                        ]
-                    }
-                },
-                {
-                    "required": [
-                        "input_genes",
-                        "annotate"
-                    ],
-                    "not": {
-                        "required": [
-                            "call"
-                        ]
-                    }
-                },
-                {
-                    "allOf": [
-                        {
-                            "not": {
-                                "required": [
-                                    "call"
-                                ]
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": [
-                                    "input_genes"
-                                ]
-                            }
-                        }
-                    ]
-                }
-            ]
+            }
+
         },
         "call_prodigal_options": {
             "title": "Call Prodigal Options",
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Call genes on the input FASTA files using Prodigal.",
-            "required": [
-                "input_fasta"
-            ],
             "properties": {
                 "call": {
                     "type": "boolean",
@@ -252,18 +203,6 @@
                     "exists": true,
                     "description": "Path to old annotations to add to the current run."
                 },
-                "taxa": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "Path to bin taxonomy tsv. Compatible with GTDB."
-                },
-                "bin_quality": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "Path to bin quality tsv. CheckM and CheckM2 compatible."
-                },
                 "bit_score_threshold": {
                     "type": "number",
                     "description": "Minimum BitScore of search to retain hits')",
@@ -273,6 +212,11 @@
                     "type": "number",
                     "description": "Minimum BitScore of reverse best hits to retain hits",
                     "default": 350.0
+                },
+                "database_list": {
+                    "type": "string",
+                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use empty for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
+                    "default": "empty"
                 },
                 "generate_gff": {
                     "type": "boolean",
@@ -287,13 +231,247 @@
         "distill_options": {
             "title": "Distill Options",
             "type": "object",
-            "fa_icon": "fas fa-database",
+            "fa_icon": "fas fa-dna",
+            "description": "The purpose of DRAM distill is to distill down annotations based on curated distillation summary form(s). It can be ran with either --distill_topic, --distill_ecosystem, or --distill_custom (or some combination). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms). Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided.",
             "properties": {
+                "distill_topic": {
+                    "type": "string",
+                    "description": "Topic to distill. Options:  <carbon|energy|misc|nitrogen|transport> OR <default = carbon,energy,misc,nitrogen,transport> If more than one topic included, they must be seperated by a comma (--distill_topic carbon,energy or --distill_topic 'carbon,energy')."  
+                },
+                "distill_ecosystem": {
+                    "type": "string",
+                    "description": "Ecosystem to distill. Options: <eng_sys|ag> If more than one ecosystem included, they must be seperated by a comma (--distill_ecosystem eng_sys,ag or --distill_ecosystem 'eng_sys,ag')."
+
+                },
+                "distill_custom": {
+                    "type": "string",
+                    "description": "<path/to/custom_distillate.tsv>  Custom distill file to use."
+                },
                 "annotations": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
                     "description": "Path to annotations tsv to distill. Required if running without annotate"
+                },
+                "distill_carbon_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill carbon sheet."
+                },
+                "distill_energy_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill energy sheet."
+                },
+                "distill_misc_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill misc sheet."
+                },
+                "distill_nitrogen_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill nitrogen sheet."
+                },
+                "distill_transport_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill transport sheet."
+                },
+                "distill_camper_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill camper sheet."
+                },
+                "distill_eng_sys_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill energy ecosystem sheet."
+                },
+                "distill_ag_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill agriculture ecosystem sheet."
+                },
+                "distill_dummy_sheet": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "File path to distill dummy sheet."
+                }
+            }
+        },
+        "rna_options": {
+            "title": "RNA Options",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "rRNA and tRNA input sheets, used when running DRAM distill without --call",
+            "properties": {
+                "rrnas": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to rRNA tsv."
+                },
+                "trnas": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to tRNA tsv."
+                }
+            }
+        },
+        "bin_and_taxa_options": {
+            "title": "Bin Quality and Taxonomy Options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Paths to bin quality and taxonomy tsvs, used after annotate and before distill",
+            "properties": {
+                "bin_quality": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to bin quality tsv. CheckM and CheckM2 compatible."
+                },
+                "taxa": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to bin taxonomy tsv. Compatible with GTDB."
+                }
+            }
+        },
+        "database_options": {
+            "title": "Database Options",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "File paths to databases used in the workflow.",
+            "properties": {
+
+                "kegg_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/kegg/",
+                    "hidden": true
+                },
+                "uniref_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/uniref/",
+                    "hidden": true
+                },
+                "pfam_mmseq_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/pfam/mmseqs/",
+                    "hidden": true
+
+                },
+                "merops_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/merops/",
+                    "hidden": true
+                },
+                "viral_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/viral/",
+                    "hidden": true
+                },
+                "kofam_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/kofam/",
+                    "hidden": true
+                },
+                "kofam_list": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/kofam/kofam_ko_list.tsv",
+                    "hidden": true
+                },
+                "dbcan_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/dbcan/",
+                    "hidden": true
+                },
+                "dbcan_fam_activities": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/dbcan/dbcan.fam-activities.tsv",
+                    "hidden": true
+                },
+                "dbcan_subfam_activities": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/dbcan/dbcan.fam-activities.tsv",
+                    "hidden": true
+                },
+                "vog_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/vog/",
+                    "hidden": true
+                },
+                "vog_list": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/vogdb/vog_annotations_latest.tsv.gz",
+                    "hidden": true
+                },
+                "camper_hmm_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/camper/hmm/",
+                    "hidden": true
+                },
+                "camper_hmm_list": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/camper/hmm/camper_hmm_scores.tsv",
+                    "hidden": true
+                },
+                "camper_mmseqs_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/camper/mmseqs/",
+                    "hidden": true
+                },
+                "camper_mmseqs_list": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/camper/mmseqs/camper_scores.tsv",
+                    "hidden": true
+                },
+                "canthyd_hmm_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/canthyd/hmm/",
+                    "hidden": true
+                },
+                "cant_hyd_hmm_list": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/canthyd/hmm/cant_hyd_HMM_scores.tsv",
+                    "hidden": true
+                },
+                "canthyd_mmseqs_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/canthyd/mmseqs/",
+                    "hidden": true
+                },
+                "canthyd_mmseqs_list": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/canthyd/mmseqs/cant_hyd_BLAST_scores.tsv",
+                    "hidden": true
+                },
+                "fegenie_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/fegenie/",
+                    "hidden": true
+                },
+                "fegenie_list": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/fegenie/fegenie_iron_cut_offs.txt",
+                    "hidden": true
+                },
+                "sulfur_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/sulfur/",
+                    "hidden": true
+                },
+                "methyl_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/methyl/",
+                    "hidden": true
+                },
+                "sql_descriptions_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/db_descriptions/description_db.sqlite",
+                    "hidden": true
                 }
             }
         },
@@ -450,11 +628,8 @@
                     "type": "string",
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
-                    "hidden": true
-                },
-                "distill_dummy_sheet": {
-                    "type": "string",
-                    "hidden": true
+                    "hidden": true,
+                    "default": "yyyy-MM-dd_HH-mm-ssZ"
                 }
             }
         }
@@ -473,10 +648,122 @@
             "$ref": "#/$defs/annotate_options"
         },
         {
+            "$ref": "#/$defs/distill_options"
+        },
+        {
+            "$ref": "#/$defs/rna_options"
+        },
+        {
+            "$ref": "#/$defs/bin_and_taxa_options"
+        },
+        {
+            "$ref": "#/$defs/database_options"
+        },
+        {
             "$ref": "#/$defs/institutional_config_options"
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "required": [
+                "input_fasta",
+                "outdir"
+            ]
+        },
+        {
+            "oneOf": [
+                {
+                    "required": [
+                        "call"
+                    ],
+                    "not": {
+                        "required": [
+                            "input_genes"
+                        ]
+                    }
+                },
+                {
+                    "required": [
+                        "input_genes",
+                        "annotate"
+                    ],
+                    "not": {
+                        "required": [
+                            "call"
+                        ]
+                    }
+                },
+                {
+                    "allOf": [
+                        {
+                            "not": {
+                                "required": [
+                                    "call"
+                                ]
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": [
+                                    "input_genes"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "oneOf": [
+                {
+                    "required": [
+                        "call"
+                    ],
+                    "not": {
+                        "required": [
+                            "trnas",
+                            "rrnas"
+                        ]
+                    }
+                },
+                {
+                    "required": [
+                        "trnas",
+                        "rrnas"
+                    ],
+                    "not": {
+                        "required": [
+                            "call"
+                        ]
+                    }
+                },
+                {
+                    "allOf": [
+                        {
+                            "not": {
+                                "required": [
+                                    "call"
+                                ]
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": [
+                                    "trnas",
+                                ]
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": [
+                                    "rrnas"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

@@ -22,7 +22,6 @@ include { RRNA_COLLECT                                  } from "${projectDir}/mo
 workflow COLLECT_RNA {
     take:
     ch_fasta  // channel: [ val(sample name), path(fasta) ]
-    default_channel // channel: dummy sheet
 
     main:
 
@@ -30,18 +29,14 @@ workflow COLLECT_RNA {
     // If we didn't run call 
     if (!params.call) {
         // the user provided rrnas or trnas 
-        if( params.trnas != "" ){
-            Channel.fromPath("${params.trnas}/*.tsv", checkIfExists: true)
-                .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
-                .collect()
-                .set { ch_collected_tRNAs }
-        }
-        if( params.rrnas != "" ){
-            Channel.fromPath("${params.rrnas}/*.tsv", checkIfExists: true)
-                .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with barrnap. Cannot find any files at: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/directory" }
-                .collect()
-                .set { ch_collected_rRNAs }
-        }
+        Channel.fromPath("${params.trnas}/*.tsv", checkIfExists: true)
+            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
+            .collect()
+            .set { ch_collected_tRNAs }
+        Channel.fromPath("${params.rrnas}/*.tsv", checkIfExists: true)
+            .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with barrnap. Cannot find any files at: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/directory" }
+            .collect()
+            .set { ch_collected_rRNAs }
     } else { // If we did run call then we need to generate the rrnas and trnas from the fastas
         // Run tRNAscan-SE on each fasta to identify tRNAs
         TRNA_SCAN( ch_fasta )
@@ -62,24 +57,15 @@ workflow COLLECT_RNA {
     }
 
     // Create sheet for trnas from the collected tRNAs or provided tRNAs
-    if ((params.call) || (params.trnas != "")) {
-        // Run TRNA_COLLECT to generate a combined TSV for all fastas
-        TRNA_COLLECT( ch_collected_tRNAs )
-        ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
-    } else{
-        ch_trna_sheet = default_channel
-    }
+    // Run TRNA_COLLECT to generate a combined TSV for all fastas
+    TRNA_COLLECT( ch_collected_tRNAs )
+    ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
 
     // Create sheet for rrnas from the collected rRNAs or provided rRNAs
-    if ((params.call) || (params.rrnas != "")) {
-        // Run RRNA_COLLECT to generate a combined TSV for all fastas
-        RRNA_COLLECT( ch_collected_rRNAs )
-        ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
-        ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
-    } else {
-        ch_rrna_sheet = default_channel
-        ch_rrna_combined = default_channel
-    }
+    // Run RRNA_COLLECT to generate a combined TSV for all fastas
+    RRNA_COLLECT( ch_collected_rRNAs )
+    ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
+    ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
 
 
     emit:
