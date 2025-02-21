@@ -1,5 +1,9 @@
 process KEGG_HMM_FORMATTER {
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+
     tag { sample }
 
     input:

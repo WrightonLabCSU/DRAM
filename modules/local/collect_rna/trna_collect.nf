@@ -6,6 +6,8 @@ process TRNA_COLLECT {
 
     errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     file combined_trnas
 

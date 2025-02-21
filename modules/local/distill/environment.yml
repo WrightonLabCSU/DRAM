@@ -1,0 +1,11 @@
+name: dram-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - agbiome
+
+dependencies:
+  - python=3.10
+  - pandas=1.5.2
+  - openpyxl=3.1.2

@@ -1,5 +1,9 @@
 process HMM_SEARCH {
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+
     tag { sample }
 
     input:

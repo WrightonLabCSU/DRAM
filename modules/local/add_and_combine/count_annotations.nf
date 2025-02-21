@@ -1,5 +1,9 @@
 process COUNT_ANNOTATIONS {
+    
+    errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+    
     input:
     file( ch_combined_annotations )
 

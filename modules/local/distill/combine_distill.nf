@@ -1,5 +1,7 @@
 process COMBINE_DISTILL {
 
+    errorStrategy 'finish'
+
     input:
     // Define input channels
     path( ch_distill_carbon, stageAs:  "carbon_distill_sheet.tsv")

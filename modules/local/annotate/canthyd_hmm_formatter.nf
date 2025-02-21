@@ -1,6 +1,9 @@
 process CANTHYD_HMM_FORMATTER {
 
-    input:
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+    
     tag { sample }
 
     input:

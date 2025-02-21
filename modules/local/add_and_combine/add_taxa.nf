@@ -2,6 +2,8 @@ process ADD_TAXA {
 
     errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     file( combined_annotations )
     file( ch_taxa )

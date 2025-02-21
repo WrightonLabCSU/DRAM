@@ -1,4 +1,8 @@
 process MERGE_ANNOTATIONS {
+    
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
 
     input:
     path( ch_annotations, stageAs: "annotations/*" )

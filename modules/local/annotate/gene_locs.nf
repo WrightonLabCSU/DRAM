@@ -1,5 +1,9 @@
 process GENE_LOCS {
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+    
     tag { sample }
 
     input:

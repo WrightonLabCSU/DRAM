@@ -1,5 +1,9 @@
 process DISTILL {
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
     path( ch_combined_distill_sheets, stageAs: "combined/*" )

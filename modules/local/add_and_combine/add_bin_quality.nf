@@ -2,6 +2,8 @@ process ADD_BIN_QUALITY {
 
     errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     file( combined_annotations )
     file( ch_bin_quality )

@@ -1,5 +1,9 @@
 process MMSEQS_INDEX{
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+    
     tag { sample }
 
     input:

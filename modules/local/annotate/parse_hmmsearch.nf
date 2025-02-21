@@ -1,4 +1,8 @@
 process PARSE_HMM {
+    
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
 
     tag{ sample }
     

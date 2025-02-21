@@ -2,6 +2,8 @@ process ADD_SQL_DESCRIPTIONS {
 
     errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     tuple val(sample), path(hits_file)
     val(db_name)

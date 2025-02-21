@@ -2,6 +2,8 @@ process RRNA_COLLECT {
 
     errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     file combined_rrnas
 
@@ -56,4 +58,3 @@ process RRNA_COLLECT {
         combined_df.to_csv('combined_rrna_scan.tsv', sep='\\t', index=False)
     """
 }
-

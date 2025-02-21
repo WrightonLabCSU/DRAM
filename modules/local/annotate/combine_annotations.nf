@@ -1,5 +1,9 @@
 process COMBINE_ANNOTATIONS {
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+
     input:
     val all_annotations
 

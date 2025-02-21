@@ -17,7 +17,7 @@ include { CALL                   } from "${projectDir}/subworkflows/local/call.n
 include { COLLECT_RNA            } from "${projectDir}/subworkflows/local/collect_rna.nf"
 include { MERGE                  } from "${projectDir}/subworkflows/local/merge.nf"
 include { ANNOTATE               } from "${projectDir}/subworkflows/local/annotate.nf"
-include { ADD_AND_COMBINE        } from "${projectDir}/subworkflows/local/add_and_combine.nf"
+include { ADD_AND_COUNT        } from "${projectDir}/subworkflows/local/add_and_count.nf"
 include { DISTILL                } from "${projectDir}/subworkflows/local/distill.nf"
 
 
@@ -160,7 +160,7 @@ workflow DRAM {
         distill_eng_sys = "0"
         distill_ag = "0"
         if (params.distill_ecosystem != "") {
-            def distillEcosystemList = params.distill_ecosystem.split()
+            def distillEcosystemList = params.distill_ecosystem.split(',')
 
             // Create a list to store the generated channels
             def ecoSysChannels = []
@@ -294,7 +294,7 @@ workflow DRAM {
                     .fromPath(params.annotations, checkIfExists: true)
                     .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
             }
-            ADD_AND_COMBINE( ch_combined_annotations )
+            ADD_AND_COUNT( ch_combined_annotations )
 
             
             if( params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" ){
@@ -309,13 +309,13 @@ workflow DRAM {
                     ch_distill_eng_sys,
                     ch_distill_camper,
                     ch_distill_custom_collected,
-                    ADD_AND_COMBINE.out.ch_final_annots,
-                    ADD_AND_COMBINE.out.ch_annotation_counts,
+                    ADD_AND_COUNT.out.ch_final_annots,
+                    ADD_AND_COUNT.out.ch_annotation_counts,
                     COLLECT_RNA.out.ch_rrna_sheet,
                     ch_quast_stats,
                     COLLECT_RNA.out.ch_rrna_combined,
                     COLLECT_RNA.out.ch_trna_sheet,
-                    ADD_AND_COMBINE.out.ch_annotations_sqlite3
+                    ADD_AND_COUNT.out.ch_annotations_sqlite3
                 )
             }
         }

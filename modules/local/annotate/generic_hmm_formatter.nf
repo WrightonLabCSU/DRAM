@@ -1,6 +1,10 @@
 // This isn't used in the current version, but we need to fix the absolute paths in the script block
 process GENERIC_HMM_FORMATTER {
     
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+
     input:
     path( hmm_info_path )
     path( hits_file )
@@ -11,7 +15,7 @@ process GENERIC_HMM_FORMATTER {
     
     script:
     """
-    python /home/rwoyda/Projects/DRAM2-Nextflow/DRAM2-NF/assets/generic_hmm_formatter.py \
+    generic_hmm_formatter.py \
         --hits_csv ${hits_csv} \
         --hmm_info_path ${hmm_info_path} \
         --top_hit ${top_hit} \

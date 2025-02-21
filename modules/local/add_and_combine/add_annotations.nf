@@ -1,5 +1,9 @@
 process ADD_ANNOTATIONS {
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+
     input:
     path( old_annotations, stageAs: "old_annotations.tsv" )
     path( new_annotations, stageAs: "new_annotations.tsv" )

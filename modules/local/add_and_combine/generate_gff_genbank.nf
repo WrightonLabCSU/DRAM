@@ -1,5 +1,9 @@
 process GENERATE_GFF_GENBANK {
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+    
     input:
     val( all_genes_fna )
     val( databases_list )

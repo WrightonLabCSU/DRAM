@@ -2,6 +2,8 @@ process TRNA_SCAN {
 
     errorStrategy 'finish'
 
+    conda "${moduleDir}/environment.yml"
+
     tag { sample }
 
     input:

@@ -1,6 +1,9 @@
 process VOG_HMM_FORMATTER {
+    
+    errorStrategy 'finish'
 
-    input:
+    conda "${moduleDir}/environment.yml"
+
     tag { sample }
 
     input:
