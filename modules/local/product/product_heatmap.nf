@@ -3,6 +3,10 @@ This is purely a placeholder process for future Product development and can be m
 */
 process PRODUCT_HEATMAP {
 
+    errorStrategy 'finish'
+
+    conda "${moduleDir}/environment.yml"
+
     input:
     path( ch_final_annots, stageAs: "raw-annotations.tsv")
     val(groupby_column)
@@ -13,9 +17,7 @@ process PRODUCT_HEATMAP {
 
     script:
     """
-    python -m ${params.make_product_pkg} \\
-    --annotations ${ch_final_annots} \\
-    --groupby-column ${groupby_column} \\
+    dram_viz --annotations ${ch_final_annots} --groupby-column ${groupby_column}
 
     """
 }

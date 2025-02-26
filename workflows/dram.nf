@@ -13,6 +13,7 @@ include { getFastaChannel        } from '../subworkflows/local/utils_pipeline_se
 
 // Pipeline steps
 include { RENAME_FASTA           } from "${projectDir}/modules/local/rename/rename_fasta.nf"
+include { PRODUCT_HEATMAP        } from "${projectDir}/modules/local/product/product_heatmap.nf"
 include { CALL                   } from "${projectDir}/subworkflows/local/call.nf"
 include { COLLECT_RNA            } from "${projectDir}/subworkflows/local/collect_rna.nf"
 include { MERGE                  } from "${projectDir}/subworkflows/local/merge.nf"
@@ -288,19 +289,22 @@ workflow DRAM {
         if (params.call || distill_flag){
             COLLECT_RNA( ch_fasta )
         }
+
+        
         if (params.annotate || distill_flag){
-            if (params.annotate){
+            if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
                 ch_combined_annotations = ANNOTATE.out.ch_combined_annotations
-            } else {
+            } else {  // If the user has not specified --annotate, use the provided annotations
                 ch_combined_annotations = Channel
                     .fromPath(params.annotations, checkIfExists: true)
                     .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
             }
-            ADD_AND_COUNT( ch_combined_annotations )
+            
+            ADD_AND_COUNT( ch_combined_annotations )  // Do any adding of additional annotations and count the annotations
+            ch_final_annots = ADD_AND_COUNT.out.ch_final_annots
 
             
             if( distill_flag ){
-
                 DISTILL(
                     ch_distill_carbon,
                     ch_distill_energy,
@@ -311,7 +315,7 @@ workflow DRAM {
                     ch_distill_eng_sys,
                     ch_distill_camper,
                     ch_distill_custom_collected,
-                    ADD_AND_COUNT.out.ch_final_annots,
+                    ch_final_annots,
                     ADD_AND_COUNT.out.ch_annotation_counts,
                     COLLECT_RNA.out.ch_rrna_sheet,
                     ch_quast_stats,
@@ -320,7 +324,17 @@ workflow DRAM {
                     ADD_AND_COUNT.out.ch_annotations_sqlite3
                 )
             }
+
+            if (params.product) {  // If the user has specified --product after annotate or distill, generate the product heatmap
+                PRODUCT_HEATMAP( ch_final_annots, params.groupby_column )
+            }
+        } else if (params.product) {  // If user is running product without annotate or distill, use the provided annotations
+            ch_combined_annotations = Channel
+                .fromPath(params.annotations, checkIfExists: true)
+                .ifEmpty { exit 1, "If you specify --product without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
+            PRODUCT_HEATMAP( ch_combined_annotations, params.groupby_column )
         }
+
     }
 
     // //

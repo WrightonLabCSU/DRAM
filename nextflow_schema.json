@@ -5,6 +5,49 @@
     "description": "DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes",
     "type": "object",
     "$defs": {
+        "pipeline_steps": {
+            "title": "Pipeline Steps",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Which steps to run in the pipeline.",
+            "properties": {
+                "rename": {
+                    "type": "boolean",
+                    "description": "Rename FASTA headers based on file name. Example: sample1.fa --> (fasta header renamed to) > sample1......  Why? DRAM output is focused on scaffolds/contigs with respect to each provided input sample. Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable. *If you have already renamed your FASTA headers, do not include with '--call'."
+                },
+                "call": {
+                    "type": "boolean",
+                    "description": "Whether to call genes on the input FASTA files using Prodigal."
+                },
+                "annotate": {
+                    "type": "boolean",
+                    "description": "Annotate called genes using downloaded databases."
+                },
+                "merge_annotations": {
+                    "type": "string",
+                    "format": "path",
+                    "exits": "true",
+                    "description": "Path to directory pointing to DRAM annotation to merge into one file. To be ran as a separate process."
+                },
+                "distill_topic": {
+                    "type": "string",
+                    "description": "Topic to distill. Options:  <carbon|energy|misc|nitrogen|transport> OR <default = carbon,energy,misc,nitrogen,transport> If more than one topic included, they must be seperated by a comma (--distill_topic carbon,energy or --distill_topic 'carbon,energy')."  
+                },
+                "distill_ecosystem": {
+                    "type": "string",
+                    "description": "Ecosystem to distill. Options: <eng_sys|ag> If more than one ecosystem included, they must be seperated by a comma (--distill_ecosystem eng_sys,ag or --distill_ecosystem 'eng_sys,ag')."
+
+                },
+                "distill_custom": {
+                    "type": "string",
+                    "description": "<path/to/custom_distillate.tsv>  Custom distill file to use."
+                },
+                "product": {
+                    "type": "boolean",
+                    "description": "Generate a product visualization of the annotations and save the output to the output directory."
+                }                
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -67,12 +110,6 @@
                     "default": "*.fna",
                     "description": "Input format for the Genes fna file. Only needed if you are not running call and you are passing `--generate_gff` or `--generate_gbk`.",
                     "fa_,icon": "fas fa-plus"
-                },
-                "merge_annotations": {
-                    "type": "string",
-                    "format": "path",
-                    "exits": "true",
-                    "description": "Path to directory pointing to DRAM annotation to merge into one file. To be ran as a separate process."
                 }
             }
 
@@ -83,14 +120,6 @@
             "fa_icon": "fas fa-dna",
             "description": "Call genes on the input FASTA files using Prodigal.",
             "properties": {
-                "call": {
-                    "type": "boolean",
-                    "description": "Whether to call genes on the input FASTA files using Prodigal."
-                },
-                "rename": {
-                    "type": "boolean",
-                    "description": "Rename FASTA headers based on file name. Example: sample1.fa --> (fasta header renamed to) > sample1......  Why? DRAM output is focused on scaffolds/contigs with respect to each provided input sample. Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable. *If you have already renamed your FASTA headers, do not include with '--call'."
-                },
                 "prodigal_mode": {
                     "type": "string",
                     "description": "Mode for Prodigal gene calling.",
@@ -149,10 +178,6 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "properties": {
-                "annotate": {
-                    "type": "boolean",
-                    "description": "Annotate called genes using downloaded databases."
-                },
                 "use_camper": {
                     "type": "boolean",
                     "description": "Use the CAMPer database for annotation."
@@ -234,19 +259,6 @@
             "fa_icon": "fas fa-dna",
             "description": "The purpose of DRAM distill is to distill down annotations based on curated distillation summary form(s). It can be ran with either --distill_topic, --distill_ecosystem, or --distill_custom (or some combination). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms). Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided.",
             "properties": {
-                "distill_topic": {
-                    "type": "string",
-                    "description": "Topic to distill. Options:  <carbon|energy|misc|nitrogen|transport> OR <default = carbon,energy,misc,nitrogen,transport> If more than one topic included, they must be seperated by a comma (--distill_topic carbon,energy or --distill_topic 'carbon,energy')."  
-                },
-                "distill_ecosystem": {
-                    "type": "string",
-                    "description": "Ecosystem to distill. Options: <eng_sys|ag> If more than one ecosystem included, they must be seperated by a comma (--distill_ecosystem eng_sys,ag or --distill_ecosystem 'eng_sys,ag')."
-
-                },
-                "distill_custom": {
-                    "type": "string",
-                    "description": "<path/to/custom_distillate.tsv>  Custom distill file to use."
-                },
                 "annotations": {
                     "type": "string",
                     "format": "file-path",
@@ -298,6 +310,26 @@
                     "hidden": true,
                     "description": "File path to distill dummy sheet."
                 }
+            }
+        },
+        "product_options": {
+            "title": "Product Options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "The purpose of DRAM --product is to generate a product visualization of the annotations and save the output to the output directory.",
+            "properties": {
+                "annotations": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to annotations tsv to distill. Required if running without annotate. (Also a distill option)"
+                },
+                "groupby_column": {
+                    "type": "string",
+                    "description": "Column to to group by in the annotations file for etc and function groupings.",
+                    "default": "sample"
+                }
+
             }
         },
         "rna_options": {
@@ -750,7 +782,7 @@
                         {
                             "not": {
                                 "required": [
-                                    "trnas",
+                                    "trnas"
                                 ]
                             }
                         },
