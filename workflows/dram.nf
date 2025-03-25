@@ -243,6 +243,7 @@ workflow DRAM {
     //
     // Collate and save software versions
     //
+    
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
@@ -255,8 +256,6 @@ workflow DRAM {
     //
     // Pipeline steps
     //
-
-    
 
     if( params.rename ) {
         RENAME_FASTA( ch_fasta )
@@ -277,12 +276,10 @@ workflow DRAM {
             ch_called_proteins = CALL.out.ch_called_proteins
             ch_collected_fna = CALL.out.ch_collected_fna
 
-        } else{
-            
-        }
+        } 
 
         if (params.annotate){
-            ANNOTATE( ch_fasta, ch_gene_locs, ch_called_proteins, default_channel )
+            ANNOTATE( ch_gene_locs, ch_called_proteins, default_channel )
             
         }
 

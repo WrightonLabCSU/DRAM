@@ -64,7 +64,6 @@ include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "${projectDir}/mo
 
 workflow ANNOTATE {
     take:
-    ch_fasta  // channel: [ val(sample name), path(fasta) ]
     ch_gene_locs  // channel: [ val(sample name), path(gene_locs_tsv) ]
     ch_called_proteins  // channel: [ val(sample name), path(called_proteins_file.faa) ]
     ch_dummy_sheet // Path to dummy sheet

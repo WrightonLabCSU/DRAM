@@ -8,7 +8,6 @@ process SULFUR_HMM_FORMATTER {
 
     input:
     tuple val( sample ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
-    file( ch_sulfur_formatter )
 
     output:
     tuple val( sample ), path ( "${sample}_formatted_sulfur_hits.csv" ), emit: sulfur_formatted_hits

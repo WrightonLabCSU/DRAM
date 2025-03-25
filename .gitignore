@@ -9,6 +9,8 @@ trace*.txt
 # DRAM output folders
 DRAM2_output/
 DRAM_output/
+output/
+outdir/
 work/
 
 # Visualization Output Files

@@ -27,7 +27,7 @@
                     "type": "string",
                     "format": "path",
                     "exits": "true",
-                    "description": "Path to directory pointing to DRAM annotation to merge into one file. To be ran as a separate process."
+                    "description": "Path to directory pointing to DRAM annotation to merge into one file. This is ran as a separate pipeline."
                 },
                 "distill_topic": {
                     "type": "string",
