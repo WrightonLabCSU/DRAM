@@ -13,7 +13,7 @@
             "properties": {
                 "rename": {
                     "type": "boolean",
-                    "description": "Rename FASTA headers based on file name. Example: sample1.fa --> (fasta header renamed to) > sample1......  Why? DRAM output is focused on scaffolds/contigs with respect to each provided input sample. Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable. *If you have already renamed your FASTA headers, do not include with '--call'."
+                    "description": "Rename FASTA headers based on file name. Example: sample1.fa --> (fasta header renamed to) > sample1......  Why? DRAM output is focused on scaffolds/contigs with respect to each provided input input_fasta. Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable. *If you have already renamed your FASTA headers, do not include with '--call'."
                 },
                 "call": {
                     "type": "boolean",
@@ -245,11 +245,11 @@
                 },
                 "generate_gff": {
                     "type": "boolean",
-                    "description": "Generate GFF output for each sample."
+                    "description": "Generate GFF output for each input_fasta."
                 },
                 "generate_gbk": {
                     "type": "boolean",
-                    "description": "Generate GBK output for each sample."
+                    "description": "Generate GBK output for each input_fasta."
                 }
             }
         },
@@ -327,7 +327,7 @@
                 "groupby_column": {
                     "type": "string",
                     "description": "Column to to group by in the annotations file for etc and function groupings.",
-                    "default": "sample"
+                    "default": "input_fasta"
                 }
 
             }

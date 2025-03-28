@@ -1,13 +1,13 @@
 process RENAME_FASTA {
 
 
-    tag { sample }
+    tag { input_fasta }
 
     input:
-    tuple val(sample), path(fasta)
+    tuple val(input_fasta), path(fasta)
     
     output:
-    tuple val(sample), path("*.fna"), emit: renamed_fasta
+    tuple val(input_fasta), path("*.fna"), emit: renamed_fasta
 
 
     script:
@@ -16,8 +16,8 @@ process RENAME_FASTA {
 
     rename.sh \\
     in=${fasta} \\
-    out=${sample}_renamed.fna \\
-    prefix=${sample} \\
+    out=${input_fasta}_renamed.fna \\
+    prefix=${input_fasta} \\
     addprefix=t
 
     """

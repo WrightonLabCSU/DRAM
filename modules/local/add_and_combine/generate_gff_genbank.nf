@@ -28,6 +28,6 @@ process GENERATE_GFF_GENBANK {
     mkdir -p GFF
     mkdir -p GBK
 
-    generate_gff_genbank.py ${flags.join(' ')} --samples_paths ${all_genes_fna} --database_list ${databases_list} --annotations ${raw_annotations}
+    generate_gff_genbank.py ${flags.join(' ')} --input_fastas_paths ${all_genes_fna} --database_list ${databases_list} --annotations ${raw_annotations}
     """
 }

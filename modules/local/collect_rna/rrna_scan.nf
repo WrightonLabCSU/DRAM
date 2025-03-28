@@ -4,13 +4,13 @@ process RRNA_SCAN {
 
     conda "${moduleDir}/environment.yml"
 
-    tag { sample }
+    tag { input_fasta }
 
     input:
-    tuple val(sample), path(fasta)
+    tuple val(input_fasta), path(fasta)
 
     output:
-    tuple val(sample), path("${sample}_processed_rrnas.tsv"), emit: rrna_scan_out, optional: true
+    tuple val(input_fasta), path("${input_fasta}_processed_rrnas.tsv"), emit: rrna_scan_out, optional: true
 
     script:
     """
@@ -21,7 +21,7 @@ process RRNA_SCAN {
     import io
     from sys import stderr
 
-    def run_barrnap(fasta, sample_name, threads, verbose=True):
+    def run_barrnap(fasta, input_fasta_name, threads, verbose=True):
         barrnap_command = [
             "barrnap",
             "--threads", str(threads),
@@ -32,8 +32,8 @@ process RRNA_SCAN {
         raw_rrna_str = result.stdout
 
         if not raw_rrna_str.strip():
-            print(f"No rRNAs were detected for {sample_name}.", file=stderr)
-            return pd.DataFrame(columns=["sample", "query_id", "type", "begin", "end", "strand", "e-value", "note"])  # Ensure this matches RRNA_COLUMNS
+            print(f"No rRNAs were detected for {input_fasta_name}.", file=stderr)
+            return pd.DataFrame(columns=["input_fasta", "query_id", "type", "begin", "end", "strand", "e-value", "note"])  # Ensure this matches RRNA_COLUMNS
 
         try:
             rrna_df = pd.read_csv(
@@ -44,19 +44,19 @@ process RRNA_SCAN {
                 usecols=["query_id", "type", "begin", "end", "strand", "e-value", "note"],
                 comment='#'  # This will skip lines starting with '#', including the '##gff-version 3' line
             )
-            rrna_df.insert(0, 'sample', sample_name)
+            rrna_df.insert(0, 'input_fasta', input_fasta_name)
             return rrna_df
         except pd.errors.ParserError:
-            print(f"Parser error processing barrnap output for {sample_name}. Output may not be in the expected format.", file=stderr)
-            return pd.DataFrame(columns=["sample", "query_id", "type", "begin", "end", "strand", "e-value", "note"])
+            print(f"Parser error processing barrnap output for {input_fasta_name}. Output may not be in the expected format.", file=stderr)
+            return pd.DataFrame(columns=["input_fasta", "query_id", "type", "begin", "end", "strand", "e-value", "note"])
 
 
-    rrna_df = run_barrnap("${fasta}", "${sample}", threads=${params.threads}, verbose=True)
+    rrna_df = run_barrnap("${fasta}", "${input_fasta}", threads=${params.threads}, verbose=True)
 
     if not rrna_df.empty:
-        rrna_df.to_csv(f"${sample}_processed_rrnas.tsv", sep="\t", index=False)
+        rrna_df.to_csv(f"${input_fasta}_processed_rrnas.tsv", sep="\t", index=False)
     else:
-        with open(f"${sample}_processed_rrnas.tsv", "w") as file:
+        with open(f"${input_fasta}_processed_rrnas.tsv", "w") as file:
             file.write("NULL")
 
     """

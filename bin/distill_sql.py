@@ -19,9 +19,9 @@ def create_database(db_name, include_extra_columns=False):
     cursor.execute(f'''
         CREATE TABLE IF NOT EXISTS annotations (
             query_id TEXT,
-            sample TEXT,
+            input_fasta TEXT,
             gene_id TEXT{extra_columns_sql},
-            UNIQUE(query_id, sample, gene_id)
+            UNIQUE(query_id, input_fasta, gene_id)
         )
     ''')
     conn.commit()
@@ -33,7 +33,7 @@ def identify_databases(df):
         if '_' in col:
             prefix = col.split('_')[0]
             db_names.add(prefix)
-    non_db_prefixes = {'query', 'sample', 'start', 'end', 'strandedness', 'Completeness', 'Contamination', 'taxonomy', 'gene_number'}
+    non_db_prefixes = {'query', 'input_fasta', 'start', 'end', 'strandedness', 'Completeness', 'Contamination', 'taxonomy', 'gene_number'}
     return db_names - non_db_prefixes
 
 def import_annotations(conn, file_path):
@@ -46,12 +46,12 @@ def import_annotations(conn, file_path):
     for db_name in db_names:
         id_cols = [col for col in df.columns if col.startswith(db_name) and ('_id' in col or '_EC' in col)]
         for col in id_cols:
-            for _, row in df[['query_id', 'sample', col] + extra_columns].dropna(subset=['query_id', 'sample', col]).iterrows():
+            for _, row in df[['query_id', 'input_fasta', col] + extra_columns].dropna(subset=['query_id', 'input_fasta', col]).iterrows():
                 gene_id = 'EC:' + str(row[col]) if col.endswith('_EC') else row[col]
-                record = (row['query_id'], row['sample'], gene_id) + tuple(row[extra_column] for extra_column in extra_columns)
+                record = (row['query_id'], row['input_fasta'], gene_id) + tuple(row[extra_column] for extra_column in extra_columns)
                 data_to_insert.append(record)
 
-    columns_sql = "query_id, sample, gene_id" + (", " + ", ".join(extra_columns) if extra_columns else "")
+    columns_sql = "query_id, input_fasta, gene_id" + (", " + ", ".join(extra_columns) if extra_columns else "")
     placeholders_sql = ", ".join(["?"] * (3 + len(extra_columns)))
     cursor = conn.cursor()
     cursor.executemany(f'''

@@ -21,7 +21,7 @@ def extract_query_ids(tsv_path, ko_terms):
 
     print(f"Found {len(filtered_df)} matching entries.")
 
-    return filtered_df[['sample', 'query_id']]
+    return filtered_df[['input_fasta', 'query_id']]
 
 def main():
     if len(sys.argv) != 4:

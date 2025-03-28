@@ -2,19 +2,19 @@ process CALL_GENES {
 
     errorStrategy 'finish'
 
-    tag { sample }
+    tag { input_fasta }
 
     conda "${moduleDir}/environment.yml"
 
     input:
-    tuple val( sample ), path( fasta )
+    tuple val( input_fasta ), path( fasta )
 
     output:
-    tuple val( sample ), path( "${sample}_called_genes.fna" ), emit: prodigal_fna, optional: true
-    tuple val( sample ), path( "${sample}_called_genes.faa" ), emit: prodigal_faa, optional: true
-    tuple val( sample ), path( "${sample}_called_genes_table.tsv" ), emit: prodigal_locs_tsv, optional: true
-    path( "${sample}_${params.min_contig_len}.fa" ), emit: prodigal_filtered_fasta, optional: true
-    path( "${sample}_called_genes.gff" ), emit: prodigal_gff, optional: true
+    tuple val( input_fasta ), path( "${input_fasta}_called_genes.fna" ), emit: prodigal_fna, optional: true
+    tuple val( input_fasta ), path( "${input_fasta}_called_genes.faa" ), emit: prodigal_faa, optional: true
+    tuple val( input_fasta ), path( "${input_fasta}_called_genes_table.tsv" ), emit: prodigal_locs_tsv, optional: true
+    path( "${input_fasta}_${params.min_contig_len}.fa" ), emit: prodigal_filtered_fasta, optional: true
+    path( "${input_fasta}_called_genes.gff" ), emit: prodigal_gff, optional: true
 
 
     script:
@@ -23,27 +23,27 @@ process CALL_GENES {
 
     reformat.sh \\
     in=${fasta} \\
-    out="${sample}_${params.min_contig_len}.fa" \\
+    out="${input_fasta}_${params.min_contig_len}.fa" \\
     minlength=${params.min_contig_len}
 
-    if [ ! -s "${sample}_${params.min_contig_len}.fa" ]; then
-        echo "Sample ${sample} - Error: no contigs after filtering for minimum contig length (${params.min_contig_len})"
+    if [ ! -s "${input_fasta}_${params.min_contig_len}.fa" ]; then
+        echo "Sample ${input_fasta} - Error: no contigs after filtering for minimum contig length (${params.min_contig_len})"
         exit 1
     else
         prodigal \\
-        -i "${sample}_${params.min_contig_len}.fa" \\
-        -o "${sample}_called_genes.gff" \\
+        -i "${input_fasta}_${params.min_contig_len}.fa" \\
+        -o "${input_fasta}_called_genes.gff" \\
         -p ${params.prodigal_mode} \\
         -g ${params.prodigal_trans_table} \\
         -f gff \\
-        -d "${sample}_called_genes.fna" \\
-        -a "${sample}_called_genes.faa"
+        -d "${input_fasta}_called_genes.fna" \\
+        -a "${input_fasta}_called_genes.faa"
 
-        if [ ! -s "${sample}_called_genes.gff" ]; then
-            echo "Sample ${sample} - Warning: called genes GFF file is empty or does not exist."
+        if [ ! -s "${input_fasta}_called_genes.gff" ]; then
+            echo "Sample ${input_fasta} - Warning: called genes GFF file is empty or does not exist."
             # Consider managing absent output files for downstream processes here
         else
-            generate_gene_loc_tsv.py "${sample}_called_genes.gff" > "${sample}_called_genes_table.tsv"
+            generate_gene_loc_tsv.py "${input_fasta}_called_genes.gff" > "${input_fasta}_called_genes_table.tsv"
         fi
     fi
     """

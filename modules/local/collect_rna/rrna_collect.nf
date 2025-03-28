@@ -26,7 +26,7 @@ process RRNA_COLLECT {
         return 'Unknown rRNA'
 
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
-    samples = [os.path.basename(f).replace('_processed_rrnas.tsv', '') for f in tsv_files]
+    input_fastas = [os.path.basename(f).replace('_processed_rrnas.tsv', '') for f in tsv_files]
     gene_type_counts = defaultdict(lambda: defaultdict(int))
     combined_data = []
     all_files_null = True
@@ -40,7 +40,7 @@ process RRNA_COLLECT {
             df = pd.read_csv(file, sep='\\t')
             for index, row in df.iterrows():
                 gene_id = extract_rrna_gene_id(row['note'])
-                gene_type_counts[gene_id][row['sample']] += 1
+                gene_type_counts[gene_id][row['input_fasta']] += 1
             combined_data.append(df)
 
     if all_files_null:
@@ -48,9 +48,9 @@ process RRNA_COLLECT {
         with open('combined_rrna_scan.tsv', 'w') as f: f.write('NULL')
     else:
         collected_data = []
-        for gene_id, samples_counts in gene_type_counts.items():
+        for gene_id, input_fastas_counts in gene_type_counts.items():
             row = {'gene_id': gene_id, 'gene_description': f"{gene_id} gene", 'category': 'rRNA', 'topic_ecosystem': '', 'subcategory': ''}
-            for sample in samples: row[sample] = samples_counts.get(sample, 0)
+            for input_fasta in input_fastas: row[input_fasta] = input_fastas_counts.get(input_fasta, 0)
             collected_data.append(row)
         collected_df = pd.DataFrame(collected_data)
         collected_df.to_csv('collected_rrnas.tsv', sep='\\t', index=False)

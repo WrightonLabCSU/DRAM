@@ -64,8 +64,8 @@ include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "${projectDir}/mo
 
 workflow ANNOTATE {
     take:
-    ch_gene_locs  // channel: [ val(sample name), path(gene_locs_tsv) ]
-    ch_called_proteins  // channel: [ val(sample name), path(called_proteins_file.faa) ]
+    ch_gene_locs  // channel: [ val(input_fasta name), path(gene_locs_tsv) ]
+    ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
     ch_dummy_sheet // Path to dummy sheet
 
     main:
@@ -102,8 +102,8 @@ workflow ANNOTATE {
             .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
             .map {
-                sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-                tuple(sampleName, it)
+                input_fastaName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+                tuple(input_fastaName, it)
             }
 
         GENE_LOCS( ch_called_proteins)
@@ -426,4 +426,4 @@ workflow DB_CHANNEL_SETUP {
     ch_vogdb_db
     ch_viral_db
     index_mmseqs
-}
+} 

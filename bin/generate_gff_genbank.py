@@ -19,19 +19,19 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate GFF and/or GBK files from raw annotations, with specified databases formatting.")
     parser.add_argument("--gff", action='store_true', help="Generate GFF file")
     parser.add_argument("--gbk", action='store_true', help="Generate GBK file")
-    parser.add_argument("--samples_paths", nargs='+', help="Alternating list of sample names and paths to their .fna files.")
+    parser.add_argument("--input_fastas_paths", nargs='+', help="Alternating list of input_fasta names and paths to their .fna files.")
     parser.add_argument("--database_list", type=str, help="Comma-separated list of databases to include in the annotations. Use 'empty' for all.", default="empty")
     parser.add_argument("--annotations", required=True, help="Path to the raw annotations file")
     args = parser.parse_args()
     args.database_list = None if args.database_list == "empty" else args.database_list.split(',')
     return args
 
-def parse_samples_and_paths(samples_paths):
+def parse_input_fastas_and_paths(input_fastas_paths):
     """
-    Parses the provided list of sample names and .fna file paths into a structured dictionary.
+    Parses the provided list of input_fasta names and .fna file paths into a structured dictionary.
     """
-    cleaned_samples_paths = [item.strip("[]',") for item in samples_paths]
-    iterator = iter(cleaned_samples_paths)
+    cleaned_input_fastas_paths = [item.strip("[]',") for item in input_fastas_paths]
+    iterator = iter(cleaned_input_fastas_paths)
     return dict(zip(iterator, iterator))
 
 def sanitize_taxonomy(taxonomy):
@@ -65,14 +65,14 @@ def format_attributes(annotation, database_list):
     # Join attributes with semicolons, avoiding spaces for GFF3 compliance
     return ";".join(attributes)
 
-def generate_gff(samples_annotations, database_list):
+def generate_gff(input_fastas_annotations, database_list):
     """
-    Generate GFF files for each sample, filtered by specified databases,
+    Generate GFF files for each input_fasta, filtered by specified databases,
     ensuring adherence to GFF3 specifications, including attribute encoding and metadata comments.
     """
     os.makedirs("GFF", exist_ok=True)
-    for sample, annotations in samples_annotations.items():
-        with open(f"GFF/{sample}.gff", "w") as gff_file:
+    for input_fasta, annotations in input_fastas_annotations.items():
+        with open(f"GFF/{input_fasta}.gff", "w") as gff_file:
             gff_file.write("##gff-version 3\n")
             
             # Extract metadata from the first annotation (assuming it's consistent across annotations)
@@ -112,16 +112,16 @@ def parse_fna_sequence(fna_file_path):
         sequences[header_name] = seq_record.seq
     return sequences
 
-def aggregate_sample_sequences(samples_and_paths):
+def aggregate_input_fasta_sequences(input_fastas_and_paths):
     """
-    Aggregate sequences from .fna files, ensuring correct matching with sample names.
+    Aggregate sequences from .fna files, ensuring correct matching with input_fasta names.
     This function adjusts to the fact that each .fna file might contain multiple sequences.
     """
     sequences = {}
-    for sample, file_path in samples_and_paths.items():
+    for input_fasta, file_path in input_fastas_and_paths.items():
         if os.path.exists(file_path):
-            # Assuming we're collecting all sequences for a sample in a list
-            sequences[sample] = [seq_record.seq for seq_record in SeqIO.parse(file_path, "fasta")]
+            # Assuming we're collecting all sequences for a input_fasta in a list
+            sequences[input_fasta] = [seq_record.seq for seq_record in SeqIO.parse(file_path, "fasta")]
         else:
             print(f"File does not exist: {file_path}")
     return sequences
@@ -165,69 +165,69 @@ def generate_gbk_feature(annotation):
 
     return SeqFeature(location=location, type="CDS", qualifiers=qualifiers)
 
-def generate_gbk(samples_annotations, database_list, samples_and_paths):
+def generate_gbk(input_fastas_annotations, database_list, input_fastas_and_paths):
     os.makedirs("GBK", exist_ok=True)  # Ensure the output directory exists
 
-    for sample, annotations in samples_annotations.items():
-        print(f"Processing sample: {sample}")
-        fna_file_path = samples_and_paths.get(sample)
+    for input_fasta, annotations in input_fastas_annotations.items():
+        print(f"Processing input_fasta: {input_fasta}")
+        fna_file_path = input_fastas_and_paths.get(input_fasta)
 
         if not fna_file_path or not os.path.exists(fna_file_path):
-            print(f"No .fna file found for sample {sample}. Skipping...")
+            print(f"No .fna file found for input_fasta {input_fasta}. Skipping...")
             continue
 
         # Index the .fna file for efficient access
         sequence_index = SeqIO.index(fna_file_path, "fasta")
 
-        # Initialize a SeqRecord for the sample
-        sample_seq_record = SeqRecord(Seq(""), id=sample, name="", description=f"Annotations for {sample}")
+        # Initialize a SeqRecord for the input_fasta
+        input_fasta_seq_record = SeqRecord(Seq(""), id=input_fasta, name="", description=f"Annotations for {input_fasta}")
         
         # Extract metadata from one of the annotations (assuming consistency)
         metadata = annotations[0] if annotations else {}
-        sample_seq_record.annotations["source"] = "Your Source"
-        sample_seq_record.annotations["molecule_type"] = "DNA"
-        sample_seq_record.annotations["organism"] = metadata.get('taxonomy', 'Not Available')
-        sample_seq_record.annotations["comment"] = f"Completeness: {metadata.get('Completeness', 'NA')}; Contamination: {metadata.get('Contamination', 'NA')}; Taxonomy: {metadata.get('taxonomy', 'Not Available')}"
+        input_fasta_seq_record.annotations["source"] = "Your Source"
+        input_fasta_seq_record.annotations["molecule_type"] = "DNA"
+        input_fasta_seq_record.annotations["organism"] = metadata.get('taxonomy', 'Not Available')
+        input_fasta_seq_record.annotations["comment"] = f"Completeness: {metadata.get('Completeness', 'NA')}; Contamination: {metadata.get('Contamination', 'NA')}; Taxonomy: {metadata.get('taxonomy', 'Not Available')}"
         
         # Iterate through annotations, creating features for each
         for annotation in annotations:
             query_id = annotation["query_id"]
             if query_id in sequence_index:
                 feature = generate_gbk_feature(annotation)
-                sample_seq_record.features.append(feature)
+                input_fasta_seq_record.features.append(feature)
             else:
-                print(f"Warning: Query ID {query_id} not found in .fna file for sample {sample}.")
+                print(f"Warning: Query ID {query_id} not found in .fna file for input_fasta {input_fasta}.")
 
         # Determine the output file path
-        output_filename = os.path.join("GBK", f"{sample}.gbk")
+        output_filename = os.path.join("GBK", f"{input_fasta}.gbk")
         
         # Write the SeqRecord to a GBK file
         with open(output_filename, "w") as output_handle:
-            SeqIO.write([sample_seq_record], output_handle, "genbank")
-        print(f"GBK file generated for sample {sample}: {output_filename}")
+            SeqIO.write([input_fasta_seq_record], output_handle, "genbank")
+        print(f"GBK file generated for input_fasta {input_fasta}: {output_filename}")
 
 
 
 def main():
     args = parse_arguments()
 
-    # Load annotations and organize by sample
-    samples_annotations = defaultdict(list)
+    # Load annotations and organize by input_fasta
+    input_fastas_annotations = defaultdict(list)
     with open(args.annotations, 'r') as file:
         reader = csv.DictReader(file, delimiter='\t')
         for row in reader:
-            samples_annotations[row['sample']].append(row)
+            input_fastas_annotations[row['input_fasta']].append(row)
 
-    # Directly parse the samples and paths passed as arguments
-    samples_and_paths = parse_samples_and_paths(args.samples_paths)
+    # Directly parse the input_fastas and paths passed as arguments
+    input_fastas_and_paths = parse_input_fastas_and_paths(args.input_fastas_paths)
 
     # Check if GFF generation is requested and call generate_gff
     if args.gff:
-        generate_gff(samples_annotations, args.database_list)
+        generate_gff(input_fastas_annotations, args.database_list)
 
     # Check if GBK generation is requested and call generate_gbk
     if args.gbk:
-        generate_gbk(samples_annotations, args.database_list, samples_and_paths)
+        generate_gbk(input_fastas_annotations, args.database_list, input_fastas_and_paths)
 
 if __name__ == "__main__":
     main()

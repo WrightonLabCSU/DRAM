@@ -21,8 +21,8 @@ process QUAST_COLLECT {
     # List all tsv files in the current directory
     tsv_files = [f for f in os.listdir('.') if f.endswith('.tsv')]
 
-    # Extract sample names from the file names
-    samples = [os.path.basename(file).replace("_report.tsv", "") for file in tsv_files]
+    # Extract input_fasta names from the file names
+    input_fastas = [os.path.basename(file).replace("_report.tsv", "") for file in tsv_files]
 
 
     """

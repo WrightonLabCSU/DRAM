@@ -84,8 +84,8 @@ workflow ADD_AND_COUNT {
                 .fromPath(file(params.input_genes) / params.genes_fna_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "If you specify --generate_gff or --generate_gbk without --call, you must provide a fasta file of called genes using --input_genes and --genes_fna_fmt,. Cannot find any called gene fasta files matching: ${params.input_genes} and ${params.genes_fna_fmt}\nNB: Path needs to follow pattern: path/to/directory/" }
                 .map {
-                    sampleName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-                    tuple(sampleName, it)
+                    input_fastaName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+                    tuple(input_fastaName, it)
                 }
             // Collect all individual fasta to pass to quast
             Channel.empty()

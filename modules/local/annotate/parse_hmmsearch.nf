@@ -4,16 +4,16 @@ process PARSE_HMM {
 
     conda "${moduleDir}/environment.yml"
 
-    tag{ sample }
+    tag{ input_fasta }
     
     input:
-    tuple val( sample ), path( inputHMMSearch )
+    tuple val( input_fasta ), path( inputHMMSearch )
 
     output:
-    tuple val( sample ), path( "${sample}_parsed_hmm.out" ), emit: parsed_hmm
+    tuple val( input_fasta ), path( "${input_fasta}_parsed_hmm.out" ), emit: parsed_hmm
 
     script:
     """
-    parse_hmmsearch.py ${inputHMMSearch} ${sample}_parsed_hmm.out
+    parse_hmmsearch.py ${inputHMMSearch} ${input_fasta}_parsed_hmm.out
     """
 }

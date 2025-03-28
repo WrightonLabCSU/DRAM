@@ -4,13 +4,13 @@ process TRNA_SCAN {
 
     conda "${moduleDir}/environment.yml"
 
-    tag { sample }
+    tag { input_fasta }
 
     input:
-    tuple val(sample), path(fasta)
+    tuple val(input_fasta), path(fasta)
 
     output:
-    tuple val(sample), path("${sample}_processed_trnas.tsv"), emit: trna_scan_out, optional: true
+    tuple val(input_fasta), path("${input_fasta}_processed_trnas.tsv"), emit: trna_scan_out, optional: true
 
     script:
     """
@@ -26,7 +26,7 @@ process TRNA_SCAN {
     # Create the temporary directory if it doesn't exist
     os.makedirs(os.environ['TMPDIR'], exist_ok=True)
 
-    def process_trnascan_output(input_file, output_file, sample_name):
+    def process_trnascan_output(input_file, output_file, input_fasta_name):
         try:
             # Read the input file into a DataFrame
             trna_frame = pd.read_csv(input_file, sep="\t", skiprows=[0, 2], engine='python')
@@ -36,8 +36,8 @@ process TRNA_SCAN {
                 # Strip leading and trailing spaces from column names
                 trna_frame.columns = trna_frame.columns.str.strip()
 
-                # Add a new "sample" column and populate it with the sample_name value
-                trna_frame.insert(0, "sample", sample_name)
+                # Add a new "input_fasta" column and populate it with the input_fasta_name value
+                trna_frame.insert(0, "input_fasta", input_fasta_name)
 
                 # Check if "Note" column is present
                 if "Note" in trna_frame.columns:
@@ -77,10 +77,10 @@ process TRNA_SCAN {
                 f.write("NULL")
 
     # Run tRNAscan-SE with the necessary input to avoid prompts
-    trna_out = "${sample}_trna_out.txt"
+    trna_out = "${input_fasta}_trna_out.txt"
     subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"], input=b'O\\n', check=True)
 
     # Process tRNAscan-SE output
-    process_trnascan_output(trna_out, "${sample}_processed_trnas.tsv", "${sample}")
+    process_trnascan_output(trna_out, "${input_fasta}_processed_trnas.tsv", "${input_fasta}")
     """
 }

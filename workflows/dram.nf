@@ -278,15 +278,14 @@ workflow DRAM {
 
         } 
 
-        if (params.annotate){
-            ANNOTATE( ch_gene_locs, ch_called_proteins, default_channel )
-            
-        }
-
         if (params.call || distill_flag){
             COLLECT_RNA( ch_fasta )
         }
 
+        if (params.annotate){
+            ANNOTATE( ch_gene_locs, ch_called_proteins, default_channel )
+            
+        }
         
         if (params.annotate || distill_flag){
             if (params.annotate){ // If the user has specified --annotate, us the outputted annotations

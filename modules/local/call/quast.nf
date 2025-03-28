@@ -42,22 +42,22 @@ process QUAST {
     threads = ${task.cpus}
     run_quast(fasta_file_paths, 'quast_results', threads)
 
-    # Read the QUAST report generated for all samples
+    # Read the QUAST report generated for all input_fastas
     quast_report_path = 'quast_results/report.tsv'
     report_df = pd.read_csv(quast_report_path, sep='\t', index_col='Assembly')
 
-    # Dynamically identify sample names based on FASTA filenames and match with QUAST report
+    # Dynamically identify input_fasta names based on FASTA filenames and match with QUAST report
     collected_data = []
     for gff_file in gff_file_paths:
         base_name = os.path.splitext(os.path.basename(gff_file))[0]
-        sample_name = base_name.split('_called_genes')[0]
+        input_fasta_name = base_name.split('_called_genes')[0]
         num_genes = count_genes_in_gff(gff_file)
 
-        # Extract metrics from the QUAST report for this sample
+        # Extract metrics from the QUAST report for this input_fasta
         for column in report_df.columns:
-            if sample_name in column:
+            if input_fasta_name in column:
                 metrics = {
-                    'sample': sample_name,
+                    'input_fasta': input_fasta_name,
                     'assembly length': report_df.loc['Total length', column],
                     'no. contigs': report_df.loc['# contigs', column],
                     'largest contig': report_df.loc['Largest contig', column],
