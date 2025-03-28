@@ -40,7 +40,7 @@ workflow DRAM {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
-    default_channel = Channel.fromPath(params.distill_dummy_sheet)
+    default_sheet = file(params.distill_dummy_sheet)
     ch_fasta = getFastaChannel(params.input_fasta, params.fasta_fmt)
     distill_flag = (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "")
 
@@ -121,41 +121,41 @@ workflow DRAM {
             ch_distill_carbon = file(params.distill_carbon_sheet).exists() ? file(params.distill_carbon_sheet) : error("Error: If using --distill_topic carbon (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
-            ch_distill_carbon = default_channel
+            ch_distill_carbon = default_sheet
         }
         if (distill_energy == "1") {
             ch_distill_energy = file(params.distill_energy_sheet).exists() ? file(params.distill_energy_sheet) : error("Error: If using --distill_topic energy (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
-            ch_distill_energy = default_channel
+            ch_distill_energy = default_sheet
         }
 
         if (distill_misc == "1") {
             ch_distill_misc = file(params.distill_misc_sheet).exists() ? file(params.distill_misc_sheet) : error("Error: If using --distill_topic misc (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
-            ch_distill_misc = default_channel
+            ch_distill_misc = default_sheet
         }
 
         if (distill_nitrogen == "1") {
             ch_distill_nitrogen = file(params.distill_nitrogen_sheet).exists() ? file(params.distill_nitrogen_sheet) : error("Error: If using --distill_topic nitrogen (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
-            ch_distill_nitrogen = default_channel
+            ch_distill_nitrogen = default_sheet
         }
 
         if (distill_transport == "1") {
             ch_distill_transport = file(params.distill_transport_sheet).exists() ? file(params.distill_transport_sheet) : error("Error: If using --distill_topic transport (or 'default'), you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
-            ch_distill_transport = default_channel
+            ch_distill_transport = default_sheet
         }
 
         if (distill_camper == "1") {
             ch_distill_camper = file(params.distill_camper_sheet).exists() ? file(params.distill_camper_sheet) : error("Error: If using --distill_topic camper, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
-            ch_distill_camper = default_channel
+            ch_distill_camper = default_sheet
         }
 
         distill_eng_sys = "0"
@@ -188,21 +188,21 @@ workflow DRAM {
             ch_distill_eng_sys = file(params.distill_eng_sys_sheet).exists() ? file(params.distill_eng_sys_sheet) : error("Error: If using --distill_ecosystem eng_sys, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
-            ch_distill_eng_sys = default_channel
+            ch_distill_eng_sys = default_sheet
         }
 
         if (distill_ag == "1") {
             ch_distill_ag = file(params.distill_ag_sheet).exists() ? file(params.distill_ag_sheet) : error("Error: If using --distill_ecosystem ag, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
 
         } else{
-            ch_distill_ag = default_channel
+            ch_distill_ag = default_sheet
         }
         /*
         if (params.distill_custom != "") {
             ch_distill_custom = file(params.distill_custom).exists() ? file(params.distill_custom) : error("Error: If using --distill_custom <path/to/TSV>, you must have the preformatted custom distill sheet in the provided file: ${params.distill_custom}.")
             distill_custom_list = "params.distill_custom"
         }else{
-            ch_distill_custom = default_channel
+            ch_distill_custom = default_sheet
         }
         */
         if (params.distill_custom != "") {
@@ -212,7 +212,7 @@ workflow DRAM {
             error "Error: The specified directory for merging annotations (--distill_custom) does not exist: ${params.distill_custom}"
         }
         else{
-            ch_distill_custom_collected = default_channel
+            ch_distill_custom_collected = default_sheet
         }
 
         // Verify the directory contains .tsv files
@@ -233,7 +233,7 @@ workflow DRAM {
         }
         }
         else{
-            ch_distill_custom_collected = default_channel
+            ch_distill_custom_collected = default_sheet
         }
 
     }
@@ -264,10 +264,10 @@ workflow DRAM {
     if (params.merge_annotations){
         MERGE()
     }else {
-        ch_quast_stats = default_channel
-        ch_gene_locs = default_channel
-        ch_called_proteins = default_channel
-        ch_collected_fna = default_channel
+        ch_quast_stats = default_sheet
+        ch_gene_locs = default_sheet
+        ch_called_proteins = default_sheet
+        ch_collected_fna = default_sheet
 
         if (params.call){
             CALL( ch_fasta )
@@ -283,7 +283,7 @@ workflow DRAM {
         }
 
         if (params.annotate){
-            ANNOTATE( ch_gene_locs, ch_called_proteins, default_channel )
+            ANNOTATE( ch_gene_locs, ch_called_proteins, default_sheet )
             
         }
         
