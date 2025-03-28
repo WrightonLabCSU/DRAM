@@ -1,7 +1,5 @@
 #!/usr/bin/env nextflow
 
-nextflow.enable.dsl=2
-
 process TRNA_COLLECT {
 
     errorStrategy 'finish'
@@ -41,26 +39,26 @@ process TRNA_COLLECT {
         # Filter out files with "NULL" content
         tsv_files = [file for file in tsv_files if not file_content_is_null(file)]
 
-        # Extract sample names from the file names
-        samples = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
+        # Extract input_fasta names from the file names
+        input_fastas = [os.path.basename(file).replace("_processed_trnas.tsv", "") for file in tsv_files]
 
         # Create an empty DataFrame to store the collected data
-        collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "category", "topic_ecosystem", "subcategory"] + samples)
+        collected_data = pd.DataFrame(columns=["gene_id", "gene_description", "category", "topic_ecosystem", "subcategory"] + input_fastas)
 
-        # Create a dictionary to store counts for each sample
-        sample_counts = {sample: [] for sample in samples}
+        # Create a dictionary to store counts for each input_fasta
+        input_fasta_counts = {input_fasta: [] for input_fasta in input_fastas}
 
         # Iterate through each input file
         for file in tsv_files:
             # Read the input file into a DataFrame
-            input_data = pd.read_csv(file, sep='\t', header=None, names=["sample", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
+            input_data = pd.read_csv(file, sep='\t', header=None, names=["input_fasta", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
 
             # Populate the gene_id column
             collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
 
-            # Count occurrences for each sample
-            for sample in samples:
-                sample_counts[sample].extend(input_data[input_data['sample'] == sample]['gene_id'])
+            # Count occurrences for each input_fasta
+            for input_fasta in input_fastas:
+                input_fasta_counts[input_fasta].extend(input_data[input_data['input_fasta'] == input_fasta]['gene_id'])
 
         # Deduplicate the rows based on gene_id
         collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
@@ -73,9 +71,9 @@ process TRNA_COLLECT {
         collected_data['topic_ecosystem'] = "tRNA"
         collected_data['subcategory'] = ""  # Assuming subcategory is not defined
 
-        # Count occurrences for each sample and fill the additional columns dynamically
-        for sample in samples:
-            collected_data[sample] = collected_data['gene_id'].map(lambda x: sample_counts[sample].count(x) if x in sample_counts[sample] else 0)
+        # Count occurrences for each input_fasta and fill the additional columns dynamically
+        for input_fasta in input_fastas:
+            collected_data[input_fasta] = collected_data['gene_id'].map(lambda x: input_fasta_counts[input_fasta].count(x) if x in input_fasta_counts[input_fasta] else 0)
 
         # Sort the whole table by the gene_id column
         collected_data.sort_values(by='gene_id', inplace=True)

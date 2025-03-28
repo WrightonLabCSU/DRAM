@@ -4,7 +4,7 @@ process ADJECTIVES {
     path( ch_adjectives_script )
 
     output:
-    path "sample_adjectives.tsv" into adjectives_ch
+    path "input_fasta_adjectives.tsv" into adjectives_ch
 
     script:
     """

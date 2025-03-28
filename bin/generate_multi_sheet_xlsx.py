@@ -18,8 +18,8 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Read combined_annotations
     combined_data = pd.read_csv(combined_annotations, sep='\t')
 
-    # Deduplicate and extract unique sample values
-    unique_samples = combined_data['sample'].unique()
+    # Deduplicate and extract unique input_fasta values
+    unique_input_fastas = combined_data['input_fasta'].unique()
 
     # Create a Workbook
     wb = Workbook()
@@ -37,7 +37,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    column_names = ["sample", "number of scaffolds"]
+    column_names = ["input_fasta", "number of scaffolds"]
 
     # Check if the columns exist in combined_annotations_df and append them if they do
     if "taxonomy" in combined_data.columns:
@@ -55,28 +55,28 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
 
 
     # Populate genome_stats sheet with data from combined_annotations
-    for sample in unique_samples:
-        # Extract information for the current sample from combined_annotations
-        sample_info = combined_data[combined_data['sample'] == sample]
+    for input_fasta in unique_input_fastas:
+        # Extract information for the current input_fasta from combined_annotations
+        input_fasta_info = combined_data[combined_data['input_fasta'] == input_fasta]
 
-        if not sample_info.empty:
-            # Get the first row of sample_info (assuming one row per sample)
-            sample_info = sample_info.iloc[0]
+        if not input_fasta_info.empty:
+            # Get the first row of input_fasta_info (assuming one row per input_fasta)
+            input_fasta_info = input_fasta_info.iloc[0]
 
             # Extract completeness and contamination values
-            completeness = sample_info.get('Completeness', None)
-            contamination = sample_info.get('Contamination', None)
+            completeness = input_fasta_info.get('Completeness', None)
+            contamination = input_fasta_info.get('Contamination', None)
         else:
-            # Handle the case where sample_info is empty (no data for the sample)
+            # Handle the case where input_fasta_info is empty (no data for the input_fasta)
             completeness = None
             contamination = None
 
         # Append data to genome_stats sheet
-        gs_data = [sample, None]
+        gs_data = [input_fasta, None]
 
         # Check if the columns exist in combined_annotations_df and append them if they do
         if "taxonomy" in combined_data.columns:
-            gs_data.append(sample_info.get('taxonomy', None))
+            gs_data.append(input_fasta_info.get('taxonomy', None))
         if "Completeness" in combined_data.columns:
             gs_data.append(completeness)
         if "Contamination" in combined_data.columns:
@@ -94,17 +94,17 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             print(f"\nUpdating RNA column: {rna_type}")
             print(f"Column Index in genome_stats: {col_idx}")
 
-            # Iterate over samples
-            for idx, sample in enumerate(unique_samples, start=2):
-                # Extract relevant data for the current sample and rna_type
-                sample_rrna_data = rrna_data[(rrna_data['sample'] == sample) & (rrna_data['type'] == rna_type)]
+            # Iterate over input_fastas
+            for idx, input_fasta in enumerate(unique_input_fastas, start=2):
+                # Extract relevant data for the current input_fasta and rna_type
+                input_fasta_rrna_data = rrna_data[(rrna_data['input_fasta'] == input_fasta) & (rrna_data['type'] == rna_type)]
 
-                # Check if sample_rrna_data is not empty
-                if not sample_rrna_data.empty:
+                # Check if input_fasta_rrna_data is not empty
+                if not input_fasta_rrna_data.empty:
                     # Concatenate the values and format them as needed
                     values = [
                         f"{row['query_id']} ({row['begin']}, {row['end']})"
-                        for _, row in sample_rrna_data.iterrows()
+                        for _, row in input_fasta_rrna_data.iterrows()
                     ]
 
                     # Join multiple values with "; "
@@ -114,18 +114,18 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
                     gs_sheet.cell(row=idx, column=col_idx).value = joined_values
                     print(f"Updated value at row {idx}, column {col_idx}")
                 else:
-                    print(f"Sample {sample} has no data for {rna_type}")
+                    print(f"Sample {input_fasta} has no data for {rna_type}")
 
     # Sum tRNA counts and update the 'tRNA count' column
     if not is_null_content(trna_file):
         trna_data = pd.read_csv(trna_file, sep='\t')
 
-        for idx, sample in enumerate(unique_samples, start=2):
-            # Extract relevant data for the current sample
-            sample_trna_count = trna_data[sample].sum(numeric_only=True)
+        for idx, input_fasta in enumerate(unique_input_fastas, start=2):
+            # Extract relevant data for the current input_fasta
+            input_fasta_trna_count = trna_data[input_fasta].sum(numeric_only=True)
 
             # Update the 'tRNA count' column in the correct cell
-            gs_sheet.cell(row=idx, column=len(column_names)).value = sample_trna_count
+            gs_sheet.cell(row=idx, column=len(column_names)).value = input_fasta_trna_count
             print(f"Updated tRNA count value at row {idx}")
 
     # Create a dictionary to store data for each sheet

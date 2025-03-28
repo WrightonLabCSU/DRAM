@@ -25,7 +25,7 @@ def parse_arguments():
     return parser.parse_args()
 
 def sum_counts_for_multi_gene_ids(target_id_counts_df, gene_ids):
-    """Sum counts for each gene ID across all samples."""
+    """Sum counts for each gene ID across all input_fastas."""
     summed_counts = {col: 0 for col in target_id_counts_df.columns if col != 'gene_id'}
     for gene_id in gene_ids:
         counts = target_id_counts_df[target_id_counts_df['gene_id'] == gene_id]
@@ -205,8 +205,8 @@ def process_distill_sheet_topic(df_topic, target_id_counts_df, db_name, threads)
             any_gene_identified = True
 
         updated_row = row.to_dict()
-        for sample_col, count in aggregated_counts.items():
-            updated_row[sample_col] = count
+        for input_fasta_col, count in aggregated_counts.items():
+            updated_row[input_fasta_col] = count
         processed_rows.append(updated_row)
 
     if not any_gene_identified:
@@ -226,12 +226,12 @@ def compile_genome_stats(db_name):
     columns_info = cursor.fetchall()
     column_names = [info[1] for info in columns_info]
     
-    # Start with a query to select distinct samples
-    query_base = "SELECT DISTINCT sample FROM annotations"
-    df_samples = pd.read_sql_query(query_base, conn)
+    # Start with a query to select distinct input_fastas
+    query_base = "SELECT DISTINCT input_fasta FROM annotations"
+    df_input_fastas = pd.read_sql_query(query_base, conn)
     
-    # Initialize the genome_stats DataFrame with sample names
-    df_genome_stats = pd.DataFrame({"sample": df_samples['sample']})
+    # Initialize the genome_stats DataFrame with input_fasta names
+    df_genome_stats = pd.DataFrame({"input_fasta": df_input_fastas['input_fasta']})
     
     # Dynamically build a query to include optional columns if they are present
     optional_columns = ['taxonomy', 'Completeness', 'Contamination']
@@ -246,11 +246,11 @@ def compile_genome_stats(db_name):
     
     # If there are optional columns to include, modify the base query
     if select_clauses:
-        query = f"SELECT sample, {', '.join(select_clauses)} FROM annotations GROUP BY sample"
+        query = f"SELECT input_fasta, {', '.join(select_clauses)} FROM annotations GROUP BY input_fasta"
         df_stats = pd.read_sql_query(query, conn)
-        df_genome_stats = pd.merge(df_genome_stats, df_stats, on="sample", how="left")
+        df_genome_stats = pd.merge(df_genome_stats, df_stats, on="input_fasta", how="left")
     else:
-        # If no optional columns, the genome_stats will only contain sample names at this point
+        # If no optional columns, the genome_stats will only contain input_fasta names at this point
         pass
     
     conn.close()
@@ -304,8 +304,8 @@ def query_annotations_for_gene_ids(db_name, ids):
 def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
     rrna_data = pd.read_csv(combined_rrna_file, sep='\t')
-    # Group by sample and type to concatenate query_id and positions
-    rrna_summary = rrna_data.groupby(['sample', 'type']).apply(
+    # Group by input_fasta and type to concatenate query_id and positions
+    rrna_summary = rrna_data.groupby(['input_fasta', 'type']).apply(
         lambda x: '; '.join([f"{row['query_id']} ({row['begin']}, {row['end']})" for _, row in x.iterrows()])
     ).unstack(fill_value='')
     rrna_summary.reset_index(inplace=True)
@@ -321,13 +321,13 @@ def compile_rrna_data(rrna_file):
     """Compile rRNA data from the given file."""
     rrna_data = pd.read_csv(rrna_file, sep='\t')
     # Process rRNA data as required for your use case
-    # This might involve summarizing the rRNA types and locations for each sample
+    # This might involve summarizing the rRNA types and locations for each input_fasta
     return rrna_data
 
 def compile_trna_counts(trna_file):
     trna_data = pd.read_csv(trna_file, sep='\t')
-    sample_columns = trna_data.columns[5:]  # Adjust based on actual structure
-    trna_counts = pd.DataFrame([{'sample': sample, 'tRNA count': trna_data[sample].sum()} for sample in sample_columns])
+    input_fasta_columns = trna_data.columns[5:]  # Adjust based on actual structure
+    trna_counts = pd.DataFrame([{'input_fasta': input_fasta, 'tRNA count': trna_data[input_fasta].sum()} for input_fasta in input_fasta_columns])
     return trna_counts
 
 def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
@@ -341,7 +341,7 @@ def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
     if file_contains_data(trna_file):
         trna_counts = compile_trna_counts(trna_file)
         # Merge tRNA counts into genome_stats_df
-        genome_stats_df = pd.merge(genome_stats_df, trna_counts, on="sample", how="left")
+        genome_stats_df = pd.merge(genome_stats_df, trna_counts, on="input_fasta", how="left")
 
     return genome_stats_df
 
@@ -349,7 +349,7 @@ def update_genome_stats_with_rrna(genome_stats_df, combined_rrna_file):
     """Update the genome_stats DataFrame with rRNA information if available."""
     if file_contains_data(combined_rrna_file):
         rrna_summary = compile_rrna_information(combined_rrna_file)
-        genome_stats_df = pd.merge(genome_stats_df, rrna_summary, on="sample", how="left")
+        genome_stats_df = pd.merge(genome_stats_df, rrna_summary, on="input_fasta", how="left")
     return genome_stats_df
 
 def add_optional_sheets(wb, args):
@@ -382,7 +382,7 @@ def main():
     if args.quast:
         quast_data = compile_quast_info(args.quast)
         if quast_data is not None:
-            genome_stats_df = pd.merge(genome_stats_df, quast_data, on="sample", how="left")
+            genome_stats_df = pd.merge(genome_stats_df, quast_data, on="input_fasta", how="left")
     add_sheet_from_dataframe(wb, genome_stats_df, "Genome_Stats")
 
     # Read target ID counts

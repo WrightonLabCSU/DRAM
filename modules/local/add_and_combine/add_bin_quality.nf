@@ -25,7 +25,7 @@ process ADD_BIN_QUALITY {
     checkm_path = "${ch_bin_quality}"
     checkm_header = pd.read_csv(checkm_path, sep='\t', nrows=0)  # Load only the header
 
-    # Determine the correct column name ('Name' or 'Bin Id') for bin/sample identifiers
+    # Determine the correct column name ('Name' or 'Bin Id') for bin/input_fasta identifiers
     if 'Name' in checkm_header.columns:
         id_column = 'Name'
     elif 'Bin Id' in checkm_header.columns:
@@ -39,15 +39,15 @@ process ADD_BIN_QUALITY {
     # Load the ch_bin_quality TSV with only necessary columns
     checkm_data = pd.read_csv(checkm_path, sep='\t', usecols=quality_columns)
 
-    # Standardize sample identifiers by replacing "." with "-" if necessary in both dataframes
-    combined_annotations["sample"] = combined_annotations["sample"].str.replace(".", "-")
+    # Standardize input_fasta identifiers by replacing "." with "-" if necessary in both dataframes
+    combined_annotations["input_fasta"] = combined_annotations["input_fasta"].str.replace(".", "-")
     checkm_data[id_column] = checkm_data[id_column].str.replace(".", "-")
 
     # Merge operation: Add "Completeness" and "Contamination" from checkm_data to combined_annotations
-    # Merge based on the 'sample' column in combined_annotations and id_column in checkm_data
-    merged_data = pd.merge(combined_annotations, checkm_data, left_on="sample", right_on=id_column, how="left")
+    # Merge based on the 'input_fasta' column in combined_annotations and id_column in checkm_data
+    merged_data = pd.merge(combined_annotations, checkm_data, left_on="input_fasta", right_on=id_column, how="left")
 
-    # Drop the id_column from the merge as it's redundant with 'sample'
+    # Drop the id_column from the merge as it's redundant with 'input_fasta'
     merged_data.drop(columns=[id_column], inplace=True)
 
     # Save the updated data back to raw-annotations.tsv

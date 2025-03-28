@@ -54,7 +54,7 @@ process MERGE_ANNOTATIONS {
     # Sorting by 'query_id'
     merged_df.sort_values(by='query_id', inplace=True)
 
-    base_columns = ['query_id', 'sample', 'start_position', 'stop_position', 'strandedness', 'rank']
+    base_columns = ['query_id', 'input_fasta', 'start_position', 'stop_position', 'strandedness', 'rank']
     kegg_columns = [col for col in merged_df.columns if col.startswith('kegg_')]
     essential_columns = ['Completeness', 'Contamination', 'taxonomy']
     other_columns = [col for col in merged_df.columns if col not in base_columns + kegg_columns + essential_columns]

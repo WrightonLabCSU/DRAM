@@ -13,10 +13,10 @@ def assign_rank(row, a_rank, b_rank, db_name_bit_score):
     else:
         return None
 
-def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path):
-    print(f"Starting processing for sample: {sample}, database: {db_name}")
+def main(input_fasta, db_name, descriptions_path, bit_score_threshold, gene_locs_path):
+    print(f"Starting processing for input_fasta: {input_fasta}, database: {db_name}")
 
-    mmseqs_path = f"mmseqs_out/{sample}_mmseqs_{db_name}.tsv"
+    mmseqs_path = f"mmseqs_out/{input_fasta}_mmseqs_{db_name}.tsv"
     print(f"Loading MMseqs output from {mmseqs_path}")
     
     df_gene_locs = pd.read_csv(gene_locs_path, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
@@ -58,15 +58,15 @@ def main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path
         # Drop A_rank and B_rank columns as they should not be output
         df_merged.drop(columns=['A_rank', 'B_rank'], inplace=True, errors='ignore')
 
-    output_path = f"mmseqs_out/{sample}_mmseqs_{db_name}_formatted.csv"
+    output_path = f"mmseqs_out/{input_fasta}_mmseqs_{db_name}_formatted.csv"
     df_merged.to_csv(output_path, index=False)
     print("Merged DataFrame saved to", output_path)
 
 if __name__ == "__main__":
-    sample = sys.argv[1]
+    input_fasta = sys.argv[1]
     db_name = sys.argv[2]
     descriptions_path = sys.argv[3]
     bit_score_threshold = float(sys.argv[4])
     gene_locs_path = sys.argv[5]
 
-    main(sample, db_name, descriptions_path, bit_score_threshold, gene_locs_path)
+    main(input_fasta, db_name, descriptions_path, bit_score_threshold, gene_locs_path)

@@ -4,15 +4,15 @@ process HMM_SEARCH {
 
     conda "${moduleDir}/environment.yml"
 
-    tag { sample }
+    tag { input_fasta }
 
     input:
-    tuple val( sample ), path( fasta )
+    tuple val( input_fasta ), path( fasta )
     val ( e_value )
     path( database_loc )
 
     output:
-    tuple val( sample ), path("${sample}_hmmsearch.out"), emit: hmm_search_out
+    tuple val( input_fasta ), path("${input_fasta}_hmmsearch.out"), emit: hmm_search_out
 
     script:
 
@@ -21,7 +21,7 @@ process HMM_SEARCH {
 
     hmmsearch \\
     -E ${e_value} \\
-    --domtblout ${sample}_hmmsearch.out \\
+    --domtblout ${input_fasta}_hmmsearch.out \\
     --cpu 2 \\
     *.hmm \\
     ${fasta}

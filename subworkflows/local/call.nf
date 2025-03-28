@@ -20,7 +20,7 @@ include { QUAST_COLLECT                                 } from "${projectDir}/mo
 
 workflow CALL {
     take:
-    ch_fasta  // channel: [ val(sample name), path(fasta) ]
+    ch_fasta  // channel: [ val(input_fasta name), path(fasta) ]
 
     main:
 
@@ -56,9 +56,9 @@ workflow CALL {
 
     emit:
     ch_quast_stats
-    ch_gene_locs  // channel: [ val(sample name), path(gene_locs_tsv) ]
-    ch_called_genes // channel: [ val(sample name), path(called_genes_file.fna) ]
-    ch_called_proteins  // channel: [ val(sample name), path(called_proteins_file.faa) ]
+    ch_gene_locs  // channel: [ val(input_fasta name), path(gene_locs_tsv) ]
+    ch_called_genes // channel: [ val(input_fasta name), path(called_genes_file.fna) ]
+    ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
     ch_collected_faa  
     ch_collected_fna
     ch_collected_fasta

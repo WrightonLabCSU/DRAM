@@ -4,18 +4,18 @@ process SULFUR_HMM_FORMATTER {
 
     conda "${moduleDir}/environment.yml"
     
-    tag { sample }
+    tag { input_fasta }
 
     input:
-    tuple val( sample ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
+    tuple val( input_fasta ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
 
     output:
-    tuple val( sample ), path ( "${sample}_formatted_sulfur_hits.csv" ), emit: sulfur_formatted_hits
+    tuple val( input_fasta ), path ( "${input_fasta}_formatted_sulfur_hits.csv" ), emit: sulfur_formatted_hits
 
 
     script:
     """
-    sulfur_hmm_formatter.py --hits_csv ${hits_file} --gene_locs ${prodigal_locs_tsv} --output "${sample}_formatted_sulfur_hits.csv"
+    sulfur_hmm_formatter.py --hits_csv ${hits_file} --gene_locs ${prodigal_locs_tsv} --output "${input_fasta}_formatted_sulfur_hits.csv"
     
     """
 }
