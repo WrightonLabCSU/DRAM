@@ -1,24 +1,26 @@
 process RENAME_FASTA {
 
-
-    tag { input_fasta }
+    tag { "renaming_fastas" }
 
     input:
-    tuple val(input_fasta), path(fasta)
-    
-    output:
-    tuple val(input_fasta), path("*.fna"), emit: renamed_fasta
+    val fasta_names
+    path fastas
 
+    output:
+    path("renamed/*.fna"), emit: renamed_fasta_paths
 
     script:
+    // def samples = fasta_names as List
+
+    def rename_cmds = fasta_names.indices.collect { i ->
+        def name = fasta_names[i]
+        def file = fastas[i]
+        "rename.sh in=${file} out=renamed/${name}.fna prefix=${name} addprefix=t"
+    }.join("\n")
+
 
     """
-
-    rename.sh \\
-    in=${fasta} \\
-    out=${input_fasta}_renamed.fna \\
-    prefix=${input_fasta} \\
-    addprefix=t
-
+    mkdir -p renamed
+    ${rename_cmds}
     """
-}  
+}
