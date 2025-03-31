@@ -2,6 +2,8 @@ process RENAME_FASTA {
 
     tag { "renaming_fastas" }
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     val fasta_names
     path fastas
