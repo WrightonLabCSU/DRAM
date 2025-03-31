@@ -9,8 +9,11 @@
 */
 
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
+include { dramLogo                  } from '../../local/utils_pipeline_setup.nf'
+include { workflowCitation          } from '../../local/utils_pipeline_setup.nf'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
+include { paramsHelp                } from 'plugin/nf-schema'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
@@ -28,12 +31,11 @@ workflow PIPELINE_INITIALISATION {
 
     take:
     version           // boolean: Display version and exit
+    help              // boolean: Display help text and exit
     validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    input_fasta      //  string: Path to input fasta directory
-    fasta_fmt        //  string: Format of fasta files
     // input             //  string: Path to input samplesheet
 
     main:
@@ -49,6 +51,14 @@ workflow PIPELINE_INITIALISATION {
         outdir,
         workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1
     )
+
+    pre_help_text = dramLogo(monochrome_logs)
+    post_help_text = '\n' + workflowCitation() + '\n'
+    workflow_command = 'nextflow run WrightonLabCSU/dram -profile <docker/singularity/.../institute> --input_fasta path/to/input_fasta <pipeline steps and options, --call, --annotate, etc.> --outdir path/to/outdir'
+    if (help) {
+        log.info pre_help_text + paramsHelp(workflow_command, parameters_schema: "nextflow_schema.json") + post_help_text
+        System.exit(0)
+    }
 
     //
     // Validate parameters and generate parameter summary to stdout

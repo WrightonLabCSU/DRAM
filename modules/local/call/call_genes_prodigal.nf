@@ -5,6 +5,7 @@ process CALL_GENES {
     tag { input_fasta }
 
     conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/python_pandas_scikit-bio_hmmer_pruned:ef64c488c99048d6"
 
     input:
     tuple val( input_fasta ), path( fasta )

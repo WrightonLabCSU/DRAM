@@ -3,6 +3,7 @@ process COUNT_ANNOTATIONS {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/python_pandas_biopython:7df21d027f67112e"
     
     input:
     file( ch_combined_annotations )

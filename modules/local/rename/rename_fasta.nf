@@ -2,6 +2,9 @@ process RENAME_FASTA {
 
     tag { "renaming_fastas" }
 
+    conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/bbmap:801715ef64484762"
+
     input:
     val fasta_names
     path fastas

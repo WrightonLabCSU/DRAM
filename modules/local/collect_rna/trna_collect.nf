@@ -5,6 +5,7 @@ process TRNA_COLLECT {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/python_pandas_barrnap_trnascan-se:ed2ab26abf39304b"
 
     input:
     file combined_trnas

@@ -3,6 +3,7 @@ process ADD_ANNOTATIONS {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/python_pandas_biopython:7df21d027f67112e"
 
     input:
     path( old_annotations, stageAs: "old_annotations.tsv" )

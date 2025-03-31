@@ -6,6 +6,7 @@ process PRODUCT_HEATMAP {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/python_dram-viz:8399ca59227b4fd9"
 
     input:
     path( ch_final_annots, stageAs: "raw-annotations.tsv")

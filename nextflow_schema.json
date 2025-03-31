@@ -4,7 +4,7 @@
     "title": "WrightonLabCSU/dram pipeline parameters",
     "description": "DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes",
     "type": "object",
-    "$defs": {
+    "defs": {
         "pipeline_steps": {
             "title": "Pipeline Steps",
             "type": "object",
@@ -59,18 +59,6 @@
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
-                },
-                "email": {
-                    "type": "string",
-                    "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
-                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "multiqc_title": {
-                    "type": "string",
-                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
-                    "fa_icon": "fas fa-file-signature"
                 }
             }
         },
@@ -378,7 +366,6 @@
             "fa_icon": "fas fa-database",
             "description": "File paths to databases used in the workflow.",
             "properties": {
-
                 "kegg_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/kegg/",
@@ -504,6 +491,56 @@
                     "type": "string",
                     "default": "${launchDir}/databases/db_descriptions/description_db.sqlite",
                     "hidden": true
+                },
+                "kegg_e_value": {
+                    "type": "string",
+                    "default": "1e-05",
+                    "hidden": true
+                },
+                "kofam_e_value": {
+                    "type": "string",
+                    "default": "1e-05",
+                    "hidden": true
+                },
+                "dbcan_e_value": {
+                    "type": "string",
+                    "default": "1e-15",
+                    "hidden": true
+                },
+                "merops_e_value": {
+                    "type": "string",
+                    "default": "1e-1",
+                    "hidden": true
+                },
+                "vog_e_value": {
+                    "type": "string",
+                    "default": "1e-05",
+                    "hidden": true
+                },
+                "camper_e_value": {
+                    "type": "string",
+                    "default": "1e-05",
+                    "hidden": true
+                },
+                "uniref_e_value": {
+                    "type": "string",
+                    "default": "1e-05",
+                    "hidden": true
+                },
+                "canthyd_e_value": {
+                    "type": "string",
+                    "default": "1e-05",
+                    "hidden": true
+                },
+                "sulfur_e_value": {
+                    "type": "string",
+                    "default": "1e-05",
+                    "hidden": true
+                },
+                "fegenie_e_value": {
+                    "type": "string",
+                    "default": "1e-05",
+                    "hidden": true
                 }
             }
         },
@@ -589,6 +626,15 @@
                     ],
                     "hidden": true
                 },
+                "email": {
+                    "type": "string",
+                    "description": "Email address for completion summary.",
+                    "fa_icon": "fas fa-envelope",
+                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "hidden": true
+                },
+
                 "email_on_fail": {
                     "type": "string",
                     "description": "Email address for completion summary, only when pipeline fails.",
@@ -622,6 +668,12 @@
                     "description": "Incoming hook URL for messaging service",
                     "fa_icon": "fas fa-people-group",
                     "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
+                    "hidden": true
+                },
+                "multiqc_title": {
+                    "type": "string",
+                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
+                    "fa_icon": "fas fa-file-signature",
                     "hidden": true
                 },
                 "multiqc_config": {
@@ -668,34 +720,37 @@
     },
     "allOf": [
         {
-            "$ref": "#/$defs/input_output_options"
+            "$ref": "#/defs/pipeline_steps"
         },
         {
-            "$ref": "#/$defs/genome_options"
+            "$ref": "#/defs/input_output_options"
         },
         {
-            "$ref": "#/$defs/call_prodigal_options"
+            "$ref": "#/defs/genome_options"
         },
         {
-            "$ref": "#/$defs/annotate_options"
+            "$ref": "#/defs/call_prodigal_options"
         },
         {
-            "$ref": "#/$defs/distill_options"
+            "$ref": "#/defs/annotate_options"
         },
         {
-            "$ref": "#/$defs/rna_options"
+            "$ref": "#/defs/distill_options"
         },
         {
-            "$ref": "#/$defs/bin_and_taxa_options"
+            "$ref": "#/defs/rna_options"
         },
         {
-            "$ref": "#/$defs/database_options"
+            "$ref": "#/defs/bin_and_taxa_options"
         },
         {
-            "$ref": "#/$defs/institutional_config_options"
+            "$ref": "#/defs/database_options"
         },
         {
-            "$ref": "#/$defs/generic_options"
+            "$ref": "#/defs/institutional_config_options"
+        },
+        {
+            "$ref": "#/defs/generic_options"
         },
         {
             "required": [
