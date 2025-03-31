@@ -3,6 +3,7 @@ process ADD_BIN_QUALITY {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/python_pandas_biopython:7df21d027f67112e"
 
     input:
     file( combined_annotations )

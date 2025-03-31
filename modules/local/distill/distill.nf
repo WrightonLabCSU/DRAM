@@ -3,6 +3,7 @@ process DISTILL {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/python_pandas_openpyxl:20d9b4833f4ee53c"
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )

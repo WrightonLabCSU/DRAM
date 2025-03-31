@@ -3,6 +3,7 @@ process HMM_SEARCH {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2:89f055454dac3575"
 
     tag { input_fasta }
 
