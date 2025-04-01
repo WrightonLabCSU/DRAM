@@ -1,0 +1,8 @@
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - python=3.10
+  - scikit-bio=0.5.7
+  - scipy=1.8.1

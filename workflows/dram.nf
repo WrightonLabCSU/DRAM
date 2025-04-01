@@ -14,6 +14,8 @@ include { getFastaChannel        } from '../subworkflows/local/utils_pipeline_se
 // Pipeline steps
 include { RENAME_FASTA           } from "${projectDir}/modules/local/rename/rename_fasta.nf"
 include { PRODUCT_HEATMAP        } from "${projectDir}/modules/local/product/product_heatmap.nf"
+include { CAT_KEGG_PEP           } from "${projectDir}/modules/local/database/cat_kegg_pep.nf"
+include { FORMAT_KEGG_DB         } from "${projectDir}/modules/local/database/format_kegg_db.nf"
 include { CALL                   } from "${projectDir}/subworkflows/local/call.nf"
 include { COLLECT_RNA            } from "${projectDir}/subworkflows/local/collect_rna.nf"
 include { MERGE                  } from "${projectDir}/subworkflows/local/merge.nf"
@@ -36,7 +38,6 @@ workflow DRAM {
     // Setup
     //
 
-
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
@@ -44,17 +45,18 @@ workflow DRAM {
     // ch_fasta = getFastaChannel(params.input_fasta, params.fasta_fmt)
     distill_flag = (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "")
 
-    ch_fasta = Channel
-        .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
-            .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
-    
-    ch_fasta = ch_fasta.map {
-        fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-        tuple(fasta_name, it)
-    }
-
-    fasta_name = ch_fasta.map { it[0] }
-    fasta_files = ch_fasta.map { it[1] }
+    if (params.rename || params.call) {
+        ch_fasta = Channel
+            .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
+                .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
+        
+        ch_fasta = ch_fasta.map {
+            fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+            tuple(fasta_name, it)
+        }
+        fasta_name = ch_fasta.map { it[0] }
+        fasta_files = ch_fasta.map { it[1] }
+    }    
 
     def distill_topic_list = ""
     def distill_ecosystem_list = ""
@@ -263,28 +265,52 @@ workflow DRAM {
             newLine: true
         ).set { ch_collated_versions }
 
-
     //
-    // Pipeline steps
+    // Single step commands
     //
 
-    if( params.rename ) {
-        // We need to use collect so that we pass all the fasta files to the rename process at once
-        // Otherwise, it will try to rename each fasta file one at a time
-        // Which since rename is so fast, will clog up job queues
-        // so it is faster to rename all at once
-        RENAME_FASTA( fasta_name.toList(), fasta_files.toList() )
-        // we use flatten here to turn a list back into a channel
-        renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
-        // we need to recreate the fasta channel with the renamed fasta files
-        ch_fasta = renamed_fasta_paths.map {
-            fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-            tuple(fasta_name, it)
+    if (params.format_kegg){
+        if ( params.kegg_pep_root_dir ) {
+            CAT_KEGG_PEP( file(params.kegg_pep_root_dir) )
+            kegg_pep_f = CAT_KEGG_PEP.out.kegg_pep
         }
-    }
-    if (params.merge_annotations){
+        else {
+            kegg_pep_f = file(params.kegg_pep_loc)
+        }
+
+        if ( !kegg_pep_f.exists() ) {
+            error("Error: when using running format_kegg, the kegg_pep_loc file must exists or the user must provide the KEGG pep file root directories. KEGG pep file not found at ${params.kegg_pep_loc} nor kegg pep root directory at ${params.kegg_pep_root_dir}.")
+        }
+
+        gene_ko_link_f = params.gene_ko_link_loc && file(params.gene_ko_link_loc).exists() ? file(params.gene_ko_link_loc) : default_sheet
+        kegg_download_date = params.kegg_download_date ? params.kegg_download_date : "''"
+        skip_gene_ko_link = params.skip_gene_ko_link ? 1 : 0
+        FORMAT_KEGG_DB( kegg_pep_f, gene_ko_link_f, kegg_download_date, skip_gene_ko_link )
+ 
+    } else if (params.merge_annotations){
         MERGE()
-    }else {
+    } else {
+
+
+        //
+        // Pipeline steps
+        //
+
+        if( params.rename ) {
+            // We need to use collect so that we pass all the fasta files to the rename process at once
+            // Otherwise, it will try to rename each fasta file one at a time
+            // Which since rename is so fast, will clog up job queues
+            // so it is faster to rename all at once
+            RENAME_FASTA( fasta_name.toList(), fasta_files.toList() )
+            // we use flatten here to turn a list back into a channel
+            renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
+            // we need to recreate the fasta channel with the renamed fasta files
+            ch_fasta = renamed_fasta_paths.map {
+                fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+                tuple(fasta_name, it)
+            }
+        }
+        
         ch_quast_stats = default_sheet
         ch_gene_locs = default_sheet
         ch_called_proteins = default_sheet
@@ -351,7 +377,6 @@ workflow DRAM {
                 .ifEmpty { exit 1, "If you specify --product without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
             PRODUCT_HEATMAP( ch_combined_annotations, params.groupby_column )
         }
-
     }
 
     // //
