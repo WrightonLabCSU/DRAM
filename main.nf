@@ -43,8 +43,8 @@ workflow WRIGHTONLABCSU_DRAM {
     //
     DRAM ()
     
-    // emit:
-    // multiqc_report = DRAM.out.multiqc_report // channel: /path/to/multiqc_report.html
+    emit:
+    multiqc_report = DRAM.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,15 +75,15 @@ workflow {
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    // PIPELINE_COMPLETION (
-    //     params.email,
-    //     params.email_on_fail,
-    //     params.plaintext_email,
-    //     params.outdir,
-    //     params.monochrome_logs,
-    //     params.hook_url,
-    //     WRIGHTONLABCSU_DRAM.out.multiqc_report
-    // )
+    PIPELINE_COMPLETION (
+        params.email,
+        params.email_on_fail,
+        params.plaintext_email,
+        params.outdir,
+        params.monochrome_logs,
+        params.hook_url,
+        WRIGHTONLABCSU_DRAM.out.multiqc_report
+    )
 }
 
 /*
