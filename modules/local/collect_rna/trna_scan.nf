@@ -1,4 +1,5 @@
 process TRNA_SCAN {
+    label 'process_low'
 
     errorStrategy 'finish'
 

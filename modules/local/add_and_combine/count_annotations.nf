@@ -1,4 +1,5 @@
 process COUNT_ANNOTATIONS {
+    label 'process_low'
     
     errorStrategy 'finish'
 

@@ -1,4 +1,5 @@
 process ADD_BIN_QUALITY {
+    label 'process_low'
 
     errorStrategy 'finish'
 

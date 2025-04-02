@@ -1,4 +1,5 @@
 process RRNA_SCAN {
+    label 'process_low'
 
     errorStrategy 'finish'
 

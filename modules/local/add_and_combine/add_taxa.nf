@@ -1,4 +1,5 @@
 process ADD_TAXA {
+    label 'process_low'
 
     errorStrategy 'finish'
 

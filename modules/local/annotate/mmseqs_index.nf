@@ -1,4 +1,5 @@
 process MMSEQS_INDEX{
+    label 'process_tiny'
 
     errorStrategy 'finish'
 

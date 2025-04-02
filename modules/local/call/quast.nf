@@ -1,4 +1,5 @@
 process QUAST {
+    label 'process_low'
 
     errorStrategy 'finish'
 

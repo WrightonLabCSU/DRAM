@@ -1,4 +1,5 @@
 process VOG_HMM_FORMATTER {
+    label 'process_tiny'
     
     errorStrategy 'finish'
 

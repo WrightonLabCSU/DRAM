@@ -1,4 +1,5 @@
 process ADD_ANNOTATIONS {
+    label 'process_low'
 
     errorStrategy 'finish'
 

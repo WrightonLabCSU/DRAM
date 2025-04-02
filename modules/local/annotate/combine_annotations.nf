@@ -1,4 +1,5 @@
 process COMBINE_ANNOTATIONS {
+    label 'process_low'
 
     errorStrategy 'finish'
 

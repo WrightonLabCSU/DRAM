@@ -1,6 +1,7 @@
 #!/usr/bin/env nextflow
 
 process TRNA_COLLECT {
+    label 'process_low'
 
     errorStrategy 'finish'
 

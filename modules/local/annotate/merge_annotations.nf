@@ -1,4 +1,5 @@
 process MERGE_ANNOTATIONS {
+    label 'process_low'
     
     errorStrategy 'finish'
 

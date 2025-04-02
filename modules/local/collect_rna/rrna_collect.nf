@@ -1,4 +1,5 @@
 process RRNA_COLLECT {
+    label 'process_low'
 
     errorStrategy 'finish'
 

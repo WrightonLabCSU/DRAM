@@ -1,4 +1,7 @@
 process MMSEQS_SEARCH {
+    label 'process_high'
+    label 'process_day'
+    label 'process_high_memory'
 
     errorStrategy 'finish'
 

@@ -1,4 +1,5 @@
 process DISTILL {
+    label 'process_medium'
 
     errorStrategy 'finish'
 

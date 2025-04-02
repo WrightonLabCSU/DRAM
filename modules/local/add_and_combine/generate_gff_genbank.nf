@@ -1,4 +1,5 @@
 process GENERATE_GFF_GENBANK {
+    label 'process_tiny'
 
     errorStrategy 'finish'
 

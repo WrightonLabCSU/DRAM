@@ -1,4 +1,5 @@
 process COMBINE_DISTILL {
+    label 'process_tiny'
 
     errorStrategy 'finish'
 

@@ -1,4 +1,5 @@
 process TREES {
+    label 'process_tiny'
 
     errorStrategy 'finish'
 

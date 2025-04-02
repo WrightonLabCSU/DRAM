@@ -1,4 +1,6 @@
 process ADD_SQL_DESCRIPTIONS {
+    label 'process_medium'
+    label 'process_single_cpu'
 
     errorStrategy 'finish'
 

@@ -1,7 +1,5 @@
-/*
-This is purely a placeholder process for future Product development and can be modified freely
-*/
 process PRODUCT_HEATMAP {
+    label 'process_low'
 
     errorStrategy 'finish'
 

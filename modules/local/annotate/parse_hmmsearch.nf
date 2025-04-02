@@ -1,4 +1,5 @@
 process PARSE_HMM {
+    label 'process_tiny'
     
     errorStrategy 'finish'
 

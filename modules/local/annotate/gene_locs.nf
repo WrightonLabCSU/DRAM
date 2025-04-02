@@ -1,4 +1,5 @@
 process GENE_LOCS {
+    label 'process_single'
 
     errorStrategy 'finish'
 
