@@ -8,10 +8,10 @@
 DRAM v2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic and genomic assembled data (e.g. scaffolds or contigs) or called genes (e.g. nuclotide or amino acid format). DRAM annotates MAGs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases. DRAM is run in two stages. First an annotation step to assign database identifiers to gene, and then a distill step to curate these annotations into useful functional categories. DRAM was implemented in [Nextflow](https://www.nextflow.io/) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
 
 DRAM is run in four stages: 
-1) Gene calling - genes are called on user provided scaffolds or contigs 
-2) Gene annotation - genes are annotated with a set of user defined databases 
+1) Gene Calling Prodogal - genes are called on user provided scaffolds or contigs 
+2) Gene Annotation - genes are annotated with a set of user defined databases 
 3) Distillation - annotations are curated into functional categories
-4) Product generation - interactive visualizations of DRAM output are generated 
+4) Product Generation - interactive visualizations of DRAM output are generated 
 
 DRAM v2 was implemented in [Nextflow](https://www.nextflow.io/) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
 
@@ -31,7 +31,6 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
 - [General Instructions](#general-instructions)
 - [Important Installation Notes](#important-computation-notes)
 - [Important Computation Notes](#important-computation-notes)
-- [Which is Better?](#which-is-better)
 - [DRAM v2 Databases](#dram-v2-databases)
 - [Example command-line usage](#example-usage)
 - [All command-line options](#command-line-options)
@@ -44,12 +43,13 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
 
 ### Requirements
 
-* Nextflow >= v23.04.2.5870
-* Some form of Conda or a Nextflow supported Container Runtime that can run Docker Images (Apptainer, Singularity CE, Docker, Podman, Sarus, etc.)
-* Docker image file (if using a Container Runtime)
+* Nextflow >= v23.04.2
+* Some form of Conda or a Nextflow supported Container Runtime (Apptainer, Singularity CE, Docker, Podman, Sarus, etc.)
 * DRAM databases (preformatted and downloaded via Globus, or with KEGG, formatted by the user)
 
 ### General Instructions:
+
+On many HPC systems, Nextflow, Conda, and some container runtime (usually Singularity or Apptainer) are already installed. If you are using a local system, you will need to install Nextflow and Conda or a container runtime. On an HPC system, Nextflow, Conda, and a container runtime are often loaded with modules. Refer to your HPC system's documentation for instructions on how to load modules. They might be loaded another way or already pre-installed.
 
 1) If you do not have Nextflow installed, please follow the instructions [from their documentation page](https://www.nextflow.io/docs/stable/install.html).
 
@@ -58,7 +58,7 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
     - If you choose to use a container runtime, you will need to have the container runtime installed on your system. Apptainer is a good option for this, it is the modern and open-source version of Singularity. You can find the installation instructions [here](https://apptainer.org/docs/admin/main/installation.html) but any of the listed above should work.
 
 3) Create a DRAM directory to store the DRAM files and the nextflow configuration file:
-
+  
     ```
     mkdir DRAM
     cd DRAM
@@ -66,9 +66,9 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
 
 4) Download the DRAM data from Globus in this DRAM directory. This is a large download (> 500 GB) and will take some time. 
     - You can find the data [here](https://app.globus.org/file-manager?origin_id=97ed64b9-dea0-4eb5-a7e0-0b50ac94e889). UUID: 97ed64b9-dea0-4eb5-a7e0-0b50ac94e889 You will need a Globus account to access and download the data.
-    - The download consists of a database folder that contains all the preformatted databases with the description database. As well as a containers folder that contains the docker image to be ran with your container runtime. 
+    - The download consists of a database folder that contains all the preformatted databases with the description database.
 
-5) DRAM by default looks for the databases and container image relative to the launch directory, if you would like to change this, change where you want to store the DRAM data, or other configuration options such as what container runtime you are using, SLURM options, customize or add other profile options, etc. you can download this defaults configuration file to customize your DRAM run.
+5) DRAM by default looks for the databases relative to the launch directory, if you would like to change this, change where you want to store the DRAM data, or other configuration options such as what container runtime you are using, SLURM options, customize or add other profile options, etc. you can download this defaults configuration file to customize your DRAM run.
 
     ```
     curl -o nextflow.config https://raw.githubusercontent.com/WrightonLabCSU/DRAM/refs/heads/dev/nextflow.config
@@ -109,81 +109,25 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
 
 Nextflow installs all nextflow pipeline scripts by default in the `$HOME/.nextflow/assets/WrightonLabCSU/DRAM` directory, allowing nextflow to centralize install and update management. If you are running DRAM on a shared system, you may wish to install DRAM in a shared directory. DRAM's actual pipeline scripts are very small and if multiple users are running DRAM on the same system, having them each install their own copy of DRAM does not take up a lot of space, but it does make it easier to manage updates and versions. 
 
-Two ways to install DRAM in a shared directory are:
+The best way to accomplish this is to download or clone the DRAM repository to a shared directory and launch the `main.nf` script in the root directory with the following command:
 
-1) Where nextflow installs all of its scripts when you do `nextflow pull` is defined in the environment variable `NXF_HOME`, which if not set defaults to `$HOME/.nextflow`. You can set this on your system to a shared directory such as `/home/nextflow` and then run `nextflow pull` to install DRAM in that shared directory. This will install all nextflow scripts in that shared directory. You may or may not want to install all nextflow scripts in a shared directory, so this may not be the best option.
+```
+nextflow run <path/to/DRAM>/main.nf <options>
+```
 
-2) In the launch directory `nextflow.config`, you can add a section that tells nextflow to set `NXF_HOME` for the DRAM pipeline. This will only set `NXF_HOME` for the DRAM pipeline and not for all nextflow pipelines. This is the best option if you only want to set `NXF_HOME` for the DRAM pipeline. At the top of your `nextflow.config` file, you could add something like:
+You can use the `-c` to specify the path to a custom nextflow.config file. For example, if you have a custom nextflow.config file in another directory, you can run the following command:
 
-    ```
-    env {
-        NXF_HOME='$PWD'
-    }
-    ```
-
-    This will set `NXF_HOME` to the CWD of the config file for the DRAM pipeline only (or set it anywhere else you want).
-
-
-You will be able to run DRAM from anywhere, not just the directory you downloaded your data and config too with the command `nextflow run DRAM`, but if it is anywhere other than where the nextflow.config file is located, you will need to specify the path to the nextflow.config file with the `-c` flag.
+```
+nextflow run <path/to/DRAM>/main.nf -c <path/to/custom/nextflow.config> <options>
+```
 
 ### Important Computation Notes:
 
-DRAM utilizes either Conda or Singularity for dependency management and the user MUST choose one of the following options on execution of any DRAM command
+DRAM comes with a variety of profiles to choose from. The profiles are used to specify the environment for dependency management. The main options are conda, singularity, apptainer, mamba, docker, podman, and shifter. Others can be found in the `nextflow.config` file in the root of the DRAM repo. It is specified with `-profile <profile_name>`.
 
 *The Nextflow profile option is used (`-profile`) - yes! a single hyphen! Nextflow options use a single hyphen, while DRAM options use the traditional double hyphen*
 
-1) `-profile conda`
-   
-  This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
-
-2) `-profile conda_slurm`
-   
-  This option will submit each individual DRAM process as its own SLURM job. (See Wiki Resource Management for details).
-  This option relies on the local systems Conda. Nextflow will create its own Conda environments to run in. 
-
-3) `-profile singularity`
-   
-  This option relies on the local systems Singularity. Nextflow will create its own Conda environments to run in. 
-
-4) `-profile singularity_slurm`
-   
-  This option will submit each individual DRAM process as its own SLURM job. (See Wiki Resource Management for details)
-  This option relies on the local systems Singularity to run the downloaded Singularity container.  
-
-
-### Which is Better?
-
-#### Conda Environments
-
-#### Pros:
-
-- Beginner-Friendly: Easy to install and use, making it accessible for newcomers.
-- Reproducibility: Efficient management of environments facilitates reproducibility.
-
-##### Cons:
-
-- Generally slower than using Singularity containers (will have metrics in the future).
-- Dependency Conflicts: Dependency resolution can be slow and may lead to conflicts.
-- Limited Portability: System dependencies may introduce variability, affecting portability.
-- System Variability: Reliance on the host system's architecture and libraries can cause variability between systems.
-
-#### Singularity Containers
-
-##### Pros:
-
-- Generally faster than using Conda environments (will have metrics in the future).
-- Consistent Environments: Ensures consistent runtime environments, enhancing reproducibility.
-- HPC Ideal: Perfect for high-performance computing (HPC) environments without the need for root access.
-- Isolation: Offers isolation from the host system, minimizing conflicts.
-- Wide Portability: Containers are portable across any Linux system with Singularity.
-
-##### Cons:
-
-- Installation Complexity: Can be trickier to install compared to Conda environments.
-- Storage Space: May consume more storage space.
-
-Conda is recommended for its ease of use and versatility across different programming languages.
-Singularity excels in ensuring reproducibility and compatibility in high-performance computing environments.
+Use the `-profile` option that best fits your needs. Many HPC systems come with a way to load modules that give access to conda, apptainer, and singularity. The initial time you load a profile, the dependencies will be installed and then cached in a temp directory called `work` in the launch directory (See the nextflow docs page for information on specifing the cache directory directly). Then it will be reused for subsequent runs.
 
 ---------
 
@@ -246,6 +190,8 @@ DRAM v2 databases, unlike DRAM v1 databases, will be pre-formatted and hosted on
 DRAM apps Call, Annotate and Distill can all be run at once or alternatively, each app can be run individually (assuming you provide the required input data for each app).
 
 Additionally, `--merge_annotations` and `--rename` can be run idenpendently of any other apps. 
+
+**You can also run DRAM with the `--slurm` option to have nextflow launch jobs on a SLURM cluster. The actual nextflow job is lightweight enough to usually run as a background process in your main session. If you are launching nextflow jobs from you main session on a server where you might get disconnected, launch you run with the `-bg` flag to run it as a background task so it doesn't get killed when you get disconnected**
 
 
 1) **Rename fasta headers based on input sample file names:**
@@ -317,327 +263,7 @@ DRAM
 
 ## Command-line Options
 
-### General Command-line Options
-
-    Description: 
-        The purpose of DRAM is to provide FASTA annotation, across a vast array of databases, with expertly-currated distillation. 
-        DRAM can be used to call, annotate and distill annotations from input FASTA files. 
-        Call, annotate and distill can be run together or, each can be run idependently. 
-
-    Bring up help menu:
-        nextflow run DRAM --help (--h)
-
-    Bring up versions menu:
-        nextflow run DRAM --version (--v)      
-
-    Usage:
-        nextflow run DRAM --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
-
-        Call genes using input fastas (use --rename to rename FASTA headers):
-            nextflow run DRAM --call --rename --input_fasta <path/to/fasta/directory/>
-
-        Annotate called genes using input fastas:
-            nextflow run DRAM --annotate --input_genes <path/to/called/genes/directory>
-
-        Distill using input annotations:
-            nextflow run DRAM --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
-
-        (Combined): Call, annotate and distill input fasta files:
-            nextflow run DRAM --rename --call --annotate --use_<database(s) --distill_topic <distillate(s)>
-
-        (Real) example: (on multiple lines for clarity)
-        nextflow run DRAM --input_fasta ../test_data/ 
-            --outdir DRAM-test-data-Feb012024/ 
-            --call --rename 
-            --annotate --use_uniref --use_kegg --use_merops --use_viral --use_camper --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur 
-            --add_annotations ../test-data/old-DRAM-annotations.tsv
-            --distill_topic 'carbon transport energy' --distill_ecosystem 'eng_sys ag' 
-            --distill_custom assets/forms/distill_sheets/test.tsv -resume --slurm_node zenith 
-            --trnas ../test-data/trnas.tsv
-            --rrnas ../test-data/rrnas.tsv
-            --bin_quality ../test-data/checkM1-test-data.tsv
-            --taxa ../test-data/gtdbtk.bac120.summary.tsv
-            --generate_gff 
-            --generate_gbk
-            --threads 5
-            -with-report -with-trace -with-timeline
-
-    Main DRAM Operations:
-        --call      : Call genes using prodigal 
-        --annotate  : Annotate called genes using downloaded databases
-        --distill   : Distill the annotations into a multi-sheet distillate.xlsx
-    
-    REQUIRED DRAM profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM with no scheduling or scheduling via SLURM.
-                                        See SLURM options in full help menu.
-
-    Call options:
-        --call                  OPTION  Call genes on the input FASTA files using Prodigal.
-
-        --input_fasta           PATH    <path/to/fasta/directory/>
-                                            Directory containing input fasta files.      
-                                            Default: <./input_fasta/*.fa*>
-
-        --rename                OPTION  Rename FASTA headers based on file name.    
-                                            Example: sample1.fa --> (fasta header renamed to) > sample1......
-                                            Why? DRAM output is focused on scaffolds/contigs with respect to each provided input sample.
-                                                Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable.
-                                                *If you have already renamed your FASTA headers, do not include '--call'.
-
-        --prodigal_mode         STRING  <single|meta>
-                                            Default: 'single'
-
-        --prodigal_tras_table   NUMBER  (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25)
-                                            Specify a translation table to use (default: '1').
-                                    
-        --min_contig_len        NUMBER  <number in base pairs>
-                                            Default: '2500'
-                                            
-    Annotate options:
-        --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
-                                            Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
-        
-        --use_dbset             STRING  <metabolism_kegg_set|metabolism_set|adjectives_kegg_set|adjectivs set>
-                                            metabolism_kegg_set = kegg, dbcan, merops, pfam, heme
-                                            metabolism_set      = kofam, dbcan, merops, pfam, heme
-                                            adjectives_kegg_set = kegg, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                            adjectives_set      = kofam, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                            *Only one set can be used. Can be used in combination with --use_[db-name]
-        
-        --input_genes           PATH    <path/to/called/genes/directory/>
-                                            Directory containing called genes (.faa) 
-
-        --add_annotations       PATH    <path/to/old-annoations.tsv> 
-
-        --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
-
-        --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
-                                                    Used to add in old annotations to the current run. (See example for format.)
-
-    Distill options:
-        --annotations           PATH     <path/to/annotations.tsv>
-                                            Required if you are running distill without --call and --annotate.
-
-        --rrnas                 PATH    <path/to/rRNA.tsv> (See example for format.)
-                                            rRNA information will be included in distill output.
-
-        --trnas                 PATH    <path/to/tRNA.tsv> (See example for format.)
-                                            tRNA information will be included in distill output.
-        
-        --bin_quality           PATH    <path/to/bin-quality.tsv> (See example for format.)
-                                            CheckM and CheckM2 compatible. 
-
-        --taxa                  PATH    <path/to/bin-taxonomy.tsv>
-                                            Compatible with GTDB. (See example for format.)
-
-        --distill_topic         STRING  <carbon|energy|misc|nitrogen|transport> OR <default = carbon, energy, misc, nitrogen, transport>
-                                            If more than one topic included, they must be enclosed in single quotes
-
-        --distill_ecosystem     STRING  <eng_sys|ag>
-                                            If more than one ecosystem included, they must be enclosed in single quotes
-
-        --distill_custom        STRING  <path/to/custom_distillate.tsv> (See example for format and options.)
-                                            As of now, only one custom distillate may be included.
-
-    General options:
-        --outdir                PATH    <path/to/output/directory>
-                                            Default: './DRAM_output/'
-
-        --threads               NUMBER  Number of threads to use for processing.
-                                        Default: '10'
-
-        --slurm_node            STRING  <node_name>
-                                        Example --slurm_queue c001
-
-        --slurm_queue           STRING  <slurm partition name>
-                                        Example:  --slurn_queue 'smith-hi,smith-low'
-
-        -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
-        -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
-        -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
-
-### Call Command-line Options
-
-    Call description: The purpose of DRAM --call is to call genes on input FASTA files.
-
-    Usage:
-
-        Call genes using input fastas:
-            nextflow run DRAM --call --input_fasta <path/to/fasta/directory/> --outdir <path/to/output/directory/> --threads <threads>
-    
-    REQUIRED DRAM profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM with no scheduling or scheduling via SLURM.
-                                        See SLURM options in full help menu.
-
-    Call options:
-        --rename                Rename FASTA headers based on file name.    
-                                    Example: sample1.fa --> (fasta header renamed to) > sample1......
-                                    Why? DRAM output is focused on scaffolds/contigs with respect to each provided input sample.
-                                        Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable.
-                                        *If you have already renamed your FASTA headers, do not include '--call'.
-
-        --prodigal_mode         STRING  <single|meta>
-                                    Default: 'single'
-
-        --prodigal_tras_table   <1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25>
-                                    Specify a translation table to use (default: '1').
-                                    
-        --min_contig_len        NUMBER  <number in base pairs>
-                                            Default: '2500'
-
-    Main options:
-        --input_fasta           PATH    <path/to/fasta/directory/>
-                                        Directory containing input fasta files.      
-                                        Default: './input_fasta/'
-
-        --outdir                PATH    <path/to/output/directory>
-                                            Default: './DRAM_output/'
-
-        --threads               NUMBER  Number of threads to use for processing.
-                                        Default: '10'
-
-        --slurm_node            STRING  <node_name>
-                                        Example --slurm_queue c001
-
-        --slurm_queue           STRING  <slurm partition name>
-                                        Example:  --slurn_queue 'smith-hi,smith-low'
-
-        -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
-        -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
-        -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
-                                       
-### Annotate Command-line Options
-
-    Annotate description: The purpose of DRAM '--annotate' is to annotate called genes on input (nucleotide) FASTA (fa*) files.
-
-    Usage:
-
-        Annotate called genes using input called genes and the KOFAM database:
-            nextflow run DRAM --annotate --input_genes <path/to/called/genes/directory> --use_kofam
-        
-        Annotate called genes using input fasta files and the KOFAM database:
-            nextflow run DRAM --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
-    
-    REQUIRED DRAM profile options:
-        -profile            STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM with no scheduling or scheduling via SLURM.
-                                        See SLURM options in full help menu.
-
-    Annotate options:
-    --use_<db-name>         STRING   <camper|cant_hyd|dbcan|fegenie|kegg|kofam|merops|methyl|heme|pfam|sulfur|uniref]
-                                        Specify databases to use. Can use more than one. Can be used in combination with --use_dbset.
-    
-    --use_dbset             STRING  <metabolism_kegg_set|metabolism_set|adjectives_kegg_set|adjectivs set>
-                                        metabolism_kegg_set = kegg, dbcan, merops, pfam, heme
-                                        metabolism_set      = kofam, dbcan, merops, pfam, heme
-                                        adjectives_kegg_set = kegg, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                        adjectives_set      = kofam, dbcan, merops, pfam, heme, sulfur, camper, methyl, fegenie
-                                        *Only one set can be used. Can be used in combination with --use_[db-name]
-    
-    --add_annotations       PATH    <path/to/old-annoations.tsv> 
-                                        Used to add in old annotations to the current run. (See example for format.)
-
-    --generate_gff          OPTION Will generate an output GFF for each sample based on the raw-annotations.tsv.
-
-    --generate_gbk          OPTION Will generate an output GBK for each sample based on the raw-annotations.tsv.
-    
-    Main options:
-    --input_fasta           PATH    <path/to/fasta/directory/>
-                                        Directory containing input fasta files.      
-                                        Default: './input_fasta/' 
-                                        Either '--input_fasta' or '--input_genes' may be used - not both.
-
-    --input_genes           PATH    <path/to/called/genes/directory/>
-                                        Directory containing called genes (.fna)
-                                        Either '--input_fasta' or '--input_genes' may be used - not both.
-
-    --outdir                PATH    <path/to/output/directory/>
-                                        Default: './DRAM_output/'
-
-    --threads               NUMBER  Number of threads to use for processing.
-                                        Default '10'
-
-    --slurm_node            string  <node_name>
-                                    Example --slurm_queue c001
-
-    --slurm_queue           string  <slurm partition name>
-                                    Example:  --slurn_queue 'smith-hi,smith-low'
-
-    -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
-    -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
-    -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)         
-                                
-### Distill Command-line Options
-
-    DRAM Nextflow Pipeline
-    ===================================
-    Distill description:    The purpose of DRAM --distill is to distill down annotations based on curated distillation summary form(s). 
-                            User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
-                            Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). 
-                            Optional tRNA, rRNA and bin quality may also be provided.
-    
-    Usage:
-        nextflow run DRAM --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv> --outdir <path/to/output/directory/> --threads <threads>
-        *Important: if more than one topic or ecosystem is included, they must be enclosed in single quotes. Example: --distill_topic 'carbon transport'
-    
-    Example:
-        Call and Annotate genes using input fastas and KOFAM database. Distill using carbon topic and AG ecosystem:
-            nextflow run DRAM --input_fasta <path/to/fasta/directory/> --outdir <path/to/output/directory/> --call --annotate --distill_topic carbon --distill_ecosystem ag --threads <threads> --use_kofam
-    
-    REQUIRED DRAM profile options:
-        -profile                STRING  <conda, conda_slurm, singularity, singularity_conda>
-                                        Runs DRAM either using Conda (must be installed) or Singularity (must be installed).
-                                        Runs DRAM with no scheduling or scheduling via SLURM.
-                                        See SLURM options in full help menu.
-
-    Distill options:
-        --annotations           PATH     <path/to/annotations.tsv>
-                                            Required if you are running distill without --call and --annotate.
-
-        --rrnas                 PATH    <path/to/rRNA.tsv> (See example for format.)
-                                            rRNA information will be included in distill output.
-
-        --trnas                 PATH    <path/to/tRNA.tsv> (See example for format.)
-                                            tRNA information will be included in distill output.
-
-        --bin_quality           PATH    <path/to/bin-quality.tsv> (See example for format.)
-                                            CheckM and CheckM2 compatible. 
-
-        --taxa                  PATH    <path/to/bin-taxonomy.tsv>
-                                        Compatible with GTDB. (See example for format.)
-
-        --distill_topic         STRING  <carbon|energy|misc|nitrogen|transport> OR <default = carbon, energy, misc, nitrogen, transport>
-                                            If more than one topic included, they must be enclosed in single quotes
-
-        --distill_ecosystem     STRING  <eng_sys|ag>
-                                            If more than one ecosystem included, they must be enclosed in single quotes
-
-        --distill_custom        STRING  <path/to/custom_distillate.tsv> (See example for format and options.)
-                                            As of now, only one custom distillate may be included.
-
-    Main options:                
-        --outdir                PATH    <path/to/output/directory/>
-                                            Default: './DRAM_output/'
-
-        --threads               NUMBER  Number of threads to use for processing.
-                                            Default '10'
-
-        --slurm_node            string  <node_name>
-                                        Example --slurm_queue c001
-
-        --slurm_queue           string  <slurm partition name>
-                                        Example:  --slurn_queue 'smith-hi,smith-low'
-
-        -with-trace             OPTION  Nextflow option to output a process-by-process report of the run. (TEXT)
-        -with-report            OPTION  Nextflow option to output a process-by-process report of the run. (HTML)
-        -with-timeline:         OPTION  Nextflow option to output a process-by-process HTML timeline report of the run. (HTML)
------------
-------
+See `--help` for a full list of options. A docs page with all the options is in progress.
 
 ### Nextflow Tips and Tricks
 
@@ -657,7 +283,6 @@ Every CLI option in DRAM shown above or from `nextflow run DRAM --help` can be s
     ```
     params {
         use_uniref = true
-        // or use_uniref = 1
     }
     ```
 
@@ -666,7 +291,6 @@ If you are always running `--annotate`, you can set this in the `nextflow.config
     ```
     params {
         annotate = true
-        // or annotate = 1
     }
     ```
 

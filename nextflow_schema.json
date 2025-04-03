@@ -45,6 +45,10 @@
                 "product": {
                     "type": "boolean",
                     "description": "Generate a product visualization of the annotations and save the output to the output directory."
+                },                
+                "format_kegg": {
+                    "type": "boolean",
+                    "description": "Format KEGG database for use in DRAM. Standalone operation, will exit after completion."
                 }                
             }
         },
@@ -581,6 +585,29 @@
                 }
             }
         },
+        "slurm_options": {
+            "title": "SLURM Options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Generic options for SLURM job submission. More customized options can be configured in your own Nextflow config file. See https://www.nextflow.io/docs/latest/executor.html#slurm and example configs here: https://github.com/nf-core/configs/tree/master/conf",
+            "properties": {
+                "slurm": {
+                    "type": "boolean",
+                    "default" : false,
+                    "description": "Launch the pipeline using the SLURM executor. Without this option, the pipeline will run in your current shell/environment."
+                    
+                },
+                "partition": {
+                    "type": "string",
+                    "description": "Name of the SLURM partition to use for job submission. If not provided, the default partition will be used."
+                },
+                "queue_size": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Maximum number of jobs to submit to the queue at once."
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -782,6 +809,9 @@
         },
         {
             "$ref": "#/defs/database_options"
+        },
+        {
+            "$ref": "#/defs/slurm_options"
         },
         {
             "$ref": "#/defs/institutional_config_options"
