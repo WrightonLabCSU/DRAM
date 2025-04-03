@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - python=3.10
+  - pandas=1.5.2
+  - barrnap=0.9
+  - trnascan-se=2.0.12
+  

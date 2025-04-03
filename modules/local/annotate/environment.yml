@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - python=3.10
+  - pandas=1.5.2
+  - hmmer=3.3.2
+  - mmseqs2==15.6f452

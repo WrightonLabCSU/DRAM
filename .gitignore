@@ -9,6 +9,8 @@ trace*.txt
 # DRAM output folders
 DRAM2_output/
 DRAM_output/
+output/
+outdir/
 work/
 
 # Visualization Output Files
@@ -22,7 +24,12 @@ containers/*.tar
 containers/*.tar.gz
 
 test_data/
-output/
+data/
+results/
+testing/
+testing*
+null/
+output*
 nextflow-LOCAL.config
 .nextflow.log*
 .nextflow/history
