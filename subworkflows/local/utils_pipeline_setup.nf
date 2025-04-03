@@ -29,7 +29,7 @@ def getFastaChannel(input_fasta, fasta_fmt) {
 def dramLogo(monochrome_logs=true) {
     Map colors = logColours(monochrome_logs)
     String.format(  // In groovy we can use $/ to start a string to avoid escaping (end with /$)
-        $/\n
+        $/
         =====================================================================        
                          _____    _____               __  __            
         (==(     )==)   |  __ \  |  __ \      /\     |  \/  |   (==(     )==)    
