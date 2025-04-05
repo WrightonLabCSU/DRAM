@@ -112,7 +112,7 @@ Nextflow installs all nextflow pipeline scripts by default in the `$HOME/.nextfl
 The best way to accomplish this is to download or clone the DRAM repository to a shared directory and launch the `main.nf` script in the root directory with the following command:
 
 ```
-nextflow run <path/to/DRAM>/main.nf <options>
+nextflow run <path/to/DRAM> <options>
 ```
 
 You can use the `-c` to specify the path to a custom nextflow.config file. For example, if you have a custom nextflow.config file in another directory, you can run the following command:
@@ -127,7 +127,8 @@ DRAM comes with a variety of profiles to choose from. The profiles are used to s
 
 *The Nextflow profile option is used (`-profile`) - yes! a single hyphen! Nextflow options use a single hyphen, while DRAM options use the traditional double hyphen*
 
-Use the `-profile` option that best fits your needs. Many HPC systems come with a way to load modules that give access to conda, apptainer, and singularity. The initial time you load a profile, the dependencies will be installed and then cached in a temp directory called `work` in the launch directory (See the nextflow docs page for information on specifing the cache directory directly). Then it will be reused for subsequent runs.
+Use the `-profile` option that best fits your needs. Many HPC systems come with a way to load modules that give access to conda, apptainer, and singularity. The initial time you load a profile, the dependencies will be installed and then cached in a temp directory called `work` in the launcZ
+h directory (See the nextflow docs page for information on specifing the cache directory directly). Then it will be reused for subsequent runs.
 
 ---------
 
