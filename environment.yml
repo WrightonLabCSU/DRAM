@@ -1,0 +1,13 @@
+name: dram-nf
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - nextflow
+  - sphinx>=8
+  - myst-parser
+  - pytest>=7
+  - pip
+  - pip:
+    - git+https://github.com/nf-core/tools.git@dev

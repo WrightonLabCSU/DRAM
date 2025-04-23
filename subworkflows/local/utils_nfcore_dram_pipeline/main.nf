@@ -14,6 +14,7 @@ include { workflowCitation          } from '../../local/utils_pipeline_setup.nf'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
 include { paramsHelp                } from 'plugin/nf-schema'
+include { paramsHelp as valHelp     } from 'plugin/nf-validation'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
@@ -58,6 +59,24 @@ workflow PIPELINE_INITIALISATION {
     if (help) {
         log.info pre_help_text + paramsHelp(workflow_command, parameters_schema: "nextflow_schema.json") + post_help_text
         System.exit(0)
+    }
+
+    //
+    // Check pipeline params that need to be validated outside of the nf-schema plugin
+    //
+    if (params.input_genes) {
+        if (params.call) {
+            error("Input genes file cannot be used with --call. Input genes is used when you are running annotate without call.")
+        }
+        if (!params.annotate) {
+            error("Input genes file must be used with --annotate. Input genes is used when you are running annotate without call.")
+        }
+    }
+
+    if (params.trnas || params.rrnas) {
+        if (params.call) {
+            error("Input tRNAs and rRNAs files cannot be used with --call. Input tRNAs and rRNAs are used when you are running without call.")
+        }
     }
 
     //

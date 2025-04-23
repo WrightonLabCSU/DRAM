@@ -29,7 +29,7 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
 - [Installation](#installation)
 - [Requirements](#requirements)
 - [General Instructions](#general-instructions)
-- [Important Installation Notes](#important-computation-notes)
+- [Important Installation Notes](#important-installation-notes)
 - [Important Computation Notes](#important-computation-notes)
 - [DRAM v2 Databases](#dram-v2-databases)
 - [Example command-line usage](#example-usage)
@@ -47,28 +47,83 @@ The DRAM development team is actively working on DRAM v2. We do not anticipate a
 * Some form of Conda or a Nextflow supported Container Runtime (Apptainer, Singularity CE, Docker, Podman, Sarus, etc.)
 * DRAM databases (preformatted and downloaded via Globus, or with KEGG, formatted by the user)
 
-### General Instructions:
+#### HPC Note
 
 On many HPC systems, Nextflow, Conda, and some container runtime (usually Singularity or Apptainer) are already installed. If you are using a local system, you will need to install Nextflow and Conda or a container runtime. On an HPC system, Nextflow, Conda, and a container runtime are often loaded with modules. Refer to your HPC system's documentation for instructions on how to load modules. They might be loaded another way or already pre-installed.
 
-1) If you do not have Nextflow installed, please follow the instructions [from their documentation page](https://www.nextflow.io/docs/stable/install.html).
+### General Instructions:
 
-2) Choose if you want to install DRAM v2 using Conda or a container runtime (Apptainer, Singularity CE, Docker, Podman, Sarus, etc.).
-    - If you choose to use Conda, you will need to have Conda installed on your system. Miniconda is a good option for this because it is lightweight and easy to install. You can find the installation instructions [here](https://docs.anaconda.com/miniconda/miniconda-install/).
-    - If you choose to use a container runtime, you will need to have the container runtime installed on your system. Apptainer is a good option for this, it is the modern and open-source version of Singularity. You can find the installation instructions [here](https://apptainer.org/docs/admin/main/installation.html) but any of the listed above should work.
+#### Installation Steps
 
-3) Create a DRAM directory to store the DRAM files and the nextflow configuration file:
+1) If you do not have Nextflow installed, please follow the instructions [from their documentation page](https://www.nextflow.io/docs/stable/install.html). Alternatively,  it may be easuer to install Nextflow within a conda environment (which then also ensures Nextflow's dependencies are met, like Java), see [nf-core's Nextflow installation instructions](https://nf-co.re/docs/usage/getting_started/installation#bioconda-installation).
+
+
+1) If you choose to use a container runtime (Apptainer, Singularity CE, Docker, Podman, Sarus, etc.), make sure you have it installed, working, and available in your PATH. You can check this by running the following command:
+
+    ```
+    apptainer --version
+    ```
+
+    or
+
+
+    ```
+    singularity --version
+    ```
+
+    or
+
+    ```
+    docker --version
+    ```
+
+    or
+
+    ```
+    podman --version
+    ```
+
+    or
+
+    ```
+    sarus --version
+    ```
+
+    etc.
+
+    - If you do not have a container runtime installed, see the [nf-core documentation](https://nf-co.re/docs/usage/getting_started/installation#pipeline-software) for instructions on how to install one.
+
+
+#### Important Installation Notes:
+
+Nextflow installs all nextflow pipeline scripts by default in the `$HOME/.nextflow/assets/WrightonLabCSU/DRAM` directory for any given user, allowing nextflow to centralize install and update management. If you are running DRAM on a shared system, you may wish to install DRAM in a shared directory. DRAM's actual pipeline scripts are very small and if multiple users are running DRAM on the same system, having them each install their own copy of DRAM does not take up a lot of space (the database's need to be downloaded seperately and are not stored in the same place), but it does make it easier to manage updates and versions. 
+
+The best way to accomplish this is to download or clone the DRAM repository to a shared directory and launch the pipeline directly by specifying the path to the directory. For example, if you have cloned the DRAM repository to `/path/to/DRAM`, you can run the pipeline with the following command:
+
+```
+nextflow run <path/to/DRAM> <options>
+```
+
+You can use the `-c` to specify the path to a custom nextflow.config file. For example, if you have a custom nextflow.config file in another directory, you can run the following command:
+
+```
+nextflow run <path/to/DRAM>/main.nf -c <path/to/custom/nextflow.config> <options>
+```
+
+#### Setup DRAM
+
+1) Create a DRAM directory to store the DRAM files and the nextflow configuration file:
   
     ```
     mkdir DRAM
     cd DRAM
     ```
 
-4) Download the DRAM data from Globus in this DRAM directory. This is a large download (> 500 GB) and will take some time. 
+1) Download the DRAM data from Globus in this DRAM directory. This is a large download (> 500 GB) and will take some time. 
     - You can find the data [here](https://app.globus.org/file-manager?origin_id=97ed64b9-dea0-4eb5-a7e0-0b50ac94e889). UUID: 97ed64b9-dea0-4eb5-a7e0-0b50ac94e889 You will need a Globus account to access and download the data.
     - The download consists of a database folder that contains all the preformatted databases with the description database.
 
-5) DRAM by default looks for the databases relative to the launch directory, if you would like to change this, change where you want to store the DRAM data, or other configuration options such as what container runtime you are using, SLURM options, customize or add other profile options, etc. you can download this defaults configuration file to customize your DRAM run.
+1) DRAM by default looks for the databases relative to the launch directory, if you would like to change this, change where you want to store the DRAM data, or other configuration options such as what container runtime you are using, SLURM options, customize or add other profile options, etc. you can download this defaults configuration file to customize your DRAM run.
 
     ```
     curl -o nextflow.config https://raw.githubusercontent.com/WrightonLabCSU/DRAM/refs/heads/dev/nextflow.config
@@ -76,7 +131,7 @@ On many HPC systems, Nextflow, Conda, and some container runtime (usually Singul
 
     If you don't download the nextflow.config file, DRAM will run with the default settings, but you can still override options on the command line.
 
-6) You can use nextflow to install and update DRAM by running the following command anywhere on your system:
+1) You can use nextflow to install and update DRAM by running the following command anywhere on your system:
 
     ```
     nextflow pull WrightonLabCSU/DRAM -r dev
@@ -104,22 +159,6 @@ On many HPC systems, Nextflow, Conda, and some container runtime (usually Singul
    
     You can update DRAM by rerunning the pull command,
 
-
-### Important Installation Notes:
-
-Nextflow installs all nextflow pipeline scripts by default in the `$HOME/.nextflow/assets/WrightonLabCSU/DRAM` directory, allowing nextflow to centralize install and update management. If you are running DRAM on a shared system, you may wish to install DRAM in a shared directory. DRAM's actual pipeline scripts are very small and if multiple users are running DRAM on the same system, having them each install their own copy of DRAM does not take up a lot of space, but it does make it easier to manage updates and versions. 
-
-The best way to accomplish this is to download or clone the DRAM repository to a shared directory and launch the `main.nf` script in the root directory with the following command:
-
-```
-nextflow run <path/to/DRAM> <options>
-```
-
-You can use the `-c` to specify the path to a custom nextflow.config file. For example, if you have a custom nextflow.config file in another directory, you can run the following command:
-
-```
-nextflow run <path/to/DRAM>/main.nf -c <path/to/custom/nextflow.config> <options>
-```
 
 ### Important Computation Notes:
 
