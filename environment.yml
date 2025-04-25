@@ -11,3 +11,4 @@ dependencies:
   - pip
   - pip:
     - git+https://github.com/nf-core/tools.git@dev
+    - sphinx-nefertiti
