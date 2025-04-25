@@ -4,7 +4,7 @@
     "title": "WrightonLabCSU/dram pipeline parameters",
     "description": "DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes",
     "type": "object",
-    "defs": {
+    "$defs": {
         "pipeline_steps": {
             "title": "Pipeline Steps",
             "type": "object",
@@ -64,7 +64,10 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 }
-            }
+            },
+            "required": [
+                "outdir"
+            ]
         },
         "genome_options": {
             "title": "Reference genome options",
@@ -75,7 +78,7 @@
                 "input_fasta": {
                     "type": "string",
                     "format": "path",
-                    "exits": "true",
+                    "exists": true,
                     "description": "Path to FASTA directory",
                     "help_text": "This parameter is *mandatory*.",
                     "fa_icon": "fas fa-folder-open"
@@ -310,12 +313,6 @@
             "fa_icon": "fas fa-dna",
             "description": "The purpose of DRAM --product is to generate a product visualization of the annotations and save the output to the output directory.",
             "properties": {
-                "annotations": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "Path to annotations tsv to distill. Required if running without annotate. (Also a distill option)"
-                },
                 "groupby_column": {
                     "type": "string",
                     "description": "Column to to group by in the annotations file for etc and function groupings.",
@@ -593,7 +590,6 @@
             "properties": {
                 "slurm": {
                     "type": "boolean",
-                    "default" : false,
                     "description": "Launch the pipeline using the SLURM executor. Without this option, the pipeline will run in your current shell/environment."
                     
                 },
@@ -784,139 +780,46 @@
     },
     "allOf": [
         {
-            "$ref": "#/defs/pipeline_steps"
+            "$ref": "#/$defs/pipeline_steps"
         },
         {
-            "$ref": "#/defs/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/defs/genome_options"
+            "$ref": "#/$defs/genome_options"
         },
         {
-            "$ref": "#/defs/call_prodigal_options"
+            "$ref": "#/$defs/call_prodigal_options"
         },
         {
-            "$ref": "#/defs/annotate_options"
+            "$ref": "#/$defs/annotate_options"
         },
         {
-            "$ref": "#/defs/distill_options"
+            "$ref": "#/$defs/distill_options"
         },
         {
-            "$ref": "#/defs/rna_options"
+            "$ref": "#/$defs/rna_options"
         },
         {
-            "$ref": "#/defs/bin_and_taxa_options"
+            "$ref": "#/$defs/bin_and_taxa_options"
         },
         {
-            "$ref": "#/defs/database_options"
+            "$ref": "#/$defs/product_options"   
         },
         {
-            "$ref": "#/defs/slurm_options"
+            "$ref": "#/$defs/format_kegg_options"   
         },
         {
-            "$ref": "#/defs/institutional_config_options"
+            "$ref": "#/$defs/database_options"
         },
         {
-            "$ref": "#/defs/generic_options"
+            "$ref": "#/$defs/slurm_options"
         },
         {
-            "required": [
-                "outdir"
-            ]
+            "$ref": "#/$defs/institutional_config_options"
         },
         {
-            "oneOf": [
-                {
-                    "required": [
-                        "call"
-                    ],
-                    "not": {
-                        "required": [
-                            "input_genes"
-                        ]
-                    }
-                },
-                {
-                    "required": [
-                        "input_genes",
-                        "annotate"
-                    ],
-                    "not": {
-                        "required": [
-                            "call"
-                        ]
-                    }
-                },
-                {
-                    "allOf": [
-                        {
-                            "not": {
-                                "required": [
-                                    "call"
-                                ]
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": [
-                                    "input_genes"
-                                ]
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "oneOf": [
-                {
-                    "required": [
-                        "call"
-                    ],
-                    "not": {
-                        "required": [
-                            "trnas",
-                            "rrnas"
-                        ]
-                    }
-                },
-                {
-                    "required": [
-                        "trnas",
-                        "rrnas"
-                    ],
-                    "not": {
-                        "required": [
-                            "call"
-                        ]
-                    }
-                },
-                {
-                    "allOf": [
-                        {
-                            "not": {
-                                "required": [
-                                    "call"
-                                ]
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": [
-                                    "trnas"
-                                ]
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": [
-                                    "rrnas"
-                                ]
-                            }
-                        }
-                    ]
-                }
-            ]
+            "$ref": "#/$defs/generic_options"
         }
     ]
 }
