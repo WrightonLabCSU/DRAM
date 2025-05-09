@@ -23,6 +23,15 @@ containers/*.sif
 containers/*.tar
 containers/*.tar.gz
 
+
+# docs build
+docs/_build
+docs/api
+docs/_autosummary
+docs/jupyter_execute
+docs/code_reference/api
+
+
 test_data/
 data/
 results/
