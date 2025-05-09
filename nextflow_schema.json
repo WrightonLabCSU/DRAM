@@ -4,7 +4,7 @@
     "title": "WrightonLabCSU/dram pipeline parameters",
     "description": "DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes",
     "type": "object",
-    "$defs": {
+    "defs": {
         "pipeline_steps": {
             "title": "Pipeline Steps",
             "type": "object",
@@ -780,46 +780,46 @@
     },
     "allOf": [
         {
-            "$ref": "#/$defs/pipeline_steps"
+            "$ref": "#/defs/pipeline_steps"
         },
         {
-            "$ref": "#/$defs/input_output_options"
+            "$ref": "#/defs/input_output_options"
         },
         {
-            "$ref": "#/$defs/genome_options"
+            "$ref": "#/defs/genome_options"
         },
         {
-            "$ref": "#/$defs/call_prodigal_options"
+            "$ref": "#/defs/call_prodigal_options"
         },
         {
-            "$ref": "#/$defs/annotate_options"
+            "$ref": "#/defs/annotate_options"
         },
         {
-            "$ref": "#/$defs/distill_options"
+            "$ref": "#/defs/distill_options"
         },
         {
-            "$ref": "#/$defs/rna_options"
+            "$ref": "#/defs/rna_options"
         },
         {
-            "$ref": "#/$defs/bin_and_taxa_options"
+            "$ref": "#/defs/bin_and_taxa_options"
         },
         {
-            "$ref": "#/$defs/product_options"   
+            "$ref": "#/defs/product_options"   
         },
         {
-            "$ref": "#/$defs/format_kegg_options"   
+            "$ref": "#/defs/format_kegg_options"   
         },
         {
-            "$ref": "#/$defs/database_options"
+            "$ref": "#/defs/database_options"
         },
         {
-            "$ref": "#/$defs/slurm_options"
+            "$ref": "#/defs/slurm_options"
         },
         {
-            "$ref": "#/$defs/institutional_config_options"
+            "$ref": "#/defs/institutional_config_options"
         },
         {
-            "$ref": "#/$defs/generic_options"
+            "$ref": "#/defs/generic_options"
         }
     ]
 }
