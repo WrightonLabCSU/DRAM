@@ -13,7 +13,7 @@ build:
     pre_build:
       # Since we have to use an older nf-schema to support older nextflows, we need to update the nextflow_schema file
       # for it to output our params doc by replacing defs (needed for older nf-schema) to $defs (newer format)
-      - sed -E 's/"defs":/"$defs":/; s:"#/defs:"#/$defs:g' nextflow_schema.json > tmp && mv tmp nextflow_schema.json
+      - sed 's/"defs":/"$defs":/; s|#\/defs|#\/$defs|g' nextflow_schema.json > tmp && mv tmp nextflow_schema.json
       - cat nextflow_schema.json
       - nf-core pipelines schema docs --format markdown --output docs/params_doc.md
       - cat docs/params_doc.md
