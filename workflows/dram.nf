@@ -258,6 +258,7 @@ workflow DRAM {
 
         if (!params.use_kegg || !params.use_ko || !params.use_dbcan || !params.use_merops) {
             error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_ko, --use_dbcan, or --use_merops.")
+        }
     }
 
 
