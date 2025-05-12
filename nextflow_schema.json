@@ -252,7 +252,7 @@
             "title": "Distill Options",
             "type": "object",
             "fa_icon": "fas fa-dna",
-            "description": "The purpose of DRAM distill is to distill down annotations based on curated distillation summary form(s). It can be ran with either --distill_topic, --distill_ecosystem, or --distill_custom (or some combination). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms). Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided.",
+            "description": "The purpose of DRAM distill is to distill down annotations based on curated distillation summary form(s). It can be ran with either --distill_topic, --distill_ecosystem, or --distill_custom (or some combination). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms). Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided. When using distll, you also must use kegg, ko, dbcan, or merops when you do your annotation. To get the full results, you need to use kegg or ko and dbcan and merops.",
             "properties": {
                 "annotations": {
                     "type": "string",
