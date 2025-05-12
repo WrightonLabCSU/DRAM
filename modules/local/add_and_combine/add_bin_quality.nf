@@ -28,6 +28,7 @@ process ADD_BIN_QUALITY {
     checkm_header = pd.read_csv(checkm_path, sep='\t', nrows=0)  # Load only the header
 
     # Determine the correct column name ('Name' or 'Bin Id') for bin/input_fasta identifiers
+    # Name is for CheckM2 and Bin Id is for CheckM1
     if 'Name' in checkm_header.columns:
         id_column = 'Name'
     elif 'Bin Id' in checkm_header.columns:

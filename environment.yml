@@ -8,6 +8,7 @@ dependencies:
   - sphinx>=8
   - myst-parser
   - pytest>=7
+  - nf-core=3.2.1
   - pip
   - pip:
-    - git+https://github.com/nf-core/tools.git@dev
+    - sphinx-nefertiti
