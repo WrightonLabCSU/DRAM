@@ -256,8 +256,8 @@ workflow DRAM {
             ch_distill_custom_collected = default_sheet
         }
 
-        if (!params.use_kegg || !params.use_ko || !params.use_dbcan || !params.use_merops) {
-            error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_ko, --use_dbcan, or --use_merops.")
+        if (!params.use_kegg && !params.use_kofam && !params.use_dbcan && !params.use_merops) {
+            error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_kofam, --use_dbcan, or --use_merops.")
         }
     }
 
