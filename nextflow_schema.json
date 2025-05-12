@@ -118,10 +118,10 @@
                 "prodigal_mode": {
                     "type": "string",
                     "description": "Mode for Prodigal gene calling.",
-                    "default": "anon",
+                    "default": "meta",
                     "enum": [
-                        "anon",
-                        "normal"
+                        "meta",
+                        "single"
                     ]
                 },
                 "prodigal_trans_table": {
