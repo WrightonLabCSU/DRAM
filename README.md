@@ -18,6 +18,8 @@ DRAM v2 is now open for public beta testing. You can try out DRAM v2 by heading 
 
 DRAM v2 was implemented in [Nextflow](https://www.nextflow.io) due to its innate scalability on HPCs and containerization, ensuring rigorous reproducibility and version control, thus making it ideally suited for high-performance computing environments. 
 
+Additionall, DRAM v2 has a [readthedocs](https://dramit.readthedocs.io/en/latest/)
+
 ## Getting Started Part 1: Installation
 
 **NOTE** If you already have an old release of DRAM installed and just want to upgrade, then please read the set-up step before you remove your old environment.
