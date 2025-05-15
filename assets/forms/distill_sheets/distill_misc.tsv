@@ -286,22 +286,6 @@ K00012	UGDH; UDP-Glc -> UDP-GlcA [EC:1.1.1.22]	Nucleotide sugar biosynthesis, eu
 K08678	UXS1; UDP-GlcA -> UDP-Xyl [EC:4.1.1.35]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
 K00966	GMPP; Man-1P -> GDP-Man [EC:2.7.7.13]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
 K00971	GMPP; Man-1P -> GDP-Man [EC:2.7.7.13]	Nucleotide sugar biosynthesis, eukaryotes	MISC	Information systems	Nucleotide	TRUE
-K01905	6.2.1.13, acetate---CoA ligase (ADP-forming) subunit alpha	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K01067	acetyl-CoA hydrolase [EC:3.1.2.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K00101	L-lactate dehydrogenase (cytochrome) [EC:1.1.2.3]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K03777	D-lactate dehydrogenase (quinone) [EC:1.1.5.12]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K00634	phosphate butyryltransferase [EC:2.3.1.19]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K00929	butyrate kinase [EC:2.7.2.7]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K01896	medium-chain acyl-CoA synthetase [EC:6.2.1.2]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K19697	propionate kinase [EC:2.7.2.15]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K01026	propionate CoA-transferase [EC:2.8.3.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K18857	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K13980	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K13953	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K13952	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K13951	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K04072	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
-K00121	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
 K01661	naphthoate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
 K01851	salicylate biosynthesis isochorismate synthase	Menaquinone biosynthesis	MISC	MISC		TRUE
 K01911	O-succinylbenzoic acid--CoA ligase	Menaquinone biosynthesis	MISC	MISC		TRUE

@@ -60,10 +60,11 @@ process QUAST {
             if input_fasta_name in column:
                 metrics = {
                     'input_fasta': input_fasta_name,
-                    'assembly length': report_df.loc['Total length', column],
+                    'assembly size': report_df.loc['Total length', column],
                     'no. contigs': report_df.loc['# contigs', column],
                     'largest contig': report_df.loc['Largest contig', column],
                     'N50': report_df.loc['N50', column],
+                    'L50': report_df.loc['L50', column],
                     'GC (%)': report_df.loc['GC (%)', column],
                     'no. pred. genes': num_genes
                 }

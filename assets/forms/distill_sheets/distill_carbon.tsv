@@ -488,7 +488,7 @@ CBM30	CBM30 Binding to cellulose has been demonstrated for the N-terminal module
 CBM31	CBM31 Binding to beta-1,3-xylan has been demonstrated for the C-terminal module of the beta-1,3-xylanase of Alcaligenes sp. XY234.	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM32	CBM32 Binding to galactose and lactose has been demonstrated for the module of Micromonospora viridifaciens sialidase (PMID: 16239725). Binding to polygalacturonic acid has been shown for a Yersinia member (PMID: 17292916). Binding to LacNAc (beta-D-galactosyl-1,4-beta-D-N-acetylglucosamine) has been shown for an N-acetylglucosaminidase from Clostridium perfingens (PMID: 16990278).	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM33	CBM33 Copper-dependent lytic polysaccharide monooxygenases now reclassified in family AA10	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
-CBM34	CBM34 Modules of approx. 120 residues. Granular starch-binding function has been demonstrated in the case of Thermoactinomyces vulgaris R-47 ‚Äö√†√∂‚àö¬©¬¨¬®¬¨¬±-amylase 1 (TVAI).	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
+CBM34	CBM34 Modules of approx. 120 residues. Granular starch-binding function has been demonstrated in the case of Thermoactinomyces vulgaris R-47 ‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ‚Äö√†√∂¬¨¬©¬¨¬®¬¨¬Æ¬¨¬®¬¨¬±-amylase 1 (TVAI).	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM35	CBM35 Modules of approx. 130 residues. A module that is conserved in three Cellvibrio xylan-degrading enzymes binds to xylan and the interaction is calcium dependent, while a module from a Cellvibrio mannanase binds to decorated soluble mannans and mannooligosaccharides. A module in a Phanerochaete chrysosporium galactan 1,3-beta-galactosidase binds to beta-galactan.	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM36	CBM36 Modules of approx. 120-130 residues displaying structural similarities to CBM6 modules. The only CBM36 currently characterised, that from Paenbacillus polymyxa xylanase 43A, shows calcium-dependent binding of xylans and xylooligosaccharides. X-ray crystallography shows that there is a direct interaction between calcium and ligand.	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM37	CBM37 Modules of approx. 100 residues, conserved in numerous R. albus polysaccharide-degrading enzymes and other proteins from this bacterium. Several members of CBM37 have been shown to exhibit rather broad binding specificity to xylan, chitin, microcrystalline and phosphoric-acid swollen cellulose, as well as more heterogeneous substrates, such as alfalfa cell walls, banana stem and wheat straw.	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
@@ -511,7 +511,7 @@ CBM51	CBM51 Modules of approx. 150 residues found attached to various enzymes fr
 CBM52	CBM52 Modules of approx. 60 residues attached to a few GH81 enzymes but present in other proteins. Binding to beta-1,3-glucan demonstrated for Schizosaccharomyces pombe 972h- endo-1,3-beta-glucanase Eng1 [Martin-Quadrado et al., Mol. Microbiol. (2008) 69:188-200 PMID:18466295]	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM53	CBM53 Starch-binding function demonstrated by Valdez et al. (2008) [PMID: 18260645]	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM54	CBM54 Binding to xylan, yeast cell wall glucan and chitin shown in Dvortsov et al., Microbiology UK (2009) in press.	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
-CBM55	CBM55 Binding to chitin demonstrated in the case of the CBM55 of Entamoeba histolytica chitinase (Van Dellen et al. (2002) Infect Immun. 70:3259‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àö‚à´3263; PMID: 12011021).	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
+CBM55	CBM55 Binding to chitin demonstrated in the case of the CBM55 of Entamoeba histolytica chitinase (Van Dellen et al. (2002) Infect Immun. 70:3259‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ¬¨¬®¬¨¬¢‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö¬∞¬¨¬®¬¨√Ü‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö√´‚Äö√†√∂‚Äö√†¬¥3263; PMID: 12011021).	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM56	CBM56 beta-1,3-glucan binding function demonstrated by Yamamoto et al. (1998) FEBS Letters 433:41-43 [PMID: 9738929]	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM57	CBM57 Created from reading Schallus et al (2008) Mol Biol Cell. 19:3404-3414 [PMID: 18524852] and finding related domains attached to various glycosidases.	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
 CBM58	CBM58 The CBM58 module of the Bacteroides thetaiotaomicron SusG protein has been shown to bind maltoheptaose	Carbohydrate-Binding Modules	carbon utilization	CAZY		TRUE
@@ -749,7 +749,7 @@ GT16	GT16 alpha-1,6-mannosyl-glycoprotein beta-1,2-N-acetylglucosaminyltransfera
 GT17	GT17 beta-1,4-mannosyl-glycoprotein beta-1,4-N-acetylglucosaminyltransferase (EC 2.4.1.144).	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT18	GT18 alpha-1,3(6)-mannosylglycoprotein beta-1,6-N-acetyl-glucosaminyltransferase (EC 2.4.1.155).	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT19	GT19 lipid-A-disaccharide synthase (EC 2.4.1.182).	GlycosylTransferases	carbon utilization	CAZY		TRUE
-GT1	GT1 UDP-glucuronosyltransferase (EC 2.4.1.17); zeatin O-beta-xylosyltransferase (EC 2.4.2.40); 2-hydroxyacylsphingosine 1-beta-galactosyltransferase (EC 2.4.1.45); N-acylsphingosine galactosyltransferase (EC 2.4.1.47); flavonol 3-O-glucosyltransferase (EC 2.4.1.91); anthocyanidin 3-O-glucosyltransferase (EC 2.4.1.115); sinapate 1-glucosyltransferase (EC 2.4.1.120); indole-3-acetate beta-glucosyltransferase (EC 2.4.1.121); flavonol L-rhamnosyltransferase (EC 2.4.1.159); sterol glucosyltransferase (EC 2.4.1.173); UDP-Glc: 4-hydroxybenzoate 4-O-beta-glucosyltransferase (EC 2.4.1.194); zeatin O-beta-glucosyltransferase (EC 2.4.1.203); limonoid glucosyltransferase (EC 2.4.1.210); UDP-GlcA: baicalein 7-O-beta-glucuronosyltransferase (EC 2.4.1.253); UDP-Glc: chalcone 4‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ¬¨¬®‚Äö√¢¬ß-O-beta-glucosyltransferase (EC 2.4.1.286); ecdysteroid UDP-glucosyltransferase (EC 2.4.1.-); salicylic acid beta-glucosyltransferase (EC 2.4.1.-); anthocyanin 3-O-galactosyltransferase (EC 2.4.1.-); anthocyanin 5-O-glucosyltransferase (EC 2.4.1.-); dTDP-beta-2-deoxy-L-fucose: alpha-L-2-deoxyfucosyltransferase (EC 2.4.1.-); UDP-beta-L-rhamnose: alpha-L-rhamnosyltransferase (EC 2.4.1.-); zeaxanthin glucosyltransferase (EC 2.4.1.-); flavone 8-C-glycosyltransferase	GlycosylTransferases	carbon utilization	CAZY		TRUE
+GT1	GT1 UDP-glucuronosyltransferase (EC 2.4.1.17); zeatin O-beta-xylosyltransferase (EC 2.4.2.40); 2-hydroxyacylsphingosine 1-beta-galactosyltransferase (EC 2.4.1.45); N-acylsphingosine galactosyltransferase (EC 2.4.1.47); flavonol 3-O-glucosyltransferase (EC 2.4.1.91); anthocyanidin 3-O-glucosyltransferase (EC 2.4.1.115); sinapate 1-glucosyltransferase (EC 2.4.1.120); indole-3-acetate beta-glucosyltransferase (EC 2.4.1.121); flavonol L-rhamnosyltransferase (EC 2.4.1.159); sterol glucosyltransferase (EC 2.4.1.173); UDP-Glc: 4-hydroxybenzoate 4-O-beta-glucosyltransferase (EC 2.4.1.194); zeatin O-beta-glucosyltransferase (EC 2.4.1.203); limonoid glucosyltransferase (EC 2.4.1.210); UDP-GlcA: baicalein 7-O-beta-glucuronosyltransferase (EC 2.4.1.253); UDP-Glc: chalcone 4‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ¬¨¬®¬¨¬¢‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö¬∞¬¨¬®¬¨√Ü¬¨¬®¬¨¬Æ‚Äö√Ñ√∂‚àö¬¢¬¨√ü-O-beta-glucosyltransferase (EC 2.4.1.286); ecdysteroid UDP-glucosyltransferase (EC 2.4.1.-); salicylic acid beta-glucosyltransferase (EC 2.4.1.-); anthocyanin 3-O-galactosyltransferase (EC 2.4.1.-); anthocyanin 5-O-glucosyltransferase (EC 2.4.1.-); dTDP-beta-2-deoxy-L-fucose: alpha-L-2-deoxyfucosyltransferase (EC 2.4.1.-); UDP-beta-L-rhamnose: alpha-L-rhamnosyltransferase (EC 2.4.1.-); zeaxanthin glucosyltransferase (EC 2.4.1.-); flavone 8-C-glycosyltransferase	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT20	GT20 alpha,alpha-trehalose-phosphate synthase [UDP-forming] (EC 2.4.1.15); Glucosylglycerol-phosphate synthase (EC 2.4.1.213); trehalose-6-P phosphatase (EC 3.1.3.12); [retaining] GDP-valeniol: validamine 7-phosphate valeniolyltransferase (EC 2.-.-.-)	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT21	GT21 UDP-Glc: ceramide beta-glucosyltransferase (EC 2.4.1.80).	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT22	GT22 Dol-P-Man: Man6GlcNAc2-PP-Dol alpha-1,2-mannosyltransferase (EC 2.4.1.259); Dol-P-Man: Man8GlcNAc2-PP-Dol alpha-1,2-mannosyltransferase (EC 2.4.1.261); Dol-P-Man: Man2-GlcNAc-phosphatidylinositol alpha-1,2-mannosyltransferase (EC 2.4.1.-); Dol-P-Man: Man3-GlcNAc-phosphatidylinositol alpha-1,2-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	carbon utilization	CAZY		TRUE
@@ -800,7 +800,7 @@ GT62	GT62 alpha-1,2-mannosyltransferase (EC 2.4.1.-); alpha-1,6-mannosyltransfer
 GT63	GT63 UDP-Glc: DNA beta-glucosyltransferase (EC 2.4.1.27)	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT64	GT64 UDP-GlcNAc: heparan alpha-N-acetylhexosaminyltransferase (EC 2.4.1.224)	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT65	GT65 GDP-Fuc: protein O-alpha-fucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	carbon utilization	CAZY		TRUE
-GT66	GT66 dolichyl-diphosphooligosaccharide‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àöœÄprotein glycotransferase (EC 2.4.99.18); undecaprenyl-diphosphooligosaccharide‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àöœÄprotein glycotransferase (EC 2.4.99.19)	GlycosylTransferases	carbon utilization	CAZY		TRUE
+GT66	GT66 dolichyl-diphosphooligosaccharide‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ¬¨¬®¬¨¬¢‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö¬∞¬¨¬®¬¨√Ü‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö√´‚Äö√†√∂≈ì√Ñprotein glycotransferase (EC 2.4.99.18); undecaprenyl-diphosphooligosaccharide‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ¬¨¬®¬¨¬¢‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö¬∞¬¨¬®¬¨√Ü‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö√´‚Äö√†√∂≈ì√Ñprotein glycotransferase (EC 2.4.99.19)	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT67	GT67 UDP-Gal: phosphoglycan beta-1,3-galactosyltransferase 1 (SCG1) (EC 2.4.1.-); UDP-GlcNAc beta-1,2-N-acetylglucosaminyltransferase (EC 2.4.1.-)	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT68	GT68 GDP-Fuc: protein O-alpha-fucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	carbon utilization	CAZY		TRUE
 GT69	GT69 GDP-Man: alpha-1,3-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	carbon utilization	CAZY		TRUE
@@ -879,49 +879,65 @@ PL9	PL9 pectate lyase (EC 4.2.2.2); exopolygalacturonate lyase (EC 4.2.2.9); thi
 K05810	polyphenol oxidase	polyphenols	carbon utilization		Polyphenolics Cleavage	TRUE
 K00422	polyphenol oxidase	polyphenols	carbon utilization		Polyphenolics Cleavage	TRUE
 K05909	polyphenol oxidase	polyphenols	carbon utilization		Polyphenolics Cleavage	TRUE
-K01812	glucuronate isomerase	Pentose and glucuronate interconversions	carbon utilization	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
-K00041	tagaturonate reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
-K01685	altronate hydrolase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
-K16849	altronate dehydratase small subunit	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
-K16850	altronate dehydratase large subunit	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
-K00874	2-dehydro-3-deoxygluconokinase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
-K01625	2-dehydro-3-deoxyphosphogluconate aldolase / (4S)-4-hydroxy-2-oxoglutarate aldolase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galacturonic acid degradation	TRUE
-K01785	aldose 1-epimerase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galactose degradation	TRUE
-K00849	galactokinase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galactose degradation	TRUE
-K00965	UDPglucose--hexose-1-phosphate uridylyltransferase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galactose degradation	TRUE
-K01784	UDP-glucose 4-epimerase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	galactose degradation	TRUE
-K01190	beta-galactosidase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	lactose degradation	TRUE
-K12111	evolved beta-galactosidase subunit alpha	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	lactose degradation	TRUE
-K12112	evolved beta-galactosidase subunit beta	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	lactose degradation	TRUE
-K12309	beta-galactosidase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	lactose degradation	TRUE
-K01203	sucrase-isomaltase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
-K01193	beta-fructofuranosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
-K12047	maltase-glucoamylase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
-K01187	alpha-glucosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
-K12316	lysosomal alpha-glucosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
-K12317	neutral alpha-glucosidase C	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
-K15922	sulfoquinovosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
-K00690	sucrose phosphorylase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	sucrose degradation	TRUE
-K00847	fructokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fructose degradation	TRUE
-K00844	hexokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fructose degradation	TRUE
-K00844	hexokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
-K02793	mannose PTS system EIIA component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
-K02794	mannose PTS system EIIAB component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
-K02795	mannose PTS system EIIC component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
-K02796	mannose PTS system EIID component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
-K01809	mannose-6-phosphate isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	mannose degradation	TRUE
-K01818	L-fucose/D-arabinose isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fucose degradation	TRUE
-K00879	L-fuculokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fucose degradation	TRUE
-K01628	L-fuculose-phosphate aldolase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	fucose degradation	TRUE
-K01805	xylose isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (isomerase pathway)	TRUE
-K00854	xylulokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (isomerase pathway)	TRUE
-K17743	D-xylose reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
-K00011	aldehyde reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
-K05351	D-xylulose reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
-K00008	L-iditol 2-dehydrogenase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
-K00854	xylulokinase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (oxidoreductase pathway)	TRUE
-K14275	D-xylonate dehydratase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (xylonate hydratase pathway)	TRUE
-K00078	dihydrodiol dehydrogenase / D-xylose 1-dehydrogenase (NADP)	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (weimburg/dahms)	TRUE
-K14273	D-xylose 1-dehydrogenase (NADP+)	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (weimburg/dahms)	TRUE
-K14274	xylono-1,5-lactonase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (weimburg/dahms)	TRUE
-K14275	D-xylonate dehydratase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization (woodcroft)	xylose degradation (weimburg/dahms)	TRUE
+K01812	glucuronate isomerase	Pentose and glucuronate interconversions	carbon utilization	sugar utilization	galacturonic acid degradation	TRUE
+K00041	tagaturonate reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	galacturonic acid degradation	TRUE
+K01685	altronate hydrolase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	galacturonic acid degradation	TRUE
+K16849	altronate dehydratase small subunit	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	galacturonic acid degradation	TRUE
+K16850	altronate dehydratase large subunit	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	galacturonic acid degradation	TRUE
+K00874	2-dehydro-3-deoxygluconokinase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	galacturonic acid degradation	TRUE
+K01625	2-dehydro-3-deoxyphosphogluconate aldolase / (4S)-4-hydroxy-2-oxoglutarate aldolase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	galacturonic acid degradation	TRUE
+K01785	aldose 1-epimerase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization	galactose degradation	TRUE
+K00849	galactokinase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization	galactose degradation	TRUE
+K00965	UDPglucose--hexose-1-phosphate uridylyltransferase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization	galactose degradation	TRUE
+K01784	UDP-glucose 4-epimerase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization	galactose degradation	TRUE
+K01190	beta-galactosidase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization	lactose degradation	TRUE
+K12111	evolved beta-galactosidase subunit alpha	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization	lactose degradation	TRUE
+K12112	evolved beta-galactosidase subunit beta	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization	lactose degradation	TRUE
+K12309	beta-galactosidase	Galactose metabolism	carbon utilization (Woodcroft)	sugar utilization	lactose degradation	TRUE
+K01203	sucrase-isomaltase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization	sucrose degradation	TRUE
+K01193	beta-fructofuranosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization	sucrose degradation	TRUE
+K12047	maltase-glucoamylase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization	sucrose degradation	TRUE
+K01187	alpha-glucosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization	sucrose degradation	TRUE
+K12316	lysosomal alpha-glucosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization	sucrose degradation	TRUE
+K12317	neutral alpha-glucosidase C	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization	sucrose degradation	TRUE
+K15922	sulfoquinovosidase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization	sucrose degradation	TRUE
+K00690	sucrose phosphorylase	Starch and sucrose metabolism	carbon utilization (Woodcroft)	sugar utilization	sucrose degradation	TRUE
+K00847	fructokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	fructose degradation	TRUE
+K00844	hexokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	fructose degradation	TRUE
+K00844	hexokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	mannose degradation	TRUE
+K02793	mannose PTS system EIIA component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	mannose degradation	TRUE
+K02794	mannose PTS system EIIAB component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	mannose degradation	TRUE
+K02795	mannose PTS system EIIC component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	mannose degradation	TRUE
+K02796	mannose PTS system EIID component	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	mannose degradation	TRUE
+K01809	mannose-6-phosphate isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	mannose degradation	TRUE
+K01818	L-fucose/D-arabinose isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	fucose degradation	TRUE
+K00879	L-fuculokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	fucose degradation	TRUE
+K01628	L-fuculose-phosphate aldolase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	fucose degradation	TRUE
+K01805	xylose isomerase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (isomerase pathway)	TRUE
+K00854	xylulokinase	Fructose and mannose metabolism	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (isomerase pathway)	TRUE
+K17743	D-xylose reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (oxidoreductase pathway)	TRUE
+K00011	aldehyde reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (oxidoreductase pathway)	TRUE
+K05351	D-xylulose reductase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (oxidoreductase pathway)	TRUE
+K00008	L-iditol 2-dehydrogenase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (oxidoreductase pathway)	TRUE
+K00854	xylulokinase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (oxidoreductase pathway)	TRUE
+K14275	D-xylonate dehydratase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (xylonate hydratase pathway)	TRUE
+K00078	dihydrodiol dehydrogenase / D-xylose 1-dehydrogenase (NADP)	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (weimburg/dahms)	TRUE
+K14273	D-xylose 1-dehydrogenase (NADP+)	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (weimburg/dahms)	TRUE
+K14274	xylono-1,5-lactonase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (weimburg/dahms)	TRUE
+K14275	D-xylonate dehydratase	Pentose and glucuronate interconversions	carbon utilization (Woodcroft)	sugar utilization	xylose degradation (weimburg/dahms)	TRUE
+K01905	6.2.1.13, acetate---CoA ligase (ADP-forming) subunit alpha	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K01067	acetyl-CoA hydrolase [EC:3.1.2.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K00101	L-lactate dehydrogenase (cytochrome) [EC:1.1.2.3]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K03777	D-lactate dehydrogenase (quinone) [EC:1.1.5.12]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K00634	phosphate butyryltransferase [EC:2.3.1.19]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K00929	butyrate kinase [EC:2.7.2.7]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K01896	medium-chain acyl-CoA synthetase [EC:6.2.1.2]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K19697	propionate kinase [EC:2.7.2.15]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K01026	propionate CoA-transferase [EC:2.8.3.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K18857	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K13980	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K13953	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K13952	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K13951	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K04072	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE
+K00121	alcohol dehydrogenase [EC:1.1.1.1]	SCFA  and alcohol conversions	MISC	SCFA  and alcohol conversions		TRUE

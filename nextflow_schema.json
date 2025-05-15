@@ -31,7 +31,7 @@
                 },
                 "distill_topic": {
                     "type": "string",
-                    "description": "Topic to distill. Options:  <carbon|energy|misc|nitrogen|transport> OR <default = carbon,energy,misc,nitrogen,transport> If more than one topic included, they must be seperated by a comma (--distill_topic carbon,energy or --distill_topic 'carbon,energy')."  
+                    "description": "Topic to distill. Options:  <carbon|energy|misc|nitrogen|transport|camper> OR <default = carbon,energy,misc,nitrogen,transport,camper> if `--use_camper` is used, else <default = carbon,energy,misc,nitrogen,transport>. If more than one topic included, they must be seperated by a comma (--distill_topic carbon,energy or --distill_topic 'carbon,energy')."  
                 },
                 "distill_ecosystem": {
                     "type": "string",
@@ -118,10 +118,10 @@
                 "prodigal_mode": {
                     "type": "string",
                     "description": "Mode for Prodigal gene calling.",
-                    "default": "single",
+                    "default": "meta",
                     "enum": [
-                        "single",
-                        "meta"
+                        "meta",
+                        "single"
                     ]
                 },
                 "prodigal_trans_table": {
@@ -252,7 +252,7 @@
             "title": "Distill Options",
             "type": "object",
             "fa_icon": "fas fa-dna",
-            "description": "The purpose of DRAM distill is to distill down annotations based on curated distillation summary form(s). It can be ran with either --distill_topic, --distill_ecosystem, or --distill_custom (or some combination). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms). Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided.",
+            "description": "The purpose of DRAM distill is to distill down annotations based on curated distillation summary form(s). It can be ran with either --distill_topic, --distill_ecosystem, or --distill_custom (or some combination). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms). Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided. When using distll, you also must use kegg, ko, dbcan, or merops when you do your annotation. To get the full results, you need to use kegg or ko and dbcan and merops.",
             "properties": {
                 "annotations": {
                     "type": "string",

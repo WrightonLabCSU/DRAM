@@ -5,13 +5,13 @@ K03788	aphA, Acid phosphatase class B	organic P mineralization	ag	Phosphorus
 K01078	olpA Acid phosphatase class C	organic P mineralization	ag	Phosphorus	
 K01093	appA, 4-phytase	organic P mineralization	ag	Phosphorus	
 K01083	3-phytase	organic P mineralization	ag	Phosphorus	
-K06166	phnG, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
-K06165	phnH, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
-K06164	phnI, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
-K06163	phnJ, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
-K05781	phnK, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
-K05780	phnL, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
-K06162	phnM, C–P lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06166	phnG, C‚ÄìP lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06165	phnH, C‚ÄìP lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06164	phnI, C‚ÄìP lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06163	phnJ, C‚ÄìP lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K05781	phnK, C‚ÄìP lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K05780	phnL, C‚ÄìP lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
+K06162	phnM, C‚ÄìP lyase multienzyme complex	organic P mineralization	ag	Phosphorus	
 K01507	ppa, Inorganic pyrophosphatase	inorganic P solubuiliation	ag	Phosphorus	
 K01514	ppx, Exopolyphosphatase	inorganic P solubuiliation	ag	Phosphorus	
 K00937	ppk1, Polyphosphate kinase	inorganic P solubuiliation	ag	Phosphorus	
@@ -262,9 +262,9 @@ M67	PSMD14 peptidase (Saccharomyces cerev	Extracellular Peptidases	ag	Nitrogen
 A37	sso1175 g.p. (Sulfolobus solfataricus)	Extracellular Peptidases	ag	Nitrogen 	
 A31	HybD peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
 K01183	chiA1, chitinase A1; [EC:3.2.1.14]	Chitin Degredation 	ag	Nitrogen 	
-K20547  	chiB, basic endochitinase	Chitin Degredation 	ag	Nitrogen 	
+K20547¬†¬†	chiB, basic endochitinase	Chitin Degredation 	ag	Nitrogen 	
 K01183	chiC, chitinase	Chitin Degredation 	ag	Nitrogen 	
-K21713  	lytic chitin monoxygenase [EC:1.14.99.53]	Chitin Degredation 	ag	Nitrogen 	
+K21713¬†¬†	lytic chitin monoxygenase [EC:1.14.99.53]	Chitin Degredation 	ag	Nitrogen 	
 GH110	GH110 alpha-galactosidase (EC 3.2.1.22); alpha-1,3-galactosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage
 GH27	GH27 alpha-galactosidase (EC 3.2.1.22); alpha-N-acetylgalactosaminidase (EC 3.2.1.49); isomalto-dextranase (EC 3.2.1.94); beta-L-arabinopyranosidase (EC 3.2.1.88); galactan:galactan galactosyltransferase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage, Mucin Oligo Cleavage
 GH36	GH36 alpha-galactosidase (EC 3.2.1.22); alpha-N-acetylgalactosaminidase (EC 3.2.1.49); stachyose synthase (EC 2.4.1.67); raffinose synthase (EC 2.4.1.82)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage, Mucin Oligo Cleavage
@@ -461,7 +461,7 @@ CBM30	CBM30 Binding to cellulose has been demonstrated for the N-terminal module
 CBM31	CBM31 Binding to beta-1,3-xylan has been demonstrated for the C-terminal module of the beta-1,3-xylanase of Alcaligenes sp. XY234.	Carbohydrate-Binding Modules	ag	CAZY	
 CBM32	CBM32 Binding to galactose and lactose has been demonstrated for the module of Micromonospora viridifaciens sialidase (PMID: 16239725). Binding to polygalacturonic acid has been shown for a Yersinia member (PMID: 17292916). Binding to LacNAc (beta-D-galactosyl-1,4-beta-D-N-acetylglucosamine) has been shown for an N-acetylglucosaminidase from Clostridium perfingens (PMID: 16990278).	Carbohydrate-Binding Modules	ag	CAZY	
 CBM33	CBM33 Copper-dependent lytic polysaccharide monooxygenases now reclassified in family AA10	Carbohydrate-Binding Modules	ag	CAZY	
-CBM34	CBM34 Modules of approx. 120 residues. Granular starch-binding function has been demonstrated in the case of Thermoactinomyces vulgaris R-47 ‚Äö√†√∂‚àö¬©¬¨¬®¬¨¬±-amylase 1 (TVAI).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM34	CBM34 Modules of approx. 120 residues. Granular starch-binding function has been demonstrated in the case of Thermoactinomyces vulgaris R-47 ‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ‚Äö√†√∂¬¨¬©¬¨¬®¬¨¬Æ¬¨¬®¬¨¬±-amylase 1 (TVAI).	Carbohydrate-Binding Modules	ag	CAZY	
 CBM35	CBM35 Modules of approx. 130 residues. A module that is conserved in three Cellvibrio xylan-degrading enzymes binds to xylan and the interaction is calcium dependent, while a module from a Cellvibrio mannanase binds to decorated soluble mannans and mannooligosaccharides. A module in a Phanerochaete chrysosporium galactan 1,3-beta-galactosidase binds to beta-galactan.	Carbohydrate-Binding Modules	ag	CAZY	
 CBM36	CBM36 Modules of approx. 120-130 residues displaying structural similarities to CBM6 modules. The only CBM36 currently characterised, that from Paenbacillus polymyxa xylanase 43A, shows calcium-dependent binding of xylans and xylooligosaccharides. X-ray crystallography shows that there is a direct interaction between calcium and ligand.	Carbohydrate-Binding Modules	ag	CAZY	
 CBM37	CBM37 Modules of approx. 100 residues, conserved in numerous R. albus polysaccharide-degrading enzymes and other proteins from this bacterium. Several members of CBM37 have been shown to exhibit rather broad binding specificity to xylan, chitin, microcrystalline and phosphoric-acid swollen cellulose, as well as more heterogeneous substrates, such as alfalfa cell walls, banana stem and wheat straw.	Carbohydrate-Binding Modules	ag	CAZY	
@@ -484,7 +484,7 @@ CBM51	CBM51 Modules of approx. 150 residues found attached to various enzymes fr
 CBM52	CBM52 Modules of approx. 60 residues attached to a few GH81 enzymes but present in other proteins. Binding to beta-1,3-glucan demonstrated for Schizosaccharomyces pombe 972h- endo-1,3-beta-glucanase Eng1 [Martin-Quadrado et al., Mol. Microbiol. (2008) 69:188-200 PMID:18466295]	Carbohydrate-Binding Modules	ag	CAZY	
 CBM53	CBM53 Starch-binding function demonstrated by Valdez et al. (2008) [PMID: 18260645]	Carbohydrate-Binding Modules	ag	CAZY	
 CBM54	CBM54 Binding to xylan, yeast cell wall glucan and chitin shown in Dvortsov et al., Microbiology UK (2009) in press.	Carbohydrate-Binding Modules	ag	CAZY	
-CBM55	CBM55 Binding to chitin demonstrated in the case of the CBM55 of Entamoeba histolytica chitinase (Van Dellen et al. (2002) Infect Immun. 70:3259‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àö‚à´3263; PMID: 12011021).	Carbohydrate-Binding Modules	ag	CAZY	
+CBM55	CBM55 Binding to chitin demonstrated in the case of the CBM55 of Entamoeba histolytica chitinase (Van Dellen et al. (2002) Infect Immun. 70:3259‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ¬¨¬®¬¨¬¢‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö¬∞¬¨¬®¬¨√Ü‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö√´‚Äö√†√∂‚Äö√†¬¥3263; PMID: 12011021).	Carbohydrate-Binding Modules	ag	CAZY	
 CBM56	CBM56 beta-1,3-glucan binding function demonstrated by Yamamoto et al. (1998) FEBS Letters 433:41-43 [PMID: 9738929]	Carbohydrate-Binding Modules	ag	CAZY	
 CBM57	CBM57 Created from reading Schallus et al (2008) Mol Biol Cell. 19:3404-3414 [PMID: 18524852] and finding related domains attached to various glycosidases.	Carbohydrate-Binding Modules	ag	CAZY	
 CBM58	CBM58 The CBM58 module of the Bacteroides thetaiotaomicron SusG protein has been shown to bind maltoheptaose	Carbohydrate-Binding Modules	ag	CAZY	
@@ -593,7 +593,7 @@ GH90	GH90 endorhamnosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY
 GH91	GH91 inulin lyase [DFA-I-forming] (EC 4.2.2.17); inulin lyase [DFA-III-forming] (EC 4.2.2.18); difructofuranose 1,2':2,3' dianhydride hydrolase [DFA-IIIase] (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	
 GH96	GH96 alpha-agarase (EC 3.2.1.158)	Glycoside Hydrolases	ag	CAZY	
 GT0	GT0 Glycosyltransferases not yet assigned to a family	GlycosylTransferases	ag	CAZY	
-GT1	GT1 UDP-glucuronosyltransferase (EC 2.4.1.17); zeatin O-beta-xylosyltransferase (EC 2.4.2.40); 2-hydroxyacylsphingosine 1-beta-galactosyltransferase (EC 2.4.1.45); N-acylsphingosine galactosyltransferase (EC 2.4.1.47); flavonol 3-O-glucosyltransferase (EC 2.4.1.91); anthocyanidin 3-O-glucosyltransferase (EC 2.4.1.115); sinapate 1-glucosyltransferase (EC 2.4.1.120); indole-3-acetate beta-glucosyltransferase (EC 2.4.1.121); flavonol L-rhamnosyltransferase (EC 2.4.1.159); sterol glucosyltransferase (EC 2.4.1.173); UDP-Glc: 4-hydroxybenzoate 4-O-beta-glucosyltransferase (EC 2.4.1.194); zeatin O-beta-glucosyltransferase (EC 2.4.1.203); limonoid glucosyltransferase (EC 2.4.1.210); UDP-GlcA: baicalein 7-O-beta-glucuronosyltransferase (EC 2.4.1.253); UDP-Glc: chalcone 4‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ¬¨¬®‚Äö√¢¬ß-O-beta-glucosyltransferase (EC 2.4.1.286); ecdysteroid UDP-glucosyltransferase (EC 2.4.1.-); salicylic acid beta-glucosyltransferase (EC 2.4.1.-); anthocyanin 3-O-galactosyltransferase (EC 2.4.1.-); anthocyanin 5-O-glucosyltransferase (EC 2.4.1.-); dTDP-beta-2-deoxy-L-fucose: alpha-L-2-deoxyfucosyltransferase (EC 2.4.1.-); UDP-beta-L-rhamnose: alpha-L-rhamnosyltransferase (EC 2.4.1.-); zeaxanthin glucosyltransferase (EC 2.4.1.-); flavone 8-C-glycosyltransferase	GlycosylTransferases	ag	CAZY	
+GT1	GT1 UDP-glucuronosyltransferase (EC 2.4.1.17); zeatin O-beta-xylosyltransferase (EC 2.4.2.40); 2-hydroxyacylsphingosine 1-beta-galactosyltransferase (EC 2.4.1.45); N-acylsphingosine galactosyltransferase (EC 2.4.1.47); flavonol 3-O-glucosyltransferase (EC 2.4.1.91); anthocyanidin 3-O-glucosyltransferase (EC 2.4.1.115); sinapate 1-glucosyltransferase (EC 2.4.1.120); indole-3-acetate beta-glucosyltransferase (EC 2.4.1.121); flavonol L-rhamnosyltransferase (EC 2.4.1.159); sterol glucosyltransferase (EC 2.4.1.173); UDP-Glc: 4-hydroxybenzoate 4-O-beta-glucosyltransferase (EC 2.4.1.194); zeatin O-beta-glucosyltransferase (EC 2.4.1.203); limonoid glucosyltransferase (EC 2.4.1.210); UDP-GlcA: baicalein 7-O-beta-glucuronosyltransferase (EC 2.4.1.253); UDP-Glc: chalcone 4‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ¬¨¬®¬¨¬¢‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö¬∞¬¨¬®¬¨√Ü¬¨¬®¬¨¬Æ‚Äö√Ñ√∂‚àö¬¢¬¨√ü-O-beta-glucosyltransferase (EC 2.4.1.286); ecdysteroid UDP-glucosyltransferase (EC 2.4.1.-); salicylic acid beta-glucosyltransferase (EC 2.4.1.-); anthocyanin 3-O-galactosyltransferase (EC 2.4.1.-); anthocyanin 5-O-glucosyltransferase (EC 2.4.1.-); dTDP-beta-2-deoxy-L-fucose: alpha-L-2-deoxyfucosyltransferase (EC 2.4.1.-); UDP-beta-L-rhamnose: alpha-L-rhamnosyltransferase (EC 2.4.1.-); zeaxanthin glucosyltransferase (EC 2.4.1.-); flavone 8-C-glycosyltransferase	GlycosylTransferases	ag	CAZY	
 GT10	GT10 galactoside alpha-1,3/1,4-L-fucosyltransferase (EC 2.4.1.65); galactoside alpha-1,3-L-fucosyltransferase (EC 2.4.1.152); glycoprotein alpha-1,3-L-fucosyltransferase (EC 2.4.1.214)	GlycosylTransferases	ag	CAZY	
 GT100	GT100 alpha-sialyltransferase (EC 2.4.99.-)	GlycosylTransferases	ag	CAZY	
 GT101	GT101 glucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
@@ -671,7 +671,7 @@ GT62	GT62 alpha-1,2-mannosyltransferase (EC 2.4.1.-); alpha-1,6-mannosyltransfer
 GT63	GT63 UDP-Glc: DNA beta-glucosyltransferase (EC 2.4.1.27)	GlycosylTransferases	ag	CAZY	
 GT64	GT64 UDP-GlcNAc: heparan alpha-N-acetylhexosaminyltransferase (EC 2.4.1.224)	GlycosylTransferases	ag	CAZY	
 GT65	GT65 GDP-Fuc: protein O-alpha-fucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
-GT66	GT66 dolichyl-diphosphooligosaccharide‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àöœÄprotein glycotransferase (EC 2.4.99.18); undecaprenyl-diphosphooligosaccharide‚Äö√†√∂¬¨¬¢‚Äö√Ñ√∂‚àö√°¬¨¬Æ‚Äö√Ñ√∂‚àö√ë‚àöœÄprotein glycotransferase (EC 2.4.99.19)	GlycosylTransferases	ag	CAZY	
+GT66	GT66 dolichyl-diphosphooligosaccharide‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ¬¨¬®¬¨¬¢‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö¬∞¬¨¬®¬¨√Ü‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö√´‚Äö√†√∂≈ì√Ñprotein glycotransferase (EC 2.4.99.18); undecaprenyl-diphosphooligosaccharide‚Äö√Ñ√∂‚àö‚Ä†‚àö‚àÇ¬¨¬®¬¨¬¢‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö¬∞¬¨¬®¬¨√Ü‚Äö√Ñ√∂‚àö√ë‚àö‚àÇ‚Äö√†√∂‚àö√´‚Äö√†√∂≈ì√Ñprotein glycotransferase (EC 2.4.99.19)	GlycosylTransferases	ag	CAZY	
 GT67	GT67 UDP-Gal: phosphoglycan beta-1,3-galactosyltransferase 1 (SCG1) (EC 2.4.1.-); UDP-GlcNAc beta-1,2-N-acetylglucosaminyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
 GT68	GT68 GDP-Fuc: protein O-alpha-fucosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
 GT69	GT69 GDP-Man: alpha-1,3-mannosyltransferase (EC 2.4.1.-)	GlycosylTransferases	ag	CAZY	
@@ -1172,7 +1172,7 @@ K00656	formate acetyltransferase (pyruvate-formate lyase )	pyruvate metabolism	a
 K01512	acylphosphatase	pyruvate metabolism	ag	pyruvate metabolism	
 K04069	pyruvate formate lyase activating enzyme	pyruvate metabolism	ag	pyruvate metabolism	
 K04070	putative pyruvate formate lyase activating enzyme	pyruvate metabolism	ag	pyruvate metabolism	
-K01812	glucuronate isomerase	Pentose and glucuronate interconversions	ag	sugar utilization (woodcroft)	galacturonic acid degradation
+K01812	glucuronate isomerase	Pentose and glucuronate interconversions	ag	sugar utilization	galacturonic acid degradation
 K00422	polyphenol oxidase	polyphenols	ag		Polyphenolics Cleavage
 K05810	polyphenol oxidase	polyphenols	ag		Polyphenolics Cleavage
 K05909	polyphenol oxidase	polyphenols	ag		Polyphenolics Cleavage

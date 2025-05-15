@@ -88,6 +88,10 @@ workflow DRAM {
                     distill_misc = "1"
                     distill_nitrogen = "1"
                     distill_transport = "1"
+
+                    if (params.use_camper) {
+                        distill_camper = "1"
+                    }
                     // Ensure that default topics are listed only once
                     if (!distill_topic_list.contains("default")) {
                         distill_topic_list += "default (carbon, energy, misc, nitrogen, transport) "
@@ -166,6 +170,9 @@ workflow DRAM {
 
         if (distill_camper == "1") {
             ch_distill_camper = file(params.distill_camper_sheet).exists() ? file(params.distill_camper_sheet) : error("Error: If using --distill_topic camper, you must have the preformatted distill sheets in ./assets/forms/distill_sheets.")
+            if (!params.use_camper) {
+                error("Error: If using --distill_topic camper, you must also use --use_camper.")
+            }
 
         } else{
             ch_distill_camper = default_sheet
@@ -249,6 +256,9 @@ workflow DRAM {
             ch_distill_custom_collected = default_sheet
         }
 
+        if (!params.use_kegg && !params.use_kofam && !params.use_dbcan && !params.use_merops) {
+            error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_kofam, --use_dbcan, or --use_merops.")
+        }
     }
 
 
