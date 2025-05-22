@@ -4,4 +4,4 @@ channels:
 
 dependencies:
   - python=3.10
-  - dram-viz=0.1.6
+  - dram-viz=0.1.7
