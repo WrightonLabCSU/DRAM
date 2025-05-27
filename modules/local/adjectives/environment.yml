@@ -1,0 +1,11 @@
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - python=3.10
+  - pandas=1.5.2
+  - click<9.0
+  - graphviz
+  - python-graphviz
+  - networkx=2.8.8

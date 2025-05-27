@@ -49,14 +49,14 @@ workflow DRAM {
         ch_fasta = Channel
             .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
-        
+
         ch_fasta = ch_fasta.map {
             fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
             tuple(fasta_name, it)
         }
         fasta_name = ch_fasta.map { it[0] }
         fasta_files = ch_fasta.map { it[1] }
-    }    
+    }
 
     def distill_topic_list = ""
     def distill_ecosystem_list = ""
@@ -266,7 +266,7 @@ workflow DRAM {
     //
     // Collate and save software versions
     //
-    
+
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
@@ -296,7 +296,7 @@ workflow DRAM {
         kegg_download_date = params.kegg_download_date ? params.kegg_download_date : "''"
         skip_gene_ko_link = params.skip_gene_ko_link ? 1 : 0
         FORMAT_KEGG_DB( kegg_pep_f, gene_ko_link_f, kegg_download_date, skip_gene_ko_link )
- 
+
     } else if (params.merge_annotations){
         MERGE()
     } else {
@@ -320,7 +320,7 @@ workflow DRAM {
                 tuple(fasta_name, it)
             }
         }
-        
+
         ch_quast_stats = default_sheet
         ch_gene_locs = default_sheet
         ch_called_proteins = default_sheet
@@ -333,7 +333,7 @@ workflow DRAM {
             ch_called_proteins = CALL.out.ch_called_proteins
             ch_collected_fna = CALL.out.ch_collected_fna
 
-        } 
+        }
 
         if (params.call || distill_flag){
             COLLECT_RNA( ch_fasta )
@@ -341,9 +341,9 @@ workflow DRAM {
 
         if (params.annotate){
             ANNOTATE( ch_gene_locs, ch_called_proteins, default_sheet )
-            
+
         }
-        
+
         if (params.annotate || distill_flag){
             if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
                 ch_combined_annotations = ANNOTATE.out.ch_combined_annotations
@@ -352,11 +352,11 @@ workflow DRAM {
                     .fromPath(params.annotations, checkIfExists: true)
                     .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
             }
-            
+
             ADD_AND_COUNT( ch_combined_annotations )  // Do any adding of additional annotations and count the annotations
             ch_final_annots = ADD_AND_COUNT.out.ch_final_annots
 
-            
+
             if( distill_flag ){
                 DISTILL(
                     ch_distill_carbon,
@@ -387,6 +387,18 @@ workflow DRAM {
                 .ifEmpty { exit 1, "If you specify --product without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
             PRODUCT_HEATMAP( ch_combined_annotations, params.groupby_column )
         }
+
+        //
+        // ADJECTIVES
+        //
+
+        if( params.adjectives ){
+            ADJECTIVES( ch_final_annots, ch_adjectives_script )
+
+        }
+
+
+
     }
 
     //
