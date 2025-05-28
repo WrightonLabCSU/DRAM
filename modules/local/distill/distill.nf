@@ -21,6 +21,8 @@ process DISTILL {
 
     script:
     """
+    # export constants for script
+    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
     distill_xlsx.py --target_id_counts ${ch_target_id_counts} --db_name ${annotations_sqlite3} --distill_sheets combined/*.tsv --rrna_file ${ch_rrna_sheet} --combined_rrna_file ${ch_combined_rrna} --trna_file ${ch_trna_sheet} --quast ${ch_quast_stats} --output_file "distillate.xlsx" --threads ${params.threads}
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Tool to parse the rules tsv, and make a graph."""
 import re
 import os
@@ -5,8 +6,9 @@ import pandas as pd
 import numpy as np
 import networkx as nx
 import graphviz
-from annotations import Annotations, SULFUR_ID, FEGENIE_ID, FUNCTION_DICT
+from rule_adjectives.annotations import Annotations, SULFUR_ID, FEGENIE_ID, FUNCTION_DICT
 
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 LEAF_NODES = ['ko', 'camper', 'fegenie', 'sulfur', 'PF', 'ec', 'columnvalue']
 
 def parse_ands(logic:str):
@@ -452,7 +454,7 @@ class RuleParser():
                                    for i in self.G.successors(node)])
             case  'columnvalue':
                 # data = self.annot.data.copy()
-                # data.set_index(['fasta', data.index], inplace=True)
+                # data.set_index([FASTA_COLUMN, data.index], inplace=True)
                 data = self.annot.data.loc[genome_name]
                 arg_dict = self.G.nodes[node]['args']
                 if arg_dict['comp'] == 'gt':
@@ -516,7 +518,7 @@ def get_positive_genes(rules, annotations, adjectives_dat):
     positive_leaves = {i: rules.find_positve_leaves(i)
                        for i in adj_data['adjective'].unique()}
     anno_data = get_annot_data_for_positive_genes(annotations,
-                                                  fasta_names = adj_data['fasta'].unique(),
+                                                  fasta_names = adj_data[FASTA_COLUMN].unique(),
                                                   positive_leaves=positive_leaves)
 
     gene_adj = pd.concat([
@@ -528,7 +530,7 @@ def get_positive_genes(rules, annotations, adjectives_dat):
          .assign(fasta=fa)
          .assign(adjective=aj)
          )
-        for fa, aj in zip(adj_data['fasta'].values, adj_data['adjective'].values) ])
+        for fa, aj in zip(adj_data[FASTA_COLUMN].values, adj_data['adjective'].values) ])
     gene_adj = gene_adj[gene_adj['positive_ids'].apply(len) > 0]
     gene_adj['positive_ids'] = gene_adj['positive_ids'].apply(
         lambda x: ','.join(x))

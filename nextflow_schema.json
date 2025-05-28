@@ -319,8 +319,7 @@
             "properties": {
                 "groupby_column": {
                     "type": "string",
-                    "description": "Column to to group by in the annotations file for etc and function groupings.",
-                    "default": "input_fasta"
+                    "description": "Column to to group by in the annotations file for etc and function groupings. Defaults to DRAM's annotation output fasta column name."
                 }
 
             }

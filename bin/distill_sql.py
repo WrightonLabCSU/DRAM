@@ -2,6 +2,9 @@
 import sqlite3
 import pandas as pd
 import argparse
+import os
+
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Import annotations into an SQLite database.')
@@ -33,7 +36,7 @@ def identify_databases(df):
         if '_' in col:
             prefix = col.split('_')[0]
             db_names.add(prefix)
-    non_db_prefixes = {'query', 'input_fasta', 'start', 'end', 'strandedness', 'Completeness', 'Contamination', 'taxonomy', 'gene_number'}
+    non_db_prefixes = {'query', FASTA_COLUMN, 'start', 'end', 'strandedness', 'Completeness', 'Contamination', 'taxonomy', 'gene_number'}
     return db_names - non_db_prefixes
 
 def import_annotations(conn, file_path):
@@ -46,9 +49,9 @@ def import_annotations(conn, file_path):
     for db_name in db_names:
         id_cols = [col for col in df.columns if col.startswith(db_name) and ('_id' in col or '_EC' in col)]
         for col in id_cols:
-            for _, row in df[['query_id', 'input_fasta', col] + extra_columns].dropna(subset=['query_id', 'input_fasta', col]).iterrows():
+            for _, row in df[['query_id', FASTA_COLUMN, col] + extra_columns].dropna(subset=['query_id', FASTA_COLUMN, col]).iterrows():
                 gene_id = 'EC:' + str(row[col]) if col.endswith('_EC') else row[col]
-                record = (row['query_id'], row['input_fasta'], gene_id) + tuple(row[extra_column] for extra_column in extra_columns)
+                record = (row['query_id'], row[FASTA_COLUMN], gene_id) + tuple(row[extra_column] for extra_column in extra_columns)
                 data_to_insert.append(record)
 
     columns_sql = "query_id, input_fasta, gene_id" + (", " + ", ".join(extra_columns) if extra_columns else "")

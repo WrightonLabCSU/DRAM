@@ -6,9 +6,12 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 import logging
 import re
+import os
 
 import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Generate a multi-sheet XLSX document from distill sheets and a SQLite database.')
@@ -215,7 +218,7 @@ def compile_genome_stats(db_name):
     df_input_fastas = pd.read_sql_query(query_base, conn)
     
     # Initialize the genome_stats DataFrame with input_fasta names
-    df_genome_stats = pd.DataFrame({"input_fasta": df_input_fastas['input_fasta']})
+    df_genome_stats = pd.DataFrame({FASTA_COLUMN: df_input_fastas[FASTA_COLUMN]})
     
     # Dynamically build a query to include optional columns if they are present
     optional_columns = ['taxonomy', 'Completeness', 'Contamination']
@@ -232,7 +235,7 @@ def compile_genome_stats(db_name):
     if select_clauses:
         query = f"SELECT input_fasta, {', '.join(select_clauses)} FROM annotations GROUP BY input_fasta"
         df_stats = pd.read_sql_query(query, conn)
-        df_genome_stats = pd.merge(df_genome_stats, df_stats, on="input_fasta", how="left")
+        df_genome_stats = pd.merge(df_genome_stats, df_stats, on=FASTA_COLUMN, how="left")
     else:
         # If no optional columns, the genome_stats will only contain input_fasta names at this point
         pass
@@ -289,7 +292,7 @@ def compile_rrna_information(combined_rrna_file):
     """Compile rRNA information from the combined rRNA file."""
     rrna_data = pd.read_csv(combined_rrna_file, sep='\t')
     # Group by input_fasta and type to concatenate query_id and positions
-    rrna_summary = rrna_data.groupby(['input_fasta', 'type']).apply(
+    rrna_summary = rrna_data.groupby([FASTA_COLUMN, 'type']).apply(
         lambda x: '; '.join([f"{row['query_id']} ({row['begin']}, {row['end']})" for _, row in x.iterrows()])
     ).unstack(fill_value='')
     rrna_summary.reset_index(inplace=True)
@@ -311,7 +314,7 @@ def compile_rrna_data(rrna_file):
 def compile_trna_counts(trna_file):
     trna_data = pd.read_csv(trna_file, sep='\t')
     input_fasta_columns = trna_data.columns[5:]  # Adjust based on actual structure
-    trna_counts = pd.DataFrame([{'input_fasta': input_fasta, 'tRNA count': trna_data[input_fasta].sum()} for input_fasta in input_fasta_columns])
+    trna_counts = pd.DataFrame([{FASTA_COLUMN: input_fasta, 'tRNA count': trna_data[input_fasta].sum()} for input_fasta in input_fasta_columns])
     return trna_counts
 
 def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
@@ -325,7 +328,7 @@ def update_genome_stats_with_rrna_trna(genome_stats_df, rrna_file, trna_file):
     if file_contains_data(trna_file):
         trna_counts = compile_trna_counts(trna_file)
         # Merge tRNA counts into genome_stats_df
-        genome_stats_df = pd.merge(genome_stats_df, trna_counts, on="input_fasta", how="left")
+        genome_stats_df = pd.merge(genome_stats_df, trna_counts, on=FASTA_COLUMN, how="left")
 
     return genome_stats_df
 
@@ -333,7 +336,7 @@ def update_genome_stats_with_rrna(genome_stats_df, combined_rrna_file):
     """Update the genome_stats DataFrame with rRNA information if available."""
     if file_contains_data(combined_rrna_file):
         rrna_summary = compile_rrna_information(combined_rrna_file)
-        genome_stats_df = pd.merge(genome_stats_df, rrna_summary, on="input_fasta", how="left")
+        genome_stats_df = pd.merge(genome_stats_df, rrna_summary, on=FASTA_COLUMN, how="left")
     return genome_stats_df
 
 def add_optional_sheets(wb, args):
@@ -366,7 +369,7 @@ def main():
     if args.quast:
         quast_data = compile_quast_info(args.quast)
         if quast_data is not None:
-            genome_stats_df = pd.merge(genome_stats_df, quast_data, on="input_fasta", how="left")
+            genome_stats_df = pd.merge(genome_stats_df, quast_data, on=FASTA_COLUMN, how="left")
     add_sheet_from_dataframe(wb, genome_stats_df, "Genome_Stats")
 
     # Read target ID counts

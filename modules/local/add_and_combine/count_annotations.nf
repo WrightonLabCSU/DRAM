@@ -15,6 +15,9 @@ process COUNT_ANNOTATIONS {
 
     script:
     """
+    # export constants for script
+    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
     count_annotations.py ${ch_combined_annotations} "target_id_counts.tsv"
 
     distill_sql.py --combined_annotations ${ch_combined_annotations} --db_name "annotations.db" 

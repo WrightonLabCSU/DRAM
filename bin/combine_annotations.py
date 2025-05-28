@@ -3,14 +3,17 @@ import argparse
 import pandas as pd
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import os
 
 # Configure the logger
 logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
 
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
+
 def read_and_preprocess(input_fasta, path):
     try:
         df = pd.read_csv(path)
-        df['input_fasta'] = input_fasta  # Add input_fasta column
+        df[FASTA_COLUMN] = input_fasta  # Add input_fasta column
         return df
     except Exception as e:
         logging.error(f"Error loading DataFrame for input_fasta {input_fasta}: {str(e)}")
@@ -37,7 +40,7 @@ def convert_bit_scores_to_numeric(df):
 def organize_columns(df, special_columns=None):
     if special_columns is None:
         special_columns = []
-    base_columns = ['query_id', 'input_fasta', 'start_position', 'stop_position', 'strandedness', 'rank', 'gene_number']
+    base_columns = ['query_id', FASTA_COLUMN, 'start_position', 'stop_position', 'strandedness', 'rank', 'gene_number']
     base_columns = [col for col in base_columns if col in df.columns]
     
     kegg_columns = sorted([col for col in df.columns if col.startswith('kegg_')], key=lambda x: (x != 'kegg_id', x))
@@ -63,19 +66,19 @@ def combine_annotations(annotation_files, output_file, threads):
     combined_data = pd.concat(data_frames, ignore_index=True)
     combined_data = convert_bit_scores_to_numeric(combined_data)
     
-    aggregation_functions = {col: 'first' for col in combined_data.columns if col not in ['query_id', 'input_fasta']}
+    aggregation_functions = {col: 'first' for col in combined_data.columns if col not in ['query_id', FASTA_COLUMN]}
     for col in ['Completeness', 'Contamination', 'taxonomy']:
         if col in combined_data.columns:
             aggregation_functions[col] = 'max'
     
-    combined_data = combined_data.groupby(['query_id', 'input_fasta'], as_index=False).agg(aggregation_functions)
+    combined_data = combined_data.groupby(['query_id', FASTA_COLUMN], as_index=False).agg(aggregation_functions)
     # After aggregating data
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
 
     # Correctly extract the base part of 'query_id'
     combined_data['base_query_id'] = combined_data['query_id'].str.rsplit('_', n=1).str[0]
     # Recalculate 'gene_number' with corrected grouping
-    combined_data['gene_number'] = combined_data.groupby(['input_fasta', 'base_query_id']).cumcount() + 1
+    combined_data['gene_number'] = combined_data.groupby([FASTA_COLUMN, 'base_query_id']).cumcount() + 1
 
     # Continue with organizing columns and saving the DataFrame
     special_columns = ['Completeness', 'Contamination', 'taxonomy']

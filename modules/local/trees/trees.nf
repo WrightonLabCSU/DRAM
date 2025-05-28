@@ -18,7 +18,10 @@ process TREES {
     path("colored_tree_python.pdf"), emit: colored_tree_python, optional: true
 
     script:
-    """        
+    """       
+    # export constants for script
+    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
     ln -s ${tree_data_files}/* .
     ln -s ${ch_trees_scripts}/*.py .
     ln -s ${ch_trees_scripts}/*.R .

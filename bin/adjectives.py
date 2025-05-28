@@ -1,11 +1,12 @@
+#!/usr/bin/env python
 """Contains main entry point to the program and helper functions"""
 import os
 import click
 
 import pandas as pd
 
-from rule_graph import RuleParser, get_positive_genes
-from annotations import Annotations
+from rule_adjectives.rule_graph import RuleParser, get_positive_genes
+from rule_adjectives.annotations import Annotations
 
 
 class PythonLiteralOption(click.Option):
@@ -26,6 +27,7 @@ def get_package_path(local_path):
     """
     abs_snake_path = os.path.join(os.path.dirname(
         os.path.abspath(__file__)),
+                                  "rule_adjectives",
         local_path)
     return abs_snake_path
 
@@ -53,8 +55,8 @@ def show_rules_path(ctx, param, value):
     print(get_package_path('rules.tsv'))
 
 @click.command()
-@click.argument('annotations_tsv', type=click.Path(exists=True), required=1, help="One of only 2 required files. Path to a DRAM annotations file.")
-@click.argument('adjectives_tsv', type=click.Path(), required=1, help="Path for the output table. A true false table created by this script.")
+@click.option('--annotations', type=click.Path(exists=True), required=True, help="One of only 2 required files. Path to a DRAM annotations file.")
+@click.option('-o', '--output', type=click.Path(), default='adjectives.tsv', help="Path for the output table. A true false table created by this script.")
 @click.option('-a', '--adjectives', multiple=True, default=[], help="A list of adjectives, by name, to evaluate. This limits the number of adjectives that are evaluated and is faster.")
 @click.option('-p', '--plot_adjectives', multiple=True, default=[], help="A list of adjectives, by name, to plot. This limits the number of adjectives that are plotted and is probably needed for speed.")
 @click.option('-g', '--plot_genomes', multiple=True,
@@ -74,28 +76,28 @@ def show_rules_path(ctx, param, value):
               help="Show the path to the default rules path.")
 @click.option('--list_name', is_flag=True, callback=list_adjective_name,
               expose_value=False, is_eager=True,
-              help="List the names for all adjectives_tsv that are"
+              help="List the names for all adjectives.tsv that are"
                    " available, you can pass these names to limit the"
                    " adjectives that are evaluated")
 @click.option('--list_id', is_flag=True, callback=list_adjectives,
               expose_value=False, is_eager=True,
-              help="List the names for all adjectives_tsv that are"
+              help="List the names for all adjectives.tsv that are"
                    " available, you can pass these names to limit the"
                    " adjectives that are evaluated")
 # @click.argument('-p', type=click.Path(exists=True))
-def evaluate(annotations_tsv:str, adjectives_tsv:str,
+def evaluate(annotations:str, output:str,
              rules_tsv:str=get_package_path('rules.tsv'),
              adjectives:list=None, plot_adjectives:list=None,
              plot_genomes:list=None,plot_path:str=None,
              debug_ids_by_fasta_to_tsv:str=None,
              strainer_tsv:str=None, strainer_type='pgtb'):
     rules = RuleParser(rules_tsv, verbose=False, adjectives=adjectives)
-    annotations = Annotations(annotations_tsv)
+    annotations = Annotations(annotations)
     adjectives = rules.check_genomes(annotations)
     if debug_ids_by_fasta_to_tsv is not None:
         annotations.ids_by_fasta.to_csv(debug_ids_by_fasta_to_tsv, sep='\t')
         exit()
-    adjectives.to_csv(adjectives_tsv, sep='\t')
+    adjectives.to_csv(output, sep='\t')
     # annotations.ids_by_fasta.iloc[1]['annotations']
     if plot_path is not None:
         rules.plot_cause(plot_path, adjectives=plot_adjectives,
@@ -115,7 +117,7 @@ def evaluate(annotations_tsv:str, adjectives_tsv:str,
               help='The path that will become a folder of output plots, no path no plots.') # , help='The rules file which adhere to strict formating' )
 @click.option('--list_name', is_flag=True, callback=list_adjective_name,
               expose_value=False, is_eager=True,
-              help="List the names for all adjectives_tsv that are"
+              help="List the names for all adjectives.tsv that are"
                    " available, you can pass these names to limit the"
                    " adjectives that are evaluated")
 @click.option('--show_rules_path', is_flag=True, callback=show_rules_path,
@@ -123,7 +125,7 @@ def evaluate(annotations_tsv:str, adjectives_tsv:str,
               help="Show the path to the default rules path.")
 @click.option('--list_id', is_flag=True, callback=list_adjectives,
               expose_value=False, is_eager=True,
-              help="List the names for all adjectives_tsv that are"
+              help="List the names for all adjectives.tsv that are"
                    " available, you can pass these names to limit the"
                    " adjectives that are evaluated")
 # @click.argument('-p', type=click.Path(exists=True))
@@ -134,3 +136,6 @@ def rule_plot(rules_tsv:str=get_package_path('rules.tsv'),
     """
     rules = RuleParser(rules_tsv, verbose=False, adjectives=adjectives)
     rules.plot_rule(plot_path)
+
+if __name__ == "__main__":
+    evaluate()

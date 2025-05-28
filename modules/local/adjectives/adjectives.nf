@@ -8,14 +8,16 @@ process ADJECTIVES {
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
-    path( ch_adjectives_script )
 
     output:
-    path "input_fasta_adjectives.tsv" into adjectives_ch
+    path("adjectives.tsv"), emit: adjectives_ch
 
     script:
     """
-    rule_adjectives --annotations ${ch_combined_annotations}
+    # export constants for script
+    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
+    adjectives.py --annotations ${ch_combined_annotations} --output adjectives.tsv
 
     """
 }

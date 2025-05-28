@@ -14,6 +14,8 @@ import urllib.parse  # For escaping characters in accordance with RFC 3986
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
+
 def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Generate GFF and/or GBK files from raw annotations, with specified databases formatting.")
@@ -216,7 +218,7 @@ def main():
     with open(args.annotations, 'r') as file:
         reader = csv.DictReader(file, delimiter='\t')
         for row in reader:
-            input_fastas_annotations[row['input_fasta']].append(row)
+            input_fastas_annotations[row[FASTA_COLUMN]].append(row)
 
     # Directly parse the input_fastas and paths passed as arguments
     input_fastas_and_paths = parse_input_fastas_and_paths(args.input_fastas_paths)

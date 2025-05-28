@@ -27,6 +27,9 @@ process GENERATE_GFF_GENBANK {
 
     // Make sure to properly pass the `flags` variable to the Python script
     """
+    # export constants for script
+    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
     mkdir -p GFF
     mkdir -p GBK
 

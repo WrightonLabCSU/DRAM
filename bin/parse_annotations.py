@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import pandas as pd
 import sys
+import os
+
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
 def extract_query_ids(tsv_path, ko_terms):
     df = pd.read_csv(tsv_path, sep='\t')
@@ -21,7 +24,7 @@ def extract_query_ids(tsv_path, ko_terms):
 
     print(f"Found {len(filtered_df)} matching entries.")
 
-    return filtered_df[['input_fasta', 'query_id']]
+    return filtered_df[[FASTA_COLUMN, 'query_id']]
 
 def main():
     if len(sys.argv) != 4:

@@ -24,6 +24,8 @@ process TRNA_SCAN {
 
     # Set TMPDIR to ./tmp
     os.environ['TMPDIR'] = './tmp'
+
+    FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
     
     # Create the temporary directory if it doesn't exist
     os.makedirs(os.environ['TMPDIR'], exist_ok=True)
@@ -38,8 +40,8 @@ process TRNA_SCAN {
                 # Strip leading and trailing spaces from column names
                 trna_frame.columns = trna_frame.columns.str.strip()
 
-                # Add a new "input_fasta" column and populate it with the input_fasta_name value
-                trna_frame.insert(0, "input_fasta", input_fasta_name)
+                # Add a new FASTA_COLUMN column and populate it with the input_fasta_name value
+                trna_frame.insert(0, FASTA_COLUMN, input_fasta_name)
 
                 # Check if "Note" column is present
                 if "Note" in trna_frame.columns:

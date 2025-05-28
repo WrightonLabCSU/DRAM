@@ -14,6 +14,9 @@ process COMBINE_ANNOTATIONS {
 
     script:
     """
+    # export constants for script
+    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
     # Create a log directory if it doesn't exist
     mkdir logs
 
