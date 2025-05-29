@@ -150,7 +150,8 @@ class RuleParser():
             keep_adj = set(adjectives)
             if not keep_adj.issubset(adj_names):
                 raise ValueError(
-                    f"No such adjectives {keep_adj - adj_names}")
+                    f"No such adjectives {keep_adj - adj_names}."
+                    f"\nadjectives possible: {adj_names}")
         self.root_nodes = set(
             self.data[
                 self.data['name'].apply(lambda x: x in keep_adj)

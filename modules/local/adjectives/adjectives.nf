@@ -17,7 +17,7 @@ process ADJECTIVES {
     # export constants for script
     export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
-    adjectives.py --annotations ${ch_combined_annotations} --output adjectives.tsv
+    adjectives.py --annotations ${ch_combined_annotations} --output adjectives.tsv --adjectives_list '${params.adjectives_list}'
 
     """
 }

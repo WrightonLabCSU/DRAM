@@ -3,6 +3,7 @@ import argparse
 import pandas as pd
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from skbio.io import read as read_sequence
 import os
 
 # Configure the logger
@@ -37,6 +38,13 @@ def convert_bit_scores_to_numeric(df):
             df[col] = pd.to_numeric(df[col], errors='coerce')
     return df
 
+def count_motifs(gene_faa, motif="(C..CH)", motif_count_dict=None):
+    if motif_count_dict is None:
+        motif_count_dict = dict()
+    for seq in read_sequence(gene_faa, format="fasta"):
+        motif_count_dict[seq.metadata["id"]] = len(list(seq.find_with_regex(motif)))
+    return motif_count_dict
+
 def organize_columns(df, special_columns=None):
     if special_columns is None:
         special_columns = []
@@ -56,14 +64,29 @@ def organize_columns(df, special_columns=None):
     return df[final_columns_order]
 
 
-def combine_annotations(annotation_files, output_file, threads):
+def combine_annotations(annotation_files, output_file, threads, genes_faa=None):
     input_fastas_and_paths = [(annotation_files[i].strip('[], '), annotation_files[i + 1].strip('[], ')) for i in range(0, len(annotation_files), 2)]
+    if genes_faa:
+        genes_faa = [(genes_faa[i].strip('[], '), genes_faa[i + 1].strip('[], ')) for i in range(0, len(genes_faa), 2)]
     
     with ThreadPoolExecutor(max_workers=threads) as executor:
         futures = [executor.submit(read_and_preprocess, input_fasta, path) for input_fasta, path in input_fastas_and_paths]
         data_frames = [future.result() for future in as_completed(futures)]
     
     combined_data = pd.concat(data_frames, ignore_index=True)
+    if genes_faa:
+        motif_count_dict = dict()
+        for input_fasta, gene_path in genes_faa:
+            count_motifs(gene_path, "(C..CH)", motif_count_dict=motif_count_dict)
+        df = pd.DataFrame.from_dict(
+            motif_count_dict,
+            orient="index", columns=["heme_regulatory_motif_count"]
+        )
+        df.index.name = 'query_id'
+        logging.info(df)
+        
+        combined_data = pd.merge(combined_data, df, how="inner", on="query_id")
+                
     combined_data = convert_bit_scores_to_numeric(combined_data)
     
     aggregation_functions = {col: 'first' for col in combined_data.columns if col not in ['query_id', FASTA_COLUMN]}
@@ -97,9 +120,11 @@ if __name__ == "__main__":
     parser.add_argument("--annotations", nargs='+', help="List of annotation files and input_fasta names, alternating.")
     parser.add_argument("--threads", help="Number of threads for parallel processing", type=int, default=4)
     parser.add_argument("--output", help="Output file path for the combined annotations.")
+    parser.add_argument("--genes-faa", nargs='+', help="Precalled genes faa file path.")
     args = parser.parse_args()
-
+    
     if args.annotations and args.output:
-        combine_annotations(args.annotations, args.output, args.threads)
+        # combine_annotations(args.annotations, args.output, args.threads)
+        combine_annotations(args.annotations, args.output, args.threads, args.genes_faa)
     else:
         logging.error("Missing required arguments. Use --help for usage information.")

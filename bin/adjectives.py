@@ -53,11 +53,17 @@ def show_rules_path(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
     print(get_package_path('rules.tsv'))
+    
+def validate_comma_separated(ctx, param, value):
+    print(value)
+    if not value:
+        return []
+    return value.split(',')
 
 @click.command()
 @click.option('--annotations', type=click.Path(exists=True), required=True, help="One of only 2 required files. Path to a DRAM annotations file.")
 @click.option('-o', '--output', type=click.Path(), default='adjectives.tsv', help="Path for the output table. A true false table created by this script.")
-@click.option('-a', '--adjectives', multiple=True, default=[], help="A list of adjectives, by name, to evaluate. This limits the number of adjectives that are evaluated and is faster.")
+@click.option('-a', '--adjectives_list', default=[], callback=validate_comma_separated, help="A comma seperated list of adjectives ('adj1,adj2,adj3'), by name, to evaluate. This limits the number of adjectives that are evaluated and is faster.")
 @click.option('-p', '--plot_adjectives', multiple=True, default=[], help="A list of adjectives, by name, to plot. This limits the number of adjectives that are plotted and is probably needed for speed.")
 @click.option('-g', '--plot_genomes', multiple=True,
               default=[], )
@@ -87,11 +93,12 @@ def show_rules_path(ctx, param, value):
 # @click.argument('-p', type=click.Path(exists=True))
 def evaluate(annotations:str, output:str,
              rules_tsv:str=get_package_path('rules.tsv'),
-             adjectives:list=None, plot_adjectives:list=None,
+             adjectives_list:list=None, plot_adjectives:list=None,
              plot_genomes:list=None,plot_path:str=None,
              debug_ids_by_fasta_to_tsv:str=None,
              strainer_tsv:str=None, strainer_type='pgtb'):
-    rules = RuleParser(rules_tsv, verbose=False, adjectives=adjectives)
+    """Using a DRAM annotations file make a table of adjectives."""
+    rules = RuleParser(rules_tsv, verbose=False, adjectives=adjectives_list)
     annotations = Annotations(annotations)
     adjectives = rules.check_genomes(annotations)
     if debug_ids_by_fasta_to_tsv is not None:
