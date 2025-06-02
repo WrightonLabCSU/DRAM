@@ -78,6 +78,7 @@ def format_dbcan_EC(ec_string):
         return ""
 
 def extract_kegg_EC(description):
+    # TODO this could be optimized into one regex with groups I am pretty sure
     # Extract and format EC numbers from the description with "EC:" prefix and semicolon separation
     ec_start = description.find("[EC:")
     if ec_start != -1:

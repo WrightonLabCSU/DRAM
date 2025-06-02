@@ -4,7 +4,7 @@ process DISTILL {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_openpyxl:20d9b4833f4ee53c"
+    container "community.wave.seqera.io/library/python_pandas_openpyxl_click:71fdc06a3fdfbdc1"
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
