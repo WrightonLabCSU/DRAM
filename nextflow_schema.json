@@ -328,7 +328,7 @@
             "title": "Adjectives Options",
             "type": "object",
             "fa_icon": "fas fa-dna",
-            "description": "The purpose of DRAM --adjectives is to use the outputted DRAM annotations file to make a table of adjectives. You must use the FeGenie database, for iron annotations to work. You must use the Sulfer database, for sulfer annotations to work.",
+            "description": "The purpose of DRAM --adjectives is to use the outputted DRAM annotations file to make a table of adjectives. You need to use the Kegg, FeGenie, and Sulfur Databases.",
             "properties": {
                 "adjectives_list": {
                     "type": "string",

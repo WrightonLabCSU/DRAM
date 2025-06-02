@@ -79,6 +79,10 @@ workflow PIPELINE_INITIALISATION {
         }
     }
 
+    if (params.adjectives && (!params.use_kegg || !params.use_fegenie || !params.use_sulfur)) {
+        error("When using Adjectives, make sure you use Kegg, FeGenie, and Sulfur Databases")
+    }
+
     //
     // Validate parameters and generate parameter summary to stdout
     //
