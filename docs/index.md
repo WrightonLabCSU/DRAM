@@ -10,6 +10,8 @@ The WrightonLabCSU/dram documentation is split into the following pages:
   - A description of the parameters used in the pipeline, including their default values and how to modify them.
 - [Output](output.md)
   - An overview of the different results produced by the pipeline and how to interpret them.
+- [Contributing](contributing.md)
+  - An overview of the basics on how to add new scripts and process to DRAM2 in Nextflow
 
 # Indices and tables
 
