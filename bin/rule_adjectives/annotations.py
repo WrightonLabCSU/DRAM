@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Tool to parse the annotations file, and store it in
 convenient transformations.
@@ -6,8 +7,10 @@ import re
 import pandas as pd
 from collections import Counter
 from itertools import chain
+import os
 # import dask.dataframe as dd
 
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
 SULFUR_ID = 'sulfur_id'
 FEGENIE_ID = 'fegenie_id'
@@ -58,14 +61,14 @@ class Annotations():
         self.ids_by_fasta = None
         self.ids_by_row = None
         self.data = pd.read_csv(annotations_tsv, sep='\t', index_col=0, low_memory=False)
-        self.data.set_index(['fasta', self.data.index], inplace=True)
+        self.data.set_index([FASTA_COLUMN, self.data.index], inplace=True)
         self.set_annotation_ids_by_row()
         self.set_annotations(annotations_tsv)
 
     def set_annotations(self, annotations_tsv:str):
         data = self.ids_by_row.copy()
         data['annotations'] = data['annotations'].apply(list)
-        annot_fasta_ids = data.groupby('fasta')
+        annot_fasta_ids = data.groupby(FASTA_COLUMN)
         annot_fasta_ids = annot_fasta_ids.apply(lambda x: Counter(chain(*x['annotations'].values)))
         annot_fasta_ids = pd.DataFrame(annot_fasta_ids, columns=['annotations'])
         self.ids_by_fasta = annot_fasta_ids
@@ -74,7 +77,7 @@ class Annotations():
         # self.raw_annotations = anno_data
         print("generating IDs by index, this may take some time")
         data = self.data.copy()
-        # data.set_index(['fasta', data.index], inplace=True)
+        # data.set_index([FASTA_COLUMN, data.index], inplace=True)
         annot_ids = get_ids_from_annotations_by_row(self.data)
         annot_ids = pd.DataFrame(annot_ids, columns=['annotations'])
         self.ids_by_row = annot_ids

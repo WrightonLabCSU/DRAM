@@ -5,7 +5,7 @@ process GENERIC_HMM_FORMATTER {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2:89f055454dac3575"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:7b4f27307e83be0e"
 
     input:
     path( hmm_info_path )

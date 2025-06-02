@@ -26,6 +26,8 @@ process QUAST {
     import subprocess
     from glob import glob
 
+    FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
     # Function to run QUAST
     def run_quast(fasta_files, output_dir, threads):
         quast_cmd = f'quast.py -o {output_dir} --threads {threads} ' + ' '.join(fasta_files)
@@ -59,7 +61,7 @@ process QUAST {
         for column in report_df.columns:
             if input_fasta_name in column:
                 metrics = {
-                    'input_fasta': input_fasta_name,
+                    FASTA_COLUMN: input_fasta_name,
                     'assembly size': report_df.loc['Total length', column],
                     'no. contigs': report_df.loc['# contigs', column],
                     'largest contig': report_df.loc['Largest contig', column],

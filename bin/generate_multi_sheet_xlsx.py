@@ -3,6 +3,9 @@ import argparse
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
+import os
+
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
 def is_null_content(file_path):
     with open(file_path, 'r') as file:
@@ -19,7 +22,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     combined_data = pd.read_csv(combined_annotations, sep='\t')
 
     # Deduplicate and extract unique input_fasta values
-    unique_input_fastas = combined_data['input_fasta'].unique()
+    unique_input_fastas = combined_data[FASTA_COLUMN].unique()
 
     # Create a Workbook
     wb = Workbook()
@@ -37,7 +40,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
         unique_rna_types = rrna_data['type'].unique()
 
     # Append column names to genome_stats sheet
-    column_names = ["input_fasta", "number of scaffolds"]
+    column_names = [FASTA_COLUMN, "number of scaffolds"]
 
     # Check if the columns exist in combined_annotations_df and append them if they do
     if "taxonomy" in combined_data.columns:
@@ -57,7 +60,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
     # Populate genome_stats sheet with data from combined_annotations
     for input_fasta in unique_input_fastas:
         # Extract information for the current input_fasta from combined_annotations
-        input_fasta_info = combined_data[combined_data['input_fasta'] == input_fasta]
+        input_fasta_info = combined_data[combined_data[FASTA_COLUMN] == input_fasta]
 
         if not input_fasta_info.empty:
             # Get the first row of input_fasta_info (assuming one row per input_fasta)
@@ -97,7 +100,7 @@ def generate_multi_sheet_xlsx(input_file, rrna_file, trna_file, combined_annotat
             # Iterate over input_fastas
             for idx, input_fasta in enumerate(unique_input_fastas, start=2):
                 # Extract relevant data for the current input_fasta and rna_type
-                input_fasta_rrna_data = rrna_data[(rrna_data['input_fasta'] == input_fasta) & (rrna_data['type'] == rna_type)]
+                input_fasta_rrna_data = rrna_data[(rrna_data[FASTA_COLUMN] == input_fasta) & (rrna_data['type'] == rna_type)]
 
                 # Check if input_fasta_rrna_data is not empty
                 if not input_fasta_rrna_data.empty:

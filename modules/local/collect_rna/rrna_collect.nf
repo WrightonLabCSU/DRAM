@@ -21,6 +21,8 @@ process RRNA_COLLECT {
     from collections import defaultdict
     import re
 
+    FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
     def extract_rrna_gene_id(note):
         match = re.search(r'Name=(\\w+)_rRNA', note)
         if match:
@@ -42,7 +44,7 @@ process RRNA_COLLECT {
             df = pd.read_csv(file, sep='\\t')
             for index, row in df.iterrows():
                 gene_id = extract_rrna_gene_id(row['note'])
-                gene_type_counts[gene_id][row['input_fasta']] += 1
+                gene_type_counts[gene_id][row[FASTA_COLUMN]] += 1
             combined_data.append(df)
 
     if all_files_null:

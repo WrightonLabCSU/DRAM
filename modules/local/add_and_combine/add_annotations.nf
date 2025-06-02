@@ -19,12 +19,14 @@ process ADD_ANNOTATIONS {
     #!/usr/bin/env python
     import pandas as pd
 
+    FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
     # Load the annotations into DataFrames
     df_old = pd.read_csv("old_annotations.tsv", sep='\t')
     df_new = pd.read_csv("new_annotations.tsv", sep='\t')
 
     # Define key columns for merging
-    key_columns = ['query_id', 'input_fasta', 'start_position', 'stop_position', 'strandedness']
+    key_columns = ['query_id', FASTA_COLUMN, 'start_position', 'stop_position', 'strandedness']
 
     # Perform an outer merge on the key columns
     merged_df = pd.merge(df_old, df_new, on=key_columns, how='outer', suffixes=('_old', '_new'))

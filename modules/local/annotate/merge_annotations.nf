@@ -4,7 +4,7 @@ process MERGE_ANNOTATIONS {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2:89f055454dac3575"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:7b4f27307e83be0e"
 
     input:
     path( ch_annotations, stageAs: "annotations/*" )
@@ -19,6 +19,8 @@ process MERGE_ANNOTATIONS {
     import pandas as pd
     import os
     import glob
+
+    FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
     def assign_rank(row):
         rank = 'E'
@@ -56,7 +58,7 @@ process MERGE_ANNOTATIONS {
     # Sorting by 'query_id'
     merged_df.sort_values(by='query_id', inplace=True)
 
-    base_columns = ['query_id', 'input_fasta', 'start_position', 'stop_position', 'strandedness', 'rank']
+    base_columns = ['query_id', FASTA_COLUMN, 'start_position', 'stop_position', 'strandedness', 'rank']
     kegg_columns = [col for col in merged_df.columns if col.startswith('kegg_')]
     essential_columns = ['Completeness', 'Contamination', 'taxonomy']
     other_columns = [col for col in merged_df.columns if col not in base_columns + kegg_columns + essential_columns]

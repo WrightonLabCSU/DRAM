@@ -306,7 +306,13 @@ workflow ANNOTATE {
         .set { collected_formatted_hits }
 
     // COMBINE_ANNOTATIONS collects all annotations files across ALL databases
-    COMBINE_ANNOTATIONS( collected_formatted_hits )
+    // COMBINE_ANNOTATIONS( collected_formatted_hits )
+    Channel.empty()
+        .mix( ch_called_proteins )
+        .collect()
+        .set { collected_called_proteins }
+
+    COMBINE_ANNOTATIONS( collected_formatted_hits, collected_called_proteins )
     ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
 

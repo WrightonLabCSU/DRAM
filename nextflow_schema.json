@@ -319,8 +319,20 @@
             "properties": {
                 "groupby_column": {
                     "type": "string",
-                    "description": "Column to to group by in the annotations file for etc and function groupings.",
-                    "default": "input_fasta"
+                    "description": "Column to to group by in the annotations file for etc and function groupings. Defaults to DRAM's annotation output fasta column name."
+                }
+
+            }
+        },
+        "adjectives_options": {
+            "title": "Adjectives Options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "The purpose of DRAM --adjectives is to use the outputted DRAM annotations file to make a table of adjectives. You need to use the Kegg, FeGenie, and Sulfur Databases.",
+            "properties": {
+                "adjectives_list": {
+                    "type": "string",
+                    "description": "A comma seperated list of adjectives ('adj1,adj2,adj3'), by name, to evaluate. This limits the number of adjectives that are evaluated and is faster."
                 }
 
             }
@@ -809,6 +821,9 @@
         },
         {
             "$ref": "#/defs/product_options"
+        },
+        {
+            "$ref": "#/defs/adjectives_options"
         },
         {
             "$ref": "#/defs/format_kegg_options"

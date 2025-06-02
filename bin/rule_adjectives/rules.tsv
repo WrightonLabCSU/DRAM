@@ -56,7 +56,7 @@ Probable Iron Reduction	ProbIronReduction	[notIronReductionGenes|hemeCountGT3]&E
 	hemeCount	inGenomeCount:3:hemeCountGT3
 	hemeCountGT3	columnvalue:gt:3:heme_regulatory_motif_count
 	NotUnironDescription	not:UnironDescription
-	UnironDescription	columncontains:kegg_hit:NitrateReducer
+	UnironDescription	columncontains:kegg_description:NitrateReducer
 Iron Reduction	IronReduction	IronReductionGenes&ETC50
 	IronReductionGenes	mtrCAB|fe>omcF|fe>omcS|fe>omcZ|fe>DFE_operons|fe>FmnA
 	mtrCAB	fe>MtrA&fe>MtrB_TIGR03509&fe>MtrC_TIGR03507

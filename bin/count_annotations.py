@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import argparse
 import pandas as pd
+import os
+
+FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
 def count_annotations(input_file, output_file):
     # Read the data from the input file
@@ -10,19 +13,19 @@ def count_annotations(input_file, output_file):
     relevant_columns = [col for col in data.columns if (col.endswith("_id") or col.endswith("_EC")) and col != 'query_id']
 
     # Create an empty DataFrame to store the combined data
-    gene_id_data = pd.DataFrame(columns=['input_fasta', 'gene_id'])
+    gene_id_data = pd.DataFrame(columns=[FASTA_COLUMN, 'gene_id'])
 
     # Process each relevant column, keeping entries as is without splitting
     for col in relevant_columns:
         # Keep the entries as is
-        exploded_data = data[['input_fasta', col]].copy()
-        exploded_data.columns = ['input_fasta', 'gene_id']
+        exploded_data = data[[FASTA_COLUMN, col]].copy()
+        exploded_data.columns = [FASTA_COLUMN, 'gene_id']
         
         # Append the processed data to the gene_id_data DataFrame
         gene_id_data = pd.concat([gene_id_data, exploded_data], ignore_index=True)
 
-    # Group by "gene_id" and "input_fasta", then count the occurrences
-    table = gene_id_data.groupby(['gene_id', 'input_fasta']).size().unstack(fill_value=0)
+    # Group by "gene_id" and FASTA_COLUMN, then count the occurrences
+    table = gene_id_data.groupby(['gene_id', FASTA_COLUMN]).size().unstack(fill_value=0)
 
     # Save the resulting table to a TSV file
     table.to_csv(output_file, sep='\t')

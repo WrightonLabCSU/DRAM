@@ -21,6 +21,8 @@ process TRNA_COLLECT {
     import os
     import pandas as pd
 
+    FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
     # Function to check if file content is "NULL"
     def file_content_is_null(filename):
         with open(filename, 'r') as file:
@@ -53,14 +55,14 @@ process TRNA_COLLECT {
         # Iterate through each input file
         for file in tsv_files:
             # Read the input file into a DataFrame
-            input_data = pd.read_csv(file, sep='\t', header=None, names=["input_fasta", "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
+            input_data = pd.read_csv(file, sep='\t', header=None, names=[FASTA_COLUMN, "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
 
             # Populate the gene_id column
             collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
 
             # Count occurrences for each input_fasta
             for input_fasta in input_fastas:
-                input_fasta_counts[input_fasta].extend(input_data[input_data['input_fasta'] == input_fasta]['gene_id'])
+                input_fasta_counts[input_fasta].extend(input_data[input_data[FASTA_COLUMN] == input_fasta]['gene_id'])
 
         # Deduplicate the rows based on gene_id
         collected_data.drop_duplicates(subset=['gene_id'], inplace=True)

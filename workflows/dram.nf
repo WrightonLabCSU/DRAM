@@ -12,6 +12,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_dram
 include { getFastaChannel        } from '../subworkflows/local/utils_pipeline_setup.nf'
 
 // Pipeline steps
+include { ADJECTIVES           } from "${projectDir}/modules/local/adjectives/adjectives.nf"
 include { RENAME_FASTA           } from "${projectDir}/modules/local/rename/rename_fasta.nf"
 include { PRODUCT_HEATMAP        } from "${projectDir}/modules/local/product/product_heatmap.nf"
 include { CAT_KEGG_PEP           } from "${projectDir}/modules/local/database/cat_kegg_pep.nf"
@@ -393,7 +394,7 @@ workflow DRAM {
         //
 
         if( params.adjectives ){
-            ADJECTIVES( ch_final_annots, ch_adjectives_script )
+            ADJECTIVES( ch_final_annots )
 
         }
 
