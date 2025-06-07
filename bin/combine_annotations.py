@@ -85,7 +85,7 @@ def combine_annotations(annotation_files, output_file, threads, genes_faa=None):
         df.index.name = 'query_id'
         logging.info(df)
         
-        combined_data = pd.merge(combined_data, df, how="inner", on="query_id")
+        combined_data = pd.merge(combined_data, df, how="left", on="query_id")
                 
     combined_data = convert_bit_scores_to_numeric(combined_data)
     

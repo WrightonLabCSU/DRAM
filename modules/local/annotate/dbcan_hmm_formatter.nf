@@ -4,7 +4,7 @@ process DBCAN_HMM_FORMATTER {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:7b4f27307e83be0e"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:4a55e4bf58e4a06b"
     
     tag { input_fasta }
 
@@ -24,6 +24,5 @@ process DBCAN_HMM_FORMATTER {
 
     sql_add_descriptions.py --hits_csv "${input_fasta}_formatted_dbcan_hits.csv" --db_name ${db_name} --output "${input_fasta}_sql_formatted_${db_name}_hits.csv" --db_file ${ch_sql_descriptions_db}
 
-    
     """
 }

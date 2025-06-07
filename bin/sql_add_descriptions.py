@@ -64,6 +64,7 @@ def extract_kegg_orthology(description):
     if "(K" in description:
         ko_start = description.find("(K") + 1
         ko_end = description.find(")", ko_start)
+        # return description[ko_start:ko_end].replace("/", "; ")
         return description[ko_start:ko_end]
     else:
         return None

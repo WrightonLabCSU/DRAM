@@ -43,13 +43,13 @@ process TRNA_SCAN {
                 # Add a new FASTA_COLUMN column and populate it with the input_fasta_name value
                 trna_frame.insert(0, FASTA_COLUMN, input_fasta_name)
 
-                # Check if "Note" column is present
-                if "Note" in trna_frame.columns:
-                    # Process the "Note" column to update the "Type" column
-                    trna_frame["Type"] = trna_frame.apply(lambda row: row["Type"] + " (pseudo)" if str(row["Note"]).lower().startswith("pseudo") else row["Type"], axis=1)
+                ## Check if "Note" column is present
+                #if "Note" in trna_frame.columns:
+                #    # Process the "Note" column to update the "Type" column
+                #    trna_frame["Type"] = trna_frame.apply(lambda row: row["Type"] + " (pseudo)" if str(row["Note"]).lower().startswith("pseudo") else row["Type"], axis=1)
 
-                    # Drop the processed "Note" column
-                    trna_frame = trna_frame.drop(columns=["Note"])
+                #    # Drop the processed "Note" column
+                #    trna_frame = trna_frame.drop(columns=["Note"])
 
                 # Keep only the first occurrence of "Begin" and "End" columns
                 trna_frame = trna_frame.loc[:, ~trna_frame.columns.duplicated(keep='first')]
@@ -58,7 +58,7 @@ process TRNA_SCAN {
                 trna_frame = trna_frame.loc[:, ~trna_frame.columns.str.match('(Begin|End)\\.')]
 
                 # Rename specified columns
-                trna_frame = trna_frame.rename(columns={"Name": "query_id", "Begin": "begin", "End": "end", "Type": "type", "Codon": "codon", "Score": "score"})
+                trna_frame = trna_frame.rename(columns={"Name": "query_id", "Begin": "begin", "End": "end", "Type": "type", "Codon": "codon", "Score": "score", "Note": "note"})
 
                 # Create the "gene_id" column by concatenating "type" and "codon"
                 trna_frame["gene_id"] = trna_frame["type"] + " (" + trna_frame["codon"] + ")"

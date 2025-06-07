@@ -4,7 +4,7 @@ process MMSEQS_INDEX{
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:7b4f27307e83be0e"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:4a55e4bf58e4a06b"
     
     tag { input_fasta }
 
@@ -16,8 +16,11 @@ process MMSEQS_INDEX{
 
     script:
     """
+    # Create temporary directory
+    mkdir -p mmseqs_out/tmp
 
     mmseqs createdb ${fasta} ${input_fasta}.mmsdb
+    mmseqs createindex ${input_fasta}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
     """
 

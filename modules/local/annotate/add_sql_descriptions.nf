@@ -5,7 +5,7 @@ process ADD_SQL_DESCRIPTIONS {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:7b4f27307e83be0e"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:fc59f737a5e0566a"
 
     input:
     tuple val(input_fasta), path(hits_file)

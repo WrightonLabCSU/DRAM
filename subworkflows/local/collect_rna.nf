@@ -60,6 +60,7 @@ workflow COLLECT_RNA {
     // Run TRNA_COLLECT to generate a combined TSV for all fastas
     TRNA_COLLECT( ch_collected_tRNAs )
     ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
+    ch_trna_combined = TRNA_COLLECT.out.trna_combined_out
 
     // Create sheet for rrnas from the collected rRNAs or provided rRNAs
     // Run RRNA_COLLECT to generate a combined TSV for all fastas
@@ -72,5 +73,6 @@ workflow COLLECT_RNA {
     ch_rrna_sheet
     ch_rrna_combined
     ch_trna_sheet
+    ch_trna_combined
 
 }

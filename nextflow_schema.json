@@ -40,7 +40,7 @@
                 },
                 "distill_custom": {
                     "type": "string",
-                    "description": "<path/to/custom_distillate.tsv>  Custom distill file to use."
+                    "description": "<path/to/custom_distillate.tsv>  Custom distill file to use. Can also supply a comma separated list of custom distill files to use. If more than one file included, they must be seperated by a comma (--distill_custom path/to/file1.tsv,path/to/file2.tsv or --distill_custom 'file1.tsv,file2.tsv'). The custom distill file must be in TSV format with the first column being the gene ID and the second column being the distillate value."
                 },
                 "product": {
                     "type": "boolean",
@@ -48,7 +48,7 @@
                 },
                 "adjectives": {
                     "type": "boolean",
-                    "description": "Using a DRAM annotations file, make a table of adjectives."
+                    "description": "Using a DRAM annotations file, make a table of adjectives. Still in development, but can still be used."
                 },
                 "format_kegg": {
                     "type": "boolean",
@@ -211,7 +211,7 @@
                 },
                 "use_pfam": {
                     "type": "boolean",
-                    "description": "Use the PFAM database for annotation."
+                    "description": "Use the PFAM database for annotation. Currently disabled for this release as a bug was discovered with the pfam DRAM2 implementation. It will be re-enabled in the next release."
                 },
                 "use_sulfur": {
                     "type": "boolean",

@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 """Contains main entry point to the program and helper functions"""
 import os
+import ast
 import click
 
 import pandas as pd
 
 from rule_adjectives.rule_graph import RuleParser, get_positive_genes
 from rule_adjectives.annotations import Annotations
+from utils.click_utils import validate_comma_separated
 
 
 class PythonLiteralOption(click.Option):
@@ -53,12 +55,7 @@ def show_rules_path(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
     print(get_package_path('rules.tsv'))
-    
-def validate_comma_separated(ctx, param, value):
-    print(value)
-    if not value:
-        return []
-    return value.split(',')
+
 
 @click.command()
 @click.option('--annotations', type=click.Path(exists=True), required=True, help="One of only 2 required files. Path to a DRAM annotations file.")
