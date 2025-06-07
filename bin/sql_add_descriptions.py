@@ -64,6 +64,7 @@ def extract_kegg_orthology(description):
     if "(K" in description:
         ko_start = description.find("(K") + 1
         ko_end = description.find(")", ko_start)
+        # return description[ko_start:ko_end].replace("/", "; ")
         return description[ko_start:ko_end]
     else:
         return None
@@ -78,6 +79,7 @@ def format_dbcan_EC(ec_string):
         return ""
 
 def extract_kegg_EC(description):
+    # TODO this could be optimized into one regex with groups I am pretty sure
     # Extract and format EC numbers from the description with "EC:" prefix and semicolon separation
     ec_start = description.find("[EC:")
     if ec_start != -1:

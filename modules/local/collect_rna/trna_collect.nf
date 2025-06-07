@@ -13,6 +13,7 @@ process TRNA_COLLECT {
 
     output:
     path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
+    path("combined_trna_scan.tsv"), emit: trna_combined_out, optional: true
 
     script:
     """
@@ -52,10 +53,12 @@ process TRNA_COLLECT {
         # Create a dictionary to store counts for each input_fasta
         input_fasta_counts = {input_fasta: [] for input_fasta in input_fastas}
 
+        combined_data = []
+
         # Iterate through each input file
         for file in tsv_files:
             # Read the input file into a DataFrame
-            input_data = pd.read_csv(file, sep='\t', header=None, names=[FASTA_COLUMN, "query_id", "tRNA #", "begin", "end", "type", "codon", "score", "gene_id"])
+            input_data = pd.read_csv(file, sep='\t')
 
             # Populate the gene_id column
             collected_data = pd.concat([collected_data, input_data[['gene_id']].drop_duplicates()], ignore_index=True)
@@ -63,6 +66,8 @@ process TRNA_COLLECT {
             # Count occurrences for each input_fasta
             for input_fasta in input_fastas:
                 input_fasta_counts[input_fasta].extend(input_data[input_data[FASTA_COLUMN] == input_fasta]['gene_id'])
+
+            combined_data.append(input_data)
 
         # Deduplicate the rows based on gene_id
         collected_data.drop_duplicates(subset=['gene_id'], inplace=True)
@@ -84,5 +89,7 @@ process TRNA_COLLECT {
 
         # Write the collected data to the output file
         collected_data.to_csv("collected_trnas.tsv", sep="\t", index=False)
+        combined_df = pd.concat(combined_data, ignore_index=True)
+        combined_df.to_csv('combined_trna_scan.tsv', sep='\\t', index=False)
     """
 }

@@ -6,7 +6,7 @@ process MMSEQS_SEARCH {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:7b4f27307e83be0e"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:4a55e4bf58e4a06b"
 
     tag { input_fasta }
 
@@ -23,6 +23,7 @@ process MMSEQS_SEARCH {
 
 
     output:
+    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
     tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
     //tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv "), emit: mmseqs_search_rbh_formatted_out, optional: true
 
@@ -49,8 +50,7 @@ process MMSEQS_SEARCH {
         # if statement for kegg rbh goes here
     elif [ "${db_name}" == "pfam" ]; then
         # Do profile search:
-        mmseqs search query_database/${input_fasta}.mmsdb ${db_name}.mmspro mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
-        # -k 5 -s 7
+        mmseqs search query_database/${input_fasta}.mmsdb ${db_name}.mmspro mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/tmp -k 5 -s 7  --threads ${params.threads}
 
         # Convert results to BLAST outformat 6
         mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmspro mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv --threads ${params.threads}

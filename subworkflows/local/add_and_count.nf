@@ -50,6 +50,7 @@ workflow ADD_AND_COUNT {
         ch_updated_taxa_annots = ch_combined_annotations
     }
 
+    ch_final_annots = ch_updated_taxa_annots
     // Check for additional user-provided annotations
     if( params.add_annotations ){
         ch_add_annots = file(params.add_annotations)
@@ -61,21 +62,23 @@ workflow ADD_AND_COUNT {
         //     TREES( ch_final_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
         // }
 
-        COUNT_ANNOTATIONS ( ch_final_annots )
-        ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
-        ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
+
+        // Not running count after changing distill to not use sql db built here, remove soon once sure
+        // COUNT_ANNOTATIONS ( ch_final_annots )
+        // ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+        // ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
     }
-    else{
+    // else{
         // If the user wants to run trees, do it before we count the annotations
         // if( params.trees ){
         //     TREES( ch_updated_taxa_annots, params.trees_list, ch_collected_faa, ch_tree_data_files, ch_trees_scripts, ch_add_trees )
         // }
 
-        ch_final_annots = ch_updated_taxa_annots
-        COUNT_ANNOTATIONS ( ch_final_annots )
-        ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
-        ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
-    }
+        // ch_final_annots = ch_updated_taxa_annots
+        // COUNT_ANNOTATIONS ( ch_final_annots )
+        // ch_annotation_counts = COUNT_ANNOTATIONS.out.target_id_counts
+        // ch_annotations_sqlite3 = COUNT_ANNOTATIONS.out.annotations_sqlite3
+    // }
 
     if( params.generate_gff || params.generate_gbk ){
 
@@ -99,7 +102,5 @@ workflow ADD_AND_COUNT {
 
     emit:
     ch_final_annots
-    ch_annotation_counts
-    ch_annotations_sqlite3
 
 }

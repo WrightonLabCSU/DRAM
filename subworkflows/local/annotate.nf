@@ -273,7 +273,7 @@ workflow ANNOTATE {
         formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
     }
     // VOGdb annotation
-    if (params.use_vogdb) {
+    if (params.use_vog) {
         HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , DB_CHANNEL_SETUP.out.ch_vogdb_db )
         ch_vog_hmms = HMM_SEARCH_VOG.out.hmm_search_out
 
@@ -403,7 +403,7 @@ workflow DB_CHANNEL_SETUP {
         ch_canthyd_mmseqs_list = file(params.canthyd_mmseqs_list)
     }
 
-    if (params.use_vogdb) {
+    if (params.use_vog) {
         ch_vogdb_db = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
     }
 

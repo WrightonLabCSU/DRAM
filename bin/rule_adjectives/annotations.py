@@ -16,12 +16,18 @@ SULFUR_ID = 'sulfur_id'
 FEGENIE_ID = 'fegenie_id'
 FUNCTION_DICT = {
     'camper_id': lambda x: [x],
+    'camper_EC': lambda x: [i[1:-1] for i in
+                           re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
     FEGENIE_ID: lambda x: [x],
     SULFUR_ID: lambda x: [x],
     'kegg_genes_id': lambda x: [x],
     'ko_id': lambda x: [j for j in x.split(',')],
-    'kegg_id': lambda x: [j for j in x.split(',')],
-    'kegg_hit': lambda x: [i[1:-1] for i in
+    'kegg_id': lambda x: [j for j in x.split('/')],
+    'kegg_EC': lambda x: [i[1:-1] for i in
+                           re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
+    'kofam_genes_id': lambda x: [x],
+    'kofam_id': lambda x: [j for j in x.split('/')],
+    'kofam_EC': lambda x: [i[1:-1] for i in
                            re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
     'cazy_hits': lambda x: [f"{i[1:3]}:{i[4:-1]}" for i in  # Old formats for Cazy
                             re.findall(r'\(EC [\d+\.]+[\d-]\)', x)],
