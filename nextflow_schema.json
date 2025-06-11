@@ -613,6 +613,10 @@
                     "type": "string",
                     "description": "Name of the SLURM partition to use for job submission. If not provided, the default partition will be used."
                 },
+                "slurm_node": {
+                    "type": "string",
+                    "description": "Name of the SLURM Node to use for job submission. If not provided, the default node will be used.",
+                },
                 "queue_size": {
                     "type": "integer",
                     "default": 10,
