@@ -83,10 +83,6 @@ workflow PIPELINE_INITIALISATION {
         error("When using Adjectives, make sure you use Kegg, FeGenie, and Sulfur Databases")
     }
 
-    if (params.use_pfam) {
-        error("PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in the next release.")
-    }
-
     //
     // Validate parameters and generate parameter summary to stdout
     //

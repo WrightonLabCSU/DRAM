@@ -211,7 +211,7 @@
                 },
                 "use_pfam": {
                     "type": "boolean",
-                    "description": "Use the PFAM database for annotation. Currently disabled for this release as a bug was discovered with the pfam DRAM2 implementation. It will be re-enabled in the next release."
+                    "description": "Use the PFAM database for annotation."
                 },
                 "use_sulfur": {
                     "type": "boolean",
@@ -612,6 +612,10 @@
                 "partition": {
                     "type": "string",
                     "description": "Name of the SLURM partition to use for job submission. If not provided, the default partition will be used."
+                },
+                "slurm_node": {
+                    "type": "string",
+                    "description": "Name of the SLURM Node to use for job submission. If not provided, the default node will be used.",
                 },
                 "queue_size": {
                     "type": "integer",
