@@ -67,18 +67,9 @@ process TRNA_SCAN {
                 if not trna_frame.empty:
                     # Write the processed DataFrame to the output file
                     trna_frame.to_csv(output_file, sep="\t", index=False)
-                else:
-                    # DataFrame is empty after processing, write "NULL" to output
-                    with open(output_file, "w") as f:
-                        f.write("NULL")
-            else:
-                # Initial DataFrame is empty, write "NULL" to output
-                with open(output_file, "w") as f:
-                    f.write("NULL")
         except pd.errors.EmptyDataError:
             # The input file is empty or only contains headers, write "NULL" to output
-            with open(output_file, "w") as f:
-                f.write("NULL")
+            pass
 
     # Run tRNAscan-SE with the necessary input to avoid prompts
     trna_out = "${input_fasta}_trna_out.txt"
