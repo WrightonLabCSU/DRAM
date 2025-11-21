@@ -72,8 +72,8 @@ workflow COLLECT_RNA {
         // Create sheet for rrnas from the collected rRNAs or provided rRNAs
         // Run RRNA_COLLECT to generate a combined TSV for all fastas
         RRNA_COLLECT( ch_collected_rRNAs )
-        ch_rrna_sheet = RRNA_COLLECT.out.rrna_collected_out
-        ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
+        ch_rrna_sheet = RRNA_COLLECT.out.rrna_combined_out
+        ch_rrna_combined = RRNA_COLLECT.out.rrna_collected_out
     } else {
         ch_rrna_sheet = default_sheet
         ch_rrna_combined = default_sheet
@@ -82,8 +82,8 @@ workflow COLLECT_RNA {
         // Create sheet for trnas from the collected tRNAs or provided tRNAs
         // Run TRNA_COLLECT to generate a combined TSV for all fastas
         TRNA_COLLECT( ch_collected_tRNAs )
-        ch_trna_sheet = TRNA_COLLECT.out.trna_collected_out
-        ch_trna_combined = TRNA_COLLECT.out.trna_combined_out
+        ch_trna_sheet = TRNA_COLLECT.out.trna_combined_out
+        ch_trna_combined = TRNA_COLLECT.out.trna_collected_out
     } else {
         ch_trna_sheet = default_sheet
         ch_trna_combined = default_sheet
