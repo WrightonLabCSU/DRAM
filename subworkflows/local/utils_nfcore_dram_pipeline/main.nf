@@ -9,8 +9,6 @@
 */
 
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
-include { dramLogo                  } from '../../local/utils_pipeline_setup.nf'
-include { workflowCitation          } from '../../local/utils_pipeline_setup.nf'
 include { getDBFlag                 } from '../../local/utils_pipeline_setup.nf'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
@@ -55,13 +53,6 @@ workflow PIPELINE_INITIALISATION {
         workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1
     )
 
-    pre_help_text = dramLogo(monochrome_logs)
-    post_help_text = '\n' + workflowCitation() + '\n'
-    workflow_command = 'nextflow run WrightonLabCSU/dram -profile <docker/singularity/.../institute> --input_fasta path/to/input_fasta <pipeline steps and options, --call, --annotate, etc.> --outdir path/to/outdir'
-    if (help) {
-        log.info pre_help_text + paramsHelp(workflow_command, parameters_schema: "nextflow_schema.json") + post_help_text
-        System.exit(0)
-    }
 
     //
     // Check pipeline params that need to be validated outside of the nf-schema plugin

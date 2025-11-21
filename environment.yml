@@ -11,4 +11,4 @@ dependencies:
   - nf-core=3.2.1
   - pip
   - pip:
-    - sphinx-nefertiti
+    - sphinx-rtd-theme

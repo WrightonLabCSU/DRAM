@@ -1,4 +1,4 @@
-# WrightonLabCSU/dram: Output
+# DRAM Output
 
 ## Introduction
 

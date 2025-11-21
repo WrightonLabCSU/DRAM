@@ -46,6 +46,7 @@ workflow DRAM {
 
     // if annotate with raw fasta but no call, we can infer we need to call genes, so set call to true
     // Also, if call is specified, set call to true
+    call = false
     if ((params.annotate && params.input_fasta != "") || params.call) {
         call = true
     }
@@ -107,6 +108,15 @@ workflow DRAM {
     if (distill_ecosystem == "") {
         distill_ecosystem = params.distill_ecosystem
     }
+    if (params.sum_custom != "") {
+        distill_custom = file(params.sum_custom)
+    }
+    else if (params.distill_custom != "") {
+        distill_custom = file(params.distill_custom)
+    }
+    else {
+        distill_custom = ""
+    }
     distill_topic = params.distill_topic
     if (distill_flag) {
         if (distill_topic != "") {
@@ -134,11 +144,11 @@ workflow DRAM {
             }
         }
 
-        if (params.distill_custom != "") {
+        if (distill_custom != "") {
             // Verify the directory exists
-            def custom_distill_dir = file(params.distill_custom)
+            def custom_distill_dir = file(distill_custom)
             if (!custom_distill_dir.exists()) {
-                error "Error: The specified custom_distill sheet (--distill_custom) does not exist: ${params.distill_custom}"
+                error "Error: The specified custom_distill sheet (--sum_custom or --distill_custom) does not exist: ${distill_custom}"
             }      
         }
 
@@ -154,7 +164,7 @@ workflow DRAM {
 
         if (!use_kegg && !use_kofam && !use_dbcan && !use_merops) {
             if (!params.annotations) {
-                error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_kofam, --use_dbcan, or --use_merops.")
+                error("Error: If you are using summarize, you must also use --use_kegg, --use_kofam, --use_dbcan, or --use_merops.")
             }
         }
     }
@@ -242,10 +252,12 @@ workflow DRAM {
 
                 SUMMARIZE(
                     ch_final_annots,
-                    ANNOTATE.out.ch_rrna_combined,
-                    ANNOTATE.out.ch_trna_combined,
+                    ANNOTATE.out.ch_rrna_collected,
+                    ANNOTATE.out.ch_trna_collected,
+                    ANNOTATE.out.ch_quast_stats,
                     distill_topic,
                     distill_ecosystem,
+                    distill_custom
                 )
             
 

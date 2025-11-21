@@ -1,4 +1,4 @@
-# Installation Guide
+# DRAM Installation Guide
 
 ## Requirements
 
@@ -119,7 +119,7 @@ DRAM uses Nextflow to handle all dependency management automatically. When you f
 ## Important Notes
 
 ### Installation Location
-Nextflow installs all pipeline scripts by default in `$HOME/.nextflow/assets/WrightonLabCSU/DRAM`. If you're running DRAM on a shared system, you may want to install it in a shared directory.
+Nextflow installs all pipeline scripts by default in `$HOME/.nextflow/assets/WrightonLabCSU/DRAM`. If you're running DRAM on a shared system, you may want to install it in a shared directory. See the "Custom Installation Location" section below.
 
 ### Custom Installation Location
 To install DRAM in a custom location:

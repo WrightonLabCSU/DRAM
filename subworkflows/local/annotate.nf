@@ -29,8 +29,8 @@ workflow ANNOTATE {
 
     main:
     n_fastas = 0
-    ch_rrna_combined = default_sheet
-    ch_trna_combined = default_sheet
+    ch_rrna_collected = default_sheet
+    ch_trna_collected = default_sheet
     ch_combined_annotations = default_sheet
 
     if (params.rename || call) {
@@ -95,14 +95,15 @@ workflow ANNOTATE {
 
     if (params.qc){
         QC( ch_fasta, default_sheet, ch_combined_annotations, ch_collected_fna, call )
-        ch_rrna_combined = QC.out.ch_rrna_combined
-        ch_trna_combined = QC.out.ch_trna_combined
+        ch_rrna_collected = QC.out.ch_rrna_collected
+        ch_trna_collected = QC.out.ch_trna_collected
         ch_combined_annotations = QC.out.ch_final_annots
     }
 
     emit:
-    ch_rrna_combined
-    ch_trna_combined
+    ch_rrna_collected
+    ch_trna_collected
     ch_combined_annotations
+    ch_quast_stats
 
 }

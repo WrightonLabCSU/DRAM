@@ -113,51 +113,11 @@ def summarize_rrnas(rrnas_df, groupby_column=FASTA_COLUMN):
     return rrna_frame
 
 
-def summarize_trnas(trnas_df, groupby_column=FASTA_COLUMN):
-    # first build the frame
-    combos = {(line.type, line.codon, line.note) for _, line in trnas_df.iterrows()}
-    frame_rows = list()
-    for combo in combos:
-        if combo[2] == 'pseudo':
-            gene_id = '%s, pseudo (%s)'
-            gene_description = '%s pseudo tRNA with %s Codon'
-        else:
-            gene_id = '%s (%s)'
-            gene_description = '%s tRNA with %s Codon'
-        gene_id = gene_id % (combo[0], combo[1])
-        gene_description = gene_description % (combo[0], combo[1])
-        module_description = '%s tRNA' % combo[0]
-        frame_rows.append([gene_id, gene_description, module_description, 'tRNA', 'tRNA', ''])
-    trna_frame = pd.DataFrame(frame_rows, columns=FRAME_COLUMNS)
-    trna_frame = trna_frame.sort_values(COL_GENE_ID)
-    # then fill it in
-    trna_frame = trna_frame.set_index(COL_GENE_ID)
-    for group, frame in trnas_df.groupby(groupby_column):
-        gene_ids = list()
-        for index, line in frame.iterrows():
-            if line.note == 'pseudo':
-                gene_id = '%s, pseudo (%s)'
-            else:
-                gene_id = '%s (%s)'
-            gene_ids.append(gene_id % (line.type, line.codon))
-        trna_frame[group] = pd.Series(Counter(gene_ids))
-    trna_frame = trna_frame.reset_index()
-    trna_frame = trna_frame.fillna(0)
-    return trna_frame
-
-
-def make_genome_summary(annotations, genome_summary_frame, logger, trna_frame=None, rrna_frame=None, groupby_column=FASTA_COLUMN):
+def make_genome_summary(annotations, genome_summary_frame, logger, groupby_column=FASTA_COLUMN):
+    
     summary_frames = list()
     # get ko summaries
     summary_frames.append(fill_genome_summary_frame(annotations, genome_summary_frame.copy(), groupby_column, logger))
-
-    # add rRNAs
-    if rrna_frame is not None:
-        summary_frames.append(summarize_rrnas(rrna_frame, groupby_column))
-
-    # add tRNAs
-    if trna_frame is not None:
-        summary_frames.append(summarize_trnas(trna_frame, groupby_column))
 
     # merge summary frames
     summarized_genomes = pd.concat(summary_frames, sort=False)
@@ -187,7 +147,7 @@ def split_names_to_long(col:pd.Series):
     return pd.DataFrame(splits, columns=col_names, index=dex).fillna('')
 
 
-def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
+def write_summarized_genomes_to_xlsx(summarized_genomes, output_file, extra_frames=tuple()):
     # turn all this into an xlsx
     with pd.ExcelWriter(output_file) as writer:
         for sheet, frame in summarized_genomes.groupby(COL_SHEET, sort=False):
@@ -197,6 +157,9 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
             split_genes = pd.concat([split_names_to_long(frame[i].astype(str)) for i in gene_columns], axis=1)
             frame = pd.concat([frame[CONSTANT_DISTILLATE_COLUMNS],  split_genes], axis=1)
             frame.to_excel(writer, sheet_name=sheet, index=False)
+        for extra_frame in extra_frames:
+            if extra_frame is not None and not extra_frame.empty:
+                extra_frame.to_excel(writer, sheet_name=extra_frame[COL_SHEET].iloc[0], index=False)
 
 
 # TODO: add assembly stats like N50, longest contig, total assembled length etc
@@ -311,7 +274,6 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
     else:
         quast_frame = pd.read_csv(quast_path, sep='\t')
 
-
     distil_sheets_names = []
     if "default" in distil_topics:
         distil_sheets_names = [
@@ -371,10 +333,9 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
         summarized_genomes = fill_genome_summary_frame_gene_names(annotations, genome_summary_form, groupby_column, logger)
     else:
         logger.info(f'distillate_gene_names flag is {distillate_gene_names}. Giving counts instead of gene names in genome metabolism summary')
-        summarized_genomes = make_genome_summary(annotations, genome_summary_form, logger, trna_frame, rrna_frame,
-                                                 groupby_column)
+        summarized_genomes = make_genome_summary(annotations, genome_summary_form, logger, groupby_column)
     summarized_genomes.to_csv('summarized_genomes.tsv', sep='\t', index=None)
-    write_summarized_genomes_to_xlsx(summarized_genomes, genome_summary)
+    write_summarized_genomes_to_xlsx(summarized_genomes, genome_summary, extra_frames=[rrna_frame, trna_frame])
     logger.info('Generated genome metabolism summary')
 
     

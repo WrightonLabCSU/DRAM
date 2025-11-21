@@ -3,10 +3,10 @@ channels:
   - bioconda
 
 dependencies:
-  - python=3.10
-  - pandas=1.5.2
-  - hmmer=3.3.2
-  - mmseqs2==13.45111
-  - scikit-bio=0.5.7
-  - scipy=1.8.1
+  - python=3.13
+  - pandas>=2.0
+  - hmmer=3.4
+  - mmseqs2==18.8cc5c
+  - scikit-bio=0.7.1
+  - scipy<2
   - click<9.0

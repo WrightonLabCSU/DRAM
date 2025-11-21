@@ -8,10 +8,12 @@ process SUMMARIZE {
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
-    path( ch_rrna_combined, stageAs: "rrna_combined.tsv" )
-    path( ch_trna_combined, stageAs: "trna_combined.tsv" )
+    path( ch_rrna_collected, stageAs: "rrna_combined.tsv" )
+    path( ch_trna_collected, stageAs: "trna_combined.tsv" )
+    path( ch_quast_stats )
     val( distill_topic )
     val( distill_ecosystem )
+    val( distill_custom )
 
     output:
     path( "metabolism_summary.xlsx" ), emit: distillate
@@ -24,7 +26,7 @@ process SUMMARIZE {
     # export constants for script
     export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
-    distill.py -i ${ch_combined_annotations} --rrna_path '${ch_rrna_combined}' --trna_path '${ch_trna_combined}' --distil_topics "${distill_topic}" --distil_ecosystem "${distill_ecosystem}" --custom_distillate "${params.distill_custom}"
+    distill.py -i ${ch_combined_annotations} --rrna_path '${ch_rrna_collected}' --trna_path '${ch_trna_collected}' --distil_topics "${distill_topic}" --distil_ecosystem "${distill_ecosystem}" --custom_distillate "${distill_custom}" --quast_path '${ch_quast_stats}'
 
     """
 }

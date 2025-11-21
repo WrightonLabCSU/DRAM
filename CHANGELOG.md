@@ -2,6 +2,71 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta19 - 2025-11-21
+
+[3c20b59](https://github.com/WrightonLabCSU/DRAM/commit/3c20b59f74e7af1a78993e8e91f31a4d8390ecd6)...[79dd74d](https://github.com/WrightonLabCSU/DRAM/commit/79dd74db3e60e1b6b3f84d8a691a5f37b4365e80)
+
+### Bugfix
+
+- Fix distill bugs with genome stats, and metabolism summary ([419322b](https://github.com/WrightonLabCSU/DRAM/commit/419322b0d3b54ccc98d4540f94689b69c687ee42))
+
+genome_stats would error out if certain arguments were not provided.
+Also fixed that the metabolism summary was adding extra columns to
+some tabs that were needed.
+Also fixed that quast stats were not being passed to distill script
+
+## 2.0.0-beta18 - 2025-11-21
+
+[756904d](https://github.com/WrightonLabCSU/DRAM/commit/756904df36a390847945c07aa33a6741d160ab82)...[763f71f](https://github.com/WrightonLabCSU/DRAM/commit/763f71f3baa20b14dc3bcb42a25cca4805f71e71)
+
+### Bug Fixes
+
+- Add back in genome_stats, fix trna counts ([8db49d1](https://github.com/WrightonLabCSU/DRAM/commit/8db49d1122fc5196b24201ffdf8130cdd816e456))
+
+genome_stats.tsv have been absent in DRAM2, re-add them back
+in.
+Also fix the tRNA count in the genoma_stats as mentioned in #348.
+This fixes #348.
+Add quast stats to genome stats as well.
+- Small bgfixes for namespace errors, error messages, and cli ([a08a37c](https://github.com/WrightonLabCSU/DRAM/commit/a08a37c03e19ccab95f7316cd20d8e75fe381af8))
+
+
+
+### Package
+
+- Restructure output folders ([7b66599](https://github.com/WrightonLabCSU/DRAM/commit/7b665991b602dd8acc5611f1a5b54b15e0906df4))
+
+Restructure output folders to mainly ANNOTATE, SUMMARIZE, and VISUALIZE
+- Rename distill to summarize ([f902264](https://github.com/WrightonLabCSU/DRAM/commit/f902264072c38350aaac7e77281862f30b58a604))
+
+Moving and aliad distill to summarize.
+Move call under annotate and automatically run call when annotate
+and input_fasta set.
+If summarize is set, run all distillate sheets, you can still
+manually set individual distillate sheets the old way.
+Add QC flag to run QC steps like collect_rna steps, taxa, and others
+instead of having collect_rna run automatically., BREAKING CHANGE:API changes to move towards using summarize instead
+of distill, visualize instead of product, traits indead of adjectives,
+and automatically use call when annotate with input_fasta. QC only ran
+when directed instead of automatically now as its own flag now.
+- Cleanup and remove outdated files ([89b563c](https://github.com/WrightonLabCSU/DRAM/commit/89b563c58438af6dff16733de9f5f5225775035d))
+
+
+- Add full_mode to profiles to run all options ([d7c55bc](https://github.com/WrightonLabCSU/DRAM/commit/d7c55bcae52f52827e917f40bb72d3c6a99b18b7))
+
+if you run -profile full_mode, runs all dbs and pipelines steps.
+This is a convenient shorthand.
+Also add ability to specify annotation dbs as comma seperated
+with --annon_dbs, ex: --annon_dbs kegg,merops instead of
+--use_kegg --use_merops. These option names are still subject to
+change
+- Update MMSEQS2 and API documentation ([895ba8e](https://github.com/WrightonLabCSU/DRAM/commit/895ba8e0e52f2dc2afb6e47ab028f55f2f515cea))
+
+Update MMSEQS version from 13 to 18, which should result in a
+major speedup.
+Update some other dependencies in the annotate state as well.
+Update API documentation and usage instructions
+
 ## 2.0.0-beta17 - 2025-09-23
 
 [1ede0d5](https://github.com/WrightonLabCSU/DRAM/commit/1ede0d53641fdd286218ea3a4b5c6a832b951905)...[ab7b133](https://github.com/WrightonLabCSU/DRAM/commit/ab7b1330ca290887d7b8d435c9b135355980689e)

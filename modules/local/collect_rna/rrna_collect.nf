@@ -53,7 +53,7 @@ process RRNA_COLLECT {
     else:
         collected_data = []
         for gene_id, input_fastas_counts in gene_type_counts.items():
-            row = {'gene_id': gene_id, 'gene_description': f"{gene_id} gene", 'category': 'rRNA', 'topic_ecosystem': '', 'subcategory': ''}
+            row = {'gene_id': gene_id, 'gene_description': f"{gene_id} gene", 'category': 'rRNA', 'topic_ecosystem': 'rRNA', 'subcategory': ''}
             for input_fasta in input_fastas: row[input_fasta] = input_fastas_counts.get(input_fasta, 0)
             collected_data.append(row)
         collected_df = pd.DataFrame(collected_data)

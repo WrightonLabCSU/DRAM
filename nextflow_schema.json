@@ -1,10 +1,10 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/WrightonLabCSU/dram/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/WrightonLabCSU/dram/dev/nextflow_schema.json",
     "title": "WrightonLabCSU/dram pipeline parameters",
     "description": "DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes",
     "type": "object",
-    "defs": {
+    "$defs": {
         "pipeline_steps": {
             "title": "Pipeline Steps",
             "type": "object",
@@ -62,18 +62,7 @@
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
-                }
-            },
-            "required": [
-                "outdir"
-            ]
-        },
-        "genome_options": {
-            "title": "Reference genome options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
-            "properties": {
+                },
                 "input_fasta": {
                     "type": "string",
                     "format": "path",
@@ -105,7 +94,10 @@
                     "description": "Input format for the Genes fna file. Only needed if you are not running call and you are passing `--generate_gff` or `--generate_gbk`.",
                     "fa_,icon": "fas fa-plus"
                 }
-            }
+            },
+            "required": [
+                "outdir"
+            ]
         },
         "call_prodigal_options": {
             "title": "Call Prodigal Options",
@@ -173,8 +165,7 @@
             "properties": {
                 "anno_dbs": {
                     "type": "string",
-                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)",
-                    "default": ""
+                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)"
                 },
                 "use_camper": {
                     "type": "boolean",
@@ -262,7 +253,7 @@
             "title": "QC Options",
             "type": "object",
             "fa_icon": "fas fa-dna",
-            "description": "Quality control options for DRAM annotation workflow. The QC step collects rRNA and tRNA scans using Barrnap and tRNAscan-SE as a baseline. Additional options can be found below.",
+            "description": "Quality control options for DRAM workflow. The QC step collects rRNA and tRNA scans using Barrnap and tRNAscan-SE for the genome_states.tsv output as a baseline. Additional options can be found below.",
             "properties": {
                 "bin_quality": {
                     "type": "string",
@@ -292,9 +283,9 @@
                     "type": "string",
                     "description": "A way to specify a subset of topics instead of all topics. By default, if `--sumarize` is specified, all topics are included. Options:  <carbon|energy|misc|nitrogen|transport|camper|none> OR <default = carbon,energy,misc,nitrogen,transport,camper> if `--use_camper` is used, else <default = carbon,energy,misc,nitrogen,transport>. If more than one topic included, they must be seperated by a comma (--distill_topic carbon,energy or --distill_topic 'carbon,energy'). Use `none` to skip topic distillation."
                 },
-                "distill_custom": {
+                "sum_custom": {
                     "type": "string",
-                    "description": "<path/to/custom_distillate.tsv>  Custom distill file to use. Can also supply a comma separated list of custom distill files to use. If more than one file included, they must be seperated by a comma (--distill_custom path/to/file1.tsv,path/to/file2.tsv or --distill_custom 'file1.tsv,file2.tsv'). The custom distill file must be in TSV format with the first column being the gene ID and the second column being the distillate value."
+                    "description": "<path/to/custom_distillate.tsv>  Custom distill file to use. The custom distill file must be in TSV format with the first column being the gene ID and the second column being the distillate value."
                 },
                 "annotations": {
                     "type": "string",
@@ -690,7 +681,11 @@
                 },
                 "distill_ecosystem": {
                     "type": "string",
-                    "description": "Ecosystem to distill. Options: <eng_sys|ag> If more than one ecosystem included, they must be seperated by a comma (--distill_ecosystem eng_sys,ag or --distill_ecosystem 'eng_sys,ag')."
+                    "description": "alias for sum_ecos."
+                },
+                "distill_custom": {
+                    "type": "string",
+                    "description": "alias for sum_custom."
                 }
             }
         },
@@ -869,52 +864,49 @@
     },
     "allOf": [
         {
-            "$ref": "#/defs/pipeline_steps"
+            "$ref": "#/$defs/pipeline_steps"
         },
         {
-            "$ref": "#/defs/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/defs/genome_options"
+            "$ref": "#/$defs/call_prodigal_options"
         },
         {
-            "$ref": "#/defs/call_prodigal_options"
+            "$ref": "#/$defs/annotate_options"
         },
         {
-            "$ref": "#/defs/annotate_options"
+            "$ref": "#/$defs/qc_options"
         },
         {
-            "$ref": "#/defs/qc_options"
+            "$ref": "#/$defs/distill_options"
         },
         {
-            "$ref": "#/defs/distill_options"
+            "$ref": "#/$defs/product_options"
         },
         {
-            "$ref": "#/defs/product_options"
+            "$ref": "#/$defs/adjectives_options"
         },
         {
-            "$ref": "#/defs/adjectives_options"
+            "$ref": "#/$defs/aliased_options"
         },
         {
-            "$ref": "#/defs/aliased_options"
+            "$ref": "#/$defs/format_kegg_options"
         },
         {
-            "$ref": "#/defs/format_kegg_options"
+            "$ref": "#/$defs/database_options"
         },
         {
-            "$ref": "#/defs/database_options"
+            "$ref": "#/$defs/slurm_options"
         },
         {
-            "$ref": "#/defs/slurm_options"
+            "$ref": "#/$defs/process_options"
         },
         {
-            "$ref": "#/defs/process_options"
+            "$ref": "#/$defs/institutional_config_options"
         },
         {
-            "$ref": "#/defs/institutional_config_options"
-        },
-        {
-            "$ref": "#/defs/generic_options"
+            "$ref": "#/$defs/generic_options"
         }
     ]
 }
