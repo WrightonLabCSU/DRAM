@@ -27,7 +27,6 @@ CONSTANT_DISTILLATE_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, CO
 DISTILATE_SORT_ORDER_COLUMNS = [COL_HEADER, COL_SUBHEADER, COL_MODULE, COL_GENE_ID]
 EXCEL_MAX_CELL_SIZE = 32767
 
-FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 DISTILL_DIR = Path(__file__).parent / "assets/forms/distill_sheets"
 
 
@@ -74,7 +73,7 @@ def fill_genome_summary_frame(annotations, genome_summary_frame, groupby_column,
         
         return pd.Series(counts, index=genome_summary_frame.index)
     
-    counts = annotations.groupby(groupby_column, sort=False).apply(fill_a_frame)
+    counts = annotations.groupby(groupby_column, sort=False)[annotations.columns].apply(fill_a_frame)
     genome_summary_frame = pd.concat([genome_summary_frame, counts.T], axis=1)
     
     return genome_summary_frame
@@ -99,7 +98,7 @@ def fill_genome_summary_frame_gene_names(annotations, genome_summary_frame, grou
     return genome_summary_frame
 
 
-def summarize_rrnas(rrnas_df, groupby_column=FASTA_COLUMN):
+def summarize_rrnas(rrnas_df, groupby_column="input_fasta"):
     genome_rrna_dict = dict()
     for genome, frame in rrnas_df.groupby(groupby_column):
         genome_rrna_dict[genome] = Counter(frame['type'])
@@ -113,7 +112,7 @@ def summarize_rrnas(rrnas_df, groupby_column=FASTA_COLUMN):
     return rrna_frame
 
 
-def make_genome_summary(annotations, genome_summary_frame, logger, groupby_column=FASTA_COLUMN):
+def make_genome_summary(annotations, genome_summary_frame, logger, groupby_column="input_fasta"):
     
     summary_frames = list()
     # get ko summaries
@@ -159,11 +158,11 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file, extra_fram
             frame.to_excel(writer, sheet_name=sheet, index=False)
         for extra_frame in extra_frames:
             if extra_frame is not None and not extra_frame.empty:
-                extra_frame.to_excel(writer, sheet_name=extra_frame[COL_SHEET].iloc[0], index=False)
+                extra_frame.to_excel(writer, sheet_name=extra_frame[COL_HEADER].iloc[0], index=False)
 
 
 # TODO: add assembly stats like N50, longest contig, total assembled length etc
-def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame=None, groupby_column=FASTA_COLUMN):
+def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame=None, groupby_column="input_fasta"):
     rows = list()
     columns = ['genome']
     if 'scaffold' in annotations.columns:
@@ -230,19 +229,19 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
 @click.command()
 @click.option("-i", "--input_file", required=True, help="Annotations path")
 # @click.option("-o", "--output_dir", required=True, help="Directory to write summarized genomes")
-@click.option("--rrna_path", help="rRNA output from annotation")
-@click.option("--trna_path", help="tRNA output from annotation")
-@click.option("--quast_path", help="Quast summary TSV from the quast step")
+@click.option("--rrna_path", help="rRNA output from annotation", default=None, type=click.Path(exists=True))
+@click.option("--trna_path", help="tRNA output from annotation", default=None, type=click.Path(exists=True))
+@click.option("--quast_path", help="Quast summary TSV from the quast step", default=None, type=click.Path(exists=True))
 @click.option("--groupby_column", help="Column from annotations to group as organism units",
-                            default=FASTA_COLUMN)
+                            default="input_fasta", type = click.STRING)
 @click.option("--distil_topics", default="default", help="Default distillates topics to run.")
 @click.option("--distil_ecosystem", default="eng_sys,ag", help="Default distillates ecosystems to run.")
-@click.option("--custom_distillate", default=[], callback=validate_comma_separated, help="Custom distillate forms to add your own modules, comma separated. ")
+@click.option("--custom_distillate", default="", callback=validate_comma_separated, help="Custom distillate forms to add your own modules, comma separated. ")
 @click.option("--distillate_gene_names", is_flag=True,
     show_default=True, default=False,
                             help="Give names of genes instead of counts in genome metabolism summary")
-def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby_column=FASTA_COLUMN, distil_topics=None, distil_ecosystem=None,
-                      custom_distillate=None, distillate_gene_names=False):
+def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil_topics, distil_ecosystem,
+                      custom_distillate, distillate_gene_names):
     """Summarize metabolic content of annotated genomes"""
     # make output folder
     # mkdir(output_dir)
@@ -255,24 +254,20 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
     # Check the columns are present
     check_columns(annotations, logger)
 
-    if trna_path is None:
-        trna_frame = None
-    else:
+    trna_frame = None
+    rrna_frame = None
+    if all([v is not None for v in [trna_path, rrna_path]]):
         trna_frame = pd.read_csv(trna_path, sep='\t')
-    if rrna_path is None:
-        rrna_frame = None
-    else:
         rrna_frame = pd.read_csv(rrna_path, sep='\t')
-    # Check NF DRAM didn't pass an empty sheet to signal no tRNAs or rRNAs
-    if rrna_frame.empty:
-        rrna_frame = None
-    if trna_frame.empty:
-        trna_frame = None
-        
-    if quast_path is None:
-        quast_frame = None
-    else:
+        if any(v.dropna(how="all").empty for v in [trna_frame, rrna_frame]):
+            trna_frame = None
+            rrna_frame = None
+
+    quast_frame = None
+    if quast_path is not None:
         quast_frame = pd.read_csv(quast_path, sep='\t')
+        if quast_frame.dropna(how="all").empty:
+            quast_frame = None
 
     distil_sheets_names = []
     if "default" in distil_topics:
@@ -322,7 +317,7 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
     genome_summary_form = genome_summary_form.reset_index(drop=True)
 
     # make genome stats
-    genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, quast_frame=quast_frame, groupby_column=groupby_column)
+    genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, quast_frame, groupby_column=groupby_column)
     genome_stats.to_csv('genome_stats.tsv', sep='\t', index=None)
     logger.info('Calculated genome statistics')
 

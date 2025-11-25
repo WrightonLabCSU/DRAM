@@ -7,10 +7,10 @@ process SUMMARIZE {
     container "community.wave.seqera.io/library/python_pandas_openpyxl_click_dram-viz:bd6f4fb065d73a68"
 
     input:
-    path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
-    path( ch_rrna_collected, stageAs: "rrna_combined.tsv" )
-    path( ch_trna_collected, stageAs: "trna_combined.tsv" )
-    path( ch_quast_stats )
+    path( combined_annotations, stageAs: "raw-annotations.tsv" )
+    path( rrna_collected, stageAs: "rrna_combined.tsv" )
+    path( trna_collected, stageAs: "trna_combined.tsv" )
+    path( quast_stats )
     val( distill_topic )
     val( distill_ecosystem )
     val( distill_custom )
@@ -22,11 +22,20 @@ process SUMMARIZE {
     path( "genome_stats.tsv" ), emit: genome_stats
 
     script:
+    def args = task.ext.args ?: ""
+    def rrna = rrna_collected ? "--rrna_path ${rrna_collected}" : ""
+    def trna = trna_collected ? "--trna_path ${trna_collected}" : ""
+    def quast = quast_stats ? "--trna_path ${quast_stats}" : ""
+
     """
-    # export constants for script
-    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
-
-    distill.py -i ${ch_combined_annotations} --rrna_path '${ch_rrna_collected}' --trna_path '${ch_trna_collected}' --distil_topics "${distill_topic}" --distil_ecosystem "${distill_ecosystem}" --custom_distillate "${distill_custom}" --quast_path '${ch_quast_stats}'
-
+    distill.py \
+        -i ${combined_annotations} \
+        ${rrna} \
+        ${trna} \
+        ${quast} \
+        --distil_topics "${distill_topic}" \
+        --distil_ecosystem "${distill_ecosystem}" \
+        --custom_distillate "${distill_custom}" \
+        ${args}
     """
 }
