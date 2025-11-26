@@ -153,8 +153,9 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file, extra_fram
             frame = frame.sort_values(DISTILATE_SORT_ORDER_COLUMNS)
             frame = frame.drop([COL_SHEET], axis=1)
             gene_columns = list(set(frame.columns) - set(CONSTANT_DISTILLATE_COLUMNS))
-            split_genes = pd.concat([split_names_to_long(frame[i].astype(str)) for i in gene_columns], axis=1)
-            frame = pd.concat([frame[CONSTANT_DISTILLATE_COLUMNS],  split_genes], axis=1)
+            if gene_columns:
+                split_genes = pd.concat([split_names_to_long(frame[i].astype(str)) for i in gene_columns], axis=1)
+                frame = pd.concat([frame[CONSTANT_DISTILLATE_COLUMNS],  split_genes], axis=1)
             frame.to_excel(writer, sheet_name=sheet, index=False)
         for extra_frame in extra_frames:
             if extra_frame is not None and not extra_frame.empty:
@@ -199,7 +200,6 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
         # Rename the index column to input_fasta (or whatever you want)
         df_rrna = df_rrna.rename(columns={"index": "genome"})
         df_rrna.columns.name = None
-        print(df_rrna)
         genome_stats = pd.merge(genome_stats, df_rrna, how="outer", on="genome")
     if trna_frame is not None:
         meta_cols = ["gene_id", "gene_description", "category",
