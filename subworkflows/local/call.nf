@@ -38,13 +38,13 @@ workflow CALL {
         .set { ch_collected_faa }   // Set the resulting list to ch_collected_faa
 
     // Collect all individual fasta to pass to quast
-    Channel.empty()
+    channel.empty()
         .mix( ch_called_genes  )
         .collect()
         .set { ch_collected_fna }
 
     // Collect all individual fasta to pass to quast
-    Channel.empty()
+    channel.empty()
         .mix( ch_filtered_fasta, ch_gene_gff  )
         .collect()
         .set { ch_collected_fasta }

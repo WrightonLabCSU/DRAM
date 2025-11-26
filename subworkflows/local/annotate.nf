@@ -34,8 +34,8 @@ workflow ANNOTATE {
     ch_combined_annotations = default_sheet
 
     if (params.rename || call) {
-        fasta_name = ch_fasta.map { it[0] }
-        fasta_files = ch_fasta.map { it[1] }
+        fasta_name = ch_fasta.map { it-> it[0] }
+        fasta_files = ch_fasta.map { it -> it[1] }
 
         n_fastas = file("$params.input_fasta/${params.fasta_fmt}").size()
     }
@@ -49,10 +49,7 @@ workflow ANNOTATE {
         // we use flatten here to turn a list back into a channel
         renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
         // we need to recreate the fasta channel with the renamed fasta files
-        ch_fasta = renamed_fasta_paths.map {
-            fasta_name = it.getBaseName()
-            tuple(fasta_name, it)
-        }
+        ch_fasta = renamed_fasta_paths.map { it -> [ it.getBaseName(), it ] }
     }
 
     ch_quast_stats = default_sheet
