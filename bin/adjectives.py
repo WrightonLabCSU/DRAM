@@ -60,7 +60,7 @@ def show_rules_path(ctx, param, value):
 @click.command()
 @click.option('--annotations', type=click.Path(exists=True), required=True, help="One of only 2 required files. Path to a DRAM annotations file.")
 @click.option('-o', '--output', type=click.Path(), default='adjectives.tsv', help="Path for the output table. A true false table created by this script.")
-@click.option('-a', '--adjectives_list', default=[], callback=validate_comma_separated, help="A comma seperated list of adjectives ('adj1,adj2,adj3'), by name, to evaluate. This limits the number of adjectives that are evaluated and is faster.")
+@click.option('-a', '--adjectives_list', default="", callback=validate_comma_separated, help="A comma seperated list of adjectives ('adj1,adj2,adj3'), by name, to evaluate. This limits the number of adjectives that are evaluated and is faster.")
 @click.option('-p', '--plot_adjectives', multiple=True, default=[], help="A list of adjectives, by name, to plot. This limits the number of adjectives that are plotted and is probably needed for speed.")
 @click.option('-g', '--plot_genomes', multiple=True,
               default=[], )

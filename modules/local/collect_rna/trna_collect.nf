@@ -12,7 +12,7 @@ process TRNA_COLLECT {
     file combined_trnas
 
     output:
-    path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
+    path("collected_trnas.tsv"), emit: trna_collected_out
     path("raw_trna_scan.tsv"), emit: trna_combined_out, optional: true
 
     script:

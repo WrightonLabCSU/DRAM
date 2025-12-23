@@ -1,10 +1,10 @@
 nextflow_pipeline {
 
-    name "Test pipeline"
+    name "Test annotation step"
     script "../main.nf"
     tag "pipeline"
 
-    test("Test the whole pipeline e2e") {
+    test("Test ANNOTATE") {
 
         when {
             params {

@@ -74,6 +74,19 @@ workflow PIPELINE_INITIALISATION {
         // PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.
     }
 
+    if (params.annotate && params.annotations) {
+        error("--annotations cannot be used with --annotate. Annotations file is used when you are running without annotate.")
+    }
+
+    if (params.summarize && (!params.annotate && !params.annotations)) {
+        error("--summarize must be used with --annotate or --annotations.")
+    }
+    if (params.traits && (!params.annotate && !params.annotations)) {
+        error("--traits must be used with --annotate or --annotations.")
+    }
+    if (params.visualize && (!params.annotate && !params.annotations)) {
+        error("--visualize must be used with --annotate or --annotations.")
+    }
 
     if (params.input_genes) {
         if (params.call) {
@@ -90,7 +103,7 @@ workflow PIPELINE_INITIALISATION {
         }
     }
 
-    if ((params.adjectives || params.visualize) && (!use_kegg || !use_fegenie || !use_sulfur)) {
+    if (((params.adjectives || params.traits) || (params.visualize || params.product)) && (!use_kegg || !use_fegenie || !use_sulfur)) {
         // If they are using a premade annotations file, we just trust that they used kegg, fegenies, or sulfur
         if (!params.annotations) {
             error("When using Adjectives, make sure you use Kegg, FeGenie, and Sulfur Databases")

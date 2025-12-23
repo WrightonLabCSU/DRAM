@@ -229,40 +229,34 @@ workflow DRAM {
             use_vog
         )
 
-        if (distill_flag) {
-            if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
-                ch_final_annots = ANNOTATE.out.ch_combined_annotations
-                if( params.add_annotations ){
-                    ch_add_annots = file(params.add_annotations)
-                    ADD_ANNOTATIONS( ANNOTATE.out.ch_combined_annotations, ch_add_annots )
-                    ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
-                }
-            } else {  // If the user has not specified --annotate, use the provided annotations
-                ch_final_annots = channel
-                    .fromPath(params.annotations, checkIfExists: true)
-                    .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
+
+        if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
+            ch_final_annots = ANNOTATE.out.ch_combined_annotations
+            if( params.add_annotations ){
+                ch_add_annots = file(params.add_annotations)
+                ADD_ANNOTATIONS( ANNOTATE.out.ch_combined_annotations, ch_add_annots )
+                ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
             }
-
-            // ADD_AND_COUNT( ch_combined_annotations, call )  // Do any adding of additional annotations and count the annotations
-            // ch_final_annots = ADD_AND_COUNT.out.ch_final_annots
-
-
-                SUMMARIZE(
-                    ch_final_annots,
-                    ANNOTATE.out.ch_rrna_collected,
-                    ANNOTATE.out.ch_trna_collected,
-                    ANNOTATE.out.ch_quast_stats,
-                    distill_topic,
-                    distill_ecosystem,
-                    distill_custom
-                )
-            
-
-        }
-        else if (params.annotations) {
-            ch_final_annots = channel
+        } else if (params.annotations) {
+            ch_final_annots = Channel
                 .fromPath(params.annotations, checkIfExists: true)
                 .ifEmpty { exit 1, "Parameter annotations problem: Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
+        } else {
+            ch_final_annots = default_sheet
+        }
+
+        if (distill_flag) {
+            SUMMARIZE(
+                ch_final_annots,
+                ANNOTATE.out.ch_rrna_collected,
+                ANNOTATE.out.ch_trna_collected,
+                ANNOTATE.out.ch_quast_stats,
+                distill_topic,
+                distill_ecosystem,
+                distill_custom
+            )
+            
+
         }
 
         if (visualize) {  // If the user has specified --product after annotate or distill, generate the product heatmap
@@ -279,12 +273,8 @@ workflow DRAM {
             if (!ch_final_annots) {
                 error("Error: If you specify --product, you must also specify --annotate or --distill_<topic|ecosystem|custom> to generate the product heatmap or provide an annotations TSV file (--annotations <path>).")
             }
-            ADJECTIVES( ch_final_annots )
-
+            ADJECTIVES( ch_final_annots, file(params.rules_tsv))
         }
-
-
-
     }
 
     //

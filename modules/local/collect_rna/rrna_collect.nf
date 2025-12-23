@@ -10,7 +10,7 @@ process RRNA_COLLECT {
     file combined_rrnas
 
     output:
-    path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true
+    path("collected_rrnas.tsv"), emit: rrna_collected_out
     path("raw_rrna_scan.tsv"), emit: rrna_combined_out, optional: true
 
     script:
