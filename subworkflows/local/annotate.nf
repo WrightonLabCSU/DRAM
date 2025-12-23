@@ -25,6 +25,7 @@ workflow ANNOTATE {
     use_pfam
     use_merops
     use_uniref
+    use_metals
     use_vog
 
     main:
@@ -85,6 +86,7 @@ workflow ANNOTATE {
             use_pfam,
             use_merops,
             use_uniref,
+            use_metals,
             use_vog
             )
         ch_combined_annotations = DB_SEARCH.out.ch_combined_annotations

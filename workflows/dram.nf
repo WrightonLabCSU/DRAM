@@ -79,6 +79,7 @@ workflow DRAM {
     use_pfam = params.use_pfam
     use_merops = params.use_merops
     use_uniref = params.use_uniref
+    use_metals = params.use_metals
     use_vog = params.use_vog
 
     if (params.anno_dbs != "") {
@@ -96,6 +97,7 @@ workflow DRAM {
         // PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.
         use_merops = getDBFlag(anno_dbs, 'merops', value_for_all)
         use_uniref = getDBFlag(anno_dbs, 'uniref', value_for_all)
+        use_metals = getDBFlag(anno_dbs, 'metals', value_for_all)
         use_vog = getDBFlag(anno_dbs, 'vog', value_for_all)
     }
 
@@ -226,6 +228,7 @@ workflow DRAM {
             use_pfam,
             use_merops,
             use_uniref,
+            use_metals,
             use_vog
         )
 

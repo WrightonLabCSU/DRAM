@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta22 - 2025-12-17
+
+[64da24e](https://github.com/WrightonLabCSU/DRAM/commit/64da24e51367feaffe2f643dfbb0aa602e28c5c5)...[0933424](https://github.com/WrightonLabCSU/DRAM/commit/093342450e6e49c1a706cdf2c181bd931bab7a6d)
+
+### Bug Fixes
+
+- A_rank from info sheet for hmm parse now parse properly ([0933424](https://github.com/WrightonLabCSU/DRAM/commit/093342450e6e49c1a706cdf2c181bd931bab7a6d))
+
+
+
+## 2.0.0-beta21 - 2025-12-15
+
+[3648a77](https://github.com/WrightonLabCSU/DRAM/commit/3648a77ee93cb0e5c72dee5cf3d1b6b4a38a834e)...[1106003](https://github.com/WrightonLabCSU/DRAM/commit/1106003daaab6bea519132c5232cf62c54be2a9b)
+
+### Bug Fixes
+
+- Rrna scan e_value and strand column order fix ([e23d09f](https://github.com/WrightonLabCSU/DRAM/commit/e23d09fc90ee3c7671a6f49a5b1d95e3a6875503))
+
+
+- Traits and vis can now be ran with w/o summarize ([51f7763](https://github.com/WrightonLabCSU/DRAM/commit/51f77632f1093591785ee293f5e524cbb60270ce))
+
+traits and visualize if ran with annotate and without
+summarize would error ebcause of a use before definition
+error. This fixes that.
+- Hmm parsing now takes top hit consistently ([1106003](https://github.com/WrightonLabCSU/DRAM/commit/1106003daaab6bea519132c5232cf62c54be2a9b))
+
+In the translation from DRAM1->2 and moving to nextflow,
+the code to take the tophit for the hmm search had a couple
+bugs in it depending on the hmm db. It would sometimes
+take just the first hit outputted in the data sheet,
+it would calcuate the bitscore wrong, and it wouldn't
+do the info sheets right (since it was calculating bitscore
+wrong).
+Now it reports both full sequence bitscore and domain bitscore.
+It takes the top it and also reports all other hits as well.
+All of this is done in a generic way so that adding generic hmm
+support will be trivial for next release after we fix this bug
+Also add support for metals hmm DB.
+
+### Testing
+
+- Add integration test for summarize ([7411f82](https://github.com/WrightonLabCSU/DRAM/commit/7411f82e6cf016beb94d52996db0559648b2a38f))
+
+
+
 ## 2.0.0-beta19 - 2025-11-21
 
 [3c20b59](https://github.com/WrightonLabCSU/DRAM/commit/3c20b59f74e7af1a78993e8e91f31a4d8390ecd6)...[79dd74d](https://github.com/WrightonLabCSU/DRAM/commit/79dd74db3e60e1b6b3f84d8a691a5f37b4365e80)

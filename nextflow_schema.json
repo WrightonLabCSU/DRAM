@@ -211,6 +211,10 @@
                     "type": "boolean",
                     "description": "Use the UniRef database for annotation."
                 },
+                "use_metals": {
+                    "type": "boolean",
+                    "description": "Use the Metals database for annotation."
+                },
                 "use_vog": {
                     "type": "boolean"
                 },
@@ -354,6 +358,11 @@
                 "uniref_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/uniref/",
+                    "hidden": true
+                },
+                "metals_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/metals/",
                     "hidden": true
                 },
                 "pfam_mmseq_db": {
@@ -520,6 +529,11 @@
                     "type": "string",
                     "default": "1e-05",
                     "hidden": true
+                },
+                "metals_e_value": {
+                    "type": "string",
+                    "default": "1e-03",
+                    "hidden": true
                 }
             }
         },
@@ -579,15 +593,15 @@
                     "description": "Name of the SLURM Node to use for job submission. If not provided, the default node will be used."
                 },
                 "cpu_provision_limit": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The largest numbers of CPUs you can provision in 1 job. Not the total CPU limit. You can control that with process size or provision limit and queue_size"
                 },
                 "mem_gb_provision_limit": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The largest amount of memory you can provision in 1 job. Not the total memory limit. You can control that with process size or provision limit and queue_size"
                 },
                 "time_hr_provision_limit": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "The longest time a job should be provisioned for. Not the total length cutoff for all jobs. You can control that with process size or provision limit and queue_size"
                 }
             }
