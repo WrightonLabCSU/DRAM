@@ -19,7 +19,6 @@ include { FORMAT_KEGG_DB         } from "../modules/local/database/format_kegg_d
 include { MERGE                  } from "../subworkflows/local/merge.nf"
 include { ANNOTATE               } from "../subworkflows/local/annotate.nf"
 include { ADD_ANNOTATIONS        } from "../modules/local/add_and_combine/add_annotations.nf"
-include { ADD_AND_COUNT          } from "../subworkflows/local/add_and_count.nf"
 include { SUMMARIZE              } from "../modules/local/distill/distill.nf"
 
 

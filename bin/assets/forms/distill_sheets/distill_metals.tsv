@@ -1,0 +1,167 @@
+gene_id	rules	gene_description	pathway	topic_ecosystem	category	subcategory	note	reference
+arsD	arsD	"arsD, Arsenic metallochaperone for efflux pump"		metals	Stressors	Heavy Metals	arsenic	
+arsM	arsM|K07755	"arsM, arsenite methyltransferase"		metals	Stressors	Heavy Metals	arsenic	
+aioA-aoxB	aioA-aoxB|K08356	"aioA-aoxB, arsenite oxidase large subunit"		metals	Stressors	Heavy Metals	arsenic	
+aioB-aoxA	aioB-aoxA|K08355	"aioB-aoxA, arsenite oxidase small subunit"		metals	Stressors	Heavy Metals	arsenic	
+arsC|K00537	arsC|K00537	"arsC, arsenate reductase (glutaredoxin)"		metals	Stressors	Heavy Metals	arsenic	
+arsC|K03741	arsC|K03741	"arsC, arsenate reductase (thioredoxin)"		metals	Stressors	Heavy Metals	arsenic	
+arsH	arsH|K11811	"arsH, arsenical resistance protein ArsH"		metals	Stressors	Heavy Metals	arsenic	
+aioR-aoxR	aioR-aoxR	"aioR-aoxR, Transcriptional activator protein; two-component system"		metals	Stressors	Heavy Metals	arsenic	
+aioS-aoxS	aioS-aoxS	"aioS-aoxS, Sensor protein; two-component system"		metals	Stressors	Heavy Metals	arsenic	
+arsR	arsR|K03892	"arsR, arsenate/arsenite/antimonite-responsive transcriptional repressor"		metals	Stressors	Heavy Metals	arsenic	
+acr3	acr3|K03325	"acr3, arsenite transporter"		metals	Stressors	Heavy Metals	arsenic	
+arsA	arsA|K01551	"arsA, arsenite/tail-anchored protein-transporting ATPase"		metals	Stressors	Heavy Metals	arsenic	
+arsB	arsB|K03893	"arsB, arsenical pump membrane protein"		metals	Stressors	Heavy Metals	arsenic	
+cadC	cadC|K03765	"cadC, transcriptional activator of cad operon"		metals	Stressors	Heavy Metals	cadmium	
+cadR	cadR	"cadR, Transcriptional regulator for cadmium resistance"		metals	Stressors	Heavy Metals	cadmium	
+cadX	cadX|K21903	"cadX, lead/cadmium/zinc/bismuth-responsive transcriptional repressor"		metals	Stressors	Heavy Metals	cadmium	
+cmtR	cmtR|K21885	"cmtR, cadmium/lead-responsive transcriptional repressor"		metals	Stressors	Heavy Metals	cadmium	
+cusR-ylcA	cusR-ylcA|K07665	"cusR-ylcA, opper resistance phosphate regulon response regulator CusR"		metals	Stressors	Heavy Metals	cadmium	
+cusS	cusS|K07644	"cusS, heavy metal sensor histidine kinase CusS"		metals	Stressors	Heavy Metals	cadmium	
+czcR	czcR|K02483	"czcR, two-component system, OmpR family, response regulator"		metals	Stressors	Heavy Metals	cadmium	
+czrA	czrA|K22043	"czrA, zinc-responsive transcriptional repressor"		metals	Stressors	Heavy Metals	cadmium	
+K03088	K03088	"RNA polymerase sigma-70 factor, ECF subfamily"		metals	Stressors	Heavy Metals	cadmium	
+K24079	K24079	nickel and cobalt resistance protein CnrY		metals	Stressors	Heavy Metals	cadmium	
+K24078	K24078	nickel and cobalt resistance protein CnrR		metals	Stressors	Heavy Metals	cadmium	
+cadD	cadD	"cadD, Cadmium resistance permease"		metals	Stressors	Heavy Metals	cadmium	
+czcA	czcA|K15726	"czcA, heavy metal efflux system protein"		metals	Stressors	Heavy Metals	cadmium	
+czcB	czcB|K15727	"czcB, membrane fusion protein, heavy metal efflux system"		metals	Stressors	Heavy Metals	cadmium	
+czcC	czcC|K15725	"czcC, outer membrane protein, heavy metal efflux system"		metals	Stressors	Heavy Metals	cadmium	
+cznB	cznB	"cznB, Cadmium-zinc-nickel efflux; transporter"		metals	Stressors	Heavy Metals	cadmium	
+czrB	czrB|K21133	"czrB, multidrug efflux pump"		metals	Stressors	Heavy Metals	cadmium	
+dmeF	dmeF	"dmeF, Broad range metal ion transporter"		metals	Stressors	Heavy Metals	cadmium	
+rcnA-yohM	rcnA-yohM|K08970	"rcnA-yohM, nickel/cobalt transporter (NicO) family protein"		metals	Stressors	Heavy Metals	cadmium	
+zitB-ybgR	zitB-ybgR|K16264	"zitB-ybgR, cobalt-zinc-cadmium efflux system protein"		metals	Stressors	Heavy Metals	cadmium	
+zntA-yhhO	zntA-yhhO|K01534	"zntA-yhhO, Zn2+/Cd2+-exporting ATPase"		metals	Stressors	Heavy Metals	cadmium	
+ncrB	ncrB	"ncrB, Ni-Co efflux; regulator"		metals	Stressors	Heavy Metals	cobalt	
+ncrY	ncrY	"ncrY, Ni-Co efflux; regulator"		metals	Stressors	Heavy Metals	cobalt	
+rcnR-yohL	rcnR-yohL|K23240	"rcnR-yohL, FrmR/RcnR family transcriptional regulator, repressor of rcnA expression"		metals	Stressors	Heavy Metals	cobalt	
+K24073	K24073	RNA polymerase sigma factor CnrH		metals	Stressors	Heavy Metals	cobalt	
+K06042	K06042	precorrin-8X/cobalt-precorrin-8 methylmutase		metals	Stressors	Heavy Metals	cobalt	
+cmeA	cmeA|K03585	"cmeA, membrane fusion protein, multidrug efflux system"		metals	Stressors	Heavy Metals	cobalt	
+cmeB	cmeB|K18138	"cmeB, multidrug efflux pump"		metals	Stressors	Heavy Metals	cobalt	
+cmeC	cmeC|K18139	"cmeC, outer membrane protein, multidrug efflux system"		metals	Stressors	Heavy Metals	cobalt	
+cnrT	cnrT	"cnrT, Ni-Co efflux system; cation diffusion facilitator"		metals	Stressors	Heavy Metals	cobalt	
+corA	corA|K03284	"corA, magnesium transporter"		metals	Stressors	Heavy Metals	cobalt	
+corB	corB	"corB, Magnesium-transporting ATPase"		metals	Stressors	Heavy Metals	cobalt	
+corC	corC|K06189	"corC, hemolysin (HlyC) family protein"		metals	Stressors	Heavy Metals	cobalt	
+ctpD	ctpD|K12951	"ctpD, cobalt/nickel-transporting P-type ATPase D"		metals	Stressors	Heavy Metals	cobalt	
+dmeR	dmeR	"dmeR, Co-Ni dmeRF efflux system"		metals	Stressors	Heavy Metals	cobalt	
+nrsD-nreB	nrsD-nreB|K07785	"nrsD-nreB, MFS transporter, NRE family, putaive nickel resistance protein"		metals	Stressors	Heavy Metals	cobalt	
+rcnB-yohN	rcnB-yohN|K23243	"rcnB-yohN, nickel/cobalt homeostasis protein"		metals	Stressors	Heavy Metals	cobalt	
+copC	copC|K07156	"copC, copper resistance protein C"		metals	Stressors	Heavy Metals	copper	
+cutA	cutA|K03926	"cutA, periplasmic divalent cation tolerance protein"		metals	Stressors	Heavy Metals	copper	
+cutC	cutC|K06201	"cutC, copper homeostasis protein"		metals	Stressors	Heavy Metals	copper	
+mymT	mymT|K21609	"mymT, Cu-binding metallothionein"		metals	Stressors	Heavy Metals	copper	
+pcoB	pcoB|K07233	"pcoB, copper resistance protein B"		metals	Stressors	Heavy Metals	copper	
+pcoE	pcoE	"pcoE, Copper binding protein; downstream from regulatory genes"		metals	Stressors	Heavy Metals	copper	
+copZ	copZ|K07213	"copZ, copper chaperone"		metals	Stressors	Heavy Metals	copper	
+K09796	K09796	periplasmic copper chaperone A		metals	Stressors	Heavy Metals	copper	
+K19342	K19342	copper chaperone NosL		metals	Stressors	Heavy Metals	copper	
+cinA	cinA	"cinA, Copper-binding azurin-like protein"		metals	Stressors	Heavy Metals	copper	
+cueO	cueO|K14588	"cueO, cuproxidase"		metals	Stressors	Heavy Metals	copper	
+cutO	cutO	"cutO, Multicopper oxidase"		metals	Stressors	Heavy Metals	copper	
+mco	mco|K22552	"mco, multicopper oxidase"		metals	Stressors	Heavy Metals	copper	
+copL	copL	"copL, Copper binding protein; higher affinity for Cu(I)"		metals	Stressors	Heavy Metals	copper	
+copY-tcrY	copY-tcrY	"copY-tcrY, Upstream repressor of CopA/CopB"		metals	Stressors	Heavy Metals	copper	
+corR	corR	"corR, Transcriptional regulator protein; two component system; cuoABC and copAB"		metals	Stressors	Heavy Metals	copper	
+crdR	crdR|K02483	"crdR, two-component system, OmpR family, response regulator"		metals	Stressors	Heavy Metals	copper	
+csoR	csoR|K21600	"csoR, CsoR family transcriptional regulator, copper-sensing transcriptional repressor"		metals	Stressors	Heavy Metals	copper	
+cueR-ybbI	cueR-ybbI|K11923	"cueR-ybbI, copper efflux regulator"		metals	Stressors	Heavy Metals	copper	
+cusR-ylcA	cusR-ylcA|K07665	"cusR-ylcA, copper resistance phosphate regulon response regulator CusR"		metals	Stressors	Heavy Metals	copper	
+hmrR	hmrR|K19591	"hmrR, copper efflux regulator"		metals	Stressors	Heavy Metals	copper	
+ycnK	ycnK|K21601	"ycnK, copper-sensing transcriptional repressor"		metals	Stressors	Heavy Metals	copper	
+yfmP	yfmP|K21902	"yfmP, MerR family transcriptional regulator, repressor of the yfmOP operon"		metals	Stressors	Heavy Metals	copper	
+K18992	K18992	"TetR/AcrR family transcriptional regulator, cmeABC operon repressor"		metals	Stressors	Heavy Metals	copper	
+acrD	acrD|K18324	"acrD, multidrug efflux pump"		metals	Stressors	Heavy Metals	copper	
+copA	copA|K17686	"copA, P-type Cu+ transporter"		metals	Stressors	Heavy Metals	copper	
+copB	copB|K01533	"copB, P-type Cu2+ transporter"		metals	Stressors	Heavy Metals	copper	
+copD	copD|K07245	"copD, copper resistance protein D"		metals	Stressors	Heavy Metals	copper	
+copP	copP	"copP, Copper binding protein; part of cation transport system"		metals	Stressors	Heavy Metals	copper	
+crdA	crdA	"crdA, Copper resistance determinant"		metals	Stressors	Heavy Metals	copper	
+ctpG	ctpG|K12954	"ctpG, cation-transporting P-type ATPase G"		metals	Stressors	Heavy Metals	copper	
+ctpV	ctpV|K12956	"ctpV, copper-transporting P-type ATPase V"		metals	Stressors	Heavy Metals	copper	
+cusA-ybdE	cusA-ybdE|K07787	"cusA-ybdE, copper/silver efflux system protein"		metals	Stressors	Heavy Metals	copper	
+cusB	cusB|K07798	"cusB, membrane fusion protein, copper/silver efflux system"		metals	Stressors	Heavy Metals	copper	
+cusC-ylcB	cusC-ylcB|K07796	"cusC-ylcB, outer membrane protein, copper/silver efflux system"		metals	Stressors	Heavy Metals	copper	
+cusF-cusX	cusF-cusX|K07810	"cusF-cusX, Cu(I)/Ag(I) efflux system periplasmic protein CusF"		metals	Stressors	Heavy Metals	copper	
+cutE-lnt	cutE-lnt|K03820	"cutE-lnt, apolipoprotein N-acyltransferase"		metals	Stressors	Heavy Metals	copper	
+cutF-nlpE	cutF-nlpE|K06079	"cutF-nlpE, copper homeostasis protein (lipoprotein)"		metals	Stressors	Heavy Metals	copper	
+hpcopA	hpcopA	"hpcopA, Copper transport ATPase"		metals	Stressors	Heavy Metals	copper	
+mctB	mctB	"mctB, Pore-forming protein; copper efflux"		metals	Stressors	Heavy Metals	copper	
+ycnJ	ycnJ|K14166	"ycnJ, copper transport protein"		metals	Stressors	Heavy Metals	copper	
+yfmO	yfmO|K08221	"yfmO, MFS transporter, ACDE family, multidrug resistance protein"		metals	Stressors	Heavy Metals	copper	
+bfrA	bfrA|K03594	"bfrA, bacterioferritin"		metals	Stressors	Heavy Metals	iron	
+dpr-dps	dpr-dps	"dpr-dps, Sequesters Fe(II), binds and oxidizes to Fe(III) "		metals	Stressors	Heavy Metals	iron	
+dpsA	dpsA	"dpsA, Stress response, iron-binding protein"		metals	Stressors	Heavy Metals	iron	
+pfr	pfr|K02217	"pfr, ferritin"		metals	Stressors	Heavy Metals	iron	
+yqjH	yqjH|K07229	"yqjH, ferric-chelate reductase (NADPH)"		metals	Stressors	Heavy Metals	iron	
+ideR	ideR|K03709	"ideR, Mn-dependent transcriptional regulator"		metals	Stressors	Heavy Metals	iron	
+pmrA	pmrA	"pmrA, Transcriptional regulator protein; two component system"		metals	Stressors	Heavy Metals	iron	
+pmrB	pmrB	"pmrB, Sensor protein; two component system"		metals	Stressors	Heavy Metals	iron	
+fbpA	fbpA|K02012	"fbpA, iron(III) transport system substrate-binding protein"		metals	Stressors	Heavy Metals	iron	
+fbpB	fbpB|K02011	"fbpB, iron(III) transport system permease protein"		metals	Stressors	Heavy Metals	iron	
+fbpC	fbpC|K02010	"fbpC, iron(III) transport system ATP-binding protein"		metals	Stressors	Heavy Metals	iron	
+fieF-yiip	fieF-yiip|K13283	"fieF-yiip, ferrous-iron efflux pump FieF"		metals	Stressors	Heavy Metals	iron	
+fptA	fptA|K16088	"fptA, outer-membrane receptor for ferric coprogen and ferric-rhodotorulic acid"		metals	Stressors	Heavy Metals	iron	
+mntH-yfeB	mntH-yfeB|K03322	"mntH-yfeB, manganese transport protein"		metals	Stressors	Heavy Metals	iron	
+nia	nia|K01552	"nia, energy-coupling factor transport system ATP-binding protein"		metals	Stressors	Heavy Metals	iron	
+pmrC	pmrC	"pmrC, Membrane protein"		metals	Stressors	Heavy Metals	iron	
+ybtP	ybtP|K06147	"ybtP, ATP-binding cassette, subfamily B, bacterial"		metals	Stressors	Heavy Metals	iron	
+ybtQ	ybtQ|K06147	"ybtQ, ATP-binding cassette, subfamily B, bacterial"		metals	Stressors	Heavy Metals	iron	
+yfeA	yfeA|K11604	"yfeA, manganese/iron transport system substrate-binding protein"		metals	Stressors	Heavy Metals	iron	
+yfeB	yfeB|K11607	"yfeB, manganese/iron transport system ATP-binding protein"		metals	Stressors	Heavy Metals	iron	
+yfeC	yfeC|K11605	"yfeC, manganese/iron transport system permease protein"		metals	Stressors	Heavy Metals	iron	
+yfeD	yfeD|K11606	"yfeD, manganese/iron transport system permease protein"		metals	Stressors	Heavy Metals	iron	
+K07224	K07224	iron uptake system component EfeO		metals	Stressors	Heavy Metals	iron	
+pbrR	pbrR	"pbrR, Transcription factor, regulator"		metals	Stressors	Heavy Metals	lead	
+pbrT	pbrT	"pbrT, Pb(II) uptake protein; membrane transporter"		metals	Stressors	Heavy Metals	lead	
+K03101	K03101	signal peptidase II		metals	Stressors	Heavy Metals	lead	
+mgtA	mgtA|K01531	"mgtA, P-type Mg2+ transporter"		metals	Stressors	Heavy Metals	magnesium	
+K06213	K06213	magnesium transporter		metals	Stressors	Heavy Metals	magnesium	
+mntR	mntR|K11924	"mntR, manganese transport regulator"		metals	Stressors	Heavy Metals	manganese	
+ctpC	ctpC|K12950	"ctpC, manganese-transporting P-type ATPase C"		metals	Stressors	Heavy Metals	manganese	
+mntA-ytgA	mntA-ytgA|K11707	"mntA-ytgA, manganese/zinc/iron transport system substrate-binding protein"		metals	Stressors	Heavy Metals	manganese	
+mntP-yebN	mntP-yebN|K23242	"mntP-yebN, manganese efflux pump family protein"		metals	Stressors	Heavy Metals	manganese	
+merB	merB|K00221	"merB, alkylmercury lyase"		metals	Stressors	Heavy Metals	mercury	
+merA	merA|K00520	"merA, mercuric reductase"		metals	Stressors	Heavy Metals	mercury	
+merD	merD|K19057	"merD, mercuric resistance operon regulatory protein"		metals	Stressors	Heavy Metals	mercury	
+merR	merR|K08365	"merR, mercuric resistance operon regulatory protein"		metals	Stressors	Heavy Metals	mercury	
+merC	merC|K19058	"merC, mercuric ion transport protein"		metals	Stressors	Heavy Metals	mercury	
+merE	merE|K19059	"merE, mercuric ion transport protein"		metals	Stressors	Heavy Metals	mercury	
+merF	merF|K19058	"merF, mercuric ion transport protein"		metals	Stressors	Heavy Metals	mercury	
+merP	merP|K08364	"merP, periplasmic mercuric ion binding protein"		metals	Stressors	Heavy Metals	mercury	
+merT	merT|K08363	"merT, mercuric ion transport protein"		metals	Stressors	Heavy Metals	mercury	
+nikR	nikR|K07722	"nikR, CopG family transcriptional regulator, nickel-responsive regulator"		metals	Stressors	Heavy Metals	nickel	
+nrsS	nrsS|K11328	"nrsS, Ni(II)-sensor and/or redox sensor kinase NrsS"		metals	Stressors	Heavy Metals	nickel	
+K11330	K11330	Ni(II)-responsive and/or redox-responsive regulator NrsR		metals	Stressors	Heavy Metals	nickel	
+hupE	hupE	"hupE, Nickel transporter; metal permease"		metals	Stressors	Heavy Metals	nickel	
+nikA	nikA|K15584	"nikA, nickel transport system substrate-binding protein"		metals	Stressors	Heavy Metals	nickel	
+nikB	nikB|K15585	"nikB, nickel transport system permease protein"		metals	Stressors	Heavy Metals	nickel	
+nikC	nikC|K15586	"nikC, nickel transport system permease protein"		metals	Stressors	Heavy Metals	nickel	
+nikD	nikD|K15587	"nikD, nickel transport system ATP-binding protein"		metals	Stressors	Heavy Metals	nickel	
+nikE	nikE|K10824	"nikE, nickel transport system ATP-binding protein"		metals	Stressors	Heavy Metals	nickel	
+nixA	nixA|K07241	"nixA, nickel/cobalt transporter (NiCoT) family protein"		metals	Stressors	Heavy Metals	nickel	
+nrsA	nrsA|K11326	"nrsA, cation efflux system protein involved in nickel and cobalt tolerance"		metals	Stressors	Heavy Metals	nickel	
+silF	silF	"silF, Silver cation efflux system; chaperone"		metals	Stressors	Heavy Metals	silver	
+silE	silE	"silE, Silver cation efflux system; binding protein"		metals	Stressors	Heavy Metals	silver	
+silP	silP|K23254	"silP, P-type Ag+ transporter"		metals	Stressors	Heavy Metals	silver	
+smtA	smtA|K21904	"smtA, Zinc binding metallothionein"		metals	Stressors	Heavy Metals	zinc	
+zevA	zevA	"zevA, Zinc binding protein"		metals	Stressors	Heavy Metals	zinc	
+zraP	zraP|K07803	"zraP, zinc resistance-associated protein"		metals	Stressors	Heavy Metals	zinc	
+zinT-yodA	zinT-yodA	"zinT-yodA, Periplasmic zinc (and cadmium) binding protein"		metals	Stressors	Heavy Metals	zinc	
+zntR-yhdM	zntR-yhdM|K13638	"zntR-yhdM, Zn(II)-responsive regulator of zntA"		metals	Stressors	Heavy Metals	zinc	
+zraR-hydH	zraR-hydH|K07713	"zraR-hydH, two-component system, NtrC family, response regulator HydG"		metals	Stressors	Heavy Metals	zinc	
+zraS-hydG	zraS-hydG|K07709	"zraS-hydG, two-component system, NtrC family, sensor histidine kinase HydH"		metals	Stressors	Heavy Metals	zinc	
+zur-yjbK	zur-yjbK|K09823	"zur-yjbK, Fur family transcriptional regulator, zinc uptake regulator"		metals	Stressors	Heavy Metals	zinc	
+K03709	K03709	Mn-dependent transcriptional regulator		metals	Stressors	Heavy Metals	zinc	
+mdtA	mdtA|K07799	"mdtA, membrane fusion protein, multidrug efflux system"		metals	Stressors	Heavy Metals	zinc	
+mdtB	mdtB|K07788	"mdtB, multidrug efflux pump"		metals	Stressors	Heavy Metals	zinc	
+mdtC	mdtC|K07789	"mdtC, multidrug efflux pump"		metals	Stressors	Heavy Metals	zinc	
+troB	troB|K11710	"troB, manganese/zinc/iron transport system ATP- binding protein"		metals	Stressors	Heavy Metals	zinc	
+zipB	zipB|K07238	"zipB, zinc transporter, ZIP family"		metals	Stressors	Heavy Metals	zinc	
+znuA-yebL	znuA-yebL|K09815	"znuA-yebL, zinc transport system substrate-binding protein"		metals	Stressors	Heavy Metals	zinc	
+znuB-yebI	znuB-yebI|K09816	"znuB-yebI, zinc transport system permease protein"		metals	Stressors	Heavy Metals	zinc	
+znuC-yebM	znuC-yebM|K09817	"znuC-yebM, zinc transport system ATP-binding protein"		metals	Stressors	Heavy Metals	zinc	
+K11708	K11708	manganese/zinc/iron transport system permease protein		metals	Stressors	Heavy Metals	zinc	
+K11709	K11709	manganese/zinc/iron transport system permease protein		metals	Stressors	Heavy Metals	zinc	

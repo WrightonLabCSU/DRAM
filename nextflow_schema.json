@@ -334,10 +334,6 @@
             "fa_icon": "fas fa-dna",
             "description": "The purpose of DRAM --adjectives is to use the outputted DRAM annotations file to make a table of adjectives. You need to use the Kegg, FeGenie, and Sulfur Databases.",
             "properties": {
-                "adjectives_list": {
-                    "type": "string",
-                    "description": "A comma seperated list of adjectives ('adj1,adj2,adj3'), by name, to evaluate. This limits the number of adjectives that are evaluated and is faster."
-                },
                 "rules_tsv": {
                     "type": "string",
                     "description": "This is an optional path to a rules file with strict formatting. It will take the place of the original rules file that is stored with the script. For formatting, see the original rules.tsv sheet stored with the script in the repo."

@@ -21,12 +21,11 @@ For more detail on DRAM and how DRAM v2 works please see our DRAM products:
 
 ## Quick Links
 
-- [Installation Guide](docs/installation.md)
-- [Usage Examples](#example-usage)
-- [Command Line Options](#command-line-options)
-- [Nextflow Tips and Tricks](#nextflow-tips-and-tricks)
-- [Resource Management](#resource-management)
-- [Citation](#citing-dram)
+- [Docs](https://dramit.readthedocs.io/en/latest)
+- [Installation Guide](https://dramit.readthedocs.io/en/latest/installation.html)
+- [Usage Examples](https://dramit.readthedocs.io/en/latest/usage.html)
+- [Parameter API]([#command-line-options](https://dramit.readthedocs.io/en/latest/params_doc.html))
+- [Rules API]([#nextflow-tips-and-tricks](https://dramit.readthedocs.io/en/latest/rules_parser.html))
 
 ## Example Usage
 
@@ -34,45 +33,41 @@ DRAM apps Call, Annotate and Distill can all be run at once or alternatively, ea
 
 1) **Rename fasta headers based on input sample file names:**
 ```bash
-nextflow run DRAM --rename --input_fasta <path/to/fasta/directory/>
+nextflow run WrightonLabCSU/DRAM --rename --input_fasta <path/to/fasta/directory/>
 ```
 
 2) **Call genes using input fastas (use --rename to rename FASTA headers):**
 ```bash
-nextflow run DRAM --call --rename --input_fasta <path/to/fasta/directory/>
+nextflow run WrightonLabCSU/DRAM --call --rename --input_fasta <path/to/fasta/directory/>
 ```
 
 3) **Annotate called genes using input called genes and the KOFAM database:**
 ```bash
-nextflow run DRAM --annotate --input_genes <path/to/called/genes/directory> --use_kofam
+nextflow run WrightonLabCSU/DRAM --annotate --input_genes <path/to/called/genes/directory> --use_kofam
 ```
 
 4) **Annotate called genes using input fasta files and the KOFAM database:**
 ```bash
-nextflow run DRAM --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
+nextflow run WrightonLabCSU/DRAM --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
 ```
 
 5) **Merge various existing annotations files together (Must be generated using DRAM):**
 ```bash
-nextflow run DRAM --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>
+nextflow run WrightonLabCSU/DRAM --merge_annotations <path/to/directory/with/multiple/annotation/TSV/files>
 ```
 
 6) **Distill using input annotations:**
 ```bash
-nextflow run DRAM --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
+nextflow run WrightonLabCSU/DRAM --distill_<topic|ecosystem|custom> --annotations <path/to/annotations.tsv>
 ```
 
 7) **Complete workflow example:**
 ```bash
-nextflow run -bg DRAM \
-  --input_fasta ../test_data/DRAM_test_data/ \
-  --outdir DRAM-test-data-call-annotate-distill \
-  --threads 8 \
-  --call --rename --annotate \
-  --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper \
-  --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur \
-  --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv \
-  -profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline
+nextflow run -bg WrightonLabCSU/DRAM \
+  --input_fasta [DIRECTORY of fasta files] \
+  --outdir [OUTPUT] \
+  --rename --sum_ecos 'eng_sys,ag' \
+  -profile singularity,full_mode
 ```
 
 ## Nextflow Tips and Tricks

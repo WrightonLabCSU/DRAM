@@ -11,6 +11,7 @@ installation
 usage
 Parameter API <params_doc>
 output
+rules_parser
 contributing
 changelog_include
 ```

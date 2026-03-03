@@ -62,7 +62,9 @@ def set_gene_data(gene_faa, genes_faa_dict=None):
         split_label = seq.metadata["id"].split("_")
         gene_position = split_label[-1]
         start_position, end_position, strandedness = seq.metadata["description"].split("#")[1:4]
-        genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN] = str(Path(gene_faa).stem).replace('_called_genes', '')
+
+        input_fasta_name = Path(gene_faa).stem.split('_called_genes')[0]
+        genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN] = input_fasta_name
         genes_faa_dict[seq.metadata["id"]]["scaffold"] = (
             seq.metadata["id"]
             .removeprefix(genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN])
@@ -132,8 +134,6 @@ def combine_annotations(annotations_dir, genes_dir, output, threads):
 
     combined_data.to_csv(output, index=False, sep='\t')
     logger.info(f"Combined annotations saved to {output}, with corrected gene numbers.")
-
-
 
 if __name__ == "__main__":
     combine_annotations()

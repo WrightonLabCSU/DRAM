@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta24 - 2026-02-03
+
+[3659fda](https://github.com/WrightonLabCSU/DRAM/commit/3659fdaa0f9779108840e3bbf97c6d196b37a7d3)...[32d0527](https://github.com/WrightonLabCSU/DRAM/commit/32d05274be6eaeaed48de6bb5a047bd67f21fea1)
+
+### Bug Fixes
+
+- Bugfix for excel saving when rrna or trna are None ([32d0527](https://github.com/WrightonLabCSU/DRAM/commit/32d05274be6eaeaed48de6bb5a047bd67f21fea1))
+
+
+
+## 2.0.0-beta23 - 2026-02-01
+
+[348e276](https://github.com/WrightonLabCSU/DRAM/commit/348e2764de7b666c0f6dcc1d82deea67d96e439b)...[852e0ae](https://github.com/WrightonLabCSU/DRAM/commit/852e0ae18ae5976e8594e8f68ed1938f7eafce9d)
+
+### Features
+
+- Add new DRAM rule parser submodule for traits and distill ([5e9a088](https://github.com/WrightonLabCSU/DRAM/commit/5e9a08872b590c3ac372047db46ddbaa946b8814))
+
+New python Lark base rule parser that defines rule grammer
+for traits grammer that can be reused for distill and product.
+This rule parser is more accurate and less error prone than
+the older traits parser completely custom coded. THis fixes
+a number of bugs where things were being double counted and not
+parsed correctly. This also allows distill, traits, and product
+eventually to all use the same rule parsing code. Rule parsing
+documentation can be found in docs/rules_parser.md or
+https://dramit.readthedocs.io/en/latest/rules_parser.html
+
+Rule parser is implemented with polars instead of Pandas for a
+few reasons. It is a bit faster, and it allows lazy query planning.
+The annotation df is not currently lazy (eager rn), but with plans
+to allow it to be lazy. Lazy DataFrames can be more memory efficient
+by only loading the data/columns needed, and doing query optimization
+to speed up and require less memory for intermediate steps.
+- Update summarize eco Ag sheet to newly developed Ag sheet ([4937f1c](https://github.com/WrightonLabCSU/DRAM/commit/4937f1ce846b3910e5fe18264f9daca8221dd207))
+
+
+- Add carbon rules to traits, save traits as excel sheet ([02de665](https://github.com/WrightonLabCSU/DRAM/commit/02de6657261fb5517b3df20985285a6b2b392fa7))
+
+
+
+### Package
+
+- Package cleanup. Removing old files and cleanups ([c6bae64](https://github.com/WrightonLabCSU/DRAM/commit/c6bae64a787623721ff402a38afd94bab63eb12d))
+
+
+
 ## 2.0.0-beta22 - 2025-12-17
 
 [64da24e](https://github.com/WrightonLabCSU/DRAM/commit/64da24e51367feaffe2f643dfbb0aa602e28c5c5)...[0933424](https://github.com/WrightonLabCSU/DRAM/commit/093342450e6e49c1a706cdf2c181bd931bab7a6d)

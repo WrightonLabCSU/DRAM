@@ -167,7 +167,3 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
 
 if __name__ == '__main__':
     main()
-
-
-
-# gene_locs_df["query_id"] = gene_locs_df["query_id"].str.replace(".", "-")

@@ -5,7 +5,7 @@ from glob import glob
 from utils.logger import get_logger
 from pathlib import Path
 
-FASTA_COLUMN = os.getenv('FASTA_COLUMN')
+FASTA_COLUMN = os.getenv('FASTA_COLUMN', 'input_fasta')
 
 logger = get_logger(filename=Path(__file__).stem)
 

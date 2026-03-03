@@ -14,7 +14,7 @@ import urllib.parse  # For escaping characters in accordance with RFC 3986
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-FASTA_COLUMN = os.getenv('FASTA_COLUMN')
+FASTA_COLUMN = os.getenv('FASTA_COLUMN', 'input_fasta')
 
 def parse_arguments():
     """Parse command line arguments."""

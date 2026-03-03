@@ -3,7 +3,7 @@ import pandas as pd
 import sys
 import os
 
-FASTA_COLUMN = os.getenv('FASTA_COLUMN')
+FASTA_COLUMN = os.getenv('FASTA_COLUMN', 'input_fasta')
 
 def extract_query_ids(tsv_path, ko_terms):
     df = pd.read_csv(tsv_path, sep='\t')

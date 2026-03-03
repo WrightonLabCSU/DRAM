@@ -1,0 +1,197 @@
+name	parent	child	topic_ecosystem	notes
+Methanogen	methanogen	mcr & notOtherMethanogen	energy	
+	mcr	K00399 | K00400 | K00401 | K00402 | K03421 | K03422	energy	
+	notOtherMethanogen	not(OtherAjMethanogen)	energy	
+	OtherAjMethanogen	sulfatereducer | Denitrifier | AerobicAmmoniaOxidizer | comammox | annamox | Phototroph | ETC60	energy	
+Aerobic Ammonia Oxidizer	AerobicAmmoniaOxidizer	AmmoniaMonooxygenase | [AmmoniaMonooxygenase & HydroxylamineDehydrogenase]	energy	
+	AmmoniaMonooxygenase	EC1.14.99.39 | K10944 | K10945 | K10946	energy	
+	HydroxylamineDehydrogenase	EC1.7.2.6 | K10535	energy	
+Comammox	comammox	AmmoniaMonooxygenase & NitriteOxidoreductase & HydrazineDeydrogenase	energy	
+	NitriteOxidoreductase	K00370 | K00371	energy	
+	HydrazineDeydrogenase	EC1.7.2.8 | K20935	energy	
+annamox	annamox	HydrazineDeydrogenase & HydrazineSynthase	energy	
+	HydrazineSynthase	EC1.7.2.7 | K20932 | K20933 | K20934	energy	
+Nitrogen fixer	NitrogenFixer	Nitrogenase	energy	
+	Nitrogenase	EC1.18.6.1 | EC1.18.6.2 | K02591 | K02586 | K02588 | K00531 | K22897 | K22896 | K22898 | K22899	energy	
+Phototroph	Phototroph	PhotosystemI | PhotosystemII	energy	
+	PhotosystemI	K02689 | K02690 | K026901 | K02692 | K02693 | K02694 | K08940 | K08941 | K08942 | K08943	energy	
+	PhotosystemII	K02703 | K02704 | K02705 | K02706 | K02707 | K02708 | K08928 | K08929	energy	
+	ETC60	percent60ComplexIA | percent60ComplexIB | percent60ComplexIC	energy	
+	ETC50	percent50ComplexIA | percent50ComplexIB | percent50ComplexIC	energy	
+	percent50ComplexIA	percent(50,ComplexIA)	energy	
+	percent50ComplexIB	percent(50,ComplexIB)	energy	
+	percent50ComplexIC	percent(50,ComplexIC)	energy	
+	percent60ComplexIA	percent(60,ComplexIA)	energy	
+	percent60ComplexIB	percent(60,ComplexIB)	energy	
+	percent60ComplexIC	percent(60,ComplexIC)	energy	
+	ComplexIA	K00330,[K00331 & K00332 & [K00333 | K00331] & [K13378 | K13380]],K00334,K00335,K00336,K00337,K00338,K00339,K00340,[[K00341 & K00342] | K15863],K00343	energy	
+	ComplexIB	K05574,K05582,K05581,K05579,K05572,K05580,K05578,K05576,K05577,K05575,K05573,K05583,K05584,K05585	energy	
+	ComplexIC	K03945,K03946,K03947,K03948,K03949,K03950,K03951,K03952,K03953,K03954,K03955,K03956,K11352,K11353	energy	
+Fermenter	Fermenter	not(NegativeForFermenter)	energy	
+	NegativeForFermenter	ETC50 | methanogen | Denitrifier | sulfatereducer | AerobicAmmoniaOxidizer | Aerobe | Microaerophillic | Phototroph	energy	
+	Denitrifier	ETC50 & [NitrateReductase | NitriteReductase | NitricOxideReductase | NitrousOxideReductase]	energy	
+	NitrousOxideReductase	K00376 | EC1.7.2.4	energy	
+	NitricOxideReductase	K04561 | K02305 | EC1.7.2.5	energy	
+	NitriteReductase	K00368 | K15864 | EC1.7.2.1	energy	
+Aerobe	Aerobe	[CytochromeCOxidase | CytochromeAa3600MenaquinolOxidase | CytochromeOUbiquinolOxidase] & ETC50	energy	
+	CytochromeCOxidase	K02275 | K02274 | K02276 | K15408 | K02277	energy	
+	CytochromeAa3600MenaquinolOxidase	K02827 | K02826 | K02828 | K02829	energy	
+	CytochromeOUbiquinolOxidase	K02297 | K02298 | K02299 | K02300	energy	
+Microaerophillic	Microaerophillic	[percent50CytochromeBDUbiquinolOxidase | percent50CytochromeCOxidaseCBB3] & ETC50	energy	
+	percent50CytochromeBDUbiquinolOxidase	percent(50,CytochromeBDUbiquinolOxidase)	energy	
+	percent50CytochromeCOxidaseCBB3	percent(50,CytochromeCOxidaseCBB3)	energy	
+	CytochromeBDUbiquinolOxidase	K00425,K00426,K00424 | K22501	energy	
+	CytochromeCOxidaseCBB3	K00404 | K00405 | K15862,K00407,K00406	energy	
+	NotNarNapNrf	not(NarNapNrf)	energy	
+	NarNapNrf	NitrateReductase | NRF	energy	
+	NitrateReductase	K00370 | K00371 | K00374 | K02567 | K02568 | EC1.7.5.1 | EC1.9.6.1	energy	
+Iron Oxidation	IronOxidation	[Cyc2 | PioA | Fe:sulfocyanin | foxEYZ | foxABC] & [Microaerophillic | Aerobe | sulfatereducer | Denitrifier | Phototroph]	energy	
+	Cyc2	Fe:Cyc2_repCluster1	energy	
+	PioA	PlaceHolder	energy	
+	foxEYZ	Fe:FoxE | Fe:FoxY | Fe:FoxZ	energy	
+	foxABC	Fe:FoxA | Fe:FoxB | Fe:FoxC	energy	
+	PlaceHolder	FALSE	energy	
+Probable Iron Reduction	ProbIronReduction	[notIronReductionGenes | hemeCount] & ETC50	energy	
+	notIronReductionGenes	not(IronReductionGenes)	energy	
+	hemeCount	NotUnironDescription -> column_count_values(heme_regulatory_motif_count,ge,4,ge,3)	energy	
+	NotUnironDescription	not(UnironDescription)	energy	
+	UnironDescription	filter_contains(kegg_description,"nitrate reductase")	energy	
+Iron Reduction	IronReduction	IronReductionGenes & ETC50	energy	
+	IronReductionGenes	mtrCAB | Fe:omcF | Fe:omcS | Fe:omcZ | Fe:DFE_operons | Fe:FmnA	energy	
+	mtrCAB	Fe:MtrA & Fe:MtrB_TIGR03509 & Fe:MtrC_TIGR03507	energy	
+	DFE_operons	Fe:DFE_0448 | Fe:DFE_0449 | Fe:DFE_0450 | Fe:DFE_0451 | Fe:DFE_0461 | Fe:DFE_0462 | Fe:DFE_0463 | Fe:DFE_0464 | Fe:DFE_0465	energy	
+N reducer	Nreducer	ETC50 & [NitrateReductase | NitriteReductase | NitricOxideReductase | NitrousOxideReductase]	energy	
+Fumarate Reduction	FumarateReduction	at_least(1,FumarateReductionParts)	energy	
+	FumarateReductionParts	K00244,K00245,K00246,K00247	energy	
+Tetrathionate Reduction	TetrathionateReduction	[1ofttrrs & 1ofttrabc] | 2ofttrabc	energy	
+	1ofttrrs	K13040 | K13041	energy	
+	2ofttrabc	at_least(2,ttrabc)	energy	
+	1ofttrabc	at_least(1,ttrabc)	energy	
+	ttrabc	K08359,K08358,K08357	energy	
+DNRA	DNRA	nirBD | nrfAH	energy	
+	nirBD	K00362 | K00363	energy	
+	nrfAH	K03385 | K15876	energy	
+Methanotroph	Methanotroph	pmoA | mmoX	energy	
+	pmoA	K10944 | EC1.14.18.3	energy	
+	mmoX	K16157	energy	
+S oxidizer	sulfateoxidizer	[DsrABtypeo | SoeABC | SorAB | Sqr | FccAB | SoxXA | SoxYZ | SoxB | SoxCD] & percent50NADH	energy	
+	DsrABtypeo	K11180 | S:dsrA | S:dsrB | K11181	energy	BAD dsrAB (oxidizing type) [ --BAD dissimilatory-type sulfite reductase]
+	SoeABC	K21307 | K21308 | K21309	energy	GOOD soeABC
+	SorAB	K05301 | K00386	energy	MAYBE sorAB  PF07682.11  S:SOR or just the kos I used
+	Sqr	S:sqr_alignment | K17218	energy	MAYBE sqr
+	FccAB	K17230 | K17229	energy	GOOD fccAB
+	SoxXA	K17223 | K17222	energy	GOOD soxXA
+	SoxYZ	S:SoxY | K17226 | S:SoxZ | K17227	energy	MAYBE soxYZ
+	SoxB	K17224	energy	GOOD soxB
+	SoxCD	K17225 | K22622	energy	GOOD soxCD Selected the KO that was SUlpher related
+	percent50NADH	percent(50,NADH)	energy	MAYBE 50% of NADH  dehydrogenase with electron acceptor [--BAD is this 2 things]
+	NADH	K03934,K03935,K03936,K03937,K03938,K03939,K03940,K03941,K03942,K03943,K03944	energy	I am going to include the optional extra K03934+K03935+K03936+K03937+K03938+K03939+K03940+K03941+K03942+K03943-K03944
+S reducer	sulfatereducer	DsrABtyper | PhsA | TtrA	energy	
+	DsrABtyper	K11180 | S:dsrA | S:dsrB | K11181	energy	BAD dsrAB (reducing type) [dissimilatory-type sulfite reductase in sulpher]
+	PhsA	K08352	energy	MAYBE phsA [S:thiosulfate_reductase_phsA_alignment]
+	TtrA	K08357	energy	GOOD ttrA
+Simple Sugars Glucose	Glucose	K02777 | K02779 | K02791 | K20118 | K18124 | K18125 | K00115 | K00117 | K19813 | K18851 | K00844 | K12407 | K00845 | K25026	carbon	
+Simple Sugars Sucrose	Sucrose	K01182 | K01203 | K12047 | K01187 | K12316 | K12317 | K06617 | K01193 | K00695 | K02810 | K00690 | K05341 | K00689 | K00692	carbon	
+Simple Sugars Mannose	Mannose	[K01809 | K02793 | K02794 | K02795] | K02796	carbon	
+Simple Sugars Galactose	Galactose	[K00849 | K00965 | K01784] | K01785	carbon	
+Simple Sugars Fucose	Fucose	[K00879 | K01628] | K01818	carbon	
+Simple Sugars Xylose	Xylose	[K00854 | K01805 | K00008 | K00011 | K00854 | K05351 | K17743 | K00078 | K14273 | K14274] | K14275	carbon	
+Simple Sugars Fructose	Fructose	K00008 | K00045 | K27924 | K00007 | K00844 | K00847 | K01805 | K00846 | K27475 | K02768 | K02769 | K02770 | K02771 | K11194 | K11195 | K11196	carbon	
+Simple Sugars Arabinose	Arabinose	K01804 | K00011 | K26066 | K13873 | K19660 | K12446	carbon	
+Simple Sugars Ribose	Ribose	K00852	carbon	
+Simple Sugars Rhamnose	Rhamnose	K01813 | K01820 | K18337	carbon	
+Simple Sugars Maltose	Maltose	K05343 | K00691 | K06896 | K16146 | K00705 | K22451 | K12047 | K01187 | K12316 | K12317	carbon	
+Simple Sugars Raffinose	Raffinose	K006611 | K01193 | K01189 | K07406 | K07407	carbon	
+Simple Sugars Sorbose	Sorbose	K02812 | K02813 | K02814 | K02815	carbon	
+Simple Sugars Trehalose	Trehalose	K12437 | K02777 | K02819 | K01194 | K22934 | K05342 | K05343	carbon	
+Simple Sugars Lactose	Lactose	[K01190 | K12111 | K12112] | K12309	carbon	
+Complex Polysaccharide Amorphous Cellulose	Amorphous Cellulose	[[GH94 | GH1 | GH2 | GH3 | GH5 | GH9 | GH16] | GH116] & [[GH5 | GH6 | GH7 | GH8 | GH9 | GH10 | GH124 | GH12 | GH44] | GH45]	carbon	
+Complex Polysaccharide Crystalline Cellulose	Crystalline Cellulose	[GH7 | GH48 | AA10 | AA15 | AA16 | AA9 | AA10 | AA11] | AA13	carbon	
+Complex Polysaccharide Starch	Starch	[[AA13 | GH13 | GH14 | GH57 | GH119] | GH126] & [[GH133 | GH15] | GH97]	carbon	
+Complex Polysaccharide Pectin	Pectin	[[GH28 | PL1 | PL2 | PL9 | PL10 | PL11 | PL22 | PL26 | PL3] | PL4] & [[GH78 | GH106 | GH138 | GH139 | GH143 | CE8 | GH105 | GH4 | CE12] | GH2]	carbon	
+Complex Polysaccharide Beta-mannan	Beta-mannan	[[GH113 | GH134 | GH26] | GH5] & [[GH26 | GH130 | GH113 | CE2 | CE17] | GH2]	carbon	
+Complex Polysaccharide Alpha-mannan	Alpha-mannan	[[GH99 | GH76] & [GH76 | GH92 | GH38 | GH63 | GH47 | GH125]] | GH130	carbon	
+Complex Polysaccharide Xyloglucan	Xyloglucan	[[GH5 | GH9 | GH12 | GH16 | GH44 | GH45 | GH48 | GH74] | AA9] & [[GH31 | GH43 | GH10] | GH2]	carbon	
+Complex Polysaccharide Xylan	Xylan	[[AA13 | GH13 | GH14 | GH57 | GH119] | GH126] & [[GH133 | GH15] | GH97]	carbon	
+Short-Chain Fatty Acids (SCFA) Acetate	Acetate-Final	Acetate-1 | Acetate-2 | Acetate-3	carbon	
+	Acetate-1	[[Acetate-sub1 & [K00163 | K00161 | K00162] & K00627] | [K00174 | K00175] | [K00169 | K00170 | K00172 | K00189 | K00171 | K03737]] & [K01905 | K22224 | K24012]	carbon	
+	Acetate-2	Acetate-sub1 & K01568 & [K00138 | K00128 | K14085 | K00149 | K00129]	carbon	
+	Acetate-3	K001895 | K01913	carbon	
+	Acetate-sub1	[K00163 | K00161 | K00162 | K01568]	carbon	
+Short-Chain Fatty Acids (SCFA) Propionate	Propionate-Final	Propionate-1 | Propionate-2 | Propionate-3	carbon	
+	Propionate-1	"[
+						[K01899 | K01900 | K01902 | K01903 | K01899]
+						& [K01847 | K01849 | K01848]
+						& [K00140 | [K05606 & [K11264 | K03416 | K18426]]]
+						& Propionate-sub2
+					]
+					| Propionate-sub1"	carbon	
+	Propionate-2	[K01026 & [K20626 | K20627] & [K00248 | K00232] & Propionate-sub2] | Propionate-sub1	carbon	
+	Propionate-3	[[K01699 | K13919 | K13920] & K13922 & Propionate-sub2] | Propionate-sub1	carbon	
+	Propionate-sub1	"[
+						[K01206 | K01905 | K22224 | K24012] 
+						| [
+							[
+								[K13788 | K00625 | K15024 | K13923]
+								| [K00169 | K00170 | K00172 | K00189 | K00171]
+								| K00656
+							]
+							& [K00925 | K00932 | K19697]
+						]
+					]"	carbon	
+	Propionate-sub2	[K01895 | K01908]	carbon	
+Short-Chain Fatty Acids (SCFA) Butyrate	Butyrate-Final	Butyrate-1 | Butyrate-2 | Butyrate-3 | Butyrate-4	carbon	
+	Butyrate-1	K00626 & [K00074 | K00022 | K07516 | K01825 | K01782 | K07514] & [K01692 | K01825 | K01782 | K07515 | K07514 | K07511 | K01715] & Butyrate-sub1	carbon	
+	Butyrate-2	[K00135 | K08324 | K00135 | K00139 | K17761 | K08324] & Butyrate-sub2 & Butyrate-sub1	carbon	
+	Butyrate-3	K01580 & [K13524 | K07250 | K14268 | K00823 | K16871] & Butyrate-sub2 & Butyrate-sub1	carbon	
+	Butyrate-4	"K01843
+				& [K01844 | K18011]
+				& K18012
+				& K18013
+				& [
+					[K01034 | K01035]
+					| [
+						K18014
+						& [K01692 | K01825 | K01782 | K07515 | K07514 | K07511]
+						& [K00022 | K01825 | K01782 | K07514]
+					]
+				]
+				& Butyrate-1"	carbon
+	Butyrate-sub1	[K00209 | K17829] & [K01034 | K01035 | K19709]	carbon	
+	Butyrate-sub2	[K00043 | K08318 | K18120 | K18121] & K18122 & K14534	carbon	
+Short-Chain Fatty Acids (SCFA) Lactate	Lactate-Final	Lactate-1 | Lactate-2 | Lactate-3	carbon
+	Lactate-1	"Lactate-sub1
+				& [
+					[
+						[K00134 | K00150]
+						& [K00927 | K01837]
+						& [K01834 | K15633 | K15634 | K15635 | K01837]
+					]
+					| [
+						[K11389 | K00131 | K18978]
+						& [K01834 | K15633 | K15634 | K15635 | K01837]
+					]
+					| [
+						[K00134 | K00150]
+						& K01837 & K03103
+					]
+				]
+				& [K01689 | K27394 | K00873 | K12406]
+				& K00016"	carbon	
+	Lactate-2	K00016	carbon	
+	Lactate-3	[K18124 | K18125 | K00115 | K19813 | K00117] & K01053 & K05308 & [K11395 | K18127] & K00016	carbon	
+	Lactate-sub1	"[K00844 | K00886 | K08074 | K00918 | K12407 | K00845 | K25026]
+					& [K01810 | K06859 | K13810 | K15916]
+					& [K24182 | K00850 | K16370 | K21071 | K00918 | K00895 | K21071]
+					& [K01623 | K01624 | K01622 | K11645 | K16305 | K16306]"	carbon	
+Short-Chain Fatty Acids (SCFA) Formate	Formate	K00656	carbon	
+Amino Acids Glutamate	Glutamate	K11067 | K00618 | K00619 | K14681 | K14682 | K00620 | K22476 | K22477 | K22478 | K19412 | K25032 | K00260 | K00261 | K00262 | K01915 | K00931 | K18538 | K18539 | K00603 | K01776 | K11204 | K11205 | K01909 | K06048 | K13559 | K01915 | K14272 | K05825 | K28204 | K19268 | K01846 | K01885 | K14163 | K09698 | K14223 | K01886	carbon	
+Amino Acids Glycine	Glycine	K00659 | K00273 | K14272 | K00827 | K00830 | K14272 | K00281 | K00282 | K00283 | K00643 | K01620 | K20801 | K00639 | K18896 | K24071 | K00552 | K00613 | K00830 | K00600 | K10814 | K10815 | K10816 | K19967 | K21456 | K01920 | K00605 | K00382 | K02437 | K03153 | K01878 | K01879 | K01880 | K14164	carbon	
+Amino Acids Alanine	Alanine	K00814 | K14260 | K14272 | K00827 | K00830 | K14272 | K00259 | K19244 | K03851 | K01775 | K01798 | K01872 | K23665	carbon	
+Amino Acids Serine	Serine	K17989 | K01754 | K10752 | K25316 | K25317 | K12235 | K01695 | K01696 | K06001 | K01694 | K00600 | K00830 | K01697 | K10150 | K13290 | K17989 | K01752 | K00640 | K23304 | K23370 | K25193 | K00654 | K00640 | K23304 | K01875 | K23371	carbon	
+Organic Acids Oxalate	Oxalate	K01569 | K22133	carbon	
+Organic Acids Citrate	Citrate	K01681 | K27802 | K01682 | K05942 | K01648 | K01647 | K01659 | K15230 | K15231 | K27797 | K18310 | K27802 | K01682 | K15232 | K15233	carbon	
+Organic Acids Malate	Malate	K00025 | K00026 | K00024 | K00116 | K01676 | K01677 | K01678 | K01679 | K01675 | K01774 | K00051 | K22212 | K01638 | K08692 | K14067 | K00029 | K00028 | K14471 | K14472	carbon	
+Aromatics/Phenolics Vanillin	Vanillin	K21802 | K24276	carbon	
+Lipids Glycerol	Glycerol	K01189 | K07406 | K07407 | K00005 | K22251 | K18097 | K00864 | K06120 | K06121 | K06122 | K00011 | K00002 | K13979	carbon	
+Microbial Compounds Chitin	Chitin	K01183 | K20547 | K13381 | K01452	carbon	

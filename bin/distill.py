@@ -1,26 +1,24 @@
 #!/usr/bin/env python
 """This is the script that distills the genomes"""
-from collections import Counter
-from itertools import chain
-import pandas as pd
-from collections import Counter, defaultdict
 import click
 import os
 from pathlib import Path
-
+import polars as pl
+from xlsxwriter import Workbook
 from utils.logger import get_logger
 from utils.click_utils import validate_comma_separated
 from utils.click_utils import validate_comma_separated
-from rule_adjectives.annotations import FUNCTION_DICT
-
-# TODO: add RBH information to output
-# TODO: add flag to output table and not xlsx
-# TODO: add flag to output heatmap table
+from utils.excel import write_summarized_genomes_to_xlsx
+from rule_parser.src.rules import evaluate_rules_on_anno, ID_EXPR_DICT
 
 logger = get_logger(filename=Path(__file__).stem)
 
-COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_SHEET, COL_HEADER, COL_SUBHEADER = 'gene_id', 'gene_description', 'pathway', 'topic_ecosystem','category', 'subcategory'
-FRAME_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_SHEET, COL_HEADER, COL_SUBHEADER]
+COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_SHEET, COL_HEADER, COL_SUBHEADER, RULES_PARENT, RULES = 'gene_id', 'gene_description', 'pathway', 'topic_ecosystem','category', 'subcategory', 'parent', 'rules'
+OPTIONAL_COLUMNS = [RULES_PARENT, RULES]
+RRNA_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_SHEET, COL_HEADER, COL_SUBHEADER]
+TRNA_COLUMNS = RRNA_COLUMNS + ['AA_type']
+CORE_COLUMNS = RRNA_COLUMNS + [COL_MODULE]
+FRAME_COLUMNS = CORE_COLUMNS + OPTIONAL_COLUMNS
 RRNA_TYPES = ['5S rRNA', '16S rRNA', '23S rRNA']
 TAXONOMY_LEVELS = ['d', 'p', 'c', 'o', 'f', 'g', 's']
 CONSTANT_DISTILLATE_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_HEADER, COL_SUBHEADER]
@@ -29,10 +27,10 @@ EXCEL_MAX_CELL_SIZE = 32767
 
 DISTILL_DIR = Path(__file__).parent / "assets/forms/distill_sheets"
 
-
+    
 def check_columns(data, logger):
-    functions = {i:j for i,j in FUNCTION_DICT.items() if i in data.columns}
-    missing = [i for i in FUNCTION_DICT if i not in data.columns]
+    functions = [i for i in ID_EXPR_DICT if i in data.columns]
+    missing = [i for i in ID_EXPR_DICT if i not in data.columns]
     logger.info("Note: the following id fields "
           f"were not in the annotations file and are not being used: {missing},"
           f" but these are {list(functions.keys())}")
@@ -137,14 +135,21 @@ def split_column_str(names):
             out += ['']
     return out
 
+    df = evaluate_rules_on_anno(
+        rules=genome_summary_frame,
+        # rules_tsv_path="/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM/bin/assets/forms/distill_sheets/distill_metals.tsv",
+        annotations=annotations,
+        sample_col="query_id",
+        label_col="gene_id",
+        parent_col=None,
+        rules_col=rules_col
+        )
+    df = df.join(annotations.select([pl.col("query_id"), pl.col("input_fasta")]), on="query_id").drop("query_id")
+    df = df.group_by("input_fasta").agg(pl.exclude("input_fasta").sum())
 
-def split_names_to_long(col:pd.Series):
-    dex = col.index
-    splits = [split_column_str(i) for i in col.values]
-    ncols =  max([len(i) for i in splits])
-    col_names = [col.name if i == 0 else f"{col.name}[{i + 1}]" for i in range(ncols)]
-    return pd.DataFrame(splits, columns=col_names, index=dex).fillna('')
+    df = df.select(pl.exclude("input_fasta")).transpose(include_header=True, header_name="gene_id", column_names=df["input_fasta"])
 
+    df = genome_summary_frame.collect().join(df, on="gene_id", how="left")
 
 def write_summarized_genomes_to_xlsx(summarized_genomes, output_file, extra_frames=tuple()):
     # turn all this into an xlsx
@@ -161,6 +166,7 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file, extra_fram
             if extra_frame is not None and not extra_frame.empty:
                 extra_frame.to_excel(writer, sheet_name=extra_frame[COL_HEADER].iloc[0], index=False)
 
+    return df
 
 # TODO: add assembly stats like N50, longest contig, total assembled length etc
 def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame=None, groupby_column="input_fasta"):
@@ -174,8 +180,8 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
         columns.append('completeness score')
     if 'bin_contamination' in annotations.columns:
         columns.append('contamination score')
-    for genome, frame in annotations.groupby(groupby_column, sort=False):
-        row = [genome]
+    for genome, frame in annotations.group_by(groupby_column):
+        row = [genome[0]]
         if 'scaffold' in frame.columns:
             row.append(len(set(frame['scaffold'])))
         if 'bin_taxonomy' in frame.columns:
@@ -185,11 +191,10 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
         if 'bin_contamination' in frame.columns:
             row.append(frame['bin_contamination'][0])
         rows.append(row)
-    genome_stats = pd.DataFrame(rows, columns=columns)
+    genome_stats = pl.DataFrame(rows, schema=columns, orient='row')
     if rrna_frame is not None:
         # Identify the "sample" columns (everything that's not metadata)
-        meta_cols = ["gene_id", "gene_description", "category",
-                     "topic_ecosystem", "subcategory"]
+        meta_cols = RRNA_COLUMNS
         sample_cols = [c for c in rrna_frame.columns if c not in meta_cols]
 
         df_rrna = rrna_frame.groupby("gene_id")[sample_cols].sum()
@@ -202,28 +207,31 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
         df_rrna.columns.name = None
         genome_stats = pd.merge(genome_stats, df_rrna, how="outer", on="genome")
     if trna_frame is not None:
-        meta_cols = ["gene_id", "gene_description", "category",
-            "topic_ecosystem", "subcategory", "AA_type"]
+        meta_cols = TRNA_COLUMNS
 
         sample_cols = [c for c in trna_frame.columns if c not in meta_cols]
 
-        # filter out Undet and Sup types
-        df_trna = trna_frame[~trna_frame["AA_type"].isin(["Undet", "Sup"])]
-
-        df_trna = df_trna.groupby("AA_type")[sample_cols].sum()
+        df_trna = (
+            trna_frame
+            .filter(~pl.col("AA_type").is_in(["Undet", "Sup"]))
+            .group_by("AA_type")
+            .agg([pl.col(c).sum().alias(c) for c in sample_cols])
+            .select([(pl.col(c) != 0).cast(pl.Int64).sum().alias(c) for c in sample_cols])
+            .transpose(include_header=True, header_name="genome", column_names=["tRNA count"])
+        )
+        genome_stats = genome_stats.join(df_trna, on="genome", how="inner")
         
-        df_trna = (df_trna != 0).astype(int)
-
-        df_trna = pd.DataFrame(df_trna.sum(), columns=["tRNA count"])
-        df_trna.index.name = "genome"
-        df_trna = df_trna.reset_index()
-        genome_stats = pd.merge(genome_stats, df_trna, how="outer", on="genome")
     if quast_frame is not None:
-        quast_frame = quast_frame.rename(columns={groupby_column: "genome"})
-        quast_frame = quast_frame.drop(columns=["no. contigs"])
-        genome_stats = pd.merge(genome_stats, quast_frame, how="outer", on="genome")
-    return genome_stats
+        quast_frame = (
+            quast_frame
+            .rename({groupby_column: "genome"})
+            .drop("no. contigs")
+        )
 
+        genome_stats = genome_stats.join(quast_frame, on="genome", how="inner")
+        assert genome_stats.shape[0] == quast_frame.shape[0], "genomes from annotation file don't map to quast file"
+
+    return genome_stats
 
 
 @click.command()
@@ -243,11 +251,12 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
 def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil_topics, distil_ecosystem,
                       custom_distillate, distillate_gene_names):
     """Summarize metabolic content of annotated genomes"""
-    # make output folder
-    # mkdir(output_dir)
 
     # read in data
-    annotations = pd.read_csv(input_file, sep='\t', index_col=0)
+    try:
+        annotations = pl.read_csv(input_file, separator="\t", infer_schema_length=10_000)
+    except Exception as e:
+        annotations = pl.read_csv(input_file, separator="\t", infer_schema_length=None)
     if 'bin_taxnomy' in annotations:
         annotations = annotations.sort_values('bin_taxonomy')
 
@@ -276,7 +285,8 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
             DISTILL_DIR / "distill_energy.tsv",
             DISTILL_DIR / "distill_misc.tsv",
             DISTILL_DIR / "distill_nitrogen.tsv",
-            DISTILL_DIR / "distill_transport.tsv"
+            DISTILL_DIR / "distill_transport.tsv",
+            DISTILL_DIR / "distill_metals.tsv"
         ]
     else:
         if 'carbon' in distil_topics:
@@ -289,6 +299,8 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
             distil_sheets_names.append(DISTILL_DIR / "distill_nitrogen.tsv")
         if 'transport' in distil_topics:
             distil_sheets_names.append(DISTILL_DIR / "distill_transport.tsv")
+        if "metals" in distil_topics:
+            distil_sheets_names.append(DISTILL_DIR / "distill_metals.tsv")
     
         
     if "ag" in distil_ecosystem:
@@ -305,16 +317,16 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
         for custom_sheet in custom_distillate:
             distil_sheets_names.append(custom_sheet)
     
-    genome_summary_form = pd.concat(
-        [pd.read_csv(sheet, 
-                     sep='\t', 
-                     usecols=FRAME_COLUMNS) 
-         for sheet in distil_sheets_names],
+    genome_summary_form = pl.concat(
+        [
+            pl.scan_csv(s, separator="\t")
+            .select([c for c in FRAME_COLUMNS if c in pl.scan_csv(s, separator="\t", n_rows=0).columns])
+            for s in distil_sheets_names
+        ],
+        how="diagonal",
     )
     
     logger.info('Retrieved distillate genome summary form')
-
-    genome_summary_form = genome_summary_form.reset_index(drop=True)
 
     # make genome stats
     genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, quast_frame, groupby_column=groupby_column)
@@ -323,14 +335,21 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
 
     # make genome metabolism summary
     genome_summary = 'metabolism_summary.xlsx'
-    if distillate_gene_names:
-        logger.info(f'distillate_gene_names flag is {distillate_gene_names}. Giving gene names instead of counts in genome metabolism summary')
-        summarized_genomes = fill_genome_summary_frame_gene_names(annotations, genome_summary_form, groupby_column, logger)
-    else:
-        logger.info(f'distillate_gene_names flag is {distillate_gene_names}. Giving counts instead of gene names in genome metabolism summary')
-        summarized_genomes = make_genome_summary(annotations, genome_summary_form, logger, groupby_column)
-    summarized_genomes.to_csv('summarized_genomes.tsv', sep='\t', index=None)
-    write_summarized_genomes_to_xlsx(summarized_genomes, genome_summary, extra_frames=[rrna_frame, trna_frame])
+    logger.info(f'Giving counts for genome metabolism summary')
+    summarized_genomes = make_genome_summary(annotations, genome_summary_form, logger, groupby_column)
+    summarized_genomes.write_csv('summarized_genomes.tsv', separator='\t')
+    kw = {"extra_frames": []}
+    if rrna_frame is not None:
+        kw["extra_frames"].append(rrna_frame)
+    if trna_frame is not None:
+        kw["extra_frames"].append(trna_frame)
+    write_summarized_genomes_to_xlsx(
+        df=summarized_genomes,
+        output_file=genome_summary,
+        group_by=COL_SHEET,
+        sort_order_columns=DISTILATE_SORT_ORDER_COLUMNS,
+        **kw
+    )
     logger.info('Generated genome metabolism summary')
 
     

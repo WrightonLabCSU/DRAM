@@ -1,0 +1,3 @@
+[submodule "bin/rule_parser"]
+	path = bin/rule_parser
+	url = https://github.com/WrightonLabCSU/Rule-Parser

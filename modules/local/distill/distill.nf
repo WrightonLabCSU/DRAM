@@ -4,7 +4,7 @@ process SUMMARIZE {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_openpyxl_click_dram-viz:bd6f4fb065d73a68"
+    container "community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:00822989eabb8b47"
 
     input:
     path combined_annotations

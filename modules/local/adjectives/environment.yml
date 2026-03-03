@@ -3,10 +3,10 @@ channels:
   - bioconda
 
 dependencies:
-  - python=3.10
-  - pandas=1.5.2
+  - python=3.14
   - click<9.0
-  - graphviz
-  - python-graphviz
-  - networkx=2.8.8
-  - dram-viz=0.1.8
+  - polars>1
+  - pyarrow
+  - xlsxwriter
+  - numpy
+  - lark
