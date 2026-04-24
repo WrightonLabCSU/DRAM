@@ -68,13 +68,13 @@
                     "format": "path",
                     "exists": true,
                     "description": "Path to FASTA directory",
-                    "help_text": "This parameter is *mandatory*.",
+                    "help_text": "This parameter is *mandatory*. Files may be uncompressed (.fa/.fna/.fasta) or gzip-compressed (.fa.gz/.fna.gz/.fasta.gz); compressed inputs are decompressed automatically.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "fasta_fmt": {
                     "type": "string",
                     "default": "*.f*",
-                    "description": "Input format for the FASTA file.",
+                    "description": "Input glob for the FASTA files. The default matches both plain and .gz files.",
                     "fa_icon": "fas fa-plus"
                 },
                 "input_genes": {

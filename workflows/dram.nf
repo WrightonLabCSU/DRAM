@@ -20,6 +20,7 @@ include { MERGE                  } from "../subworkflows/local/merge.nf"
 include { ANNOTATE               } from "../subworkflows/local/annotate.nf"
 include { ADD_ANNOTATIONS        } from "../modules/local/add_and_combine/add_annotations.nf"
 include { SUMMARIZE              } from "../modules/local/distill/distill.nf"
+include { DECOMPRESS_FASTA       } from "../modules/local/rename/decompress_fasta.nf"
 
 
 /*
@@ -60,11 +61,23 @@ workflow DRAM {
 
 
     if (params.rename || call) {
-        ch_fasta = channel
+        ch_fasta_raw = channel
             .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
 
-        ch_fasta = ch_fasta.map { it -> [ it.getBaseName(), it ] }
+        // Strip .gz (if present) and then .fa/.fna/.fasta so gz and plain inputs yield identical sample names
+        ch_fasta_named = ch_fasta_raw.map { f ->
+            def name = f.name.replaceAll(/\.gz$/, '').replaceAll(/\.(fa|fna|fasta)$/, '')
+            [ name, f ]
+        }
+
+        ch_fasta_branched = ch_fasta_named.branch { entry ->
+            gz: entry[1].name.endsWith('.gz')
+            plain: true
+        }
+
+        DECOMPRESS_FASTA( ch_fasta_branched.gz )
+        ch_fasta = DECOMPRESS_FASTA.out.decompressed_fasta.mix( ch_fasta_branched.plain )
     }
 
     use_kegg = params.use_kegg
