@@ -147,7 +147,7 @@ workflow DB_SEARCH {
         HMM_SEARCH_KOFAM ( 
             ch_combined_proteins_locs, 
             params.kofam_e_value, 
-            DB_CHANNEL_SETUP.out.ch_kofam_db,
+            DB_channel_SETUP.out.ch_kofam_db,
             ch_kofam_list,
             true,
             kofam_name
@@ -172,7 +172,7 @@ workflow DB_SEARCH {
         HMM_SEARCH_DBCAN ( 
             ch_combined_proteins_locs, 
             params.dbcan_e_value,
-            DB_CHANNEL_SETUP.out.ch_dbcan_db,
+            DB_channel_SETUP.out.ch_dbcan_db,
             default_sheet,
             false,
             dbcan_name
@@ -189,7 +189,7 @@ workflow DB_SEARCH {
         HMM_SEARCH_CAMPER ( 
             ch_combined_proteins_locs, 
             params.camper_e_value, 
-            DB_CHANNEL_SETUP.out.ch_camper_hmm_db,
+            DB_channel_SETUP.out.ch_camper_hmm_db,
             ch_camper_hmm_list,
             false,
             camper_name
@@ -210,7 +210,7 @@ workflow DB_SEARCH {
         HMM_SEARCH_FEGENIE ( 
             ch_combined_proteins_locs,  
             params.fegenie_e_value, 
-            DB_CHANNEL_SETUP.out.ch_fegenie_db,
+            DB_channel_SETUP.out.ch_fegenie_db,
             default_sheet,
             false,
             fegenie_name
@@ -240,7 +240,7 @@ workflow DB_SEARCH {
         HMM_SEARCH_CANTHYD ( 
             ch_combined_proteins_locs, 
             params.canthyd_e_value, 
-            DB_CHANNEL_SETUP.out.ch_canthyd_hmm_db,
+            DB_channel_SETUP.out.ch_canthyd_hmm_db,
             ch_canthyd_hmm_list,
             false,
             canthyd_name
@@ -255,7 +255,7 @@ workflow DB_SEARCH {
         HMM_SEARCH_SULFUR ( 
             ch_combined_proteins_locs,  
             params.sulfur_e_value, 
-            DB_CHANNEL_SETUP.out.ch_sulfur_db,
+            DB_channel_SETUP.out.ch_sulfur_db,
             default_sheet,
             false,
             sulfur_name
@@ -291,7 +291,7 @@ workflow DB_SEARCH {
         HMM_SEARCH_METALS ( 
             ch_combined_proteins_locs,  
             params.metals_e_value, 
-            DB_CHANNEL_SETUP.out.ch_metals_db,
+            DB_channel_SETUP.out.ch_metals_db,
             default_sheet,
             false,
             metals_name
@@ -305,7 +305,7 @@ workflow DB_SEARCH {
         HMM_SEARCH_VOG (
             ch_combined_proteins_locs, 
             params.vog_e_value, 
-            DB_CHANNEL_SETUP.out.ch_vogdb_db,
+            DB_channel_SETUP.out.ch_vogdb_db,
             default_sheet,
             false,
             vogdb_name            
