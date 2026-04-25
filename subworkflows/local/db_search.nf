@@ -153,7 +153,7 @@ workflow DB_SEARCH {
             kofam_name
             )
         ch_kofam_formatted = HMM_SEARCH_KOFAM.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_kofam_formatted)
+        formattedOutputchannels = formattedOutputchannels.mix(ch_kofam_formatted)
     }
     // PFAM annotation
     if (use_pfam) {
@@ -180,7 +180,7 @@ workflow DB_SEARCH {
         ch_dbcan_unformatted = HMM_SEARCH_DBCAN.out.formatted_hits
         SQL_DBCAN(ch_dbcan_unformatted, dbcan_name, ch_sql_descriptions_db)
         ch_dbcan_formatted = SQL_DBCAN.out.sql_formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
+        formattedOutputchannels = formattedOutputchannels.mix(ch_dbcan_formatted)
     }
     // CAMPER annotation
     if (use_camper) {
@@ -195,7 +195,7 @@ workflow DB_SEARCH {
             camper_name
         )
         ch_camper_hmm_formatted = HMM_SEARCH_CAMPER.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_camper_hmm_formatted)
+        formattedOutputchannels = formattedOutputchannels.mix(ch_camper_hmm_formatted)
 
         // MMseqs
         ch_combined_query_locs_camper = ch_mmseqs_query.join(ch_gene_locs)
@@ -216,7 +216,7 @@ workflow DB_SEARCH {
             fegenie_name
             )
         ch_fegenie_formatted = HMM_SEARCH_FEGENIE.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_fegenie_formatted)
+        formattedOutputchannels = formattedOutputchannels.mix(ch_fegenie_formatted)
     }
     // Methyl annotation
     if (use_methyl) {
@@ -246,7 +246,7 @@ workflow DB_SEARCH {
             canthyd_name
             )
         ch_canthyd_hmm_formatted = HMM_SEARCH_CANTHYD.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_canthyd_hmm_formatted)
+        formattedOutputchannels = formattedOutputchannels.mix(ch_canthyd_hmm_formatted)
 
     }
     // Sulfur annotation
@@ -261,7 +261,7 @@ workflow DB_SEARCH {
             sulfur_name
             )
         ch_sulfur_formatted = HMM_SEARCH_SULFUR.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_sulfur_formatted)
+        formattedOutputchannels = formattedOutputchannels.mix(ch_sulfur_formatted)
     }
     // MEROPS annotation
     if (use_merops) {
@@ -297,7 +297,7 @@ workflow DB_SEARCH {
             metals_name
             )
         ch_metals_formatted = HMM_SEARCH_METALS.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_metals_formatted)
+        formattedOutputchannels = formattedOutputchannels.mix(ch_metals_formatted)
     }
     // VOGdb annotation
     if (use_vog) {
@@ -311,7 +311,7 @@ workflow DB_SEARCH {
             vogdb_name            
             )
         ch_vog_formatted = HMM_SEARCH_VOG.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_vog_formatted)
+        formattedOutputchannels = formattedOutputchannels.mix(ch_vog_formatted)
     }
     // Viral annotation
     if (params.use_viral) {
