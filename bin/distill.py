@@ -332,7 +332,7 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
 
     # make genome stats
     genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, quast_frame, groupby_column=groupby_column)
-    genome_stats.to_csv('genome_stats.tsv', sep='\t', index=None)
+    genome_stats.write_csv('genome_stats.tsv', separator='\t')
     logger.info('Calculated genome statistics')
 
     # make genome metabolism summary
