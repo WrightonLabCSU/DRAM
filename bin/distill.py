@@ -193,19 +193,16 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
         rows.append(row)
     genome_stats = pl.DataFrame(rows, schema=columns, orient='row')
     if rrna_frame is not None:
-        # Identify the "sample" columns (everything that's not metadata)
         meta_cols = RRNA_COLUMNS
         sample_cols = [c for c in rrna_frame.columns if c not in meta_cols]
 
-        df_rrna = rrna_frame.groupby("gene_id")[sample_cols].sum()
-
-        # Transpose so samples become rows and genes become columns
-        df_rrna = df_rrna.T.reset_index()
-
-        # Rename the index column to input_fasta (or whatever you want)
-        df_rrna = df_rrna.rename(columns={"index": "genome"})
-        df_rrna.columns.name = None
-        genome_stats = pd.merge(genome_stats, df_rrna, how="outer", on="genome")
+        df_rrna = (
+            rrna_frame
+            .group_by("gene_id")
+            .agg([pl.col(c).sum().alias(c) for c in sample_cols])
+            .transpose(include_header=True, header_name="genome", column_names="gene_id")
+        )
+        genome_stats = genome_stats.join(df_rrna, on="genome", how="left")
     if trna_frame is not None:
         meta_cols = TRNA_COLUMNS
 
