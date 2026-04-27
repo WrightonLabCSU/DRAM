@@ -26,6 +26,8 @@ process SUMMARIZE {
     def rrna = rrna_collected ? "--rrna_path ${rrna_collected}" : ""
     def trna = trna_collected ? "--trna_path ${trna_collected}" : ""
     def quast = quast_stats ? "--quast_path ${quast_stats}" : ""
+    def groupby = params.use_dramv ? "scaffold" : params.groupby_column
+    def amg_only = params.use_dramv ? "--amg_only" : ""
 
     """
     distill.py \
@@ -33,9 +35,11 @@ process SUMMARIZE {
         ${rrna} \
         ${trna} \
         ${quast} \
+        --groupby_column ${groupby} \
         --distil_topics "${distill_topic}" \
         --distil_ecosystem "${distill_ecosystem}" \
         --custom_distillate "${distill_custom}" \
+        ${amg_only} \
         ${args}
     """
 }

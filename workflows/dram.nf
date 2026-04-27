@@ -278,7 +278,7 @@ workflow DRAM {
             if (!ch_final_annots) {
                 error("Error: If you specify --product, you must also specify --annotate or --distill_<topic|ecosystem|custom> to generate the product heatmap or provide an annotations TSV file (--annotations <path>).")
             }
-            PRODUCT_HEATMAP( ch_final_annots, params.groupby_column )
+            PRODUCT_HEATMAP( ch_final_annots, params.use_dramv ? 'scaffold' : params.groupby_column )
         }
         //
         // ADJECTIVES
