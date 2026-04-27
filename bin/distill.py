@@ -111,14 +111,43 @@ def summarize_rrnas(rrnas_df, groupby_column="input_fasta"):
 
 
 def make_genome_summary(annotations, genome_summary_frame, logger, groupby_column="input_fasta"):
-    
-    summary_frames = list()
-    # get ko summaries
-    summary_frames.append(fill_genome_summary_frame(annotations, genome_summary_frame.copy(), groupby_column, logger))
+    summary = genome_summary_frame.collect()
 
-    # merge summary frames
-    summarized_genomes = pd.concat(summary_frames, sort=False)
-    return summarized_genomes
+    if RULES not in summary.columns:
+        summary = summary.with_columns(pl.lit(None, dtype=pl.Utf8).alias(RULES))
+    summary = summary.with_columns(
+        pl.when(pl.col(RULES).is_null() | (pl.col(RULES).cast(pl.Utf8) == ""))
+          .then(pl.col(COL_GENE_ID))
+          .otherwise(pl.col(RULES))
+          .alias(RULES)
+    )
+
+    rule_hits = evaluate_rules_on_anno(
+        annotations=annotations,
+        sample_col="query_id",
+        rules=summary.lazy(),
+        label_col=COL_GENE_ID,
+        parent_col=None,
+        rules_col=RULES,
+    )
+
+    counts = (
+        rule_hits.join(
+            annotations.select([pl.col("query_id"), pl.col(groupby_column)]),
+            on="query_id",
+        )
+        .drop("query_id")
+        .group_by(groupby_column)
+        .agg(pl.exclude(groupby_column).sum())
+    )
+
+    counts = counts.select(pl.exclude(groupby_column)).transpose(
+        include_header=True,
+        header_name=COL_GENE_ID,
+        column_names=counts[groupby_column],
+    )
+
+    return summary.drop(RULES).join(counts, on=COL_GENE_ID, how="left")
 
 
 def split_column_str(names):
@@ -135,38 +164,6 @@ def split_column_str(names):
             out += ['']
     return out
 
-    df = evaluate_rules_on_anno(
-        rules=genome_summary_frame,
-        # rules_tsv_path="/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM/bin/assets/forms/distill_sheets/distill_metals.tsv",
-        annotations=annotations,
-        sample_col="query_id",
-        label_col="gene_id",
-        parent_col=None,
-        rules_col=rules_col
-        )
-    df = df.join(annotations.select([pl.col("query_id"), pl.col("input_fasta")]), on="query_id").drop("query_id")
-    df = df.group_by("input_fasta").agg(pl.exclude("input_fasta").sum())
-
-    df = df.select(pl.exclude("input_fasta")).transpose(include_header=True, header_name="gene_id", column_names=df["input_fasta"])
-
-    df = genome_summary_frame.collect().join(df, on="gene_id", how="left")
-
-def write_summarized_genomes_to_xlsx(summarized_genomes, output_file, extra_frames=tuple()):
-    # turn all this into an xlsx
-    with pd.ExcelWriter(output_file) as writer:
-        for sheet, frame in summarized_genomes.groupby(COL_SHEET, sort=False):
-            frame = frame.sort_values(DISTILATE_SORT_ORDER_COLUMNS)
-            frame = frame.drop([COL_SHEET], axis=1)
-            gene_columns = list(set(frame.columns) - set(CONSTANT_DISTILLATE_COLUMNS))
-            if gene_columns:
-                split_genes = pd.concat([split_names_to_long(frame[i].astype(str)) for i in gene_columns], axis=1)
-                frame = pd.concat([frame[CONSTANT_DISTILLATE_COLUMNS],  split_genes], axis=1)
-            frame.to_excel(writer, sheet_name=sheet, index=False)
-        for extra_frame in extra_frames:
-            if extra_frame is not None and not extra_frame.empty:
-                extra_frame.to_excel(writer, sheet_name=extra_frame[COL_HEADER].iloc[0], index=False)
-
-    return df
 
 # TODO: add assembly stats like N50, longest contig, total assembled length etc
 def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame=None, groupby_column="input_fasta"):
@@ -254,8 +251,8 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
         annotations = pl.read_csv(input_file, separator="\t", infer_schema_length=10_000)
     except Exception as e:
         annotations = pl.read_csv(input_file, separator="\t", infer_schema_length=None)
-    if 'bin_taxnomy' in annotations:
-        annotations = annotations.sort_values('bin_taxonomy')
+    if 'bin_taxonomy' in annotations.columns:
+        annotations = annotations.sort('bin_taxonomy')
 
     # Check the columns are present
     check_columns(annotations, logger)
