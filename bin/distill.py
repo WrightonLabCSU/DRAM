@@ -142,8 +142,14 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
 @click.option("--distil_topics", default="default", help="Default distillates topics to run.")
 @click.option("--distil_ecosystem", default="eng_sys,ag", help="Default distillates ecosystems to run.")
 @click.option("--custom_distillate", default="", callback=validate_comma_separated, help="Custom distillate forms to add your own modules, comma separated. ")
+@click.option("--amg_only", is_flag=True, default=False,
+              help="DRAM-v mode: keep only AMG-candidate annotation rows "
+                   "(amg_flags contains 'M' and lacks 'A','P','T'), restrict the "
+                   "distillate form to potential_amg=TRUE rows, and collapse them "
+                   "into one 'AMG' Excel sheet. Requires the amg_flags column from "
+                   "DRAMV_FLAGS.")
 def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil_topics, distil_ecosystem,
-                      custom_distillate):
+                      custom_distillate, amg_only):
     """Summarize metabolic content of annotated genomes"""
 
     # read in data
@@ -153,6 +159,20 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
         annotations = pl.read_csv(input_file, separator="\t", infer_schema_length=None)
     if 'bin_taxonomy' in annotations.columns:
         annotations = annotations.sort('bin_taxonomy')
+
+    if amg_only:
+        if "amg_flags" not in annotations.columns:
+            raise click.UsageError(
+                "--amg_only requires the amg_flags column. Run DRAMV_FLAGS first."
+            )
+        flags = pl.col("amg_flags").fill_null("")
+        annotations = annotations.filter(
+            flags.str.contains("M")
+            & ~flags.str.contains("A")
+            & ~flags.str.contains("P")
+            & ~flags.str.contains("T")
+        )
+        logger.info(f"--amg_only: kept {annotations.height} AMG-candidate annotation rows")
 
     # Check the columns are present
     check_columns(annotations, logger)
@@ -216,15 +236,31 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
         for custom_sheet in custom_distillate:
             distil_sheets_names.append(custom_sheet)
     
+    keep_cols = FRAME_COLUMNS + (["potential_amg"] if amg_only else [])
     genome_summary_form = pl.concat(
         [
             pl.scan_csv(s, separator="\t")
-            .select([c for c in FRAME_COLUMNS if c in pl.scan_csv(s, separator="\t", n_rows=0).columns])
+            .select([c for c in keep_cols if c in pl.scan_csv(s, separator="\t", n_rows=0).columns])
             for s in distil_sheets_names
         ],
         how="diagonal",
     )
-    
+
+    if amg_only:
+        if "potential_amg" not in genome_summary_form.collect_schema().names():
+            raise click.UsageError(
+                "--amg_only requires distill sheets carrying a potential_amg column "
+                "(none of the selected topics has it)."
+            )
+        genome_summary_form = (
+            genome_summary_form
+            .filter(
+                pl.col("potential_amg").cast(pl.Utf8).str.strip_chars().str.to_uppercase() == "TRUE"
+            )
+            .with_columns(pl.lit("AMG").alias(COL_SHEET))
+            .drop("potential_amg")
+        )
+
     logger.info('Retrieved distillate genome summary form')
 
     # make genome stats
