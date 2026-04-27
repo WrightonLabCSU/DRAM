@@ -8,9 +8,9 @@ process SUMMARIZE {
 
     input:
     path combined_annotations
-    path rrna_collected
-    path trna_collected
-    path quast_stats
+    path(rrna_collected, stageAs: 'rrna_input.tsv')
+    path(trna_collected, stageAs: 'trna_input.tsv')
+    path(quast_stats, stageAs: 'quast_input.tsv')
     val distill_topic
     val distill_ecosystem
     val distill_custom
