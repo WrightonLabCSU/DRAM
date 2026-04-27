@@ -33,7 +33,7 @@ def check_columns(data, logger):
     missing = [i for i in ID_EXPR_DICT if i not in data.columns]
     logger.info("Note: the following id fields "
           f"were not in the annotations file and are not being used: {missing},"
-          f" but these are {list(functions.keys())}")
+          f" but these are {functions}")
 
 
 def get_ids_from_annotations_by_row(data):
