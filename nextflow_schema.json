@@ -222,6 +222,15 @@
                     "type": "boolean",
                     "hidden": true
                 },
+                "use_dramv": {
+                    "type": "boolean",
+                    "description": "DRAM-v Phase 1: post-annotation AMG flag computation on viral contigs (no VirSorter). Forces groupby_column=scaffold, skips QUAST and rRNA/tRNA collection, and runs distill in --amg_only mode."
+                },
+                "amg_length_from_end": {
+                    "type": "integer",
+                    "default": 5000,
+                    "description": "Window in bp from contig ends used to set the F flag in DRAM-v amg_flags."
+                },
                 "add_annotations": {
                     "type": "string",
                     "format": "file-path",
