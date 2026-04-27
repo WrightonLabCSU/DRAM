@@ -265,17 +265,22 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
 
     trna_frame = None
     rrna_frame = None
-    if all([v is not None for v in [trna_path, rrna_path]]):
-        trna_frame = pd.read_csv(trna_path, sep='\t')
-        rrna_frame = pd.read_csv(rrna_path, sep='\t')
-        if any(v.dropna(how="all").empty for v in [trna_frame, rrna_frame]):
-            trna_frame = None
-            rrna_frame = None
+    if trna_path is not None and rrna_path is not None:
+        try:
+            trna_frame = pl.read_csv(trna_path, separator='\t')
+            rrna_frame = pl.read_csv(rrna_path, separator='\t')
+        except Exception:
+            trna_frame = rrna_frame = None
+        if trna_frame is None or rrna_frame is None or trna_frame.is_empty() or rrna_frame.is_empty():
+            trna_frame = rrna_frame = None
 
     quast_frame = None
     if quast_path is not None:
-        quast_frame = pd.read_csv(quast_path, sep='\t')
-        if quast_frame.dropna(how="all").empty:
+        try:
+            quast_frame = pl.read_csv(quast_path, separator='\t')
+        except Exception:
+            quast_frame = None
+        if quast_frame is not None and quast_frame.is_empty():
             quast_frame = None
 
     distil_sheets_names = []
