@@ -184,7 +184,7 @@ def compute_flags(
     # 3-windows that include X (ending at X, X+1, or X+2) sums to 3 on _M.
     df = df.sort(["scaffold", "start_position"])
     m_int = pl.col("_M").cast(pl.Int32)
-    roll = m_int.rolling_sum(window_size=3, min_periods=3).over("scaffold")
+    roll = m_int.rolling_sum(window_size=3, min_samples=3).over("scaffold")
     df = df.with_columns([
         roll.alias("_roll_here"),
         roll.shift(-1).over("scaffold").alias("_roll_next"),
