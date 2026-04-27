@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased (feature/dramv-phase1)
+
+### Features
+
+- **DRAM-v Phase 1: viral mode for geNomad+CheckV catalogs.** A new `--use_dramv` flag adds AMG flagging and viral-flavoured distillation on top of the bacterial annotate pipeline, no VirSorter affi-contigs required.
+  - New `DRAMV_FLAGS` process runs after `COMBINE_ANNOTATIONS` and appends `amg_flags` (M/K/E/A/P/T/F/B per DRAM v1 conventions, less the `V` flag pending VOGdb integration) and `is_transposon` columns to `raw-annotations.tsv`.
+  - `distill.py --amg_only` filters annotations to AMG candidates (`M` set, `A`/`P`/`T` clear), restricts the distillate form to `potential_amg=TRUE` rows, and collapses them into a single `AMG` Excel sheet.
+  - Viral mode forces `groupby_column=scaffold`, skips QUAST and the rRNA/tRNA collectors (none of which align with per-vMAG aggregation), and runs SUMMARIZE in `--amg_only` mode.
+  - Bundled assets: `bin/assets/amg_database.tsv` (ported verbatim from DRAM v1) and `bin/utils/dramv_constants.py` (TRANSPOSON_PFAMS, CELL_ENTRY_CAZYS, VIRAL_PEPTIDASES_MEROPS).
+  - Pytest unit suite at `tests/unit/test_dramv_flags.py` covering individual flag firing, B-flag scaffold boundaries, sub-3-gene scaffolds, K-forces-M, E (verified AMG), F window, and FASTA parsing.
+
+### Bug Fixes
+
+- `bin/distill.py`: rewrote the pandas-era summarisation path on top of polars + `rule_parser.evaluate_rules_on_anno`, dropped the broken pandas `write_summarized_genomes_to_xlsx` shadow, fixed `bin_taxnomy` typo, swapped `pd.read_csv` for `pl.read_csv` for rrna/trna/quast, and converted the rrna section of `make_genome_stats` to polars.
+- `modules/local/distill/distill.nf`: stage rrna / trna / quast inputs under distinct names so the same `default_sheet` dummy in viral mode no longer triggers a Nextflow input-name collision.
+- `conf/modules.config`: dropped the `task.ext.args = "--groupby_column …"` SUMMARIZE override that double-defined the flag and silently won the click race.
+
 ## 2.0.0-beta24 - 2026-02-03
 
 [3659fda](https://github.com/WrightonLabCSU/DRAM/commit/3659fdaa0f9779108840e3bbf97c6d196b37a7d3)...[32d0527](https://github.com/WrightonLabCSU/DRAM/commit/32d05274be6eaeaed48de6bb5a047bd67f21fea1)

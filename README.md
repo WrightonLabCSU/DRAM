@@ -70,6 +70,19 @@ nextflow run -bg WrightonLabCSU/DRAM \
   -profile singularity,full_mode
 ```
 
+8) **Viral mode (DRAM-v Phase 1) — AMG flags on geNomad+CheckV catalogs:**
+```bash
+nextflow run WrightonLabCSU/DRAM \
+  --input_fasta <path/to/viral_catalog_dir> \
+  --outdir <output> \
+  --call --annotate --summarize --qc \
+  --use_kofam --use_dbcan --use_merops \
+  --use_dramv true \
+  -profile singularity
+```
+`--use_dramv` runs after `COMBINE_ANNOTATIONS` and adds two columns to `raw-annotations.tsv`:
+`amg_flags` (string of M/K/E/A/P/T/F/B per the DRAM v1 conventions, no `V` since VOGdb is not yet wired) and `is_transposon` (bool). The distillate is filtered to AMG candidates (rows with `M` and without `A`/`P`/`T`) and emitted as a single `AMG` sheet in `metabolism_summary.xlsx`, with one count column per scaffold (vMAG). Viral mode forces `groupby_column=scaffold` and skips QUAST and rRNA/tRNA collection — those don't make sense at the per-scaffold granularity. Inputs that come from a typical geNomad → CheckV pipeline (a single multi-fasta of trimmed viral contigs) work out of the box; no VirSorter affi-contigs file is required.
+
 ## Nextflow Tips and Tricks
 
 The `-resume` option in Nextflow DSL2 allows you to efficiently manage and modify your workflow runs:
