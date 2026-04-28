@@ -39,7 +39,8 @@ workflow ANNOTATE {
         fasta_name = ch_fasta.map { it-> it[0] }
         fasta_files = ch_fasta.map { it -> it[1] }
 
-        n_fastas = file("$params.input_fasta/${params.fasta_fmt}").size()
+        def input_path = file(params.input_fasta)
+        n_fastas = input_path.isFile() ? 1 : file("$params.input_fasta/${params.fasta_fmt}").size()
     }
 
     if( params.rename ) {

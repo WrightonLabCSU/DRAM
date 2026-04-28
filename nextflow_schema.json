@@ -67,8 +67,8 @@
                     "type": "string",
                     "format": "path",
                     "exists": true,
-                    "description": "Path to FASTA directory",
-                    "help_text": "This parameter is *mandatory*. Files may be uncompressed (.fa/.fna/.fasta) or gzip-compressed (.fa.gz/.fna.gz/.fasta.gz); compressed inputs are decompressed automatically.",
+                    "description": "Path to a FASTA file or to a directory of FASTAs (matched by --fasta_fmt)",
+                    "help_text": "This parameter is *mandatory*. Accepts either a single FASTA file or a directory containing FASTAs (filtered by --fasta_fmt, default '*.f*'). Files may be uncompressed (.fa/.fna/.fasta) or gzip-compressed (.fa.gz/.fna.gz/.fasta.gz); compressed inputs are decompressed automatically.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "fasta_fmt": {

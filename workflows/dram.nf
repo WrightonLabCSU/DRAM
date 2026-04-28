@@ -61,9 +61,11 @@ workflow DRAM {
 
 
     if (params.rename || call) {
+        def input_path = file(params.input_fasta)
+        def fasta_pattern = input_path.isFile() ? input_path : (input_path / params.fasta_fmt)
         ch_fasta_raw = channel
-            .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
-                .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
+            .fromPath(fasta_pattern, checkIfExists: true)
+                .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: pass a single fasta file or a directory containing fastas matching ${params.fasta_fmt}" }
 
         // Strip .gz (if present) and then .fa/.fna/.fasta so gz and plain inputs yield identical sample names
         ch_fasta_named = ch_fasta_raw.map { f ->
