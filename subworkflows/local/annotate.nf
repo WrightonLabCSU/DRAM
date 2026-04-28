@@ -2,6 +2,7 @@ include { RENAME_FASTA           } from "../../modules/local/rename/rename_fasta
 include { CALL                   } from "../../subworkflows/local/call.nf"
 include { QC                     } from "../../subworkflows/local/qc.nf"
 include { DB_SEARCH              } from "../../subworkflows/local/db_search.nf"
+include { DRAMV_FLAGS            } from "../../modules/local/dramv/dramv_flags.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,6 +98,14 @@ workflow ANNOTATE {
         ch_rrna_collected = QC.out.ch_rrna_collected
         ch_trna_collected = QC.out.ch_trna_collected
         ch_combined_annotations = QC.out.ch_final_annots
+    }
+
+    if (params.use_dramv) {
+        DRAMV_FLAGS(
+            ch_combined_annotations,
+            ch_fasta.map { it -> it[1] }.collect()
+        )
+        ch_combined_annotations = DRAMV_FLAGS.out.combined_annotations_with_flags
     }
 
     emit:

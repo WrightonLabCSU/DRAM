@@ -19,9 +19,19 @@ workflow QC {
 
     main:
 
-    COLLECT_RNA( ch_fasta, default_sheet, call )
-    ch_rrna_collected = COLLECT_RNA.out.ch_rrna_collected
-    ch_trna_collected = COLLECT_RNA.out.ch_trna_collected
+    // tRNA / rRNA collectors group by input_fasta. For DRAM-v viral mode the
+    // catalog ships as one input_fasta and the meaningful unit is the
+    // scaffold, so the collected output would be a single uninformative row.
+    // Skip both scans (matches DRAM v1's --skip_trnascan in spirit, extended
+    // to rRNA since we have no per-scaffold collector yet).
+    if (!params.use_dramv) {
+        COLLECT_RNA( ch_fasta, default_sheet, call )
+        ch_rrna_collected = COLLECT_RNA.out.ch_rrna_collected
+        ch_trna_collected = COLLECT_RNA.out.ch_trna_collected
+    } else {
+        ch_rrna_collected = default_sheet
+        ch_trna_collected = default_sheet
+    }
 
 
     // Add Bin Quality to annotations

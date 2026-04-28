@@ -8,9 +8,9 @@ process SUMMARIZE {
 
     input:
     path combined_annotations
-    path rrna_collected
-    path trna_collected
-    path quast_stats
+    path(rrna_collected, stageAs: 'rrna_input.tsv')
+    path(trna_collected, stageAs: 'trna_input.tsv')
+    path(quast_stats, stageAs: 'quast_input.tsv')
     val distill_topic
     val distill_ecosystem
     val distill_custom
@@ -26,6 +26,8 @@ process SUMMARIZE {
     def rrna = rrna_collected ? "--rrna_path ${rrna_collected}" : ""
     def trna = trna_collected ? "--trna_path ${trna_collected}" : ""
     def quast = quast_stats ? "--quast_path ${quast_stats}" : ""
+    def groupby = params.use_dramv ? "scaffold" : params.groupby_column
+    def amg_only = params.use_dramv ? "--amg_only" : ""
 
     """
     distill.py \
@@ -33,9 +35,11 @@ process SUMMARIZE {
         ${rrna} \
         ${trna} \
         ${quast} \
+        --groupby_column ${groupby} \
         --distil_topics "${distill_topic}" \
         --distil_ecosystem "${distill_ecosystem}" \
         --custom_distillate "${distill_custom}" \
+        ${amg_only} \
         ${args}
     """
 }

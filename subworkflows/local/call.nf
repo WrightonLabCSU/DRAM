@@ -49,9 +49,15 @@ workflow CALL {
         .collect()
         .set { ch_collected_fasta }
 
-    // Run QUAST on individual FASTA file combined with respective GFF
-    QUAST( ch_collected_fasta )
-    ch_quast_stats = QUAST.out.quast_collected_out
+    // QUAST is per-input_fasta; for DRAM-v viral mode the unit of analysis is
+    // the scaffold (per-vMAG), and the catalog-level QUAST stats would collapse
+    // all contigs into one row. Skip the process and substitute the dummy sheet.
+    if (!params.use_dramv) {
+        QUAST( ch_collected_fasta )
+        ch_quast_stats = QUAST.out.quast_collected_out
+    } else {
+        ch_quast_stats = Channel.value(file(params.distill_dummy_sheet))
+    }
 
     emit:
     ch_quast_stats
