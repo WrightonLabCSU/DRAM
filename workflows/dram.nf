@@ -113,7 +113,16 @@ workflow DRAM {
         use_vog = getDBFlag(anno_dbs, 'vog', value_for_all)
     }
 
-
+    // DRAM-v viral mode needs Pfam annotations: the T flag in amg_flags is
+    // built from is_transposon, which is in turn computed from
+    // pfam_hits/pfam_id ∩ TRANSPOSON_PFAMS. Without --use_pfam, T can never
+    // fire and the AMG flags are silently incomplete. Auto-enable it here.
+    // Pass --use_pfam false explicitly if you really want viral mode without
+    // Pfam (e.g. for performance reasons).
+    if (params.use_dramv && !use_pfam) {
+        log.warn "DRAM-v viral mode auto-enabled --use_pfam (required for is_transposon / T flag). Pass --use_pfam false to opt out."
+        use_pfam = true
+    }
 
     distill_ecosystem = params.sum_ecos
     if (distill_ecosystem == "") {
