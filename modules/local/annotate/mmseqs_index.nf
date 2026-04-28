@@ -1,7 +1,8 @@
 process MMSEQS_INDEX{
-    label 'process_tiny'
+    label 'process_small'
 
-    errorStrategy 'finish'
+    errorStrategy 'retry'
+    maxRetries 2
 
     conda "${moduleDir}/environment.yml"
     container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:d2c88b719ab1322c"
