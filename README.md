@@ -8,6 +8,8 @@
 
 DRAM v2 (Distilled and Refined Annotation of Metabolism Version 2) is a tool for annotating metagenomic and genomic assembled data (e.g. scaffolds or contigs) or called genes (e.g. nuclotide or amino acid format). DRAM annotates MAGs using [KEGG](https://www.kegg.jp/) (if provided by the user), [UniRef90](https://www.uniprot.org/), [PFAM](https://pfam.xfam.org/), [dbCAN](http://bcb.unl.edu/dbCAN2/), [RefSeq viral](https://www.ncbi.nlm.nih.gov/genome/viruses/), [VOGDB](http://vogdb.org/) and the [MEROPS](https://www.ebi.ac.uk/merops/) peptidase database as well as custom user databases.
 
+Viral catalogs from a typical geNomad → CheckV pipeline are also supported via **DRAM-v Phase 1 viral mode** (`--use_dramv true`): per-vMAG (per-scaffold) AMG flagging (M/K/E/A/P/T/F/B per the v1 conventions) and a viral-flavoured distillate, no VirSorter affi-contigs file required. See the "Viral mode" example below.
+
 DRAM is run in four stages: 
 1) Gene Calling Prodogal - genes are called on user provided scaffolds or contigs 
 2) Gene Annotation - genes are annotated with a set of user defined databases 
@@ -26,6 +28,7 @@ For more detail on DRAM and how DRAM v2 works please see our DRAM products:
 - [Usage Examples](https://dramit.readthedocs.io/en/latest/usage.html)
 - [Parameter API]([#command-line-options](https://dramit.readthedocs.io/en/latest/params_doc.html))
 - [Rules API]([#nextflow-tips-and-tricks](https://dramit.readthedocs.io/en/latest/rules_parser.html))
+- [Viral mode (DRAM-v Phase 1)](#example-usage) — see example 8 below
 
 ## Example Usage
 
