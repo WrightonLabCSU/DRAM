@@ -510,6 +510,18 @@
                     "default": "1e-05",
                     "hidden": true
                 },
+                "kofam_chunk_size": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Split called-protein FASTA into chunks of this many records and run KOFam hmmsearch per chunk in parallel. 0 disables chunking.",
+                    "hidden": true
+                },
+                "vog_chunk_size": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Split called-protein FASTA into chunks of this many records and run VOG hmmsearch per chunk in parallel. 0 disables chunking.",
+                    "hidden": true
+                },
                 "camper_e_value": {
                     "type": "string",
                     "default": "1e-05",

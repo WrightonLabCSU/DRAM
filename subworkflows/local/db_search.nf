@@ -39,6 +39,9 @@ include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from "../../modules/lo
 include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_METALS               } from "../../modules/local/annotate/hmmsearch.nf"
 
+include { CONCAT_HMM_HITS as CONCAT_HMM_HITS_KOFAM      } from "../../modules/local/annotate/concat_hmm_hits.nf"
+include { CONCAT_HMM_HITS as CONCAT_HMM_HITS_VOG        } from "../../modules/local/annotate/concat_hmm_hits.nf"
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     SUBWORKFLOW TO DB_SEARCH
@@ -143,16 +146,44 @@ workflow DB_SEARCH {
     }
     // KOFAM annotation
     if (use_kofam) {
-        ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_KOFAM ( 
-            ch_combined_proteins_locs, 
-            params.kofam_e_value, 
-            DB_channel_SETUP.out.ch_kofam_db,
-            ch_kofam_list,
-            true,
-            kofam_name
+        if (params.kofam_chunk_size && params.kofam_chunk_size > 0) {
+            ch_kofam_chunks = ch_called_proteins
+                .splitFasta(by: params.kofam_chunk_size, file: true, elem: 1)
+                .combine(ch_gene_locs, by: 0)
+            ch_kofam_input = ch_kofam_chunks
+                .map { sample, chunk_fasta, gene_locs ->
+                    tuple("${sample}___${chunk_fasta.baseName}", chunk_fasta, gene_locs)
+                }
+            ch_kofam_chunk_to_sample = ch_kofam_chunks
+                .map { sample, chunk_fasta, gene_locs ->
+                    tuple("${sample}___${chunk_fasta.baseName}", sample)
+                }
+            HMM_SEARCH_KOFAM (
+                ch_kofam_input,
+                params.kofam_e_value,
+                DB_channel_SETUP.out.ch_kofam_db,
+                ch_kofam_list,
+                true,
+                kofam_name
             )
-        ch_kofam_formatted = HMM_SEARCH_KOFAM.out.formatted_hits
+            ch_kofam_chunk_csvs_per_sample = HMM_SEARCH_KOFAM.out.formatted_hits
+                .join(ch_kofam_chunk_to_sample)
+                .map { chunk_id, csv, sample -> tuple(sample, csv) }
+                .groupTuple()
+            CONCAT_HMM_HITS_KOFAM(ch_kofam_chunk_csvs_per_sample, kofam_name)
+            ch_kofam_formatted = CONCAT_HMM_HITS_KOFAM.out.combined_hits
+        } else {
+            ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
+            HMM_SEARCH_KOFAM (
+                ch_combined_proteins_locs,
+                params.kofam_e_value,
+                DB_channel_SETUP.out.ch_kofam_db,
+                ch_kofam_list,
+                true,
+                kofam_name
+            )
+            ch_kofam_formatted = HMM_SEARCH_KOFAM.out.formatted_hits
+        }
         formattedOutputchannels = formattedOutputchannels.mix(ch_kofam_formatted)
     }
     // PFAM annotation
@@ -301,16 +332,44 @@ workflow DB_SEARCH {
     }
     // VOGdb annotation
     if (use_vog) {
-        ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_VOG (
-            ch_combined_proteins_locs, 
-            params.vog_e_value, 
-            DB_channel_SETUP.out.ch_vogdb_db,
-            default_sheet,
-            false,
-            vogdb_name            
+        if (params.vog_chunk_size && params.vog_chunk_size > 0) {
+            ch_vog_chunks = ch_called_proteins
+                .splitFasta(by: params.vog_chunk_size, file: true, elem: 1)
+                .combine(ch_gene_locs, by: 0)
+            ch_vog_input = ch_vog_chunks
+                .map { sample, chunk_fasta, gene_locs ->
+                    tuple("${sample}___${chunk_fasta.baseName}", chunk_fasta, gene_locs)
+                }
+            ch_vog_chunk_to_sample = ch_vog_chunks
+                .map { sample, chunk_fasta, gene_locs ->
+                    tuple("${sample}___${chunk_fasta.baseName}", sample)
+                }
+            HMM_SEARCH_VOG (
+                ch_vog_input,
+                params.vog_e_value,
+                DB_channel_SETUP.out.ch_vogdb_db,
+                default_sheet,
+                false,
+                vogdb_name
             )
-        ch_vog_formatted = HMM_SEARCH_VOG.out.formatted_hits
+            ch_vog_chunk_csvs_per_sample = HMM_SEARCH_VOG.out.formatted_hits
+                .join(ch_vog_chunk_to_sample)
+                .map { chunk_id, csv, sample -> tuple(sample, csv) }
+                .groupTuple()
+            CONCAT_HMM_HITS_VOG(ch_vog_chunk_csvs_per_sample, vogdb_name)
+            ch_vog_formatted = CONCAT_HMM_HITS_VOG.out.combined_hits
+        } else {
+            ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
+            HMM_SEARCH_VOG (
+                ch_combined_proteins_locs,
+                params.vog_e_value,
+                DB_channel_SETUP.out.ch_vogdb_db,
+                default_sheet,
+                false,
+                vogdb_name
+            )
+            ch_vog_formatted = HMM_SEARCH_VOG.out.formatted_hits
+        }
         formattedOutputchannels = formattedOutputchannels.mix(ch_vog_formatted)
     }
     // Viral annotation
