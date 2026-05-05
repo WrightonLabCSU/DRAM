@@ -696,8 +696,8 @@
                 },
                 "array_size": {
                     "type": "integer",
-                    "default": 10,
-                    "description": "Number of tasks to submit per job array. Set to 0 to disable job arrays (e.g. when running on the local executor, which does not support them)."
+                    "default": 0,
+                    "description": "Number of tasks to submit per job array. Set to 0 to disable job arrays (e.g. when running on the local executor, which does not support them, or to avoid the Nextflow ConcurrentModificationException race in BashWrapperBuilder when arrays are combined with containers)."
                 }
             }
         },
