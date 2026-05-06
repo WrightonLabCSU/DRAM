@@ -152,7 +152,7 @@ K05369	EC:1.3.7.2		pebA; Phycoerythrobilin biosynthesis			Sullivan et al. 2005	F
 K05371	EC:1.3.7.6		pebS; phycoerythrobilin synthase			Dammeyer et al. 2008; Ignacio?Espinoza et al. 2012	TRUE	FALSE
 	EC:1.3.7.5		pcyA; Phycocyanobilin biosynthesis			Sullivan et al. 2005	FALSE	FALSE
 K00762	EC:2.4.2.10		pyrE; Orootate phosphoribosyltransferase			Sullivan et al. 2005	FALSE	TRUE
-K00602	EC:2.1.2.33.5.4.10		purH; phosphoribosyl formyl glycinamide synthase			Sullivan et al. 2005	FALSE	TRUE
+K00602	EC:2.1.2.3; EC:3.5.4.10		purH; phosphoribosyl formyl glycinamide synthase			Sullivan et al. 2005	FALSE	TRUE
 K01952	EC:6.3.5.3		purL; phosphoribosyl formyl glycinamide cyclo-ligase			Sullivan et al. 2005	FALSE	TRUE
 K01933	EC:6.3.3.1		purM;AICARFT/IMPCHase bienzyme			Sullivan et al. 2005	FALSE	TRUE
 K01492	EC:2.1.2.2; EC:2.1.2.3		purN; phophoribosyl glycinamide formyltransferase			Sullivan et al. 2005	FALSE	TRUE
@@ -164,7 +164,7 @@ K06133	EC:2.7.8.-	PF01648	4'-phosphopantetheinyl transferase superfamily			Roux 
 		PF05221	S-adenosyl-L-homocysteine hydrolase			Roux et al. 2016	FALSE	FALSE
 		PF02675	speD; S-adenosylmethionine decarboxylase			Sullivan et al. 2005; Ignacio?Espinoza et al. 2012; Hurwitz et al. 2015; Roux et al. 2016	FALSE	FALSE
 	EC:4.2.1.24	PF00490	Delta-aminolevulinic acid dehydratase			Roux et al. 2016	FALSE	FALSE
-K00324	EC:1.6.1.27.1.1.1	PF05222	Alanine dehydrogenase/PNT, N-terminal domain			Roux et al. 2016	FALSE	FALSE
+K00324	EC:1.6.1.2; EC:7.1.1.1	PF05222	Alanine dehydrogenase/PNT, N-terminal domain			Roux et al. 2016	FALSE	FALSE
 		PF02522	Aminoglycoside 3-N-acetyltransferase			Roux et al. 2016	FALSE	FALSE
 		PF12139	Adenosine-5'-phosphosulfate reductase beta subunit			Roux et al. 2016	FALSE	FALSE
 		PF09206	Alpha-L-arabinofuranosidase B, catalytic			Roux et al. 2016	FALSE	FALSE
@@ -267,7 +267,7 @@ K01599	EC:4.1.1.37	PF01208	Uroporphyrinogen decarboxylase (URO-D)			Roux et al. 
 		PF00719	Inorganic pyrophosphatase			Roux et al. 2016	FALSE	FALSE
 		 PF00722	Glycosyl hydrolases family 16; beta-1,3-glucanase			Sun et al. 2000; Emerson et al. 2018	TRUE	FALSE
 		 PF00150	Cellulase; endo-beta-1,4-mannosidase			Emerson et al. 2018	TRUE	FALSE
-		 PF0232	Glycosyl hydrolase family 70; alpha amylase			Emerson et al. 2018	FALSE	FALSE
+		 PF02324	Glycosyl hydrolase family 70; alpha amylase			Emerson et al. 2018	FALSE	FALSE
 		 PF07971	Alpha-1,2-mannosidase			Emerson et al. 2018	FALSE	FALSE
 	EC:3.2.1.51	 PF01120	Alpha-L-fucosidase			Emerson et al. 2018	FALSE	FALSE
 		 PF04616	Glycosyl hydrolases family 43; beta-1,4-xylosidase			Emerson et al. 2018	FALSE	FALSE
