@@ -507,7 +507,7 @@
                 },
                 "vog_e_value": {
                     "type": "string",
-                    "default": "1e-05",
+                    "default": "1e-10",
                     "hidden": true
                 },
                 "kofam_chunk_size": {
