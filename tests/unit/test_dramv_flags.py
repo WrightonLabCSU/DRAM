@@ -175,6 +175,97 @@ def test_f_flag_window():
     assert "F" in flags["near_end"]
 
 
+def test_n_flag_fires_for_essential_viral_function():
+    """A row whose only AMG-relevant id sits in essential_amgs gets N at the
+    end of amg_flags. N is informational — it must NOT force M."""
+    ann = _ann([
+        # PF06508 = QueC, paper-flagged essential viral function.
+        {"query_id": "g1", "scaffold": "s1", "start_position": 6000, "stop_position": 6500,
+         "kofam_id": None, "pfam_hits": "[PF06508.1]", "dbcan_id": None},
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes=set(), amgs=set(), verified_amgs=set(),
+        scaffold_lengths={"s1": 14_000},  # F-free window 5000..9000
+        length_from_end=5_000,
+        essential_amgs={"PF06508"},
+    )
+    flags = _flags_by_query(out)
+    # Just N, with no M (no force from N), no K, no E, no F.
+    assert flags["g1"] == "N", f"expected exactly 'N', got {flags['g1']!r}"
+
+
+def test_n_flag_combines_with_k_and_e():
+    """Same id can be in amgs, verified_amgs, and essential_amgs simultaneously
+    (e.g. mazG: verified=TRUE and essential_viral_function=TRUE in the bundled
+    db). Resulting flag string must include K, E, and trailing N, with M from
+    the v1 K-forces-M rule."""
+    ann = _ann([
+        {"query_id": "g1", "scaffold": "s1", "start_position": 6000, "stop_position": 6500,
+         "kofam_id": "K04765", "pfam_hits": None, "dbcan_id": None},
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes=set(),
+        amgs={"K04765"},
+        verified_amgs={"K04765"},
+        scaffold_lengths={"s1": 14_000},
+        length_from_end=5_000,
+        essential_amgs={"K04765"},
+    )
+    assert _flags_by_query(out)["g1"] == "MKEN"
+
+
+def test_n_flag_default_is_off_when_no_essential_set_passed():
+    """Backward-compat: the existing call signature (no essential_amgs kwarg)
+    still works, and produces no N in the output."""
+    ann = _ann([
+        {"query_id": "g1", "scaffold": "s1", "start_position": 6000, "stop_position": 6500,
+         "kofam_id": "K00001", "pfam_hits": None, "dbcan_id": None},
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes={"K00001"},
+        amgs={"K00001"},
+        verified_amgs={"K00001"},
+        scaffold_lengths={"s1": 14_000},
+        length_from_end=5_000,
+        # essential_amgs intentionally omitted
+    )
+    assert _flags_by_query(out)["g1"] == "MKE"
+
+
+def test_build_amg_id_sets_returns_essential(tmp_path):
+    """build_amg_id_sets parses the new essential_viral_function column."""
+    from dramv_flags import build_amg_id_sets
+    db = tmp_path / "amg.tsv"
+    db.write_text(
+        "KO\tEC\tPFAM\tgene\tmodule\tmetabolism\treference\tverified\tessential_viral_function\n"
+        "K00001\t\t\tg1\t\t\tref\tTRUE\tFALSE\n"
+        "K00002\t\tPF99999\tg2\t\t\tref\tFALSE\tTRUE\n"
+        "K00003\t\t\tg3\t\t\tref\tFALSE\tFALSE\n"
+    )
+    amgs, verified, essential = build_amg_id_sets(db)
+    assert amgs == {"K00001", "K00002", "K00003", "PF99999"}
+    assert verified == {"K00001"}
+    assert essential == {"K00002", "PF99999"}
+
+
+def test_build_amg_id_sets_tolerates_missing_essential_column(tmp_path):
+    """An older amg_database.tsv (no essential_viral_function column) must still
+    load; essential set comes back empty."""
+    from dramv_flags import build_amg_id_sets
+    db = tmp_path / "amg.tsv"
+    db.write_text(
+        "KO\tEC\tPFAM\tgene\tmodule\tmetabolism\treference\tverified\n"
+        "K00001\t\t\tg1\t\t\tref\tTRUE\n"
+    )
+    amgs, verified, essential = build_amg_id_sets(db)
+    assert amgs == {"K00001"}
+    assert verified == {"K00001"}
+    assert essential == set()
+
+
 def test_read_scaffold_lengths(tmp_path):
     """Scaffold lengths are read correctly across multi-line records, including
     trailing newlines and IDs with embedded spaces."""

@@ -5,10 +5,14 @@ Phase 1 (FASTA-only): no VirSorter input required. Adds two columns:
 
   - is_transposon (bool): the gene's Pfam hits intersect TRANSPOSON_PFAMS.
   - amg_flags (str): concatenated single-letter flags in v1 order
-    M / K / E / A / P / T / F / B. Semantics ported verbatim from
-    DRAM v1 mag_annotator/annotate_vgfs.py:get_metabolic_flags
-    (commit 6cd68f9), minus the V (VOGdb) flag and the auxiliary_score
-    block, both of which are deferred to Phase 2.
+    M / K / E / A / P / T / F / B, then a trailing N (not in v1).
+    Semantics for M-B ported verbatim from DRAM v1
+    mag_annotator/annotate_vgfs.py:get_metabolic_flags (commit 6cd68f9),
+    minus the V (VOGdb) flag and the auxiliary_score block, both deferred
+    to Phase 2. The N flag is informational — it marks genes whose ids
+    appear in amg_database.tsv rows where essential_viral_function=TRUE,
+    per Martin et al. 2025 (doi:10.1038/s41564-025-02095-4). It does NOT
+    propagate to M and is NOT used by any downstream filter yet.
 """
 
 from pathlib import Path
@@ -69,23 +73,38 @@ def _split_semicolon_ids(s: pl.Series) -> set[str]:
     return out
 
 
-def build_amg_id_sets(amg_db_path: Path) -> tuple[set[str], set[str]]:
-    """Return (all_amgs, verified_amgs) — KO ∪ EC ∪ PFAM ids from the AMG db."""
+def build_amg_id_sets(
+    amg_db_path: Path,
+) -> tuple[set[str], set[str], set[str]]:
+    """Return (all_amgs, verified_amgs, essential_amgs).
+
+    all_amgs       — KO ∪ EC ∪ PFAM ids from every row of the AMG db.
+    verified_amgs  — same union restricted to rows with verified=TRUE.
+    essential_amgs — same union restricted to rows with
+                     essential_viral_function=TRUE (Martin et al. 2025
+                     paper-cautioned). The column is optional; if absent,
+                     this set is empty.
+    """
     db = pl.read_csv(amg_db_path, separator="\t", infer_schema_length=10_000)
     amgs = (
         _split_semicolon_ids(db["KO"])
         | _split_semicolon_ids(db["EC"])
         | _split_semicolon_ids(db["PFAM"])
     )
-    verified = db.filter(
-        pl.col("verified").cast(pl.Utf8).str.strip_chars().str.to_uppercase() == "TRUE"
-    )
-    verified_amgs = (
-        _split_semicolon_ids(verified["KO"])
-        | _split_semicolon_ids(verified["EC"])
-        | _split_semicolon_ids(verified["PFAM"])
-    )
-    return amgs, verified_amgs
+
+    def _ids_where(col: str) -> set[str]:
+        if col not in db.columns:
+            return set()
+        sub = db.filter(
+            pl.col(col).cast(pl.Utf8).str.strip_chars().str.to_uppercase() == "TRUE"
+        )
+        return (
+            _split_semicolon_ids(sub["KO"])
+            | _split_semicolon_ids(sub["EC"])
+            | _split_semicolon_ids(sub["PFAM"])
+        )
+
+    return amgs, _ids_where("verified"), _ids_where("essential_viral_function")
 
 
 def build_metabolic_genes(distill_sheets_dir: Path) -> set[str]:
@@ -135,7 +154,10 @@ def compute_flags(
     verified_amgs: set[str],
     scaffold_lengths: dict[str, int],
     length_from_end: int,
+    essential_amgs: set[str] | None = None,
 ) -> pl.DataFrame:
+    if essential_amgs is None:
+        essential_amgs = set()
     df = explode_gene_ids(annotations)
 
     def _has_intersect(set_: set[str]) -> pl.Expr:
@@ -155,6 +177,7 @@ def compute_flags(
         _has_intersect(CELL_ENTRY_CAZYS).alias("_A"),
         _has_intersect(VIRAL_PEPTIDASES_MEROPS).alias("_P"),
         _has_intersect(TRANSPOSON_PFAMS).alias("is_transposon"),
+        _has_intersect(essential_amgs).alias("_N"),
     ])
 
     # T flag: any gene on the same scaffold has is_transposon=True.
@@ -201,7 +224,7 @@ def compute_flags(
     # K forces M (per v1).
     df = df.with_columns((pl.col("_M") | pl.col("_K")).alias("_M"))
 
-    # Build amg_flags string in v1 order.
+    # Build amg_flags string in v1 order, with non-v1 N appended at the end.
     flag_str = (
         pl.when(pl.col("_M")).then(pl.lit("M")).otherwise(pl.lit(""))
         + pl.when(pl.col("_K")).then(pl.lit("K")).otherwise(pl.lit(""))
@@ -211,6 +234,7 @@ def compute_flags(
         + pl.when(pl.col("_T")).then(pl.lit("T")).otherwise(pl.lit(""))
         + pl.when(pl.col("_F")).then(pl.lit("F")).otherwise(pl.lit(""))
         + pl.when(pl.col("_B")).then(pl.lit("B")).otherwise(pl.lit(""))
+        + pl.when(pl.col("_N")).then(pl.lit("N")).otherwise(pl.lit(""))
     ).alias("amg_flags")
     df = df.with_columns(flag_str)
 
@@ -245,8 +269,11 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir, len
     annotations = pl.read_csv(input_file, separator="\t", infer_schema_length=10_000)
 
     logger.info(f"Reading AMG database: {amg_db}")
-    amgs, verified_amgs = build_amg_id_sets(amg_db)
-    logger.info(f"AMG ids: {len(amgs)} ({len(verified_amgs)} verified)")
+    amgs, verified_amgs, essential_amgs = build_amg_id_sets(amg_db)
+    logger.info(
+        f"AMG ids: {len(amgs)} ({len(verified_amgs)} verified, "
+        f"{len(essential_amgs)} essential viral function)"
+    )
 
     logger.info(f"Building metabolic_genes set from {distill_sheets_dir}")
     metabolic_genes = build_metabolic_genes(distill_sheets_dir)
@@ -259,6 +286,7 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir, len
     annotated = compute_flags(
         annotations, metabolic_genes, amgs, verified_amgs,
         scaffold_lengths, length_from_end,
+        essential_amgs=essential_amgs,
     )
     logger.info(f"Writing {output_file}")
     annotated.write_csv(output_file, separator="\t")
