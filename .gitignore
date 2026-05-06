@@ -56,3 +56,6 @@ nextflow-local.config
 
 # scratch folder
 scratch/
+
+# local-only reference material (papers, notes)
+misc/
