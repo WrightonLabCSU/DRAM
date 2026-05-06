@@ -143,11 +143,13 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
 @click.option("--distil_ecosystem", default="eng_sys,ag", help="Default distillates ecosystems to run.")
 @click.option("--custom_distillate", default="", callback=validate_comma_separated, help="Custom distillate forms to add your own modules, comma separated. ")
 @click.option("--amg_only", is_flag=True, default=False,
-              help="DRAM-v mode: keep only AMG-candidate annotation rows "
-                   "(amg_flags contains 'M' and lacks 'A','P','T'), restrict the "
-                   "distillate form to potential_amg=TRUE rows, and collapse them "
-                   "into one 'AMG' Excel sheet. Requires the amg_flags column from "
-                   "DRAMV_FLAGS.")
+              help="DRAM-v mode: keep only strict AMG-candidate annotation rows "
+                   "(amg_flags contains 'M' and lacks 'A','P','T','N'), restrict "
+                   "the distillate form to potential_amg=TRUE rows, and collapse "
+                   "them into one 'AMG' Excel sheet. The N exclusion drops genes "
+                   "flagged as essential viral function per Martin et al. 2025 "
+                   "(doi:10.1038/s41564-025-02095-4). Requires the amg_flags "
+                   "column from DRAMV_FLAGS.")
 def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil_topics, distil_ecosystem,
                       custom_distillate, amg_only):
     """Summarize metabolic content of annotated genomes"""
@@ -171,8 +173,9 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
             & ~flags.str.contains("A")
             & ~flags.str.contains("P")
             & ~flags.str.contains("T")
+            & ~flags.str.contains("N")
         )
-        logger.info(f"--amg_only: kept {annotations.height} AMG-candidate annotation rows")
+        logger.info(f"--amg_only: kept {annotations.height} strict AMG-candidate annotation rows")
 
     # Check the columns are present
     check_columns(annotations, logger)
