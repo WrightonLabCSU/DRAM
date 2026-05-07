@@ -462,6 +462,30 @@ def test_b_flag_downgrades_low_auxiliary_score_to_four():
     assert by_id["g0"][1] == 5
 
 
+def test_parse_genomad_genes_tsv_maps_hallmark_and_viral_taxname(tmp_path):
+    """virus_hallmark=TRUE → '0'; taxname starting 'Viruses' → '1';
+    everything else (host marker, plasmid hallmark, NA, blank taxname) is dropped."""
+    from dramv_flags import parse_genomad_genes_tsv
+    p = tmp_path / "x_genes.tsv"
+    p.write_text(
+        "gene\tstart\tend\tstrand\tmarker\tvirus_hallmark\tplasmid_hallmark\tuscg\ttaxname\n"
+        # Hallmark wins, irrespective of taxname.
+        "g_hallmark\t1\t300\t1\tmk1\tTRUE\tFALSE\tFALSE\tViruses;Caudovirales\n"
+        # Viral lineage but not a hallmark → viral-like.
+        "g_viral_like\t301\t600\t1\tmk2\tFALSE\tFALSE\tFALSE\tViruses;Duplodnaviria\n"
+        # USCG (host single-copy gene) — non-viral lineage → dropped.
+        "g_uscg\t601\t900\t1\tmk3\tFALSE\tFALSE\tTRUE\tBacteria;Proteobacteria\n"
+        # Plasmid hallmark — dropped.
+        "g_plasmid\t901\t1200\t1\tmk4\tFALSE\tTRUE\tFALSE\tNA\n"
+        # No marker, NA taxname — dropped.
+        "g_na\t1201\t1500\t1\tNA\tFALSE\tFALSE\tFALSE\tNA\n"
+        # Bacterial marker — dropped.
+        "g_bact\t1501\t1800\t1\tmk5\tFALSE\tFALSE\tFALSE\tBacteria;Bacillota\n"
+    )
+    out = parse_genomad_genes_tsv(p)
+    assert out == {"g_hallmark": "0", "g_viral_like": "1"}
+
+
 def test_read_scaffold_lengths(tmp_path):
     """Scaffold lengths are read correctly across multi-line records, including
     trailing newlines and IDs with embedded spaces."""

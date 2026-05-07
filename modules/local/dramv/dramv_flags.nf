@@ -10,6 +10,7 @@ process DRAMV_FLAGS {
     path annotations
     path(fastas, stageAs: "fastas/*")
     path vog_list
+    path genomad_genes  // optional; pass assets/NO_FILE when absent
 
     output:
     path "annotations_with_flags.tsv", emit: combined_annotations_with_flags
@@ -17,6 +18,7 @@ process DRAMV_FLAGS {
 
     script:
     def length_from_end = params.amg_length_from_end ?: 5000
+    def genomad_arg = genomad_genes.name != 'NO_FILE' ? "--genomad_genes ${genomad_genes}" : ''
     """
     cat fastas/* > _catalog.fa
 
@@ -25,6 +27,7 @@ process DRAMV_FLAGS {
         -o annotations_with_flags.tsv \\
         --catalog_fasta _catalog.fa \\
         --length_from_end ${length_from_end} \\
-        --vog_list ${vog_list}
+        --vog_list ${vog_list} \\
+        ${genomad_arg}
     """
 }

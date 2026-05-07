@@ -174,6 +174,48 @@ def build_metabolic_genes(distill_sheets_dir: Path) -> set[str]:
     return metabolic
 
 
+def parse_genomad_genes_tsv(path: Path) -> dict[str, str]:
+    """Adapter from geNomad's *_genes.tsv to VirSorter-style category codes.
+
+    geNomad's gene-level annotation has no direct equivalent of VirSorter's
+    0-4 scale, but the closest signals are:
+
+      - virus_hallmark (bool, TRUE/FALSE) — geNomad-curated viral hallmark
+        gene. Mapped to "0" (phage hallmark, the strongest viral signal).
+      - taxname (str) — marker lineage. If it starts with "Viruses" but
+        the row is not a hallmark, mapped to "1" (phage viral-like).
+      - everything else (host marker, plasmid marker, NA marker, blank
+        taxname) is dropped and never contributes to auxiliary_score.
+
+    The phage / prophage distinction (v1's 0 vs 3, 1 vs 4) is collapsed —
+    the algorithm treats {0,3} and {1,4} as equivalent for scoring, so the
+    adapter only emits "0" or "1". Returns a {gene_id: category} dict.
+    """
+    df = pl.read_csv(path, separator="\t", infer_schema_length=10_000,
+                     null_values=["NA", ""])
+    out: dict[str, str] = {}
+    cols = set(df.columns)
+    has_hallmark = "virus_hallmark" in cols
+    has_taxname = "taxname" in cols
+    for row in df.iter_rows(named=True):
+        gene = row.get("gene")
+        if not gene:
+            continue
+        gene = str(gene).strip()
+        if not gene:
+            continue
+        if has_hallmark:
+            v = row.get("virus_hallmark")
+            if v is True or (isinstance(v, str) and v.strip().upper() == "TRUE"):
+                out[gene] = "0"
+                continue
+        if has_taxname:
+            tn = row.get("taxname")
+            if isinstance(tn, str) and tn.strip().startswith("Viruses"):
+                out[gene] = "1"
+    return out
+
+
 def _aux_score_for_scaffold(
     gene_ids: list[str],
     virsorter_categories: dict[str, str],
@@ -384,11 +426,15 @@ def compute_flags(
 @click.option("--vog_list", default=None, type=click.Path(),
               help="VOGdb vog_annotations_latest.tsv(.gz). Required for the V flag; "
                    "if omitted the V flag is never set.")
+@click.option("--genomad_genes", default=None, type=click.Path(),
+              help="geNomad *_genes.tsv. Drives auxiliary_score: virus_hallmark "
+                   "→ '0', taxname starting 'Viruses' → '1'. If omitted every "
+                   "gene gets the v1 fallback score 5.")
 @click.option("--length_from_end", default=DEFAULT_LENGTH_FROM_END, type=int,
               show_default=True,
               help="Window (bp) from contig ends used to set the F flag.")
 def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir,
-         vog_list, length_from_end):
+         vog_list, genomad_genes, length_from_end):
     """Add DRAM-v amg_flags and is_transposon columns to a combined annotations TSV."""
     here = Path(__file__).parent
     amg_db = Path(amg_db) if amg_db else here / "assets" / "amg_database.tsv"
@@ -419,6 +465,16 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir,
     else:
         logger.info("No --vog_list provided; V flag will not be set.")
 
+    virsorter_categories: dict[str, str] = {}
+    if genomad_genes:
+        logger.info(f"Parsing geNomad genes TSV for VirSorter category mapping: {genomad_genes}")
+        virsorter_categories = parse_genomad_genes_tsv(Path(genomad_genes))
+        n_hallmark = sum(1 for c in virsorter_categories.values() if c == "0")
+        n_viral_like = sum(1 for c in virsorter_categories.values() if c == "1")
+        logger.info(f"geNomad-derived categories: {n_hallmark} hallmark + {n_viral_like} viral-like")
+    else:
+        logger.info("No --genomad_genes provided; auxiliary_score will fall through to 5 for every gene.")
+
     logger.info(f"Reading scaffold lengths from {catalog_fasta}")
     scaffold_lengths = read_scaffold_lengths(catalog_fasta)
     logger.info(f"Scaffolds: {len(scaffold_lengths)}")
@@ -428,6 +484,7 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir,
         scaffold_lengths, length_from_end,
         essential_amgs=essential_amgs,
         viral_vog_ids=viral_vog_ids,
+        virsorter_categories=virsorter_categories,
     )
     logger.info(f"Writing {output_file}")
     annotated.write_csv(output_file, separator="\t")
