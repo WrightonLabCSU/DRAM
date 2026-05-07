@@ -233,9 +233,7 @@
                 },
                 "genomad_genes": {
                     "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "Optional geNomad *_genes.tsv. Drives auxiliary_score: virus_hallmark→hallmark (cat 0), viral taxname→viral-like (cat 1). Without it every gene scores 5."
+                    "description": "Optional geNomad *_genes.tsv (single path, or a quoted glob matching one file per sample). Drives auxiliary_score: virus_hallmark→hallmark (cat 0), viral taxname→viral-like (cat 1). Without it every gene scores 5."
                 },
                 "add_annotations": {
                     "type": "string",
