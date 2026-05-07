@@ -29,6 +29,21 @@ workflow UTILS_NFSCHEMA_PLUGIN {
     }
 
     //
+    // Coerce integer params that arrive as strings from the CLI.
+    // nf-schema 2.6.x lenientMode coerces booleans but not numerics.
+    //
+    [
+        'array_size', 'queue_size', 'threads',
+        'tiny_cpus_limit', 'small_cpus_limit', 'medium_cpus_limit', 'big_cpus_limit', 'huge_cpus_limit',
+        'tiny_gb_mem_limit', 'small_gb_mem_limit', 'medium_gb_mem_limit', 'big_gb_mem_limit', 'huge_gb_mem_limit',
+        'tiny_hr_time_limit', 'small_hr_time_limit', 'medium_hr_time_limit', 'big_hr_time_limit', 'huge_hr_time_limit',
+        'cpu_provision_limit', 'mem_gb_provision_limit', 'time_hr_provision_limit',
+        'kofam_chunk_size', 'vog_chunk_size', 'amg_length_from_end',
+    ].each { k ->
+        if (params[k] instanceof String) params[k] = params[k] as Integer
+    }
+
+    //
     // Validate the parameters using nextflow_schema.json or the schema
     // given via the validation.parametersSchema configuration option
     //
