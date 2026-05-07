@@ -9,6 +9,21 @@
 
 nextflow.enable.dsl = 2
 
+//
+// Coerce CLI string params to their schema types. nf-schema 2.6.x
+// lenientMode does not coerce numerics or booleans despite the docs,
+// and Groovy treats the string "false" as truthy — so an `if(params.x)`
+// check would silently misfire on `--call false`. Coerce at script-load
+// time, before any workflow runs.
+//
+params.each { k, v ->
+    if (v instanceof String) {
+        if (v == 'true')  params[k] = true
+        else if (v == 'false') params[k] = false
+        else if (v ==~ /^-?\d+$/) params[k] = v as Integer
+    }
+}
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Internal DRAM parameters
