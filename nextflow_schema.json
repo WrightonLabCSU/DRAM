@@ -12,31 +12,31 @@
             "description": "Which steps to run in the pipeline.",
             "properties": {
                 "rename": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Rename FASTA headers based on file name. Example: sample1.fa --> (fasta header renamed to) > sample1......  Why? DRAM output is focused on scaffolds/contigs with respect to each provided input input_fasta. Thus, without renaming FASTA headers, the individual scaffolds/contigs will not be distinguashable. *If you have already renamed your FASTA headers, do not include with '--call'."
                 },
                 "call": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Whether to call genes on the input FASTA files using Prodigal."
                 },
                 "annotate": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Annotate called genes using downloaded databases."
                 },
                 "qc": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Run quality control steps such as collect rRNA and tRNA scans. See QC section for more options."
                 },
                 "summarize": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Summarize annotations into a distilled output file. Will use all available topic distillate forms. Ecosystem"
                 },
                 "visualize": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Generate a product visualization of the annotations and save the output to the output directory."
                 },
                 "traits": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Using a DRAM annotations file, make a table of adjectives. Still in development, but can still be used."
                 },
                 "merge_annotations": {
@@ -46,7 +46,7 @@
                     "description": "Path to directory pointing to multiple DRAM annotations to merge into one file. This is ran as a separate pipeline."
                 },
                 "format_kegg": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Format KEGG database for use in DRAM. Standalone operation, will exit after completion."
                 }
             }
@@ -168,62 +168,62 @@
                     "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)"
                 },
                 "use_camper": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the CAMPer database for annotation."
                 },
                 "use_canthyd": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the Cant_Hyd database for annotation."
                 },
                 "use_dbcan": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the DBCan database for annotation."
                 },
                 "use_fegenie": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the FeGenie database for annotation."
                 },
                 "use_kegg": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the KEGG database for annotation."
                 },
                 "use_kofam": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the Kofam database for annotation."
                 },
                 "use_merops": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the MEROPS database for annotation."
                 },
                 "use_methyl": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the Methyl database for annotation."
                 },
                 "use_pfam": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the PFAM database for annotation. Currently disabled for this release as a bug was discovered with the pfam DRAM2 implementation. It will be re-enabled in the next release."
                 },
                 "use_sulfur": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the Sulfur database for annotation."
                 },
                 "use_uniref": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the UniRef database for annotation."
                 },
                 "use_metals": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Use the Metals database for annotation."
                 },
                 "use_vog": {
-                    "type": "boolean"
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$"
                 },
                 "use_viral": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "hidden": true
                 },
                 "use_dramv": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "DRAM-v Phase 1: post-annotation AMG flag computation on viral contigs (no VirSorter). Forces groupby_column=scaffold, skips QUAST and rRNA/tRNA collection, and runs distill in --amg_only mode."
                 },
                 "amg_length_from_end": {
@@ -253,11 +253,11 @@
                     "default": "all"
                 },
                 "generate_gff": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Generate GFF output for each input_fasta. This option is in development right now and may not work properly, and may not work with large numbers of inputs."
                 },
                 "generate_gbk": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Generate GBK output for each input_fasta. This option is in development right now and may not work properly, and may not work with large numbers of inputs."
                 }
             }
@@ -507,7 +507,7 @@
                 },
                 "vog_e_value": {
                     "type": "string",
-                    "default": "1e-05",
+                    "default": "1e-10",
                     "hidden": true
                 },
                 "kofam_chunk_size": {
@@ -579,7 +579,7 @@
                     "description": "Path to and of the KO file that is provided by the KEGG FTP server."
                 },
                 "skip_gene_ko_link": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "fa_icon": "fas fa-question-circle",
                     "description": "Skip the gene_ko_link file. If you are using an older version of KEGG that does not supply the gene_ko_link file you can use this option to skip the gene_ko_link file. Otherwise, the gene_ko_link file is required."
                 },
@@ -598,7 +598,7 @@
             "description": "Generic options for SLURM job submission. More customized options can be configured in your own Nextflow config file. See https://www.nextflow.io/docs/latest/executor.html#slurm and example configs here: https://github.com/nf-core/configs/tree/master/conf",
             "properties": {
                 "slurm": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Launch the pipeline using the SLURM executor. Without this option, the pipeline will run in your current shell/environment."
                 },
                 "partition": {
@@ -710,11 +710,11 @@
             "description": "Aliased options for DRAM annotation workflow. These are provided for backward compatibility with older versions of the pipeline.",
             "properties": {
                 "product": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "alias for visualize."
                 },
                 "adjectives": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "alias for traits."
                 },
                 "distill_ecosystem": {
@@ -789,7 +789,7 @@
                     "hidden": true
                 },
                 "version": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
@@ -827,7 +827,7 @@
                     "hidden": true
                 },
                 "plaintext_email": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Send plain-text email instead of HTML.",
                     "fa_icon": "fas fa-remove-format",
                     "hidden": true
@@ -841,7 +841,7 @@
                     "hidden": true
                 },
                 "monochrome_logs": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
                     "hidden": true
@@ -878,7 +878,7 @@
                     "fa_icon": "fas fa-cog"
                 },
                 "validate_params": {
-                    "type": "boolean",
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
                     "description": "Boolean whether to validate parameters against the schema at runtime",
                     "default": true,
                     "fa_icon": "fas fa-check-square",

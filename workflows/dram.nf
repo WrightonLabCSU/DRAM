@@ -126,6 +126,15 @@ workflow DRAM {
         use_pfam = true
     }
 
+    // DRAM-v Phase 2 needs VOGdb annotations: the V flag in amg_flags and the
+    // auxiliary_score (1-5) computation both depend on per-gene VOG hits.
+    // Without --use_vog, V can never fire and auxiliary_score collapses to a
+    // single value for every gene. Auto-enable here so viral mode just works.
+    if (params.use_dramv && !use_vog) {
+        log.warn "DRAM-v viral mode auto-enabled --use_vog (required for V flag and auxiliary_score)."
+        use_vog = true
+    }
+
     distill_ecosystem = params.sum_ecos
     if (distill_ecosystem == "") {
         distill_ecosystem = params.distill_ecosystem

@@ -9,6 +9,23 @@
 
 nextflow.enable.dsl = 2
 
+//
+// Coerce CLI string params to their schema types. nf-schema 2.6.x
+// lenientMode does not coerce numerics or booleans despite the docs,
+// and Groovy treats the string "false" as truthy — so an `if(params.x)`
+// check would silently misfire on `--call false`. Called from workflow
+// {} below, before PIPELINE_INITIALISATION runs validateParameters().
+//
+def coerceCliParams(p) {
+    p.collectEntries { k, v -> [k, v] }.each { k, v ->
+        if (v instanceof String) {
+            if (v == 'true')       p[k] = true
+            else if (v == 'false') p[k] = false
+            else if (v ==~ /^-?\d+$/) p[k] = v as Integer
+        }
+    }
+}
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Internal DRAM parameters
@@ -35,6 +52,8 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_dram
 workflow {
 
     main:
+    coerceCliParams(params)
+
     //
     // SUBWORKFLOW: Run initialisation tasks
     //

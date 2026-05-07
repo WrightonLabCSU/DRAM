@@ -39,9 +39,16 @@ DEFAULT_LENGTH_FROM_END = 5000
 # Override locally to extract the bare id. Fix upstream is left for a
 # follow-up rule_parser change.
 _PFAM_ID_RE = r"PF\d{5}"
+_VOG_ID_RE = r"VOG\d+"
 _ID_EXPR_DICT = dict(ID_EXPR_DICT)
 _ID_EXPR_DICT["pfam_hits"] = pl.col("pfam_hits").str.extract_all(_PFAM_ID_RE)
 _ID_EXPR_DICT["pfam_id"] = pl.col("pfam_id").str.extract_all(_PFAM_ID_RE)
+# vog_id / vog_ids aren't yet in the upstream rule_parser ID_EXPR_DICT, so
+# register them here. vog_id is the bare best-hit name (e.g. "VOG00177") and
+# vog_ids is "; "-joined all hits per hmm_parser. extract_all on /VOG\d+/
+# tolerates both shapes.
+_ID_EXPR_DICT["vog_id"] = pl.col("vog_id").cast(pl.Utf8).str.extract_all(_VOG_ID_RE)
+_ID_EXPR_DICT["vog_ids"] = pl.col("vog_ids").cast(pl.Utf8).str.extract_all(_VOG_ID_RE)
 
 
 def read_scaffold_lengths(fasta_path: str) -> dict[str, int]:
