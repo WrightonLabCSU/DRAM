@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 """Compute DRAM-v AMG flags and is_transposon column on a combined annotations TSV.
 
-Phase 1 (FASTA-only): no VirSorter input required. Adds two columns:
+Phase 1+2b (FASTA-only): no VirSorter input required. Adds two columns:
 
   - is_transposon (bool): the gene's Pfam hits intersect TRANSPOSON_PFAMS.
   - amg_flags (str): concatenated single-letter flags in v1 order
-    M / K / E / A / P / T / F / B, then a trailing N (not in v1).
-    Semantics for M-B ported verbatim from DRAM v1
-    mag_annotator/annotate_vgfs.py:get_metabolic_flags (commit 6cd68f9),
-    minus the V (VOGdb) flag and the auxiliary_score block, both deferred
-    to Phase 2. The N flag is informational — it marks genes whose ids
-    appear in amg_database.tsv rows where essential_viral_function=TRUE,
-    per Martin et al. 2025 (doi:10.1038/s41564-025-02095-4). It does NOT
-    propagate to M and is NOT used by any downstream filter yet.
+    M / K / E / V / A / P / T / F / B, then a trailing N (not in v1).
+    Semantics ported verbatim from DRAM v1
+    mag_annotator/annotate_vgfs.py:get_metabolic_flags (commit 6cd68f9).
+    V fires when the gene has a VOG hit whose VOGdb functional category
+    is Xr (viral replication) or Xs (virion structure). The auxiliary_score
+    block is still deferred to Phase 2c. The N flag is informational — it
+    marks genes whose ids appear in amg_database.tsv rows where
+    essential_viral_function=TRUE, per Martin et al. 2025
+    (doi:10.1038/s41564-025-02095-4). It does NOT propagate to M and is
+    NOT used by any downstream filter yet.
 """
 
 from pathlib import Path
@@ -43,12 +45,19 @@ _VOG_ID_RE = r"VOG\d+"
 _ID_EXPR_DICT = dict(ID_EXPR_DICT)
 _ID_EXPR_DICT["pfam_hits"] = pl.col("pfam_hits").str.extract_all(_PFAM_ID_RE)
 _ID_EXPR_DICT["pfam_id"] = pl.col("pfam_id").str.extract_all(_PFAM_ID_RE)
-# vog_id / vog_ids aren't yet in the upstream rule_parser ID_EXPR_DICT, so
-# register them here. vog_id is the bare best-hit name (e.g. "VOG00177") and
-# vog_ids is "; "-joined all hits per hmm_parser. extract_all on /VOG\d+/
-# tolerates both shapes.
-_ID_EXPR_DICT["vog_id"] = pl.col("vog_id").cast(pl.Utf8).str.extract_all(_VOG_ID_RE)
-_ID_EXPR_DICT["vog_ids"] = pl.col("vog_ids").cast(pl.Utf8).str.extract_all(_VOG_ID_RE)
+# vogdb_id / vogdb_ids aren't in the upstream rule_parser ID_EXPR_DICT, so
+# register them here. vogdb_id is the bare best-hit name (e.g. "VOG00177")
+# and vogdb_ids is "; "-joined all hits per hmm_parser. Column names follow
+# hmm_parser's `{db_name}_id` / `{db_name}_ids` convention with db_name=vogdb.
+_ID_EXPR_DICT["vogdb_id"] = pl.col("vogdb_id").cast(pl.Utf8).str.extract_all(_VOG_ID_RE)
+_ID_EXPR_DICT["vogdb_ids"] = pl.col("vogdb_ids").cast(pl.Utf8).str.extract_all(_VOG_ID_RE)
+
+# VOGdb functional categories that count as "viral" for the V flag, per DRAM v1
+# (mag_annotator/annotate_vgfs.py:get_metabolic_flags, commit 6cd68f9):
+#   Xr — viral replication
+#   Xs — virion structure
+# Xh (host benefit), Xp (host integration), and Xu (unknown) are excluded.
+_V_FLAG_CATEGORIES = frozenset({"Xr", "Xs"})
 
 
 def read_scaffold_lengths(fasta_path: str) -> dict[str, int]:
@@ -114,6 +123,29 @@ def build_amg_id_sets(
     return amgs, _ids_where("verified"), _ids_where("essential_viral_function")
 
 
+def build_viral_vog_ids(vog_list_path: Path) -> set[str]:
+    """Return the set of VOG ids whose FunctionalCategory is Xr or Xs.
+
+    `vog_list_path` is VOGdb's vog_annotations_latest.tsv(.gz) — a 5-col TSV
+    (GroupName, ProteinCount, SpeciesCount, FunctionalCategory,
+    ConsensusFunctionalDescription). polars handles the .gz transparently.
+    Categories are the v1 VOGdb codes (Xh/Xp/Xr/Xs/Xu); only Xr and Xs
+    count as viral for the V flag. A category cell can hold multiple
+    one-character codes concatenated (e.g. "XrXs"); we match on substring.
+    """
+    df = pl.read_csv(vog_list_path, separator="\t", infer_schema_length=10_000)
+    name_col = "GroupName" if "GroupName" in df.columns else df.columns[0]
+    cat_col = (
+        "FunctionalCategory" if "FunctionalCategory" in df.columns else df.columns[3]
+    )
+    sub = df.filter(
+        pl.any_horizontal(
+            [pl.col(cat_col).cast(pl.Utf8).str.contains(c) for c in _V_FLAG_CATEGORIES]
+        )
+    )
+    return {str(v) for v in sub[name_col].drop_nulls().to_list()}
+
+
 def build_metabolic_genes(distill_sheets_dir: Path) -> set[str]:
     """Union of gene_id values across distill sheets where potential_amg=TRUE."""
     metabolic: set[str] = set()
@@ -162,9 +194,12 @@ def compute_flags(
     scaffold_lengths: dict[str, int],
     length_from_end: int,
     essential_amgs: set[str] | None = None,
+    viral_vog_ids: set[str] | None = None,
 ) -> pl.DataFrame:
     if essential_amgs is None:
         essential_amgs = set()
+    if viral_vog_ids is None:
+        viral_vog_ids = set()
     df = explode_gene_ids(annotations)
 
     def _has_intersect(set_: set[str]) -> pl.Expr:
@@ -181,6 +216,7 @@ def compute_flags(
         _has_intersect(metabolic_genes).alias("_M"),
         _has_intersect(amgs).alias("_K"),
         _has_intersect(verified_amgs).alias("_E"),
+        _has_intersect(viral_vog_ids).alias("_V"),
         _has_intersect(CELL_ENTRY_CAZYS).alias("_A"),
         _has_intersect(VIRAL_PEPTIDASES_MEROPS).alias("_P"),
         _has_intersect(TRANSPOSON_PFAMS).alias("is_transposon"),
@@ -231,11 +267,13 @@ def compute_flags(
     # K forces M (per v1).
     df = df.with_columns((pl.col("_M") | pl.col("_K")).alias("_M"))
 
-    # Build amg_flags string in v1 order, with non-v1 N appended at the end.
+    # Build amg_flags string in v1 order (M K E V A P T F B), with non-v1 N
+    # appended at the end.
     flag_str = (
         pl.when(pl.col("_M")).then(pl.lit("M")).otherwise(pl.lit(""))
         + pl.when(pl.col("_K")).then(pl.lit("K")).otherwise(pl.lit(""))
         + pl.when(pl.col("_E")).then(pl.lit("E")).otherwise(pl.lit(""))
+        + pl.when(pl.col("_V")).then(pl.lit("V")).otherwise(pl.lit(""))
         + pl.when(pl.col("_A")).then(pl.lit("A")).otherwise(pl.lit(""))
         + pl.when(pl.col("_P")).then(pl.lit("P")).otherwise(pl.lit(""))
         + pl.when(pl.col("_T")).then(pl.lit("T")).otherwise(pl.lit(""))
@@ -260,10 +298,14 @@ def compute_flags(
               help="AMG reference TSV. Defaults to the bundled assets/amg_database.tsv.")
 @click.option("--distill_sheets_dir", default=None, type=click.Path(),
               help="Distill TSV directory. Defaults to bundled assets/forms/distill_sheets.")
+@click.option("--vog_list", default=None, type=click.Path(),
+              help="VOGdb vog_annotations_latest.tsv(.gz). Required for the V flag; "
+                   "if omitted the V flag is never set.")
 @click.option("--length_from_end", default=DEFAULT_LENGTH_FROM_END, type=int,
               show_default=True,
               help="Window (bp) from contig ends used to set the F flag.")
-def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir, length_from_end):
+def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir,
+         vog_list, length_from_end):
     """Add DRAM-v amg_flags and is_transposon columns to a combined annotations TSV."""
     here = Path(__file__).parent
     amg_db = Path(amg_db) if amg_db else here / "assets" / "amg_database.tsv"
@@ -286,6 +328,14 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir, len
     metabolic_genes = build_metabolic_genes(distill_sheets_dir)
     logger.info(f"Metabolic genes: {len(metabolic_genes)}")
 
+    viral_vog_ids: set[str] = set()
+    if vog_list:
+        logger.info(f"Building viral VOG id set (Xr/Xs) from {vog_list}")
+        viral_vog_ids = build_viral_vog_ids(Path(vog_list))
+        logger.info(f"Viral VOG ids: {len(viral_vog_ids)}")
+    else:
+        logger.info("No --vog_list provided; V flag will not be set.")
+
     logger.info(f"Reading scaffold lengths from {catalog_fasta}")
     scaffold_lengths = read_scaffold_lengths(catalog_fasta)
     logger.info(f"Scaffolds: {len(scaffold_lengths)}")
@@ -294,6 +344,7 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir, len
         annotations, metabolic_genes, amgs, verified_amgs,
         scaffold_lengths, length_from_end,
         essential_amgs=essential_amgs,
+        viral_vog_ids=viral_vog_ids,
     )
     logger.info(f"Writing {output_file}")
     annotated.write_csv(output_file, separator="\t")
