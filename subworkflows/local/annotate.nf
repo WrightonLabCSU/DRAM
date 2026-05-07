@@ -102,9 +102,13 @@ workflow ANNOTATE {
     }
 
     if (params.use_dramv) {
+        // VOGdb annotations TSV powers the V flag (Xr/Xs categories).
+        // use_dramv force-enables use_vog upstream, so vog_list is always available.
+        ch_vog_list = Channel.fromPath(params.vog_list, checkIfExists: true)
         DRAMV_FLAGS(
             ch_combined_annotations,
-            ch_fasta.map { it -> it[1] }.collect()
+            ch_fasta.map { it -> it[1] }.collect(),
+            ch_vog_list
         )
         ch_combined_annotations = DRAMV_FLAGS.out.combined_annotations_with_flags
     }

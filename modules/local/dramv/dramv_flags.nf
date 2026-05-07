@@ -9,6 +9,7 @@ process DRAMV_FLAGS {
     input:
     path annotations
     path(fastas, stageAs: "fastas/*")
+    path vog_list
 
     output:
     path "annotations_with_flags.tsv", emit: combined_annotations_with_flags
@@ -23,6 +24,7 @@ process DRAMV_FLAGS {
         -i ${annotations} \\
         -o annotations_with_flags.tsv \\
         --catalog_fasta _catalog.fa \\
-        --length_from_end ${length_from_end}
+        --length_from_end ${length_from_end} \\
+        --vog_list ${vog_list}
     """
 }

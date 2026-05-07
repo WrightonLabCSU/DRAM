@@ -266,6 +266,89 @@ def test_build_amg_id_sets_tolerates_missing_essential_column(tmp_path):
     assert essential == set()
 
 
+def test_v_flag_fires_for_xr_xs_vog_hits():
+    """V flag fires when the gene's vogdb_ids contain at least one VOG whose
+    FunctionalCategory is Xr or Xs. Inserted between E and A in v1 order."""
+    ann = _ann([
+        # Xr hit only → V at v1 position (between E and A)
+        {"query_id": "g_xr", "scaffold": "s1", "start_position": 6000, "stop_position": 6500,
+         "kofam_id": None, "pfam_hits": None, "dbcan_id": None,
+         "vogdb_id": "VOG00001", "vogdb_ids": "VOG00001"},
+        # Xs in a multi-id list (joined by "; ") still fires V
+        {"query_id": "g_xs", "scaffold": "s1", "start_position": 6700, "stop_position": 7000,
+         "kofam_id": None, "pfam_hits": None, "dbcan_id": None,
+         "vogdb_id": "VOG00099", "vogdb_ids": "VOG00099; VOG00002"},
+        # Xu (unknown) — must NOT fire V
+        {"query_id": "g_xu", "scaffold": "s1", "start_position": 7100, "stop_position": 7400,
+         "kofam_id": None, "pfam_hits": None, "dbcan_id": None,
+         "vogdb_id": "VOG00099", "vogdb_ids": "VOG00099"},
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes=set(), amgs=set(), verified_amgs=set(),
+        scaffold_lengths={"s1": 14_000}, length_from_end=5_000,
+        viral_vog_ids={"VOG00001", "VOG00002"},
+    )
+    flags = _flags_by_query(out)
+    assert flags["g_xr"] == "V"
+    assert flags["g_xs"] == "V"
+    assert flags["g_xu"] == ""
+
+
+def test_v_flag_combines_with_other_flags_in_v1_order():
+    """V slots between E and A. A gene with M+K+E+V+A should produce 'MKEVA'."""
+    ann = _ann([
+        # K00001 metabolic + verified AMG + GH18 (A) + VOG hit Xr
+        {"query_id": "g1", "scaffold": "s1", "start_position": 6000, "stop_position": 6500,
+         "kofam_id": "K00001", "pfam_hits": None, "dbcan_id": "GH18",
+         "vogdb_id": "VOG00001", "vogdb_ids": "VOG00001"},
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes={"K00001"},
+        amgs={"K00001"}, verified_amgs={"K00001"},
+        scaffold_lengths={"s1": 14_000}, length_from_end=5_000,
+        viral_vog_ids={"VOG00001"},
+    )
+    assert _flags_by_query(out)["g1"] == "MKEVA"
+
+
+def test_v_flag_default_off_when_no_viral_vog_set_passed():
+    """Backward compat: omitting viral_vog_ids never produces V even if a row
+    has a vogdb_ids hit."""
+    ann = _ann([
+        {"query_id": "g1", "scaffold": "s1", "start_position": 6000, "stop_position": 6500,
+         "kofam_id": "K00001", "pfam_hits": None, "dbcan_id": None,
+         "vogdb_id": "VOG00001", "vogdb_ids": "VOG00001"},
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes={"K00001"},
+        amgs={"K00001"}, verified_amgs={"K00001"},
+        scaffold_lengths={"s1": 14_000}, length_from_end=5_000,
+        # viral_vog_ids intentionally omitted
+    )
+    assert "V" not in _flags_by_query(out)["g1"]
+
+
+def test_build_viral_vog_ids(tmp_path):
+    """build_viral_vog_ids picks up GroupNames whose FunctionalCategory contains
+    Xr or Xs, and rejects Xh/Xp/Xu."""
+    from dramv_flags import build_viral_vog_ids
+    p = tmp_path / "vog_annot.tsv"
+    p.write_text(
+        "GroupName\tProteinCount\tSpeciesCount\tFunctionalCategory\tConsensusFunctionalDescription\n"
+        "VOG00001\t10\t5\tXr\tviral replication thing\n"
+        "VOG00002\t10\t5\tXs\tvirion structural\n"
+        "VOG00003\t10\t5\tXrXs\tcombined replication+structure\n"
+        "VOG00004\t10\t5\tXh\thost benefit\n"
+        "VOG00005\t10\t5\tXp\tintegration\n"
+        "VOG00006\t10\t5\tXu\tunknown\n"
+        "VOG00007\t10\t5\t\tno category\n"
+    )
+    assert build_viral_vog_ids(p) == {"VOG00001", "VOG00002", "VOG00003"}
+
+
 def test_read_scaffold_lengths(tmp_path):
     """Scaffold lengths are read correctly across multi-line records, including
     trailing newlines and IDs with embedded spaces."""
