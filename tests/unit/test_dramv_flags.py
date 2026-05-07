@@ -349,6 +349,119 @@ def test_build_viral_vog_ids(tmp_path):
     assert build_viral_vog_ids(p) == {"VOG00001", "VOG00002", "VOG00003"}
 
 
+def test_auxiliary_score_pure_fasta_mode_is_all_fives():
+    """Without virsorter_categories, every gene gets the v1 fallback score 5."""
+    ann = _ann([
+        {"query_id": "g1", "scaffold": "s1", "start_position": 100,  "stop_position": 500,
+         "kofam_id": "K00001", "pfam_hits": None, "dbcan_id": None},
+        {"query_id": "g2", "scaffold": "s1", "start_position": 1000, "stop_position": 1500,
+         "kofam_id": None,    "pfam_hits": None, "dbcan_id": None},
+        {"query_id": "g3", "scaffold": "s1", "start_position": 2000, "stop_position": 2500,
+         "kofam_id": None,    "pfam_hits": None, "dbcan_id": None},
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes={"K00001"},
+        amgs=set(), verified_amgs=set(),
+        scaffold_lengths={"s1": 10_000}, length_from_end=5_000,
+    )
+    by_id = {row["query_id"]: row["auxiliary_score"] for row in out.iter_rows(named=True)}
+    assert by_id == {"g1": 5, "g2": 5, "g3": 5}
+
+
+def test_auxiliary_score_v1_if_chain_with_virsorter_categories():
+    """Reproduce each branch of v1's calculate_auxiliary_scores using a 5-gene
+    scaffold and supplied virsorter_categories. Indices 0 and 4 are ends → 5."""
+    ann = _ann([
+        {"query_id": f"g{i}", "scaffold": "s1", "start_position": i * 1000,
+         "stop_position": i * 1000 + 500,
+         "kofam_id": None, "pfam_hits": None, "dbcan_id": None}
+        for i in range(5)
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes=set(), amgs=set(), verified_amgs=set(),
+        scaffold_lengths={"s1": 100_000},  # F-window stays well off
+        length_from_end=5_000,
+        virsorter_categories={"g0": "0", "g1": "0", "g3": "0", "g4": "0"},  # hallmark on both flanks of g2
+    )
+    by_id = {row["query_id"]: row["auxiliary_score"] for row in out.iter_rows(named=True)}
+    assert by_id["g0"] == 5    # first
+    assert by_id["g4"] == 5    # last
+    assert by_id["g2"] == 1    # hallmark left + hallmark right
+
+
+def test_auxiliary_score_branches():
+    """Each non-end-gene branch of the v1 if-chain on its own 3-gene scaffold."""
+    cases = [
+        # (scaffold, vs_categories_for_neighbors, own_cat, expected_score)
+        ("s_hh", {0: "0",  2: "0"},  None, 1),  # hallmark left + hallmark right
+        ("s_hv", {0: "0",  2: "1"},  None, 2),  # hallmark left + viral_like right
+        ("s_vv", {0: "1",  2: "1"},  None, 3),  # viral_like both sides
+        ("s_hl", {0: "0"},           None, 4),  # hallmark left only, nothing right
+        ("s_sh", {},                 "0",  4),  # own=hallmark, no neighbor cats
+        ("s_no", {},                 None, 5),  # nothing anywhere
+    ]
+    rows = []
+    vs_all: dict[str, str] = {}
+    for sc, neighbor_cats, own_cat, _ in cases:
+        for i in range(3):
+            qid = f"q_{sc}_{i}"
+            rows.append({
+                "query_id": qid, "scaffold": sc,
+                "start_position": i * 1000, "stop_position": i * 1000 + 500,
+                "kofam_id": None, "pfam_hits": None, "dbcan_id": None,
+            })
+            if i in neighbor_cats:
+                vs_all[qid] = neighbor_cats[i]
+            if i == 1 and own_cat is not None:
+                vs_all[qid] = own_cat
+    out = compute_flags(
+        _ann(rows),
+        metabolic_genes=set(), amgs=set(), verified_amgs=set(),
+        scaffold_lengths={s: 100_000 for s, _, _, _ in cases},
+        length_from_end=5_000,
+        virsorter_categories=vs_all,
+    )
+    by_id = {row["query_id"]: row["auxiliary_score"] for row in out.iter_rows(named=True)}
+    for sc, _, _, expected in cases:
+        assert by_id[f"q_{sc}_1"] == expected, \
+            f"{sc}: expected {expected}, got {by_id[f'q_{sc}_1']}"
+
+
+def test_b_flag_downgrades_low_auxiliary_score_to_four():
+    """v1: a gene with B in amg_flags AND auxiliary_score < 4 is bumped to 4."""
+    # 3 metabolic genes back-to-back → all get B. Place hallmark VirSorter
+    # neighbors so g2 (the middle) would otherwise score 1.
+    ann = _ann([
+        {"query_id": "g0", "scaffold": "s1", "start_position": 1000,  "stop_position": 1500,
+         "kofam_id": None,    "pfam_hits": None, "dbcan_id": None},
+        {"query_id": "g1", "scaffold": "s1", "start_position": 2000,  "stop_position": 2500,
+         "kofam_id": "K00001", "pfam_hits": None, "dbcan_id": None},
+        {"query_id": "g2", "scaffold": "s1", "start_position": 3000,  "stop_position": 3500,
+         "kofam_id": "K00002", "pfam_hits": None, "dbcan_id": None},
+        {"query_id": "g3", "scaffold": "s1", "start_position": 4000,  "stop_position": 4500,
+         "kofam_id": "K00003", "pfam_hits": None, "dbcan_id": None},
+        {"query_id": "g4", "scaffold": "s1", "start_position": 5000,  "stop_position": 5500,
+         "kofam_id": None,    "pfam_hits": None, "dbcan_id": None},
+    ])
+    out = compute_flags(
+        ann,
+        metabolic_genes={"K00001", "K00002", "K00003"},
+        amgs=set(), verified_amgs=set(),
+        scaffold_lengths={"s1": 100_000}, length_from_end=5_000,
+        virsorter_categories={"g0": "0", "g4": "0"},  # hallmark on both flanks
+    )
+    by_id = {row["query_id"]: (row["amg_flags"], row["auxiliary_score"])
+             for row in out.iter_rows(named=True)}
+    # g2 has B (centre of M-triple) AND would have scored 1 (hallmark both
+    # flanks); v1 bumps it to 4.
+    assert "B" in by_id["g2"][0]
+    assert by_id["g2"][1] == 4
+    # End genes still 5, no downgrade applies.
+    assert by_id["g0"][1] == 5
+
+
 def test_read_scaffold_lengths(tmp_path):
     """Scaffold lengths are read correctly across multi-line records, including
     trailing newlines and IDs with embedded spaces."""

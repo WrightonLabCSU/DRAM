@@ -1,20 +1,24 @@
 #!/usr/bin/env python
-"""Compute DRAM-v AMG flags and is_transposon column on a combined annotations TSV.
+"""Compute DRAM-v AMG flags, auxiliary_score, and is_transposon columns.
 
-Phase 1+2b (FASTA-only): no VirSorter input required. Adds two columns:
+Phase 1+2b+2c (FASTA-default): no VirSorter input required. Adds:
 
   - is_transposon (bool): the gene's Pfam hits intersect TRANSPOSON_PFAMS.
   - amg_flags (str): concatenated single-letter flags in v1 order
     M / K / E / V / A / P / T / F / B, then a trailing N (not in v1).
-    Semantics ported verbatim from DRAM v1
-    mag_annotator/annotate_vgfs.py:get_metabolic_flags (commit 6cd68f9).
-    V fires when the gene has a VOG hit whose VOGdb functional category
-    is Xr (viral replication) or Xs (virion structure). The auxiliary_score
-    block is still deferred to Phase 2c. The N flag is informational — it
-    marks genes whose ids appear in amg_database.tsv rows where
-    essential_viral_function=TRUE, per Martin et al. 2025
+    V fires when the gene has a VOG hit whose VOGdb FunctionalCategory
+    is Xr (viral replication) or Xs (virion structure). The N flag is
+    informational — it marks genes whose ids appear in amg_database.tsv
+    rows where essential_viral_function=TRUE, per Martin et al. 2025
     (doi:10.1038/s41564-025-02095-4). It does NOT propagate to M and is
     NOT used by any downstream filter yet.
+  - auxiliary_score (int 1-5): VirSorter-flank-based confidence per v1's
+    calculate_auxiliary_scores. Lower = more confident viral context. In
+    pure-FASTA mode (no virsorter_categories supplied) every gene scores
+    5, matching v1's fallback. The B flag downgrades 1/2/3 to 4.
+
+All semantics ported verbatim from DRAM v1
+mag_annotator/annotate_vgfs.py (commit 6cd68f9).
 """
 
 from pathlib import Path
@@ -58,6 +62,13 @@ _ID_EXPR_DICT["vogdb_ids"] = pl.col("vogdb_ids").cast(pl.Utf8).str.extract_all(_
 #   Xs — virion structure
 # Xh (host benefit), Xp (host integration), and Xu (unknown) are excluded.
 _V_FLAG_CATEGORIES = frozenset({"Xr", "Xs"})
+
+# VirSorter category strings recognised by the auxiliary_score algorithm
+# (mag_annotator/annotate_vgfs.py, commit 6cd68f9). Categories 0/3 are phage
+# and prophage hallmark genes; 1/4 are phage and prophage viral-like genes.
+# Category 2 (uncategorized) and any None do not contribute.
+_VIRSORTER_HALLMARK_CATEGORIES = frozenset({"0", "3"})
+_VIRSORTER_VIRAL_LIKE_CATEGORIES = frozenset({"1", "4"})
 
 
 def read_scaffold_lengths(fasta_path: str) -> dict[str, int]:
@@ -163,6 +174,57 @@ def build_metabolic_genes(distill_sheets_dir: Path) -> set[str]:
     return metabolic
 
 
+def _aux_score_for_scaffold(
+    gene_ids: list[str],
+    virsorter_categories: dict[str, str],
+) -> dict[str, int]:
+    """Verbatim port of v1 calculate_auxiliary_scores for one scaffold.
+
+    `gene_ids` is the scaffold's genes in start-position order. v1 builds
+    a (dram_gene, virsorter_gene, virsorter_category) tuple per gene and
+    iterates with index `i`. In pure-FASTA mode every virsorter_gene is
+    None, so the left/right context lists are empty and every gene falls
+    through to the default score of 5. With VirSorter input, neighboring
+    hallmark/viral-like calls drop the score per the v1 if-else chain.
+    """
+    n = len(gene_ids)
+    scores: dict[str, int] = {}
+    for i, gene_id in enumerate(gene_ids):
+        if i == 0 or i == n - 1:
+            scores[gene_id] = 5
+            continue
+
+        left_cats = {
+            virsorter_categories[g]
+            for g in gene_ids[:i] if g in virsorter_categories
+        }
+        right_cats = {
+            virsorter_categories[g]
+            for g in gene_ids[i + 1:] if g in virsorter_categories
+        }
+        hallmark_left = bool(left_cats & _VIRSORTER_HALLMARK_CATEGORIES)
+        viral_like_left = bool(left_cats & _VIRSORTER_VIRAL_LIKE_CATEGORIES)
+        hallmark_right = bool(right_cats & _VIRSORTER_HALLMARK_CATEGORIES)
+        viral_like_right = bool(right_cats & _VIRSORTER_VIRAL_LIKE_CATEGORIES)
+
+        own_cat = virsorter_categories.get(gene_id)
+
+        if hallmark_left and hallmark_right:
+            score = 1
+        elif (hallmark_left and viral_like_right) or (viral_like_left and hallmark_right):
+            score = 2
+        elif viral_like_left and viral_like_right:
+            score = 3
+        elif hallmark_left or viral_like_left or hallmark_right or viral_like_right:
+            score = 4
+        elif own_cat in _VIRSORTER_HALLMARK_CATEGORIES or own_cat in _VIRSORTER_VIRAL_LIKE_CATEGORIES:
+            score = 4
+        else:
+            score = 5
+        scores[gene_id] = score
+    return scores
+
+
 def explode_gene_ids(annotations: pl.DataFrame) -> pl.DataFrame:
     """Add a `_gene_ids` list[str] column: union of ids across all besthit columns."""
     cols = [c for c in _ID_EXPR_DICT if c in annotations.columns]
@@ -195,11 +257,14 @@ def compute_flags(
     length_from_end: int,
     essential_amgs: set[str] | None = None,
     viral_vog_ids: set[str] | None = None,
+    virsorter_categories: dict[str, str] | None = None,
 ) -> pl.DataFrame:
     if essential_amgs is None:
         essential_amgs = set()
     if viral_vog_ids is None:
         viral_vog_ids = set()
+    if virsorter_categories is None:
+        virsorter_categories = {}
     df = explode_gene_ids(annotations)
 
     def _has_intersect(set_: set[str]) -> pl.Expr:
@@ -282,6 +347,24 @@ def compute_flags(
         + pl.when(pl.col("_N")).then(pl.lit("N")).otherwise(pl.lit(""))
     ).alias("amg_flags")
     df = df.with_columns(flag_str)
+
+    # auxiliary_score: per-scaffold v1 algorithm, then B-flag downgrade.
+    scores: dict[str, int] = {}
+    for scaffold_name, group in df.group_by("scaffold", maintain_order=True):
+        gene_ids = group["query_id"].to_list()
+        scores.update(_aux_score_for_scaffold(gene_ids, virsorter_categories))
+    score_df = pl.DataFrame({
+        "query_id": list(scores.keys()),
+        "auxiliary_score": list(scores.values()),
+    }, schema_overrides={"auxiliary_score": pl.Int64})
+    df = df.join(score_df, on="query_id", how="left")
+    # v1 downgrade: B-flagged genes with score < 4 are bumped up to 4.
+    df = df.with_columns(
+        pl.when(pl.col("_B") & (pl.col("auxiliary_score") < 4))
+          .then(4)
+          .otherwise(pl.col("auxiliary_score"))
+          .alias("auxiliary_score")
+    )
 
     drop_cols = [c for c in df.columns if c.startswith("_")]
     return df.drop(drop_cols)
