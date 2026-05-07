@@ -426,10 +426,12 @@ def compute_flags(
 @click.option("--vog_list", default=None, type=click.Path(),
               help="VOGdb vog_annotations_latest.tsv(.gz). Required for the V flag; "
                    "if omitted the V flag is never set.")
-@click.option("--genomad_genes", default=None, type=click.Path(),
+@click.option("--genomad_genes", multiple=True, type=click.Path(),
               help="geNomad *_genes.tsv. Drives auxiliary_score: virus_hallmark "
-                   "→ '0', taxname starting 'Viruses' → '1'. If omitted every "
-                   "gene gets the v1 fallback score 5.")
+                   "→ '0', taxname starting 'Viruses' → '1'. Pass once per "
+                   "sample (the flag may be repeated) — entries are merged into "
+                   "a single {gene_id: category} dict. If omitted every gene "
+                   "gets the v1 fallback score 5.")
 @click.option("--length_from_end", default=DEFAULT_LENGTH_FROM_END, type=int,
               show_default=True,
               help="Window (bp) from contig ends used to set the F flag.")
@@ -467,11 +469,15 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir,
 
     virsorter_categories: dict[str, str] = {}
     if genomad_genes:
-        logger.info(f"Parsing geNomad genes TSV for VirSorter category mapping: {genomad_genes}")
-        virsorter_categories = parse_genomad_genes_tsv(Path(genomad_genes))
+        for p in genomad_genes:
+            logger.info(f"Parsing geNomad genes TSV for VirSorter category mapping: {p}")
+            virsorter_categories.update(parse_genomad_genes_tsv(Path(p)))
         n_hallmark = sum(1 for c in virsorter_categories.values() if c == "0")
         n_viral_like = sum(1 for c in virsorter_categories.values() if c == "1")
-        logger.info(f"geNomad-derived categories: {n_hallmark} hallmark + {n_viral_like} viral-like")
+        logger.info(
+            f"geNomad-derived categories across {len(genomad_genes)} file(s): "
+            f"{n_hallmark} hallmark + {n_viral_like} viral-like"
+        )
     else:
         logger.info("No --genomad_genes provided; auxiliary_score will fall through to 5 for every gene.")
 

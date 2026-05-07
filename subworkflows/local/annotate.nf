@@ -105,11 +105,12 @@ workflow ANNOTATE {
         // VOGdb annotations TSV powers the V flag (Xr/Xs categories).
         // use_dramv force-enables use_vog upstream, so vog_list is always available.
         ch_vog_list = Channel.fromPath(params.vog_list, checkIfExists: true)
-        // geNomad genes TSV powers auxiliary_score via the v1 VirSorter category
-        // mapping. Optional — pass the empty NO_FILE sentinel when not provided.
+        // geNomad genes TSV(s) power auxiliary_score via the v1 VirSorter category
+        // mapping. Optional — accepts a single path or a glob pattern matching one
+        // file per sample. Pass the empty NO_FILE sentinel when not provided.
         ch_genomad_genes = params.genomad_genes
-            ? Channel.fromPath(params.genomad_genes, checkIfExists: true)
-            : Channel.value(file("${projectDir}/assets/NO_FILE"))
+            ? Channel.fromPath(params.genomad_genes, checkIfExists: true).collect()
+            : Channel.value([file("${projectDir}/assets/NO_FILE")])
         DRAMV_FLAGS(
             ch_combined_annotations,
             ch_fasta.map { it -> it[1] }.collect(),
