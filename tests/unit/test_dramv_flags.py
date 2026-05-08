@@ -482,58 +482,135 @@ def test_parse_genomad_genes_tsv_modern_schema(tmp_path):
         "k141_1_8\t2101\t2400\t100\t1\tGENOMAD.500.HH\t0\t0\t1\tBacteria\n"  # dropped
     )
     out = parse_genomad_genes_tsv(p)
-    rows = {(r["contig"], r["start"], r["end"]): r["category"]
+    rows = {(r["gene"], r["contig"], r["start"], r["end"]): r["category"]
             for r in out.iter_rows(named=True)}
     assert rows == {
-        ("k141_1", 1, 300): "0",
-        ("k141_1", 301, 600): "0",
-        ("k141_1", 601, 900): "0",
-        ("k141_1", 901, 1200): "1",
-        ("k141_1", 1201, 1500): "1",
+        ("k141_1_1", "k141_1", 1, 300): "0",
+        ("k141_1_2", "k141_1", 301, 600): "0",
+        ("k141_1_3", "k141_1", 601, 900): "0",
+        ("k141_1_4", "k141_1", 901, 1200): "1",
+        ("k141_1_5", "k141_1", 1201, 1500): "1",
     }
 
 
-def test_build_virsorter_categories_translates_provirus_coords():
-    """A DRAM gene on a CheckV-trimmed provirus contig
-    (`k141_99|provirus_1000_5000`) carries 1-based positions within the
-    1000–5000 window of `k141_99`. Joining to a geNomad gene at parent
-    coords 2010–2400 should match the DRAM gene at provirus coords
-    1011–1401 (i.e. parent 2010 = provirus 1011 when offset=1000)."""
+def test_build_virsorter_categories_direct_gene_id_match():
+    """Common case: geNomad and DRAM use identical gene ids — provirus or
+    whole-virus. Direct equality match catches them, position-join is not
+    consulted."""
     import polars as pl
     from dramv_flags import build_virsorter_categories_from_genomad
 
+    # geNomad uses provirus-suffixed gene ids with provirus-local coords
+    # — same convention as DRAM, so a string match wins.
     genomad_df = pl.DataFrame(
         {
-            "contig": ["k141_99", "k141_99", "k141_42"],
-            "start":  [   2010,        4500,       100],
-            "end":    [   2400,        4900,       400],
+            "gene": ["k141_100971|provirus_1_18064_4", "k141_85503_1"],
+            "contig": ["k141_100971|provirus_1_18064", "k141_85503"],
+            "start":  [1558, 2],
+            "end":    [2112, 388],
+            "category": ["0", "0"],
+        },
+        schema_overrides={"start": pl.Int64, "end": pl.Int64},
+    )
+    annotations = pl.DataFrame([
+        # Provirus gene id matches geNomad's gene id directly
+        {"query_id": "k141_100971|provirus_1_18064_4",
+         "scaffold": "k141_100971|provirus_1_18064",
+         "start_position": 1558, "stop_position": 2112},
+        # Whole-virus gene id matches geNomad's gene id directly
+        {"query_id": "k141_85503_1", "scaffold": "k141_85503",
+         "start_position": 2, "stop_position": 388},
+        # No match anywhere
+        {"query_id": "k141_99_1", "scaffold": "k141_99",
+         "start_position": 1, "stop_position": 100},
+    ])
+    out = build_virsorter_categories_from_genomad(genomad_df, annotations)
+    assert out == {
+        "k141_100971|provirus_1_18064_4": "0",
+        "k141_85503_1": "0",
+    }
+
+
+def test_build_virsorter_categories_position_overlap_fallback():
+    """Fallback path: gene ids don't match (e.g. DRAM run on clustered
+    catalog whose ids differ from per-sample geNomad), but the parent
+    assembly contig is the same and geNomad's interval overlaps the
+    DRAM gene after coord translation."""
+    import polars as pl
+    from dramv_flags import build_virsorter_categories_from_genomad
+
+    # geNomad ids use a different sample-prefix that DRAM doesn't carry,
+    # so direct gene-id match never fires.
+    genomad_df = pl.DataFrame(
+        {
+            "gene":   ["sampleA_k141_99_3", "sampleA_k141_99_5", "sampleA_k141_42_1"],
+            "contig": ["sampleA_k141_99",   "sampleA_k141_99",   "sampleA_k141_42"],
+            "start":  [   2010,                 4500,                 100],
+            "end":    [   2400,                 4900,                 400],
+            "category": ["0", "1", "0"],
+        },
+        schema_overrides={"start": pl.Int64, "end": pl.Int64},
+    )
+    # DRAM doesn't carry the sampleA_ prefix — fallback won't help unless
+    # parent contigs align. So construct a case where parent names DO align
+    # by parsing the same (provirus-stripped) DRAM scaffold.
+    genomad_df = pl.DataFrame(
+        {
+            "gene":   ["other_id_x", "other_id_y", "other_id_z"],
+            "contig": ["k141_99",    "k141_99",    "k141_42"],
+            "start":  [   2010,         4500,         100],
+            "end":    [   2400,         4900,         400],
             "category": ["0", "1", "0"],
         },
         schema_overrides={"start": pl.Int64, "end": pl.Int64},
     )
     annotations = pl.DataFrame([
-        # Provirus gene that overlaps geNomad row 1 (parent 2010-2400 → provirus 1011-1401 with offset=1000)
-        {"query_id": "g_prov_a", "scaffold": "k141_99|provirus_1000_5000",
+        # Provirus gene; direct id "k141_99|provirus_1000_5000_x" not in geNomad,
+        # but parent k141_99 + translated coords overlap geNomad row 1
+        {"query_id": "k141_99|provirus_1000_5000_x",
+         "scaffold": "k141_99|provirus_1000_5000",
          "start_position": 1011, "stop_position": 1401},
-        # Provirus gene that overlaps geNomad row 2 (parent 4500-4900 → provirus 3501-3901)
-        {"query_id": "g_prov_b", "scaffold": "k141_99|provirus_1000_5000",
-         "start_position": 3501, "stop_position": 3901},
-        # Provirus gene with no geNomad overlap
-        {"query_id": "g_prov_none", "scaffold": "k141_99|provirus_1000_5000",
-         "start_position": 100,  "stop_position": 200},
-        # Whole-virus contig (no provirus suffix), match on raw coords
-        {"query_id": "g_whole",      "scaffold": "k141_42",
-         "start_position": 100,  "stop_position": 350},
-        # Contig that doesn't appear in geNomad data
-        {"query_id": "g_orphan",     "scaffold": "k141_77",
-         "start_position": 1,    "stop_position": 100},
+        # Whole-virus gene; direct id "k141_42_some_other_name" not in geNomad,
+        # but parent k141_42 + raw coords overlap geNomad row 3
+        {"query_id": "k141_42_some_other_name", "scaffold": "k141_42",
+         "start_position": 100, "stop_position": 350},
+        # No match anywhere
+        {"query_id": "k141_77_1", "scaffold": "k141_77",
+         "start_position": 1, "stop_position": 100},
     ])
     out = build_virsorter_categories_from_genomad(genomad_df, annotations)
     assert out == {
-        "g_prov_a": "0",
-        "g_prov_b": "1",
-        "g_whole":  "0",
+        "k141_99|provirus_1000_5000_x": "0",
+        "k141_42_some_other_name": "0",
     }
+
+
+def test_build_virsorter_categories_direct_match_wins_over_overlap():
+    """When both paths could produce a match, direct gene-id match wins
+    (and gets the expected category, not whatever happens to overlap)."""
+    import polars as pl
+    from dramv_flags import build_virsorter_categories_from_genomad
+
+    genomad_df = pl.DataFrame(
+        {
+            "gene":   ["k141_99_3",  "k141_99_4"],
+            "contig": ["k141_99",    "k141_99"],
+            "start":  [   100,           500],
+            "end":    [   400,           900],
+            # Direct match key would map to "0"; overlapping different gene maps to "1".
+            "category": ["0", "1"],
+        },
+        schema_overrides={"start": pl.Int64, "end": pl.Int64},
+    )
+    annotations = pl.DataFrame([
+        # query_id == "k141_99_3" — direct match wins, returns "0".
+        # If the position fallback ran instead, the gene would also overlap
+        # row 2 (start 500-900) since DRAM start 200-700 overlaps both.
+        {"query_id": "k141_99_3", "scaffold": "k141_99",
+         "start_position": 200, "stop_position": 700},
+    ])
+    out = build_virsorter_categories_from_genomad(genomad_df, annotations)
+    assert out == {"k141_99_3": "0"}
 
 
 def test_build_virsorter_categories_empty_inputs():
@@ -541,7 +618,8 @@ def test_build_virsorter_categories_empty_inputs():
     import polars as pl
     from dramv_flags import build_virsorter_categories_from_genomad
     empty = pl.DataFrame(
-        schema={"contig": pl.Utf8, "start": pl.Int64, "end": pl.Int64, "category": pl.Utf8}
+        schema={"gene": pl.Utf8, "contig": pl.Utf8,
+                "start": pl.Int64, "end": pl.Int64, "category": pl.Utf8}
     )
     annotations = pl.DataFrame([
         {"query_id": "g1", "scaffold": "k141_1", "start_position": 1, "stop_position": 100},

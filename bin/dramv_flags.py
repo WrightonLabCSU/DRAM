@@ -230,14 +230,18 @@ def parse_genomad_genes_tsv(path: Path) -> pl.DataFrame:
     auxiliary_score treats {0,3} and {1,4} as equivalent, so the adapter
     emits only "0" or "1".
 
-    Returns a DataFrame with columns (contig, start, end, category) — one
-    row per *kept* gene. The contig is the geNomad parent assembly contig
-    (gene_id with the trailing _<gene_number> stripped). Empty rows are
-    dropped, so no-signal samples produce an empty frame, not None.
+    Returns a DataFrame with columns (gene, contig, start, end, category) —
+    one row per *kept* gene. `gene` is the full geNomad gene id; `contig`
+    is the parent assembly contig (gene id with the trailing _<num>
+    stripped). Empty rows are dropped, so no-signal samples produce an
+    empty frame, not None.
 
-    Coordinate joining with DRAM annotations is handled by
-    `build_virsorter_categories_from_genomad`, which translates DRAM
-    provirus coords to assembly-contig coords before the overlap check.
+    Joining with DRAM annotations is handled by
+    `build_virsorter_categories_from_genomad`. It tries direct gene-id
+    equality first — the common case when both tools name provirus
+    contigs the same way and use provirus-local coords. It falls back to
+    a position-overlap join on the parent assembly contig only when no
+    direct match exists.
     """
     df = pl.read_csv(path, separator="\t", infer_schema_length=10_000,
                      null_values=["NA", ""])
@@ -272,6 +276,7 @@ def parse_genomad_genes_tsv(path: Path) -> pl.DataFrame:
         except (TypeError, ValueError):
             continue
         rows.append({
+            "gene": gene,
             "contig": _parse_genomad_parent_contig(gene),
             "start": start,
             "end": end,
@@ -279,7 +284,8 @@ def parse_genomad_genes_tsv(path: Path) -> pl.DataFrame:
         })
     return pl.DataFrame(
         rows,
-        schema={"contig": pl.Utf8, "start": pl.Int64, "end": pl.Int64,
+        schema={"gene": pl.Utf8, "contig": pl.Utf8,
+                "start": pl.Int64, "end": pl.Int64,
                 "category": pl.Utf8},
     )
 
@@ -288,42 +294,63 @@ def build_virsorter_categories_from_genomad(
     genomad_df: pl.DataFrame,
     annotations: pl.DataFrame,
 ) -> dict[str, str]:
-    """Map geNomad's gene-level categories onto DRAM's gene ids via position
-    overlap on the parent assembly contig.
+    """Map geNomad's gene-level categories onto DRAM's gene ids.
 
-    For each DRAM gene:
-      1. Parse the scaffold name. If it's a provirus contig
-         (`<parent>|provirus_<offset>_<end>`), extract the parent contig
-         and the 1-based start offset on that parent. Otherwise the parent
-         is the scaffold itself with offset 1.
-      2. Translate DRAM (start_position, stop_position) into parent-contig
-         coordinates: `parent_pos = offset + dram_pos - 1`.
-      3. Find geNomad genes on the parent contig that overlap the
-         translated interval (g_start ≤ orig_end AND g_end ≥ orig_start).
-         Pick the first match — geNomad genes don't overlap each other on
-         the same strand, so any single overlap is unambiguous.
+    Two-step join:
+
+      1. **Direct gene-id equality.** geNomad and DRAM both name provirus
+         contigs `<parent>|provirus_<start>_<end>` and number genes 1-based
+         within the provirus, so a gene id like
+         `k141_100971|provirus_1_18064_4` is identical in both tools.
+         This is the common case and catches whole-virus contigs too
+         (`k141_85503_1` etc).
+      2. **Position-overlap on parent assembly contig** (fallback). Only
+         consulted for DRAM genes that didn't get a direct match. Useful
+         when DRAM and geNomad disagree on contig naming — e.g. CheckV
+         further trimmed a geNomad-named provirus, or DRAM was run on a
+         clustered catalog whose ids don't match per-sample geNomad. For
+         each unmatched DRAM gene, parse its scaffold to extract the
+         parent contig + start offset (offset 1 for whole-virus), then
+         translate provirus coords back to parent coords and look for a
+         geNomad gene on the same parent whose interval overlaps.
     """
     if genomad_df.is_empty():
         return {}
+
+    # Direct gene-id index
+    by_gene_id = dict(zip(
+        genomad_df["gene"].to_list(),
+        genomad_df["category"].to_list(),
+    ))
+
+    # Position-overlap fallback index
     by_contig: dict[str, list[tuple[int, int, str]]] = {}
     for row in genomad_df.iter_rows(named=True):
         by_contig.setdefault(row["contig"], []).append(
             (int(row["start"]), int(row["end"]), str(row["category"]))
         )
+
     out: dict[str, str] = {}
     needed = annotations.select(
         ["query_id", "scaffold", "start_position", "stop_position"]
     ).unique()
     for row in needed.iter_rows(named=True):
+        qid = str(row["query_id"])
+        # 1. Direct match
+        cat = by_gene_id.get(qid)
+        if cat is not None:
+            out[qid] = cat
+            continue
+        # 2. Position-overlap fallback on parent assembly contig
         parent, offset = _parse_dram_scaffold(str(row["scaffold"]))
         hits = by_contig.get(parent)
         if not hits:
             continue
         orig_start = offset + int(row["start_position"]) - 1
         orig_end = offset + int(row["stop_position"]) - 1
-        for g_start, g_end, cat in hits:
+        for g_start, g_end, c in hits:
             if g_start <= orig_end and g_end >= orig_start:
-                out[str(row["query_id"])] = cat
+                out[qid] = c
                 break
     return out
 
