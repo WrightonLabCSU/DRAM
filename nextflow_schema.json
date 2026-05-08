@@ -232,11 +232,10 @@
                     "description": "Window in bp from contig ends used to set the F flag in DRAM-v amg_flags."
                 },
                 "max_auxiliary_score": {
-                    "type": "integer",
+                    "type": ["integer", "string"],
+                    "pattern": "^[1-5]$",
                     "default": 3,
-                    "minimum": 1,
-                    "maximum": 5,
-                    "description": "DRAM-v --amg_only filter: drop AMG candidates whose auxiliary_score exceeds this. 1=strongest viral context, 5=no flank info. Set to 5 to disable."
+                    "description": "DRAM-v --amg_only filter: drop AMG candidates whose auxiliary_score exceeds this. 1=strongest viral context, 5=no flank info. Set to 5 to disable. Accepts integer or numeric string (CLI overrides arrive as strings under nf-schema 2.6.x)."
                 },
                 "genomad_genes": {
                     "type": "string",
