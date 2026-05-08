@@ -231,6 +231,10 @@
                     "default": 5000,
                     "description": "Window in bp from contig ends used to set the F flag in DRAM-v amg_flags."
                 },
+                "genomad_genes": {
+                    "type": "string",
+                    "description": "Optional geNomad *_genes.tsv (single path, or a quoted glob matching one file per sample). Drives auxiliary_score: virus_hallmark→hallmark (cat 0), viral taxname→viral-like (cat 1). Without it every gene scores 5."
+                },
                 "add_annotations": {
                     "type": "string",
                     "format": "file-path",
