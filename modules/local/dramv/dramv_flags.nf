@@ -18,10 +18,11 @@ process DRAMV_FLAGS {
 
     script:
     def length_from_end = params.amg_length_from_end ?: 5000
-    // genomad_genes is staged into ./genomad/. Pass each non-sentinel file with --genomad_genes.
+    // genomad_genes is staged into ./genomad/. Interpolate each path directly —
+    // ${it} resolves to the staged relative path Nextflow gives us.
     def genomad_files = (genomad_genes instanceof List ? genomad_genes : [genomad_genes])
                             .findAll { it.name != 'NO_FILE' }
-    def genomad_args = genomad_files.collect { "--genomad_genes genomad/${it.name}" }.join(' ')
+    def genomad_args = genomad_files.collect { "--genomad_genes ${it}" }.join(' ')
     """
     cat fastas/* > _catalog.fa
 
