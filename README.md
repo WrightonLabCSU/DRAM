@@ -80,7 +80,7 @@ nextflow run -bg WrightonLabCSU/DRAM \
 DRAM-v adds three columns to the per-gene table and ships an AMG-filtered distillate. Designed for input from a geNomad → CheckV pipeline (no VirSorter affi-contigs file required). Two run modes — pick whichever matches your input:
 
 - **Per-sample mode** — DRAM runs separately on each sample's filtered viral fasta (`<sample>_filtered.fna`). Used during development, smoke testing, or when you want per-sample annotations without going through clustering.
-- **Catalog mode** — DRAM runs once on a clustered vOTU catalog whose contigs were renamed `<sample>_<orig>` upstream. Standard MIUViG / Sullivan-lab production path, recommended for any multi-sample analysis. See [tpall/nf-virome](https://github.com/tpall/nf-virome) for an opinionated catalog builder.
+- **Catalog mode** — DRAM runs once on a clustered vOTU catalog whose contigs were renamed `<sample>_<orig>` upstream. Standard MIUViG / Sullivan-lab production path, recommended for any multi-sample analysis.
 
 ### What `--use_dramv` produces
 
