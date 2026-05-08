@@ -462,6 +462,39 @@ def test_b_flag_downgrades_low_auxiliary_score_to_four():
     assert by_id["g0"][1] == 5
 
 
+def test_derive_sample_prefix_from_filename(tmp_path):
+    """Filename → prefix derivation strips `_virus_genes.tsv` /
+    `_genes.tsv` (with optional .gz) and adds an underscore."""
+    from pathlib import Path
+    from dramv_flags import derive_sample_prefix_from_filename
+    assert derive_sample_prefix_from_filename(Path("EV01_virus_genes.tsv")) == "EV01_"
+    assert derive_sample_prefix_from_filename(Path("/some/path/EV02_virus_genes.tsv")) == "EV02_"
+    assert derive_sample_prefix_from_filename(Path("EV03_virus_genes.tsv.gz")) == "EV03_"
+    assert derive_sample_prefix_from_filename(Path("S04_genes.tsv")) == "S04_"
+    # Non-matching filename → no prefix (caller should treat as per-sample mode).
+    assert derive_sample_prefix_from_filename(Path("weird_filename.tsv")) == ""
+
+
+def test_parse_genomad_genes_tsv_with_sample_prefix(tmp_path):
+    """When parsed with sample_prefix='EV01_', every kept gene's `gene` and
+    `contig` columns get the prefix prepended. The position columns and
+    category are unchanged."""
+    from dramv_flags import parse_genomad_genes_tsv
+    p = tmp_path / "EV01_virus_genes.tsv"
+    p.write_text(
+        "gene\tstart\tend\tlength\tstrand\tmarker\tvirus_hallmark\tplasmid_hallmark\tuscg\ttaxname\n"
+        "k141_1_1\t1\t300\t100\t1\tGENOMAD.000123.VV\t1\t0\t0\tCaudoviricetes\n"
+        "k141_2_5\t100\t450\t117\t1\tGENOMAD.000456.vV\t0\t0\t0\tCaudoviricetes\n"
+    )
+    out = parse_genomad_genes_tsv(p, sample_prefix="EV01_")
+    rows = {(r["gene"], r["contig"], r["start"], r["end"]): r["category"]
+            for r in out.iter_rows(named=True)}
+    assert rows == {
+        ("EV01_k141_1_1", "EV01_k141_1", 1, 300): "0",
+        ("EV01_k141_2_5", "EV01_k141_2", 100, 450): "1",
+    }
+
+
 def test_parse_genomad_genes_tsv_modern_schema(tmp_path):
     """Modern geNomad (>=1.5): virus_hallmark is 0/1 int and marker suffix
     (.VV/.Vv/.vV/.vv) carries the classification. taxname is just a leaf

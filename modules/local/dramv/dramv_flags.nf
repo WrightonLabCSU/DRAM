@@ -25,6 +25,7 @@ process DRAMV_FLAGS {
     def genomad_files = (genomad_genes instanceof List ? genomad_genes : [genomad_genes])
                             .findAll { !it.toString().endsWith('NO_FILE') }
     def genomad_args = genomad_files.collect { "--genomad_genes ${it}" }.join(' ')
+    def filename_prefix_flag = params.genomad_filename_prefix ? '--genomad_filename_prefix' : ''
     """
     cat fastas/* > _catalog.fa
 
@@ -34,6 +35,7 @@ process DRAMV_FLAGS {
         --catalog_fasta _catalog.fa \\
         --length_from_end ${length_from_end} \\
         --vog_list ${vog_list} \\
-        ${genomad_args}
+        ${genomad_args} \\
+        ${filename_prefix_flag}
     """
 }
