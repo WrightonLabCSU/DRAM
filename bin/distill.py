@@ -150,8 +150,16 @@ def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame
                    "flagged as essential viral function per Martin et al. 2025 "
                    "(doi:10.1038/s41564-025-02095-4). Requires the amg_flags "
                    "column from DRAMV_FLAGS.")
+@click.option("--max_auxiliary_score", default=3, type=int, show_default=True,
+              help="DRAM-v mode (with --amg_only): drop AMG candidates whose "
+                   "auxiliary_score exceeds this threshold. Lower scores mean "
+                   "stronger viral flank context (1 = hallmark on both sides; "
+                   "5 = no viral context). Set to 5 to disable the filter. "
+                   "Requires the auxiliary_score column from DRAMV_FLAGS; "
+                   "ignored when --amg_only is not set or when the column is "
+                   "absent.")
 def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil_topics, distil_ecosystem,
-                      custom_distillate, amg_only):
+                      custom_distillate, amg_only, max_auxiliary_score):
     """Summarize metabolic content of annotated genomes"""
 
     # read in data
@@ -176,6 +184,17 @@ def distill(input_file, rrna_path, trna_path, quast_path, groupby_column, distil
             & ~flags.str.contains("N")
         )
         logger.info(f"--amg_only: kept {annotations.height} strict AMG-candidate annotation rows")
+        if "auxiliary_score" in annotations.columns:
+            before = annotations.height
+            annotations = annotations.filter(
+                pl.col("auxiliary_score").is_null()
+                | (pl.col("auxiliary_score") <= max_auxiliary_score)
+            )
+            logger.info(
+                f"--max_auxiliary_score={max_auxiliary_score}: kept "
+                f"{annotations.height} of {before} (dropped "
+                f"{before - annotations.height} with score > {max_auxiliary_score})"
+            )
 
     # Check the columns are present
     check_columns(annotations, logger)
