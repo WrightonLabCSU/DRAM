@@ -465,36 +465,88 @@ def test_b_flag_downgrades_low_auxiliary_score_to_four():
 def test_parse_genomad_genes_tsv_modern_schema(tmp_path):
     """Modern geNomad (>=1.5): virus_hallmark is 0/1 int and marker suffix
     (.VV/.Vv/.vV/.vv) carries the classification. taxname is just a leaf
-    taxon, not a lineage — so we don't use it."""
+    taxon, not a lineage — so we don't use it. Returns a DataFrame with
+    one row per kept gene."""
     from dramv_flags import parse_genomad_genes_tsv
     p = tmp_path / "x_genes.tsv"
     p.write_text(
         "gene\tstart\tend\tlength\tstrand\tmarker\tvirus_hallmark\tplasmid_hallmark\tuscg\ttaxname\n"
-        # virus_hallmark=1 wins
-        "g_hallmark\t1\t300\t100\t1\tGENOMAD.000123.VV\t1\t0\t0\tCaudoviricetes\n"
-        # No hallmark flag, but marker suffix VV → still hallmark
-        "g_vv_marker\t301\t600\t100\t1\tGENOMAD.000124.VV\t0\t0\t0\tCaudoviricetes\n"
-        # No hallmark flag, marker suffix Vv → hallmark
-        "g_Vv_marker\t601\t900\t100\t1\tGENOMAD.000125.Vv\t0\t0\t0\tCaudoviricetes\n"
-        # No hallmark flag, marker suffix vV → viral-like
-        "g_vV_marker\t901\t1200\t100\t1\tGENOMAD.000126.vV\t0\t0\t0\tCaudoviricetes\n"
-        # No hallmark flag, marker suffix vv → viral-like
-        "g_vv_marker_lc\t1201\t1500\t100\t1\tGENOMAD.000127.vv\t0\t0\t0\tCaudoviricetes\n"
-        # NA marker → dropped
-        "g_na\t1501\t1800\t100\t1\tNA\t0\t0\t0\tNA\n"
-        # Plasmid hallmark with non-viral marker suffix → dropped (no VV/Vv/vV/vv)
-        "g_plasmid\t1801\t2100\t100\t1\tGENOMAD.999.PP\t0\t1\t0\tNA\n"
-        # USCG host gene with H prefix marker → dropped
-        "g_uscg\t2101\t2400\t100\t1\tGENOMAD.500.HH\t0\t0\t1\tBacteria\n"
+        # Gene id is `<contig>_<num>` — contig column in result strips trailing _\d+.
+        "k141_1_1\t1\t300\t100\t1\tGENOMAD.000123.VV\t1\t0\t0\tCaudoviricetes\n"
+        "k141_1_2\t301\t600\t100\t1\tGENOMAD.000124.VV\t0\t0\t0\tCaudoviricetes\n"
+        "k141_1_3\t601\t900\t100\t1\tGENOMAD.000125.Vv\t0\t0\t0\tCaudoviricetes\n"
+        "k141_1_4\t901\t1200\t100\t1\tGENOMAD.000126.vV\t0\t0\t0\tCaudoviricetes\n"
+        "k141_1_5\t1201\t1500\t100\t1\tGENOMAD.000127.vv\t0\t0\t0\tCaudoviricetes\n"
+        "k141_1_6\t1501\t1800\t100\t1\tNA\t0\t0\t0\tNA\n"  # dropped
+        "k141_1_7\t1801\t2100\t100\t1\tGENOMAD.999.PP\t0\t1\t0\tNA\n"  # dropped
+        "k141_1_8\t2101\t2400\t100\t1\tGENOMAD.500.HH\t0\t0\t1\tBacteria\n"  # dropped
     )
     out = parse_genomad_genes_tsv(p)
-    assert out == {
-        "g_hallmark": "0",
-        "g_vv_marker": "0",
-        "g_Vv_marker": "0",
-        "g_vV_marker": "1",
-        "g_vv_marker_lc": "1",
+    rows = {(r["contig"], r["start"], r["end"]): r["category"]
+            for r in out.iter_rows(named=True)}
+    assert rows == {
+        ("k141_1", 1, 300): "0",
+        ("k141_1", 301, 600): "0",
+        ("k141_1", 601, 900): "0",
+        ("k141_1", 901, 1200): "1",
+        ("k141_1", 1201, 1500): "1",
     }
+
+
+def test_build_virsorter_categories_translates_provirus_coords():
+    """A DRAM gene on a CheckV-trimmed provirus contig
+    (`k141_99|provirus_1000_5000`) carries 1-based positions within the
+    1000–5000 window of `k141_99`. Joining to a geNomad gene at parent
+    coords 2010–2400 should match the DRAM gene at provirus coords
+    1011–1401 (i.e. parent 2010 = provirus 1011 when offset=1000)."""
+    import polars as pl
+    from dramv_flags import build_virsorter_categories_from_genomad
+
+    genomad_df = pl.DataFrame(
+        {
+            "contig": ["k141_99", "k141_99", "k141_42"],
+            "start":  [   2010,        4500,       100],
+            "end":    [   2400,        4900,       400],
+            "category": ["0", "1", "0"],
+        },
+        schema_overrides={"start": pl.Int64, "end": pl.Int64},
+    )
+    annotations = pl.DataFrame([
+        # Provirus gene that overlaps geNomad row 1 (parent 2010-2400 → provirus 1011-1401 with offset=1000)
+        {"query_id": "g_prov_a", "scaffold": "k141_99|provirus_1000_5000",
+         "start_position": 1011, "stop_position": 1401},
+        # Provirus gene that overlaps geNomad row 2 (parent 4500-4900 → provirus 3501-3901)
+        {"query_id": "g_prov_b", "scaffold": "k141_99|provirus_1000_5000",
+         "start_position": 3501, "stop_position": 3901},
+        # Provirus gene with no geNomad overlap
+        {"query_id": "g_prov_none", "scaffold": "k141_99|provirus_1000_5000",
+         "start_position": 100,  "stop_position": 200},
+        # Whole-virus contig (no provirus suffix), match on raw coords
+        {"query_id": "g_whole",      "scaffold": "k141_42",
+         "start_position": 100,  "stop_position": 350},
+        # Contig that doesn't appear in geNomad data
+        {"query_id": "g_orphan",     "scaffold": "k141_77",
+         "start_position": 1,    "stop_position": 100},
+    ])
+    out = build_virsorter_categories_from_genomad(genomad_df, annotations)
+    assert out == {
+        "g_prov_a": "0",
+        "g_prov_b": "1",
+        "g_whole":  "0",
+    }
+
+
+def test_build_virsorter_categories_empty_inputs():
+    """Empty geNomad frame returns an empty dict cleanly (no crash)."""
+    import polars as pl
+    from dramv_flags import build_virsorter_categories_from_genomad
+    empty = pl.DataFrame(
+        schema={"contig": pl.Utf8, "start": pl.Int64, "end": pl.Int64, "category": pl.Utf8}
+    )
+    annotations = pl.DataFrame([
+        {"query_id": "g1", "scaffold": "k141_1", "start_position": 1, "stop_position": 100},
+    ])
+    assert build_virsorter_categories_from_genomad(empty, annotations) == {}
 
 
 def test_read_scaffold_lengths(tmp_path):

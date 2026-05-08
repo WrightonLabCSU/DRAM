@@ -21,6 +21,7 @@ All semantics ported verbatim from DRAM v1
 mag_annotator/annotate_vgfs.py (commit 6cd68f9).
 """
 
+import re
 from pathlib import Path
 
 import click
@@ -177,6 +178,14 @@ def build_metabolic_genes(distill_sheets_dir: Path) -> set[str]:
 _GENOMAD_HALLMARK_SUFFIXES = frozenset({"VV", "Vv"})
 _GENOMAD_VIRAL_LIKE_SUFFIXES = frozenset({"vV", "vv"})
 
+# DRAM scaffold name on a CheckV-trimmed provirus carries an offset suffix:
+#   <parent_assembly_contig>|provirus_<start>_<end>
+# DRAM calls genes on the trimmed sub-sequence so gene start_position is
+# 1-based within the provirus. To match a geNomad gene called on the parent
+# assembly contig, translate via assembly_pos = start_offset + dram_pos - 1.
+_PROVIRUS_RE = re.compile(r"^(.+)\|provirus_(\d+)_(\d+)$")
+_GENOMAD_GENE_NUM_RE = re.compile(r"_\d+$")
+
 
 def _is_truthy(v) -> bool:
     """geNomad's boolean columns serialise as 0/1 ints in modern releases and
@@ -189,7 +198,25 @@ def _is_truthy(v) -> bool:
     return False
 
 
-def parse_genomad_genes_tsv(path: Path) -> dict[str, str]:
+def _parse_dram_scaffold(scaffold: str) -> tuple[str, int]:
+    """Return (parent_assembly_contig, start_offset_1based).
+
+    For provirus contigs (`<contig>|provirus_<start>_<end>`) the offset is
+    parsed from the suffix. For whole-virus contigs the parent is the
+    scaffold itself and the offset is 1, so translation is a no-op.
+    """
+    m = _PROVIRUS_RE.match(scaffold)
+    if m:
+        return m.group(1), int(m.group(2))
+    return scaffold, 1
+
+
+def _parse_genomad_parent_contig(gene_id: str) -> str:
+    """Strip the trailing _<gene_number> from a geNomad gene id."""
+    return _GENOMAD_GENE_NUM_RE.sub("", gene_id)
+
+
+def parse_genomad_genes_tsv(path: Path) -> pl.DataFrame:
     """Adapter from geNomad's *_genes.tsv to VirSorter-style category codes.
 
     Two complementary signals (modern geNomad ≥1.5):
@@ -203,15 +230,18 @@ def parse_genomad_genes_tsv(path: Path) -> dict[str, str]:
     auxiliary_score treats {0,3} and {1,4} as equivalent, so the adapter
     emits only "0" or "1".
 
-    Note: geNomad calls genes on the assembled contigs *before* CheckV
-    provirus trimming, so its gene ids look like `k141_85503_1`. DRAM
-    gene ids on a provirus contig look like `k141_85503|provirus_1_5000_1`
-    and cannot string-match. For those, the join silently produces no
-    coverage; only whole-virus contigs (no provirus suffix) line up.
+    Returns a DataFrame with columns (contig, start, end, category) — one
+    row per *kept* gene. The contig is the geNomad parent assembly contig
+    (gene_id with the trailing _<gene_number> stripped). Empty rows are
+    dropped, so no-signal samples produce an empty frame, not None.
+
+    Coordinate joining with DRAM annotations is handled by
+    `build_virsorter_categories_from_genomad`, which translates DRAM
+    provirus coords to assembly-contig coords before the overlap check.
     """
     df = pl.read_csv(path, separator="\t", infer_schema_length=10_000,
                      null_values=["NA", ""])
-    out: dict[str, str] = {}
+    rows: list[dict] = []
     has_hallmark = "virus_hallmark" in df.columns
     has_marker = "marker" in df.columns
     for row in df.iter_rows(named=True):
@@ -221,19 +251,80 @@ def parse_genomad_genes_tsv(path: Path) -> dict[str, str]:
         gene = str(gene).strip()
         if not gene:
             continue
+        category: str | None = None
         if has_hallmark and _is_truthy(row.get("virus_hallmark")):
-            out[gene] = "0"
-            continue
-        if has_marker:
+            category = "0"
+        elif has_marker:
             m = row.get("marker")
             if isinstance(m, str):
                 m = m.strip()
                 if m and m != "NA":
                     suffix = m.rsplit(".", 1)[-1] if "." in m else ""
                     if suffix in _GENOMAD_HALLMARK_SUFFIXES:
-                        out[gene] = "0"
+                        category = "0"
                     elif suffix in _GENOMAD_VIRAL_LIKE_SUFFIXES:
-                        out[gene] = "1"
+                        category = "1"
+        if category is None:
+            continue
+        try:
+            start = int(row.get("start"))
+            end = int(row.get("end"))
+        except (TypeError, ValueError):
+            continue
+        rows.append({
+            "contig": _parse_genomad_parent_contig(gene),
+            "start": start,
+            "end": end,
+            "category": category,
+        })
+    return pl.DataFrame(
+        rows,
+        schema={"contig": pl.Utf8, "start": pl.Int64, "end": pl.Int64,
+                "category": pl.Utf8},
+    )
+
+
+def build_virsorter_categories_from_genomad(
+    genomad_df: pl.DataFrame,
+    annotations: pl.DataFrame,
+) -> dict[str, str]:
+    """Map geNomad's gene-level categories onto DRAM's gene ids via position
+    overlap on the parent assembly contig.
+
+    For each DRAM gene:
+      1. Parse the scaffold name. If it's a provirus contig
+         (`<parent>|provirus_<offset>_<end>`), extract the parent contig
+         and the 1-based start offset on that parent. Otherwise the parent
+         is the scaffold itself with offset 1.
+      2. Translate DRAM (start_position, stop_position) into parent-contig
+         coordinates: `parent_pos = offset + dram_pos - 1`.
+      3. Find geNomad genes on the parent contig that overlap the
+         translated interval (g_start ≤ orig_end AND g_end ≥ orig_start).
+         Pick the first match — geNomad genes don't overlap each other on
+         the same strand, so any single overlap is unambiguous.
+    """
+    if genomad_df.is_empty():
+        return {}
+    by_contig: dict[str, list[tuple[int, int, str]]] = {}
+    for row in genomad_df.iter_rows(named=True):
+        by_contig.setdefault(row["contig"], []).append(
+            (int(row["start"]), int(row["end"]), str(row["category"]))
+        )
+    out: dict[str, str] = {}
+    needed = annotations.select(
+        ["query_id", "scaffold", "start_position", "stop_position"]
+    ).unique()
+    for row in needed.iter_rows(named=True):
+        parent, offset = _parse_dram_scaffold(str(row["scaffold"]))
+        hits = by_contig.get(parent)
+        if not hits:
+            continue
+        orig_start = offset + int(row["start_position"]) - 1
+        orig_end = offset + int(row["stop_position"]) - 1
+        for g_start, g_end, cat in hits:
+            if g_start <= orig_end and g_end >= orig_start:
+                out[str(row["query_id"])] = cat
+                break
     return out
 
 
@@ -490,14 +581,26 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir,
 
     virsorter_categories: dict[str, str] = {}
     if genomad_genes:
+        parts: list[pl.DataFrame] = []
         for p in genomad_genes:
             logger.info(f"Parsing geNomad genes TSV for VirSorter category mapping: {p}")
-            virsorter_categories.update(parse_genomad_genes_tsv(Path(p)))
-        n_hallmark = sum(1 for c in virsorter_categories.values() if c == "0")
-        n_viral_like = sum(1 for c in virsorter_categories.values() if c == "1")
+            parts.append(parse_genomad_genes_tsv(Path(p)))
+        non_empty = [df for df in parts if not df.is_empty()]
+        genomad_df = pl.concat(non_empty) if non_empty else pl.DataFrame(
+            schema={"contig": pl.Utf8, "start": pl.Int64, "end": pl.Int64,
+                    "category": pl.Utf8})
+        n_hallmark = int((genomad_df["category"] == "0").sum()) if not genomad_df.is_empty() else 0
+        n_viral_like = int((genomad_df["category"] == "1").sum()) if not genomad_df.is_empty() else 0
         logger.info(
             f"geNomad-derived categories across {len(genomad_genes)} file(s): "
             f"{n_hallmark} hallmark + {n_viral_like} viral-like"
+        )
+        virsorter_categories = build_virsorter_categories_from_genomad(
+            genomad_df, annotations
+        )
+        logger.info(
+            f"DRAM genes with mapped category (after provirus position-join): "
+            f"{len(virsorter_categories)} of {annotations.height}"
         )
     else:
         logger.info("No --genomad_genes provided; auxiliary_score will fall through to 5 for every gene.")
