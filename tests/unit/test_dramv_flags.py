@@ -465,36 +465,166 @@ def test_b_flag_downgrades_low_auxiliary_score_to_four():
 def test_parse_genomad_genes_tsv_modern_schema(tmp_path):
     """Modern geNomad (>=1.5): virus_hallmark is 0/1 int and marker suffix
     (.VV/.Vv/.vV/.vv) carries the classification. taxname is just a leaf
-    taxon, not a lineage — so we don't use it."""
+    taxon, not a lineage — so we don't use it. Returns a DataFrame with
+    one row per kept gene."""
     from dramv_flags import parse_genomad_genes_tsv
     p = tmp_path / "x_genes.tsv"
     p.write_text(
         "gene\tstart\tend\tlength\tstrand\tmarker\tvirus_hallmark\tplasmid_hallmark\tuscg\ttaxname\n"
-        # virus_hallmark=1 wins
-        "g_hallmark\t1\t300\t100\t1\tGENOMAD.000123.VV\t1\t0\t0\tCaudoviricetes\n"
-        # No hallmark flag, but marker suffix VV → still hallmark
-        "g_vv_marker\t301\t600\t100\t1\tGENOMAD.000124.VV\t0\t0\t0\tCaudoviricetes\n"
-        # No hallmark flag, marker suffix Vv → hallmark
-        "g_Vv_marker\t601\t900\t100\t1\tGENOMAD.000125.Vv\t0\t0\t0\tCaudoviricetes\n"
-        # No hallmark flag, marker suffix vV → viral-like
-        "g_vV_marker\t901\t1200\t100\t1\tGENOMAD.000126.vV\t0\t0\t0\tCaudoviricetes\n"
-        # No hallmark flag, marker suffix vv → viral-like
-        "g_vv_marker_lc\t1201\t1500\t100\t1\tGENOMAD.000127.vv\t0\t0\t0\tCaudoviricetes\n"
-        # NA marker → dropped
-        "g_na\t1501\t1800\t100\t1\tNA\t0\t0\t0\tNA\n"
-        # Plasmid hallmark with non-viral marker suffix → dropped (no VV/Vv/vV/vv)
-        "g_plasmid\t1801\t2100\t100\t1\tGENOMAD.999.PP\t0\t1\t0\tNA\n"
-        # USCG host gene with H prefix marker → dropped
-        "g_uscg\t2101\t2400\t100\t1\tGENOMAD.500.HH\t0\t0\t1\tBacteria\n"
+        # Gene id is `<contig>_<num>` — contig column in result strips trailing _\d+.
+        "k141_1_1\t1\t300\t100\t1\tGENOMAD.000123.VV\t1\t0\t0\tCaudoviricetes\n"
+        "k141_1_2\t301\t600\t100\t1\tGENOMAD.000124.VV\t0\t0\t0\tCaudoviricetes\n"
+        "k141_1_3\t601\t900\t100\t1\tGENOMAD.000125.Vv\t0\t0\t0\tCaudoviricetes\n"
+        "k141_1_4\t901\t1200\t100\t1\tGENOMAD.000126.vV\t0\t0\t0\tCaudoviricetes\n"
+        "k141_1_5\t1201\t1500\t100\t1\tGENOMAD.000127.vv\t0\t0\t0\tCaudoviricetes\n"
+        "k141_1_6\t1501\t1800\t100\t1\tNA\t0\t0\t0\tNA\n"  # dropped
+        "k141_1_7\t1801\t2100\t100\t1\tGENOMAD.999.PP\t0\t1\t0\tNA\n"  # dropped
+        "k141_1_8\t2101\t2400\t100\t1\tGENOMAD.500.HH\t0\t0\t1\tBacteria\n"  # dropped
     )
     out = parse_genomad_genes_tsv(p)
-    assert out == {
-        "g_hallmark": "0",
-        "g_vv_marker": "0",
-        "g_Vv_marker": "0",
-        "g_vV_marker": "1",
-        "g_vv_marker_lc": "1",
+    rows = {(r["gene"], r["contig"], r["start"], r["end"]): r["category"]
+            for r in out.iter_rows(named=True)}
+    assert rows == {
+        ("k141_1_1", "k141_1", 1, 300): "0",
+        ("k141_1_2", "k141_1", 301, 600): "0",
+        ("k141_1_3", "k141_1", 601, 900): "0",
+        ("k141_1_4", "k141_1", 901, 1200): "1",
+        ("k141_1_5", "k141_1", 1201, 1500): "1",
     }
+
+
+def test_build_virsorter_categories_direct_gene_id_match():
+    """Common case: geNomad and DRAM use identical gene ids — provirus or
+    whole-virus. Direct equality match catches them, position-join is not
+    consulted."""
+    import polars as pl
+    from dramv_flags import build_virsorter_categories_from_genomad
+
+    # geNomad uses provirus-suffixed gene ids with provirus-local coords
+    # — same convention as DRAM, so a string match wins.
+    genomad_df = pl.DataFrame(
+        {
+            "gene": ["k141_100971|provirus_1_18064_4", "k141_85503_1"],
+            "contig": ["k141_100971|provirus_1_18064", "k141_85503"],
+            "start":  [1558, 2],
+            "end":    [2112, 388],
+            "category": ["0", "0"],
+        },
+        schema_overrides={"start": pl.Int64, "end": pl.Int64},
+    )
+    annotations = pl.DataFrame([
+        # Provirus gene id matches geNomad's gene id directly
+        {"query_id": "k141_100971|provirus_1_18064_4",
+         "scaffold": "k141_100971|provirus_1_18064",
+         "start_position": 1558, "stop_position": 2112},
+        # Whole-virus gene id matches geNomad's gene id directly
+        {"query_id": "k141_85503_1", "scaffold": "k141_85503",
+         "start_position": 2, "stop_position": 388},
+        # No match anywhere
+        {"query_id": "k141_99_1", "scaffold": "k141_99",
+         "start_position": 1, "stop_position": 100},
+    ])
+    out = build_virsorter_categories_from_genomad(genomad_df, annotations)
+    assert out == {
+        "k141_100971|provirus_1_18064_4": "0",
+        "k141_85503_1": "0",
+    }
+
+
+def test_build_virsorter_categories_position_overlap_fallback():
+    """Fallback path: gene ids don't match (e.g. DRAM run on clustered
+    catalog whose ids differ from per-sample geNomad), but the parent
+    assembly contig is the same and geNomad's interval overlaps the
+    DRAM gene after coord translation."""
+    import polars as pl
+    from dramv_flags import build_virsorter_categories_from_genomad
+
+    # geNomad ids use a different sample-prefix that DRAM doesn't carry,
+    # so direct gene-id match never fires.
+    genomad_df = pl.DataFrame(
+        {
+            "gene":   ["sampleA_k141_99_3", "sampleA_k141_99_5", "sampleA_k141_42_1"],
+            "contig": ["sampleA_k141_99",   "sampleA_k141_99",   "sampleA_k141_42"],
+            "start":  [   2010,                 4500,                 100],
+            "end":    [   2400,                 4900,                 400],
+            "category": ["0", "1", "0"],
+        },
+        schema_overrides={"start": pl.Int64, "end": pl.Int64},
+    )
+    # DRAM doesn't carry the sampleA_ prefix — fallback won't help unless
+    # parent contigs align. So construct a case where parent names DO align
+    # by parsing the same (provirus-stripped) DRAM scaffold.
+    genomad_df = pl.DataFrame(
+        {
+            "gene":   ["other_id_x", "other_id_y", "other_id_z"],
+            "contig": ["k141_99",    "k141_99",    "k141_42"],
+            "start":  [   2010,         4500,         100],
+            "end":    [   2400,         4900,         400],
+            "category": ["0", "1", "0"],
+        },
+        schema_overrides={"start": pl.Int64, "end": pl.Int64},
+    )
+    annotations = pl.DataFrame([
+        # Provirus gene; direct id "k141_99|provirus_1000_5000_x" not in geNomad,
+        # but parent k141_99 + translated coords overlap geNomad row 1
+        {"query_id": "k141_99|provirus_1000_5000_x",
+         "scaffold": "k141_99|provirus_1000_5000",
+         "start_position": 1011, "stop_position": 1401},
+        # Whole-virus gene; direct id "k141_42_some_other_name" not in geNomad,
+        # but parent k141_42 + raw coords overlap geNomad row 3
+        {"query_id": "k141_42_some_other_name", "scaffold": "k141_42",
+         "start_position": 100, "stop_position": 350},
+        # No match anywhere
+        {"query_id": "k141_77_1", "scaffold": "k141_77",
+         "start_position": 1, "stop_position": 100},
+    ])
+    out = build_virsorter_categories_from_genomad(genomad_df, annotations)
+    assert out == {
+        "k141_99|provirus_1000_5000_x": "0",
+        "k141_42_some_other_name": "0",
+    }
+
+
+def test_build_virsorter_categories_direct_match_wins_over_overlap():
+    """When both paths could produce a match, direct gene-id match wins
+    (and gets the expected category, not whatever happens to overlap)."""
+    import polars as pl
+    from dramv_flags import build_virsorter_categories_from_genomad
+
+    genomad_df = pl.DataFrame(
+        {
+            "gene":   ["k141_99_3",  "k141_99_4"],
+            "contig": ["k141_99",    "k141_99"],
+            "start":  [   100,           500],
+            "end":    [   400,           900],
+            # Direct match key would map to "0"; overlapping different gene maps to "1".
+            "category": ["0", "1"],
+        },
+        schema_overrides={"start": pl.Int64, "end": pl.Int64},
+    )
+    annotations = pl.DataFrame([
+        # query_id == "k141_99_3" — direct match wins, returns "0".
+        # If the position fallback ran instead, the gene would also overlap
+        # row 2 (start 500-900) since DRAM start 200-700 overlaps both.
+        {"query_id": "k141_99_3", "scaffold": "k141_99",
+         "start_position": 200, "stop_position": 700},
+    ])
+    out = build_virsorter_categories_from_genomad(genomad_df, annotations)
+    assert out == {"k141_99_3": "0"}
+
+
+def test_build_virsorter_categories_empty_inputs():
+    """Empty geNomad frame returns an empty dict cleanly (no crash)."""
+    import polars as pl
+    from dramv_flags import build_virsorter_categories_from_genomad
+    empty = pl.DataFrame(
+        schema={"gene": pl.Utf8, "contig": pl.Utf8,
+                "start": pl.Int64, "end": pl.Int64, "category": pl.Utf8}
+    )
+    annotations = pl.DataFrame([
+        {"query_id": "g1", "scaffold": "k141_1", "start_position": 1, "stop_position": 100},
+    ])
+    assert build_virsorter_categories_from_genomad(empty, annotations) == {}
 
 
 def test_read_scaffold_lengths(tmp_path):

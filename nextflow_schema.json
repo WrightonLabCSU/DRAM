@@ -231,6 +231,13 @@
                     "default": 5000,
                     "description": "Window in bp from contig ends used to set the F flag in DRAM-v amg_flags."
                 },
+                "max_auxiliary_score": {
+                    "type": "integer",
+                    "default": 3,
+                    "minimum": 1,
+                    "maximum": 5,
+                    "description": "DRAM-v --amg_only filter: drop AMG candidates whose auxiliary_score exceeds this. 1=strongest viral context, 5=no flank info. Set to 5 to disable."
+                },
                 "genomad_genes": {
                     "type": "string",
                     "description": "Optional geNomad *_genes.tsv (single path, or a quoted glob matching one file per sample). Drives auxiliary_score: virus_hallmark→hallmark (cat 0), viral taxname→viral-like (cat 1). Without it every gene scores 5."
