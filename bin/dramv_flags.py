@@ -216,7 +216,26 @@ def _parse_genomad_parent_contig(gene_id: str) -> str:
     return _GENOMAD_GENE_NUM_RE.sub("", gene_id)
 
 
-def parse_genomad_genes_tsv(path: Path) -> pl.DataFrame:
+_GENOMAD_TSV_BASENAME_RE = re.compile(r"_(?:virus_)?genes\.tsv(?:\.gz)?$")
+
+
+def derive_sample_prefix_from_filename(path: Path) -> str:
+    """Extract a sample prefix from a geNomad TSV basename.
+
+    Strips a trailing `_genes.tsv` or `_virus_genes.tsv` (with optional .gz)
+    and appends an underscore, mirroring how nf-virome's CONCAT_FASTAS
+    prefixes catalog contigs (`<sample>_<contig>`). For a basename that
+    doesn't match the convention, returns "" so behaviour falls back to
+    no-prefix (per-sample mode).
+    """
+    name = path.name
+    m = _GENOMAD_TSV_BASENAME_RE.search(name)
+    if not m:
+        return ""
+    return name[:m.start()] + "_"
+
+
+def parse_genomad_genes_tsv(path: Path, sample_prefix: str = "") -> pl.DataFrame:
     """Adapter from geNomad's *_genes.tsv to VirSorter-style category codes.
 
     Two complementary signals (modern geNomad ≥1.5):
@@ -230,18 +249,18 @@ def parse_genomad_genes_tsv(path: Path) -> pl.DataFrame:
     auxiliary_score treats {0,3} and {1,4} as equivalent, so the adapter
     emits only "0" or "1".
 
-    Returns a DataFrame with columns (gene, contig, start, end, category) —
-    one row per *kept* gene. `gene` is the full geNomad gene id; `contig`
-    is the parent assembly contig (gene id with the trailing _<num>
-    stripped). Empty rows are dropped, so no-signal samples produce an
-    empty frame, not None.
+    `sample_prefix` is prepended to both `gene` and `contig` on every kept
+    row. Used in catalog mode where DRAM ran on a multi-sample catalog
+    whose contigs were renamed `<sample>_<orig_contig>` upstream (e.g.
+    by nf-virome's CONCAT_FASTAS). geNomad's per-sample gene ids
+    (`<orig_contig>_<num>`) become `<sample>_<orig_contig>_<num>` here so
+    the direct gene-id match in build_virsorter_categories_from_genomad
+    lines up against DRAM's catalog gene ids. Default "" (per-sample
+    mode) leaves names untouched.
 
-    Joining with DRAM annotations is handled by
-    `build_virsorter_categories_from_genomad`. It tries direct gene-id
-    equality first — the common case when both tools name provirus
-    contigs the same way and use provirus-local coords. It falls back to
-    a position-overlap join on the parent assembly contig only when no
-    direct match exists.
+    Returns a DataFrame with columns (gene, contig, start, end, category) —
+    one row per *kept* gene. Empty rows are dropped, so no-signal samples
+    produce an empty frame, not None.
     """
     df = pl.read_csv(path, separator="\t", infer_schema_length=10_000,
                      null_values=["NA", ""])
@@ -276,8 +295,8 @@ def parse_genomad_genes_tsv(path: Path) -> pl.DataFrame:
         except (TypeError, ValueError):
             continue
         rows.append({
-            "gene": gene,
-            "contig": _parse_genomad_parent_contig(gene),
+            "gene": sample_prefix + gene,
+            "contig": sample_prefix + _parse_genomad_parent_contig(gene),
             "start": start,
             "end": end,
             "category": category,
@@ -571,11 +590,20 @@ def compute_flags(
                    "sample (the flag may be repeated) — entries are merged into "
                    "a single {gene_id: category} dict. If omitted every gene "
                    "gets the v1 fallback score 5.")
+@click.option("--genomad_filename_prefix", is_flag=True, default=False,
+              help="Catalog mode: derive a sample prefix from each "
+                   "--genomad_genes filename (`<sample>_virus_genes.tsv` → "
+                   "prefix `<sample>_`) and prepend it to gene ids and "
+                   "contig names before joining with DRAM annotations. Use "
+                   "when DRAM ran on a multi-sample catalog whose contigs "
+                   "were renamed `<sample>_<contig>` upstream (e.g. by "
+                   "nf-virome's CONCAT_FASTAS). Default off matches the "
+                   "per-sample DRAM-v workflow.")
 @click.option("--length_from_end", default=DEFAULT_LENGTH_FROM_END, type=int,
               show_default=True,
               help="Window (bp) from contig ends used to set the F flag.")
 def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir,
-         vog_list, genomad_genes, length_from_end):
+         vog_list, genomad_genes, genomad_filename_prefix, length_from_end):
     """Add DRAM-v amg_flags and is_transposon columns to a combined annotations TSV."""
     here = Path(__file__).parent
     amg_db = Path(amg_db) if amg_db else here / "assets" / "amg_database.tsv"
@@ -610,11 +638,14 @@ def main(input_file, output_file, catalog_fasta, amg_db, distill_sheets_dir,
     if genomad_genes:
         parts: list[pl.DataFrame] = []
         for p in genomad_genes:
-            logger.info(f"Parsing geNomad genes TSV for VirSorter category mapping: {p}")
-            parts.append(parse_genomad_genes_tsv(Path(p)))
+            prefix = derive_sample_prefix_from_filename(Path(p)) if genomad_filename_prefix else ""
+            tag = f" with prefix '{prefix}'" if prefix else ""
+            logger.info(f"Parsing geNomad genes TSV{tag}: {p}")
+            parts.append(parse_genomad_genes_tsv(Path(p), sample_prefix=prefix))
         non_empty = [df for df in parts if not df.is_empty()]
         genomad_df = pl.concat(non_empty) if non_empty else pl.DataFrame(
-            schema={"contig": pl.Utf8, "start": pl.Int64, "end": pl.Int64,
+            schema={"gene": pl.Utf8, "contig": pl.Utf8,
+                    "start": pl.Int64, "end": pl.Int64,
                     "category": pl.Utf8})
         n_hallmark = int((genomad_df["category"] == "0").sum()) if not genomad_df.is_empty() else 0
         n_viral_like = int((genomad_df["category"] == "1").sum()) if not genomad_df.is_empty() else 0

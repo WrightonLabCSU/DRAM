@@ -241,6 +241,11 @@
                     "type": "string",
                     "description": "Optional geNomad *_genes.tsv (single path, or a quoted glob matching one file per sample). Drives auxiliary_score: virus_hallmark→hallmark (cat 0), viral taxname→viral-like (cat 1). Without it every gene scores 5."
                 },
+                "genomad_filename_prefix": {
+                    "type": ["boolean", "string"], "pattern": "^(true|false)$",
+                    "default": false,
+                    "description": "Catalog-mode geNomad adapter. When true, derive a sample prefix from each --genomad_genes filename (e.g. EV01_virus_genes.tsv → 'EV01_') and prepend it to gene ids and contig names before matching against DRAM annotations. Required when DRAM ran on a multi-sample catalog whose contigs were renamed <sample>_<orig> upstream."
+                },
                 "add_annotations": {
                     "type": "string",
                     "format": "file-path",
