@@ -462,28 +462,39 @@ def test_b_flag_downgrades_low_auxiliary_score_to_four():
     assert by_id["g0"][1] == 5
 
 
-def test_parse_genomad_genes_tsv_maps_hallmark_and_viral_taxname(tmp_path):
-    """virus_hallmark=TRUE → '0'; taxname starting 'Viruses' → '1';
-    everything else (host marker, plasmid hallmark, NA, blank taxname) is dropped."""
+def test_parse_genomad_genes_tsv_modern_schema(tmp_path):
+    """Modern geNomad (>=1.5): virus_hallmark is 0/1 int and marker suffix
+    (.VV/.Vv/.vV/.vv) carries the classification. taxname is just a leaf
+    taxon, not a lineage — so we don't use it."""
     from dramv_flags import parse_genomad_genes_tsv
     p = tmp_path / "x_genes.tsv"
     p.write_text(
-        "gene\tstart\tend\tstrand\tmarker\tvirus_hallmark\tplasmid_hallmark\tuscg\ttaxname\n"
-        # Hallmark wins, irrespective of taxname.
-        "g_hallmark\t1\t300\t1\tmk1\tTRUE\tFALSE\tFALSE\tViruses;Caudovirales\n"
-        # Viral lineage but not a hallmark → viral-like.
-        "g_viral_like\t301\t600\t1\tmk2\tFALSE\tFALSE\tFALSE\tViruses;Duplodnaviria\n"
-        # USCG (host single-copy gene) — non-viral lineage → dropped.
-        "g_uscg\t601\t900\t1\tmk3\tFALSE\tFALSE\tTRUE\tBacteria;Proteobacteria\n"
-        # Plasmid hallmark — dropped.
-        "g_plasmid\t901\t1200\t1\tmk4\tFALSE\tTRUE\tFALSE\tNA\n"
-        # No marker, NA taxname — dropped.
-        "g_na\t1201\t1500\t1\tNA\tFALSE\tFALSE\tFALSE\tNA\n"
-        # Bacterial marker — dropped.
-        "g_bact\t1501\t1800\t1\tmk5\tFALSE\tFALSE\tFALSE\tBacteria;Bacillota\n"
+        "gene\tstart\tend\tlength\tstrand\tmarker\tvirus_hallmark\tplasmid_hallmark\tuscg\ttaxname\n"
+        # virus_hallmark=1 wins
+        "g_hallmark\t1\t300\t100\t1\tGENOMAD.000123.VV\t1\t0\t0\tCaudoviricetes\n"
+        # No hallmark flag, but marker suffix VV → still hallmark
+        "g_vv_marker\t301\t600\t100\t1\tGENOMAD.000124.VV\t0\t0\t0\tCaudoviricetes\n"
+        # No hallmark flag, marker suffix Vv → hallmark
+        "g_Vv_marker\t601\t900\t100\t1\tGENOMAD.000125.Vv\t0\t0\t0\tCaudoviricetes\n"
+        # No hallmark flag, marker suffix vV → viral-like
+        "g_vV_marker\t901\t1200\t100\t1\tGENOMAD.000126.vV\t0\t0\t0\tCaudoviricetes\n"
+        # No hallmark flag, marker suffix vv → viral-like
+        "g_vv_marker_lc\t1201\t1500\t100\t1\tGENOMAD.000127.vv\t0\t0\t0\tCaudoviricetes\n"
+        # NA marker → dropped
+        "g_na\t1501\t1800\t100\t1\tNA\t0\t0\t0\tNA\n"
+        # Plasmid hallmark with non-viral marker suffix → dropped (no VV/Vv/vV/vv)
+        "g_plasmid\t1801\t2100\t100\t1\tGENOMAD.999.PP\t0\t1\t0\tNA\n"
+        # USCG host gene with H prefix marker → dropped
+        "g_uscg\t2101\t2400\t100\t1\tGENOMAD.500.HH\t0\t0\t1\tBacteria\n"
     )
     out = parse_genomad_genes_tsv(p)
-    assert out == {"g_hallmark": "0", "g_viral_like": "1"}
+    assert out == {
+        "g_hallmark": "0",
+        "g_vv_marker": "0",
+        "g_Vv_marker": "0",
+        "g_vV_marker": "1",
+        "g_vv_marker_lc": "1",
+    }
 
 
 def test_read_scaffold_lengths(tmp_path):

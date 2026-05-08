@@ -174,29 +174,46 @@ def build_metabolic_genes(distill_sheets_dir: Path) -> set[str]:
     return metabolic
 
 
+_GENOMAD_HALLMARK_SUFFIXES = frozenset({"VV", "Vv"})
+_GENOMAD_VIRAL_LIKE_SUFFIXES = frozenset({"vV", "vv"})
+
+
+def _is_truthy(v) -> bool:
+    """geNomad's boolean columns serialise as 0/1 ints in modern releases and
+    TRUE/FALSE in older ones. Handle both, plus polars-decoded Python bool."""
+    if v is True or v == 1:
+        return True
+    if isinstance(v, str):
+        s = v.strip().upper()
+        return s == "TRUE" or s == "1"
+    return False
+
+
 def parse_genomad_genes_tsv(path: Path) -> dict[str, str]:
     """Adapter from geNomad's *_genes.tsv to VirSorter-style category codes.
 
-    geNomad's gene-level annotation has no direct equivalent of VirSorter's
-    0-4 scale, but the closest signals are:
+    Two complementary signals (modern geNomad ≥1.5):
 
-      - virus_hallmark (bool, TRUE/FALSE) — geNomad-curated viral hallmark
-        gene. Mapped to "0" (phage hallmark, the strongest viral signal).
-      - taxname (str) — marker lineage. If it starts with "Viruses" but
-        the row is not a hallmark, mapped to "1" (phage viral-like).
-      - everything else (host marker, plasmid marker, NA marker, blank
-        taxname) is dropped and never contributes to auxiliary_score.
+      - virus_hallmark (0/1 int)             → "0"  hallmark
+      - marker name suffix .VV / .Vv         → "0"  hallmark
+      - marker name suffix .vV / .vv         → "1"  viral-like
 
+    Anything else (host marker, plasmid_hallmark, NA marker) is dropped.
     The phage / prophage distinction (v1's 0 vs 3, 1 vs 4) is collapsed —
-    the algorithm treats {0,3} and {1,4} as equivalent for scoring, so the
-    adapter only emits "0" or "1". Returns a {gene_id: category} dict.
+    auxiliary_score treats {0,3} and {1,4} as equivalent, so the adapter
+    emits only "0" or "1".
+
+    Note: geNomad calls genes on the assembled contigs *before* CheckV
+    provirus trimming, so its gene ids look like `k141_85503_1`. DRAM
+    gene ids on a provirus contig look like `k141_85503|provirus_1_5000_1`
+    and cannot string-match. For those, the join silently produces no
+    coverage; only whole-virus contigs (no provirus suffix) line up.
     """
     df = pl.read_csv(path, separator="\t", infer_schema_length=10_000,
                      null_values=["NA", ""])
     out: dict[str, str] = {}
-    cols = set(df.columns)
-    has_hallmark = "virus_hallmark" in cols
-    has_taxname = "taxname" in cols
+    has_hallmark = "virus_hallmark" in df.columns
+    has_marker = "marker" in df.columns
     for row in df.iter_rows(named=True):
         gene = row.get("gene")
         if not gene:
@@ -204,15 +221,19 @@ def parse_genomad_genes_tsv(path: Path) -> dict[str, str]:
         gene = str(gene).strip()
         if not gene:
             continue
-        if has_hallmark:
-            v = row.get("virus_hallmark")
-            if v is True or (isinstance(v, str) and v.strip().upper() == "TRUE"):
-                out[gene] = "0"
-                continue
-        if has_taxname:
-            tn = row.get("taxname")
-            if isinstance(tn, str) and tn.strip().startswith("Viruses"):
-                out[gene] = "1"
+        if has_hallmark and _is_truthy(row.get("virus_hallmark")):
+            out[gene] = "0"
+            continue
+        if has_marker:
+            m = row.get("marker")
+            if isinstance(m, str):
+                m = m.strip()
+                if m and m != "NA":
+                    suffix = m.rsplit(".", 1)[-1] if "." in m else ""
+                    if suffix in _GENOMAD_HALLMARK_SUFFIXES:
+                        out[gene] = "0"
+                    elif suffix in _GENOMAD_VIRAL_LIKE_SUFFIXES:
+                        out[gene] = "1"
     return out
 
 
