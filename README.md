@@ -77,7 +77,11 @@ nextflow run -bg WrightonLabCSU/DRAM \
 
 ## DRAM-v (Viral mode)
 
-DRAM-v adds three columns to the per-gene table and ships an AMG-filtered distillate. Designed for input from a geNomad → CheckV pipeline (no VirSorter affi-contigs file required). Two run modes — pick whichever matches your input:
+DRAM-v adds three columns to the per-gene table and ships an AMG-filtered distillate. Designed for input from a geNomad → CheckV pipeline (no VirSorter affi-contigs file required).
+
+> **Note.** DRAM-v Phase 2 (V flag, `auxiliary_score`, geNomad adapter, `--max_auxiliary_score`, `--genomad_filename_prefix`) currently lives on this fork's `dev` branch only — `nextflow run WrightonLabCSU/DRAM ...` will not recognise these flags. Launch with `nextflow run tpall/DRAM -r dev ...` until the changes are upstreamed.
+
+Two run modes — pick whichever matches your input:
 
 - **Per-sample mode** — DRAM runs separately on each sample's filtered viral fasta (`<sample>_filtered.fna`). Used during development, smoke testing, or when you want per-sample annotations without going through clustering.
 - **Catalog mode** — DRAM runs once on a clustered vOTU catalog whose contigs were renamed `<sample>_<orig>` upstream. Standard MIUViG / Sullivan-lab production path, recommended for any multi-sample analysis.
@@ -99,7 +103,7 @@ Viral mode forces `groupby_column=scaffold` and skips QUAST + rRNA/tRNA collecti
 ### Per-sample mode
 
 ```bash
-nextflow run WrightonLabCSU/DRAM \
+nextflow run tpall/DRAM -r dev \
   --input_fasta path/to/filtered_fastas_dir \
   --fasta_fmt "*.fna" \
   --outdir results/dramv \
@@ -115,7 +119,7 @@ Each gene id matches between DRAM and geNomad (both call genes from scratch on t
 ### Catalog mode
 
 ```bash
-nextflow run WrightonLabCSU/DRAM \
+nextflow run tpall/DRAM -r dev \
   --input_fasta path/to/votu_catalog.fa \
   --outdir results/dramv \
   --call --annotate --summarize \
