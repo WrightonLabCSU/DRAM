@@ -50,9 +50,14 @@ def make_genome_summary(annotations, genome_summary_frame, logger, groupby_colum
         rules_col=RULES,
     )
 
+    # Cast both join keys to Utf8 — when annotations is empty (e.g. --amg_only
+    # + --max_auxiliary_score combined to drop every row) polars infers
+    # rule_hits.query_id as null-type, which doesn't join against str.
     counts = (
-        rule_hits.join(
-            annotations.select([pl.col("query_id"), pl.col(groupby_column)]),
+        rule_hits.with_columns(pl.col("query_id").cast(pl.Utf8))
+        .join(
+            annotations
+                .select([pl.col("query_id").cast(pl.Utf8), pl.col(groupby_column)]),
             on="query_id",
         )
         .drop("query_id")
