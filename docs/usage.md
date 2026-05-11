@@ -4,6 +4,8 @@
 
 ## Introduction
 
+As of May 11, 2026, we will not be making public changes to DRAM2 code ahead of our upcoming publication. We appreciate your patience & stay tuned!
+
 ---
 
 ## Description of command-line options:
