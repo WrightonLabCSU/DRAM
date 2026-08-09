@@ -16,6 +16,7 @@ include { ADJECTIVES             } from "../modules/local/adjectives/adjectives.
 include { PRODUCT_HEATMAP        } from "../modules/local/product/product_heatmap.nf"
 include { CAT_KEGG_PEP           } from "../modules/local/database/cat_kegg_pep.nf"
 include { FORMAT_KEGG_DB         } from "../modules/local/database/format_kegg_db.nf"
+include { MMSEQS_GPU_DATABASE    } from "../modules/local/database/mmseqs_gpu_database.nf"
 include { MERGE                  } from "../subworkflows/local/merge.nf"
 include { ANNOTATE               } from "../subworkflows/local/annotate.nf"
 include { ADD_ANNOTATIONS        } from "../modules/local/add_and_combine/add_annotations.nf"
@@ -225,7 +226,25 @@ workflow DRAM {
     // Single step commands
     //
 
-    if (params.format_kegg){
+    if (params.format_mmseqs_gpu) {
+        if (!params.mmseqs_db_path) {
+            error("--mmseqs_db_path is required with --format_mmseqs_gpu.")
+        }
+        if (!params.mmseqs_db_name) {
+            error("--mmseqs_db_name is required with --format_mmseqs_gpu.")
+        }
+        if (!(params.mmseqs_db_name ==~ /[A-Za-z0-9._-]+/)) {
+            error("--mmseqs_db_name may contain only letters, numbers, periods, underscores, and hyphens.")
+        }
+
+        mmseqs_db_f = file(params.mmseqs_db_path)
+        if (!mmseqs_db_f.exists()) {
+            error("MMseqs database directory not found at ${params.mmseqs_db_path}.")
+        }
+
+        MMSEQS_GPU_DATABASE(mmseqs_db_f, params.mmseqs_db_name)
+
+    } else if (params.format_kegg){
         if ( params.kegg_pep_root_dir ) {
             CAT_KEGG_PEP( file(params.kegg_pep_root_dir) )
             kegg_pep_f = CAT_KEGG_PEP.out.kegg_pep
