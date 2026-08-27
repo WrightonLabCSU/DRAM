@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    WrightonLabCSU/dram
+    BortonWrightonLabs/dram
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/WrightonLabCSU/dram
+    Github : https://github.com/BortonWrightonLabs/dram
 ----------------------------------------------------------------------------------------
 */
 

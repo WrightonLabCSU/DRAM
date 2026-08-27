@@ -1,6 +1,6 @@
 {
-    "name": "WrightonLabCSU/dram",
-    "homePage": "https://github.com/WrightonLabCSU/dram",
+    "name": "BortonWrightonLabs/dram",
+    "homePage": "https://github.com/BortonWrightonLabs/dram",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
@@ -27,7 +27,7 @@
                     },
                     "rundbcan/easysubstrate": {
                         "branch": "master",
-                        "git_sha": "31d9ec502b58f4fcf026de727ad23e725473c70f",
+                        "git_sha": "5e0b34c7ad0841e3e160b15a0180bf2b9be0e3bf",
                         "installed_by": ["modules"]
                     }
                 }

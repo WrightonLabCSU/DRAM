@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the WrightonLabCSU/dram pipeline
+// Subworkflow with functionality specific to the BortonWrightonLabs/dram pipeline
 //
 
 /*

@@ -67,7 +67,7 @@ lint:
     - nextflow_badge
 
 template:
-  org: WrightonLabCSU
+  org: BortonWrightonLabs
   name: DRAM
   description: DRAM (Distilled and Refined Annotation of Metabolism) is a tool for
     annotating metagenomic assembled genomes

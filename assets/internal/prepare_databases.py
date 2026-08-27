@@ -20,10 +20,10 @@ database_urls = {
         "base_url": "https://api.github.com/repos/dgittins/CANT-HYD-HydrocarbonBiodegradation/contents/HMMs/concatenated%20HMMs",
     },
     "camper": {
-        "hmm_url": "https://raw.githubusercontent.com/WrightonLabCSU/CAMPER/main/CAMPER.hmm",
-        "faa_url": "https://raw.githubusercontent.com/WrightonLabCSU/CAMPER/main/CAMPER_blast.faa",
-        "mmseq_scores_url": "https://raw.githubusercontent.com/WrightonLabCSU/CAMPER/main/CAMPER_blast_scores.tsv",
-        "hmm_scores_url": "https://raw.githubusercontent.com/WrightonLabCSU/CAMPER/main/CAMPER_hmm_scores.tsv",
+        "hmm_url": "https://raw.githubusercontent.com/BortonWrightonLabs/CAMPER/main/CAMPER.hmm",
+        "faa_url": "https://raw.githubusercontent.com/BortonWrightonLabs/CAMPER/main/CAMPER_blast.faa",
+        "mmseq_scores_url": "https://raw.githubusercontent.com/BortonWrightonLabs/CAMPER/main/CAMPER_blast_scores.tsv",
+        "hmm_scores_url": "https://raw.githubusercontent.com/BortonWrightonLabs/CAMPER/main/CAMPER_hmm_scores.tsv",
     },
     "vogdb": {
         "hmm_url": "https://fileshare.lisc.univie.ac.at/vog/latest/vog.hmm.tar.gz",

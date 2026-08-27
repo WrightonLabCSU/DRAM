@@ -82,7 +82,7 @@ cd DRAM
 3. Configure DRAM:
    - Download the default configuration file:
    ```bash
-   curl -o nextflow.config https://raw.githubusercontent.com/WrightonLabCSU/DRAM/refs/heads/dev/nextflow.config
+   curl -o nextflow.config https://raw.githubusercontent.com/BortonWrightonLabs/DRAM/refs/heads/dev/nextflow.config
    ```
    - This file can be customized to change:
      - Database locations
@@ -97,13 +97,13 @@ cd DRAM
 Install DRAM using Nextflow:
 
 ```bash
-nextflow pull WrightonLabCSU/DRAM -r dev
+nextflow pull BortonWrightonLabs/DRAM -r dev
 ```
 
 Note: Once DRAM v2 is out of development, the `-r dev` flag will be removed and the command will be simply:
 
 ```bash
-nextflow pull WrightonLabCSU/DRAM
+nextflow pull BortonWrightonLabs/DRAM
 ```
 
 #### Updating DRAM
@@ -111,13 +111,13 @@ nextflow pull WrightonLabCSU/DRAM
 To update DRAM, rerun the pull command:
 
 ```bash
-nextflow pull WrightonLabCSU/DRAM
+nextflow pull BortonWrightonLabs/DRAM
 ```
 
 To pull a specific branch or version tag:
 
 ```bash
-nextflow pull WrightonLabCSU/DRAM -r <branch_or_tag>
+nextflow pull BortonWrightonLabs/DRAM -r <branch_or_tag>
 ```
 
 Note: Only version tags >= 2 are supported. Pre-version 2 releases were before Nextflow was used.
@@ -134,7 +134,7 @@ DRAM uses Nextflow to handle all dependency management automatically. When you f
 
 ### Installation Location
 
-Nextflow installs all pipeline scripts by default in `$HOME/.nextflow/assets/WrightonLabCSU/DRAM`. If you're running DRAM on a shared system, you may want to install it in a shared directory. See the "Custom Installation Location" section below.
+Nextflow installs all pipeline scripts by default in `$HOME/.nextflow/assets/BortonWrightonLabs/DRAM`. If you're running DRAM on a shared system, you may want to install it in a shared directory. See the "Custom Installation Location" section below.
 
 ### Custom Installation Location
 

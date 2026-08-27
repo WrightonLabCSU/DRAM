@@ -17,7 +17,7 @@
                         "size": "Large",
                         "weight": "Bolder",
                         "color": "<% if (success) { %>Good<% } else { %>Attention<%} %>",
-                        "text": "WrightonLabCSU/dram v${version} - ${runName}",
+                        "text": "BortonWrightonLabs/dram v${version} - ${runName}",
                         "wrap": true
                     },
                     {

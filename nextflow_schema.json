@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/WrightonLabCSU/dram/dev/nextflow_schema.json",
-    "title": "WrightonLabCSU/dram pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/BortonWrightonLabs/dram/dev/nextflow_schema.json",
+    "title": "BortonWrightonLabs/dram pipeline parameters",
     "description": "DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes",
     "type": "object",
     "$defs": {

@@ -7,7 +7,7 @@ Here you will find give you basic instructions for running DRAM2
 
 Below is an example of common workflow in DRAM2. The user is calling genes from a directory of MAGs, annotating those genes using all available databases, assessing the qualtiy of each MAG. The user is then summarizing their annotations into user-friendly documents, assigning MAG-level metabolic functions, and generating an interactive heatmap of these functions per MAG. This command in being run from the command line in the background. A more detailed description of flags can be found below
 
-`nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
+`nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
 --anno_dbs all --qc --summarize --traits --visualize -profile singularity -bg` 
 
 ## Description of command-line options:
@@ -18,7 +18,7 @@ All command line options can also be set inside a configuration or params file f
 
 The general command to run DRAM2 is:
 
-`nextflow run WrightonLabCSU/DRAM [OPTIONS]`
+`nextflow run BortonWrightonLabs/DRAM [OPTIONS]`
 
 If DRAM2 is installed in a shared location, then the command is:
 
@@ -116,7 +116,7 @@ Distill out traits from the annotated genes.
 
 Other command-line options exist to control specific parameters of the DRAM2 pipeline. These are all described in the [Parameters API](params_doc.md) documentation page, or can be seen by running:
 
-`nextflow run WrightonLabCSU/DRAM --help`
+`nextflow run BortonWrightonLabs/DRAM --help`
 
 ---
 
@@ -125,32 +125,32 @@ Other command-line options exist to control specific parameters of the DRAM2 pip
 Simple run with rename, annotate, QC, summarize, and visualize:
 
 ```
-nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
+nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
 --anno_dbs camper,kegg --qc --summarize --visualize -profile singularity
 ```
 
 Add resume option and ecosystem summaries:
 
 ```
-nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
+nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
 --anno_dbs camper,kegg --qc --summarize --sum_ecos 'eng_sys,ag' --visualize -profile singularity -resume
 ```
 
 Run all standard databases and launch on slurm and background:
 
 ```
-nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
+nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
 --anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize -profile singularity -resume --slurm -bg
 ```
 
 The same as the above command but with full_mode to simplify the command:
 
 ```
-nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --sum_ecos 'eng_sys,ag' -profile singularity,full_mode -resume --slurm -bg
+nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --sum_ecos 'eng_sys,ag' -profile singularity,full_mode -resume --slurm -bg
 ```
 
 Utilizing a custom nextflow.config file to pass specific parameters (with a custom configuration file, DRAM parameters can be set there and do not need to be specified on the command-line, but Nextflow options still do):
 
 ```
-nextflow run WrightonLabCSU/DRAM -c [PATH/TO/NEXTFLOW.CONFIG] -profile singularity -resume -bg
+nextflow run BortonWrightonLabs/DRAM -c [PATH/TO/NEXTFLOW.CONFIG] -profile singularity -resume -bg
 ```

@@ -4,21 +4,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="WrightonLabCSU/dram: DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes">
-  <title>WrightonLabCSU/dram Pipeline Report</title>
+  <meta name="description" content="BortonWrightonLabs/dram: DRAM (Distilled and Refined Annotation of Metabolism) is a tool for annotating metagenomic assembled genomes">
+  <title>BortonWrightonLabs/dram Pipeline Report</title>
 </head>
 <body>
 <div style="font-family: Helvetica, Arial, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto;">
 
 <img src="cid:nfcorepipelinelogo">
 
-<h1>WrightonLabCSU/dram ${version}</h1>
+<h1>BortonWrightonLabs/dram ${version}</h1>
 <h2>Run Name: $runName</h2>
 
 <% if (!success){
     out << """
     <div style="color: #a94442; background-color: #f2dede; border-color: #ebccd1; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
-        <h4 style="margin-top:0; color: inherit;">WrightonLabCSU/dram execution completed unsuccessfully!</h4>
+        <h4 style="margin-top:0; color: inherit;">BortonWrightonLabs/dram execution completed unsuccessfully!</h4>
         <p>The exit status of the task that caused the workflow execution to fail was: <code>$exitStatus</code>.</p>
         <p>The full error message was:</p>
         <pre style="white-space: pre-wrap; overflow: visible; margin-bottom: 0;">${errorReport}</pre>
@@ -27,7 +27,7 @@
 } else {
     out << """
     <div style="color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
-        WrightonLabCSU/dram execution completed successfully!
+        BortonWrightonLabs/dram execution completed successfully!
     </div>
     """
 }
@@ -44,8 +44,8 @@
     </tbody>
 </table>
 
-<p>WrightonLabCSU/dram</p>
-<p><a href="https://github.com/WrightonLabCSU/dram">https://github.com/WrightonLabCSU/dram</a></p>
+<p>BortonWrightonLabs/dram</p>
+<p><a href="https://github.com/BortonWrightonLabs/dram">https://github.com/BortonWrightonLabs/dram</a></p>
 
 </div>
 

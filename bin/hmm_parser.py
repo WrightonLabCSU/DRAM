@@ -246,6 +246,10 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
         hits = hits.merge(
             hmm_info[merge_cols], how="left", left_on="query_name", right_index=True
         )
+        hits["score_type"] = hits["score_type"].fillna("full")
+        for col in merge_cols:
+            if col in ["threshold", "A_rank", "B_rank"]:
+                hits[col] = hits[col].fillna(0)
         print(hits.columns)
         print(hits)
         hits_sig = sig_scores_row_by_row(hits, db_name=db_name)
@@ -267,6 +271,7 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
         # if nothing significant then return nothing, don't get descriptions
         # df = pd.DataFrame(columns=OUTPUT_COLUMNS)
         # df.to_csv(output, index=False)
+        print(f"No significant hits founds for {hmm_domtbl}")
         return
 
     hits_sig[f"{db_name}_id"] = hits_sig["query_name"].str.replace(
