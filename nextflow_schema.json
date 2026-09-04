@@ -258,7 +258,7 @@
                     "description": "Ecosystem to distill. Options: <eng_sys|ag|marine|gut|bgc> If more than one ecosystem included, they must be seperated by a comma (--sum_ecos eng_sys,ag or --sum_ecos 'eng_sys,ag')."
                 },
                 "sum_topics": {
-                    "utype": "string",
+                    "type": "string",
                     "description": "A way to specify a subset of topics instead of all topics. By default, if `--sumarize` is specified, all topics are included. Options:  <assim|cell|energy|env|none> OR <default = assim,cell,energy,env>. If more than one topic included, they must be seperated by a comma (--sum_topics assim,energy or --distill_topic 'assim,energy'). Use `none` to skip topic distillation."
                 },
                 "sum_custom": {
@@ -580,113 +580,35 @@
                 }
             }
         },
-        "slurm_options": {
-            "title": "SLURM Options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Generic options for SLURM job submission. More customized options can be configured in your own Nextflow config file. See https://www.nextflow.io/docs/latest/executor.html#slurm and example configs here: https://github.com/nf-core/configs/tree/master/conf",
-            "properties": {
-                "slurm": {
-                    "type": "boolean",
-                    "description": "Launch the pipeline using the SLURM executor. Without this option, the pipeline will run in your current shell/environment."
-                },
-                "partition": {
-                    "type": "string",
-                    "description": "Name of the SLURM partition to use for job submission. If not provided, the default partition will be used."
-                },
-                "slurm_node": {
-                    "type": "string",
-                    "description": "Name of the SLURM Node to use for job submission. If not provided, the default node will be used."
-                },
-                "cpu_provision_limit": {
-                    "type": "integer",
-                    "description": "The largest numbers of CPUs you can provision in 1 job. Not the total CPU limit. You can control that with process size or provision limit and queue_size"
-                },
-                "mem_gb_provision_limit": {
-                    "type": "integer",
-                    "description": "The largest amount of memory you can provision in 1 job. Not the total memory limit. You can control that with process size or provision limit and queue_size"
-                },
-                "time_hr_provision_limit": {
-                    "type": "integer",
-                    "description": "The longest time a job should be provisioned for. Not the total length cutoff for all jobs. You can control that with process size or provision limit and queue_size"
-                }
-            }
-        },
         "process_options": {
-            "title": "Process Options",
+            "title": "Process resource options",
             "type": "object",
             "fa_icon": "fas fa-dna",
-            "description": "Total resource limits for a single process. Not the limit to the total resources available to the pipeline. Up to queue_size processes can run in parallel, of various sizes",
+            "description": "Per-task resource caps and optional job-array batching. Resource caps do not increase the resources requested by a process.",
             "properties": {
-                "tiny_cpus_limit": {
+                "max_cpus": {
                     "type": "integer",
-                    "description": "Maximum number of CPUs to use/provision for a this job size."
+                    "minimum": 1,
+                    "default": 24,
+                    "description": "Maximum number of CPUs that any single task can request."
                 },
-                "small_cpus_limit": {
-                    "type": "integer",
-                    "description": "Maximum number of CPUs to use/provision for a this job size."
+                "max_memory": {
+                    "type": "string",
+                    "default": "200.GB",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
+                    "description": "Maximum memory that any single task can request, for example '64.GB'."
                 },
-                "medium_cpus_limit": {
-                    "type": "integer",
-                    "description": "Maximum number of CPUs to use/provision for a this job size."
+                "max_time": {
+                    "type": "string",
+                    "default": "168.h",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
+                    "description": "Maximum wall time that any single task can request, for example '48.h'."
                 },
-                "big_cpus_limit": {
+                "job_array_size": {
                     "type": "integer",
-                    "description": "Maximum number of CPUs to use/provision for a this job size."
-                },
-                "huge_cpus_limit": {
-                    "type": "integer",
-                    "description": "Maximum number of CPUs to use/provision for a this job size."
-                },
-                "tiny_gb_mem_limit": {
-                    "type": "integer",
-                    "description": "Maximum memory to use/provision for a this job size."
-                },
-                "small_gb_mem_limit": {
-                    "type": "integer",
-                    "description": "Maximum memory to use/provision for a this job size."
-                },
-                "medium_gb_mem_limit": {
-                    "type": "integer",
-                    "description": "Maximum memory to use/provision for a this job size."
-                },
-                "big_gb_mem_limit": {
-                    "type": "integer",
-                    "description": "Maximum memory to use/provision for a this job size."
-                },
-                "huge_gb_mem_limit": {
-                    "type": "integer",
-                    "description": "Maximum memory to use/provision for a this job size."
-                },
-                "tiny_hr_time_limit": {
-                    "type": "integer",
-                    "description": "Maximum time in hours to use/provision for a this job size."
-                },
-                "small_hr_time_limit": {
-                    "type": "integer",
-                    "description": "Maximum time in hours to use/provision for a this job size."
-                },
-                "medium_hr_time_limit": {
-                    "type": "integer",
-                    "description": "Maximum time in hours to use/provision for a this job size."
-                },
-                "big_hr_time_limit": {
-                    "type": "integer",
-                    "description": "Maximum time in hours to use/provision for a this job size."
-                },
-                "huge_hr_time_limit": {
-                    "type": "integer",
-                    "description": "Maximum time in hours to use/provision for a this job size."
-                },
-                "queue_size": {
-                    "type": "integer",
-                    "default": 10,
-                    "description": "Maximum number of jobs to submit to the queue at once."
-                },
-                "array_size": {
-                    "type": "integer",
+                    "minimum": 0,
                     "default": 0,
-                    "description": "Number of tasks to submit per SLURM job array. 0 disables (default) so the local executor is unaffected. Set when running with --slurm. Note, job arrays submit multiple jobs with the same resource requests together to be more efficent on the slurm queue. They do not batch multiple jobs together. Job arrays are about reducing slurm overheard when running many similar jobs."
+                    "description": "Maximum tasks per job array on supported executors. Values 0 and 1 disable arrays; values 2 or greater enable them for array-labelled processes."
                 }
             }
         },
@@ -917,9 +839,6 @@
         },
         {
             "$ref": "#/$defs/database_options"
-        },
-        {
-            "$ref": "#/$defs/slurm_options"
         },
         {
             "$ref": "#/$defs/process_options"

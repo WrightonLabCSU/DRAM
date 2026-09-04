@@ -8,8 +8,11 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { CALL_GENES                                    } from "../../modules/local/call/call_genes_prodigal.nf"
+include { CALL_GENES as CALL_GENES_SMALL                } from "../../modules/local/call/call_genes_prodigal.nf"
+include { CALL_GENES as CALL_GENES_MEDIUM               } from "../../modules/local/call/call_genes_prodigal.nf"
+include { CALL_GENES as CALL_GENES_LARGE                } from "../../modules/local/call/call_genes_prodigal.nf"
 include { QUAST                                         } from "../../modules/local/call/quast.nf"
+include {resourceBytes; resourceClass                   } from './utils_resource_classes.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,13 +26,30 @@ workflow CALL {
 
     main:
 
-    // Call genes using Prodigal on the input fasta file(s) 1-by-1
-    CALL_GENES ( ch_fasta )
-    ch_called_genes = CALL_GENES.out.prodigal_fna
-    ch_called_proteins = CALL_GENES.out.prodigal_faa
-    ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv
-    ch_gene_gff = CALL_GENES.out.prodigal_gff
-    ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta
+    // Route each input to a process instance whose initial resources are
+    // uniform, allowing supported executors to safely construct job arrays.
+    ch_fasta_by_resource = ch_fasta
+        .map { name, fasta -> tuple(resourceClass(resourceBytes(fasta)), name, fasta) }
+        .branch { resource_class, name, fasta ->
+            small: resource_class == 'small'
+            medium: resource_class == 'medium'
+            large: resource_class == 'large'
+        }
+
+    CALL_GENES_SMALL(ch_fasta_by_resource.small)
+    CALL_GENES_MEDIUM(ch_fasta_by_resource.medium)
+    CALL_GENES_LARGE(ch_fasta_by_resource.large)
+
+    ch_called_genes = CALL_GENES_SMALL.out.prodigal_fna
+        .mix(CALL_GENES_MEDIUM.out.prodigal_fna, CALL_GENES_LARGE.out.prodigal_fna)
+    ch_called_proteins = CALL_GENES_SMALL.out.prodigal_faa
+        .mix(CALL_GENES_MEDIUM.out.prodigal_faa, CALL_GENES_LARGE.out.prodigal_faa)
+    ch_gene_locs = CALL_GENES_SMALL.out.prodigal_locs_tsv
+        .mix(CALL_GENES_MEDIUM.out.prodigal_locs_tsv, CALL_GENES_LARGE.out.prodigal_locs_tsv)
+    ch_gene_gff = CALL_GENES_SMALL.out.prodigal_gff
+        .mix(CALL_GENES_MEDIUM.out.prodigal_gff, CALL_GENES_LARGE.out.prodigal_gff)
+    ch_filtered_fasta = CALL_GENES_SMALL.out.prodigal_filtered_fasta
+        .mix(CALL_GENES_MEDIUM.out.prodigal_filtered_fasta, CALL_GENES_LARGE.out.prodigal_filtered_fasta)
 
     // Collect all individual fasta to pass to quast
     ch_called_proteins
@@ -50,7 +70,9 @@ workflow CALL {
         .set { ch_collected_fasta }
 
     // Run QUAST on individual FASTA file combined with respective GFF
-    QUAST( ch_collected_fasta )
+    ch_quast_input = ch_collected_fasta
+        .map { files -> tuple(resourceClass(resourceBytes(files)), files) }
+    QUAST(ch_quast_input)
     ch_quast_stats = QUAST.out.quast_collected_out
 
     emit:

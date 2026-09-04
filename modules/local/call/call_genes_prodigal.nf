@@ -1,5 +1,6 @@
 process CALL_GENES {
-    label 'process_small'
+    label 'process_call_genes'
+    label 'process_array'
 
     errorStrategy 'finish'
 
@@ -11,7 +12,7 @@ process CALL_GENES {
         'community.wave.seqera.io/library/python_pandas_scikit-bio_hmmer_pruned:ef64c488c99048d6' }"
 
     input:
-    tuple val( input_fasta ), path( fasta )
+    tuple val( resource_class ), val( input_fasta ), path( fasta )
 
     output:
     tuple val( input_fasta ), path( "${input_fasta}_called_genes.fna" ), emit: prodigal_fna, optional: true

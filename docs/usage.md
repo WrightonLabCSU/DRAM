@@ -55,9 +55,52 @@ If the user has already called genes they may use this option to specify the loc
 
 If the user already has a DRAM2 annotations TSV file, in the correct format, they can provide these using this command-line option.
 
-`--slurm`
+### Running on Slurm
 
-This option tells Nextflow to use SLURM as the job scheduler. Additional SLURM options can be specified such as `--partition [PARTITION_NAME]` and `--slurm_node [NODE_NAME]`
+Use the built-in `slurm` profile to select the Slurm executor. The profile intentionally does not choose a partition, account, QoS, node, or GPU configuration because those settings are specific to each cluster.
+
+Create a site-specific configuration such as `cluster.config`:
+
+```groovy
+process {
+    queue = 'general'
+    clusterOptions = '--account=my_account --qos=normal'
+}
+
+executor.queueSize = 100
+```
+
+Then compose it with a software profile and the Slurm profile:
+
+```bash
+nextflow run WrightonLabCSU/DRAM \
+    -profile apptainer,slurm \
+    -c cluster.config \
+    [OPTIONS]
+```
+
+Site configuration files can also use `withLabel` or `withName` selectors to choose different partitions, nodes, or GPU flags for particular tasks. For example, all KEGG MMseqs size buckets can be selected with `withName: 'MMSEQS_SEARCH_KEGG_.*'`.
+
+### Resource caps and job arrays
+
+DRAM chooses per-task CPU, memory, and time requests from fixed defaults. CALL_GENES, HMM_SEARCH, MMSEQS_SEARCH, and QUAST vary their requests according to input size. Mixed runs are separated into small (at most 1 GiB), medium (over 1 through 20 GiB), and large (over 20 GiB) task classes.
+
+Workload size is the input FASTA for CALL_GENES; all collected FASTA and GFF files for QUAST; and the query plus primary database for HMM_SEARCH and MMSEQS_SEARCH. Files, collections, and directory contents are summed recursively. Auxiliary description files and metadata tables are not included.
+
+| Processes | Small | Medium | Large |
+| --- | --- | --- | --- |
+| CALL_GENES and QUAST | 4 CPUs, 12 GB, 4 hours | 6 CPUs, 36 GB, 8 hours | 24 CPUs, 200 GB, 168 hours |
+| HMM_SEARCH and MMSEQS_SEARCH | 6 CPUs, 36 GB, 8 hours | 12 CPUs, 72 GB, 16 hours | 24 CPUs, 200 GB, 168 hours |
+
+The following parameters cap a single task's request:
+
+- `--max_cpus 24`
+- `--max_memory '200.GB'`
+- `--max_time '168.h'`
+
+These are upper limits only; raising them does not increase a process request. A cluster configuration can override label resources when larger or smaller defaults are required.
+
+Set `--job_array_size` to enable job arrays for bucketed CALL_GENES, HMM_SEARCH, and MMSEQS_SEARCH tasks on an executor that supports arrays. Values `0` and `1` disable arrays; values of `2` or greater specify the maximum number of tasks per array. Do not enable this parameter with an unsupported executor.
 
 ### Important Core Nextflow Options
 
@@ -73,7 +116,7 @@ While the user will still see things being output to the current screen, the use
 
 `-profile`
 
-This is the Nextflow profile to use. The profile determines how software dependencies are handled and what compute environment settings are used. Common profiles include `singularity`, `docker`, `conda`. The user can also create custom profiles in the `nextflow.config` file.
+This is the Nextflow profile to use. The profile determines how software dependencies are handled and what compute environment settings are used. Common profiles include `singularity`, `apptainer`, `docker`, `conda`, and `slurm`. Profiles can be composed as a comma-separated list.
 
 Additionally, short hand modes exist for common run modes, such as `full_mode`, which will run the entire pipeline (without rename), and with `--anno_dbs all`. See the nextflow.config file on GitHub for the full list of profiles.
 
@@ -140,13 +183,13 @@ Run all standard databases and launch on slurm and background:
 
 ```
 nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
---anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize -profile singularity -resume --slurm -bg
+--anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize -profile apptainer,slurm -c cluster.config -resume -bg
 ```
 
 The same as the above command but with full_mode to simplify the command:
 
 ```
-nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --sum_ecos 'eng_sys,ag' -profile singularity,full_mode -resume --slurm -bg
+nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --sum_ecos 'eng_sys,ag' -profile apptainer,slurm,full_mode -c cluster.config -resume -bg
 ```
 
 Utilizing a custom nextflow.config file to pass specific parameters (with a custom configuration file, DRAM parameters can be set there and do not need to be specified on the command-line, but Nextflow options still do):

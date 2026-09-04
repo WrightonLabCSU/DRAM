@@ -1,5 +1,6 @@
 process MMSEQS_SEARCH {
-    label 'process_huge'
+    label 'process_mmseqs_search'
+    label 'process_array'
 
     errorStrategy 'finish'
 
@@ -11,7 +12,8 @@ process MMSEQS_SEARCH {
     tag { input_fasta }
 
     input:
-    tuple( val(input_fasta),
+    tuple( val(resource_class),
+        val(input_fasta),
         path( query_database, stageAs: "query_database/" ),
         path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
         )

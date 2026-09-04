@@ -1,5 +1,6 @@
 process HMM_SEARCH {
-    label 'process_medium'
+    label 'process_hmm_search'
+    label 'process_array'
 
     errorStrategy 'finish'
 
@@ -11,7 +12,7 @@ process HMM_SEARCH {
     tag { input_fasta }
 
     input:
-    tuple val( input_fasta ), path( fasta ), path( prodigal_locs_tsv )
+    tuple val( resource_class ), val( input_fasta ), path( fasta ), path( prodigal_locs_tsv )
     val ( e_value )
     path( database_loc )
     path( hmm_info_path )

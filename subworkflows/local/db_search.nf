@@ -14,16 +14,16 @@ include { COMBINE_ANNOTATIONS                           } from "../../modules/lo
 include { MMSEQS_INDEX                                  } from "../../modules/local/annotate/mmseqs_index.nf"
 
 // NextFlow only process with the same name in the same workflow, so either alias it or include it a different workflow
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS         } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL          } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER         } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL         } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD        } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG           } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF         } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM           } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_CARD           } from "../../modules/local/annotate/mmseqs_search.nf"
-include { MMSEQS_SEARCH as MMSEQS_SEARCH_TCDB           } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS_SMALL;  MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS_MEDIUM;  MMSEQS_SEARCH as MMSEQS_SEARCH_MEROPS_LARGE  } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL_SMALL;   MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL_MEDIUM;   MMSEQS_SEARCH as MMSEQS_SEARCH_VIRAL_LARGE   } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER_SMALL;  MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER_MEDIUM;  MMSEQS_SEARCH as MMSEQS_SEARCH_CAMPER_LARGE  } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL_SMALL;  MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL_MEDIUM;  MMSEQS_SEARCH as MMSEQS_SEARCH_METHYL_LARGE  } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD_SMALL; MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD_MEDIUM; MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD_LARGE } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG_SMALL;    MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG_MEDIUM;    MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG_LARGE    } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF_SMALL;  MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF_MEDIUM;  MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF_LARGE  } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM_SMALL;    MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM_MEDIUM;    MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM_LARGE    } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CARD_SMALL;    MMSEQS_SEARCH as MMSEQS_SEARCH_CARD_MEDIUM;    MMSEQS_SEARCH as MMSEQS_SEARCH_CARD_LARGE    } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_TCDB_SMALL;    MMSEQS_SEARCH as MMSEQS_SEARCH_TCDB_MEDIUM;    MMSEQS_SEARCH as MMSEQS_SEARCH_TCDB_LARGE    } from "../../modules/local/annotate/mmseqs_search.nf"
 
 include { ADD_SQL_DESCRIPTIONS as SQL_UNIREF            } from "../../modules/local/annotate/add_sql_descriptions.nf"
 include { ADD_SQL_DESCRIPTIONS as SQL_VIRAL             } from "../../modules/local/annotate/add_sql_descriptions.nf"
@@ -32,20 +32,34 @@ include { ADD_SQL_DESCRIPTIONS as SQL_KEGG              } from "../../modules/lo
 include { ADD_SQL_DESCRIPTIONS as SQL_PFAM              } from "../../modules/local/annotate/add_sql_descriptions.nf"
 include { ADD_SQL_DESCRIPTIONS as SQL_DBCAN             } from "../../modules/local/annotate/add_sql_descriptions.nf"
 
-include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_DRAM_DB              } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_VOG                  } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_METALS               } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_KOFAM_SMALL;   HMM_SEARCH as HMM_SEARCH_KOFAM_MEDIUM;   HMM_SEARCH as HMM_SEARCH_KOFAM_LARGE   } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_DRAM_DB_SMALL; HMM_SEARCH as HMM_SEARCH_DRAM_DB_MEDIUM; HMM_SEARCH as HMM_SEARCH_DRAM_DB_LARGE } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_VOG_SMALL;     HMM_SEARCH as HMM_SEARCH_VOG_MEDIUM;     HMM_SEARCH as HMM_SEARCH_VOG_LARGE     } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_CAMPER_SMALL;  HMM_SEARCH as HMM_SEARCH_CAMPER_MEDIUM;  HMM_SEARCH as HMM_SEARCH_CAMPER_LARGE  } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_CANTHYD_SMALL; HMM_SEARCH as HMM_SEARCH_CANTHYD_MEDIUM; HMM_SEARCH as HMM_SEARCH_CANTHYD_LARGE } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_SULFUR_SMALL;  HMM_SEARCH as HMM_SEARCH_SULFUR_MEDIUM;  HMM_SEARCH as HMM_SEARCH_SULFUR_LARGE  } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_FEGENIE_SMALL; HMM_SEARCH as HMM_SEARCH_FEGENIE_MEDIUM; HMM_SEARCH as HMM_SEARCH_FEGENIE_LARGE } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_METALS_SMALL;  HMM_SEARCH as HMM_SEARCH_METALS_MEDIUM;  HMM_SEARCH as HMM_SEARCH_METALS_LARGE  } from "../../modules/local/annotate/hmmsearch.nf"
 
 include { ANTISMASH_ANTISMASH                           } from '../../modules/nf-core/antismash/antismash/main'
 include { RGI_MAIN                                      } from '../../modules/nf-core/rgi/main/main'
 include { RUNDBCAN_EASYSUBSTRATE                        } from '../../modules/nf-core/rundbcan/easysubstrate/main'
 
 include {checkDBVersion                                 } from '../../subworkflows/local/utils_pipeline_setup.nf'
+include {resourceBytes; resourceClass                   } from './utils_resource_classes.nf'
+
+def bucketSearchInputs(ch_inputs, database) {
+    final long database_bytes = resourceBytes(database)
+    ch_inputs
+        .map { name, query, gene_locs ->
+            tuple(resourceClass(resourceBytes(query) + database_bytes), name, query, gene_locs)
+        }
+        .branch { resource_class, name, query, gene_locs ->
+            small: resource_class == 'small'
+            medium: resource_class == 'medium'
+            large: resource_class == 'large'
+        }
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,8 +159,12 @@ workflow DB_SEARCH {
     // KEGG annotation
     if (use_kegg) {
         ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, DB_CHANNEL_SETUP.out.ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, kegg_name )
-        ch_mmseqs_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
+        ch_kegg_resource = bucketSearchInputs(ch_combined_query_locs_kegg, DB_CHANNEL_SETUP.out.ch_kegg_db.val)
+        MMSEQS_SEARCH_KEGG_SMALL(ch_kegg_resource.small, DB_CHANNEL_SETUP.out.ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, kegg_name)
+        MMSEQS_SEARCH_KEGG_MEDIUM(ch_kegg_resource.medium, DB_CHANNEL_SETUP.out.ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, kegg_name)
+        MMSEQS_SEARCH_KEGG_LARGE(ch_kegg_resource.large, DB_CHANNEL_SETUP.out.ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, kegg_name)
+        ch_mmseqs_unformatted = MMSEQS_SEARCH_KEGG_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_KEGG_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_KEGG_LARGE.out.mmseqs_search_formatted_out)
 
         SQL_KEGG(ch_mmseqs_unformatted, kegg_name, ch_sql_descriptions_db)
         ch_mmseqs_formatted = SQL_KEGG.out.sql_formatted_hits
@@ -155,22 +173,23 @@ workflow DB_SEARCH {
     // KOFAM annotation
     if (use_kofam) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_KOFAM (
-            ch_combined_proteins_locs,
-            params.kofam_e_value,
-            DB_CHANNEL_SETUP.out.ch_kofam_db,
-            ch_kofam_list,
-            true,
-            kofam_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_KOFAM.out.formatted_hits
+        ch_kofam_resource = bucketSearchInputs(ch_combined_proteins_locs, DB_CHANNEL_SETUP.out.ch_kofam_db.val)
+        HMM_SEARCH_KOFAM_SMALL(ch_kofam_resource.small, params.kofam_e_value, DB_CHANNEL_SETUP.out.ch_kofam_db, ch_kofam_list, true, kofam_name)
+        HMM_SEARCH_KOFAM_MEDIUM(ch_kofam_resource.medium, params.kofam_e_value, DB_CHANNEL_SETUP.out.ch_kofam_db, ch_kofam_list, true, kofam_name)
+        HMM_SEARCH_KOFAM_LARGE(ch_kofam_resource.large, params.kofam_e_value, DB_CHANNEL_SETUP.out.ch_kofam_db, ch_kofam_list, true, kofam_name)
+        ch_hmm_formatted = HMM_SEARCH_KOFAM_SMALL.out.formatted_hits
+            .mix(HMM_SEARCH_KOFAM_MEDIUM.out.formatted_hits, HMM_SEARCH_KOFAM_LARGE.out.formatted_hits)
         formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
     }
     // PFAM annotation
     if (use_pfam) {
         ch_combined_query_locs_pfam = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_PFAM( ch_combined_query_locs_pfam, DB_CHANNEL_SETUP.out.ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, pfam_name )
-        ch_mmseqs_unformatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
+        ch_pfam_resource = bucketSearchInputs(ch_combined_query_locs_pfam, DB_CHANNEL_SETUP.out.ch_pfam_mmseqs_db.val)
+        MMSEQS_SEARCH_PFAM_SMALL(ch_pfam_resource.small, DB_CHANNEL_SETUP.out.ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, pfam_name)
+        MMSEQS_SEARCH_PFAM_MEDIUM(ch_pfam_resource.medium, DB_CHANNEL_SETUP.out.ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, pfam_name)
+        MMSEQS_SEARCH_PFAM_LARGE(ch_pfam_resource.large, DB_CHANNEL_SETUP.out.ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, pfam_name)
+        ch_mmseqs_unformatted = MMSEQS_SEARCH_PFAM_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_PFAM_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_PFAM_LARGE.out.mmseqs_search_formatted_out)
 
         SQL_PFAM(ch_mmseqs_unformatted, pfam_name, ch_sql_descriptions_db)
         ch_mmseqs_formatted = SQL_PFAM.out.sql_formatted_hits
@@ -201,84 +220,88 @@ workflow DB_SEARCH {
     if (use_camper) {
         // HMM
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_CAMPER (
-            ch_combined_proteins_locs,
-            params.camper_e_value,
-            DB_CHANNEL_SETUP.out.ch_camper_hmm_db,
-            ch_camper_hmm_list,
-            false,
-            camper_name
-        )
-        ch_hmm_formatted = HMM_SEARCH_CAMPER.out.formatted_hits
+        ch_camper_hmm_resource = bucketSearchInputs(ch_combined_proteins_locs, DB_CHANNEL_SETUP.out.ch_camper_hmm_db.val)
+        HMM_SEARCH_CAMPER_SMALL(ch_camper_hmm_resource.small, params.camper_e_value, DB_CHANNEL_SETUP.out.ch_camper_hmm_db, ch_camper_hmm_list, false, camper_name)
+        HMM_SEARCH_CAMPER_MEDIUM(ch_camper_hmm_resource.medium, params.camper_e_value, DB_CHANNEL_SETUP.out.ch_camper_hmm_db, ch_camper_hmm_list, false, camper_name)
+        HMM_SEARCH_CAMPER_LARGE(ch_camper_hmm_resource.large, params.camper_e_value, DB_CHANNEL_SETUP.out.ch_camper_hmm_db, ch_camper_hmm_list, false, camper_name)
+        ch_hmm_formatted = HMM_SEARCH_CAMPER_SMALL.out.formatted_hits
+            .mix(HMM_SEARCH_CAMPER_MEDIUM.out.formatted_hits, HMM_SEARCH_CAMPER_LARGE.out.formatted_hits)
         formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
 
         // MMseqs
         ch_combined_query_locs_camper = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_CAMPER( ch_combined_query_locs_camper, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_list, camper_name )
-        ch_mmseqs_formatted = MMSEQS_SEARCH_CAMPER.out.mmseqs_search_formatted_out
+        ch_camper_mmseqs_resource = bucketSearchInputs(ch_combined_query_locs_camper, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_db.val)
+        MMSEQS_SEARCH_CAMPER_SMALL(ch_camper_mmseqs_resource.small, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_list, camper_name)
+        MMSEQS_SEARCH_CAMPER_MEDIUM(ch_camper_mmseqs_resource.medium, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_list, camper_name)
+        MMSEQS_SEARCH_CAMPER_LARGE(ch_camper_mmseqs_resource.large, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_camper_mmseqs_list, camper_name)
+        ch_mmseqs_formatted = MMSEQS_SEARCH_CAMPER_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_CAMPER_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_CAMPER_LARGE.out.mmseqs_search_formatted_out)
         formattedOutputChannels = formattedOutputChannels.mix(ch_mmseqs_formatted)
     }
     // FeGenie annotation
     if (use_fegenie) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_FEGENIE (
-            ch_combined_proteins_locs,
-            params.fegenie_e_value,
-            DB_CHANNEL_SETUP.out.ch_fegenie_db,
-            default_sheet,
-            false,
-            fegenie_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_FEGENIE.out.formatted_hits
+        ch_fegenie_resource = bucketSearchInputs(ch_combined_proteins_locs, DB_CHANNEL_SETUP.out.ch_fegenie_db.val)
+        HMM_SEARCH_FEGENIE_SMALL(ch_fegenie_resource.small, params.fegenie_e_value, DB_CHANNEL_SETUP.out.ch_fegenie_db, default_sheet, false, fegenie_name)
+        HMM_SEARCH_FEGENIE_MEDIUM(ch_fegenie_resource.medium, params.fegenie_e_value, DB_CHANNEL_SETUP.out.ch_fegenie_db, default_sheet, false, fegenie_name)
+        HMM_SEARCH_FEGENIE_LARGE(ch_fegenie_resource.large, params.fegenie_e_value, DB_CHANNEL_SETUP.out.ch_fegenie_db, default_sheet, false, fegenie_name)
+        ch_hmm_formatted = HMM_SEARCH_FEGENIE_SMALL.out.formatted_hits
+            .mix(HMM_SEARCH_FEGENIE_MEDIUM.out.formatted_hits, HMM_SEARCH_FEGENIE_LARGE.out.formatted_hits)
         formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
     }
     // Methyl annotation
     if (use_methyl) {
         ch_combined_query_locs_methyl = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_METHYL( ch_combined_query_locs_methyl, DB_CHANNEL_SETUP.out.ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, methyl_name )
-        ch_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
+        ch_methyl_resource = bucketSearchInputs(ch_combined_query_locs_methyl, DB_CHANNEL_SETUP.out.ch_methyl_db.val)
+        MMSEQS_SEARCH_METHYL_SMALL(ch_methyl_resource.small, DB_CHANNEL_SETUP.out.ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, methyl_name)
+        MMSEQS_SEARCH_METHYL_MEDIUM(ch_methyl_resource.medium, DB_CHANNEL_SETUP.out.ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, methyl_name)
+        MMSEQS_SEARCH_METHYL_LARGE(ch_methyl_resource.large, DB_CHANNEL_SETUP.out.ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, methyl_name)
+        ch_mmseqs_formatted = MMSEQS_SEARCH_METHYL_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_METHYL_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_METHYL_LARGE.out.mmseqs_search_formatted_out)
         formattedOutputChannels = formattedOutputChannels.mix(ch_mmseqs_formatted)
     }
     // CANT-HYD annotation
     if (use_canthyd) {
         // MMseqs
         ch_combined_query_locs_canthyd = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_CANTHYD( ch_combined_query_locs_canthyd, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_list, canthyd_name )
-        ch_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD.out.mmseqs_search_formatted_out
+        ch_canthyd_mmseqs_resource = bucketSearchInputs(ch_combined_query_locs_canthyd, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_db.val)
+        MMSEQS_SEARCH_CANTHYD_SMALL(ch_canthyd_mmseqs_resource.small, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_list, canthyd_name)
+        MMSEQS_SEARCH_CANTHYD_MEDIUM(ch_canthyd_mmseqs_resource.medium, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_list, canthyd_name)
+        MMSEQS_SEARCH_CANTHYD_LARGE(ch_canthyd_mmseqs_resource.large, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_list, canthyd_name)
+        ch_mmseqs_formatted = MMSEQS_SEARCH_CANTHYD_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_CANTHYD_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_CANTHYD_LARGE.out.mmseqs_search_formatted_out)
         formattedOutputChannels = formattedOutputChannels.mix(ch_mmseqs_formatted)
 
         //HMM
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_CANTHYD (
-            ch_combined_proteins_locs,
-            params.canthyd_e_value,
-            DB_CHANNEL_SETUP.out.ch_canthyd_hmm_db,
-            ch_canthyd_hmm_list,
-            false,
-            canthyd_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_CANTHYD.out.formatted_hits
+        ch_canthyd_hmm_resource = bucketSearchInputs(ch_combined_proteins_locs, DB_CHANNEL_SETUP.out.ch_canthyd_hmm_db.val)
+        HMM_SEARCH_CANTHYD_SMALL(ch_canthyd_hmm_resource.small, params.canthyd_e_value, DB_CHANNEL_SETUP.out.ch_canthyd_hmm_db, ch_canthyd_hmm_list, false, canthyd_name)
+        HMM_SEARCH_CANTHYD_MEDIUM(ch_canthyd_hmm_resource.medium, params.canthyd_e_value, DB_CHANNEL_SETUP.out.ch_canthyd_hmm_db, ch_canthyd_hmm_list, false, canthyd_name)
+        HMM_SEARCH_CANTHYD_LARGE(ch_canthyd_hmm_resource.large, params.canthyd_e_value, DB_CHANNEL_SETUP.out.ch_canthyd_hmm_db, ch_canthyd_hmm_list, false, canthyd_name)
+        ch_hmm_formatted = HMM_SEARCH_CANTHYD_SMALL.out.formatted_hits
+            .mix(HMM_SEARCH_CANTHYD_MEDIUM.out.formatted_hits, HMM_SEARCH_CANTHYD_LARGE.out.formatted_hits)
         formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
     }
     // Sulfur annotation
     if (use_sulfur) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_SULFUR (
-            ch_combined_proteins_locs,
-            params.sulfur_e_value,
-            DB_CHANNEL_SETUP.out.ch_sulfur_db,
-            default_sheet,
-            false,
-            sulfur_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_SULFUR.out.formatted_hits
+        ch_sulfur_resource = bucketSearchInputs(ch_combined_proteins_locs, DB_CHANNEL_SETUP.out.ch_sulfur_db.val)
+        HMM_SEARCH_SULFUR_SMALL(ch_sulfur_resource.small, params.sulfur_e_value, DB_CHANNEL_SETUP.out.ch_sulfur_db, default_sheet, false, sulfur_name)
+        HMM_SEARCH_SULFUR_MEDIUM(ch_sulfur_resource.medium, params.sulfur_e_value, DB_CHANNEL_SETUP.out.ch_sulfur_db, default_sheet, false, sulfur_name)
+        HMM_SEARCH_SULFUR_LARGE(ch_sulfur_resource.large, params.sulfur_e_value, DB_CHANNEL_SETUP.out.ch_sulfur_db, default_sheet, false, sulfur_name)
+        ch_hmm_formatted = HMM_SEARCH_SULFUR_SMALL.out.formatted_hits
+            .mix(HMM_SEARCH_SULFUR_MEDIUM.out.formatted_hits, HMM_SEARCH_SULFUR_LARGE.out.formatted_hits)
         formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
     }
     // MEROPS annotation
     if (use_merops) {
         ch_combined_query_locs_merops = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_MEROPS( ch_combined_query_locs_merops, DB_CHANNEL_SETUP.out.ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, merops_name )
-        ch_mmseqs_unformatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
+        ch_merops_resource = bucketSearchInputs(ch_combined_query_locs_merops, DB_CHANNEL_SETUP.out.ch_merops_db.val)
+        MMSEQS_SEARCH_MEROPS_SMALL(ch_merops_resource.small, DB_CHANNEL_SETUP.out.ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, merops_name)
+        MMSEQS_SEARCH_MEROPS_MEDIUM(ch_merops_resource.medium, DB_CHANNEL_SETUP.out.ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, merops_name)
+        MMSEQS_SEARCH_MEROPS_LARGE(ch_merops_resource.large, DB_CHANNEL_SETUP.out.ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, merops_name)
+        ch_mmseqs_unformatted = MMSEQS_SEARCH_MEROPS_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_MEROPS_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_MEROPS_LARGE.out.mmseqs_search_formatted_out)
 
         SQL_MEROPS(ch_mmseqs_unformatted, merops_name, ch_sql_descriptions_db)
         ch_mmseqs_formatted = SQL_MEROPS.out.sql_formatted_hits
@@ -287,8 +310,12 @@ workflow DB_SEARCH {
     // Uniref annotation
     if (use_uniref) {
         ch_combined_query_locs_uniref = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_UNIREF( ch_combined_query_locs_uniref, DB_CHANNEL_SETUP.out.ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, uniref_name )
-        ch_mmseqs_unformatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
+        ch_uniref_resource = bucketSearchInputs(ch_combined_query_locs_uniref, DB_CHANNEL_SETUP.out.ch_uniref_db.val)
+        MMSEQS_SEARCH_UNIREF_SMALL(ch_uniref_resource.small, DB_CHANNEL_SETUP.out.ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, uniref_name)
+        MMSEQS_SEARCH_UNIREF_MEDIUM(ch_uniref_resource.medium, DB_CHANNEL_SETUP.out.ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, uniref_name)
+        MMSEQS_SEARCH_UNIREF_LARGE(ch_uniref_resource.large, DB_CHANNEL_SETUP.out.ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, uniref_name)
+        ch_mmseqs_unformatted = MMSEQS_SEARCH_UNIREF_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_UNIREF_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_UNIREF_LARGE.out.mmseqs_search_formatted_out)
 
         SQL_UNIREF(ch_mmseqs_unformatted, uniref_name, ch_sql_descriptions_db)
         ch_mmseqs_formatted = SQL_UNIREF.out.sql_formatted_hits
@@ -297,15 +324,12 @@ workflow DB_SEARCH {
     // Metals annotation
     if (use_metals) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_METALS (
-            ch_combined_proteins_locs,
-            params.metals_e_value,
-            DB_CHANNEL_SETUP.out.ch_metals_db,
-            default_sheet,
-            false,
-            metals_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_METALS.out.formatted_hits
+        ch_metals_resource = bucketSearchInputs(ch_combined_proteins_locs, DB_CHANNEL_SETUP.out.ch_metals_db.val)
+        HMM_SEARCH_METALS_SMALL(ch_metals_resource.small, params.metals_e_value, DB_CHANNEL_SETUP.out.ch_metals_db, default_sheet, false, metals_name)
+        HMM_SEARCH_METALS_MEDIUM(ch_metals_resource.medium, params.metals_e_value, DB_CHANNEL_SETUP.out.ch_metals_db, default_sheet, false, metals_name)
+        HMM_SEARCH_METALS_LARGE(ch_metals_resource.large, params.metals_e_value, DB_CHANNEL_SETUP.out.ch_metals_db, default_sheet, false, metals_name)
+        ch_hmm_formatted = HMM_SEARCH_METALS_SMALL.out.formatted_hits
+            .mix(HMM_SEARCH_METALS_MEDIUM.out.formatted_hits, HMM_SEARCH_METALS_LARGE.out.formatted_hits)
         formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
     }
     // antiSMASH
@@ -337,50 +361,56 @@ workflow DB_SEARCH {
     // CARD annotation
     if (use_card) {
         ch_combined_query_locs_card = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_CARD( ch_combined_query_locs_card, DB_CHANNEL_SETUP.out.ch_card_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, card_name )
-        ch_mmseqs_formatted = MMSEQS_SEARCH_CARD.out.mmseqs_search_formatted_out
+        ch_card_resource = bucketSearchInputs(ch_combined_query_locs_card, DB_CHANNEL_SETUP.out.ch_card_db.val)
+        MMSEQS_SEARCH_CARD_SMALL(ch_card_resource.small, DB_CHANNEL_SETUP.out.ch_card_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, card_name)
+        MMSEQS_SEARCH_CARD_MEDIUM(ch_card_resource.medium, DB_CHANNEL_SETUP.out.ch_card_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, card_name)
+        MMSEQS_SEARCH_CARD_LARGE(ch_card_resource.large, DB_CHANNEL_SETUP.out.ch_card_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, card_name)
+        ch_mmseqs_formatted = MMSEQS_SEARCH_CARD_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_CARD_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_CARD_LARGE.out.mmseqs_search_formatted_out)
         formattedOutputChannels = formattedOutputChannels.mix(ch_mmseqs_formatted)
     }
     // TCDB annotation
     if (use_tcdb) {
         ch_combined_query_locs_tcdb = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_TCDB( ch_combined_query_locs_tcdb, DB_CHANNEL_SETUP.out.ch_tcdb_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, tcdb_name )
-        ch_mmseqs_formatted = MMSEQS_SEARCH_TCDB.out.mmseqs_search_formatted_out
+        ch_tcdb_resource = bucketSearchInputs(ch_combined_query_locs_tcdb, DB_CHANNEL_SETUP.out.ch_tcdb_db.val)
+        MMSEQS_SEARCH_TCDB_SMALL(ch_tcdb_resource.small, DB_CHANNEL_SETUP.out.ch_tcdb_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, tcdb_name)
+        MMSEQS_SEARCH_TCDB_MEDIUM(ch_tcdb_resource.medium, DB_CHANNEL_SETUP.out.ch_tcdb_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, tcdb_name)
+        MMSEQS_SEARCH_TCDB_LARGE(ch_tcdb_resource.large, DB_CHANNEL_SETUP.out.ch_tcdb_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, tcdb_name)
+        ch_mmseqs_formatted = MMSEQS_SEARCH_TCDB_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_TCDB_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_TCDB_LARGE.out.mmseqs_search_formatted_out)
         formattedOutputChannels = formattedOutputChannels.mix(ch_mmseqs_formatted)
     }
     // DRAM DB annotation
-     if (use_dram_db) {
+    if (use_dram_db) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_DRAM_DB (
-            ch_combined_proteins_locs,
-            "",  // No e value, skip e value flag
-            DB_CHANNEL_SETUP.out.ch_dram_db,
-            ch_dram_db_hmm_list,
-            false,
-            dram_db_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_DRAM_DB.out.formatted_hits
+        ch_dram_db_resource = bucketSearchInputs(ch_combined_proteins_locs, DB_CHANNEL_SETUP.out.ch_dram_db.val)
+        HMM_SEARCH_DRAM_DB_SMALL(ch_dram_db_resource.small, "", DB_CHANNEL_SETUP.out.ch_dram_db, ch_dram_db_hmm_list, false, dram_db_name)
+        HMM_SEARCH_DRAM_DB_MEDIUM(ch_dram_db_resource.medium, "", DB_CHANNEL_SETUP.out.ch_dram_db, ch_dram_db_hmm_list, false, dram_db_name)
+        HMM_SEARCH_DRAM_DB_LARGE(ch_dram_db_resource.large, "", DB_CHANNEL_SETUP.out.ch_dram_db, ch_dram_db_hmm_list, false, dram_db_name)
+        ch_hmm_formatted = HMM_SEARCH_DRAM_DB_SMALL.out.formatted_hits
+            .mix(HMM_SEARCH_DRAM_DB_MEDIUM.out.formatted_hits, HMM_SEARCH_DRAM_DB_LARGE.out.formatted_hits)
         formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
     }
     // VOGdb annotation
     if (use_vog) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_VOG (
-            ch_combined_proteins_locs,
-            params.vog_e_value,
-            DB_CHANNEL_SETUP.out.ch_vogdb_db,
-            default_sheet,
-            false,
-            vogdb_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_VOG.out.formatted_hits
+        ch_vog_resource = bucketSearchInputs(ch_combined_proteins_locs, DB_CHANNEL_SETUP.out.ch_vogdb_db.val)
+        HMM_SEARCH_VOG_SMALL(ch_vog_resource.small, params.vog_e_value, DB_CHANNEL_SETUP.out.ch_vogdb_db, default_sheet, false, vogdb_name)
+        HMM_SEARCH_VOG_MEDIUM(ch_vog_resource.medium, params.vog_e_value, DB_CHANNEL_SETUP.out.ch_vogdb_db, default_sheet, false, vogdb_name)
+        HMM_SEARCH_VOG_LARGE(ch_vog_resource.large, params.vog_e_value, DB_CHANNEL_SETUP.out.ch_vogdb_db, default_sheet, false, vogdb_name)
+        ch_hmm_formatted = HMM_SEARCH_VOG_SMALL.out.formatted_hits
+            .mix(HMM_SEARCH_VOG_MEDIUM.out.formatted_hits, HMM_SEARCH_VOG_LARGE.out.formatted_hits)
         formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
     }
     // Viral annotation
     if (params.use_viral) {
         ch_combined_query_locs_viral = ch_mmseqs_query.join(ch_gene_locs)
-        MMSEQS_SEARCH_VIRAL( ch_combined_query_locs_viral, DB_CHANNEL_SETUP.out.ch_viral_db, params.bit_score_threshold,  params.rbh_bit_score_threshold,default_sheet, viral_name )
-        ch_mmseqs_unformatted = MMSEQS_SEARCH_VIRAL.out.mmseqs_search_formatted_out
+        ch_viral_resource = bucketSearchInputs(ch_combined_query_locs_viral, DB_CHANNEL_SETUP.out.ch_viral_db.val)
+        MMSEQS_SEARCH_VIRAL_SMALL(ch_viral_resource.small, DB_CHANNEL_SETUP.out.ch_viral_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, viral_name)
+        MMSEQS_SEARCH_VIRAL_MEDIUM(ch_viral_resource.medium, DB_CHANNEL_SETUP.out.ch_viral_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, viral_name)
+        MMSEQS_SEARCH_VIRAL_LARGE(ch_viral_resource.large, DB_CHANNEL_SETUP.out.ch_viral_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, viral_name)
+        ch_mmseqs_unformatted = MMSEQS_SEARCH_VIRAL_SMALL.out.mmseqs_search_formatted_out
+            .mix(MMSEQS_SEARCH_VIRAL_MEDIUM.out.mmseqs_search_formatted_out, MMSEQS_SEARCH_VIRAL_LARGE.out.mmseqs_search_formatted_out)
 
         SQL_VIRAL(ch_mmseqs_unformatted, viral_name, ch_sql_descriptions_db)
         ch_mmseqs_formatted = SQL_VIRAL.out.sql_formatted_hits
