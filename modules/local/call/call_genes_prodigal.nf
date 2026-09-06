@@ -1,9 +1,10 @@
 process CALL_GENES {
-    label 'process_small'
+    label 'process_call_genes'
+    label 'process_array'
 
     errorStrategy 'finish'
 
-    tag { input_fasta }
+    tag { sample_names.join(',') }
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
@@ -11,19 +12,22 @@ process CALL_GENES {
         'community.wave.seqera.io/library/python_pandas_scikit-bio_hmmer_pruned:ef64c488c99048d6' }"
 
     input:
-    tuple val( input_fasta ), path( fasta )
+    tuple val(resource_class), val(sample_names),
+        path(fastas, stageAs: 'inputs/input??.fa', arity: '1..*')
 
     output:
-    tuple val( input_fasta ), path( "${input_fasta}_called_genes.fna" ), emit: prodigal_fna, optional: true
-    tuple val( input_fasta ), path( "${input_fasta}_called_genes.faa" ), emit: prodigal_faa, optional: true
-    tuple val( input_fasta ), path( "${input_fasta}_called_genes_table.tsv" ), emit: prodigal_locs_tsv, optional: true
-    tuple val( input_fasta ), path( "${input_fasta}_${params.min_contig_len}.fa" ), emit: prodigal_filtered_fasta, optional: true
-    tuple val( input_fasta ), path( "${input_fasta}_called_genes.gff" ), emit: prodigal_gff, optional: true
+    tuple val(sample_names), path("*_called_genes.fna"), emit: prodigal_fna, optional: true
+    tuple val(sample_names), path("*_called_genes.faa"), emit: prodigal_faa, optional: true
+    tuple val(sample_names), path("*_called_genes_table.tsv"), emit: prodigal_locs_tsv, optional: true
+    tuple val(sample_names), path("*_${params.min_contig_len}.fa"), emit: prodigal_filtered_fasta, optional: true
+    tuple val(sample_names), path("*_called_genes.gff"), emit: prodigal_gff, optional: true
 
 
     script:
 
-    """
+    sample_names.withIndex().collect { input_fasta, index ->
+        def fasta = fastas[index]
+        """
 
     reformat.sh \\
     in=${fasta} \\
@@ -60,5 +64,6 @@ process CALL_GENES {
             mv "${input_fasta}_called_genes_renamed.gff" "${input_fasta}_called_genes.gff"
         fi
     fi
-    """
+        """
+    }.join('\n')
 }

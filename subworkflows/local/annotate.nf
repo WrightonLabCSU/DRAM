@@ -6,6 +6,7 @@ include { QC                     } from "../../subworkflows/local/qc.nf"
 include { DB_SEARCH              } from "../../subworkflows/local/db_search.nf"
 include { GENE_LOCS              } from "../../modules/local/annotate/gene_locs.nf"
 include { GENERATE_GFF  } from "../../modules/local/add_and_combine/generate_gff.nf"
+include { resourceBytes } from './utils_resource_classes.nf'
 
 def batchManifestToTuples(ch_renamed_batch) {
     ch_renamed_batch.flatMap { manifest, renamed_files ->
@@ -91,6 +92,10 @@ workflow ANNOTATE {
             ch_fasta = batchManifestToTuples(RENAME_FASTA.out.renamed_batch)
         }
 
+        // This is the final input FASTA used by CALL and RNA scans. Carry its
+        // size as immutable per-sample metadata instead of re-statting it.
+        ch_fasta = ch_fasta.map { name, fasta -> tuple(name, fasta, resourceBytes(fasta)) }
+
         CALL( ch_fasta )
         ch_quast_stats = CALL.out.ch_quast_stats
         ch_gene_locs = CALL.out.ch_gene_locs
@@ -130,7 +135,11 @@ workflow ANNOTATE {
             ch_called_genes = batchManifestToTuples(RENAME_FNA.out.renamed_batch)
         }
 
-        GENE_LOCS( ch_called_proteins)
+        // input_genes is the final logical query for all downstream searches.
+        ch_called_proteins = ch_called_proteins
+            .map { name, proteins -> tuple(name, proteins, resourceBytes(proteins)) }
+
+        GENE_LOCS( ch_called_proteins.map { name, proteins, _bytes -> tuple(name, proteins) })
         ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
 
         // n_fastas = file("$params.input_genes/${params.genes_fmt}").size()

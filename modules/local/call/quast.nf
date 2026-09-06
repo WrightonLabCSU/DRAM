@@ -1,5 +1,5 @@
 process QUAST {
-    label 'process_small'
+    label 'process_quast'
 
     errorStrategy 'finish'
 
@@ -9,7 +9,7 @@ process QUAST {
         'community.wave.seqera.io/library/python_pandas_scikit-bio_hmmer_pruned:ef64c488c99048d6' }"
 
     input:
-    path (collected_fasta_gff)
+    tuple val(resource_class), path(collected_fasta_gff)
 
     output:
     path("quast_results/report.tsv"), emit: quast_tsv

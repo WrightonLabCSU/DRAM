@@ -11,10 +11,10 @@ process MMSEQS_INDEX{
     tag { input_fasta }
 
     input:
-    tuple val( input_fasta ), path( fasta )
+    tuple val(input_fasta), path(fasta), val(query_bytes)
 
     output:
-    tuple val( input_fasta ), path( "*.mmsdb*" ), emit: mmseqs_index_out
+    tuple val(input_fasta), path("*.mmsdb*"), val(query_bytes), emit: mmseqs_index_out
 
     script:
     """

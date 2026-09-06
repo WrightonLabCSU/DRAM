@@ -24,8 +24,9 @@ Below is an example of basic DRAM2 usage. This code is for annotating a director
 
 
 ``` bash
-nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate --anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize --traits -profile singularity -resume --slurm -bg
+nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate --anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize --traits -profile singularity,slurm -c cluster.config -resume -bg
 ```
+
 Please note that '--input_fasta [INPUT_FASTA]' should be a directory of genomes or MAGs in .fa or .fna format. It is also worth noting that all Nextflow options are specified with a single dash `-`, while all DRAM2-specific options are specified with a double dash `--`.  All available Nextflow options can be seen by running:
 
 `nextflow run -help`

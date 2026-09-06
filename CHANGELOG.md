@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Add reusable per-database HMM/MMseqs workflows with optional sequential search batching, a per-input size cutoff, deterministic membership, and compatible job arrays.
+- Search scheduler selectors now use workflow-qualified names such as `.*:MMSEQS_KEGG:SEARCH_.*`.
+- Add optional, independently configurable CALL_GENES and RNA input batching. tRNAscan-SE and Barrnap now use allocated task CPUs and remain separate array-capable process families.
+- Carry per-sample logical workload sizes through input preparation, gene calling, and MMseqs indexing so resource bucketing does not repeatedly inspect the same files or depend on generated index sizes.
+
 ## 2.0.0-beta36 - 2026-08-11
 
 [144002b](https://github.com/WrightonLabCSU/DRAM/commit/144002b7b7938db8c1d51f0559641585fb706376)...[98a3adc](https://github.com/WrightonLabCSU/DRAM/commit/98a3adcc19926e53da38b0831ee14e0a384d7e7a)

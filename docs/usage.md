@@ -55,9 +55,94 @@ If the user has already called genes they may use this option to specify the loc
 
 If the user already has a DRAM2 annotations TSV file, in the correct format, they can provide these using this command-line option.
 
-`--slurm`
+### Running on Slurm
 
-This option tells Nextflow to use SLURM as the job scheduler. Additional SLURM options can be specified such as `--partition [PARTITION_NAME]` and `--slurm_node [NODE_NAME]`
+Use the built-in `slurm` profile to select the Slurm executor. The profile intentionally does not choose a partition, account, QoS, node, or GPU configuration because those settings are specific to each cluster.
+
+Create a site-specific configuration such as `cluster.config`:
+
+```groovy
+process {
+    queue = 'general'
+    clusterOptions = '--account=my_account --qos=normal'
+}
+
+executor.queueSize = 100
+```
+
+Then compose it with a software profile and the Slurm profile:
+
+```bash
+nextflow run WrightonLabCSU/DRAM \
+    -profile apptainer,slurm \
+    -c cluster.config \
+    [OPTIONS]
+```
+
+Site configuration files can also use `withLabel` or `withName` selectors to choose different partitions, nodes, or GPU flags for particular tasks. Search processes now live inside a workflow per database. For example, all KEGG MMseqs size buckets can be selected with:
+
+```groovy
+process {
+    withName: '.*:MMSEQS_KEGG:SEARCH_.*' {
+        queue = 'large_memory'
+        clusterOptions = '--account=my_account --qos=normal'
+    }
+}
+```
+
+Use `.*:HMM_KOFAM:SEARCH_.*` for KOfam HMM searches, or replace `SEARCH_.*` with `SEARCH_LARGE` for just the large class. Migrate old `MMSEQS_SEARCH_KEGG_.*` / `HMM_SEARCH_KOFAM_.*` selectors to these workflow-qualified selectors. Generic `withName: MMSEQS_SEARCH` / `withName: HMM_SEARCH` selectors and the semantic resource labels still apply. A more specific `clusterOptions` value replaces the inherited value; repeat any required account or QoS settings.
+
+### Resource caps and job arrays
+
+DRAM chooses per-task CPU, memory, and time requests from fixed defaults. CALL_GENES, TRNA_SCAN, RRNA_SCAN, HMM_SEARCH, MMSEQS_SEARCH, and QUAST vary their requests according to input size. Mixed runs are separated into small (at most 1 GiB), medium (over 1 through 20 GiB), and large (over 20 GiB) task classes.
+
+Workload size is stored as per-sample channel metadata rather than re-read by every downstream database. DRAM measures the final decompressed/renamed input FASTA once for CALL_GENES, TRNA_SCAN, and RRNA_SCAN. After gene calling, it separately measures the called protein FASTA for every HMM/MMseqs search and the filtered FASTA for consumers such as QUAST and antiSMASH. Files, collections, and directory contents within one input are summed recursively. Database size, auxiliary description files, metadata tables, and the physical size of a generated MMseqs index are not included.
+
+| Processes | Small | Medium | Large |
+| --- | --- | --- | --- |
+| CALL_GENES, TRNA_SCAN, RRNA_SCAN, and QUAST | 4 CPUs, 12 GB, 4 hours | 6 CPUs, 36 GB, 8 hours | 24 CPUs, 200 GB, 168 hours |
+| HMM_SEARCH and MMSEQS_SEARCH | 6 CPUs, 36 GB, 8 hours | 12 CPUs, 72 GB, 16 hours | 24 CPUs, 200 GB, 168 hours |
+
+The following parameters cap a single task's request:
+
+- `--max_cpus 24`
+- `--max_memory '200.GB'`
+- `--max_time '168.h'`
+
+These are upper limits only; raising them does not increase a process request. A cluster configuration can override label resources when larger or smaller defaults are required.
+
+Set `--job_array_size` to enable job arrays for bucketed CALL_GENES, TRNA_SCAN, RRNA_SCAN, HMM_SEARCH, and MMSEQS_SEARCH tasks on an executor that supports arrays. Values `0` and `1` disable arrays; values of `2` or greater specify the maximum number of tasks per array. Do not enable this parameter with an unsupported executor. Gene calling, tRNA scanning, and rRNA scanning remain separate process families, so each can fail, retry, and receive site-specific overrides independently.
+
+### Optional gene-calling and RNA batching
+
+`--call_batch_size 10` runs Prodigal sequentially for up to ten input FASTAs in one CALL_GENES task. `--rna_batch_size 10` similarly groups up to ten FASTAs per task, but tRNAscan-SE and Barrnap still run in separate tasks. Both parameters default to `1`, which preserves one task per input and streams inputs as they become ready.
+
+`--call_batch_max_size '1.GB'` and `--rna_batch_max_size '1.GB'` set the largest individual FASTA allowed to join the corresponding batch. An input above its limit runs alone. Inputs at or below the limit may be grouped up to the configured batch size even when their combined size exceeds the limit. A batch's resource class is the class of its largest member.
+
+When either batch size is greater than one, that stage waits for all its inputs and sorts them by sample name to produce deterministic batches. Wall time is multiplied by the configured batch capacity and then limited by `max_time`; CPU and memory are not multiplied. Outputs are restored to the existing per-sample channels and filenames.
+
+### Optional search batching
+
+`--search_batch_size 10` runs up to ten HMM or MMseqs searches sequentially against one database in a single task. The default, `1`, runs one search per input per database and streams inputs as they become ready. Each search retains its own query, search statistics, gene locations, and output filenames. Queries are not concatenated and searches do not run concurrently inside a batch.
+
+`--search_batch_max_size '1.GB'` (the default) is the largest individual query input allowed to join a batch. Inputs at or below the limit can be grouped up to `search_batch_size`, regardless of their combined size. An input above the limit runs alone. Database size is never considered. For an MMseqs query made of several files, those files together constitute one input. These options affect HMM and MMseqs searches only.
+
+When batching is enabled, each database workflow waits for its input channel to finish and sorts by sample name before packing. This makes batch membership independent of task completion order, at the cost of delaying searches until all queries are ready. A batch's resource class comes from its largest individual protein query, whose size was measured once before database fan-out. The combined size of the batch, database size, and generated MMseqs index size do not affect its class.
+
+CPU and memory follow the class defaults above. Search wall time is multiplied by the configured `search_batch_size`, then capped by `max_time`. Even partial batches use that same multiplier so every array-capable process has uniform initial requests. Choose a smaller batch size or override the search resource labels if the resulting time cap is insufficient. Site overrides must also keep initial scheduler directives uniform within each array-capable process.
+
+Batching and arrays can be used independently or together:
+
+```bash
+nextflow run WrightonLabCSU/DRAM \
+    -profile apptainer,slurm -c cluster.config \
+    --search_batch_size 10 --search_batch_max_size '1.GB' \
+    --job_array_size 100 [OPTIONS]
+```
+
+Here each array contains up to 100 tasks, and each task searches up to ten inputs. Arrays still contain independently scheduled tasks; batching reduces the number of tasks themselves.
+
+For every batching option, Nextflow caches and retries an entire batch task. A failed member fails the task, and retrying it repeats the other members too; retries occur only when the configured error strategy permits them. Changing the input set or batching parameters can change membership and reduce cache reuse. Per-sample output channels and published filenames are preserved. Start with small batches and increase them only when scheduler overhead is a demonstrated problem.
 
 ### Important Core Nextflow Options
 
@@ -73,7 +158,7 @@ While the user will still see things being output to the current screen, the use
 
 `-profile`
 
-This is the Nextflow profile to use. The profile determines how software dependencies are handled and what compute environment settings are used. Common profiles include `singularity`, `docker`, `conda`. The user can also create custom profiles in the `nextflow.config` file.
+This is the Nextflow profile to use. The profile determines how software dependencies are handled and what compute environment settings are used. Common profiles include `singularity`, `apptainer`, `docker`, `conda`, and `slurm`. Profiles can be composed as a comma-separated list.
 
 Additionally, short hand modes exist for common run modes, such as `full_mode`, which will run the entire pipeline (without rename), and with `--anno_dbs all`. See the nextflow.config file on GitHub for the full list of profiles.
 
@@ -140,13 +225,13 @@ Run all standard databases and launch on slurm and background:
 
 ```
 nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
---anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize -profile singularity -resume --slurm -bg
+--anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize -profile apptainer,slurm -c cluster.config -resume -bg
 ```
 
 The same as the above command but with full_mode to simplify the command:
 
 ```
-nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --sum_ecos 'eng_sys,ag' -profile singularity,full_mode -resume --slurm -bg
+nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --sum_ecos 'eng_sys,ag' -profile apptainer,slurm,full_mode -c cluster.config -resume -bg
 ```
 
 Utilizing a custom nextflow.config file to pass specific parameters (with a custom configuration file, DRAM parameters can be set there and do not need to be specified on the command-line, but Nextflow options still do):
