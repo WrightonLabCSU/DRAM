@@ -8,10 +8,15 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { TRNA_SCAN                                     } from "../../modules/local/collect_rna/trna_scan.nf"
-include { RRNA_SCAN                                     } from "../../modules/local/collect_rna/rrna_scan.nf"
+include { TRNA_SCAN as TRNA_SCAN_SMALL                  } from "../../modules/local/collect_rna/trna_scan.nf"
+include { TRNA_SCAN as TRNA_SCAN_MEDIUM                 } from "../../modules/local/collect_rna/trna_scan.nf"
+include { TRNA_SCAN as TRNA_SCAN_LARGE                  } from "../../modules/local/collect_rna/trna_scan.nf"
+include { RRNA_SCAN as RRNA_SCAN_SMALL                  } from "../../modules/local/collect_rna/rrna_scan.nf"
+include { RRNA_SCAN as RRNA_SCAN_MEDIUM                 } from "../../modules/local/collect_rna/rrna_scan.nf"
+include { RRNA_SCAN as RRNA_SCAN_LARGE                  } from "../../modules/local/collect_rna/rrna_scan.nf"
 include { TRNA_COLLECT                                  } from "../../modules/local/collect_rna/trna_collect.nf"
 include { RRNA_COLLECT                                  } from "../../modules/local/collect_rna/rrna_collect.nf"
+include {bucketFastaBatches; batchMaxBytes; unpackBatchOutputs } from './utils_batches.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +26,7 @@ include { RRNA_COLLECT                                  } from "../../modules/lo
 
 workflow COLLECT_RNA {
     take:
-    ch_fasta  // channel: [ val(input_fasta name), path(fasta) ]
+    ch_fasta  // channel: [ val(input_fasta name), path(fasta), val(logical bytes) ]
     default_sheet // Path to dummy sheet
     call          // boolean: whether gene calling flag is set
 
@@ -53,17 +58,28 @@ workflow COLLECT_RNA {
             log.warn("No tRNA files provided, skipping tRNA steps.")
         }
     } else { // If we did run call then we need to generate the rrnas and trnas from the fastas
-        // Run tRNAscan-SE on each fasta to identify tRNAs
-        TRNA_SCAN( ch_fasta )
-        ch_trna_scan = TRNA_SCAN.out.trna_scan_out
+        ch_fasta_by_resource = bucketFastaBatches(ch_fasta,
+            params.rna_batch_size as int,
+            batchMaxBytes(params.rna_batch_max_size))
+
+        // Keep the scanners separate so failures, retries, and overrides remain isolated.
+        TRNA_SCAN_SMALL(ch_fasta_by_resource.small)
+        TRNA_SCAN_MEDIUM(ch_fasta_by_resource.medium)
+        TRNA_SCAN_LARGE(ch_fasta_by_resource.large)
+        ch_trna_scan = TRNA_SCAN_SMALL.out.trna_scan_out
+            .mix(TRNA_SCAN_MEDIUM.out.trna_scan_out, TRNA_SCAN_LARGE.out.trna_scan_out)
+            .flatMap { names, files -> unpackBatchOutputs(names, files, '_processed_trnas.tsv') }
         // Collect all input_fasta formatted tRNA files
         channel.empty()
             .mix( ch_trna_scan )
             .collect()
             .set { ch_collected_tRNAs }
-        // Run barrnap on each fasta to identify rRNAs
-        RRNA_SCAN( ch_fasta )
-        ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
+        RRNA_SCAN_SMALL(ch_fasta_by_resource.small)
+        RRNA_SCAN_MEDIUM(ch_fasta_by_resource.medium)
+        RRNA_SCAN_LARGE(ch_fasta_by_resource.large)
+        ch_rrna_scan = RRNA_SCAN_SMALL.out.rrna_scan_out
+            .mix(RRNA_SCAN_MEDIUM.out.rrna_scan_out, RRNA_SCAN_LARGE.out.rrna_scan_out)
+            .flatMap { names, files -> unpackBatchOutputs(names, files, '_processed_rrnas.tsv') }
         channel.empty()
             .mix( ch_rrna_scan )
             .collect()

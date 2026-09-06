@@ -584,7 +584,7 @@
             "title": "Process resource options",
             "type": "object",
             "fa_icon": "fas fa-dna",
-            "description": "Per-task resource caps and optional job-array batching. Resource caps do not increase the resources requested by a process.",
+            "description": "Per-task resource caps, optional input batching, and job arrays. Resource caps do not increase the resources requested by a process.",
             "properties": {
                 "max_cpus": {
                     "type": "integer",
@@ -603,6 +603,42 @@
                     "default": "168.h",
                     "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
                     "description": "Maximum wall time that any single task can request, for example '48.h'."
+                },
+                "call_batch_size": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 1,
+                    "description": "Maximum FASTA inputs processed sequentially per CALL_GENES task. 1 disables batching."
+                },
+                "call_batch_max_size": {
+                    "type": "string",
+                    "default": "1.GB",
+                    "pattern": "^[1-9][0-9]*\\.?\\s*(K|M|G|T)?B$",
+                    "description": "Largest individual FASTA that may join a CALL_GENES batch. Larger inputs run alone; combined batch size is ignored."
+                },
+                "rna_batch_size": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 1,
+                    "description": "Maximum FASTA inputs processed sequentially per tRNA or rRNA scan task. 1 disables batching."
+                },
+                "rna_batch_max_size": {
+                    "type": "string",
+                    "default": "1.GB",
+                    "pattern": "^[1-9][0-9]*\\.?\\s*(K|M|G|T)?B$",
+                    "description": "Largest individual FASTA that may join an RNA-scan batch. Larger inputs run alone; combined batch size is ignored."
+                },
+                "search_batch_size": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 1,
+                    "description": "Maximum inputs searched sequentially against one database per HMM/MMseqs task. 1 disables batching. Can be combined with job arrays."
+                },
+                "search_batch_max_size": {
+                    "type": "string",
+                    "default": "1.GB",
+                    "pattern": "^[1-9][0-9]*\\.?\\s*(K|M|G|T)?B$",
+                    "description": "Largest individual query input that may join a search batch, for example '1.GB'. Inputs above this size run alone. Database size and combined batch size are ignored. Use a positive integer and unit."
                 },
                 "job_array_size": {
                     "type": "integer",

@@ -21,6 +21,14 @@ Pipeline kicks of with `main.nf` which runs some boiler plate initialization ste
 
 ## Pipeline contribution conventions
 
+HMM and MMseqs database searches should invoke `HMM_SEARCH_WORKFLOW` or `MMSEQS_SEARCH_WORKFLOW` from `subworkflows/local`, aliased once per database in `db_search.nf`. These wrappers own batching, resource-class branching, and restoring per-sample outputs. Keep their internal `SEARCH_SMALL`, `SEARCH_MEDIUM`, and `SEARCH_LARGE` processes separate so job arrays have uniform initial requests. Shared search and FASTA batching helpers live in `utils_batches.nf`.
+
+The [search batching regression tests](../tests/search_batching/README.md) run the production workflows and generated scripts with mock search and Slurm executables on Nextflow 25.04 and 25.10. Run them when changing search inputs, staging, output channels, or resource policies.
+
+CALL_GENES, TRNA_SCAN, and RRNA_SCAN use the FASTA adapters from `utils_batches.nf`. Keep gene calling, tRNA scanning, and rRNA scanning as separate process families, and restore batched results to per-sample channels before downstream collection. Their [preprocessing batching regression tests](../tests/preprocessing_batching/README.md) cover generated scripts, resource classes, arrays, caching, and failures on Nextflow 25.04 and 25.10.
+
+Carry logical workload bytes with a sample's channel tuple once an artifact is final: input FASTA after decompression/renaming, called protein FASTA after CALL, and filtered FASTA after CALL. Do not use a mutable global map or recompute size in every database wrapper. In particular, MMseqs indexing must preserve the called-protein byte count; generated index-file size is not a scheduling input.
+
 To make the DRAM code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
 
 ### Adding a new step

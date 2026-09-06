@@ -9,10 +9,12 @@ process HMM_SEARCH {
         'oras://community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:1742d882bc99fed5' :
         'community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:6d5bc9dfeca29b70' }"
 
-    tag { input_fasta }
+    tag { sample_names.join(',') }
 
     input:
-    tuple val( resource_class ), val( input_fasta ), path( fasta ), path( prodigal_locs_tsv )
+    tuple val(resource_class), val(sample_names),
+        path(query_fastas, stageAs: 'queries/query??.faa', arity: '1..*'),
+        path(gene_locations, stageAs: 'locations/genes??.tsv', arity: '1..*')
     val ( e_value )
     path( database_loc )
     path( hmm_info_path )
@@ -20,14 +22,17 @@ process HMM_SEARCH {
     val (db_name)
 
     output:
-    tuple val( input_fasta ), path ( "${input_fasta}___formatted_${db_name}_hits.csv" ), emit: formatted_hits, optional: true
+    tuple val(sample_names), path("*___formatted_${db_name}_hits.csv"), emit: formatted_hits, optional: true
 
     script:
     def args = task.ext.args ?: ""
     def ec_flag = ec_from_info ? "--ec_from_info" : ""
     def cutoff_flag = e_value ? "--e_value ${e_value}" : ""
 
-    """
+    sample_names.withIndex().collect { input_fasta, index ->
+        def fasta = query_fastas[index]
+        def prodigal_locs_tsv = gene_locations[index]
+        """
     hmm_search.py \\
         --hmm  ${database_loc} \\
         --input_file ${fasta} \\
@@ -42,5 +47,6 @@ process HMM_SEARCH {
         --gene_locs ${prodigal_locs_tsv} \\
         --db_name ${db_name} \\
         --output "${input_fasta}___formatted_${db_name}_hits.csv"
-    """
+        """
+    }.join('\n')
 }

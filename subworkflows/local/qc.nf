@@ -10,7 +10,7 @@ include { ADD_BIN_QUALITY        } from "../../modules/local/add_and_combine/add
 
 workflow QC {
     take:
-    ch_fasta  // channel: [ val(input_fasta name), path(fasta) ]
+    ch_fasta  // channel: [ val(input_fasta name), path(fasta), val(logical bytes) ]
     default_sheet // Path to dummy sheet
     ch_combined_annotations  // channel: [ path(combined_annotations_out) ]
     ch_collected_fna
