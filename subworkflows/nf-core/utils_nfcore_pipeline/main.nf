@@ -293,33 +293,72 @@ def completionEmail(summary_params, email, email_on_fail, plaintext_email, outdi
     def html_template = engine.createTemplate(hf).make(email_fields)
     def email_html    = html_template.toString()
 
-    // Render the sendmail template
-    def max_multiqc_email_size = (params.containsKey('max_multiqc_email_size') ? params.max_multiqc_email_size : 0) as MemoryUnit
-    def smail_fields           = [email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, projectDir: "${workflow.projectDir}", mqcFile: mqc_report, mqcMaxSize: max_multiqc_email_size.toBytes()]
-    def sf                     = new File("${workflow.projectDir}/assets/sendmail_template.txt")
-    def sendmail_template      = engine.createTemplate(sf).make(smail_fields)
-    def sendmail_html          = sendmail_template.toString()
-
-    // Send the HTML e-mail
+    // Submit the completion e-mail to the local mail transport. A zero exit
+    // status confirms local acceptance, not final delivery to the recipient.
     def colors = logColours(monochrome_logs) as Map
     if (email_address) {
-        try {
-            if (plaintext_email) {
-                new org.codehaus.groovy.GroovyException('Send plaintext e-mail, not HTML')
-            }
-            // Try to send HTML e-mail using sendmail
-            def sendmail_tf = new File(workflow.launchDir.toString(), ".sendmail_tmp.html")
-            sendmail_tf.withWriter { w -> w << sendmail_html }
-            ['sendmail', '-t'].execute() << sendmail_html
-            log.info("-${colors.purple}[${workflow.manifest.name}]${colors.green} Sent summary e-mail to ${email_address} (sendmail)-")
+        def max_multiqc_email_size = (params.containsKey('max_multiqc_email_size') ? params.max_multiqc_email_size : 0) as MemoryUnit
+        def smail_fields           = [email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, projectDir: "${workflow.projectDir}", mqcFile: mqc_report, mqcMaxSize: max_multiqc_email_size.toBytes()]
+        def sf                     = new File("${workflow.projectDir}/assets/sendmail_template.txt")
+        def sendmail_content       = plaintext_email ? """To: ${email_address}
+From: ${email_address}
+Subject: ${subject}
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+${email_txt}
+""" : engine.createTemplate(sf).make(smail_fields).toString()
+
+        // Override the host's background delivery mode so that sendmail returns
+        // the SMTP relay response while it is still available to this process.
+        // Pass the envelope recipient explicitly. Some sendmail installations
+        // do not reliably extract recipients from the rendered MIME headers
+        // when invoked with `-t`.
+        def sendmail_payload = new File(workflow.launchDir.toString(), ".sendmail_payload.eml")
+        sendmail_payload.withWriter('UTF-8') { writer ->
+            writer << sendmail_content
         }
-        catch (Exception msg) {
-            log.debug(msg.toString())
-            log.debug("Trying with mail instead of sendmail")
-            // Catch failures and try with plaintext
-            def mail_cmd = ['mail', '-s', subject, '--content-type=text/html', email_address]
-            mail_cmd.execute() << email_html
-            log.info("-${colors.purple}[${workflow.manifest.name}]${colors.green} Sent summary e-mail to ${email_address} (mail)-")
+        def used_plaintext_fallback = false
+        def payload_size = sendmail_payload.length()
+        if (payload_size == 0) {
+            log.warn("Rendered HTML sendmail payload is empty; falling back to plain-text e-mail for ${email_address}")
+            used_plaintext_fallback = true
+            sendmail_payload.withWriter('UTF-8') { writer ->
+                writer << "To: ${email_address}\n"
+                writer << "From: ${email_address}\n"
+                writer << "Subject: ${subject}\n"
+                writer << "Mime-Version: 1.0\n"
+                writer << "Content-Type: text/plain; charset=utf-8\n\n"
+                writer << email_txt
+                writer << "\n"
+            }
+            payload_size = sendmail_payload.length()
+            if (payload_size == 0) {
+                log.warn("Unable to submit summary e-mail for ${email_address}: plain-text fallback payload is also empty")
+                sendmail_payload.delete()
+                return
+            }
+        }
+
+        def sendmail_result = runMailCommand(['sendmail', '-v', '-odi', email_address], sendmail_payload)
+        sendmail_payload.delete()
+        if (sendmail_result.exitStatus == 0) {
+            def delivery_format = used_plaintext_fallback ? 'plain-text fallback' : (plaintext_email ? 'plain text' : 'HTML')
+            log.info("-${colors.purple}[${workflow.manifest.name}]${colors.green} Summary e-mail succeeded for ${email_address} (${delivery_format})-")
+        } else {
+            log.warn("sendmail did not accept the summary e-mail for ${email_address} (exit ${sendmail_result.exitStatus}): ${mailFailureReason(sendmail_result)}")
+            log.warn("Trying the local mail command with a plain-text message")
+            def mail_payload = new File(workflow.launchDir.toString(), ".mail_payload.txt")
+            mail_payload.withWriter('UTF-8') { writer ->
+                writer << email_txt
+            }
+            def mail_result = runMailCommand(['mail', '-s', subject, email_address], mail_payload)
+            mail_payload.delete()
+            if (mail_result.exitStatus == 0) {
+                log.info("-${colors.purple}[${workflow.manifest.name}]${colors.green} Summary e-mail succeeded for ${email_address} (plain-text mail fallback)-")
+            } else {
+                log.warn("Unable to submit summary e-mail for ${email_address}; mail exited ${mail_result.exitStatus}: ${mailFailureReason(mail_result)}")
+            }
         }
     }
 
@@ -334,6 +373,40 @@ def completionEmail(summary_params, email, email_on_fail, plaintext_email, outdi
     output_tf.withWriter { w -> w << email_txt }
     nextflow.extension.FilesEx.copyTo(output_tf.toPath(), "${outdir}/pipeline_info/pipeline_report.txt")
     output_tf.delete()
+}
+
+// Run a local mail command with its input redirected from a rendered file.
+def runMailCommand(command, payload_file) {
+    try {
+        def input_bytes = payload_file.length()
+        def process = new ProcessBuilder(command)
+            .redirectInput(payload_file)
+            .start()
+        def stdout = new StringBuffer()
+        def stderr = new StringBuffer()
+        process.consumeProcessOutput(stdout, stderr)
+        def completed = process.waitFor(60, java.util.concurrent.TimeUnit.SECONDS)
+        if (!completed) {
+            process.destroyForcibly()
+            process.waitFor()
+            return [exitStatus: 124, inputBytes: input_bytes, output: stdout.toString().trim(), error: "Mail command timed out after 60 seconds${stderr ? ": ${stderr.toString().trim()}" : ''}"]
+        }
+        def exit_status = process.exitValue()
+        return [exitStatus: exit_status, inputBytes: input_bytes, output: stdout.toString().trim(), error: stderr.toString().trim()]
+    } catch (Exception error) {
+        return [exitStatus: -1, inputBytes: 0, output: '', error: error.toString()]
+    }
+}
+
+// Keep console diagnostics concise while retaining the most relevant trailing
+// lines returned by the mail command.
+def mailFailureReason(result) {
+    def diagnostic = [result.error, result.output]
+        .findAll { it }
+        .join('\n')
+        .readLines()
+        .findAll { it.trim() }
+    return diagnostic ? diagnostic.takeRight(5).join(' | ') : 'no diagnostic output'
 }
 
 //
