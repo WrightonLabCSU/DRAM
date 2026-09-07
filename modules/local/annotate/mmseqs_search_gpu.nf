@@ -1,51 +1,58 @@
 process MMSEQS_SEARCH_GPU {
-    label 'process_huge'
-
-    accelerator 1
+    label 'process_mmseqs_search'
+    label 'process_gpu'
+    label 'process_array'
 
     errorStrategy 'finish'
+
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
         'oras://community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:1742d882bc99fed5' :
         'community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:6d5bc9dfeca29b70' }"
-    containerOptions { workflow.containerEngine in ['singularity', 'apptainer'] ? "--nv" :
-        workflow.containerEngine == 'docker' ? "--gpus all":
-        '' }
 
-
-    // conda "${moduleDir}/environment.yml"
-    // container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
-    //     'oras://community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:1742d882bc99fed5' :
-    //     'community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:6d5bc9dfeca29b70' }"
-    // containerOptions { workflow.containerEngine in ['singularity', 'apptainer'] ?
-    //     "--nv --bind ${params.mmseqs_cuda_cache}:${params.mmseqs_cuda_cache}" :
-    //     workflow.containerEngine == 'docker' ?
-    //     "--gpus all --volume ${params.mmseqs_cuda_cache}:${params.mmseqs_cuda_cache}" : '' }
-    // beforeScript "mkdir -p '${params.mmseqs_cuda_cache}'"
-
-    tag { input_fasta }
+    tag { sample_names.join(',') }
 
     input:
-    tuple( val(input_fasta),
-        path( query_database, stageAs: "query_database/" ),
-        path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
+    tuple( val(resource_class),
+        val(sample_names),
+        path(query_database, stageAs: 'query_database/*', arity: '1..*'),
+        path(gene_locations, stageAs: 'locations/genes??.tsv', arity: '1..*')
         )
     path( mmseqs_database )
     val( bit_score_threshold )
     val( rbh_bit_score_threshold )
-    path( db_descriptions, stageAs: "db_descriptions.tsv" )
+    path( db_descriptions, stageAs: 'db_descriptions.tsv' )
     val( db_name )
 
     output:
-    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
-    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}___mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
+    tuple val(sample_names), path("mmseqs_out/*___mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
+    tuple val(sample_names), path("mmseqs_out/*___mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
 
     script:
+    def query_names = query_database.collect { it.fileName.toString() }
+    if (query_names.unique(false).size() != query_names.size()) {
+        error('MMseqs query database filenames must be unique within a search batch')
+    }
+    def searches = sample_names.withIndex().collect { input_fasta, index ->
+        def prodigal_locs_tsv = gene_locations[index]
+        """
+    mkdir -p mmseqs_out/tmp/${input_fasta}
+
+    mmseqs search query_database/${input_fasta}.mmsdb "\${target_db}" mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/tmp/${input_fasta} --gpu 1 --threads ${task.cpus}
+    mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${bit_score_threshold} --threads ${task.cpus} mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}_${db_name}_passing.mmsdb
+    mmseqs rmdb mmseqs_out/${input_fasta}_${db_name}.mmsdb
+    mmseqs filterdb mmseqs_out/${input_fasta}_${db_name}_passing.mmsdb mmseqs_out/${input_fasta}_${db_name}_best.mmsdb --extract-lines 1
+    mmseqs rmdb mmseqs_out/${input_fasta}_${db_name}_passing.mmsdb
+    mmseqs convertalis query_database/${input_fasta}.mmsdb "\${target_db}" mmseqs_out/${input_fasta}_${db_name}_best.mmsdb mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv --threads ${task.cpus}
+    mmseqs rmdb mmseqs_out/${input_fasta}_${db_name}_best.mmsdb
+
+    if [ -s "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" ]; then
+        mmseqs_add_descriptions.py "${input_fasta}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "${prodigal_locs_tsv}" "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" "mmseqs_out/${input_fasta}___mmseqs_${db_name}_formatted.csv"
+    fi
+        """
+    }.join('\n')
     """
     set -euo pipefail
-
-    # export CUDA_CACHE_PATH="${params.mmseqs_cuda_cache}"
-    # export CUDA_CACHE_MAXSIZE=1073741824
 
     if [ "${db_name}" = "pfam" ]; then
         echo "ERROR: PFAM profile searches are CPU-only and cannot use MMSEQS_SEARCH_GPU." >&2
@@ -91,26 +98,7 @@ process MMSEQS_SEARCH_GPU {
         echo "WARNING: MMseqs GPU index \${target_index} is \${index_size_bytes} bytes and this task has \${allocated_memory_bytes} bytes of host memory. At least 1.25 times the index size is recommended for search overhead." >&2
     fi
 
-    mkdir -p mmseqs_out/tmp
-
-    mmseqs search query_database/${input_fasta}.mmsdb "\${target_db}" mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/tmp --gpu 1 --threads ${task.cpus}
-
-    mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${bit_score_threshold} --threads ${task.cpus} mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/passing.mmsdb
-
-    mmseqs rmdb mmseqs_out/${input_fasta}_${db_name}.mmsdb
-
-    mmseqs filterdb mmseqs_out/passing.mmsdb mmseqs_out/best.mmsdb --extract-lines 1
-
-    mmseqs rmdb mmseqs_out/passing.mmsdb
-
-    mmseqs convertalis query_database/${input_fasta}.mmsdb "\${target_db}" mmseqs_out/best.mmsdb mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv --threads ${task.cpus}
-
-    mmseqs rmdb mmseqs_out/best.mmsdb
-
-    if [ ! -s "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" ]; then
-        echo "The file mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv is empty. Skipping further processing."
-    else
-        mmseqs_add_descriptions.py "${input_fasta}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv" "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" "mmseqs_out/${input_fasta}___mmseqs_${db_name}_formatted.csv"
-    fi
+    mkdir -p mmseqs_out
+    ${searches}
     """
 }

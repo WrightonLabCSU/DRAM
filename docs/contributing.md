@@ -21,6 +21,14 @@ Pipeline kicks of with `main.nf` which runs some boiler plate initialization ste
 
 ## Pipeline contribution conventions
 
+HMM and MMseqs database searches should invoke `HMM_SEARCH_WORKFLOW` or `MMSEQS_SEARCH_WORKFLOW` from `subworkflows/local`, aliased once per database in `db_search.nf`. These wrappers own batching, resource-class branching, and restoring per-sample outputs. Keep their internal `SEARCH_SMALL`, `SEARCH_MEDIUM`, and `SEARCH_LARGE` processes separate so job arrays have uniform initial requests. Shared search and FASTA batching helpers live in `utils_batches.nf`.
+
+The [search batching regression tests](../tests/search_batching/README.md) run the production workflows and generated scripts with mock search and Slurm executables on Nextflow 25.04 and 25.10. Run them when changing search inputs, staging, output channels, or resource policies.
+
+CALL_GENES, TRNA_SCAN, and RRNA_SCAN use the FASTA adapters from `utils_batches.nf`. Keep gene calling, tRNA scanning, and rRNA scanning as separate process families, and restore batched results to per-sample channels before downstream collection. Their [preprocessing batching regression tests](../tests/preprocessing_batching/README.md) cover generated scripts, resource classes, arrays, caching, and failures on Nextflow 25.04 and 25.10.
+
+Carry logical workload bytes with a sample's channel tuple once an artifact is final: input FASTA after decompression/renaming, called protein FASTA after CALL, and filtered FASTA after CALL. Do not use a mutable global map or recompute size in every database wrapper. In particular, MMseqs indexing must preserve the called-protein byte count; generated index-file size is not a scheduling input.
+
 To make the DRAM code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
 
 ### Adding a new step
@@ -36,7 +44,7 @@ To make the DRAM code and processing logic more understandable for new contribut
    - `wave --singularity --freeze --conda-file modules/local/subdir/environment.yml`
    Add both returned URIs to the module's `container` directive, selecting the `oras://` URI when `workflow.containerEngine` is `singularity` or `apptainer`.
    - Now users can run DRAM with with `-profile conda` and `-profile singulary/docker/apptainer/etc.` and it will just work without them installing the dependencies
-1. Add a computation label to your process, such as `label 'process_small'`, that tells Nextflow how much resources to use. We have defined defaults for what process_small, process_medium, etc. mean, but users can override this in their own configs, allowing more control. All the options can be found in `conf/base.config`
+1. Add an intrinsic computation label in the process definition. Reuse `process_small`, `process_medium`, and the other generic labels when a fixed default is appropriate. Input-sensitive tools should use a semantic label such as `process_mmseqs_search`, with their shared resource policy defined in `conf/base.config`. Add `process_array` only when all initial tasks in each process invocation have uniform scheduler directives. Users can override these labels in their own configuration files.
 1. Add your process by name to `conf/modules.config` if you want to change where your output files get stored in the user's outdir.
 1. Add a script section to call your DRAM script, passing in whatever CLI argumenets. The outputs from your DRAM script should be the process outputs. You want them to be written directly in the working directory, Nextflow will manage moving them to the users output directy. You can also rename outputs for future Nextflow steps with the `emit:` keyword, and mark some outputs as optional (see other processes).
 1. We now need to add this process to the correct part in our pipeline to be called and ran. If it is in an already established step such as Annotate, we might go to `subworkflows/local/annotate.nf` and find the right spot in that code and add it. Though we might need to add a new subworkflow and add that to our `workflows/dram.nf`

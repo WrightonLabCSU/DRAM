@@ -47,7 +47,7 @@ Users can also generate an interactive heatmap depicting the presence of specifi
 Below is an example of basic DRAM2 usage. This code is for annotating a directory of genomes, renaming them for downstream use, calling genes and annotating them using all available databases, performing quality control, summarizing and visualizing with particular ecosystems in mind and assigning genome-level traits to the organisms. The command is submitted on the command line and will run in the background.
 
 ```bash
-nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --call --annotate --anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize --traits -profile singularity -resume --slurm -bg
+nextflow run BortonWrightonLabs/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --call --annotate --anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize --traits -profile apptainer,slurm -c cluster.config -resume -bg
 ```
 
 Please note that --input_fasta [INPUT_FASTA] should be a directory of genomes or MAGs in .fa or .fna format. It is also worth noting that all Nextflow options are specified with a single dash -, while all DRAM2-specific options are specified with a double dash --.

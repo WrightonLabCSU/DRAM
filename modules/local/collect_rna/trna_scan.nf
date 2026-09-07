@@ -1,5 +1,6 @@
 process TRNA_SCAN {
-    label 'process_small'
+    label 'process_trna_scan'
+    label 'process_array'
 
     errorStrategy 'finish'
 
@@ -8,15 +9,19 @@ process TRNA_SCAN {
         'oras://community.wave.seqera.io/library/python_pandas_barrnap_trnascan-se:e21b0760a084ff3c' :
         'community.wave.seqera.io/library/python_pandas_barrnap_trnascan-se:ed2ab26abf39304b' }"
 
-    tag { input_fasta }
+    tag { sample_names.join(',') }
 
     input:
-    tuple val(input_fasta), path(fasta)
+    tuple val(resource_class), val(sample_names),
+        path(fastas, stageAs: 'inputs/input??.fa', arity: '1..*')
 
     output:
-    tuple val(input_fasta), path("${input_fasta}_processed_trnas.tsv"), emit: trna_scan_out, optional: true
+    tuple val(sample_names), path('*_processed_trnas.tsv'), emit: trna_scan_out, optional: true
 
     script:
+    def batch_inputs = groovy.json.JsonOutput.toJson(
+        sample_names.withIndex().collect { name, index -> [name, fastas[index].toString()] }
+    )
     """
     #!/usr/bin/env python
 
@@ -73,11 +78,13 @@ process TRNA_SCAN {
             # The input file is empty or only contains headers, write "NULL" to output
             pass
 
-    # Run tRNAscan-SE with the necessary input to avoid prompts
-    trna_out = "${input_fasta}_trna_out.txt"
-    subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${params.threads}", "${fasta}"], input=b'O\\n', check=True)
+    batch_inputs = ${batch_inputs}
+    for input_fasta, fasta in batch_inputs:
+        # Run tRNAscan-SE with the necessary input to avoid prompts
+        trna_out = f"{input_fasta}_trna_out.txt"
+        subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", "${task.cpus}", fasta], input=b'O\\n', check=True)
 
-    # Process tRNAscan-SE output
-    process_trnascan_output(trna_out, "${input_fasta}_processed_trnas.tsv", "${input_fasta}")
+        # Process tRNAscan-SE output
+        process_trnascan_output(trna_out, f"{input_fasta}_processed_trnas.tsv", input_fasta)
     """
 }

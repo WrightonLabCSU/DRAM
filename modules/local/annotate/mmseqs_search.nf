@@ -1,5 +1,6 @@
 process MMSEQS_SEARCH {
-    label 'process_huge'
+    label 'process_mmseqs_search'
+    label 'process_array'
 
     errorStrategy 'finish'
 
@@ -8,12 +9,13 @@ process MMSEQS_SEARCH {
         'oras://community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:1742d882bc99fed5' :
         'community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:6d5bc9dfeca29b70' }"
 
-    tag { input_fasta }
+    tag { sample_names.join(',') }
 
     input:
-    tuple( val(input_fasta),
-        path( query_database, stageAs: "query_database/" ),
-        path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
+    tuple( val(resource_class),
+        val(sample_names),
+        path(query_database, stageAs: 'query_database/*', arity: '1..*'),
+        path(gene_locations, stageAs: 'locations/genes??.tsv', arity: '1..*')
         )
     path( mmseqs_database )
     val( bit_score_threshold)
@@ -23,13 +25,18 @@ process MMSEQS_SEARCH {
 
 
     output:
-    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
-    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}___mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
+    tuple val(sample_names), path("mmseqs_out/*___mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
+    tuple val(sample_names), path("mmseqs_out/*___mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
     //tuple val( input_fasta ), path("mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}.tsv "), emit: mmseqs_search_rbh_formatted_out, optional: true
 
     script:
-    """
-    ln -s ${mmseqs_database}/* ./
+    def query_names = query_database.collect { it.fileName.toString() }
+    if (query_names.unique(false).size() != query_names.size()) {
+        error('MMseqs query database filenames must be unique within a search batch')
+    }
+    def searches = sample_names.withIndex().collect { input_fasta, index ->
+        def prodigal_locs_tsv = gene_locations[index]
+        """
 
     # Create temporary directory
     mkdir -p mmseqs_out/tmp
@@ -46,12 +53,12 @@ process MMSEQS_SEARCH {
         # Filter to only best hit
         mmseqs filterdb mmseqs_out/passing.mmsdb mmseqs_out/best.mmsdb --extract-lines 1
 
-        mmseqs rmdb passing.mmsdb
+        mmseqs rmdb mmseqs_out/passing.mmsdb
 
         # Convert results to BLAST outformat 6
         mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmsdb  mmseqs_out/best.mmsdb mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv --threads ${task.cpus}
 
-        mmseqs rmdb best.mmsdb
+        mmseqs rmdb mmseqs_out/best.mmsdb
 
         # if statement for kegg rbh goes here
     elif [ "${db_name}" == "pfam" ]; then
@@ -67,9 +74,14 @@ process MMSEQS_SEARCH {
         echo "The file mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv is empty. Skipping further processing."
     else
         # Call Python script for further processing
-        mmseqs_add_descriptions.py "${input_fasta}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv" "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" "mmseqs_out/${input_fasta}___mmseqs_${db_name}_formatted.csv"
+        mmseqs_add_descriptions.py "${input_fasta}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "${prodigal_locs_tsv}" "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" "mmseqs_out/${input_fasta}___mmseqs_${db_name}_formatted.csv"
     fi
 
+        """
+    }.join('\n')
+    """
+    ln -s ${mmseqs_database}/* ./
+    ${searches}
     """
 }
 

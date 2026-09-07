@@ -1,0 +1,100 @@
+nextflow_function {
+
+    name "Test resource class helpers"
+    script "subworkflows/local/utils_resource_classes.nf"
+    tag "resource_classes"
+
+    test("1 GiB is small") {
+        function "resourceClass"
+        when {
+            function {
+                input[0] = 1024L * 1024L * 1024L
+            }
+        }
+        then {
+            assert function.success
+            assert function.result == "small"
+        }
+    }
+
+    test("More than 1 GiB is medium") {
+        function "resourceClass"
+        when {
+            function {
+                input[0] = (1024L * 1024L * 1024L) + 1L
+            }
+        }
+        then {
+            assert function.success
+            assert function.result == "medium"
+        }
+    }
+
+    test("20 GiB is medium") {
+        function "resourceClass"
+        when {
+            function {
+                input[0] = 20L * 1024L * 1024L * 1024L
+            }
+        }
+        then {
+            assert function.success
+            assert function.result == "medium"
+        }
+    }
+
+    test("More than 20 GiB is large") {
+        function "resourceClass"
+        when {
+            function {
+                input[0] = (20L * 1024L * 1024L * 1024L) + 1L
+            }
+        }
+        then {
+            assert function.success
+            assert function.result == "large"
+        }
+    }
+
+    test("Count one file") {
+        function "resourceBytes"
+        when {
+            function {
+                input[0] = file("${projectDir}/subworkflows/local/tests/fixtures/flat.txt")
+            }
+        }
+        then {
+            assert function.success
+            assert function.result == 5L
+        }
+    }
+
+    test("Count a path collection") {
+        function "resourceBytes"
+        when {
+            function {
+                input[0] = [
+                    file("${projectDir}/subworkflows/local/tests/fixtures/flat.txt"),
+                    file("${projectDir}/subworkflows/local/tests/fixtures/nested/nested.txt")
+                ]
+            }
+        }
+        then {
+            assert function.success
+            assert function.result == 12L
+        }
+    }
+
+    test("Count a directory recursively") {
+        function "resourceBytes"
+        when {
+            function {
+                input[0] = file("${projectDir}/subworkflows/local/tests/fixtures")
+            }
+        }
+        then {
+            assert function.success
+            assert function.result == 12L
+        }
+    }
+}
