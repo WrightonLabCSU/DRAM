@@ -22,7 +22,6 @@ process MMSEQS_INDEX{
     mkdir -p mmseqs_out/tmp
 
     mmseqs createdb ${fasta} ${input_fasta}.mmsdb
-    mmseqs createindex ${input_fasta}.mmsdb mmseqs_out/tmp --threads ${task.cpus}
 
     """
 

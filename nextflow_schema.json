@@ -48,6 +48,10 @@
                 "format_kegg": {
                     "type": "boolean",
                     "description": "Format KEGG database for use in DRAM. Standalone operation, will exit after completion."
+                },
+                "format_mmseqs_gpu": {
+                    "type": "boolean",
+                    "description": "Format an existing protein MMseqs database for GPU searches. Standalone operation."
                 }
             }
         },
@@ -224,6 +228,17 @@
                     "type": "number",
                     "description": "Minimum BitScore of reverse best hits to retain hits",
                     "default": 350.0
+                },
+                "mmseqs_gpu_exclude_dbs": {
+                    "type": "string",
+                    "default": "methyl",
+                    "description": "Comma-separated protein MMseqs databases that remain on CPUs when gpu profile is selected. Use none to send every GPU-capable database to GPUs. PFAM is always CPU-only."
+                },
+                "mmseqs_cuda_cache": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "${System.getProperty('user.home')}/.nv/ComputeCache",
+                    "description": "Persistent writable CUDA JIT cache shared by MMseqs GPU tasks."
                 }
             }
         },
@@ -348,9 +363,19 @@
                     "default": "${launchDir}/databases/kegg/",
                     "hidden": true
                 },
+                "kegg_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/kegg_gpu/",
+                    "hidden": true
+                },
                 "uniref_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/uniref/",
+                    "hidden": true
+                },
+                "uniref_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/uniref_gpu/",
                     "hidden": true
                 },
                 "metals_db": {
@@ -368,9 +393,19 @@
                     "default": "${launchDir}/databases/card/",
                     "hidden": true
                 },
+                "card_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/card_gpu/",
+                    "hidden": true
+                },
                 "tcdb_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/tcdb/",
+                    "hidden": true
+                },
+                "tcdb_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/tcdb_gpu/",
                     "hidden": true
                 },
                 "pfam_mmseq_db": {
@@ -383,9 +418,19 @@
                     "default": "${launchDir}/databases/merops/",
                     "hidden": true
                 },
+                "merops_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/merops_gpu/",
+                    "hidden": true
+                },
                 "viral_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/viral/",
+                    "hidden": true
+                },
+                "viral_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/viral_gpu/",
                     "hidden": true
                 },
                 "kofam_db": {
@@ -436,6 +481,11 @@
                     "default": "${launchDir}/databases/camper/mmseqs/",
                     "hidden": true
                 },
+                "camper_mmseqs_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/camper_gpu/",
+                    "hidden": true
+                },
                 "camper_mmseqs_list": {
                     "type": "string",
                     "default": "${launchDir}/databases/camper/mmseqs/camper_scores.tsv",
@@ -454,6 +504,11 @@
                 "canthyd_mmseqs_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/canthyd/mmseqs/",
+                    "hidden": true
+                },
+                "canthyd_mmseqs_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/cant_hyd_gpu/",
                     "hidden": true
                 },
                 "canthyd_mmseqs_list": {
@@ -479,6 +534,11 @@
                 "methyl_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/methyl/",
+                    "hidden": true
+                },
+                "methyl_gpu_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/methyl_gpu/",
                     "hidden": true
                 },
                 "sql_descriptions_db": {
@@ -580,12 +640,37 @@
                 }
             }
         },
+        "format_mmseqs_gpu_options": {
+            "title": "Format MMseqs GPU Database Options",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "Options for converting an existing protein MMseqs database into a GPU-padded database with a subset-2 index.",
+            "properties": {
+                "mmseqs_db_path": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true,
+                    "description": "Directory containing the existing MMseqs database."
+                },
+                "mmseqs_db_name": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9._-]+$",
+                    "description": "Database prefix without the .mmsdb suffix, such as kegg or uniref."
+                }
+            }
+        },
         "process_options": {
             "title": "Process resource options",
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Per-task resource caps, optional input batching, and job arrays. Resource caps do not increase the resources requested by a process.",
             "properties": {
+                "gpu_container_options": {
+                    "type": "string",
+                    "description": "Override container GPU flags for GPU tasks. Auto-detects if not set (--gpus all for Docker, --nv for Singularity/Apptainer).",
+                    "fa_icon": "fas fa-microchip",
+                    "hidden": true
+                },
                 "max_cpus": {
                     "type": "integer",
                     "minimum": 1,
@@ -872,6 +957,9 @@
         },
         {
             "$ref": "#/$defs/format_kegg_options"
+        },
+        {
+            "$ref": "#/$defs/format_mmseqs_gpu_options"
         },
         {
             "$ref": "#/$defs/database_options"

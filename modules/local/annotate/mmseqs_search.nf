@@ -46,13 +46,19 @@ process MMSEQS_SEARCH {
         mmseqs search query_database/${input_fasta}.mmsdb ${db_name}.mmsdb mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/tmp --threads ${task.cpus}
 
         # Filter to only hits with minimum bit score
-        mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${bit_score_threshold} --threads ${task.cpus} mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}_${db_name}.mmsdb
+        mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${bit_score_threshold} --threads ${task.cpus} mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/passing.mmsdb
+
+        mmseqs rmdb mmseqs_out/${input_fasta}_${db_name}.mmsdb
 
         # Filter to only best hit
-        mmseqs filterdb mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}_${db_name}.mmsdb --extract-lines 1
+        mmseqs filterdb mmseqs_out/passing.mmsdb mmseqs_out/best.mmsdb --extract-lines 1
+
+        mmseqs rmdb mmseqs_out/passing.mmsdb
 
         # Convert results to BLAST outformat 6
-        mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmsdb  mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv --threads ${task.cpus}
+        mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmsdb  mmseqs_out/best.mmsdb mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv --threads ${task.cpus}
+
+        mmseqs rmdb mmseqs_out/best.mmsdb
 
         # if statement for kegg rbh goes here
     elif [ "${db_name}" == "pfam" ]; then
