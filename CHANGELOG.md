@@ -2,12 +2,59 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 2.0.0-beta37 - 2026-09-08
 
-- Add reusable per-database HMM/MMseqs workflows with optional sequential search batching, a per-input size cutoff, deterministic membership, and compatible job arrays.
-- Search scheduler selectors now use workflow-qualified names such as `.*:MMSEQS_KEGG:SEARCH_.*`.
-- Add optional, independently configurable CALL_GENES and RNA input batching. tRNAscan-SE and Barrnap now use allocated task CPUs and remain separate array-capable process families.
-- Carry per-sample logical workload sizes through input preparation, gene calling, and MMseqs indexing so resource bucketing does not repeatedly inspect the same files or depend on generated index sizes.
+[24582dc](https://github.com/BortonWrightonLabs/DRAM/commit/24582dc53c47024fd654dab5d5933611153ed51d)...[961ddde](https://github.com/BortonWrightonLabs/DRAM/commit/961ddde2fc8f112ea01ea75c408767c2d777af78)
+
+### Bug Fixes
+
+- Hotfix distill_bgc spacing error ([b7d9ddc](https://github.com/BortonWrightonLabs/DRAM/commit/b7d9ddcd420f6882edd0d1d5cec2a3e14de8b186))
+
+
+- Email flag fix to send emails on run complete ([5024106](https://github.com/BortonWrightonLabs/DRAM/commit/5024106dd8121125a4ea7a8255786c6ae15ef966))
+
+  The email flag was silently failing for a few reasons. Inocrrect paths to assets,
+  not passing the header, and not giving feedback on sendmail result.
+  The plaintext email also failed because of not sending the header properly.
+  Now it tries sendmail for the html email, if that fails, it uses the plaintext email
+  as a backup and lets you know this in the console output and in log.
+
+
+
+### Documentation
+
+- Update headers and links ([229ada3](https://github.com/BortonWrightonLabs/DRAM/commit/229ada3668abbdaf0d7508b72dbf003dbd4ce3ad))
+
+
+
+### Features
+
+- GPU mmseqs support ([2517f88](https://github.com/BortonWrightonLabs/DRAM/commit/2517f8863aa45706a80cdcc0519d3d09cd6303f4))
+
+  Add optional GPU acceleration for MMseqs2 searches through the GPU
+  profile, including GPU database preparation, validation, and per-database
+  CPU exclusions.
+
+  Integrate CPU and GPU searches with the shared batching workflows,
+  size-based resource allocation, and executor job arrays. Update pipeline
+  configuration, schema, documentation, and tests.
+
+- Dynamically allocate resources based on size, remove slurm config ([463ebf2](https://github.com/BortonWrightonLabs/DRAM/commit/463ebf27e2d671b3009ee67b3560c305d36ebc4f))
+
+  - Dynamically bucket CALL_GENES, QUAST, HMM_SEARCH, and MMSEQS_SEARCH tasks by input workload size.
+  - Add opt-in, resource-uniform job arrays for bucketed CALL_GENES, HMM_SEARCH, and MMSEQS_SEARCH tasks, BREAKING CHANGE:Replace the built-in site-specific Slurm configuration with a minimal `slurm` profile and user-supplied cluster configuration. Replace tier-specific resource parameters with `max_cpus`, `max_memory`, and `max_time` caps, and rename `array_size` to `job_array_size`.
+
+
+- Add job batching for call, rna, and db scans ([e2be421](https://github.com/BortonWrightonLabs/DRAM/commit/e2be421d327ec50e159ee78f3143e834eb0f9c27))
+
+  Input batching for CALL, rna scan and mmseqs and hmmer search,
+  inputs can be batched together with inputs above a certain size
+  being ran on their own job. This is allows users to batch inputs
+  in situations when a SLURM queue is very full and scheduling
+  many small jobs is difficult. In this siutation, it might be
+  better to batch them together for when they do get scheduled.
+
+
 
 ## 2.0.0-beta36 - 2026-08-11
 
